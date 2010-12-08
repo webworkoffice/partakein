@@ -15,7 +15,7 @@ public class PartakeProperties {
 
 	private PartakeProperties() {
 	    this.mode = fetchMode();
-		this.properties = readFrom("/partake." + mode + ".properties");
+		this.properties = readFrom("/" + mode + ".partake.properties");
 	}
 	
 	public String getMode() {
