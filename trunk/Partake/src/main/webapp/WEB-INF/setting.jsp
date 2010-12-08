@@ -19,8 +19,8 @@
 
 <div id="setting-content">
 
-<h1>
-<img id="setting-titleline" src="<%= request.getContextPath() %>/images/line-orange.png" alt="user setting" />ユーザー設定</h1>
+<h1 id="pastel-line5ji" >
+<img src="<%= request.getContextPath() %>/images/line-orange.png" alt="user setting" />ユーザー設定</h1>
 
 <p>各種設定などが可能です。</p>
 

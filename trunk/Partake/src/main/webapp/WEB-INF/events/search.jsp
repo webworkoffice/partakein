@@ -22,7 +22,7 @@
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1 id="event-search-titleline"><img src="<%= request.getContextPath() %>/images/line-yellow.png" alt="" />イベントを検索します</h1>
+<h1 id="pastel-line10ji"><img src="<%= request.getContextPath() %>/images/line-yellow.png" alt="" />イベントを検索します</h1>
 
 <div id="event-search-form">
 	<img src="<%= request.getContextPath() %>/images/search-icon.png" alt="" />タイトル、本文からイベントを検索します。

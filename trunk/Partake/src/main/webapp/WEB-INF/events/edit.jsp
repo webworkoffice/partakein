@@ -5,12 +5,12 @@
 <html lang="ja">
 <head>
 	<jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
-	<title>イベントを編集する</title>
+	<title>イベントを編集します</title>
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1 id="event-edit-titleline"><img src="<%= request.getContextPath() %>/images/line-orange.png" alt="">イベントを編集する</h1>
+<h1 id="pastel-line10ji"><img src="<%= request.getContextPath() %>/images/line-orange.png" alt="">イベントを編集します</h1>
 
 <s:form method="post" action="%{#request.contextPath}/events/commit" enctype="multipart/form-data"><%-- create じゃなくて commit なのに注意 --%>
 	<s:token />
