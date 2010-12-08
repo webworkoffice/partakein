@@ -2,11 +2,30 @@
 
 = Introduction =
 
-How to build PARTAKE with Eclipse and run it on tomcat.
+This page describes how to build PARTAKE on eclipse and run on Tomcat 6.
 
 = Details =
 
-  # download PARTAKE.
-  # ... writing now.
+We use eclipse 3.6 (Java EE platform) with m2eclipse plugin.
+
+  # checkout PARTAKE from http://code.google.com/p/partakein/source/checkout 
+  # On eclipse, select File -> New -> Dynamic Web Project. Set Project name as you like (we recommend to use "Partake"), and set Project location where you saved the file, and press Next >.
+    * set Target runtime to Apache Tomcat v6.0
+    * set Dynamic web module version to 2.5
+  # Now we are on "build path" page, set the following configurations, and press Next >.
+    * set "Source folders on build path" as "src/main/java", "src/main/resource", and "src/test/main".
+    * set "Default output folder:" to "target/classes".
+  # set Context root as "/", and set "Content directory" as "src/main/webapp", then press Finish
+  # If you are using Windows, do not forget to set project encoding to utf-8.
+  # right click on Partake project, and choose Maven -> enable project management.
+  # right click on Partake project, and choose Properties. Then choose Java Build Path page, and choose Orders and Export, and check Maven Dependencies and Web App Libraries. Then press OK.
+  # On Markers pain, you may see Classpath Dependency Validator Message.
+     * In this case, right click and select Quick fix, and press Finish.
+  # Then choose Run on Server.
+
+Since you have not configure Partake, you will see error message.
+
+
+  
 
 http://geertschuring.wordpress.com/2009/03/05/why-the-maven2_classpath_container-will-not-be-exported-or-published/
