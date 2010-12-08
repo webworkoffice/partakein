@@ -8,3 +8,5 @@ How to build PARTAKE with Eclipse and run it on tomcat.
 
   # download PARTKAKE.
   # ... writing now.
+
+http://geertschuring.wordpress.com/2009/03/05/why-the-maven2_classpath_container-will-not-be-exported-or-published/
