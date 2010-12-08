@@ -15,7 +15,7 @@
 
 <div id="login-content">
 
-<h1><img id="login-titleline" src="<%= request.getContextPath() %>/images/line-yellow.png" alt="">ログインが必要です</h1>
+<h1 id="pastel-line10ji"><img src="<%= request.getContextPath() %>/images/line-pink.png" alt="">ログインが必要です</h1>
 
 <p>ここから先に進むにはログインが必要です。</p>
 

@@ -14,7 +14,6 @@
     text-align:right;
 }
 
-
 body {
     min-width: 900px;
     margin: 0;
@@ -47,6 +46,10 @@ body {
     padding: 0 10px 10px 10px;
 }
 
+/*----------------------------------------------------
+  top画面
+----------------------------------------------------*/
+
 .top-introduction {
     position: relative;
     width: 850px;
@@ -68,6 +71,8 @@ body {
     left: 634px;
 }
 
+/* top - ボタン */
+
 #top-search-button {
     width: 143px;
     height: 33px;
@@ -79,7 +84,7 @@ body {
     left: 110px;
     width:143px;
     height:33px;
-   background: transparent url(../images/top-search2.png) no-repeat left bottom;}
+    background: transparent url(../images/top-search2.png) no-repeat left bottom;}
 
 .rollover1 a {
 display:block;
@@ -141,6 +146,9 @@ text-indent:-9999px;
     text-indent:-9999px;
 }
 
+/* partakeの特徴
+---------------------------*/
+
 .top-explanations {
     background-repeat:repeat;
     float: left;
@@ -198,6 +206,9 @@ text-indent:-9999px;
     opacity:0.86;
     filter: alpha(opacity=86);
 }
+
+/* 最近のイベント
+---------------------------*/
 
 .top-recent-events {
   /*  background-color: #f6f5f5; */
@@ -273,10 +284,17 @@ text-indent:-9999px;
     margin-left: 0;
 }
 
-
 .top-feature {
     padding: 4px 0 0 70px;
     width: 300px;
+}
+
+
+/*----------------------------------------------------
+  イベント画面
+----------------------------------------------------*/
+.summary {
+    padding: 0 10px 10px 10px;
 }
 
 .event-wrapper {
@@ -284,17 +302,6 @@ text-indent:-9999px;
     width: 100%;    
     border-top: 2px solid #444;	
 }
-
-.summary {
-    padding: 0 10px 10px 10px;
-}
-
-.event-content {
-    float: left;
-    width: 620px;
-}
-
-/* イベント詳細画面 */
 
 /* これを指定すると子供が float でも背景を表示させることが出来るようになる */
 .event-wrapper:after {
@@ -319,6 +326,9 @@ text-indent:-9999px;
     margin: 30px 0 5px 10px;
 }
 
+/* コメントらん
+---------------------------*/
+
 .event-comments {
     background-color: #efefef;
     margin: 20px 0 0 10px;
@@ -337,13 +347,6 @@ text-indent:-9999px;
     margin: -17px 0 0 0px;
 }
 
-.comments-wrap {
-    height:700px;
-    overflow:auto;
-    margin:0 3px;
-    border:1px solid #ffffff;
-}
-
 .comment {
     border-bottom: 1px dotted #cccccc;
     margin: 0 25px 3px 0px;
@@ -354,6 +357,9 @@ text-indent:-9999px;
     width: 85%;
     height: 70px;
 }
+
+/* イベント主催者用 
+---------------------------*/
 
 .event-owner-information {
     margin: 2px 0 0px 0;
@@ -409,7 +415,6 @@ text-indent:-9999px;
 	height: 21px;
 }
 
-
 .event-enrollment {
     margin: 1px 0 0 0px;
     padding: 10px 2px ;
@@ -433,6 +438,9 @@ text-indent:-9999px;
     margin-right:2px;
 }
 
+
+/* イベント参加者一覧
+---------------------------*/
 
 .event-participants {
     margin: 1px 0 0 0;
@@ -540,19 +548,9 @@ text-indent:-9999px;
 	clear: both;
 }
 
-/* イベント作成画面 */
-
-#event-form-titleline {   
-    margin: 0 0 30px 15px;
-}
-
-#event-form-titleline img {   
-    position: absolute;
-    top: 1.2em;
-    left: -0.5em;
-    width: 325px;
-    height: 11px;
-}
+/*----------------------------------------------------
+  イベント作成画面
+----------------------------------------------------*/
 
 dl.event-form {
     display: block;
@@ -595,38 +593,18 @@ dl.event-form {
     color:#2a2a2a;
 }
 
-/* イベント編集 */
+/*----------------------------------------------------
+  イベント編集画面
+----------------------------------------------------*/
 
 #event-edit-submit {
     display: block;
     margin: 0 auto;
 }
 
-#event-edit-titleline {   
-    margin: 0 0 30px 15px;
-}
-
-#event-edit-titleline img {   
-    position: absolute;
-    top: 1.2em;
-    left: -0.5em;
-    width: 230px;
-    height: 11px;
-}
-
-/* イベント検索画面 */
-
-#event-search-titleline {   
-    margin: 0 0 30px 15px;
-}
-
-#event-search-titleline img {   
-    position: absolute;
-    top: 1.2em;
-    left: -0.5em;
-    width: 253px;
-    height: 11px;
-}
+/*----------------------------------------------------
+  イベント検索画面
+----------------------------------------------------*/
 
 #event-search-form {
     width: 80%;
@@ -747,7 +725,9 @@ dl.event-form {
     margin-left: 170px;
 }
 
-/* マイページ */
+/*----------------------------------------------------
+  マイページ
+----------------------------------------------------*/
 
 #mypage-title {
     margin: 0 0 10px 15px;
@@ -809,7 +789,9 @@ dl.event-form {
     vertical-align: middle;
 }
 
-/* フィードリスト */
+/*----------------------------------------------------
+  フィードリスト
+----------------------------------------------------*/
 
 #feedlist {
     margin-left:15px;
@@ -846,18 +828,12 @@ width:60px;
 width:50px;
 }
 
-/* ユーザ設定 */
+/*----------------------------------------------------
+  ユーザ設定
+----------------------------------------------------*/
 
 #setting-content {
     margin-left: 15px;
-}
-
-#setting-titleline {   
-    position: absolute;
-    top: 1.2em;
-    left: -0.5em;
-    width: 185px;
-    height: 11px;
 }
 
 .setting-subtitle {
@@ -890,25 +866,30 @@ width:50px;
     margin-left:5px;
 }
 
-/* ログインが必要です */
+/*----------------------------------------------------
+  ログインが必要です
+----------------------------------------------------*/
 
 #login-content {
     margin-left: 15px;
 }
 
-#login-titleline {   
-    position: absolute;
-    top: 1.2em;
-    left: -0.5em;
-    width: 235px;
-    height: 11px;
+/*----------------------------------------------------
+  another
+----------------------------------------------------*/
+
+.providers li:hover {
+	opacity:0.77;
+    filter: alpha(opacity=77);
 }
 
+/* お問い合わせ画面  */
 .biglogo {
     margin-top:60px;
     margin-bottom:40px;
     text-align:center;
 }
+
 
 
 
@@ -1168,6 +1149,42 @@ h3 a:link, h3 a:visited, h3 a:hover, h3 a:active {
     text-decoration: none;
 }
 
+
+/* h1タイトルのパステル風ライン - 文字長別 
+----------------------------------------------------*/
+
+#pastel-line13ji {   
+    margin: 0 0 30px 15px;
+}
+#pastel-line13ji img {   
+    position: absolute;
+    top: 1.2em;
+    left: -0.5em;
+    width: 325px;
+    height: 11px;
+}
+
+#pastel-line10ji {   
+    margin: 0 0 30px 15px;
+}
+#pastel-line10ji img {   
+    position: absolute;
+    top: 1.2em;
+    left: -0.5em;
+    width: 253px;
+    height: 11px;
+}
+
+#pastel-line5ji {   
+    margin: 0 0 30px 15px;
+}
+#pastel-line5ji img {   
+    position: absolute;
+    top: 1.2em;
+    left: -0.5em;
+    width: 187px;
+    height: 11px;
+}
 
 /* ==================================================================
  * blocks

@@ -11,7 +11,7 @@
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1 id="event-form-titleline"><img src="<%= request.getContextPath() %>/images/line-yellow.png" alt="">新しいイベントを作成します</h1>
+<h1 id="pastel-line13ji"><img src="<%= request.getContextPath() %>/images/line-yellow.png" alt="">新しいイベントを作成します</h1>
 
 <s:form method="post" action="%{#request.contextPath}/events/create" enctype="multipart/form-data">
 	<s:token />
