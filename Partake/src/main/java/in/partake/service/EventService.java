@@ -153,7 +153,9 @@ public final class EventService extends PartakeService {
 	 * @throws DAOException
 	 */
 	public List<Event> getRecentEvents(int num) throws DAOException {
-		TopDocs docs = LuceneDao.get().getRecentDocuments(num);		
+	    System.out.println("getRecentEvents 1");
+		TopDocs docs = LuceneDao.get().getRecentDocuments(num);
+		System.out.println("getRecentEvents 2");
 		return convertToEventList(docs);
 	}
 	
@@ -521,21 +523,29 @@ public final class EventService extends PartakeService {
 	}
 	
 	private List<Event> convertToEventList(TopDocs docs) throws DAOException {
-        PartakeDAOFactory factory = getFactory();       
+	    System.out.println("convertToEventList 1");
+        PartakeDAOFactory factory = getFactory();
+        System.out.println("convertToEventList 2");
         PartakeConnection con = factory.getConnection();
+        System.out.println("convertToEventList 3");
         try {
             List<Event> events = new ArrayList<Event>();
-            
+            System.out.println("convertToEventList 4");
             for (ScoreDoc doc : docs.scoreDocs) {
+                System.out.println("convertToEventList 5");
                 Document document = LuceneDao.get().getDocument(doc.doc);
+                System.out.println("convertToEventList 6");
                 String id = document.get("ID");
                 if (id == null) { continue; }
 
+                System.out.println("convertToEventList 7");
                 events.add(factory.getEventAccess().getEventById(con, id));
+                System.out.println("convertToEventList 8");
             }
-            
+            System.out.println("convertToEventList 9");
             return events;
         } finally {
+            System.out.println("convertToEventList 10");
             con.invalidate();
         }
 	}

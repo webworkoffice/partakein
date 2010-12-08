@@ -29,7 +29,13 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     private static final Logger logger = Logger.getLogger(CassandraDAOFactory.class);
 
     @Override
-    public PartakeCassandraConnection getConnection() throws DAOException {
+    @Deprecated
+    public PartakeConnection getConnection() throws DAOException {
+        return getConnection("unknown");
+    }
+    
+    @Override
+    public PartakeCassandraConnection getConnection(String name) throws DAOException {
         try {
             long now = new Date().getTime();
             CassandraClientPool pool = CassandraClientPoolFactory.INSTANCE.get();
@@ -38,6 +44,8 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
             int port = PartakeProperties.get().getCassandraPort();
             
             CassandraClient client = pool.borrowClient(host, port);
+            
+            System.out.println("borrowing... " + name + " : " + client.toString());
             return new PartakeCassandraConnection(client, now);
         } catch (Exception e) {
             throw new DAOException(e);

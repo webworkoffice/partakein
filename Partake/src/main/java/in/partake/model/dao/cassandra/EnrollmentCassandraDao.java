@@ -390,7 +390,12 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         		String eventId = string(column.getName());
         		ParticipationStatus status = ParticipationStatus.valueOf(string(column.getValue()));
         		if (status.isEnrolled()) {
-        			return new EventCassandraDao().getEventById(getFactory().getConnection(), eventId);
+        		    PartakeConnection con = getFactory().getConnection("EnrollmentCassandraDao#getEnrolledEventsImpl");
+        		    try {
+        		        return new EventCassandraDao().getEventById(con, eventId);
+        		    } finally {
+        		        con.invalidate();
+        		    }
         		} else {
         			return null;
         		}
