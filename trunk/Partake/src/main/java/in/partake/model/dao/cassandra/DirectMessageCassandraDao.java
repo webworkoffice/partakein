@@ -240,7 +240,12 @@ class DirectMessageCassandraDao extends CassandraDao implements IDirectMessageAc
                 Column column = cosc.getColumn();
                 String messageId = string(column.getValue());
                 
-                return getFactory().getDirectMessageAccess().getDirectMessageById(getFactory().getConnection(), messageId);
+                PartakeConnection con = getFactory().getConnection("DirectMessageCassandraDao#getUserMessageIteratorImpl");
+                try {
+                    return getFactory().getDirectMessageAccess().getDirectMessageById(con, messageId);
+                } finally {
+                    con.invalidate();
+                }
             }
             
             public ColumnOrSuperColumn unmap(DirectMessage t) throws DAOException {

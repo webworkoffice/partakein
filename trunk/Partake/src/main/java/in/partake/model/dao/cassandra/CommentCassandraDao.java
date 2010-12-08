@@ -162,7 +162,12 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
                 Column column = cosc.column;
                 String commentId = string(column.value);
                 
-                return getCommentById(getFactory().getConnection(), commentId);
+                PartakeConnection con = getFactory().getConnection("CommnetCassandraDao#getCommentsByEvent");
+                try {
+                    return getCommentById(con, commentId);
+                } finally {
+                    con.invalidate();
+                }
             }
 
             @Override

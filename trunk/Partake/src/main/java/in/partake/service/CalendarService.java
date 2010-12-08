@@ -22,7 +22,7 @@ public final class CalendarService extends PartakeService {
      */
     public void revokeCalendar(User user) throws DAOException {
         PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = factory.getConnection();
+        PartakeConnection con = factory.getConnection("CalendarService#revokeCalendar");
         
         try {
             // If the calendar already exists, remove it first.

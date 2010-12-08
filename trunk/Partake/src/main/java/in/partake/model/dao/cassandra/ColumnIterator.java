@@ -94,7 +94,7 @@ class ColumnIterator {
 	    if (pos < cached.size()) { return true; }
 		if (nextStartKey == null) { return false; }
 
-		PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection();;
+		PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#hasNext");
 		try {
 			Client cassandra = con.getClient();
 			
@@ -145,7 +145,7 @@ class ColumnIterator {
 	 * @throws DAOException
 	 */
 	public void remove() throws DAOException {
-        PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection();
+        PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#remove()");
 		try {
 			Client cassandra = con.getClient();
 			ColumnPath columnPath = new ColumnPath(parent.column_family);
@@ -172,7 +172,7 @@ class ColumnIterator {
 			throw new DAOException("NAME cannot be updated."); // もうちょっと具体的な IllegalArgument とかそのへん。update は byte[] value に限っても良いかもしれない。
 		}
 		
-		PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection();
+		PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#update");
 		try {
 			Client cassandra = con.getClient();
 			
@@ -193,7 +193,7 @@ class ColumnIterator {
 	// TODO: the argument should be a ColumnOrSuperColumn object instead of <code>value</code>.
 	@Deprecated
 	public void update(byte[] value) throws DAOException {
-	    PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection();
+	    PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#update");
 		try {
 			Client cassandra = con.getClient();
 			ColumnPath columnPath = new ColumnPath(parent.column_family);
@@ -214,7 +214,7 @@ class ColumnIterator {
 	// SuperColumn を iterate している場合のみ call してよい。それ以外のときの結果は未定義
 	@Deprecated
 	public void updateSuperColumn(SuperColumn superColumn) throws DAOException {
-	    PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection();       
+	    PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#updateSuperColumn");       
 		try {
 			Client cassandra = con.getClient();
 			

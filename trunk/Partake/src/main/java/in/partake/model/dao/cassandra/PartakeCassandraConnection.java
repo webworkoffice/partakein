@@ -23,7 +23,13 @@ class PartakeCassandraConnection extends PartakeConnection {
     @Override
     public void invalidate() {
         CassandraClientPool pool = CassandraClientPoolFactory.INSTANCE.get();
-        pool.invalidateClient(client);
+        try {
+            System.out.println("releasing... " + client.toString());
+            pool.releaseClient(client);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // pool.invalidateClient(client);
     }
     
     @Override

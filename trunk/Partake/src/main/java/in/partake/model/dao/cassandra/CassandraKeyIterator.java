@@ -64,7 +64,7 @@ class CassandraKeyIterator extends KeyIterator {
         if (keySlice != null && pos < keySlice.size()) { return true; }
         if (nextStartKey == null) { return false; }
 
-        PartakeCassandraConnection con = (PartakeCassandraConnection) factory.getConnection();
+        PartakeCassandraConnection con = (PartakeCassandraConnection) factory.getConnection("CassandraKeyIterator");
         try {
             Client cassandra = con.getClient();
             
