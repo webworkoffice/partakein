@@ -28,11 +28,9 @@ Since you have not configure Partake, you will see error message.
   # Download Apache Cassandra (0.6.5) and run on localhost.
   # fill src/main/resource/sample.partake.properties (especially bitly)
     * partake.properties can set in.partake.mode property. 
-    * partake will read <mode>.partake.properties
+    * partake will read {mode}.partake.properties
   # rename src/main/resource/twitter4j.properties.sample as src/main/resource/twitter4j.properties.
     * set your project name consumer key and consumer secret given from twitter.
 
 Then you can run Partake now.
   
-
-http://geertschuring.wordpress.com/2009/03/05/why-the-maven2_classpath_container-will-not-be-exported-or-published/
