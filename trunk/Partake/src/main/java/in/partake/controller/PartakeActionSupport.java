@@ -92,6 +92,30 @@ public class PartakeActionSupport extends ActionSupport
 		}
 	}
 	
+	/**
+	 * take multiple parameters. If there is a single parameter, a new array will be created to return.
+	 * @param key
+	 * @return
+	 */
+	protected String[] getParameters(String key) {
+	    Map<String, Object> params = ActionContext.getContext().getParameters();
+	    if (params == null) { return null; }
+	    
+	    Object param = params.get(key);
+	    if (param == null) { return null; }
+	    if (param instanceof String) {
+	        return new String[]{ (String) param };
+	    }
+	    if (param instanceof String[]) {
+	        String[] strs = (String[])param;
+	        if (strs.length == 0) { return null; }
+	        return strs;
+	    }
+	    
+	    // TODO: should be logged.
+	    return null;
+	}
+	
     public void setRedirectURL(String url) {
     	this.redirectURL = url;
     }
