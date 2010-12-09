@@ -6,6 +6,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
+import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPermission;
 import in.partake.resource.Constants;
@@ -88,6 +89,13 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     private String backImageId;
     private File backImage;
     private String backImageContentType;
+    
+    // 関連イベント
+    // TODO: あーこのへん超汚い。もっときれいな解決策があるはず。
+    private String relatedEventID1, relatedEventID2, relatedEventID3;
+    private boolean relatedEventRequired1, relatedEventRequired2, relatedEventRequired3;
+    private boolean relatedEventPriority1, relatedEventPriority2, relatedEventPriority3;
+    
     
     // NOTE: required for showing jsp
     public List<KeyValuePair> getCategories() {
@@ -281,8 +289,17 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         		secret, passcode, createdAt
         );
         
+        // TODO: これはひどい
+        // related event を登録        
+        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
+        if (StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
+        if (StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
+        if (StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }        
+        
         try {
         	this.eventId = EventService.get().create(embryo, foreImageEmbryo, backImageEmbryo);
+        	EventService.get().setEventRelations(eventId, eventRelations);
+        	
         	addActionMessage("新しいイベントが作成されました。");
         	return SUCCESS;
         } catch (DAOException e) {
@@ -298,10 +315,12 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         if (partakeUser == null) { return LOGIN; }
 	    
         EventEx event;
+        List<EventRelation> eventRelations;
 		try {
 		    if (eventId == null) { return ERROR; }
 			event = EventService.get().getEventExById(eventId);
-			if (event == null) { return ERROR; }
+			if (event == null) { return NOT_FOUND; }
+			eventRelations = EventService.get().getEventRelations(eventId);			
         } catch (DAOException e) {
             e.printStackTrace();
             return ERROR;
@@ -309,9 +328,10 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         
 		// check permission
 		if (!event.hasPermission(partakeUser, UserPermission.EVENT_EDIT)) { return PROHIBITED; }
-
+		
 		// event から data を copy して input
 		copyFromEvent(event);
+		copyFromEventRelation(eventRelations);
 
 		// TODO: edate, ddate はなんとかきれいにしてあげたい。		
 		
@@ -377,10 +397,18 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        		secret, passcode, event.getCreatedAt()
 	        );
 
+	        // TODO: これはひどい
+	        // related event を登録        
+	        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
+	        if (StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
+	        if (StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
+	        if (StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }
+
 	        EventService.get().update(event, eventEmbryo,
 	        		foreImageEmbryo != null || removingForeImage, foreImageEmbryo, 
 	        		backImageEmbryo != null || removingBackImage, backImageEmbryo);
-        	
+	        EventService.get().setEventRelations(event.getId(), eventRelations);
+	        
         	addActionMessage("イベント情報が変更されました。");
         	this.eventId = event.getId();
         	return SUCCESS;
@@ -440,6 +468,8 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     // ======================================================================
     // setter and getters
 
+	// TODO: これ Event をそのままもてばえんじゃないの？
+	// TODO: date 系は汚いよなあ、なんとかなるはず。
 	private void copyFromEvent(Event event) {
 		assert (event != null);
 		
@@ -503,6 +533,27 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		this.secret = event.isPrivate();
 		this.passcode = event.getPasscode();
 		this.hashTag = event.getHashTag();
+	}
+	
+	private void copyFromEventRelation(List<EventRelation> eventRelations) {
+		// TODO: これは本当にひどい。目が腐る。みちゃだめー！！！
+		if (eventRelations.size() >= 1) {
+			relatedEventID1       = eventRelations.get(0).getEventId();
+			relatedEventRequired1 = eventRelations.get(0).isRequired();
+			relatedEventPriority1 = eventRelations.get(0).hasPriority();
+		}
+
+		if (eventRelations.size() >= 2) {
+			relatedEventID2       = eventRelations.get(1).getEventId();
+			relatedEventRequired2 = eventRelations.get(1).isRequired();
+			relatedEventPriority2 = eventRelations.get(1).hasPriority();
+		}
+
+		if (eventRelations.size() >= 3) {
+			relatedEventID3       = eventRelations.get(2).getEventId();
+			relatedEventRequired3 = eventRelations.get(2).isRequired();
+			relatedEventPriority3 = eventRelations.get(2).hasPriority();
+		}
 	}
 	
     // ======================================================================
@@ -669,6 +720,18 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public boolean isRemovingBackImage() {
 		return removingBackImage;
 	}
+	
+	public String getRelatedEventID1() { return relatedEventID1; }
+	public String getRelatedEventID2() { return relatedEventID2; }
+	public String getRelatedEventID3() { return relatedEventID3; }
+	
+	public boolean getRelatedEventRequired1() { return relatedEventRequired1; }
+	public boolean getRelatedEventRequired2() { return relatedEventRequired2; }
+	public boolean getRelatedEventRequired3() { return relatedEventRequired3; }
+
+	public boolean getRelatedEventPriority1() { return relatedEventPriority1; }
+	public boolean getRelatedEventPriority2() { return relatedEventPriority2; }
+	public boolean getRelatedEventPriority3() { return relatedEventPriority3; }
 	
 	// ----------------------------------------------------------------------
 	// setters
@@ -864,4 +927,16 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public void setRemovingBackImage(boolean removingBackImage) {
 		this.removingBackImage = removingBackImage;
 	}
+	
+	public void getRelatedEventID1(String id) { relatedEventID1 = id; }
+	public void getRelatedEventID2(String id) { relatedEventID2 = id; }
+	public void getRelatedEventID3(String id) { relatedEventID3 = id; }
+	
+	public void getRelatedEventRequired1(boolean b) { relatedEventRequired1 = b; }
+	public void getRelatedEventRequired2(boolean b) { relatedEventRequired2 = b; }
+	public void getRelatedEventRequired3(boolean b) { relatedEventRequired3 = b; }
+
+	public void getRelatedEventPriority1(boolean b) { relatedEventPriority1 = b; }
+	public void getRelatedEventPriority2(boolean b) { relatedEventPriority2 = b; }
+	public void getRelatedEventPriority3(boolean b) { relatedEventPriority3 = b; }
 }

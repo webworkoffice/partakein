@@ -25,7 +25,7 @@
 	    		<interceptor-ref name="utf8encoding" />
 	    		<interceptor-ref name="store">
                     <param name="operationMode">AUTOMATIC</param>
-	    		</interceptor-ref>	    		
+	    		</interceptor-ref>
 	    		<interceptor-ref name="defaultStack" />
 	    	</interceptor-stack>
 

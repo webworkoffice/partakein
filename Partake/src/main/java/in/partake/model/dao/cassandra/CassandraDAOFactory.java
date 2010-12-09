@@ -15,6 +15,7 @@ import in.partake.model.dao.ICommentAccess;
 import in.partake.model.dao.IDirectMessageAccess;
 import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IEventAccess;
+import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.IOpenIDLinkageAccess;
@@ -80,6 +81,11 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     @Override
     public IEventAccess getEventAccess() {
         return new EventCassandraDao();
+    }
+    
+    @Override
+    public IEventRelationAccess getEventRelationAccess() {
+    	return new EventRelationCassandraDao();
     }
 
     @Override

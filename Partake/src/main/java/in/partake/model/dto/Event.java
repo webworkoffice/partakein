@@ -340,7 +340,7 @@ public class Event extends PartakeModel<Event> {
     }
 
     /**
-     * true if reservation is being accepted now.
+     * true if reservation is acceptable now.
      * @return
      */
     public boolean canReserve() {
@@ -352,7 +352,7 @@ public class Event extends PartakeModel<Event> {
     }
     
     /**
-     * get a calculated deadline. If deadline is set, it is returned. Otherwise, 3 hours before of begindate is returned.
+     * get a calculated deadline. If deadline is set, it is returned. Otherwise, beginDate is deadline.
      * @return
      */
     public Date getCalculatedDeadline() {
@@ -388,8 +388,6 @@ public class Event extends PartakeModel<Event> {
             return -1;
         }
     }
-    
-
 }
 
 

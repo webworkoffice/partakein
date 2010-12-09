@@ -11,6 +11,7 @@ public abstract class PartakeDAOFactory {
     public abstract IDirectMessageAccess getDirectMessageAccess();
     public abstract IEnrollmentAccess getEnrollmentAccess();
     public abstract IEventAccess getEventAccess();
+    public abstract IEventRelationAccess getEventRelationAccess();
     public abstract IFeedAccess getFeedAccess();
     public abstract IMessageAccess getMessageAccess();
     public abstract IOpenIDLinkageAccess getOpenIDLinkageAccess();

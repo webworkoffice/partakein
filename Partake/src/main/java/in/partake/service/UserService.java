@@ -92,7 +92,7 @@ public final class UserService extends PartakeService {
     // ----------------------------------------------------------------------
     // Twitter Authentication
     
-    public User getUserFromTwitterLinkage(TwitterLinkage twitterLinkage, Twitter twitter, boolean createIfAbsent) throws DAOException, TwitterException {
+    public User getUserFromTwitterLinkage(TwitterLinkage twitterLinkage, Twitter twitter, boolean createsIfAbsent) throws DAOException, TwitterException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
@@ -104,7 +104,7 @@ public final class UserService extends PartakeService {
                 user = factory.getUserAccess().getUserById(con, userId);
             }
             
-            if (user == null && createIfAbsent) {
+            if (user == null && createsIfAbsent) {
                 factory.getUserAccess().addUser(con, userId, twitter.getId());
                 user = factory.getUserAccess().getUserById(con, userId);
             }

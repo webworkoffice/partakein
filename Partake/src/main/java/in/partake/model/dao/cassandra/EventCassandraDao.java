@@ -12,7 +12,6 @@ import in.partake.util.Util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,8 +31,6 @@ import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 
-import me.prettyprint.cassandra.service.CassandraClient;
-
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
@@ -41,6 +38,7 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 //      events:id:<event id>
 //          <event information>
 //
+// DEPRECATED
 // * recent events
 //      events:recent
 //          <createdAt>/<event id>
@@ -56,14 +54,6 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 //          TODO: event が消去されていれば消すべき？
 //          TODO: event が archived 基準であれば archived に移すべき
 //
-// * SUB EVENTS
-//      events:subevents:<event id>
-//          <subeventid>/""
-//
-//      subevents:id:<subevent id>
-//          subevent information
-// 
-//
 // * event リストで、begin date で並べたものとかなんとか。
 //		archive されていない event で、現在時刻よりも前の event を列挙したい
 //		archive されているイベントは触ることが出来ない。
@@ -77,19 +67,12 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 //
 
 class EventCassandraDao extends CassandraDao implements IEventAccess {
-    // Events
+    // EVENT MASTER TABLE
     private static final String EVENTS_PREFIX = "events:id:";
     private static final String EVENTS_KEYSPACE = "Keyspace1";
     private static final String EVENTS_COLUMNFAMILY = "Standard2";
     private static final ConsistencyLevel EVENTS_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel EVENTS_CL_W = ConsistencyLevel.ALL;
-    
-    // Recent Events
-    private static final String EVENTS_RECENT_PREFIX = "events:recent:";
-    private static final String EVENTS_RECENT_KEYSPACE = "Keyspace1";
-    private static final String EVENTS_RECENT_COLUMNFAMILY = "Standard2";
-    private static final ConsistencyLevel EVENTS_RECENT_CL_R = ConsistencyLevel.ONE;
-    private static final ConsistencyLevel EVENTS_RECENT_CL_W = ConsistencyLevel.ALL;
     
     // Events By Owner
     private static final String EVENTS_BYOWNER_PREFIX = "events:owner:";
@@ -97,20 +80,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     private static final String EVENTS_BYOWNER_COLUMNFAMILY = "Standard2";
     private static final ConsistencyLevel EVENTS_BYOWNER_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel EVENTS_BYOWNER_CL_W = ConsistencyLevel.ALL;
-            
-    // Sub Events
-    private static final String EVENTS_SUBEVENT_PREFIX = "events:subevents:";
-    private static final String EVENTS_SUBEVENT_KEYSPACE = "Keyspace1";
-    private static final String EVENTS_SUBEVENT_COLUMNFAMILY = "Standard2";
-    private static final ConsistencyLevel EVENTS_SUBEVENT_CL_R = ConsistencyLevel.ONE;
-    private static final ConsistencyLevel EVENTS_SUBEVENT_CL_W = ConsistencyLevel.ALL;
-
-    private static final String SUBEVENTS_PREFIX = "subevents:id:";
-    private static final String SUBEVENTS_KEYSPACE = "Keyspace1";
-    private static final String SUBEVENTS_COLUMNFAMILY = "Standard2";
-    private static final ConsistencyLevel SUBEVENTS_CL_R = ConsistencyLevel.ONE;
-    private static final ConsistencyLevel SUBEVENTS_CL_W = ConsistencyLevel.ALL;
-
     
     public EventCassandraDao() {
     	// Do Nothing
@@ -181,7 +150,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         addEventImpl(con, "demo", embryo);
     }
     
-    // TODO: DAO が仕事しすぎ
+    // TODO: DAO が仕事しすぎ?
     private String addEventImpl(PartakeConnection con, String eventId, Event embryo) throws DAOException {
         PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
         try {
@@ -189,11 +158,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
             // これで途中で死んでも master に入ってないのでデータがないように見える。
             // (RecentEvents と eventsByOwner で、eventId から event データが取れなかった場合は無視するようにすればよい。)
             
-            // public の場合のみ recent event set に追加する。
             long time = ccon.getAcquiredTime();
-            if (!embryo.isPrivate()) {
-                addToRecentEvents(ccon.getClient(), eventId, time);
-            }
             addToEventsByOwner(ccon.getClient(), eventId, embryo.getOwnerId(), time);
             addEvent(ccon.getClient(), eventId, embryo, time);
             return eventId;
@@ -223,9 +188,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         }
     }
     
-    /* (non-Javadoc)
-     * @see in.partake.dao.cassandra.IEventAccess#appendFeedId(java.lang.String, java.lang.String)
-     */
     @Override
     public boolean appendFeedId(PartakeConnection con, String eventId, String feedId) throws DAOException {
         PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
@@ -290,18 +252,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     	return true;
     }
 
-    
-    private void addToRecentEvents(Client client, String id, long time) throws Exception {
-        String key = EVENTS_RECENT_PREFIX;
-
-        ColumnPath columnPath = new ColumnPath(EVENTS_RECENT_COLUMNFAMILY);
-        columnPath.setColumn(bytes(Util.getReversedTimeString(time)));
-        
-        byte[] value = bytes(id);
-        
-        client.insert(EVENTS_RECENT_KEYSPACE, key, columnPath, value, time, EVENTS_RECENT_CL_W);
-    }
-    
     private void addToEventsByOwner(Client client, String id, String ownerId, long time) throws Exception {
         String key = EVENTS_BYOWNER_PREFIX + ownerId;
 
