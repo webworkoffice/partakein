@@ -92,7 +92,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     
     // 関連イベント
     // TODO: あーこのへん超汚い。もっときれいな解決策があるはず。
-    private String relatedEventID1, relatedEventID2, relatedEventID3;
+    private String  relatedEventID1, relatedEventID2, relatedEventID3;
     private boolean relatedEventRequired1, relatedEventRequired2, relatedEventRequired3;
     private boolean relatedEventPriority1, relatedEventPriority2, relatedEventPriority3;
     
@@ -292,9 +292,9 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         // TODO: これはひどい
         // related event を登録        
         List<EventRelation> eventRelations = new ArrayList<EventRelation>();
-        if (StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
-        if (StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
-        if (StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }        
+        if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
+        if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
+        if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }        
         
         try {
         	this.eventId = EventService.get().create(embryo, foreImageEmbryo, backImageEmbryo);
@@ -400,9 +400,9 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        // TODO: これはひどい
 	        // related event を登録        
 	        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
-	        if (StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
-	        if (StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
-	        if (StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }
+	        if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
+	        if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
+	        if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }
 
 	        EventService.get().update(event, eventEmbryo,
 	        		foreImageEmbryo != null || removingForeImage, foreImageEmbryo, 
@@ -928,15 +928,15 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		this.removingBackImage = removingBackImage;
 	}
 	
-	public void getRelatedEventID1(String id) { relatedEventID1 = id; }
-	public void getRelatedEventID2(String id) { relatedEventID2 = id; }
-	public void getRelatedEventID3(String id) { relatedEventID3 = id; }
+	public void setRelatedEventID1(String id) { relatedEventID1 = id; }
+	public void setRelatedEventID2(String id) { relatedEventID2 = id; }
+	public void setRelatedEventID3(String id) { relatedEventID3 = id; }
 	
-	public void getRelatedEventRequired1(boolean b) { relatedEventRequired1 = b; }
-	public void getRelatedEventRequired2(boolean b) { relatedEventRequired2 = b; }
-	public void getRelatedEventRequired3(boolean b) { relatedEventRequired3 = b; }
+	public void setRelatedEventRequired1(boolean b) { relatedEventRequired1 = b; }
+	public void setRelatedEventRequired2(boolean b) { relatedEventRequired2 = b; }
+	public void setRelatedEventRequired3(boolean b) { relatedEventRequired3 = b; }
 
-	public void getRelatedEventPriority1(boolean b) { relatedEventPriority1 = b; }
-	public void getRelatedEventPriority2(boolean b) { relatedEventPriority2 = b; }
-	public void getRelatedEventPriority3(boolean b) { relatedEventPriority3 = b; }
+	public void setRelatedEventPriority1(boolean b) { relatedEventPriority1 = b; }
+	public void setRelatedEventPriority2(boolean b) { relatedEventPriority2 = b; }
+	public void setRelatedEventPriority3(boolean b) { relatedEventPriority3 = b; }
 }

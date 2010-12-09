@@ -9,6 +9,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.UserPermission;
 import in.partake.model.dto.UserPreference;
@@ -19,6 +20,7 @@ import in.partake.service.MessageService;
 import in.partake.service.UserService;
 import in.partake.util.Util;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +61,7 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	    try {
 	        EventEx event = EventService.get().getEventExById(eventId);
 	        if (event == null) { return NOT_FOUND; }
-	        	        
+
 	        if (event.isPrivate()) {
 	            // owner および manager は見ることが出来る。
 	        	String passcode = (String)session.get("event:" + eventId);
@@ -73,6 +75,10 @@ public class EventsController extends PartakeActionSupport implements Validateab
 		        	return INPUT; // passcode required.	 
 	        	}
 	        }
+	        
+	        // ----- 登録している、していないの条件を満たしているかどうかのチェック
+	        List<EventEx> requiredEvents = getRequiredEvents(eventId, user);
+	        attributes.put(Constants.ATTR_REQUIRED_EVENTS, requiredEvents);
 	        
 	        List<ParticipationEx> participations = EventService.get().getParticipationEx(event.getId());
 	        if (participations == null) { 
@@ -102,7 +108,7 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        	attributes.put(Constants.ATTR_PARTICIPATION_STATUS, ParticipationStatus.NOT_ENROLLED);
 	        }
 	        attributes.put(Constants.ATTR_DEADLINE_OVER, Boolean.valueOf(deadlineOver));
-	        attributes.put(Constants.ATTR_COMMENTSET, comments);
+	        attributes.put(Constants.ATTR_COMMENTSET, comments); // TODO: comment set DataIterator じゃなくて List だと思うんだよなあ...。本当は。
 	        attributes.put(Constants.ATTR_NOTIFICATION_STATUS, MessageService.get().getNotificationStatus(eventId));
 	        
 	        this.eventId = eventId;
@@ -114,6 +120,8 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	    	return ERROR;
 	    }
     }
+
+
     
     // comment を post
     public String comment() throws PartakeResultException {
@@ -152,36 +160,19 @@ public class EventsController extends PartakeActionSupport implements Validateab
     }
 
     public String enroll() throws PartakeResultException {
-    	return changeParticipationStatus(ParticipationStatus.ENROLLED, false, false);
+    	return changeParticipationStatus(ParticipationStatus.ENROLLED, false);
     }
     
     public String reserve() throws PartakeResultException {
-    	return changeParticipationStatus(ParticipationStatus.RESERVED, false, false);
+    	return changeParticipationStatus(ParticipationStatus.RESERVED, false);
     }
     
     public String cancel() throws PartakeResultException {
-        return changeParticipationStatus(ParticipationStatus.CANCELLED, false, false);       
+        return changeParticipationStatus(ParticipationStatus.CANCELLED, false);       
     }
     
     public String changeComment() throws PartakeResultException {
-        return changeParticipationStatus(null, true, false);
-    }
-
-    
-    public String enrollSubevent() throws PartakeResultException {
-        return changeParticipationStatus(ParticipationStatus.ENROLLED, false, true);
-    }
-    
-    public String reserveSubevent() throws PartakeResultException {
-        return changeParticipationStatus(ParticipationStatus.RESERVED, false, true);
-    }
-    
-    public String cancelSubevent() throws PartakeResultException {
-        return changeParticipationStatus(ParticipationStatus.CANCELLED, false, true);
-    }
-    
-    public String changeSubeventComment() throws PartakeResultException {
-        return changeParticipationStatus(null, true, true);
+        return changeParticipationStatus(null, true);
     }
     
     public String twitterPromotion() {
@@ -223,7 +214,7 @@ public class EventsController extends PartakeActionSupport implements Validateab
     
     // ----------------------------------------------------------------------
     
-    private String changeParticipationStatus(ParticipationStatus status, boolean changesOnlyComment, boolean enrollsSubevent) throws PartakeResultException {
+    private String changeParticipationStatus(ParticipationStatus status, boolean changesOnlyComment) throws PartakeResultException {
         UserEx user = ensureLogin();
     	
 	    String eventId = getParameter("eventId");
@@ -247,17 +238,20 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        	return ERROR;
 	        }
 	        
-	        if (enrollsSubevent) { // if subevent.
-//	            if (!EventService.get().enrollSubevent(user, event, status, comment, changesOnlyComment, event.isReservationTimeOver())) {
-//	                // subevent への参加が許されなかった
-//	                
-//	            }
-	        } else { // if main event.
-    	        EventService.get().enroll(user, event, status, comment, changesOnlyComment, event.isReservationTimeOver());
-    	        
-    	        // Twitter で参加をつぶやく
-    	        if (!changesOnlyComment) { tweetEnrollment(user, event, status); }
+	        // 現在の状況が登録されていない場合、
+	        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user, event);
+	        if (!currentStatus.isEnrolled()) {
+	        	List<EventEx> requiredEvents = getRequiredEvents(eventId, user);
+	        	if (requiredEvents != null && !requiredEvents.isEmpty()) {
+	        		addActionError("登録必須のイベントがあるため参加登録が出来ません。");
+	        		return ERROR;
+	        	}
 	        }
+	        
+	        EventService.get().enroll(user, event, status, comment, changesOnlyComment, event.isReservationTimeOver());
+	        
+	        // Twitter で参加をつぶやく
+	        if (!changesOnlyComment) { tweetEnrollment(user, event, status); }
 	        
 	        this.eventId = eventId;
 	        return SUCCESS;
@@ -288,4 +282,25 @@ public class EventsController extends PartakeActionSupport implements Validateab
         	DirectMessageService.get().tweetMessage(user, message);
         }
     }
+    
+    /**
+     * user が event に登録するために、登録が必要な event たちを列挙する。
+     * @param eventId
+     * @param user
+     * @return
+     * @throws DAOException
+     */
+	private List<EventEx> getRequiredEvents(String eventId, UserEx user) throws DAOException {
+		List<EventEx> requiredEvents = new ArrayList<EventEx>();
+		List<EventRelation> relations = EventService.get().getEventRelations(eventId);
+		for (EventRelation relation : relations) {
+			if (!relation.isRequired()) { continue; }
+			EventEx ev = EventService.get().getEventExById(relation.getEventId());
+			if (ev == null) { continue; }
+			ParticipationStatus status = UserService.get().getParticipationStatus(user, ev);
+			if (status.isEnrolled()) { continue; }			
+			requiredEvents.add(ev);
+		}
+		return requiredEvents;
+	}
 }
