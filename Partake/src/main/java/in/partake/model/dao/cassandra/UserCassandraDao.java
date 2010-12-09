@@ -62,7 +62,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     // ----------------------------------------------------------------------
     
     // fresh な user id を１つ作成して返す。
-    // TODO: これ public じゃなくて UserService に任せるべきじゃないかね？
+    // TODO: これ public じゃなくて UserService に任せるべき。これは公開しちゃだめだ。
     @Override
     public String getFreshUserId(PartakeConnection con) throws DAOException {
         return UUID.randomUUID().toString();
@@ -143,10 +143,21 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     /* (non-Javadoc)
      * @see in.partake.dao.cassandra.IUserAccess#getOpenIDIdentifiers(java.lang.String)
      */
+    // TODO: DataIterator じゃなくて List<String> 返すべきじゃないかなあ...。
     @Override
     public DataIterator<String> getOpenIDIdentifiers(PartakeDAOFactory factory, String userId) throws DAOException {
         try { 
             return getOpenIDIdentitiesImpl((CassandraDAOFactory) factory, userId);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+    
+    @Override
+    public void removeOpenID(PartakeConnection con, String userId, String identifier) throws DAOException {
+        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        try {
+            removeOpenID(ccon.getClient(), userId, identifier, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -225,6 +236,15 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 
         mutations.add(createColumnMutation(identity, EMPTY, time));
+        
+        client.batch_mutate(USERS_OPENID_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_OPENID_COLUMNFAMILY, mutations)), USERS_OPENID_CL_W);
+    }
+    
+    private void removeOpenID(Client client, String userId, String identifier, long time) throws Exception {
+        String key = USERS_OPENID_PREFIX + userId;
+
+        List<Mutation> mutations = new ArrayList<Mutation>(); 
+        mutations.add(createDeleteMutation(identifier, time));
         
         client.batch_mutate(USERS_OPENID_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_OPENID_COLUMNFAMILY, mutations)), USERS_OPENID_CL_W);
     }

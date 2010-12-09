@@ -35,8 +35,9 @@ public interface IUserAccess {
      */
     public abstract List<User> getUsersByIds(PartakeConnection con, List<String> ids) throws DAOException;
 
-    public abstract void addOpenID(PartakeConnection con, String userId, String identity) throws DAOException;
-
+    // ----------------------------------------------------------------------
+    // OPEN ID 
+    public abstract void addOpenID(PartakeConnection con, String userId, String identifier) throws DAOException;
+    public abstract void removeOpenID(PartakeConnection con, String userId, String identifier) throws DAOException;
     public abstract DataIterator<String> getOpenIDIdentifiers(PartakeDAOFactory factory, String userId) throws DAOException;
-
 }

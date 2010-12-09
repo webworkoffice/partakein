@@ -136,13 +136,13 @@ public final class UserService extends PartakeService {
     }
     
     // ----------------------------------------------------------------------
-    // Twitter Authentication
+    // OpenID Authentication
 
-    public User getUserFromOpenIDLinkage(String identity) throws DAOException {
+    public User getUserFromOpenIDLinkage(String identifier) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
-            String userId = factory.getOpenIDLinkageAccess().getUserId(con, identity); 
+            String userId = factory.getOpenIDLinkageAccess().getUserId(con, identifier); 
             if (userId == null) { return null; }
             
             User user = factory.getUserAccess().getUserById(con, userId);
@@ -152,12 +152,12 @@ public final class UserService extends PartakeService {
         }     
     }
 
-    public void addOpenIDLinkage(String userId, String identity) throws DAOException {
+    public void addOpenIDLinkage(String userId, String identifier) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
-            factory.getUserAccess().addOpenID(con, userId, identity);
-            factory.getOpenIDLinkageAccess().addOpenID(con, identity, userId);
+            factory.getUserAccess().addOpenID(con, userId, identifier);
+            factory.getOpenIDLinkageAccess().addOpenID(con, identifier, userId);
         } finally {
             con.invalidate();
         }        
@@ -177,7 +177,18 @@ public final class UserService extends PartakeService {
             return result;
         } finally {
             con.invalidate();
-        }        
+        }
+    }
+    
+    public void removeOpenIDLinkage(String userId, String identifier) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = factory.getConnection();
+        try {
+            factory.getUserAccess().removeOpenID(con, userId, identifier);
+            factory.getOpenIDLinkageAccess().removeOpenID(con, identifier, userId);
+        } finally {            
+            con.invalidate();
+        }         
     }
     
     // ----------------------------------------------------------------------

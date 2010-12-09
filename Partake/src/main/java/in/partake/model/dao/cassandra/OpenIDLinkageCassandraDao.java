@@ -46,10 +46,10 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
      * @see in.partake.dao.cassandra.IOpenIDLinkageAccess#addOpenID(java.lang.String, java.lang.String)
      */
     @Override
-    public void addOpenID(PartakeConnection con, String identity, String userId) throws DAOException {
+    public void addOpenID(PartakeConnection con, String identifier, String userId) throws DAOException {
         PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
         try {
-            addOpenID(ccon.getClient(), identity, userId, ccon.getAcquiredTime());
+            addOpenID(ccon.getClient(), identifier, userId, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }        
@@ -59,10 +59,20 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
      * @see in.partake.dao.cassandra.IOpenIDLinkageAccess#getUserId(java.lang.String)
      */
     @Override
-    public String getUserId(PartakeConnection con, String identity) throws DAOException {
+    public String getUserId(PartakeConnection con, String identifier) throws DAOException {
         PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
         try {
-            return getUserId(ccon.getClient(), identity);
+            return getUserId(ccon.getClient(), identifier);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }  
+    }
+    
+    @Override
+    public void removeOpenID(PartakeConnection con, String identifier, String userId) throws DAOException {
+        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        try {
+            removeOpenId(ccon.getClient(), identifier, userId, con.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }  
@@ -74,13 +84,24 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
         String key = OPENID_LINKAGE_PREFIX + identity;
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 
-        mutations.add(createColumnMutation("userId", userId, time));
+        mutations.add(createMutation("userId", userId, time));
         
         client.batch_mutate(OPENID_LINKAGE_KEYSPACE, 
                         Collections.singletonMap(key, Collections.singletonMap(OPENID_LINKAGE_COLUMNFAMILY, mutations)), 
                         OPENID_LINKAGE_CL_W);
         
         logger.info("addOpenID:" + key);
+    }
+    
+    private void removeOpenId(Client client, String identifier, String userId, long time) throws Exception {
+        String key = OPENID_LINKAGE_PREFIX + identifier;
+        
+        List<Mutation> mutations = new ArrayList<Mutation>();
+        mutations.add(createDeleteMutation("userId", time));
+
+        client.batch_mutate(OPENID_LINKAGE_KEYSPACE, 
+                        Collections.singletonMap(key, Collections.singletonMap(OPENID_LINKAGE_COLUMNFAMILY, mutations)), 
+                        OPENID_LINKAGE_CL_W);
     }
     
     private String getUserId(Client client, String identity) throws Exception {
