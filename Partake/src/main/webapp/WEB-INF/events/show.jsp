@@ -280,16 +280,22 @@ body {
 		<% } else if (ParticipationStatus.ENROLLED.equals(status)) { %>
 			<%-- なんか stamp みたいな感じで「参加登録済み」とかいうアイコンを出せないモノだろうか。 --%>
 			<p>参加登録済みです。</p>
-			<img id="open-cancel-form" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
+			<% if (event.canReserve()) { %>
+                <img id="open-reserve-form" src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
+                <img id="open-cancel-form" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
+            <% } else { %>
+                <img id="open-cancel-form" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
+                <p>締切間際には仮参加登録は行えません。</p>
+            <% } %>
 			<ul>
-			    <li><a id="open-change-comment-form" href="#" >コメントを編集する</a></li>
+			    <li><a id="open-change-comment-form" href="#" >参加コメントを編集する</a></li>
 			</ul>
 		<% } else if (ParticipationStatus.RESERVED.equals(status) && !event.isReservationTimeOver()) { %>
 			<p>仮参加登録中です。</p>
 			<img id="open-enroll-form" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
 			<img id="open-cancel-form" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
 			<ul>
-			    <li><a id="open-change-comment-form" href="#" >コメントを編集する</a></li>
+			    <li><a id="open-change-comment-form" href="#" >参加コメントを編集する</a></li>
 			</ul>
 		<% } else { %>
 			<img id="open-enroll-form" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
