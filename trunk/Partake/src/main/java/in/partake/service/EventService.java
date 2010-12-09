@@ -470,7 +470,7 @@ public final class EventService extends PartakeService {
         }   
     }
     
-    // TODO: enrollSubevent() を参考に書き直せ
+    // TODO: 書き直せ
     public void enroll(User user, Event event, ParticipationStatus status, String comment, 
                     boolean changesOnlyComment, boolean forceChangeModifiedAt) throws DAOException {
         PartakeDAOFactory factory = getFactory();       

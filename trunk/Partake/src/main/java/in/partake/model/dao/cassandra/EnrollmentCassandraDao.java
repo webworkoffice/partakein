@@ -230,11 +230,14 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             superColumn.addToColumns(new Column(bytes("comment"), bytes(comment), time));
             if (changesOnlyComment) {
                 // status, modifiedAt の両方共変更しない
-            } else if (ParticipationStatus.RESERVED.equals(oldStatus) && ParticipationStatus.ENROLLED.equals(status) && !forceChangeModifiedAt) {             
-                // modifiedAt のみ変更しない
-                superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));
+            } else if (ParticipationStatus.RESERVED.equals(oldStatus) && ParticipationStatus.ENROLLED.equals(status) && !forceChangeModifiedAt) {
+                // RESERVED -> ENROLLED の場合、modifiedAt のみ変更しない
+                superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));                
+            } else if (ParticipationStatus.ENROLLED.equals(oldStatus) && ParticipationStatus.RESERVED.equals(status) && !forceChangeModifiedAt) {
+                // ENROLLED -> RESERVED の場合、modifiedAt のみ変更しない                
+                superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));                
             } else {
-                // 両方更新
+                // それ以外の場合は両方更新
                 superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));
                 superColumn.addToColumns(new Column(bytes("lastStatus"), bytes(LastParticipationStatus.CHANGED.toString()), time));
                 superColumn.addToColumns(new Column(bytes("modifiedAt"), bytes(Util.getTimeString(time)), time));
@@ -314,7 +317,8 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             Date modifiedAt2 = null;
             int priority = 0;
             
-            IUserAccess userDao = new UserCassandraDao();
+            // TODO: 歴史的負の遺産が多すぎるのであとで直す。
+            IUserAccess userDao = new UserCassandraDao(); // TODO: なんでここで Dao がでてくるんだ
             for (Column column : superColumn.getColumns()) {
                 String name = string(column.getName());
                 if ("status".equals(name)) {
