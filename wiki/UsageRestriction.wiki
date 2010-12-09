@@ -1,0 +1,1 @@
+You can run PARTAKE anywhere, however, please DO NOT use the name "PARTAKE". Please change the name as you like.
