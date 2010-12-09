@@ -21,14 +21,17 @@ public class LoginRequiredInterceptor extends AbstractInterceptor {
 	public String intercept(ActionInvocation invocation) throws Exception {
 		Map<String, Object> session = invocation.getInvocationContext().getSession();
 		UserEx user = (UserEx)session.get(Constants.ATTR_USER);
+		
 		if (user == null) {
 			Object action = invocation.getAction();
 			if (action instanceof PartakeActionSupport) {
 				PartakeActionSupport partake = (PartakeActionSupport)action;
 				partake.setRedirectURL(ServletActionContext.getRequest().getRequestURL().toString());
+			} else {
+				System.out.println("action is not PartakeActionSupport. something wrong.");
 			}
 
-			return "login";
+			return PartakeActionSupport.LOGIN;
 		} else {
 			return invocation.invoke();
 		}

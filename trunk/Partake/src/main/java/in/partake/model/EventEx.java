@@ -84,6 +84,7 @@ public class EventEx extends Event {
     public boolean hasPermission(UserEx user, UserPermission permission) {
         if (user == null || permission == null) { return false; }
         
+        // TODO: Hmm... UserPermission should have a check method. This should be polymorphic.
         switch (permission) {
         case EVENT_EDIT:
             return isOwner(user) || isManager(user);

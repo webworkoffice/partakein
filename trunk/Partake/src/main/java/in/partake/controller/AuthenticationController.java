@@ -114,7 +114,8 @@ public class AuthenticationController extends PartakeActionSupport {
             // 1. まず TwitterLinkage を作成 / アップデート            
             TwitterLinkage twitterLinkage = UserService.get().updateTwitterLinkage(twitterLinkageEmbryo, twitter); 
 
-            // 2. 対応するユーザーを生成　TODO: UserSerivce で一気にやってしまうべき
+            // 2. 対応するユーザーを生成　TODO: UserSerivce で一気にやってしまうべき、というか、そもそも 1 ~ 3 は一気にやるべきでしょう。
+            // TODO: embryo も Service 内で作るべきじゃないかなー？
         	User user = UserService.get().getUserFromTwitterLinkage(twitterLinkage, twitter, true);
             UserEx userEx = UserService.get().getPartakeUserByUser(user);
         	

@@ -1,4 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+
 <!DOCTYPE html>
+
+<%@taglib prefix="s" uri="/struts-tags" %>
 
 <%@page import="in.partake.model.CommentEx"%>
 <%@page import="in.partake.model.ParticipationEx"%>
@@ -17,14 +21,9 @@
 <%@page import="in.partake.view.Helper"%>
 <%@page import="in.partake.util.Util"%>
 <%@page import="java.util.Date"%>
-
-<%@taglib prefix="s" uri="/struts-tags" %>
-
-
 <%@page import="java.util.List"%>
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-
 <%@page import="in.partake.resource.Constants"%>
+
 <%@page import="static in.partake.util.Util.h"%>
 <%@page import="static in.partake.util.Util.escapeURI"%>
 <%@page import="static in.partake.util.Util.cleanupHTML"%>

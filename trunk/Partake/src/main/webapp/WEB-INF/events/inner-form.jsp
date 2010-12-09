@@ -61,7 +61,6 @@
     		<s:file name="backImage" id="backImage" label="File"/><br />
 			<span class="accent">＞</span> 背景画像を再設定できます。(png, gif, ipeg 画像のみが送信できます)</dd>
 	</s:else>
-	
 <dt><label for="place">会場</label>:</dt>
 	<dd><s:textfield id="place" name="place" cssClass="text-input" /></dd>
 <dt><label for="address">住所</label>:</dt>
@@ -75,7 +74,34 @@
 <dt><label for="managerShortnames">自分以外の管理者</label></dt>
     <dd><s:textfield id="managers" name="managers" cssClass="text-input" /><br />
         <span class="accent">＞</span>自分以外にも管理者を指定できます。twitter のショートネームをコンマ区切りで列挙してください。この管理者はイベント削除以外のことを行うことが出来ます。<br />
-        <span class="accent">＞</span>例： user1, user2, user3</dd>        
+        <span class="accent">＞</span>例： user1, user2, user3</dd>
+<dt>関連イベント</dt>
+	<dd>
+		<table>
+			<thead>
+				<tr><th>イベント ID</th><th>登録必須</th><th>優先参加</th></tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><s:textfield id="relatedEventID1"       name="relatedEventID1" cssClass="text-input" /></td>
+					<td><s:checkbox  id="relatedEventRequired1" name="relatedEventRequired1" /></td>
+					<td><s:checkbox  id="relatedEventPriority1" name="relatedEventPriority1" /></td>
+				</tr>
+				<tr>
+					<td><s:textfield id="relatedEventID2"       name="relatedEventID2" cssClass="text-input" /></td>
+					<td><s:checkbox  id="relatedEventRequired2" name="relatedEventRequired2" /></td>
+					<td><s:checkbox  id="relatedEventPriority2" name="relatedEventPriority2" /></td>
+				</tr>
+				<tr>
+					<td><s:textfield id="relatedEventID3"       name="relatedEventID3" cssClass="text-input" /></td>
+					<td><s:checkbox  id="relatedEventRequired3" name="relatedEventRequired3" /></td>
+					<td><s:checkbox  id="relatedEventPriority3" name="relatedEventPriority3" /></td>
+				</tr>
+			</tbody>
+		</table>
+	
+        <span class="accent">＞</span>関連イベントを設定することが出来ます。登録必須にチェックをいれた場合、そのイベントに登録されていなければこのイベントに登録することは出来ません。
+        優先参加にチェックを入れた場合、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。</dd>
 <dt><label for="secret">非公開設定</label>:</dt>
 	<dd><s:checkbox id="secret" name="secret"/>非公開にする<br />
 		<span class="accent">＞</span> 非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</dd>

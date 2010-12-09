@@ -16,6 +16,7 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
 import in.partake.model.dto.ParticipationStatus;
@@ -34,7 +35,6 @@ import org.apache.lucene.document.Field.TermVector;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-
 
 /**
  * event にアクセスする
@@ -62,7 +62,7 @@ public final class EventService extends PartakeService {
 	// events
 	
 	/**
-	 * get an event from a event id.
+	 * get an event from an event id.
 	 * @return event. null if it does not exist.
 	 */
 	public Event getEventById(String eventId) throws DAOException {
@@ -75,6 +75,12 @@ public final class EventService extends PartakeService {
         }
 	}
 	
+	/**
+	 * get an event-ex from an event id.
+	 * @param eventId
+	 * @return an extended event. null if it does not exist. 
+	 * @throws DAOException
+	 */
 	public EventEx getEventExById(String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
@@ -126,7 +132,10 @@ public final class EventService extends PartakeService {
             for (ScoreDoc doc : docs.scoreDocs) {
                 Document document = LuceneDao.get().getDocument(doc.doc);
                 String id = document.get("ID");
-                if (id == null) { continue; }
+                if (id == null) {
+                	logger.warn("document.get(ID) returned null. should not happen.");
+                	continue;
+                }
                 
                 events.add(factory.getEventAccess().getEventById(con, id));
             }
@@ -142,6 +151,7 @@ public final class EventService extends PartakeService {
 	 * @return
 	 * @throws DAOException
 	 */
+	@Deprecated
 	public List<Event> getRecentEvents() throws DAOException {
 		return getRecentEvents(5);
 	}
@@ -153,9 +163,7 @@ public final class EventService extends PartakeService {
 	 * @throws DAOException
 	 */
 	public List<Event> getRecentEvents(int num) throws DAOException {
-	    System.out.println("getRecentEvents 1");
 		TopDocs docs = LuceneDao.get().getRecentDocuments(num);
-		System.out.println("getRecentEvents 2");
 		return convertToEventList(docs);
 	}
 	
@@ -344,7 +352,30 @@ public final class EventService extends PartakeService {
             con.invalidate();
         }
 	}
+
+    // ----------------------------------------------------------------------
+    // relations なのっ！
 	
+	public void setEventRelations(String eventId, List<EventRelation> relations) throws DAOException {
+		PartakeDAOFactory factory = getFactory();
+		PartakeConnection con = factory.getConnection();
+		try {
+			factory.getEventRelationAccess().setEventRelations(con, eventId, relations);
+		} finally {
+			con.invalidate();
+		}
+	}
+	
+	public List<EventRelation> getEventRelations(String eventId) throws DAOException {
+		PartakeDAOFactory factory = getFactory();
+		PartakeConnection con = factory.getConnection();
+		try {
+			return factory.getEventRelationAccess().getEventRelations(con, eventId);
+		} finally {
+			con.invalidate();
+		}		
+	}
+
     // ----------------------------------------------------------------------
     // participations
 	

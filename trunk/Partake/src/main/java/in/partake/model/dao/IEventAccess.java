@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.User;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface IEventAccess {
     public abstract void addEventAsDemo(PartakeConnection con, Event embryo) throws DAOException;
     public abstract void updateEvent(PartakeConnection con, Event original, Event embryo) throws DAOException;
     public abstract void removeEvent(PartakeConnection con, Event event) throws DAOException;    
-
+    
     // feed
     // TODO: これここにあるべきかー？
     public abstract boolean appendFeedId(PartakeConnection con, String eventId, String feedId) throws DAOException;    
