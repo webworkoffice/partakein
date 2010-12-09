@@ -1,3 +1,5 @@
+<%@page import="java.util.List"%>
+<%@page import="in.partake.controller.UsersPreferenceController"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.resource.Constants"%>
@@ -38,6 +40,15 @@
     </jsp:include>
     
     <%-- TODO: 現在結び付けられている OpenID を表示する --%>
+    <h3>現在、次の URL と結び付けられています。</h3>
+    <%
+        UsersPreferenceController pref = (UsersPreferenceController) request.getSession().getAttribute(Constants.ATTR_ACTION);
+        List<String> associatedOpenIds = pref.getAssociateOpenIds();
+        if (associatedOpenIds != null && !associatedOpenIds.isEmpty()) {
+            for (String openid : associatedOpenIds) { %>
+                <li><%= openid %></li>
+            <% } %>
+    <% } %>
 </div>
 
 

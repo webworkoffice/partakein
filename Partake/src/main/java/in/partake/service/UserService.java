@@ -1,5 +1,8 @@
 package in.partake.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -155,6 +158,23 @@ public final class UserService extends PartakeService {
         try {
             factory.getUserAccess().addOpenID(con, userId, identity);
             factory.getOpenIDLinkageAccess().addOpenID(con, identity, userId);
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
+    public List<String> getOpenIDIdentifiers(String userId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = factory.getConnection();
+        try {
+            List<String> result = new ArrayList<String>();
+            DataIterator<String> it = factory.getUserAccess().getOpenIDIdentifiers(factory, userId);
+            while (it.hasNext()) {
+                String s = it.next();
+                if (s == null) { continue; }
+                result.add(s);
+            }
+            return result;
         } finally {
             con.invalidate();
         }        
