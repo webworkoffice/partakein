@@ -1,5 +1,7 @@
 package in.partake.controller;
 
+import java.util.List;
+
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.User;
@@ -12,9 +14,11 @@ public class UsersPreferenceController extends PartakeActionSupport {
 	private boolean receivingTwitterMessage;
 	private boolean tweetingAttendanceAutomatically;
 	
+	private List<String> associatedOpenIds;
+	
 	public String showPreference() {
 		try {
-			User user = (User)session.get(Constants.ATTR_USER);
+			UserEx user = (UserEx)session.get(Constants.ATTR_USER);
 			if (user == null) { return LOGIN; }
 			
 			UserPreference pref = UserService.get().getUserPreference(user.getId()); 
@@ -22,6 +26,8 @@ public class UsersPreferenceController extends PartakeActionSupport {
 			profilePublic = pref.isProfilePublic();
 			receivingTwitterMessage = pref.isReceivingTwitterMessage();
 			tweetingAttendanceAutomatically = pref.tweetsAttendanceAutomatically();
+			
+			associatedOpenIds = UserService.get().getOpenIDIdentifiers(user.getId());
 			
 			return SUCCESS;
 		} catch (DAOException e) {
@@ -59,6 +65,10 @@ public class UsersPreferenceController extends PartakeActionSupport {
 		return this.tweetingAttendanceAutomatically;
 	}
 	
+	public List<String> getAssociateOpenIds() {
+	    return this.associatedOpenIds;
+	}
+	
 	public void setProfilePublic(boolean profilePublic) {
 		this.profilePublic = profilePublic;
 	}
@@ -70,4 +80,6 @@ public class UsersPreferenceController extends PartakeActionSupport {
 	public void setTweetingAttendanceAutomatically(boolean tweetingAttendanceAutomatically) {
 		this.tweetingAttendanceAutomatically = tweetingAttendanceAutomatically;
 	}
+	
+	
 }

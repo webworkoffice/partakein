@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.sun.syndication.feed.rss.Description;
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -33,6 +32,8 @@ public class EventsFeedController extends PartakeActionSupport {
 	private ByteArrayInputStream inputStream = null;
 
 	public String feedRecentEvents() {
+	    // TODO: CACHE!
+	    
 		SyndFeed feed = new SyndFeedImpl();
 		feed.setFeedType("rss_2.0");
 		feed.setEncoding("utf-8");
@@ -61,6 +62,8 @@ public class EventsFeedController extends PartakeActionSupport {
 
 	
 	public String feedCategory() {
+	    // TODO: CACHE!
+	    
 		String category = getParameter("category");
 		
 		// check category is correct.
