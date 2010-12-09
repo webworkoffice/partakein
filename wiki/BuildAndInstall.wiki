@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+# How to build and run PARTAKE.
 
 = Introduction =
 
@@ -19,11 +19,11 @@ We use eclipse 3.6 (Java EE platform) with m2eclipse plugin.
   # If you are using Windows, do not forget to set project encoding to utf-8.
   # right click on Partake project, and choose Maven -> enable project management.
   # right click on Partake project, and choose Properties. Then choose Java Build Path page, and choose Orders and Export, and check Maven Dependencies and Web App Libraries. Then press OK.
-  # On Markers pain, you may see Classpath Dependency Validator Message.
-     * In this case, right click and select Quick fix, and press Finish.
+  # On Markers pane, you may see Classpath Dependency Validator Message.
+     * In this case, right click it and select Quick fix, and press Finish. This will fix the problem.
   # Then choose Run on Server.
 
-Since you have not configure Partake, you will see error message.
+Since you have not configure PARTAKE, you will see an error message.
 
   # Download Apache Cassandra (0.6.5) and run on localhost.
   # fill src/main/resource/sample.partake.properties (especially bitly)
@@ -32,5 +32,5 @@ Since you have not configure Partake, you will see error message.
   # rename src/main/resource/twitter4j.properties.sample as src/main/resource/twitter4j.properties.
     * set your project name consumer key and consumer secret given from twitter.
 
-Then you can run Partake now.
+Then you can run PARTAKE now.
   
