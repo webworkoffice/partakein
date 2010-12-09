@@ -297,11 +297,21 @@ body {
 			    <li><a id="open-change-comment-form" href="#" >参加コメントを編集する</a></li>
 			</ul>
 		<% } else { %>
-			<img id="open-enroll-form" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
-			<% if (event.canReserve()) { %>
-			    <img id="open-reserve-form" src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
+			<% List<EventEx> requiredEvents = (List<EventEx>) request.getAttribute(Constants.ATTR_REQUIRED_EVENTS); %>
+			<% if (requiredEvents != null && !requiredEvents.isEmpty()) { %>
+				<p>参加登録するためには、次のイベントに登録していることが必要です。</p>
+				<ul>
+					<% for (EventEx ev : requiredEvents) { %>
+						<li><a href="<%= h(ev.getEventURL()) %>"><%= h(ev.getTitle()) %></a></li>
+					<% } %>
+				</ul>
 			<% } else { %>
-			    <p>締切間際には仮参加登録は行えません。</p>
+				<img id="open-enroll-form" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
+				<% if (event.canReserve()) { %>
+				    <img id="open-reserve-form" src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
+				<% } else { %>
+				    <p>締切間際には仮参加登録は行えません。</p>
+				<% } %>
 			<% } %>
 		<% } %>
 		

@@ -35,14 +35,14 @@ public final class Constants {
     
     public static final String ATTR_REDIRECTURL = "redirectURL";
 
-    public static final String ATTR_PARTICIPATION_STATUS = "participationstatus";
-    public static final String ATTR_NOTIFICATION_STATUS = "notificationstatus";
+    public static final String ATTR_PARTICIPATION_STATUS = "PARTICIPATION_STATUS";
+    public static final String ATTR_NOTIFICATION_STATUS = "NOTIFICATION_STATUS";
     
-    public static final String ATTR_DEADLINE_OVER = "deadline_over";
+    public static final String ATTR_DEADLINE_OVER = "DEADLINE_OVER";
     
-    public static final String ATTR_COMMENTSET = "commentset";
+    public static final String ATTR_COMMENTSET = "COMMENTSET";
 
-    public static final String ATTR_SEARCH_RESULT = "search_result";
+    public static final String ATTR_SEARCH_RESULT = "SEARCH_RESULT";
     
     public static final String ATTR_CURRENT_URL = "CURRENT_URL";
     
@@ -51,6 +51,7 @@ public final class Constants {
     
     public static final String ATTR_WARNING_MESSAGE = "WARNING_MESSAGE";
     
+    public static final String ATTR_REQUIRED_EVENTS = "REQUIRED_EVENTS";
     
     private Constants() {
     	// prevent from instantiation.
