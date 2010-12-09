@@ -33,4 +33,7 @@ Since you have not configure PARTAKE, you will see an error message.
     * set your project name consumer key and consumer secret given from twitter.
 
 Then you can run PARTAKE now.
-  
+
+== NOTE ==
+
+When you failed eclipse operations, web.xml may be rewritten. In this case, please revert web.xml
