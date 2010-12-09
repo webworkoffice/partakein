@@ -154,8 +154,8 @@ public class AuthenticationController extends PartakeActionSupport {
     
     // なんでかしらないけど、open id の URL を一緒にしないと残念なことになる。
     public String verifyOpenID() {
-        String purpose = (String)this.session.get(Constants.ATTR_OPENID_PURPOSE);
-        this.session.put(Constants.ATTR_OPENID_PURPOSE, null);
+        String purpose = (String) session.get(Constants.ATTR_OPENID_PURPOSE);
+        session.remove(Constants.ATTR_OPENID_PURPOSE);
         
         if ("login".equals(purpose)) {
             return verifyOpenIDForLogin();
@@ -167,7 +167,7 @@ public class AuthenticationController extends PartakeActionSupport {
     }
     
     private String verifyOpenIDForLogin() {
-        String identity = getIdentity();
+        String identity = getIdentifier();
         if (identity == null) {
             logger.info("OpenID でのログインに失敗しました。");
             addWarningMessage("OpenID でのログインに失敗しました。");
@@ -186,7 +186,7 @@ public class AuthenticationController extends PartakeActionSupport {
             }
         } catch (DAOException e) {
             logger.error("DAOException", e);
-            addActionError("データベースエラーが発生しました。");
+            addActionError("データベースエラーが発生しました。"); // TODO: なんか ActionError の使い方が間違っているきがするんだよなあ...。
             return ERROR;
         }
     }
@@ -198,7 +198,7 @@ public class AuthenticationController extends PartakeActionSupport {
             return ERROR; 
         }
         
-        String identity = getIdentity();
+        String identity = getIdentifier();
         if (identity == null) {
             logger.info("identity の取得に失敗しました");
             return ERROR;
@@ -240,7 +240,7 @@ public class AuthenticationController extends PartakeActionSupport {
         }
     }
     
-    private String getIdentity() {
+    private String getIdentifier() {
         try {
             // extract the parameters from the authentication response
             // (which comes in as a HTTP request from the OpenID provider)
@@ -263,13 +263,6 @@ public class AuthenticationController extends PartakeActionSupport {
             // examine the verification result and extract the verified identifier
             Identifier verified = verification.getVerifiedId();
             if (verified != null) {
-//                AuthSuccess authSuccess = (AuthSuccess) verification.getAuthResponse();
-//                
-//                String identity = authSuccess.getIdentity();
-//                
-//                return identity;
-//                
-                System.out.println(verified.getIdentifier());
                 return verified.getIdentifier();
             }
             
