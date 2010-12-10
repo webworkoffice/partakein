@@ -24,7 +24,9 @@ import in.partake.model.dto.User;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
@@ -370,10 +372,14 @@ public final class EventService extends PartakeService {
 		PartakeDAOFactory factory = getFactory();
 		PartakeConnection con = factory.getConnection();
 		try {
-			return factory.getEventRelationAccess().getEventRelations(con, eventId);
+			return getEventRelations(factory, con, eventId);
 		} finally {
 			con.invalidate();
 		}		
+	}
+	
+	public List<EventRelation> getEventRelations(PartakeDAOFactory factory, PartakeConnection con, String eventId) throws DAOException {
+		return factory.getEventRelationAccess().getEventRelations(con, eventId);
 	}
 
     // ----------------------------------------------------------------------
@@ -389,15 +395,44 @@ public final class EventService extends PartakeService {
         }
 	}
 	
+	/**
+	 * event id の participation list を得る。related events も考慮される。
+	 * @param eventId
+	 * @return
+	 * @throws DAOException
+	 */
 	public List<ParticipationEx> getParticipationEx(String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
+        	// priority のあるイベントに参加している場合、priority に 1 を付加する。
+        	Map<String, Integer> priorityMap = new HashMap<String, Integer>();
+        	
+        	List<EventRelation> eventRelations = getEventRelations(factory, con, eventId);
+        	for (EventRelation relation : eventRelations) {
+        		if (!relation.hasPriority()) { continue; }
+        		EventEx ev = getEventEx(con, relation.getEventId()); 
+        		if (ev == null) { continue; }
+        		List<Participation> ps = factory.getEnrollmentAccess().getParticipation(con, relation.getEventId());
+        		for (Participation p : ps) {
+        			if (!p.getStatus().isEnrolled()) { continue; }
+        			if (priorityMap.containsKey(p.getUserId())) {
+        				priorityMap.put(p.getUserId(), priorityMap.get(p.getUserId()) + 1);
+        			} else {
+        				priorityMap.put(p.getUserId(), Integer.valueOf(1));
+        			}
+        		}
+        	}
+        	
             List<Participation> ps = factory.getEnrollmentAccess().getParticipation(con, eventId);
             List<ParticipationEx> result = new ArrayList<ParticipationEx>(); 
             for (Participation p : ps) {
                 UserEx user = getUserEx(con, p.getUserId()); 
                 ParticipationEx pe = new ParticipationEx(p, user);
+                if (priorityMap.containsKey(p.getUserId())) {
+                	pe.setPriority(priorityMap.get(p.getUserId()));
+                }
+                pe.freeze();
                 result.add(pe);
             }
             return result;

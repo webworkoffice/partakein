@@ -78,7 +78,34 @@ public class Participation extends PartakeModel<PartakeModel<?>> {
     public Date getModifiedAt() {
         return modifiedAt;
     }
-    
-    
-    
+
+	public void setUserId(String userId) {
+		checkFrozen();
+		this.userId = userId;
+	}
+
+	public void setComment(String comment) {
+		checkFrozen();
+		this.comment = comment;
+	}
+
+	public void setPriority(int priority) {
+		checkFrozen();
+		this.priority = priority;
+	}
+
+	public void setStatus(ParticipationStatus status) {
+		checkFrozen();
+		this.status = status;
+	}
+
+	public void setLastStatus(LastParticipationStatus lastStatus) {
+		checkFrozen();
+		this.lastStatus = lastStatus;
+	}
+
+	public void setModifiedAt(Date modifiedAt) {
+		checkFrozen();
+		this.modifiedAt = modifiedAt;
+	}
 }

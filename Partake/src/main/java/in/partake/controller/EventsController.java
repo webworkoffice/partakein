@@ -76,10 +76,15 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        	}
 	        }
 	        
-	        // ----- 登録している、していないの条件を満たしているかどうかのチェック
-	        List<EventEx> requiredEvents = getRequiredEvents(eventId, user);
+	        List<EventRelation> relations = EventService.get().getEventRelations(eventId);
+	        
+	        // ----- 登録している、していないの条件を満たしているかどうかのチェック			
+	        List<EventEx> requiredEvents = getRequiredEventsNotEnrolled(user, relations);
 	        attributes.put(Constants.ATTR_REQUIRED_EVENTS, requiredEvents);
 	        
+	        // ----- participants を反映
+	        // TODO: FIXME: 優先イベントへの参加の状況を反映させる必要がある。
+	        // TODO: あれだ、リストを取ってくるところも同じように直さないとだめなんじゃなイカ？
 	        List<ParticipationEx> participations = EventService.get().getParticipationEx(event.getId());
 	        if (participations == null) { 
 	            logger.error("Getting participation failed.");
@@ -239,9 +244,10 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        }
 	        
 	        // 現在の状況が登録されていない場合、
-	        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user, event);
+	        List<EventRelation> relations = EventService.get().getEventRelations(eventId);
+	        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user, event);	        
 	        if (!currentStatus.isEnrolled()) {
-	        	List<EventEx> requiredEvents = getRequiredEvents(eventId, user);
+	        	List<EventEx> requiredEvents = getRequiredEventsNotEnrolled(user, relations); 
 	        	if (requiredEvents != null && !requiredEvents.isEmpty()) {
 	        		addActionError("登録必須のイベントがあるため参加登録が出来ません。");
 	        		return ERROR;
@@ -290,9 +296,8 @@ public class EventsController extends PartakeActionSupport implements Validateab
      * @return
      * @throws DAOException
      */
-	private List<EventEx> getRequiredEvents(String eventId, UserEx user) throws DAOException {
+	private List<EventEx> getRequiredEventsNotEnrolled(UserEx user, List<EventRelation> relations) throws DAOException {
 		List<EventEx> requiredEvents = new ArrayList<EventEx>();
-		List<EventRelation> relations = EventService.get().getEventRelations(eventId);
 		for (EventRelation relation : relations) {
 			if (!relation.isRequired()) { continue; }
 			EventEx ev = EventService.get().getEventExById(relation.getEventId());
@@ -302,5 +307,19 @@ public class EventsController extends PartakeActionSupport implements Validateab
 			requiredEvents.add(ev);
 		}
 		return requiredEvents;
+	}
+	
+	private List<EventEx> getPriorityEventsEnrolled(String eventId, UserEx user) throws DAOException {
+		List<EventEx> priorityEvents = new ArrayList<EventEx>();
+		List<EventRelation> relations = EventService.get().getEventRelations(eventId);
+		for (EventRelation relation : relations) {
+			if (!relation.hasPriority()) { continue; }
+			EventEx ev = EventService.get().getEventExById(relation.getEventId());
+			if (ev == null) { continue; }
+			ParticipationStatus status = UserService.get().getParticipationStatus(user, ev);
+			if (!status.isEnrolled()) { continue; }			
+			priorityEvents.add(ev);
+		}
+		return priorityEvents;		
 	}
 }
