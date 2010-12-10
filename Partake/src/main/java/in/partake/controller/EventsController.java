@@ -2,6 +2,7 @@ package in.partake.controller;
 
 import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
+import in.partake.model.EventRelationEx;
 import in.partake.model.ParticipationEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
@@ -76,9 +77,10 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        	}
 	        }
 	        
-	        List<EventRelation> relations = EventService.get().getEventRelations(eventId);
+	        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
+	        attributes.put(Constants.ATTR_EVENT_RELATIONS, relations);
 	        
-	        // ----- 登録している、していないの条件を満たしているかどうかのチェック			
+	        // ----- 登録している、していないの条件を満たしているかどうかのチェック
 	        List<EventEx> requiredEvents = getRequiredEventsNotEnrolled(user, relations);
 	        attributes.put(Constants.ATTR_REQUIRED_EVENTS, requiredEvents);
 	        
@@ -244,7 +246,7 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        }
 	        
 	        // 現在の状況が登録されていない場合、
-	        List<EventRelation> relations = EventService.get().getEventRelations(eventId);
+	        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
 	        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user, event);	        
 	        if (!currentStatus.isEnrolled()) {
 	        	List<EventEx> requiredEvents = getRequiredEventsNotEnrolled(user, relations); 
@@ -296,30 +298,17 @@ public class EventsController extends PartakeActionSupport implements Validateab
      * @return
      * @throws DAOException
      */
-	private List<EventEx> getRequiredEventsNotEnrolled(UserEx user, List<EventRelation> relations) throws DAOException {
+	private List<EventEx> getRequiredEventsNotEnrolled(UserEx user, List<EventRelationEx> relations) throws DAOException {
 		List<EventEx> requiredEvents = new ArrayList<EventEx>();
-		for (EventRelation relation : relations) {
+		for (EventRelationEx relation : relations) {
 			if (!relation.isRequired()) { continue; }
-			EventEx ev = EventService.get().getEventExById(relation.getEventId());
-			if (ev == null) { continue; }
-			ParticipationStatus status = UserService.get().getParticipationStatus(user, ev);
+			if (relation.getEvent() == null) { continue; }
+			
+			ParticipationStatus status = UserService.get().getParticipationStatus(user, relation.getEvent());
 			if (status.isEnrolled()) { continue; }			
-			requiredEvents.add(ev);
+			requiredEvents.add(relation.getEvent());
 		}
+		
 		return requiredEvents;
-	}
-	
-	private List<EventEx> getPriorityEventsEnrolled(String eventId, UserEx user) throws DAOException {
-		List<EventEx> priorityEvents = new ArrayList<EventEx>();
-		List<EventRelation> relations = EventService.get().getEventRelations(eventId);
-		for (EventRelation relation : relations) {
-			if (!relation.hasPriority()) { continue; }
-			EventEx ev = EventService.get().getEventExById(relation.getEventId());
-			if (ev == null) { continue; }
-			ParticipationStatus status = UserService.get().getParticipationStatus(user, ev);
-			if (!status.isEnrolled()) { continue; }			
-			priorityEvents.add(ev);
-		}
-		return priorityEvents;		
 	}
 }

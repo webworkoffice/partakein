@@ -2,6 +2,7 @@ package in.partake.service;
 
 import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
+import in.partake.model.EventRelationEx;
 import in.partake.model.ParticipationEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -24,6 +25,7 @@ import in.partake.model.dto.User;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -378,6 +380,25 @@ public final class EventService extends PartakeService {
 		}		
 	}
 	
+	public List<EventRelationEx> getEventRelationsEx(String eventId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = factory.getConnection();
+        try {
+            List<EventRelationEx> relations = new ArrayList<EventRelationEx>();
+            for (EventRelation relation : getEventRelations(factory, con, eventId)) {
+                EventEx event = getEventEx(con, relation.getEventId());
+                if (event == null) { continue; }
+                EventRelationEx relex = new EventRelationEx(relation, event);
+                relex.freeze();
+                relations.add(relex);
+            }
+            
+            return relations;
+        } finally {
+            con.invalidate();
+        }
+	}
+	
 	public List<EventRelation> getEventRelations(PartakeDAOFactory factory, PartakeConnection con, String eventId) throws DAOException {
 		return factory.getEventRelationAccess().getEventRelations(con, eventId);
 	}
@@ -435,6 +456,9 @@ public final class EventService extends PartakeService {
                 pe.freeze();
                 result.add(pe);
             }
+            
+            Collections.sort(result, Participation.getPriorityBasedComparator());
+            
             return result;
         } finally {
             con.invalidate();

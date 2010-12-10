@@ -100,8 +100,11 @@
 			</tbody>
 		</table>
 	
-        <span class="accent">＞</span>関連イベントを設定することが出来ます。登録必須にチェックをいれた場合、そのイベントに登録されていなければこのイベントに登録することは出来ません。
-        優先参加にチェックを入れた場合、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。</dd>
+        <span class="accent">＞</span>関連イベントを設定することが出来ます。<br />
+        <span class="accent">＞</span>登録必須にチェックをいれた場合、そのイベントに登録されていなければこのイベントに登録することは出来ません。
+        <span class="accent">＞</span>優先参加にチェックを入れた場合、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。
+        <span class="accent">＞</span>イベント ID とは、 http://partake.in/events/{ID} の {ID} の部分の文字列です。
+        </dd>
 <dt><label for="secret">非公開設定</label>:</dt>
 	<dd><s:checkbox id="secret" name="secret"/>非公開にする<br />
 		<span class="accent">＞</span> 非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</dd>
