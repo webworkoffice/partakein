@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.EventRelationEx"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>
@@ -36,6 +37,7 @@
 	Boolean deadlineOver = (Boolean)request.getAttribute(Constants.ATTR_DEADLINE_OVER);
 	DataIterator<CommentEx> commentIterator = (DataIterator<CommentEx>)(request.getAttribute(Constants.ATTR_COMMENTSET));
 	EventNotificationStatus notificationStatus = (EventNotificationStatus)(request.getAttribute(Constants.ATTR_NOTIFICATION_STATUS));
+	List<EventRelationEx> eventRelations = (List<EventRelationEx>) request.getAttribute(Constants.ATTR_EVENT_RELATIONS);
 %>
 
 <html lang="ja">
@@ -107,8 +109,18 @@ body {
 	            <dd><a href="http://twitter.com/#search?q=<%= escapeURI(event.getHashTag()) %>"><%= h(event.getHashTag()) %></a></dd>
 	        <% } %>         
 	        <dt>このページへの<br>短縮 URL：</dt>
-	        <% String shortenURL = Util.bitlyShortURL(event.getEventURL()); %>
-	           <dd><a href="<%= h(shortenURL) %>"><%= h(shortenURL) %></a></dd> 
+	           <% String shortenURL = Util.bitlyShortURL(event.getEventURL()); %>
+	           <dd><a href="<%= h(shortenURL) %>"><%= h(shortenURL) %></a></dd>
+	        <% if (eventRelations != null && !eventRelations.isEmpty()) { %>
+	        <dt>関連イベント</dt>
+	           <% for (EventRelationEx eventRelation : eventRelations) { %>
+	               <dd>
+	                   <a href="<%= h(eventRelation.getEvent().getEventURL()) %>"><%= h(eventRelation.getEvent().getTitle()) %></a>
+                       <% if (eventRelation.isRequired()) { %>(このイベントへの登録が必須です)<% } %>
+                       <% if (eventRelation.hasPriority()) { %>(このイベントへ登録した方は優先的にこのイベントへ参加できます)<% } %>
+	               </dd>
+	           <% } %>
+	        <% }%>
 		</dl>
 		
 	    <% if (!Util.isEmpty(event.getAddress())) { %>
@@ -377,12 +389,21 @@ body {
 			<% if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) { %>
 				<li>
 					<img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
-					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> : <%= h(participation.getComment()) %>
+					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
+					    <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
+					</a>
+					<% if (participation.getPriority() > 0) { %>(優先)<% } %>
+					: <%= h(participation.getComment()) %>
 				</li>
 			<% } else { %>
 				<li>
 					<img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
-					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> : 仮参加 : <%= h(participation.getComment()) %>
+					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
+					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
+					</a>
+					(仮参加)
+					<% if (participation.getPriority() > 0) { %>(優先)<% } %>
+					: <%= h(participation.getComment()) %>
 				</li>
 			<% } %>
 		<% 	} %>
@@ -399,12 +420,21 @@ body {
 			<% if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) { %>
 				<li>
 					<img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
-					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> : <%= h(participation.getComment()) %>
+					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
+					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
+					</a>
+					<% if (participation.getPriority() > 0) { %>(優先)<% } %>
+					: <%= h(participation.getComment()) %>
 				</li>
 			<% } else { %>
 				<li>
 					<img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
-					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> (仮参加) : <%= h(participation.getComment()) %>
+					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
+					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
+					</a>
+					<% if (participation.getPriority() > 0) { %>(優先)<% } %>
+					(仮参加)
+					: <%= h(participation.getComment()) %>
 				</li>
 			<% } %>
 		<% 	} %>

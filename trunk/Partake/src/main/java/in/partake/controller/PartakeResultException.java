@@ -1,9 +1,11 @@
 package in.partake.controller;
 
+/**
+ * Controller can throw this exception to return a result.
+ * @author shinyak
+ */
 public class PartakeResultException extends Exception {
-    /**
-     * 
-     */
+    /** */
     private static final long serialVersionUID = 1L;
     
     private String result;
@@ -14,13 +16,5 @@ public class PartakeResultException extends Exception {
     
     public String getResult() {
         return result;
-    }
-    
-    public static PartakeResultException throwError() throws PartakeResultException {
-        return new PartakeResultException("error"); // TODO: should be constant.
-    }
-    
-    public static PartakeResultException throwLogin() throws PartakeResultException {
-        return new PartakeResultException("login"); // TODO: should be constant.
-    }
+    }    
 }

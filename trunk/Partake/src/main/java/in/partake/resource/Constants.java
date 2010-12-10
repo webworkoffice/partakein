@@ -52,6 +52,7 @@ public final class Constants {
     public static final String ATTR_WARNING_MESSAGE = "WARNING_MESSAGE";
     
     public static final String ATTR_REQUIRED_EVENTS = "REQUIRED_EVENTS";
+    public static final String ATTR_EVENT_RELATIONS = "ATTR_EVENT_RELATIONS";
     
     private Constants() {
     	// prevent from instantiation.

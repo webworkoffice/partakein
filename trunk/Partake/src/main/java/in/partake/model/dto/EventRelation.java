@@ -9,12 +9,16 @@ public class EventRelation extends PartakeModel<EventRelation> {
 		//
 	}
 	
-	public EventRelation(String eventId, boolean required, boolean priority) {
-		this.eventId = eventId;
-		this.required = required;
-		this.priority = priority;
+	public EventRelation(EventRelation relation) {
+	    this(relation.eventId, relation.required, relation.priority);
 	}
-	
+
+    public EventRelation(String eventId, boolean required, boolean priority) {
+        this.eventId = eventId;
+        this.required = required;
+        this.priority = priority;
+    }
+
 	// ----------------------------------------------------------------------
 	
 	public String getEventId() {
