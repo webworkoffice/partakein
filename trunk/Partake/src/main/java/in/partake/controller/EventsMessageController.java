@@ -46,11 +46,6 @@ public class EventsMessageController extends PartakeActionSupport {
 				DirectMessage msg = messages.get(2);
 				Date msgDate = msg.getCreatedAt();
 				Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60); // one hour later after the message was sent.
-				
-				System.out.println(currentTime);
-				System.out.println(msg.getCreatedAt());
-				System.out.println(thresholdDate);
-				
 				if (currentTime.before(thresholdDate)) { // NG
 					addActionError("メッセージは１時間に３通、１日に５通までしか送ることが出来ません。");
                     return INPUT;

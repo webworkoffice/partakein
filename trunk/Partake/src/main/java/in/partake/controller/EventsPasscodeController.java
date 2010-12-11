@@ -19,14 +19,11 @@ public class EventsPasscodeController extends PartakeActionSupport implements Va
 		// validate() was already called, so it should be OK now.
 		
 		session.put("event:" + eventId, passcode);
-		System.out.println("SEEMS OK");
 		return SUCCESS;
 	}
 	
 	@Override
 	public void validate() {
-		System.out.println("PasscodeController validate() called.");
-		
 		if (eventId == null) {
 			addActionError("event が指定されていません。");
 		}
@@ -47,7 +44,6 @@ public class EventsPasscodeController extends PartakeActionSupport implements Va
 	}
 	
 	public void setEventId(String eventId) {
-		System.out.println("PasscodeController setEventId() called.");
 		this.eventId = eventId;
 	}
 	
@@ -56,7 +52,6 @@ public class EventsPasscodeController extends PartakeActionSupport implements Va
 	}
 
 	public void setPasscode(String passcode) {
-		System.out.println("PasscodeController passcode() called.");
 		this.passcode = passcode;
 	}
 }

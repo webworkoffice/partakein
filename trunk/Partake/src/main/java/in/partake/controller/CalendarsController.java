@@ -14,6 +14,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.log4j.Logger;
+
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.DateTime;
@@ -34,6 +36,7 @@ import net.fortuna.ical4j.model.property.Version;
 public class CalendarsController extends PartakeActionSupport {
 	/** */
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(CalendarsController.class);
     private ByteArrayInputStream inputStream = null;
 	
 	public ByteArrayInputStream getInputStream() {
@@ -61,7 +64,7 @@ public class CalendarsController extends PartakeActionSupport {
     		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
     		TimeZone timezone = registry.getTimeZone("Asia/Tokyo");
     		if (timezone == null) {
-    			System.out.println("timezone is null!!!");
+    			logger.warn("timezone is null.");
     		} else {
 	    		VTimeZone tz = timezone.getVTimeZone();
 	    		calendar.getComponents().add(tz);    			
@@ -86,8 +89,8 @@ public class CalendarsController extends PartakeActionSupport {
     			// set unique identifier
     			vEvent.getProperties().add(new Uid(event.getId()));
 
-   			    // Description TODO: URL 直に書くな！
-                vEvent.getProperties().add(new Description("http://partake.in/events/" + event.getId()));    			
+   			    // Description
+                vEvent.getProperties().add(new Description(event.getEventURL()));
     			
     			// URL
     			if (event.getUrl() != null && !event.getUrl().isEmpty()) {

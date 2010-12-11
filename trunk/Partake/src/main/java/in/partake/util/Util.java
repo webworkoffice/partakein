@@ -91,8 +91,6 @@ public final class Util {
     	if ("image/gif".equals(s)) { return true; }
     	if ("image/pjpeg".equals(s)){ return true; }
     	
-    	System.out.println("IMAGE CONTENT TYPE: " + s);
-    	
     	return false;
     }
     
@@ -208,7 +206,6 @@ public final class Util {
     
     public static String bitlyShortURL(Bitly bitly, String sourceURL) {
         try {
-        	// System.out.println("bitlyShortURL = " + sourceURL);
             BitlyUrl bUrl = bitly.shorten(sourceURL);
             return bUrl.getShortUrl().toString();
         } catch (IOException e) {
