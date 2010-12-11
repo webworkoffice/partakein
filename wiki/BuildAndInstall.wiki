@@ -13,7 +13,7 @@ We use eclipse 3.6 (Java EE platform) with m2eclipse plugin.
     * set Target runtime to Apache Tomcat v6.0
     * set Dynamic web module version to 2.5
   # Now we are on "build path" page, set the following configurations, and press Next >.
-    * set "Source folders on build path" as "src/main/java", "src/main/resource", and "src/test/main". 
+    * set "Source folders on build path" as "src/main/java", "src/main/resource", and "src/test/java". 
     * set "Default output folder:" to "target/classes".  http://bts.partake.in/buildpath.png
   # set Context root as "/", and set "Content directory" as "src/main/webapp", then press Finish. http://bts.partake.in/webmodule.png
   # If you are using Windows, do not forget to set project encoding to utf-8.
