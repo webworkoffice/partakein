@@ -1,4 +1,3 @@
-<%@page import="in.partake.model.EventRelationEx"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>
@@ -28,6 +27,8 @@
 <%@page import="static in.partake.util.Util.h"%>
 <%@page import="static in.partake.util.Util.escapeURI"%>
 <%@page import="static in.partake.util.Util.cleanupHTML"%>
+<%@page import="org.apache.commons.lang.StringUtils"%>
+<%@page import="in.partake.model.EventRelationEx"%>
 
 
 <%
@@ -35,7 +36,6 @@
 	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
 	ParticipationStatus status = (ParticipationStatus)request.getAttribute(Constants.ATTR_PARTICIPATION_STATUS);
 	Boolean deadlineOver = (Boolean)request.getAttribute(Constants.ATTR_DEADLINE_OVER);
-	DataIterator<CommentEx> commentIterator = (DataIterator<CommentEx>)(request.getAttribute(Constants.ATTR_COMMENTSET));
 	EventNotificationStatus notificationStatus = (EventNotificationStatus)(request.getAttribute(Constants.ATTR_NOTIFICATION_STATUS));
 	List<EventRelationEx> eventRelations = (List<EventRelationEx>) request.getAttribute(Constants.ATTR_EVENT_RELATIONS);
 %>
@@ -134,32 +134,7 @@ body {
 	<%= cleanupHTML(event.getDescription()) %>
 </div>
 
-<div class="event-comments">
-	<h2><img src="<%= request.getContextPath()%>/images/comment-title.png"/></h2>
-	<% // TODO:  %>
-	<% while (commentIterator.hasNext()) { %>
-		<% CommentEx comment = commentIterator.next(); if (comment == null) { continue; } %>
-		<div class="comment">
-			<p><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>"><%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>
-			: <%= Helper.readableDate(comment.getCreatedAt()) %></p>
-			<p><%= h(comment.getComment()) %></p>
-		</div>
-	<% } %>
-	
-	<div class="comment-form">
-        <% if (user != null) { %>
-	        <s:form action="comment">
-		        <s:token />
-		        <s:hidden name="eventId" value="%{eventId}" />
-		        <textarea id="comment" name="comment"></textarea><br />
-		        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>
-		        <s:submit type="image" src="%{#request.contextPath}/images/postcomment.png" value="コメントを投稿"  />
-		    </s:form>           	
-		<% } else { %>
-            <p>コメントを投稿するにはログインしてください。</p>
-		<% } %>
-	</div>
-</div>
+<jsp:include page="_show_eventstream.jsp" />
 
 </div>
 
