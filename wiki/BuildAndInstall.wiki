@@ -22,8 +22,9 @@ We use eclipse 3.6 (Java EE platform) with m2eclipse plugin.
   # The previous step may change your build path automatically. Check the build path again.
     * src/main/java, src/main/resource, and src/test/java should be included. http://bts.partake.in/buildpath2.png
     * In "Order and Export" pane, Maven dependencies and Web App Libraries are should be checked. http://bts.partake.in/orderandexport.png
-  # On Markers pane, you may see Classpath Dependency Validator Message.
-     * In this case, right click it and select Quick fix, and press Finish. This will fix the problem.
+  # *On Markers pane, you may see Classpath Dependency Validator Message.*
+     * *In this case, right click it and select Quick fix, and press Finish. This will fix the problem.*
+     * This is important. If you forget to do this, you will see ClassNotFoundException.
   # Then choose Run on Server.
 
 Since you have not configure PARTAKE, you will see an error message.
@@ -35,7 +36,7 @@ Since you have not configure PARTAKE, you will see an error message.
   # rename src/main/resource/twitter4j.properties.sample as src/main/resource/twitter4j.properties.
     * set your project name consumer key and consumer secret given from twitter.
 
-Then you can run PARTAKE now.
+Then PARTAKE should run now. If you have any difficulties, please tell @partakein or @mayahjp.
 
 
 
