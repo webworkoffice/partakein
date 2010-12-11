@@ -2,7 +2,6 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.resource.Constants;
-import in.partake.resource.PartakeProperties;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,11 +10,6 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
-
-import me.prettyprint.cassandra.service.CassandraClient;
-import me.prettyprint.cassandra.service.CassandraClientPool;
-import me.prettyprint.cassandra.service.CassandraClientPoolFactory;
-
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.SessionAware;
@@ -23,9 +17,8 @@ import org.apache.struts2.interceptor.SessionAware;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class PartakeActionSupport extends ActionSupport 
-	implements SessionAware, RequestAware, ServletRequestAware {
-
+public class PartakeActionSupport extends ActionSupport implements SessionAware, RequestAware, ServletRequestAware {
+	/** */
 	private static final long serialVersionUID = 1L;
 	
 	/** return code in case parameter is invalid. */

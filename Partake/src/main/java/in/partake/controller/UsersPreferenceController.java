@@ -4,12 +4,14 @@ import java.util.List;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.Constants;
 import in.partake.service.UserService;
 
 public class UsersPreferenceController extends PartakeActionSupport {
+	/** */
+	private static final long serialVersionUID = 1L;
+	
 	private boolean profilePublic;
 	private boolean receivingTwitterMessage;
 	private boolean tweetingAttendanceAutomatically;

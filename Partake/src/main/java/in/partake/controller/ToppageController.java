@@ -10,6 +10,8 @@ import java.util.List;
 
 
 public class ToppageController extends PartakeActionSupport {
+	/** */
+	private static final long serialVersionUID = 1L;
 
 	public String index() {
 		// 最近登録されたイベントを出す。

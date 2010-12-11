@@ -20,6 +20,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 
 public class EventsMessageController extends PartakeActionSupport {
+	/** */
 	private static final long serialVersionUID = 1L;
 	
 	private String eventId;

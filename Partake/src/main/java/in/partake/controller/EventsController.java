@@ -36,9 +36,9 @@ import twitter4j.http.AccessToken;
 import com.opensymphony.xwork2.Validateable;
 
 public class EventsController extends PartakeActionSupport implements Validateable {
+	/** */
+	private static final long serialVersionUID = 1L;		
     private static final Logger logger = Logger.getLogger(EventsController.class);
-    
-	private static final long serialVersionUID = 1L;
 
     private String eventId;
     private EventEx event;

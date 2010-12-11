@@ -22,7 +22,7 @@ import com.opensymphony.xwork2.ActionContext;
  * Servlet implementation class UserMypageController
  */
 public class MypageController extends PartakeActionSupport implements SessionAware {
-	
+	/** */
 	private static final long serialVersionUID = 1L;
 	
 	public String show() {

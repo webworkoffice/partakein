@@ -8,6 +8,9 @@ import java.io.ByteArrayInputStream;
 
 
 public class EventsImageController extends PartakeActionSupport {
+	/** */
+	private static final long serialVersionUID = 1L;
+	
 	private String contentType = null;
 	private ByteArrayInputStream inputStream = null;
 	

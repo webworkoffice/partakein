@@ -7,9 +7,7 @@ import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
 import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.User;
 import in.partake.model.dto.UserPermission;
-import in.partake.resource.Constants;
 import in.partake.service.EventService;
 import in.partake.util.KeyValuePair;
 import in.partake.util.Util;
@@ -39,9 +37,9 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 // ModelDriven にして annotation を Model の方に書きたいのだが、そのように書くときちんと動いてくれないので、ModelDriven はやめる
 // implements ModelDriven<EventEmbryo> 
 public class EventsEditController extends PartakeActionSupport implements Validateable {
+	/** */
+	private static final long serialVersionUID = 1L;			
     private static final Logger logger = Logger.getLogger(EventsEditController.class);
-	
-	private static final long serialVersionUID = 1L;
 
 	private String shortId;     // event short id
 	private String eventId;		// event id
@@ -97,7 +95,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     private boolean relatedEventPriority1, relatedEventPriority2, relatedEventPriority3;
     
     
-    // NOTE: required for showing jsp
+    // NOTE: required for showing jsp. TODO: really? 
     public List<KeyValuePair> getCategories() {
         return EventCategory.CATEGORIES;
     }
