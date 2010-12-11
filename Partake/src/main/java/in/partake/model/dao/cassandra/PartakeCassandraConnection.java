@@ -6,12 +6,15 @@ import me.prettyprint.cassandra.service.CassandraClient;
 import me.prettyprint.cassandra.service.CassandraClientPool;
 import me.prettyprint.cassandra.service.CassandraClientPoolFactory;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.PartakeDAOFactory;
 
 class PartakeCassandraConnection extends PartakeConnection {
+	private PartakeDAOFactory factory;
     private CassandraClient client;
     private long time;
     
-    public PartakeCassandraConnection(CassandraClient client, long time) {
+    public PartakeCassandraConnection(PartakeDAOFactory factory, CassandraClient client, long time) {
+    	this.factory = factory;
         this.client = client;
         this.time = time;
     }
@@ -20,16 +23,13 @@ class PartakeCassandraConnection extends PartakeConnection {
         return client.getCassandra();
     }
     
+    public CassandraClient getCassandraClient() {
+    	return client;
+    }
+    
     @Override
     public void invalidate() {
-        CassandraClientPool pool = CassandraClientPoolFactory.INSTANCE.get();
-        try {
-            System.out.println("releasing... " + client.toString());
-            pool.releaseClient(client);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // pool.invalidateClient(client);
+    	factory.releaseConnection(this);
     }
     
     @Override

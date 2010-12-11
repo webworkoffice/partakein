@@ -46,10 +46,29 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
             
             CassandraClient client = pool.borrowClient(host, port);
             
-            System.out.println("borrowing... " + name + " : " + client.toString());
-            return new PartakeCassandraConnection(client, now);
+            logger.debug("borrowing... " + name + " : " + client.toString());
+            return new PartakeCassandraConnection(this, client, now);
         } catch (Exception e) {
             throw new DAOException(e);
+        }
+    }
+    
+    @Override
+    public void releaseConnection(PartakeConnection connection) {
+    	if (connection instanceof PartakeCassandraConnection) {
+    		releaseConnectionImpl((PartakeCassandraConnection) connection);
+    	} else {
+    		logger.warn("connection should be PartakeCassandraConnection");
+    	}
+    }
+    
+    private void releaseConnectionImpl(PartakeCassandraConnection connection) {
+        CassandraClientPool pool = CassandraClientPoolFactory.INSTANCE.get();
+        try {
+            logger.debug("releasing... " + connection.getClient().toString());
+            pool.releaseClient(connection.getCassandraClient());
+        } catch (Exception e) {
+        	logger.warn("releaseConnectionImpl failed by an exception.", e);
         }
     }
     

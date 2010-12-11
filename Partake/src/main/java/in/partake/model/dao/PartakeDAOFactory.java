@@ -4,6 +4,7 @@ package in.partake.model.dao;
 public abstract class PartakeDAOFactory {
     public abstract PartakeConnection getConnection() throws DAOException;
     public abstract PartakeConnection getConnection(String name) throws DAOException;
+    public abstract void releaseConnection(PartakeConnection connection);
     
     public abstract IBinaryAccess getBinaryAccess();
     public abstract ICalendarLinkageAccess getCalendarAccess();

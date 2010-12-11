@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import au.com.bytecode.opencsv.CSVWriter;
 
 import in.partake.model.EventEx;
@@ -20,6 +22,8 @@ import in.partake.service.EventService;
 import in.partake.service.UserService;
 
 public class EventParticipantsListController extends PartakeActionSupport {
+	private static final Logger logger = Logger.getLogger(EventParticipantsListController.class);
+    
     private String contentType = null;
     private ByteArrayInputStream inputStream = null;
     
@@ -54,7 +58,7 @@ public class EventParticipantsListController extends PartakeActionSupport {
                     lst[1] = "仮参加";
                 } else {
                     lst[1] = "(状態不明...)";
-                    System.out.println("SHOULD NOT HAPPEN : EventParticipantsListController#show()");
+                    logger.warn("SHOULD NOT HAPPEN");
                 }
                 lst[2] = participation.getComment();
                 lst[3] = participation.getModifiedAt().toString();                
@@ -72,7 +76,7 @@ public class EventParticipantsListController extends PartakeActionSupport {
                     lst[1] = "補欠 (仮参加)";
                 } else {
                     lst[1] = "補欠 (状態不明...)";
-                    System.out.println("SHOULD NOT HAPPEN : EventParticipantsListController#show()");
+                    logger.warn("SHOULD NOT HAPPEN");
                 }
                 lst[2] = participation.getComment();
                 lst[3] = participation.getModifiedAt().toString();                

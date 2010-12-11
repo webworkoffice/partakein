@@ -68,8 +68,6 @@ public class LuceneDao {
 	}
 	
 	public void addDocument(Document doc) throws DAOException {
-	    System.out.println("LuceneDao#addDocument() is called.");
-	    
 		try {
 			indexWriter.addDocument(doc, analyzer);
 			indexWriter.commit();
@@ -196,7 +194,6 @@ public class LuceneDao {
      * When index is changed, reset() should be called.
      */
     private synchronized void reset() {
-        System.out.println("LuceneDao#reset() is called.");
         try {
             IndexReader oldReader = indexReader;
             indexReader = indexWriter.getReader();
