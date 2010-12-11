@@ -34,14 +34,14 @@ class TwitterReminderTask extends TimerTask {
     
 	@Override
 	public void run() {
-	    logger.debug("TwitterReminderTask#run() called.");
+	    logger.info("TwitterReminderTask START");
 		
 	    String topPath = PartakeProperties.get().getTopPath();		
 		Date now = new Date();
 		
 		try {
 			DataIterator<EventNotificationStatus> iterator = MessageService.get().getNotificationStatuses();
-			while (iterator.hasNext()) {
+			while (iterator.hasNext()) {				
 				EventNotificationStatus status = iterator.next();
 				
 				boolean changed = sendEventNotification(status, topPath, now);
@@ -59,6 +59,7 @@ class TwitterReminderTask extends TimerTask {
 		} catch (DAOException e) {
 			e.printStackTrace();			
 		}
+		logger.info("TwitterReminderTask END");
 	}
 	
 	private boolean sendEventNotification(EventNotificationStatus status, String topPath, Date now) throws DAOException {

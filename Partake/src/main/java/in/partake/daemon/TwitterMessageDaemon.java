@@ -24,10 +24,13 @@ import twitter4j.http.AccessToken;
 
 
 class DirectMessageSendingTask extends TimerTask {
+	private boolean working = false;
     private static final Logger logger = Logger.getLogger(DirectMessageSendingTask.class);
     
     @Override
     public void run() {
+    	logger.info("DirectMessageSendingTask START");
+    	working = true;
         try {
             DataIterator<DirectMessageEnvelope> it = DirectMessageService.get().getEnvelopeIterator();             
             while (it.hasNext()) {
@@ -64,6 +67,8 @@ class DirectMessageSendingTask extends TimerTask {
         } catch (DAOException e) {
             logger.warn("run() : DAOException occured in DirectMessageSendingTask", e);
         }        
+        
+        logger.info("DirectMessageSendingTask END");
     }
     
     private boolean sendTwitterMessage(DataIterator<DirectMessageEnvelope> it, DirectMessageEnvelope envelope) throws DAOException {
