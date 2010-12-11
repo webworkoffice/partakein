@@ -13,15 +13,15 @@ We use eclipse 3.6 (Java EE platform) with m2eclipse plugin.
     * set Target runtime to Apache Tomcat v6.0
     * set Dynamic web module version to 2.5
   # Now we are on "build path" page, set the following configurations, and press Next >.
-    * set "Source folders on build path" as "src/main/java", "src/main/resource", and "src/test/main".
-    * set "Default output folder:" to "target/classes".
-  # set Context root as "/", and set "Content directory" as "src/main/webapp", then press Finish
+    * set "Source folders on build path" as "src/main/java", "src/main/resource", and "src/test/main". 
+    * set "Default output folder:" to "target/classes".  http://bts.partake.in/buildpath.png
+  # set Context root as "/", and set "Content directory" as "src/main/webapp", then press Finish. http://bts.partake.in/webmodule.png
   # If you are using Windows, do not forget to set project encoding to utf-8.
   # right click on Partake project, and choose Maven -> enable project management.
   # right click on Partake project, and choose Maven -> update project configuration. This may take a minute.
   # The previous step may change your build path automatically. Check the build path again.
-    * src/main/java, src/main/resource, and src/test/java should be included.
-    * In "Order and Export" pane, Maven dependencies and Web App Libraries are should be checked.
+    * src/main/java, src/main/resource, and src/test/java should be included. http://bts.partake.in/buildpath2.png
+    * In "Order and Export" pane, Maven dependencies and Web App Libraries are should be checked. http://bts.partake.in/orderandexport.png
   # On Markers pane, you may see Classpath Dependency Validator Message.
      * In this case, right click it and select Quick fix, and press Finish. This will fix the problem.
   # Then choose Run on Server.
