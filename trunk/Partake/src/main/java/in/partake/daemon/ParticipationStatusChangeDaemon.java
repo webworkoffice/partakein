@@ -26,6 +26,7 @@ class ParticipationStatusChangeTask extends TimerTask {
     
     @Override
     public void run() {
+    	logger.info("articipationStatusChangeTask START.");
         Date now = new Date();
         try {
             KeyIterator it = EventService.get().getAllEventKeysIterator();
@@ -111,7 +112,8 @@ class ParticipationStatusChangeTask extends TimerTask {
             
         } catch (DAOException e) {
             e.printStackTrace();
-        }        
+        }     
+        logger.info("articipationStatusChangeTask END.");
     }
     
 }
