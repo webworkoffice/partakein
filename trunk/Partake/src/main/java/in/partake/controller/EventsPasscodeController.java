@@ -9,6 +9,7 @@ import com.opensymphony.xwork2.Validateable;
 
 
 public class EventsPasscodeController extends PartakeActionSupport implements Validateable {
+	/** */
 	private static final long serialVersionUID = 1L;
 	
 	private String eventId;

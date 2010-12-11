@@ -22,6 +22,8 @@ import in.partake.service.EventService;
 import in.partake.service.UserService;
 
 public class EventParticipantsListController extends PartakeActionSupport {
+	/** */
+	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(EventParticipantsListController.class);
     
     private String contentType = null;

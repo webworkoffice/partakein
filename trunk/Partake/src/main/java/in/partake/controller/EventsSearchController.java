@@ -16,6 +16,9 @@ import org.apache.lucene.queryParser.ParseException;
 
 
 public class EventsSearchController extends PartakeActionSupport {
+	/** */
+	private static final long serialVersionUID = 1L;
+	
 	private static final List<KeyValuePair> SORTORDERS = Collections.unmodifiableList(Arrays.asList(
 			new KeyValuePair("score", "マッチ度順"),
 			new KeyValuePair("createdAt", "新着順"),
