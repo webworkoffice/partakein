@@ -18,21 +18,26 @@ We use eclipse 3.6 (Java EE platform) with m2eclipse plugin.
   # set Context root as "/", and set "Content directory" as "src/main/webapp", then press Finish
   # If you are using Windows, do not forget to set project encoding to utf-8.
   # right click on Partake project, and choose Maven -> enable project management.
-  # right click on Partake project, and choose Properties. Then choose Java Build Path page, and choose Orders and Export, and check Maven Dependencies and Web App Libraries. Then press OK.
+  # right click on Partake project, and choose Maven -> update project configuration. This may take a minute.
+  # The previous step may change your build path automatically. Check the build path again.
+    * src/main/java, src/main/resource, and src/test/java should be included.
+    * In "Order and Export" pane, Maven dependencies and Web App Libraries are should be checked.
   # On Markers pane, you may see Classpath Dependency Validator Message.
      * In this case, right click it and select Quick fix, and press Finish. This will fix the problem.
   # Then choose Run on Server.
 
 Since you have not configure PARTAKE, you will see an error message.
 
-  # Download Apache Cassandra (0.6.5) and run on localhost.
+  # Download Apache Cassandra (0.6.5) and run on localhost. Maybe you have to set up data and index directories.
   # fill src/main/resource/sample.partake.properties (especially bitly)
-    * partake.properties can set in.partake.mode property. 
-    * partake will read {mode}.partake.properties
+    * a partake.properties file has in.partake.mode property. The value of this property is called "mode".
+    * partake will read {mode}.partake.properties.
   # rename src/main/resource/twitter4j.properties.sample as src/main/resource/twitter4j.properties.
     * set your project name consumer key and consumer secret given from twitter.
 
 Then you can run PARTAKE now.
+
+
 
 == NOTE ==
 
