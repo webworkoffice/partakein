@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Date;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.cjk.CJKAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -22,6 +23,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.Sort;
@@ -138,8 +140,14 @@ public class LuceneDao {
 	
 	public TopDocs search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws DAOException, ParseException {
 		try {
-			QueryParser partialParser = new QueryParser(Version.LUCENE_30, "CONTENT", analyzer);
-			Query query = partialParser.parse(term);
+			Query query;
+			if (StringUtils.isEmpty(term)) {
+				// If the search term is not null, all events should be displayed.  
+				query = new MatchAllDocsQuery();
+			} else {
+				QueryParser partialParser = new QueryParser(Version.LUCENE_30, "CONTENT", analyzer);
+				query = partialParser.parse(term);				
+			}
 			
 			// TODO: なんか汚い...。
 			Filter filter;
