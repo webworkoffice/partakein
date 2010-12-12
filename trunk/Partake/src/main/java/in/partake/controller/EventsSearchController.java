@@ -17,8 +17,7 @@ import org.apache.lucene.queryParser.ParseException;
 
 public class EventsSearchController extends PartakeActionSupport {
 	/** */
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = 1L;	
 	private static final List<KeyValuePair> SORTORDERS = Collections.unmodifiableList(Arrays.asList(
 			new KeyValuePair("score", "マッチ度順"),
 			new KeyValuePair("createdAt", "新着順"),
@@ -58,9 +57,10 @@ public class EventsSearchController extends PartakeActionSupport {
 		    beforeDeadlineOnly = "true".equals(getParameter("beforeDeadlineOnly")) ? true : false;
 		}
 		
+		// If no query is specified, the recent registered events are shown.
 		if (searchTerm == null || category == null || sortOrder == null) {
 			try {
-				List<Event> events = EventService.get().getRecentEvents();
+				List<Event> events = EventService.get().getRecentEvents(5); // TODO: MAGIC NUMBER! 5
 				attributes.put(Constants.ATTR_RECENT_EVENTS, events);
 				return INPUT;
 			} catch (DAOException e) {
@@ -69,14 +69,9 @@ public class EventsSearchController extends PartakeActionSupport {
 			}
 		}
 		
-		String trimed = searchTerm.trim();
-		if ("".equals(trimed)) {
-			addFieldError("searchTerm", "検索条件を入力してください。");
-			return INPUT;
-		}
-		
 		try {
-			List<Event> events = EventService.get().search(searchTerm, category, sortOrder, beforeDeadlineOnly, 50);
+			// TODO: MAGIC NUMBER! 50
+			List<Event> events = EventService.get().search(searchTerm.trim(), category, sortOrder, beforeDeadlineOnly, 50);
 			attributes.put(Constants.ATTR_SEARCH_RESULT, events);
 
 			return SUCCESS;
