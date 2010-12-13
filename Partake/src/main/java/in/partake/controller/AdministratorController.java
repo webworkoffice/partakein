@@ -11,11 +11,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 
 public class AdministratorController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;	
-
+	private static final Logger logger = Logger.getLogger(AdministratorController.class);
+	
     public String index() throws PartakeResultException {
         ensureAdmin();
 		return SUCCESS;
@@ -55,7 +58,7 @@ public class AdministratorController extends PartakeActionSupport {
             return SUCCESS;
             
         } catch (DAOException e) {
-            e.printStackTrace();
+            logger.warn("createDemoPage failed", e);
             return ERROR;
         }
     }

@@ -12,12 +12,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.queryParser.ParseException;
 
 
 public class EventsSearchController extends PartakeActionSupport {
 	/** */
-	private static final long serialVersionUID = 1L;	
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(EventsSearchController.class);
+	   
+	
 	private static final List<KeyValuePair> SORTORDERS = Collections.unmodifiableList(Arrays.asList(
 			new KeyValuePair("score", "マッチ度順"),
 			new KeyValuePair("createdAt", "新着順"),
@@ -76,6 +80,7 @@ public class EventsSearchController extends PartakeActionSupport {
 
 			return SUCCESS;
 		} catch (ParseException e) {
+		    logger.debug("Parsing failed.", e); // Intentionally used "debug" instead of "warn".
 			addActionError("検索条件のパーズに失敗しました。");
 			return INPUT;
 		} catch (DAOException e) {

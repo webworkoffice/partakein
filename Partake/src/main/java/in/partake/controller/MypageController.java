@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -24,6 +25,7 @@ import com.opensymphony.xwork2.ActionContext;
 public class MypageController extends PartakeActionSupport implements SessionAware {
 	/** */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(MypageController.class);
 	
 	public String show() {
 		User user = getLoginUser();

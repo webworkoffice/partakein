@@ -13,6 +13,8 @@ import in.partake.util.Util;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
@@ -22,6 +24,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 public class EventsMessageController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(EventsMessageController.class);
 	
 	private String eventId;
 	private String message;

@@ -8,11 +8,14 @@ import in.partake.service.EventService;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 
 public class ToppageController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
-
+	private static final Logger logger = Logger.getLogger(ToppageController.class);
+	
 	public String index() {
 		// 最近登録されたイベントを出す。
 		// TODO: 毎回表示するの大変なので、cache するべきですよねー。なんとかならないかな。

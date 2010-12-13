@@ -37,6 +37,7 @@ public class CalendarsController extends PartakeActionSupport {
 	/** */
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(CalendarsController.class);
+    
     private ByteArrayInputStream inputStream = null;
 	
 	public ByteArrayInputStream getInputStream() {
