@@ -50,6 +50,10 @@ public class PartakeProperties {
 		return properties.getProperty("in.partake.toppath");
 	}
 	
+	public String getGoogleAnalyticsCode() {
+		return properties.getProperty("in.partake.analytics.google");
+	}
+	
 	// --------------------------------------------------
 	
 	/** read partake.properties and load.*/

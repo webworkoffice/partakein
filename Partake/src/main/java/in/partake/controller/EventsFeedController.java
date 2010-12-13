@@ -18,6 +18,7 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
+import in.partake.model.EventEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
@@ -42,7 +43,6 @@ public class EventsFeedController extends PartakeActionSupport {
 		feed.setTitle("Recent 100 events - [PARTAKE]");
 		feed.setLink("http://partake.in/");
 		feed.setDescription("最近登録されたイベントを(最大100)フィードします。");
-		
 		
 		try {
 			List<Event> events = EventService.get().getRecentEvents(100);
@@ -95,29 +95,30 @@ public class EventsFeedController extends PartakeActionSupport {
 		}
 	}
 	
+	
 	// feed ごとの event に関してはどうしようか悩み中。
-//	public String feedEvent() {
-//		String feedId = getParameter("feedId");
-//		if (feedId == null) { return NOT_FOUND; }
-//		
-//		try {
-//			Event event = EventService.get().getEventByFeedId(feedId);
-//			if (event == null) { return NOT_FOUND; }
-//			
-//			SyndFeed feed = new SyndFeedImpl();
-//			feed.setFeedType("rss_1.0");
-//			
-//			feed.setTitle(event.getTitle() + " - [PARTAKE]");
-//			feed.setLink(event.getEventURL());
-//			feed.setDescription(event.getSummary());
-//			
-//			// Comment および参加者リストを RSS でフィードします。
-//			
-//		} catch (DAOException e) {
-//			e.printStackTrace();
-//			return ERROR;
-//		}
-//	}
+	public String feedEvent() {
+		String feedId = getParameter("feedId");
+		if (feedId == null) { return NOT_FOUND; }
+		
+		try {
+			Event event = EventService.get().getEventByFeedId(feedId);
+			if (event == null) { return NOT_FOUND; }
+			
+			SyndFeed feed = new SyndFeedImpl();
+			feed.setFeedType("rss_2.0");
+			
+			feed.setTitle(event.getTitle() + " - [PARTAKE]");
+			feed.setLink(event.getEventURL());
+			feed.setDescription(event.getSummary());
+			
+			// Comment および参加者リストを RSS でフィードします。
+			createEventFeed(event);
+		} catch (DAOException e) {
+			e.printStackTrace();
+			return ERROR;
+		}
+	}
 
 	
 	
@@ -162,4 +163,5 @@ public class EventsFeedController extends PartakeActionSupport {
 
 		baos.close();
 	}
+	
 }
