@@ -2,6 +2,7 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.KeyIterator;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
 import in.partake.resource.PartakeProperties;
@@ -21,6 +22,7 @@ public class AdministratorController extends PartakeActionSupport {
 	
     public String index() throws PartakeResultException {
         ensureAdmin();
+        
 		return SUCCESS;
 	}
 	
@@ -68,20 +70,21 @@ public class AdministratorController extends PartakeActionSupport {
      */
     public String addFeedIdToAllEvents() throws PartakeResultException {
         ensureAdmin();
-//    	try {
-//    		KeyIterator it = EventService.get().getAllEventKeysIterator();
-//    		while (it.hasNext()) {
-//    			Event event = EventService.get().getEventById(it.next());
-//    			if (event.getFeedId() == null) {
-//    				EventService.get().appendFeed(event.getId());
-//    			}
-//    		}
-//    		
-//    		return SUCCESS;
-//    	} catch (DAOException e) {
-//    		e.printStackTrace();
-//    		return ERROR;
-//    	}
+    	try {
+    		KeyIterator it = EventService.get().getAllEventKeysIterator();
+    		while (it.hasNext()) {
+    			Event event = EventService.get().getEventById(it.next());
+    			if (event.getFeedId() == null) {
+    			    EventService.get().
+    				EventService.get().appendFeed(event.getId());
+    			}
+    		}
+    		
+    		return SUCCESS;
+    	} catch (DAOException e) {
+    		e.printStackTrace();
+    		return ERROR;
+    	}
         return SUCCESS;
     }
     
@@ -96,5 +99,22 @@ public class AdministratorController extends PartakeActionSupport {
         if (!PartakeProperties.get().getTwitterAdminName().equals(user.getScreenName())) {
             throw new PartakeResultException(PROHIBITED);
         }     
+    }
+    
+    private int getNumOfAllEvents() {
+        try {
+            int result = 0;            
+            KeyIterator key = EventService.get().getAllEventKeysIterator();
+            while (key.hasNext()) {
+                Event event = EventService.get().getEventById(key.next());
+                if (event == null) { continue; }
+                ++result;
+            }
+            
+            return result;
+        } catch (DAOException e) {
+            logger.warn("getNumOfAllEvents", e);
+            return -1;
+        }
     }
 }
