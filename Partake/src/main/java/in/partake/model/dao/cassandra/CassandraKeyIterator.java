@@ -2,12 +2,9 @@ package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.KeyIterator;
-import in.partake.model.dao.PartakeConnection;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import me.prettyprint.cassandra.service.CassandraClient;
 
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.ColumnParent;
@@ -29,7 +26,8 @@ class CassandraKeyIterator extends KeyIterator {
 
     private String keyPrefix;
     private String nextStartKey;    // null if all elements are retrieved.
-    private String rangeEndKey; 
+    private String rangeEndKey;
+    private boolean shouldExcludeNextStartKey;
     
     private CassandraDAOFactory factory;
     
@@ -45,6 +43,7 @@ class CassandraKeyIterator extends KeyIterator {
         
         this.keyPrefix = keyPrefix;
         this.nextStartKey = keyPrefix;
+        this.shouldExcludeNextStartKey = false;
         
         if (keyPrefix.isEmpty()) {
             this.rangeEndKey = "";
@@ -77,19 +76,29 @@ class CassandraKeyIterator extends KeyIterator {
             keyRange.end_key = rangeEndKey;
             
             keySlice = cassandra.get_range_slices(keyspace, columnParent, slicePredicate, keyRange, readConsistencyLevel);
+            pos = 0;
             
             if (keySlice == null || keySlice.isEmpty()) {
-                pos = 0;
                 nextStartKey = null;
                 return false;
-            } else {
-                pos = 0;
-                
-                String lastKey = keySlice.get(keySlice.size() - 1).getKey();
-                nextStartKey = lastKey + "\0";                
-                
-                return true;
             }
+            
+            if (shouldExcludeNextStartKey) {
+            	if (keySlice.get(0).getKey().equals(nextStartKey)) {
+            		++pos;
+            	}
+            }
+            
+            if (keySlice.size() <= pos) {
+            	nextStartKey = null;
+            	return false;
+            } else {
+            	nextStartKey = keySlice.get(keySlice.size() - 1).getKey();
+            	shouldExcludeNextStartKey = true;
+            }
+                
+            return true;
+            
         } catch (Exception e) {
             e.printStackTrace();
             throw new DAOException(e);

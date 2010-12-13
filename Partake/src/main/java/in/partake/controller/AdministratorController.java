@@ -69,13 +69,15 @@ public class AdministratorController extends PartakeActionSupport {
      * append a feed id to each event if it does not have feed id. 
      */
     public String addFeedIdToAllEvents() throws PartakeResultException {
+    	logger.info("addFeedIdToAllEvents() is called");
+    	
         ensureAdmin();
     	try {
     		KeyIterator it = EventService.get().getAllEventKeysIterator();
     		while (it.hasNext()) {
     		    String eventId = it.next();
     		    if (eventId == null) { continue; }
-    			Event event = EventService.get().getEventById(it.next());
+    			Event event = EventService.get().getEventById(eventId);
     			if (event == null) { continue; }
     			
     			EventService.get().appendFeedIfAbsent(eventId);
