@@ -95,17 +95,23 @@ public final class EventService extends PartakeService {
         }	    
 	}
 	
-//	/**
-//	 * get an event from a feed id.
-//	 * @param feedId
-//	 * @return
-//	 * @throws DAOException
-//	 */
-//	public Event getEventByFeedId(String feedId) throws DAOException {
-//		String eventId = new FeedDao().getEventIdByFeedId(feedId);
-//		if (eventId == null) { return null; }
-//		return getEventById(eventId);
-//	}
+	/**
+	 * get an event from a feed id.
+	 * @param feedId
+	 * @return
+	 * @throws DAOException
+	 */
+	public EventEx getEventByFeedId(String feedId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = factory.getConnection();
+        try {
+        	String eventId = factory.getFeedAccess().getEventIdByFeedId(con, feedId);
+            if (eventId == null) { return null; }
+            return getEventExById(eventId);
+        } finally {
+            con.invalidate();
+        }	    
+	}
 
 	/**
 	 * get an iterator which iterates the key of all events.
