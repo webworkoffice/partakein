@@ -248,6 +248,7 @@ public final class EventService extends PartakeService {
     			eventEmbryo.setBackImageId(backImageId);
     		}
     		
+    		
 //    		// if feed id does not exist, add one.
 //    		if (eventEmbryo.getFeedId() == null) {
 //    			eventEmbryo.setFeedId(new FeedDao().getFreshId());
@@ -278,7 +279,7 @@ public final class EventService extends PartakeService {
         	}
         	
         	// Feed Dao にも挿入。
-        	// new FeedDao().addFeedWithEventId(eventEmbryo.getFeedId(), eventId);
+        	appendFeedIfAbsent(factory, con, eventId);
         	
         	return eventId;
 	    } finally {
@@ -292,8 +293,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         IBinaryAccess binaryAccess = factory.getBinaryAccess();
         PartakeConnection con = factory.getConnection();
-        try {
-    
+        try {            
     		// まず id のみ更新
     		if (updatesForeImage) {
     			if (foreImageEmbryo != null) {
@@ -497,7 +497,7 @@ public final class EventService extends PartakeService {
 	    }
 	}
 	
-	
+	// TODO: なんで DataIterator なんだ？
     public DataIterator<Comment> getCommentsByEvent(String eventId) throws DAOException {
         return getFactory().getCommentAccess().getCommentsByEvent(getFactory(), eventId);
     }
@@ -581,15 +581,26 @@ public final class EventService extends PartakeService {
     // ----------------------------------------------------------------------
     // feed
     
-//    /**
-//     * add a feed id to the event if it does not have feed id. 
-//     */
-//    public void appendFeed(String eventId) throws DAOException {
-//    	String feedId = new FeedDao().getFreshId();
-//    	new FeedDao().addFeedWithEventId(feedId, eventId);    	
-//    	new EventDao().appendFeedId(eventId, feedId);
-//    }
+    /**
+     * add a feed id to the event if it does not have feed id. 
+     */
+    public void appendFeedIfAbsent(String eventId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();       
+        PartakeConnection con = factory.getConnection();
+        try {
+            appendFeedIfAbsent(factory, con, eventId);
+        } finally {
+            con.invalidate();
+        } 
+    }
     
+    private void appendFeedIfAbsent(PartakeDAOFactory factory, PartakeConnection con, String eventId) throws DAOException {
+        String feedId = factory.getFeedAccess().getFeedIdByEventId(con, eventId);
+        if (feedId != null) { return; }
+        
+        feedId = factory.getFeedAccess().getFreshId(con);
+        factory.getFeedAccess().addFeedId(con, feedId, eventId);
+    }
     
     // ----------------------------------------------------------------------
 	

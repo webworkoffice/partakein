@@ -326,7 +326,6 @@
 			<result name="success">/WEB-INF/events/show.jsp</result>
 			<result name="input">/WEB-INF/events/passcode.jsp</result>
 		</action>
-		
 	</package>
 		
 	<package name="feed" namespace="/feed" extends="partake-default">
@@ -347,17 +346,14 @@
 			</result>
 		</action>
 
-<!-- 
 		<action name="event/*" method="feedEvent" class="in.partake.controller.EventsFeedController">
 			<param name="feedId">{1}</param>
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
-                <param name="contentDisposition">attachment</param>
                 <param name="bufferSize">1024</param>
                 <param name="allowCaching">true</param>			
 			</result>
 		</action>
- -->	
 		
 	</package>
 	

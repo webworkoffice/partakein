@@ -33,7 +33,6 @@ public class Event extends PartakeModel<Event> {
 
     private String foreImageId;
     private String backImageId;
-    private String feedId;      // TODO: feed id が使えるように実装する
 
     private boolean isPrivate;  // true if the event is private.
     private String passcode;    // passcode to show (if not public)
@@ -96,7 +95,6 @@ public class Event extends PartakeModel<Event> {
         
         this.foreImageId = null;
         this.backImageId = null;
-        this.feedId = null;
         
         this.isPrivate = isPrivate;
         this.passcode = passcode;
@@ -105,7 +103,7 @@ public class Event extends PartakeModel<Event> {
     
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, List<String> managerScreenNames, 
-            String foreImageId, String backImageId, String feedId,
+            String foreImageId, String backImageId,
             boolean isPrivate, String passcode, Date createdAt) {
         this.id = id;
         this.shortId = shortId;
@@ -126,7 +124,6 @@ public class Event extends PartakeModel<Event> {
         
         this.foreImageId = foreImageId;
         this.backImageId = backImageId;
-        this.feedId = feedId;
         
         this.isPrivate = isPrivate;
         this.passcode = passcode;
@@ -143,10 +140,6 @@ public class Event extends PartakeModel<Event> {
     
     public void setBackImageId(String backImageId) {
         this.backImageId = backImageId;
-    }
-    
-    public void setFeedId(String feedId) {
-        this.feedId = feedId;
     }
     
     public String getShortId() {
@@ -217,10 +210,6 @@ public class Event extends PartakeModel<Event> {
         return backImageId;
     }
     
-    public String getFeedId() {
-        return feedId;
-    }
-
     public boolean isPrivate() {
         return isPrivate;
     }

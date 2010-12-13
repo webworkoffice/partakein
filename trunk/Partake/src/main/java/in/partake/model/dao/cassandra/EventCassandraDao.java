@@ -88,7 +88,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     // -----------------------------------------------------------------------------
 
     public String getFreshId(PartakeConnection con) throws DAOException {        
-        return UUID.randomUUID().toString();        
+        return UUID.randomUUID().toString();
     };
     
     @Override
@@ -227,7 +227,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         }
 	    mutations.add(createMutation("foreImageId", embryo.getForeImageId(), time));
         mutations.add(createMutation("backImageId", embryo.getBackImageId(), time));
-       	mutations.add(createMutation("feedId", embryo.getFeedId(), time));
         mutations.add(createColumnMutation("secret", embryo.isPrivate() ? TRUE : FALSE, time)); 
         mutations.add(createMutation("passcode", embryo.getPasscode(), time));
         mutations.add(createMutation("createdAt", embryo.getCreatedAt(), time));
@@ -353,8 +352,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
                 event.setForeImageId(value);
             } else if ("backImageId".equals(name)) {
                 event.setBackImageId(value);
-            } else if ("feedId".equals(name)) {
-                event.setFeedId(value);
             } else if ("secret".equals(name)) {
                 event.setPrivate(Boolean.valueOf(value));
             } else if ("passcode".equals(name)) {

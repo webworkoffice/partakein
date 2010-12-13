@@ -9,11 +9,8 @@ import in.partake.model.dto.BinaryData;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import me.prettyprint.cassandra.service.CassandraClient;
 
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.Column;

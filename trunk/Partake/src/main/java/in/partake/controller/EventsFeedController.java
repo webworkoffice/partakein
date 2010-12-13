@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +19,16 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
+import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
+import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
+import in.partake.model.dto.Participation;
 import in.partake.service.EventService;
+import in.partake.util.Pair;
 import in.partake.util.Util;
 
 public class EventsFeedController extends PartakeActionSupport {
@@ -107,19 +113,25 @@ public class EventsFeedController extends PartakeActionSupport {
 			
 			SyndFeed feed = new SyndFeedImpl();
 			feed.setFeedType("rss_2.0");
+			feed.setEncoding("utf-8");
 			
 			feed.setTitle(event.getTitle() + " - [PARTAKE]");
 			feed.setLink(event.getEventURL());
 			feed.setDescription(event.getSummary());
 			
-			// Comment および参加者リストを RSS でフィードします。
-			// createEventFeed(event);
+			createEventFeed(feed, event);
 			
 			return SUCCESS;
 		} catch (DAOException e) {
 			e.printStackTrace();
 			return ERROR;
-		}
+		} catch (IOException e) {
+            e.printStackTrace();
+            return ERROR;
+        } catch (FeedException e) {
+            e.printStackTrace();
+            return ERROR;
+        }
 	}
 
 	
@@ -151,19 +163,55 @@ public class EventsFeedController extends PartakeActionSupport {
 			entries.add(entry);
 		}
 		
-		feed.setEntries(entries);
-		
-		SyndFeedOutput output = new SyndFeedOutput();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		output.output(feed, new OutputStreamWriter(baos, "utf-8"));
-		
-		baos.flush();
-		
-		this.contentType = "application/rss+xml";
-		// this.contentType = "text/xml";
-		this.inputStream = new ByteArrayInputStream(baos.toByteArray());
-
-		baos.close();
+		feed.setEntries(entries);		
+		outputSyndFeed(feed);
 	}
 	
+	private void createEventFeed(SyndFeed feed, Event event) throws IOException, FeedException, DAOException {
+	    List<SyndEntry> entries = new ArrayList<SyndEntry>();
+	    
+	    // Participation は後で考える
+//	    List<Participation> participations = EventService.get().getParticipation(event.getId());
+//	    for (Participation p : participations) {
+//            SyndEntry entry = new SyndEntryImpl();
+//            SyndContent content = new SyndContentImpl();
+//            content.setType("text/plain");
+//            content.setValue(Util.h(p.getComment()));
+//            entry.setDescription(content);
+//            
+//            entries.add(new Pair<Long, SyndEntry>(p.getModifiedAt().getTime(), entry));
+//	    }
+	    
+	    DataIterator<CommentEx> commentIterator = EventService.get().getCommentsExByEvent(event.getId());
+	    while (commentIterator.hasNext()) {
+	        CommentEx comment = commentIterator.next();
+
+            SyndEntry entry = new SyndEntryImpl();
+            entry.setTitle(comment.getUser().getScreenName());
+            
+            SyndContent content = new SyndContentImpl();
+            content.setType("text/plain");
+            content.setValue(Util.h(comment.getComment()));
+            entry.setDescription(content);
+            
+            entries.add(entry);
+	    }	    
+	    feed.setEntries(entries);
+	    
+        outputSyndFeed(feed);	    
+	}
+
+
+    private void outputSyndFeed(SyndFeed feed) throws IOException, FeedException, UnsupportedEncodingException {
+        SyndFeedOutput output = new SyndFeedOutput();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        output.output(feed, new OutputStreamWriter(baos, "utf-8"));
+        
+        baos.flush();
+        
+        this.contentType = "application/rss+xml";
+        this.inputStream = new ByteArrayInputStream(baos.toByteArray());
+
+        baos.close();
+    }
 }
