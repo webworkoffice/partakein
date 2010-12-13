@@ -11,14 +11,20 @@ import in.partake.util.Util;
 public class EventEx extends Event {
     
     private UserEx owner;
+    private String feedId;
     
-    public EventEx(Event event, UserEx owner) {
+    public EventEx(Event event, UserEx owner, String feedId) {
         super(event);
         this.owner = owner;
+        this.feedId = feedId;
     }
     
     public UserEx getOwner() {
         return owner;
+    }
+    
+    public String getFeedId() {
+        return feedId;
     }
     
     // ----------------------------------------------------------------------

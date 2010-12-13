@@ -11,9 +11,11 @@ import java.util.List;
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;
+import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Deletion;
 import org.apache.cassandra.thrift.Mutation;
+import org.apache.cassandra.thrift.NotFoundException;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.Cassandra.Client;
@@ -31,6 +33,18 @@ abstract class CassandraDao {
     
     // ----------------------------------------------------------------------
     // Utility methods
+    
+    protected ColumnOrSuperColumn get(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
+        try {
+            ColumnPath columnPath = new ColumnPath();
+            columnPath.setColumn_family(columnFamily);
+            columnPath.setColumn(bytes(columnName));
+            return client.get(keySpace, key, columnPath, readConsistency);        
+        } catch (NotFoundException e) {
+            // e is intentionally ignored.
+            return null;
+        }
+    }
     
     /**
      * get a slice 

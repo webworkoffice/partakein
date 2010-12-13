@@ -44,7 +44,7 @@
 <head>
 	<jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
 	<% if (event.getFeedId() != null) { %>
-		<link rel="alternate" type="application/rss+xml" title="RSS 1.0" href="/feed/event/<%= event.getFeedId() %>" />
+		<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed/event/<%= event.getFeedId() %>" />
 	<% } %>
 	<title><%= h(event.getTitle()) %> - [PARTAKE]</title>
 

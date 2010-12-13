@@ -34,8 +34,9 @@ public abstract class PartakeService {
         Event event = getFactory().getEventAccess().getEventById(con, eventId);
         User user = getFactory().getUserAccess().getUserById(con, event.getOwnerId());
         TwitterLinkage tw = getFactory().getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
+        String feedId = getFactory().getFeedAccess().getFeedIdByEventId(con, eventId);
         
         UserEx userEx = new UserEx(user, tw);
-        return new EventEx(event, userEx);
+        return new EventEx(event, userEx, feedId);
     }
 }

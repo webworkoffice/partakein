@@ -73,10 +73,12 @@ public class AdministratorController extends PartakeActionSupport {
     	try {
     		KeyIterator it = EventService.get().getAllEventKeysIterator();
     		while (it.hasNext()) {
+    		    String eventId = it.next();
+    		    if (eventId == null) { continue; }
     			Event event = EventService.get().getEventById(it.next());
-    			if (event.getFeedId() == null) {
-    				// EventService.get().appendFeed(event.getId());
-    			}
+    			if (event == null) { continue; }
+    			
+    			EventService.get().appendFeedIfAbsent(eventId);
     		}
     		
     		return SUCCESS;
