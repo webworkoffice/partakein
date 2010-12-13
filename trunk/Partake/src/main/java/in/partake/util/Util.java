@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.regex.Matcher;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -26,6 +27,7 @@ import org.owasp.validator.html.ScanException;
 import com.rosaloves.net.shorturl.bitly.Bitly;
 import com.rosaloves.net.shorturl.bitly.BitlyFactory;
 import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
+import com.twitter.Regex;
 
 
 public final class Util {
@@ -77,7 +79,7 @@ public final class Util {
     }
     
     public static boolean isValidHashtag(String hashTag) {
-    	return hashTag.matches("#[a-zA-z0-9_\\-]+");
+        return Regex.AUTO_LINK_HASHTAGS.matcher(hashTag).matches();
     }
     
     // ----------------------------------------------------------------------
