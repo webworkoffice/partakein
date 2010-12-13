@@ -31,4 +31,19 @@ public class UtilTest {
 	}
 
 	
+	  
+	@Test
+	public void hashtagValidatorTest() {
+	    Assert.assertTrue(Util.isValidHashtag("#hashtag"));
+	    Assert.assertTrue(Util.isValidHashtag("#hash_tag"));
+	    Assert.assertTrue(Util.isValidHashtag("#hashtag1"));
+	    Assert.assertTrue(Util.isValidHashtag("#hÀshtag"));
+	    Assert.assertTrue(Util.isValidHashtag("＃hashtag"));
+
+	    Assert.assertFalse(Util.isValidHashtag("#012"));
+	    Assert.assertFalse(Util.isValidHashtag("#hash\\tag"));
+	    Assert.assertFalse(Util.isValidHashtag("#hash-tag"));
+	    Assert.assertFalse(Util.isValidHashtag("#hashタグ"));
+	    Assert.assertFalse(Util.isValidHashtag("#À"));
+	}
 }
