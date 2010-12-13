@@ -164,6 +164,10 @@
             <interceptor-ref name="adminStack" />
             <result name="success" type="redirect">/</result>
         </action>
+        <action name="addFeedIdToAllEvents" method="addFeedIdToAllEvents" class="in.partake.controller.AdministratorController">
+            <interceptor-ref name="adminStack" />
+            <result name="success" type="redirect">/</result>
+        </action>        
 	</package>
 	
 	<package name="users" namespace="/users" extends="partake-default">
