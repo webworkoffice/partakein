@@ -6,10 +6,13 @@ import in.partake.service.EventService;
 
 import java.io.ByteArrayInputStream;
 
+import org.apache.log4j.Logger;
+
 
 public class EventsImageController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
+    private static final Logger logger = Logger.getLogger(EventsImageController.class);
 	
 	private String contentType = null;
 	private ByteArrayInputStream inputStream = null;

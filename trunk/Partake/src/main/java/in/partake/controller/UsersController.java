@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.opensymphony.xwork2.ActionContext;
 
 
@@ -23,6 +25,7 @@ import com.opensymphony.xwork2.ActionContext;
 public class UsersController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(UsersController.class);
 	
 	// ----------------------------------------------------------------------
     
@@ -103,6 +106,7 @@ public class UsersController extends PartakeActionSupport {
     		
     		return SUCCESS;    		
     	} catch (DAOException e) {
+    	    logger.warn("revokeCalendar() failed.", e);
     		return ERROR;
     	}
     }

@@ -1,9 +1,11 @@
 package in.partake.controller;
 
+import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.service.EventService;
 
 import org.apache.commons.lang.xwork.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.opensymphony.xwork2.Validateable;
 
@@ -11,6 +13,7 @@ import com.opensymphony.xwork2.Validateable;
 public class EventsPasscodeController extends PartakeActionSupport implements Validateable {
 	/** */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(EventsPasscodeController.class);
 	
 	private String eventId;
 	private String passcode;
@@ -39,7 +42,8 @@ public class EventsPasscodeController extends PartakeActionSupport implements Va
 			if (!pass.equals(event.getPasscode())) {
 				addFieldError("passcode", "passcode が一致しませんでした。");
 			}
-		} catch (Exception e) {
+		} catch (DAOException e) {
+		    logger.warn("validate() failed", e);
 			addActionError("event を取得中にエラーが発生しました");
 		}
 	}

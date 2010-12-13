@@ -2,6 +2,8 @@ package in.partake.controller;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.UserPreference;
@@ -11,6 +13,7 @@ import in.partake.service.UserService;
 public class UsersPreferenceController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(UsersPreferenceController.class);
 	
 	private boolean profilePublic;
 	private boolean receivingTwitterMessage;

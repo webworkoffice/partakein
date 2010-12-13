@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.SessionAware;
@@ -20,6 +21,7 @@ import com.opensymphony.xwork2.ActionSupport;
 public class PartakeActionSupport extends ActionSupport implements SessionAware, RequestAware, ServletRequestAware {
 	/** */
 	private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(PartakeActionSupport.class);
 	
 	/** return code in case parameter is invalid. */
 	public static final String INVALID = "invalid"; //$NON-NLS-1$

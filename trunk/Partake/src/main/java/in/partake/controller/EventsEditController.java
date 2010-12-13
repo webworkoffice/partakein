@@ -436,6 +436,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
             
             return SUCCESS;
         } catch (DAOException e) {
+            logger.warn("destroy() failed.", e);
             return ERROR;
         }
     }
