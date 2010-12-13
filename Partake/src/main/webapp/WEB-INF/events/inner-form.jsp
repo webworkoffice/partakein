@@ -70,7 +70,7 @@
 	<dd><s:textfield id="url" name="url" cssClass="text-input" /></dd>
 <dt><label for="hashTag">ハッシュタグ</label></dt>
 	<dd><s:textfield id="hashTag" name="hashTag" cssClass="text-input" /><br />
-		<span class="accent">＞</span> twitter で用いる公式ハッシュタグを設定できます。# から始まる英数字、ハイフン、アンダースコアのみの文字列が使用できます。100 文字まで設定できます。</dd>
+		<span class="accent">＞</span> twitter で用いる公式ハッシュタグを設定できます。# から始まる英数字、アンダースコアのみの文字列が使用できます。100 文字まで設定できます。</dd>
 <dt><label for="managerShortnames">自分以外の管理者</label></dt>
     <dd><s:textfield id="managers" name="managers" cssClass="text-input" /><br />
         <span class="accent">＞</span>自分以外にも管理者を指定できます。twitter のショートネームをコンマ区切りで列挙してください。この管理者はイベント削除以外のことを行うことが出来ます。<br />
