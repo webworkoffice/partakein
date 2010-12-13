@@ -30,8 +30,6 @@ public class UtilTest {
 		Assert.assertEquals(date1, date2);
 	}
 
-	
-	  
 	@Test
 	public void hashtagValidatorTest() {
 	    Assert.assertTrue(Util.isValidHashtag("#hashtag"));
@@ -46,4 +44,31 @@ public class UtilTest {
 	    Assert.assertFalse(Util.isValidHashtag("#hashタグ"));
 	    Assert.assertFalse(Util.isValidHashtag("#À"));
 	}
+	
+	@Test
+    public void shortenAlphabetTest() {
+        Assert.assertEquals("ABCAB", Util.shorten("ABCAB", 6)); 
+        Assert.assertEquals("ABCABC", Util.shorten("ABCABC", 6)); 
+        Assert.assertEquals("ABC...", Util.shorten("ABCABCD", 6)); 
+        Assert.assertEquals("ABC...", Util.shorten("ABCABCDE", 6));
+
+        Assert.assertEquals("", Util.shorten("ABCABC", 0)); 
+        Assert.assertEquals(".", Util.shorten("ABCABC", 1)); 
+        Assert.assertEquals("..", Util.shorten("ABCABC", 2)); 
+        Assert.assertEquals("...", Util.shorten("ABCABC", 3));
+	}
+	
+	@Test
+    public void shortenJapaneseTest() {
+        Assert.assertEquals("日本語", Util.shorten("日本語", 6)); 
+        Assert.assertEquals("日本語...", Util.shorten("日本語は難しい", 6)); 
+        Assert.assertEquals("日本語...", Util.shorten("日本語難しすぎ", 6)); 
+        Assert.assertEquals("日本語...", Util.shorten("日本語aほえほえ", 6)); 
+    }
+	
+	@Test
+    public void shortenSurrogatePairTest() {
+	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.shorten("𠮟𠮟𠮟𠮟𠮟𠮟", 6));
+	    Assert.assertEquals("𠮟𠮟𠮟...", Util.shorten("𠮟𠮟𠮟𠮟𠮟𠮟𠮟", 6));
+    }
 }
