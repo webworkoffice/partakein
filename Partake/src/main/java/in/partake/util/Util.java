@@ -82,6 +82,24 @@ public final class Util {
         return Regex.AUTO_LINK_HASHTAGS.matcher(hashTag).matches();
     }
     
+    
+    public static String substring(String source, int startCodePoints) {
+        final int endCodePoints = source.codePointCount(0, source.length());
+        return substring(source, startCodePoints, endCodePoints);
+    }
+
+    public static String substring(String source, int startCodePoints, int endCodePoints) {
+        final int startIndex = source.offsetByCodePoints(0, startCodePoints);
+        final int endIndex = source.offsetByCodePoints(startIndex, endCodePoints - startCodePoints);
+        return source.substring(startIndex, endIndex);
+    }
+    
+    public static String shorten(String message, int maxLength) {
+        if (message.codePointCount(0, message.length()) <= maxLength) { return message; }
+        
+        return substring(substring(message, 0, Math.max(maxLength - 3, 0)) + "...", 0, maxLength);
+    }
+    
     // ----------------------------------------------------------------------
 	// Image
     

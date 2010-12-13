@@ -37,7 +37,7 @@ class DirectMessageSendingTask extends TimerTask {
                 DirectMessageEnvelope envelope = it.next();
                 if (envelope == null) { it.remove(); continue; }
 
-                logger.info("run : Try to send... " + envelope.getEnvelopeId());
+                logger.debug("run : Try to send... " + envelope.getEnvelopeId());
                 
                 // deadline を超えていれば送らない。
                 Date now = new Date();
@@ -62,10 +62,9 @@ class DirectMessageSendingTask extends TimerTask {
                     if (sendTwitterMessage(it, envelope)) { it.remove(); }
                     break;
                 }
-                
             }
         } catch (DAOException e) {
-            logger.warn("run() : DAOException occured in DirectMessageSendingTask", e);
+            logger.warn("run() failed.", e);
         }        
         
         logger.info("DirectMessageSendingTask END");

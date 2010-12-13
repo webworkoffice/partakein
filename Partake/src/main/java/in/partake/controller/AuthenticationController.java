@@ -35,7 +35,7 @@ import twitter4j.http.RequestToken;
 public class AuthenticationController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;	
-    private static final Logger logger = Logger.getLogger(AuthenticationController.class);
+	private static final Logger logger = Logger.getLogger(AuthenticationController.class);
 
     private static ConsumerManager manager = null;
 	
