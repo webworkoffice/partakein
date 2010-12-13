@@ -75,8 +75,7 @@ public class AdministratorController extends PartakeActionSupport {
     		while (it.hasNext()) {
     			Event event = EventService.get().getEventById(it.next());
     			if (event.getFeedId() == null) {
-    			    EventService.get().
-    				EventService.get().appendFeed(event.getId());
+    				// EventService.get().appendFeed(event.getId());
     			}
     		}
     		
@@ -85,7 +84,6 @@ public class AdministratorController extends PartakeActionSupport {
     		e.printStackTrace();
     		return ERROR;
     	}
-        return SUCCESS;
     }
     
     // ----------------------------------------------------------------------

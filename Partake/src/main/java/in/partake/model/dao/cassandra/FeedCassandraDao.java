@@ -1,34 +1,34 @@
 package in.partake.model.dao.cassandra;
 
+import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IFeedAccess;
-//package in.partake.dao;
-//
-//import static me.prettyprint.cassandra.utils.StringUtils.string;
-//import in.partake.exception.DAOException;
-//import in.partake.model.embryo.BinaryDataEmbryo;
-//
-//import java.util.ArrayList;
-//import java.util.Collections;
-//import java.util.Date;
-//import java.util.List;
-//import java.util.UUID;
-//
-//import me.prettyprint.cassandra.service.CassandraClient;
-//
-//import org.apache.cassandra.thrift.Column;
-//import org.apache.cassandra.thrift.ColumnOrSuperColumn;
-//import org.apache.cassandra.thrift.ColumnParent;
-//import org.apache.cassandra.thrift.ConsistencyLevel;
-//import org.apache.cassandra.thrift.Mutation;
-//import org.apache.cassandra.thrift.SlicePredicate;
-//import org.apache.cassandra.thrift.SliceRange;
-//import org.apache.cassandra.thrift.Cassandra.Client;
-//
-///**
-// * Since some events are private, the feed id should be different from the event id to protect the privacy.
-// */
+import in.partake.model.dao.PartakeConnection;
+
+/**
+ * Since some events may be private, the feed id should not be able to be guessed from the event id.
+ * So the feed id should be different from the event id. 
+ */
 class FeedCassandraDao extends CassandraDao implements IFeedAccess {
     
+    
+    
+    @Override
+    public void addFeedId(PartakeConnection con, String feedId, String eventId) throws DAOException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public String getEventIdByFeedId(PartakeConnection con, String feedId) throws DAOException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public String getFeedIdByEventId(PartakeConnection con, String eventId) throws DAOException {
+        // TODO Auto-generated method stub        
+        throw new RuntimeException("Not implemented yet");
+    }
 }
 //class FeedDao extends CassandraDao {
 //    //

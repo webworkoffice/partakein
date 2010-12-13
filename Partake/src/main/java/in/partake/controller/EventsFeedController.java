@@ -113,7 +113,9 @@ public class EventsFeedController extends PartakeActionSupport {
 			feed.setDescription(event.getSummary());
 			
 			// Comment および参加者リストを RSS でフィードします。
-			createEventFeed(event);
+			// createEventFeed(event);
+			
+			return SUCCESS;
 		} catch (DAOException e) {
 			e.printStackTrace();
 			return ERROR;
