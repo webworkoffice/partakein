@@ -18,7 +18,8 @@
 		<interceptors>
 			<interceptor name="utf8encoding"     class="in.partake.interceptor.UTF8EncodingInterceptor" />
 	    	<interceptor name="authenticate"     class="in.partake.interceptor.LoginRequiredInterceptor" />
-	    	<interceptor name="adminauth"        class="in.partake.interceptor.AdminRequiredInterceptor" />
+	    	<interceptor name="adminAuth"        class="in.partake.interceptor.AdminRequiredInterceptor" />
+	    	<interceptor name="dynamicInfo"      class="in.partake.interceptor.DynamicInformationInterceptor" />
 	    	<interceptor name="exceptionHandler" class="in.partake.interceptor.PartakeExceptionInterceptor" />
 
 	    	<interceptor-stack name="partakeBaseStack">
@@ -26,6 +27,7 @@
 	    		<interceptor-ref name="store">
                     <param name="operationMode">AUTOMATIC</param>
 	    		</interceptor-ref>
+	    		<interceptor-ref name="dynamicInfo" />
 	    		<interceptor-ref name="defaultStack" />
 	    	</interceptor-stack>
 
@@ -42,7 +44,7 @@
             
             <interceptor-stack name="adminStack">
                 <interceptor-ref name="partakeBaseStack"/>
-                <interceptor-ref name="adminauth" />
+                <interceptor-ref name="adminAuth" />
                 <interceptor-ref name="exceptionHandler"/>
             </interceptor-stack>
 
