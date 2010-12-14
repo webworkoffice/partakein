@@ -30,6 +30,7 @@ We use eclipse 3.6 (Java EE platform) with m2eclipse plugin.
 Since you have not configure PARTAKE, you will see an error message.
 
   # Download Apache Cassandra (0.6.5) and run on localhost. Maybe you have to set up data and index directories.
+    * Cassandra use 8080 for JMX by default. This conflicts with tomcat's default port. So the port described in cassandra's launching script (e.g. conf/cassandra.sh.in) should be changed. We recommend to use port 8081 or something like that for JMX.
   # fill src/main/resource/sample.partake.properties (especially bitly)
     * a partake.properties file has in.partake.mode property. The value of this property is called "mode".
     * partake will read {mode}.partake.properties.
