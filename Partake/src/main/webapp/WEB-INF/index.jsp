@@ -82,6 +82,14 @@
 			<li>新着イベントの RSS も配信しています。<a href="<%= request.getContextPath() %>/feedlist"><img src="<%= request.getContextPath() %>/images/rss-btn.png" alt="RSS" /></a></li>
 		</ul>
 	</div>
+	
+	<div class="top-explanation">
+	   <h3>ご要望をお聞きしています</h3>
+	   <ul class="top-feature">
+	       <li>バグを発見したり、ご要望がある場合は <a href="http://code.google.com/p/partakein/issues/list">Issue Tracker</a> までお寄せください。日本語で記述していただいて構いません。あるいは、<a href="http://twitter.com/partakein">@partakein</a> まで tweet をお願いします。</li>
+	       <li>開発者を募集しています。PARTAKE のソースは <a href="http://code.google.com/p/partakein/">Google Code</a> で(極一部の画像を除いて)公開中です。</li>
+	   </ul>
+	</div>
 </div>
 
 <div class="top-recent-events">
