@@ -26,12 +26,14 @@ public abstract class PartakeService {
     
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
         User user = getFactory().getUserAccess().getUserById(con, userId);
+        if (user == null) { return null; }
         TwitterLinkage linkage = getFactory().getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
         return new UserEx(user, linkage); 
     }
     
     protected EventEx getEventEx(PartakeConnection con, String eventId) throws DAOException {
         Event event = getFactory().getEventAccess().getEventById(con, eventId);
+        if (event == null) { return null; }
         User user = getFactory().getUserAccess().getUserById(con, event.getOwnerId());
         TwitterLinkage tw = getFactory().getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
         String feedId = getFactory().getFeedAccess().getFeedIdByEventId(con, eventId);
