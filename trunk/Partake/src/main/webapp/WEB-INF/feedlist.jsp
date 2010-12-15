@@ -22,6 +22,16 @@
     <li><a href="<%= request.getContextPath() %>/feed/category/<%= kv.getKey() %>"><%= kv.getValue() %></a></li>
     <% } %>
 </ul>
+
+<p>PARTAKE では、イベントを iCal 形式でも配信しています。<br />ただし、パスワードが設定されているイベントは配信されません。</p>
+
+<ul>
+    <li><a href="<%= request.getContextPath() %>/calendars/all">全て</a></li>
+    <% for (KeyValuePair kv : EventCategory.CATEGORIES) { %>
+    <li><a href="<%= request.getContextPath() %>/calendars/category/<%= kv.getKey() %>"><%= kv.getValue() %></a></li>
+    <% } %>    
+</ul>
+
 </div>
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
