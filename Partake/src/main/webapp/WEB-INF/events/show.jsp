@@ -125,7 +125,7 @@ body {
 		
 	    <% if (!Util.isEmpty(event.getAddress())) { %>
 	    <div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(escapeURI(event.getAddress())) %>">
-	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=220x220&center=<%= h(escapeURI(event.getAddress())) %>&zoom=17&sensor=false" />      
+	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=200x200&center=<%= h(escapeURI(event.getAddress())) %>&zoom=17&sensor=false" />      
 	    </a></div>
 	    <% } %>
 </div>
