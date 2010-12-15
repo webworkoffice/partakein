@@ -71,7 +71,7 @@ body {
     left: 634px;
 }
 
-/* top - ボタン */
+/* top - button */
 
 #top-search-button {
     width: 143px;
@@ -84,7 +84,8 @@ body {
     left: 110px;
     width:143px;
     height:33px;
-    background: transparent url(../images/top-search2.png) no-repeat left bottom;}
+    background: transparent url(../images/top-search2.png) no-repeat left bottom;
+    }
 
 .rollover1 a {
 display:block;
@@ -312,7 +313,7 @@ text-indent:-9999px;
 
 .event-content {
     float: left;
-    width: 620px;
+    width: 610px;
 }
 
 .event-information {
@@ -326,39 +327,114 @@ text-indent:-9999px;
     margin: 30px 0 5px 10px;
 }
 
+/* google Map */
+.event-map {
+    float: right;
+    width: 200px;
+    height: 200px;
+    margin: 10px 20px 0 0;
+    border: 1px #c9c9c9 double;
+}
+
+.event-information:after {
+	display: block;
+	content: "";
+	clear: both;
+}
+
 /* コメントらん
 ---------------------------*/
 
 .event-comments {
-    background-color: #efefef;
-    margin: 20px 0 0 10px;
-    padding: 0 20px 0 20px;
-    border-top: 1px solid #e5e5e5;
-    border-right : 1px solid #c0c0c0;
-    border-bottom : 2px solid #c0c0c0;
-    border-left : 1px solid #e5e5e5;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
-}
-
-.event-comments h2 {
-    margin: -17px 0 0 0px;
+	color:#282828;
+    height:350px;
+    overflow:auto;
+    margin-bottom:5px;
+    background-color: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px; 
+    behavior:url(border-radius.htc);
 }
 
 .comment {
     border-bottom: 1px dotted #cccccc;
-    margin: 0 25px 3px 0px;
+    margin: 0 7px 3px 7px;
 }
 
 .event-comments textarea#comment {
     margin: 5px 0 0 0px;
-    width: 85%;
     height: 70px;
 }
 
-/* イベント主催者用 
+.comment-form textarea {
+	margin:auto;
+	height: 40px;
+	width:450px;
+}
+
+/* Tab- LiveFeed,CommentBoard
+----------------------------------------------------*/
+ img {
+border:0
+}
+#tab-wrapper {
+width:560px;
+height:620px;
+margin: 0 auto;
+text-align: left;
+padding-top:30px;
+}
+
+#tab-wrapper h2 {
+	color:#7c7c7c;
+	margin:7px 0 3px 10px;
+}
+
+#tab-a1 {
+border-left: 1px solid #ccc;
+}
+#tab li {
+float: left;
+width: 114px;
+border-right: 1px solid #ccc;
+border-top: 1px solid #ccc;
+list-style-type: none;
+    border-radius: 2px; /* CSS3 */
+    -webkit-border-radius: 2px; /* Safari,Chrome */
+    -moz-border-radius: 2px; /* FireFox */
+    behavior:url(border-radius.htc); /* google code forIE */
+}
+#tab li a {
+display: block;
+width: 110px;
+color: #C58120;
+text-align: center;
+text-decoration:none;
+background-color:#f9f9f9;
+padding:2px;
+}
+#tab li a:hover, #tab li.present a {
+background-color:#EDECE8;
+color: #282828;
+font-weight:bold;
+}
+#news1, #news2 {
+background-color:#EDECE8;
+overflow: auto;
+clear:both;
+border:1px solid #cccccc;
+padding:14px;
+height:510px;
+color:#666;
+border-radius: 8px;
+-webkit-border-radius: 8px;
+-moz-border-radius: 8px; 
+behavior:url(border-radius.htc);
+}
+
+/* event-owner
 ---------------------------*/
 
 .event-owner-information {
@@ -415,6 +491,9 @@ text-indent:-9999px;
 	height: 21px;
 }
 
+/* event-owner
+---------------------------*/
+
 .event-enrollment {
     margin: 1px 0 0 0px;
     padding: 10px 2px ;
@@ -439,7 +518,7 @@ text-indent:-9999px;
 }
 
 
-/* イベント参加者一覧
+/* event-participants
 ---------------------------*/
 
 .event-participants {
@@ -532,20 +611,6 @@ text-indent:-9999px;
     margin-left: 100px;
     padding: 10px 0;
     word-break: break-all;
-}
-
-.event-map {
-    float: right;
-    width: 220px;
-    height: 220px;
-    margin: 10px 10px 0 0;
-    border: 1px #c9c9c9 double;
-}
-
-.event-information:after {
-	display: block;
-	content: "";
-	clear: both;
 }
 
 /*----------------------------------------------------

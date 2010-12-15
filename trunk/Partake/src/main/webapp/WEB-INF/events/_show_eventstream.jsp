@@ -18,9 +18,50 @@
 %>
 
 <script src="http://widgets.twimg.com/j/2/widget.js"></script>
-<div class="event-stream">
-	<div class="event-comments">
-		<h2><img src="<%= request.getContextPath()%>/images/comment-title.png"/></h2>
+
+<script type="text/javascript">
+var tab = {
+	init: function(){
+		var tabs = this.setup.tabs;
+		var pages = this.setup.pages;
+		
+		for(i=0; i<pages.length; i++) {
+			if(i !== 0) pages[i].style.display = 'none';
+			tabs[i].onclick = function(){ tab.showpage(this); return false; };
+		}
+	},
+	
+	showpage: function(obj){
+		var tabs = this.setup.tabs;
+		var pages = this.setup.pages;
+		var num;
+		
+		for(num=0; num<tabs.length; num++) {
+			if(tabs[num] === obj) break;
+		}
+		
+		for(var i=0; i<pages.length; i++) {
+			if(i == num) {
+				pages[num].style.display = 'block';
+				tabs[num].className = 'present';
+			}
+			else{
+				pages[i].style.display = 'none';
+				tabs[i].className = null;
+			}
+		}
+	}
+}
+</script>
+
+<div id="tab-wrapper">
+<ul id="tab">
+<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1">Comments</a></li>
+<li><a href="#news2" _fcksavedurl="#news2">Twitter Feed!</a></li>
+</ul>
+<div id="news1">
+<h2>Comments</h2>
+<div class="event-comments">
 		<% while (commentIterator.hasNext()) { %>
 			<% CommentEx comment = commentIterator.next(); if (comment == null) { continue; } %>
 			<div class="comment">
@@ -29,12 +70,12 @@
 				<p><%= h(comment.getComment()) %></p>
 			</div>
 		<% } %>
-		
+		</div>
 		<div class="comment-form">
 	        <% if (user != null) { %>
 		        <s:form action="comment">
 			        <s:token />
-			        <s:hidden name="eventId" value="%{eventId}" />
+			        <s:hidden name="eventId" value="%{eventId}" />Yout comment:<br>
 			        <textarea id="comment" name="comment"></textarea><br />
 			        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>
 			        <s:submit type="image" src="%{#request.contextPath}/images/postcomment.png" value="コメントを投稿"  />
@@ -43,44 +84,10 @@
 	            <p>コメントを投稿するにはログインしてください。</p>
 			<% } %>
 		</div>
-	</div>
 	
-	<div class="event-twitter-uri-stream">
-<script>
-new TWTR.Widget({
-	  version: 2,
-	  type: 'search',
-	  search: '<%= h(event.getEventURL()) %>',
-	  interval: 6000,
-	  title: 'Twitter Hashtag Live Feed',
-	  subject: '<%= h(event.getTitle()) %>',
-	  width: 'auto',
-	  height: 300,
-	  theme: {
-	    shell: {
-	      background: '#8ec1da',
-	      color: '#ffffff'
-	    },
-	    tweets: {
-	      background: '#ffffff',
-	      color: '#444444',
-	      links: '#1985b5'
-	    }
-	  },
-	  features: {
-	    scrollbar: true,
-	    loop: false,
-	    live: true,
-	    hashtags: true,
-	    timestamp: true,
-	    avatars: true,
-	    toptweets: true,
-	    behavior: 'all'
-	  }
-	}).render().start();
-</script>	
-	</div>
-
+</div>
+<div id="news2">
+<p>
 	<% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	<div class="event-twitter-hashtag-stream">	
 <script>
@@ -92,11 +99,11 @@ new TWTR.Widget({
 	  title: 'Twitter Hashtag Live Feed',
 	  subject: '<%= h(event.getHashTag()) %>',
 	  width: 'auto',
-	  height: 300,
+	  height: 345,
 	  theme: {
 	    shell: {
-	      background: '#8ec1da',
-	      color: '#ffffff'
+	      background: 'none',
+	      color: '#7c7c7c'
 	    },
 	    tweets: {
 	      background: '#ffffff',
@@ -118,4 +125,20 @@ new TWTR.Widget({
 </script>
 	</div>
 	<% } %>
+</p>
 </div>
+
+<script type="text/javascript">
+  tab.setup = {
+	tabs: document.getElementById('tab').getElementsByTagName('li'),
+	
+	pages: [
+		document.getElementById('news1'),
+		document.getElementById('news2'),
+		document.getElementById('news3')
+	]
+}
+tab.init();
+</script>
+</div>
+
