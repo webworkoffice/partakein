@@ -79,7 +79,8 @@
 		<h3>3. イベントを検索して自分も参加しましょう</h3>
 		<ul class="top-feature">
 			<li>楽しそうなイベントを検索して参加しましょう。</li>
-			<li>新着イベントの RSS も配信しています。<a href="<%= request.getContextPath() %>/feedlist"><img src="<%= request.getContextPath() %>/images/rss-btn.png" alt="RSS" /></a></li>
+			<%-- <li>新着イベントの RSS / Calendar file も配信しています。<a href="<%= request.getContextPath() %>/feedlist"><img src="<%= request.getContextPath() %>/images/rss-btn.png" alt="RSS" /></a></li> --%>
+			<li><a href="<%= request.getContextPath() %>/feedlist">新着イベントの RSS / iCal も配信しています。</a></li>
 		</ul>
 	</div>
 	
