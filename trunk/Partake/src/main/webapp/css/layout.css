@@ -7,7 +7,7 @@
 
 /* {
     border: 1px dashed green;
-} */ 
+} */
 
 #logo {
     margin-right:10px;
@@ -658,6 +658,37 @@ dl.event-form {
     color:#2a2a2a;
 }
 
+table.associated-event {
+   /* border:1px solid #cccccc;*/
+    border-collapse:collapse;
+    border-spacing:0;
+}
+table.associated-event th {
+	padding:2px 4px;
+}
+table.associated-event td {
+    text-align:center;
+}	
+
+#advanced-setting {
+    visibility:hidden;
+}
+
+.switchHat {
+	margin-left:10px;
+	font-weight:bold;
+    color:#DB4984;
+    text-decoration: underline;	
+}
+
+.switchDetail {
+    border:1px dashed #DB4984;
+    background-color:#f9f9f9;
+    margin-top:8px;
+    margin-bottom:10px;
+    padding:0 5px;	
+}
+
 /*----------------------------------------------------
   イベント編集画面
 ----------------------------------------------------*/
@@ -823,7 +854,6 @@ dl.event-form {
     font-size: 13px;
     border-collapse:collapse;
     border-spacing:0;
-    /* border: 1px solid red; */
 }
 
 .mypage-tbl th {

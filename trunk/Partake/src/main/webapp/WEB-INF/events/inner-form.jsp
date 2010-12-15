@@ -71,13 +71,23 @@
 <dt><label for="hashTag">ハッシュタグ</label></dt>
 	<dd><s:textfield id="hashTag" name="hashTag" cssClass="text-input" /><br />
 		<span class="accent">＞</span> twitter で用いる公式ハッシュタグを設定できます。# から始まる英数字、アンダースコアのみの文字列が使用できます。100 文字まで設定できます。</dd>
-<dt><label for="managerShortnames">自分以外の管理者</label></dt>
-    <dd><s:textfield id="managers" name="managers" cssClass="text-input" /><br />
-        <span class="accent">＞</span>自分以外にも管理者を指定できます。twitter のショートネームをコンマ区切りで列挙してください。この管理者はイベント削除以外のことを行うことが出来ます。<br />
-        <span class="accent">＞</span>例： user1, user2, user3</dd>
+<dt><label for="secret">非公開設定</label>:</dt>
+	<dd><s:checkbox id="secret" name="secret"/>非公開にする<br />
+		<span class="accent">＞</span> 非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</dd>
+<dt><label for="passcode">パスコード</label>:</dt>
+	<dd><s:textfield id="passcode" name="passcode" cssClass="text-input" /></dd>
+</dl>
+
+
+
+
+<a title="関連イベント　,　複数の管理者"><span class="switchHat">▼ 詳細な設定</span></a>
+
+<div class="switchDetail">
+<dl class="event-form">
 <dt>関連イベント</dt>
 	<dd>
-		<table>
+		<table class="associated-event">
 			<thead>
 				<tr><th>イベント ID</th><th>登録必須</th><th>優先参加</th></tr>
 			</thead>
@@ -101,13 +111,13 @@
 		</table>
 	
         <span class="accent">＞</span>関連イベントを設定することが出来ます。<br />
-        <span class="accent">＞</span>登録必須にチェックをいれた場合、そのイベントに登録されていなければこのイベントに登録することは出来ません。
-        <span class="accent">＞</span>優先参加にチェックを入れた場合、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。
+        <span class="accent">＞</span>登録必須にチェックをいれた場合、そのイベントに登録されていなければこのイベントに登録することは出来ません。<br />
+        <span class="accent">＞</span>優先参加にチェックを入れた場合、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。<br />
         <span class="accent">＞</span>イベント ID とは、 http://partake.in/events/{ID} の {ID} の部分の文字列です。
         </dd>
-<dt><label for="secret">非公開設定</label>:</dt>
-	<dd><s:checkbox id="secret" name="secret"/>非公開にする<br />
-		<span class="accent">＞</span> 非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</dd>
-<dt><label for="passcode">パスコード</label>:</dt>
-	<dd><s:textfield id="passcode" name="passcode" cssClass="text-input" /></dd>
+<dt><label for="managerShortnames">自分以外の管理者</label></dt>
+    <dd><s:textfield id="managers" name="managers" cssClass="text-input" /><br />
+        <span class="accent">＞</span>自分以外にも管理者を指定できます。twitter のショートネームをコンマ区切りで列挙してください。この管理者はイベント削除以外のことを行うことが出来ます。<br />
+        <span class="accent">＞</span>例： user1, user2, user3</dd>
 </dl>
+</div>
