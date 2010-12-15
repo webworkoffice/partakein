@@ -10,4 +10,6 @@
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/jquery.openid.js"></script>
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/script.js"></script>
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/scrolltopcontrol.js"></script>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript" src="<%= request.getContextPath() %>/js/jquery.switchHat.js"></script>
 <link rel="shortcut icon"href="<%= request.getContextPath() %>/images/favicon.ico">
