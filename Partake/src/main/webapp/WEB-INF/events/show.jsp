@@ -149,7 +149,9 @@ body {
 		<% if (event.hasPermission(user, UserPermission.EVENT_REMOVE)) { %>
 		    <li><a id="open-event-delete-form" href="#">イベントを削除する</a></li>
 		<% } %>
+		 <li><a href="<%= request.getContextPath() %>/events/participants/<%= event.getId() %>.csv">参加者リスト (CSV 形式, UTF-8)</a></li>
     </ul>
+    <h2><img src="<%= request.getContextPath() %>/images/bird.png"/>メッセージ</h2>
     <ul>
 		<li><a id="open-message-form" href="#">参加者へメッセージを送信する</a></li>
 		<li><a id="open-twitter-promotion-form" href="#">twitter で宣伝する</a></li>
@@ -159,9 +161,6 @@ body {
 	    <li><a id="open-reminder-reset-form" href="#">リマンダー送付状況をリセットする</a></li>
 	</ul>
 	 --%>
-	<ul>
-	    <li><a href="<%= request.getContextPath() %>/events/participants/<%= event.getId() %>.csv">参加者リスト (CSV 形式, UTF-8)</a></li>
-	</ul>
 	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付状況</h2>
 	<ul>
         <li>締切２４時間前メッセージ：　<%= notificationStatus.isBeforeDeadlineOneday() ? "送付済" : "未送付" %></li>
