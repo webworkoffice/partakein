@@ -50,7 +50,7 @@
 				    </form>
 			    </div>
 			    <div id="signin-with-openid-part">
-			        <a href="#" id="open-signin-dialog"><img src="<%= request.getContextPath() %>/images/openidico.png" class="signinwithopenid" />Sign in with OpenID</a>
+			        <a href="#" id="open-signin-dialog"><img src="<%= request.getContextPath() %>/images/openidico.png" class="signinwithopenid" />Log in with OpenID</a>
 			    </div>
 			</li>
 		<% } %>

@@ -17,14 +17,13 @@
 
 <h1 id="pastel-line10ji"><img src="<%= request.getContextPath() %>/images/line-pink.png" alt="">ログインが必要です</h1>
 
-<p>ここから先に進むにはログインが必要です。</p>
 
 <div class="setting-subtitle"> 		
-<h2><img id="" src="<%= request.getContextPath() %>/images/bird1.png" alt="">Twitter account でログインしましょう。</h2>
+<h2><img id="" src="<%= request.getContextPath() %>/images/bird1.png" alt="">Twitter アカウント でログインしましょう。</h2>
 </div>
 
 <div class="setting-set">	
-<p>Partake では登録は必要ありません。お手持ちの twitter アカウント でログインすることができます。<br>次のボタンをクリックしてログインしてください。</p>
+<p>PARTAKE では登録は必要ありません。お手持ちの Twitter アカウント でログインすることができます。<br>次のボタンをクリックしてログインしてください。</p>
 
 <img id="" src="<%= request.getContextPath() %>/images/click.png" alt="">
 
@@ -37,7 +36,7 @@
 </div>
 
 <div class="setting-calendar"> 
-<p>Partake では、twitter アカウントをログインに使用します。</p>
+<p>PARTAKE では、Twitter アカウントをログインに使用します。</p>
 <p><a href="https://twitter.com/signup">このページで  Twitter のアカウントを取得してください。</a></p>
 </div>
 
