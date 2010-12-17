@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class DirectMessage extends PartakeModel<DirectMessage> {
     private String id;
-    private String userId;
+    private String userId;		// senderId にすべきだな
     private String message;
     private String eventId;
     private Date   createdAt;
@@ -17,6 +17,10 @@ public class DirectMessage extends PartakeModel<DirectMessage> {
         this(null, userId, message, eventId, null);
     }
 
+    public DirectMessage(DirectMessage message) {
+    	this(message.id, message.userId, message.message, message.eventId, message.createdAt);
+    }
+    
     public DirectMessage(String id, String userId, String message, String eventId, Date createdAt) {
         this.id = id;
         this.userId = userId;

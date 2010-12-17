@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import in.partake.model.DirectMessageEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
@@ -53,6 +54,39 @@ public class DirectMessageService extends PartakeService {
         }
     }
     
+    /**
+     * ある event で管理者がユーザーに送ったメッセージを送った順に取得する。
+     * @param eventId
+     * @return
+     * @throws DAOException
+     */
+    public List<DirectMessageEx> getUserMessagesByEventId(String eventId) throws DAOException {
+    	PartakeDAOFactory factory = getFactory();
+    	PartakeConnection con = factory.getConnection();
+    	
+    	try {
+	        List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
+	        DataIterator<DirectMessage> it = factory.getDirectMessageAccess().getUserMessageIterator(factory, eventId);
+	
+	        
+	        while (it.hasNext()) {
+	        	DirectMessage message = it.next();
+	        	messages.add(new DirectMessageEx(message, getUserEx(con, message.getUserId())));
+	        }
+	                
+	        return messages;
+    	} finally {
+    		con.invalidate();
+    	}
+    }
+    
+    /**
+     * 管理者が送ったユーザーに送ったメッセージを最大 maxMessage 個取得する。
+     * @param eventId
+     * @param maxMessage
+     * @return
+     * @throws DAOException
+     */
     public List<DirectMessage> getRecentUserMessage(String eventId, int maxMessage) throws DAOException {
         PartakeDAOFactory factory = getFactory();
 

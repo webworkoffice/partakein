@@ -41,7 +41,8 @@ public final class Constants {
     public static final String ATTR_DEADLINE_OVER = "DEADLINE_OVER";
     
     public static final String ATTR_COMMENTSET = "COMMENTSET";
-
+    public static final String ATTR_MESSAGESET = "MESSAGESET";
+    
     public static final String ATTR_SEARCH_RESULT = "SEARCH_RESULT";
     
     public static final String ATTR_CURRENT_URL = "CURRENT_URL";
@@ -53,6 +54,8 @@ public final class Constants {
     
     public static final String ATTR_REQUIRED_EVENTS = "REQUIRED_EVENTS";
     public static final String ATTR_EVENT_RELATIONS = "ATTR_EVENT_RELATIONS";
+    
+    
     
     private Constants() {
     	// prevent from instantiation.
