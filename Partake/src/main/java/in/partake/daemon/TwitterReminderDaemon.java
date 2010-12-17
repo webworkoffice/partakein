@@ -72,7 +72,7 @@ class TwitterReminderTask extends TimerTask {
         
         boolean changed = false;
         
-        String shortenedURL = Util.bitlyShortURL(topPath + "/events/" + event.getId());
+        String shortenedURL = Util.bitlyShortURL(event.getEventURL());
         
         // TODO: isBeforeDeadline() とかわかりにくいな。 
         // 締め切り１日前になっても RESERVED ステータスの人がいればメッセージを送付する。
@@ -88,7 +88,7 @@ class TwitterReminderTask extends TimerTask {
         // 締め切り１２時間前になっても RESERVED な人がいればメッセージを送付する。
         if (!status.isBeforeDeadlineHalfday() && Util.halfDayBefore(deadline).before(now)) {
             String message = "[PARTAKE] 締め切り１２時間前です。参加・不参加を確定してください。 ３時間前までに確定されない場合、キャンセル扱いとなります。" + shortenedURL + " " + event.getTitle();
-            message = Util.shorten(message, 135);
+            message = Util.shorten(message, 140);
             sendNotificationOnlyForReservedParticipants(event, message);
                                 
             status.setBeforeDeadlineHalfday(true);
@@ -96,10 +96,10 @@ class TwitterReminderTask extends TimerTask {
         }
         
         // イベント１日前で、参加が確定している人にはメッセージを送付する。
-        // 参加が確定していない人には、その旨を表示する。
+        // 参加が確定していない人には、RESERVED なメッセージが送られている。
         if (!status.isBeforeTheDay() && Util.oneDayBefore(beginDate).before(now)) {
             String message = "[PARTAKE] イベントの１日前です。あなたの参加は確定しています。 " + shortenedURL + " " + event.getTitle();
-            message = Util.shorten(message, 135);
+            message = Util.shorten(message, 140);
             sendNotificationOnlyForParticipants(event, message);
             
             status.setBeforeTheDay(true);
