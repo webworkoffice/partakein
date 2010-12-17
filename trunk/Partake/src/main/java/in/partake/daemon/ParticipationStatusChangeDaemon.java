@@ -39,6 +39,8 @@ class ParticipationStatusChangeTask extends TimerTask {
                 
                 String enrollingMessage = "[PARTAKE] 補欠から参加者へ繰り上がりました。 " + Util.bitlyShortURL(event.getEventURL()) + " " + event.getTitle(); 
                 String cancellingMessage = "[PARTAKE] 参加者から補欠扱い(あるいはキャンセル扱い)に変更になりました。 " + Util.bitlyShortURL(event.getEventURL()) + " " + event.getTitle(); 
+                enrollingMessage = Util.shorten(enrollingMessage, 140);
+                cancellingMessage = Util.shorten(cancellingMessage, 140);
                 
                 String okMessageId = null;
                 String ngMessageId = null;
