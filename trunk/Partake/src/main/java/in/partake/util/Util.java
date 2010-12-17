@@ -82,6 +82,9 @@ public final class Util {
         return Regex.AUTO_LINK_HASHTAGS.matcher(hashTag).matches();
     }
     
+    public static int codePointCount(String s) {
+    	return s.codePointCount(0, s.length());
+    }
     
     public static String substring(String source, int startCodePoints) {
         final int endCodePoints = source.codePointCount(0, source.length());

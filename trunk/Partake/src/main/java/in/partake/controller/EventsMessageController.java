@@ -51,7 +51,7 @@ public class EventsMessageController extends PartakeActionSupport {
 				Date msgDate = msg.getCreatedAt();
 				Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60); // one hour later after the message was sent.
 				if (currentTime.before(thresholdDate)) { // NG
-					addActionError("メッセージは１時間に３通、１日に５通までしか送ることが出来ません。");
+					addWarningMessage("メッセージは１時間に３通、１日に５通までしか送ることが出来ません。"); // TODO: addActionError だとおかしい。addErrorMessage() をつくるべきか？
                     return INPUT;
 				}
 			}
@@ -61,13 +61,21 @@ public class EventsMessageController extends PartakeActionSupport {
 				Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60 * 24); // one day later after the message was sent.
 				
 				if (currentTime.before(thresholdDate)) { // NG
-					addActionError("メッセージは１時間に３通、１日に５通までしか送ることが出来ません。");
+					addWarningMessage("メッセージは１時間に３通、１日に５通までしか送ることが出来ません。");
                     return INPUT;
 				}
 			}
 
-			String msg = String.format("[PARTAKE] 「%s」 %s の管理者(@%s)よりメッセージ：%s",
-			                event.getTitle(), Util.bitlyShortURL(event.getEventURL()), user.getTwitterLinkage().getScreenName(), message);
+			assert (message != null && message.length() <= 100);
+			String left = "[PARTAKE] 「";
+			String right = String.format("」 %s の管理者(@%s)よりメッセージ：%s", Util.bitlyShortURL(event.getEventURL()), user.getScreenName(), message);
+			if (Util.codePointCount(left) + Util.codePointCount(right) > 140) {
+				addWarningMessage("メッセージの長さをもう少し短くしてください。");
+				return INPUT;
+			}
+			
+			String msg = left + Util.shorten(event.getTitle(), 140 - Util.codePointCount(left) - Util.codePointCount(right)) + right;
+			assert (Util.codePointCount(msg) <= 140);
 			
 			DirectMessage embryo = new DirectMessage(user.getId(), msg, event.getId());
 			String messageId = DirectMessageService.get().addMessage(embryo, true);
