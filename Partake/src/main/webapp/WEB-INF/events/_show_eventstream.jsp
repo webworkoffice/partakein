@@ -1,3 +1,6 @@
+<%@page import="in.partake.model.DirectMessageEx"%>
+<%@page import="in.partake.model.dto.DirectMessage"%>
+<%@page import="java.util.List"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -15,6 +18,7 @@
 	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
 	EventEx event = (EventEx) request.getAttribute(Constants.ATTR_EVENT);
 	DataIterator<CommentEx> commentIterator = (DataIterator<CommentEx>)(request.getAttribute(Constants.ATTR_COMMENTSET));
+	List<DirectMessageEx> messages = (List<DirectMessageEx>) request.getAttribute(Constants.ATTR_MESSAGESET);
 %>
 
 <script src="http://widgets.twimg.com/j/2/widget.js"></script>
@@ -57,7 +61,8 @@ var tab = {
 <div id="tab-wrapper">
 <ul id="tab">
 <li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1">Comments</a></li>
-<li><a href="#news2" _fcksavedurl="#news2">Twitter Feed!</a></li>
+<li><a href="#news2" _fcksavedurl="#news2">Messages</a></li>
+<li><a href="#news3" _fcksavedurl="#news3">Twitter Feed</a></li>
 </ul>
 <div id="news1">
 <h2>Comments</h2>
@@ -87,42 +92,54 @@ var tab = {
 	
 </div>
 <div id="news2">
+	<h2>管理者からのメッセージ</h2>
+	<div class="event-comments">
+	<% for (DirectMessageEx message : messages) { %>
+		<div class="comment">
+			<p><a href="<%= request.getContextPath() %>/users/<%= h(message.getUserId()) %>"><%= h(message.getSender().getScreenName()) %></a>
+			: <%= Helper.readableDate(message.getCreatedAt()) %></p>
+			<p><%= h(message.getMessage()) %></p>
+		</div>	
+	<% } %>
+	</div>
+</div>
+<div id="news3">
 <p>
 	<% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	<div class="event-twitter-hashtag-stream">	
-<script>
-new TWTR.Widget({
-	  version: 2,
-	  type: 'search',
-	  search: '<%= h(event.getHashTag()) %>',
-	  interval: 6000,
-	  title: 'Twitter Hashtag Live Feed',
-	  subject: '<%= h(event.getHashTag()) %>',
-	  width: 'auto',
-	  height: 345,
-	  theme: {
-	    shell: {
-	      background: 'none',
-	      color: '#7c7c7c'
-	    },
-	    tweets: {
-	      background: '#ffffff',
-	      color: '#444444',
-	      links: '#1985b5'
-	    }
-	  },
-	  features: {
-	    scrollbar: true,
-	    loop: false,
-	    live: true,
-	    hashtags: true,
-	    timestamp: true,
-	    avatars: true,
-	    toptweets: true,
-	    behavior: 'all'
-	  }
-	}).render().start();
-</script>
+	<script>
+	new TWTR.Widget({
+		  version: 2,
+		  type: 'search',
+		  search: '<%= h(event.getHashTag()) %>',
+		  interval: 6000,
+		  title: 'Twitter Hashtag Live Feed',
+		  subject: '<%= h(event.getHashTag()) %>',
+		  width: 'auto',
+		  height: 345,
+		  theme: {
+		    shell: {
+		      background: 'none',
+		      color: '#7c7c7c'
+		    },
+		    tweets: {
+		      background: '#ffffff',
+		      color: '#444444',
+		      links: '#1985b5'
+		    }
+		  },
+		  features: {
+		    scrollbar: true,
+		    loop: false,
+		    live: true,
+		    hashtags: true,
+		    timestamp: true,
+		    avatars: true,
+		    toptweets: true,
+		    behavior: 'all'
+		  }
+		}).render().start();
+	</script>
 	</div>
 	<% } %>
 </p>

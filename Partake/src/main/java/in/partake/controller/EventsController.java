@@ -1,6 +1,7 @@
 package in.partake.controller;
 
 import in.partake.model.CommentEx;
+import in.partake.model.DirectMessageEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.ParticipationEx;
@@ -9,6 +10,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dto.Comment;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.UserPermission;
@@ -101,7 +103,8 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        boolean deadlineOver = deadline.before(new Date());
 	        
 	        
-	        DataIterator<CommentEx> comments = EventService.get().getCommentsExByEvent(eventId); 
+	        DataIterator<CommentEx> comments = EventService.get().getCommentsExByEvent(eventId);
+	        List<DirectMessageEx> messages = DirectMessageService.get().getUserMessagesByEventId(eventId);
 	        
 	        attributes.put(Constants.ATTR_EVENT, event);
 	        attributes.put(Constants.ATTR_ENROLLED_PARTICIPATIONS, participationList.getEnrolledParticipations());
@@ -115,6 +118,7 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        }
 	        attributes.put(Constants.ATTR_DEADLINE_OVER, Boolean.valueOf(deadlineOver));
 	        attributes.put(Constants.ATTR_COMMENTSET, comments); // TODO: comment set DataIterator じゃなくて List だと思うんだよなあ...。本当は。
+	        attributes.put(Constants.ATTR_MESSAGESET, messages);
 	        attributes.put(Constants.ATTR_NOTIFICATION_STATUS, MessageService.get().getNotificationStatus(eventId));
 	        
 	        this.eventId = eventId;
