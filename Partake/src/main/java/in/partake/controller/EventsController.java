@@ -10,7 +10,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.UserPermission;
 import in.partake.model.dto.UserPreference;
@@ -269,26 +268,33 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	    }
     }
 
-    private void tweetEnrollment(UserEx user, Event event, ParticipationStatus status) throws DAOException {
-        String message;
+    private void tweetEnrollment(UserEx user, Event event, ParticipationStatus status) throws DAOException {    	
+    	UserPreference pref = UserService.get().getUserPreference(user.getId());
+    	if (pref == null || !pref.tweetsAttendanceAutomatically()) { return; }
+    	
+    	String left = "[PARTAKE] ";
+    	String right;
         switch (status) {
         case ENROLLED:
-        	message = "[PARTAKE] " + event.getTitle() + " (" + Util.bitlyShortURL(event.getEventURL()) + ") へ参加します。";
+        	right = " (" + Util.bitlyShortURL(event.getEventURL()) + ") へ参加します。";
         	break;
         case RESERVED:
-        	message = "[PARTAKE] " + event.getTitle() + " (" + Util.bitlyShortURL(event.getEventURL()) + ") へ参加予定です。";
+        	right = " (" + Util.bitlyShortURL(event.getEventURL()) + ") へ参加予定です。";
         	break;
         case CANCELLED:
-        	message = "[PARTAKE] " + event.getTitle() + " (" + Util.bitlyShortURL(event.getEventURL()) + ") への参加を取りやめました。";
+        	right = " (" + Util.bitlyShortURL(event.getEventURL()) + ") への参加を取りやめました。";
         	break;
         default:
-        	message = null;
+        	right = null;
         }
         
-        UserPreference pref = UserService.get().getUserPreference(user.getId());
-        if (message != null && pref != null && pref.tweetsAttendanceAutomatically()) {        	
-        	DirectMessageService.get().tweetMessage(user, message);
+        if (right == null) {
+        	addWarningMessage("参加予定 tweet に失敗しました。");
+        	return;
         }
+        
+        String message = left + Util.shorten(event.getTitle(), 140 - Util.codePointCount(left) - Util.codePointCount(right)) + right;
+        DirectMessageService.get().tweetMessage(user, message);
     }
     
     /**
