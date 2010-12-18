@@ -23,5 +23,8 @@ public enum UserPermission {
     EVENT_PROMOTE,
     
     /** can send message to participants */
-    EVENT_SEND_MESSAGE;
+    EVENT_SEND_MESSAGE,
+    
+    /** remove comment */
+    EVENT_REMOVE_COMMENT;
 }

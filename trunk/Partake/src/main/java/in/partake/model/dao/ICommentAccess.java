@@ -7,6 +7,7 @@ public interface ICommentAccess {
     
     public void addCommentWithId(PartakeConnection con, String commentId, Comment embryo) throws DAOException;
     public Comment getCommentById(PartakeConnection con, String commentId) throws DAOException;
+    public void removeComment(PartakeConnection con, String commentId) throws DAOException;
     
     public void addCommentToEvent(PartakeConnection con, String commentId, String eventId) throws DAOException;
     public DataIterator<Comment> getCommentsByEvent(PartakeDAOFactory factory, String eventId) throws DAOException;

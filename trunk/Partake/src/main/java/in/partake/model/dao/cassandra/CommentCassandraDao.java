@@ -66,6 +66,16 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     }
     
     @Override
+    public void removeComment(PartakeConnection con, String commentId) throws DAOException {
+        try {
+            PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+            removeComment(ccon.getClient(), commentId, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }    
+    
+    @Override
     public void addCommentToEvent(PartakeConnection con, String commentId, String eventId) throws DAOException {
         try {
             PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
@@ -91,13 +101,22 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
         String key = COMMENTS_PREFIX + id;
         List<Mutation> mutations = new ArrayList<Mutation>(); 
 
-        mutations.add(createColumnMutation("id", id, time));
-        mutations.add(createColumnMutation("userId", embryo.getUserId(), time));
-        mutations.add(createColumnMutation("eventId", embryo.getEventId(), time));
-        mutations.add(createColumnMutation("comment", embryo.getComment(), time));
-        mutations.add(createColumnMutation("createdAt", Util.getTimeString(time), time));
+        mutations.add(createMutation("id", id, time));
+        mutations.add(createMutation("userId", embryo.getUserId(), time));
+        mutations.add(createMutation("eventId", embryo.getEventId(), time));
+        mutations.add(createMutation("comment", embryo.getComment(), time));
+        mutations.add(createMutation("createdAt", Util.getTimeString(time), time));
         
         client.batch_mutate(COMMENTS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(COMMENTS_COLUMNFAMILY, mutations)), COMMENTS_CL_W);
+    }
+    
+    private void removeComment(Client client, String commentId, long time) throws Exception {
+        String key = COMMENTS_PREFIX + commentId;
+        
+        ColumnPath columnPath = new ColumnPath(COMMENTS_COLUMNFAMILY);
+        columnPath.setColumn(bytes("deleted"));
+        
+        client.insert(COMMENTS_KEYSPACE, key, columnPath, TRUE, time, COMMENTS_CL_W);    	
     }
 
     private void addCommentToEvent(Client client, String id, String eventId, long time) throws Exception {
