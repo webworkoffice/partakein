@@ -484,6 +484,26 @@ public final class EventService extends PartakeService {
 	// ----------------------------------------------------------------------
 	// Comments
 	
+	public Comment getCommentById(String commentId) throws DAOException {
+	    PartakeDAOFactory factory = getFactory(); 
+	    PartakeConnection con = factory.getConnection();
+	    try {
+	    	return factory.getCommentAccess().getCommentById(con, commentId);
+	    } finally {
+	        con.invalidate();
+	    }
+	}
+	
+	public CommentEx getCommentExById(String commentId) throws DAOException {
+	    PartakeDAOFactory factory = getFactory(); 
+	    PartakeConnection con = factory.getConnection();
+	    try {
+	    	return getCommentEx(con, commentId);
+	    } finally {
+	        con.invalidate();
+	    }		
+	}
+	
 	public String addComment(Comment embryo) throws DAOException {
 	    PartakeDAOFactory factory = getFactory(); 
 	    PartakeConnection con = factory.getConnection();
@@ -492,6 +512,17 @@ public final class EventService extends PartakeService {
     	    factory.getCommentAccess().addCommentToEvent(con, commentId, embryo.getEventId());
     	    factory.getCommentAccess().addCommentWithId(con, commentId, embryo);    	    
     	    return commentId;
+	    } finally {
+	        con.invalidate();
+	    }
+	}
+	
+	// TODO: うーん、comment が消される前に event が消されて、その後 comment を消そうとしたら落ちるんじゃないの？
+	public void removeComment(String commentId) throws DAOException {
+	    PartakeDAOFactory factory = getFactory(); 
+	    PartakeConnection con = factory.getConnection();
+	    try {
+	    	factory.getCommentAccess().removeComment(con, commentId);
 	    } finally {
 	        con.invalidate();
 	    }
@@ -507,6 +538,7 @@ public final class EventService extends PartakeService {
         Mapper<Comment, CommentEx> mapper = new Mapper<Comment, CommentEx>(getFactory()) {
             @Override
             public CommentEx map(Comment comment) throws DAOException {
+            	if (comment == null) { return null; }
                 PartakeConnection con = getFactory().getConnection();
                 try {
                     EventEx event = getEventEx(con, comment.getEventId());

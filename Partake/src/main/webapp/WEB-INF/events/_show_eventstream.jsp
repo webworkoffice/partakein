@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.dto.UserPermission"%>
 <%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="in.partake.model.dto.DirectMessage"%>
 <%@page import="java.util.List"%>
@@ -60,22 +61,36 @@ var tab = {
 
 <div id="tab-wrapper">
 <ul id="tab">
-<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1">Comments</a></li>
-<li><a href="#news2" _fcksavedurl="#news2">Messages</a></li>
-<li><a href="#news3" _fcksavedurl="#news3">Twitter Feed</a></li>
+	<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1">Comments</a></li>
+	<li><a href="#news2" _fcksavedurl="#news2">Messages</a></li>
+	<li><a href="#news3" _fcksavedurl="#news3">Twitter Feed</a></li>
 </ul>
 <div id="news1">
-<h2>Comments</h2>
-<div class="event-comments">
+	<h2>Comments</h2>
+	<div class="event-comments">
+		<s:form action="removeComment" id="removeCommentForm" name="removeCommentForm">
+			<s:token />
+			<s:hidden id="removeCommentId" name="commentId" value="" />
+			<s:hidden name="eventId" value="%{eventId}" />
+		</s:form>
+		<script>
+			function removeComment(commentId) {
+				document.removeCommentForm.commentId.value = commentId;
+				document.removeCommentForm.submit();
+			}
+		</script>
 		<% while (commentIterator.hasNext()) { %>
 			<% CommentEx comment = commentIterator.next(); if (comment == null) { continue; } %>
 			<div class="comment">
 				<p><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>"><%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>
-				: <%= Helper.readableDate(comment.getCreatedAt()) %></p>
+				: <%= Helper.readableDate(comment.getCreatedAt()) %>
+				<% if (user != null && (event.hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT) || user.getId().equals(comment.getUserId()))) { %>
+					<a href="#" onclick="removeComment('<%= h(comment.getId()) %>')">[x]</a>
+				<% } %></p>
 				<p><%= h(comment.getComment()) %></p>
 			</div>
-		<% } %>
-		</div>
+		<% } %>		
+	</div>
 		<div class="comment-form">
 	        <% if (user != null) { %>
 		        <s:form action="comment">

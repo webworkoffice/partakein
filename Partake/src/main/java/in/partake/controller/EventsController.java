@@ -16,6 +16,7 @@ import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.UserPermission;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.Constants;
+import in.partake.resource.I18n;
 import in.partake.service.DirectMessageService;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
@@ -130,8 +131,9 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	    	return ERROR;
 	    }
     }
-
-
+    
+    // ----------------------------------------------------------------------
+    // comment
     
     // comment を post
     public String comment() throws PartakeResultException {
@@ -169,6 +171,46 @@ public class EventsController extends PartakeActionSupport implements Validateab
     	}
     }
 
+    /**
+     * comment を削除します。
+     * @return
+     * @throws PartakeResultException
+     */
+    public String removeComment() throws PartakeResultException {
+    	UserEx user = ensureLogin();
+    	if (user == null) { return LOGIN; }
+    	
+    	String commentId = getParameter("commentId");
+    	if (commentId == null) { return ERROR; }
+    	
+    	this.eventId = getParameter("eventId");
+    	if (eventId == null) { return ERROR; }
+    	
+    	try {
+    		// これ Service にいれてしまわないといけないんじゃないかなー。transaction 的には。select for update というか。
+    		// update conflict してもまあ問題ないのでいいか。
+    		CommentEx comment = EventService.get().getCommentExById(commentId);
+    		
+    		// should be event owner or 
+    		if (comment.getUser().getId().equals(user.getId()) || comment.getEvent().hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT)) {
+    			EventService.get().removeComment(commentId);
+    			return SUCCESS;
+    		} else {
+    			addWarningMessage("イベント管理者もしくはコメントした本人だけがコメントを削除することが出来ます。");
+    			return PROHIBITED;
+    		}
+    	} catch (DAOException e) {
+    		String message = I18n.t(I18n.DATABASE_ERROR);
+    		logger.error(message, e);
+    		addWarningMessage(message);
+    		return ERROR;
+    	}
+    	
+    }
+    
+    // ----------------------------------------------------------------------
+    // enroll 
+    
     public String enroll() throws PartakeResultException {
     	return changeParticipationStatus(ParticipationStatus.ENROLLED, false);
     }
