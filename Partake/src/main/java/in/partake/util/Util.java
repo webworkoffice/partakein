@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -32,6 +33,8 @@ import com.twitter.Regex;
 
 public final class Util {
 	private static final Logger logger = Logger.getLogger(Util.class);
+	
+	private static final Pattern REMOVETAG_PATTERN = Pattern.compile("(<!--.+?-->)|(<.+?>)", Pattern.DOTALL | Pattern.MULTILINE);
 	
 	// ----------------------------------------------------------------------
 	// Time 
@@ -210,8 +213,7 @@ public final class Util {
     }
     
     public static String removeTags(String html) {
-    	// .+? の ? は最短マッチを表す。
-    	return html.replaceAll("<.+?>", "");
+        return REMOVETAG_PATTERN.matcher(html).replaceAll("");
     }
     
     // ----------------------------------------------------------------------

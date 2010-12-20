@@ -71,4 +71,23 @@ public class UtilTest {
 	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.shorten("𠮟𠮟𠮟𠮟𠮟𠮟", 6));
 	    Assert.assertEquals("𠮟𠮟𠮟...", Util.shorten("𠮟𠮟𠮟𠮟𠮟𠮟𠮟", 6));
     }
+	
+	@Test
+	public void removeTagsTest() {
+	    Assert.assertEquals("abc", Util.removeTags("abc"));
+	    Assert.assertEquals("abc", Util.removeTags("<p>abc</p>"));
+	    Assert.assertEquals("abc", Util.removeTags("abc<br />"));
+	    Assert.assertEquals("abc", Util.removeTags("<br />abc"));
+	    Assert.assertEquals("abc", Util.removeTags("abc<br>"));
+	    Assert.assertEquals("abc", Util.removeTags("<br>abc"));
+	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment -->"));
+	    Assert.assertEquals("abc", Util.removeTags("<!-- comment -->abc"));
+	    Assert.assertEquals("ab\r\nc", Util.removeTags("<p>ab\r\nc</p>"));
+	    Assert.assertEquals("ab\r\nc", Util.removeTags("<p \r\n>ab\r\nc</p>"));
+	    Assert.assertEquals("ab\r\nc", Util.removeTags("<p>ab\r\nc</p \r\n>"));
+	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >> hoge -->"));
+	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment << hoge -->"));
+	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment <> hoge -->"));
+	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >< hoge -->"));
+	}
 }
