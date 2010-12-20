@@ -185,7 +185,7 @@
             <result name="success" type="stream">
                 <param name="contentType">text/calendar; charset=utf-8</param>
                 <param name="contentDisposition">inline; filename="allevents.ics"</param>
-                <param name="bufferSize">1024</param>
+                <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param><!-- TODO: true? false? -->
             </result>
         </action>
@@ -196,7 +196,7 @@
             <result name="success" type="stream">
                 <param name="contentType">text/calendar; charset=utf-8</param>
                 <param name="contentDisposition">inline; filename="category.ics"</param>
-                <param name="bufferSize">1024</param>
+                <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param>
             </result>
         </action>
@@ -207,7 +207,7 @@
 			<result name="success" type="stream">
 				<param name="contentType">text/calendar; charset=utf-8</param>
 				<param name="contentDisposition">inline; filename="partake.ics"</param>
-				<param name="bufferSize">1024</param>
+				<param name="bufferSize">1M</param>
 				<param name="allowCaching">true</param><!-- TODO: true? false? -->
 			</result>
 		</action>
@@ -316,7 +316,7 @@
 			<result name="success" type="stream">
 				<param name="contentType">${contentType}</param>
 				<param name="contentDisposition">inline</param>
-				<param name="bufferSize">1024</param>
+				<param name="bufferSize">1M</param>
 				<param name="allowCaching">true</param>
 			</result>
 		</action>
@@ -341,7 +341,7 @@
             <result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
                 <param name="contentDisposition">attachment</param>
-                <param name="bufferSize">1024</param>
+                <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param>
             </result>
         </action>
@@ -368,7 +368,7 @@
 		<action name="all" method="feedRecentEvents" class="in.partake.controller.EventsFeedController">
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
-                <param name="bufferSize">1024</param>
+                <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param>			
 			</result>
 		</action>
@@ -377,7 +377,7 @@
 			<param name="category">{1}</param>
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
-                <param name="bufferSize">1024</param>
+                <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param>			
 			</result>
 		</action>
@@ -386,7 +386,7 @@
 			<param name="feedId">{1}</param>
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
-                <param name="bufferSize">1024</param>
+                <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param>			
 			</result>
 		</action>
