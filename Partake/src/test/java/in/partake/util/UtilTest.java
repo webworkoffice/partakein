@@ -85,9 +85,16 @@ public class UtilTest {
 	    Assert.assertEquals("ab\r\nc", Util.removeTags("<p>ab\r\nc</p>"));
 	    Assert.assertEquals("ab\r\nc", Util.removeTags("<p \r\n>ab\r\nc</p>"));
 	    Assert.assertEquals("ab\r\nc", Util.removeTags("<p>ab\r\nc</p \r\n>"));
-	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >> hoge -->"));
-	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment << hoge -->"));
-	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment <> hoge -->"));
-	    Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >< hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >> hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment << hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment <> hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >< hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment \n>> hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >\n> hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >>\n hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment \n>\n> hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment >\n>\n hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment \n>>\n hoge -->"));
+        Assert.assertEquals("abc", Util.removeTags("abc<!-- comment \n>\n>\n hoge -->"));
 	}
 }
