@@ -77,6 +77,7 @@ public class UtilTest {
 	    Assert.assertEquals("abc", Util.removeTags("abc"));
 	    Assert.assertEquals("abc", Util.removeTags("<p>abc</p>"));
 	    Assert.assertEquals("abc", Util.removeTags("abc<br />"));
+	    Assert.assertEquals("abc", Util.removeTags("ab<br />c"));
 	    Assert.assertEquals("abc", Util.removeTags("<br />abc"));
 	    Assert.assertEquals("abc", Util.removeTags("abc<br>"));
 	    Assert.assertEquals("abc", Util.removeTags("<br>abc"));
