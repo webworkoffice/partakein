@@ -3,7 +3,7 @@ package in.partake.service;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.EventNotificationStatus;
 
 public final class MessageService extends PartakeService {
@@ -23,7 +23,7 @@ public final class MessageService extends PartakeService {
     
     // TODO: should this be here? EventService?
     public EventNotificationStatus getNotificationStatus(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             return factory.getMessageAccess().getNotificationStatus(con, eventId);

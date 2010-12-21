@@ -58,7 +58,6 @@ public class AdministratorController extends PartakeActionSupport {
             EventService.get().createAsDemo(embryo, null, null);
             
             return SUCCESS;
-            
         } catch (DAOException e) {
             logger.warn("createDemoPage failed", e);
             return ERROR;

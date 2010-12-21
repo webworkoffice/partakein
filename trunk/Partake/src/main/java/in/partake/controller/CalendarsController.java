@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -110,11 +111,9 @@ public class CalendarsController extends PartakeActionSupport {
     		Calendar calendar = createCalendarSkeleton();
     		
     		// for all events the user will participate ...
-    		DataIterator<Event> it = UserService.get().getEnrolledEvents(user);
-    		while (it.hasNext()) {
-    			Event event = it.next();
+    		List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user);
+    		for (Event event : enrolledEvents) {
     			if (event == null) { continue; }
-    			
     			addToCalendar(calendar, event);
     		}
     		

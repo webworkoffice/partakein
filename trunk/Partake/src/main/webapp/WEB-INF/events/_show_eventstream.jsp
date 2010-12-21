@@ -18,7 +18,7 @@
 <%
 	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
 	EventEx event = (EventEx) request.getAttribute(Constants.ATTR_EVENT);
-	DataIterator<CommentEx> commentIterator = (DataIterator<CommentEx>)(request.getAttribute(Constants.ATTR_COMMENTSET));
+	List<CommentEx> comments = (List<CommentEx>)(request.getAttribute(Constants.ATTR_COMMENTSET));
 	List<DirectMessageEx> messages = (List<DirectMessageEx>) request.getAttribute(Constants.ATTR_MESSAGESET);
 %>
 
@@ -79,8 +79,8 @@ var tab = {
 				document.removeCommentForm.submit();
 			}
 		</script>
-		<% while (commentIterator.hasNext()) { %>
-			<% CommentEx comment = commentIterator.next(); if (comment == null) { continue; } %>
+		<% for (CommentEx comment : comments) { %>
+			<% if (comment == null) { continue; } %>
 			<div class="comment">
 				<p><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>"><%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>
 				: <%= Helper.readableDate(comment.getCreatedAt()) %>

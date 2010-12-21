@@ -7,7 +7,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.ParticipationStatus;
@@ -40,7 +40,7 @@ public final class UserService extends PartakeService {
     // User
     
     public User getUserById(String userId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             return factory.getUserAccess().getUserById(con, userId);
@@ -50,7 +50,7 @@ public final class UserService extends PartakeService {
     }
     
     public UserEx getUserExById(String userId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             return getUserEx(con, userId);
@@ -61,7 +61,7 @@ public final class UserService extends PartakeService {
     
     @Deprecated
     public UserEx getUserExByUser(User user) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             TwitterLinkage linkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
@@ -80,7 +80,7 @@ public final class UserService extends PartakeService {
     // Authentication
     
     public void updateLastLogin(User user) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             factory.getUserAccess().updateLastLogin(con, user);
@@ -93,7 +93,7 @@ public final class UserService extends PartakeService {
     // Twitter Authentication
     
     public User getUserFromTwitterLinkage(TwitterLinkage twitterLinkage, Twitter twitter, boolean createsIfAbsent) throws DAOException, TwitterException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             String userId = twitterLinkage.getUserId();
@@ -116,7 +116,7 @@ public final class UserService extends PartakeService {
     }
     
     public TwitterLinkage updateTwitterLinkage(TwitterLinkage twitterLinkageEmbryo, Twitter twitter) throws DAOException, TwitterException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             TwitterLinkage twitterLinkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitter.getId()); 
@@ -139,7 +139,7 @@ public final class UserService extends PartakeService {
     // OpenID Authentication
 
     public User getUserFromOpenIDLinkage(String identifier) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             String userId = factory.getOpenIDLinkageAccess().getUserId(con, identifier); 
@@ -153,7 +153,7 @@ public final class UserService extends PartakeService {
     }
 
     public void addOpenIDLinkage(String userId, String identifier) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             factory.getUserAccess().addOpenID(con, userId, identifier);
@@ -164,7 +164,7 @@ public final class UserService extends PartakeService {
     }
     
     public List<String> getOpenIDIdentifiers(String userId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             List<String> result = new ArrayList<String>();
@@ -181,7 +181,7 @@ public final class UserService extends PartakeService {
     }
     
     public void removeOpenIDLinkage(String userId, String identifier) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             factory.getUserAccess().removeOpenID(con, userId, identifier);
@@ -195,13 +195,13 @@ public final class UserService extends PartakeService {
     // Event Participation
     
     // TODO: should this be in UserService or EventService?
-    public DataIterator<Event> getEnrolledEvents(User user) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        return factory.getEnrollmentAccess().getEnrolledEvents(factory, user);
+    public List<Event> getEnrolledEvents(User user) throws DAOException {
+        PartakeModelFactory factory = getFactory();
+        return convertToList(factory.getEnrollmentAccess().getEnrolledEvents(factory, user));
     }
     
     public ParticipationStatus getParticipationStatus(User user, Event event) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             return factory.getEnrollmentAccess().getParticipationStatus(con, event, user);
@@ -214,7 +214,7 @@ public final class UserService extends PartakeService {
     // Calendar
     
     public User getUserFromCalendarId(String calendarId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             CalendarLinkage calendarLinkage = factory.getCalendarAccess().getCalendarLinkageById(factory.getConnection(), calendarId); 
@@ -236,7 +236,7 @@ public final class UserService extends PartakeService {
     // User Preference
     
     public UserPreference getUserPreference(String userId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             UserPreference pref = factory.getUserPreferenceAccess().getPreference(con, userId);
@@ -250,7 +250,7 @@ public final class UserService extends PartakeService {
     }
     
     public void setUserPreference(String userId, UserPreference embryo) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection();
         try {
             factory.getUserPreferenceAccess().setPreference(con, userId, embryo);

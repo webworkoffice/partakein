@@ -182,10 +182,10 @@ public class EventsFeedController extends PartakeActionSupport {
 //            entries.add(new Pair<Long, SyndEntry>(p.getModifiedAt().getTime(), entry));
 //	    }
 	    
-	    DataIterator<CommentEx> commentIterator = EventService.get().getCommentsExByEvent(event.getId());
-	    while (commentIterator.hasNext()) {
-	        CommentEx comment = commentIterator.next();
-
+	    List<CommentEx> comments = EventService.get().getCommentsExByEvent(event.getId());
+	    for (CommentEx comment : comments) {
+	        if (comment == null) { continue; }
+	        
             SyndEntry entry = new SyndEntryImpl();
             entry.setTitle(comment.getUser().getScreenName());
             

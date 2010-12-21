@@ -86,7 +86,7 @@ public class CassandraDaoTest {
 
     @Test
     public void testToGetALotOfConnectionUsingMultiThreads4() throws DAOException {
-        testToGetALotOfConnectionUsingMultiThreads(100, 1000, true);
+        testToGetALotOfConnectionUsingMultiThreads(50, 1000, true);
     }
     
     private void testToGetALotOfConnectionUsingMultiThreads(int N, int M, boolean doubly) {

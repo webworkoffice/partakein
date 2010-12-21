@@ -104,7 +104,7 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        boolean deadlineOver = deadline.before(new Date());
 	        
 	        
-	        DataIterator<CommentEx> comments = EventService.get().getCommentsExByEvent(eventId);
+	        List<CommentEx> comments = EventService.get().getCommentsExByEvent(eventId);
 	        List<DirectMessageEx> messages = DirectMessageService.get().getUserMessagesByEventId(eventId);
 	        
 	        attributes.put(Constants.ATTR_EVENT, event);
