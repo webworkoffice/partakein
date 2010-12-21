@@ -17,10 +17,10 @@ public interface IDirectMessageAccess {
     
     public void addUserMessage(PartakeConnection con, String messageId, String eventId) throws DAOException;
     
-    public DataIterator<DirectMessage> getUserMessageIterator(PartakeDAOFactory factory, String eventId) throws DAOException;
+    public DataIterator<DirectMessage> getUserMessageIterator(PartakeModelFactory factory, String eventId) throws DAOException;
     
     public void sendEnvelope(PartakeConnection con, String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType) throws DAOException;
     
-    public DataIterator<DirectMessageEnvelope> getEnvelopeIterator(PartakeDAOFactory factory) throws DAOException;
+    public DataIterator<DirectMessageEnvelope> getEnvelopeIterator(PartakeModelFactory factory) throws DAOException;
     
 }

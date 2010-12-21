@@ -22,7 +22,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.ICommentAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.Comment;
 import in.partake.util.Util;
 
@@ -86,7 +86,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     }
     
     @Override
-    public DataIterator<Comment> getCommentsByEvent(PartakeDAOFactory factory, String eventId) throws DAOException {
+    public DataIterator<Comment> getCommentsByEvent(PartakeModelFactory factory, String eventId) throws DAOException {
         try {
             return getCommentsByEvent((CassandraDAOFactory) factory, eventId);
         } catch (Exception e) {

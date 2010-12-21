@@ -7,7 +7,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.EventNotificationStatus;
 
 import java.util.ArrayList;
@@ -162,7 +162,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
 	}
 	
 	@Override
-	public DataIterator<EventNotificationStatus> getNotificationStatuses(PartakeDAOFactory factory) throws DAOException {
+	public DataIterator<EventNotificationStatus> getNotificationStatuses(PartakeModelFactory factory) throws DAOException {
 	    try {
 	        return getNotificationStatusesImpl((CassandraDAOFactory) factory);
 	    } catch (Exception e) {

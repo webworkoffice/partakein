@@ -2,15 +2,15 @@ package in.partake.model.dao;
 
 
 public abstract class Mapper<S, T> {
-    private PartakeDAOFactory factory;
+    private PartakeModelFactory factory;
     
-    protected Mapper(PartakeDAOFactory factory) {
+    protected Mapper(PartakeModelFactory factory) {
         this.factory = factory;
     }
     
     public abstract T map(S s) throws DAOException;
     
-    protected PartakeDAOFactory getFactory() {
+    protected PartakeModelFactory getFactory() {
         return factory;
     }
 }

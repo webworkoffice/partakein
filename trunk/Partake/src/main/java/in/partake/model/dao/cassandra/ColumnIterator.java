@@ -4,7 +4,7 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;

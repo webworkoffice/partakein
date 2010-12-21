@@ -13,7 +13,6 @@ public interface IEnrollmentAccess {
     // TODO: changesOnlyComment がださいのでなんとかする
     public void enroll(PartakeConnection con, User user, Event event, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean forceChangeModifiedAt) throws DAOException;
     
-    // TODO: ObjectItertor を返すべき
     public List<Participation> getParticipation(PartakeConnection con, String eventId) throws DAOException;
     
     public void addUserEnrollment(PartakeConnection con, String eventId, Participation p) throws DAOException;
@@ -33,7 +32,7 @@ public interface IEnrollmentAccess {
      * @return
      * @throws Exception
      */
-    public DataIterator<Event> getEnrolledEvents(PartakeDAOFactory factory, User user) throws DAOException;
+    public DataIterator<Event> getEnrolledEvents(PartakeModelFactory factory, User user) throws DAOException;
 
     
     public ParticipationStatus getParticipationStatus(PartakeConnection con, Event event, User user) throws DAOException;

@@ -23,10 +23,10 @@ import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.resource.PartakeProperties;
 
-public class CassandraDAOFactory extends PartakeDAOFactory {
+public class CassandraDAOFactory extends PartakeModelFactory {
     private static final Logger logger = Logger.getLogger(CassandraDAOFactory.class);
 
     @Override

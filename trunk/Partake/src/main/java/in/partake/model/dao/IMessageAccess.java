@@ -13,6 +13,6 @@ public interface IMessageAccess {
 
     public abstract EventNotificationStatus getNotificationStatus(PartakeConnection con, String eventId) throws DAOException;
 
-    public abstract DataIterator<EventNotificationStatus> getNotificationStatuses(PartakeDAOFactory factory) throws DAOException;
+    public abstract DataIterator<EventNotificationStatus> getNotificationStatuses(PartakeModelFactory factory) throws DAOException;
 
 }

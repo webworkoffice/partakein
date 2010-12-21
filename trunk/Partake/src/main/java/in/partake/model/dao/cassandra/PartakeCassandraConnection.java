@@ -6,14 +6,14 @@ import me.prettyprint.cassandra.service.CassandraClient;
 import me.prettyprint.cassandra.service.CassandraClientPool;
 import me.prettyprint.cassandra.service.CassandraClientPoolFactory;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 
 class PartakeCassandraConnection extends PartakeConnection {
-	private PartakeDAOFactory factory;
+	private PartakeModelFactory factory;
     private CassandraClient client;
     private long time;
     
-    public PartakeCassandraConnection(PartakeDAOFactory factory, CassandraClient client, long time) {
+    public PartakeCassandraConnection(PartakeModelFactory factory, CassandraClient client, long time) {
     	this.factory = factory;
         this.client = client;
         this.time = time;

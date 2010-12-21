@@ -54,7 +54,7 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 
 
-        mutations.add(createColumnMutation("type", embryo.getType(), time));
+        mutations.add(createMutation("type", embryo.getType(), time));
         mutations.add(createColumnMutation("content", embryo.getData(), time));
         
         client.batch_mutate(BINARY_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(BINARY_COLUMNFAMILY, mutations)), BINARY_CL_W);
