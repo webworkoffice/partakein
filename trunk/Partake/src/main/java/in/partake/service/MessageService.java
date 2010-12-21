@@ -17,10 +17,22 @@ public final class MessageService extends PartakeService {
         return instance;
     }
     
+    /**
+     * 通知（リマインダ）を送るべきイベントの情報に対するイテレータを作成する。
+     * 
+     * @return 現存するすべてのEventNotificationStatusに対するイテレータ
+     * @throws DAOException
+     */
     public DataIterator<EventNotificationStatus> getNotificationStatuses() throws DAOException {
         return getFactory().getMessageAccess().getNotificationStatuses(getFactory());
     }
     
+    /**
+     * イベントIDから通知（リマインダ）の送信状況を取得する。
+     * @param eventId イベントのID
+     * @return 指定したイベントに関する通知の状況
+     * @throws DAOException
+     */
     // TODO: should this be here? EventService?
     public EventNotificationStatus getNotificationStatus(String eventId) throws DAOException {
         PartakeModelFactory factory = getFactory();
