@@ -4,7 +4,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.User;
 import in.partake.util.Util;
 
@@ -145,7 +145,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
      */
     // TODO: DataIterator じゃなくて List<String> 返すべきじゃないかなあ...。
     @Override
-    public DataIterator<String> getOpenIDIdentifiers(PartakeDAOFactory factory, String userId) throws DAOException {
+    public DataIterator<String> getOpenIDIdentifiers(PartakeModelFactory factory, String userId) throws DAOException {
         try { 
             return getOpenIDIdentitiesImpl((CassandraDAOFactory) factory, userId);
         } catch (Exception e) {

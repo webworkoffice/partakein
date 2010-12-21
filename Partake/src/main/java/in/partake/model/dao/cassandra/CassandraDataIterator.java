@@ -2,7 +2,7 @@ package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 

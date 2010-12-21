@@ -8,7 +8,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
@@ -194,7 +194,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
      * @throws Exception
      */
     @Override
-    public DataIterator<Event> getEnrolledEvents(PartakeDAOFactory factory, User user) throws DAOException {
+    public DataIterator<Event> getEnrolledEvents(PartakeModelFactory factory, User user) throws DAOException {
         try {
             return getEnrolledEventsImpl((CassandraDAOFactory) factory, user);
         } catch (Exception e) {

@@ -4,7 +4,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.util.Util;
@@ -123,7 +123,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
      * @see in.partake.dao.cassandra.IEventAccess#getAllEventKeys()
      */
     @Override
-    public KeyIterator getAllEventKeys(PartakeDAOFactory factory) throws DAOException {
+    public KeyIterator getAllEventKeys(PartakeModelFactory factory) throws DAOException {
         return new CassandraKeyIterator((CassandraDAOFactory) factory, EVENTS_KEYSPACE, EVENTS_PREFIX, EVENTS_COLUMNFAMILY, EVENTS_CL_R);
     }
     

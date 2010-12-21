@@ -6,7 +6,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IDirectMessageAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessageEnvelope;
 import in.partake.model.dto.DirectMessagePostingType;
@@ -131,7 +131,7 @@ class DirectMessageCassandraDao extends CassandraDao implements IDirectMessageAc
     }
     
     @Override
-    public DataIterator<DirectMessage> getUserMessageIterator(PartakeDAOFactory factory, String eventId) throws DAOException {
+    public DataIterator<DirectMessage> getUserMessageIterator(PartakeModelFactory factory, String eventId) throws DAOException {
         try {
             return getUserMessageIteratorImpl((CassandraDAOFactory) factory, eventId);
         } catch (Exception e) {
@@ -153,7 +153,7 @@ class DirectMessageCassandraDao extends CassandraDao implements IDirectMessageAc
     }
     
     @Override
-    public DataIterator<DirectMessageEnvelope> getEnvelopeIterator(PartakeDAOFactory factory) throws DAOException {
+    public DataIterator<DirectMessageEnvelope> getEnvelopeIterator(PartakeModelFactory factory) throws DAOException {
         try {
             return getEnvelopeIteratorImpl((CassandraDAOFactory)factory);
         } catch (Exception e) {
