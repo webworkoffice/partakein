@@ -18,7 +18,7 @@ public final class MessageService extends PartakeService {
     }
     
     /**
-     * 通知（リマインダ）を送るべきイベントの情報に対するイテレータを作成する。
+     * 「通知（リマインダ）を送るべきイベント全て」の通知の送信状況を取得するイテレータを作成する。
      * 
      * @return 現存するすべてのEventNotificationStatusに対するイテレータ
      * @throws DAOException
