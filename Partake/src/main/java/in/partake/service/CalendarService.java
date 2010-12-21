@@ -2,7 +2,7 @@ package in.partake.service;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.User;
 
@@ -21,7 +21,7 @@ public final class CalendarService extends PartakeService {
      * revoke the current calendar and re-generate calendar id.
      */
     public void revokeCalendar(User user) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+        PartakeModelFactory factory = getFactory();
         PartakeConnection con = factory.getConnection("CalendarService#revokeCalendar");
         
         try {

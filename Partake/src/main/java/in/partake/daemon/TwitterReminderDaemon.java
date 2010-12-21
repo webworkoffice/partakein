@@ -78,7 +78,7 @@ class TwitterReminderTask extends TimerTask {
         // 締め切り１日前になっても RESERVED ステータスの人がいればメッセージを送付する。
         if (!status.isBeforeDeadlineOneday() && Util.oneDayBefore(deadline).before(now)) {
             String message = "[PARTAKE] 締め切り１日前です。参加・不参加を確定してください。 " + shortenedURL + " " + event.getTitle();
-            message = Util.shorten(message, 135);
+            message = Util.shorten(message, 140);
             sendNotificationOnlyForReservedParticipants(event, message);
                                 
             status.setBeforeDeadlineOneday(true);

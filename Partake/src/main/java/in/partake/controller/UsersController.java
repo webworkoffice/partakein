@@ -48,14 +48,13 @@ public class UsersController extends PartakeActionSupport {
 		    	
 		    	try {
 		            List<Event> owned = EventService.get().getEventsOwnedBy(user); 
-		            DataIterator<Event> enrolledEvents = UserService.get().getEnrolledEvents(user);
+		            List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user);
 		            
 		            List<Event> enrolled = new ArrayList<Event>();
 		            List<Event> finished = new ArrayList<Event>();
 		            Date now = new Date();
 		            
-		            while (enrolledEvents.hasNext()) {
-		            	Event e = enrolledEvents.next();
+		            for (Event e : enrolledEvents) {
 		            	if (e == null) { continue; }
 		            	if (e.getBeginDate().before(now)) {
 		            		finished.add(e);
