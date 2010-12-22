@@ -226,7 +226,7 @@ public class AuthenticationController extends PartakeActionSupport {
         
         try {
             String returnToUrl = callbackURL.toString();
-            List discoveries = manager.discover(userSuppliedString);
+            List<?> discoveries = manager.discover(userSuppliedString);
             DiscoveryInformation discovered = manager.associate(discoveries);
             this.session.put(Constants.ATTR_OPENID_DISCOVERY_INFORMATION, discovered);
             AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
