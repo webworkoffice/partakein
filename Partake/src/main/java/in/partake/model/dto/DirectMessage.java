@@ -33,20 +33,30 @@ public class DirectMessage extends PartakeModel<DirectMessage> {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getUserId() {
         return userId;
     }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
+    
     public String getMessage() {
         return message;
+    }
+    
+    public void setId(String id) {
+        checkFrozen();
+        this.id = id;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setUserId(String userId) {
+        checkFrozen();
+        this.userId = userId;
     }
 
     public void setMessage(String message) {
@@ -54,20 +64,12 @@ public class DirectMessage extends PartakeModel<DirectMessage> {
         this.message = message;
     }
 
-    public String getEventId() {
-        checkFrozen();
-        return eventId;
-    }
-
     public void setEventId(String eventId) {
         checkFrozen();
         this.eventId = eventId;
     }
 
-    public Date getCreatedAt() {
-        checkFrozen();
-        return createdAt;
-    }
+
 
     public void setCreatedAt(Date createdAt) {
         checkFrozen();
