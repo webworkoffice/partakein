@@ -74,8 +74,19 @@ public class UtilTest {
     public void shortenSurrogatePairTest() {
 	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.shorten("𠮟𠮟𠮟𠮟𠮟𠮟", 6));
 	    Assert.assertEquals("𠮟𠮟𠮟...", Util.shorten("𠮟𠮟𠮟𠮟𠮟𠮟𠮟", 6));
+	    Assert.assertEquals("a𠮟𠮟...", Util.shorten("a𠮟𠮟𠮟𠮟𠮟𠮟𠮟", 6));
     }
-	
+
+	@Test(expected = NullPointerException.class)
+	public void shortenNullValueTest() {
+		Util.shorten(null, 0);
+	}
+
+	@Test(expected = IndexOutOfBoundsException.class)
+	public void shortenNegativeValueTest() {
+		Util.shorten("", -1);
+	}
+
 	@Test
 	public void removeTagsTest() {
 	    Assert.assertEquals("abc", Util.removeTags("abc"));
