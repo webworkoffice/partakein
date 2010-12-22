@@ -22,6 +22,7 @@ public class PairTest {
         Assert.assertEquals(pair1, pair2);
         Assert.assertFalse(pair1.equals(pair3));
         Assert.assertFalse(pair1.equals(pair4));
+        Assert.assertFalse(pair1.equals(null));
     }
     
     @Test
@@ -36,5 +37,10 @@ public class PairTest {
         Assert.assertTrue(pair1.compareTo(pair3) < 0);
         Assert.assertTrue(pair1.compareTo(pair4) < 0);
         Assert.assertTrue(pair1.compareTo(pair5) > 0);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCompareToNull() {
+    	new ComparablePair<Integer, Integer>(1, 2).compareTo(null);
     }
 }
