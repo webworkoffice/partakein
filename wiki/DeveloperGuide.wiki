@@ -1,0 +1,12 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+This page describes what committers must know.
+
+= Details =
+
+  * DataIterator will become un-exposed from SomethingService.
+    * because it is difficult to keep transactions.
+    * When an operation requires DataIterator, it should be closed in SomethingService.
+ 
