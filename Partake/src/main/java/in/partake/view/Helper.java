@@ -91,11 +91,7 @@ public class Helper {
 			return readableDate(beginDate);
 		}
 		
-		// TODO: あとで直す
-		if (beginDate.getYear() == endDate.getYear() &&
-				beginDate.getMonth() == endDate.getMonth() &&
-				beginDate.getDate() == endDate.getDate()) {
-
+		if (areSameDay(beginDate, endDate)) {
 			GregorianCalendar cal = new GregorianCalendar();
 			cal.setTime(endDate);
 			
@@ -104,5 +100,23 @@ public class Helper {
 		} else {
 			return readableDate(beginDate) + " - " + readableDate(endDate);
 		}
+	}
+
+	/**
+	 * @author skypencil (@eller86)
+	 */
+	private static boolean areSameDay(Date beginDate, Date endDate) {
+		assert beginDate != null;
+		assert endDate != null;
+
+		Calendar begin = Calendar.getInstance();
+		begin.setTime(beginDate);
+		Calendar end = Calendar.getInstance();
+		end.setTime(endDate);
+
+		return
+			begin.get(Calendar.YEAR) == end.get(Calendar.YEAR) &&
+			begin.get(Calendar.MONTH) == end.get(Calendar.MONTH) &&
+			begin.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH);
 	}
 }
