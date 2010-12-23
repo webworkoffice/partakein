@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.prettyprint.cassandra.service.CassandraClient;
-
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 
@@ -93,31 +91,31 @@ import org.apache.cassandra.thrift.SuperColumn;
  */
 class MessageCassandraDao extends CassandraDao implements IMessageAccess {
 
-	// MESSAGE MASTER TABLE
-    private static final String MESSAGES_PREFIX = "messages:id:";
-    private static final String MESSAGES_KEYSPACE = "Keyspace1";
-    private static final String MESSAGES_COLUMNFAMILY = "Standard2";
-    private static final ConsistencyLevel MESSAGES_CL_R = ConsistencyLevel.ONE;
-    private static final ConsistencyLevel MESSAGES_CL_W = ConsistencyLevel.ALL;
-	
-    private static final String MESSAGES_EVENT_PREFIX = "messages:event:";
-    private static final String MESSAGES_EVENT_KEYSPACE = "Keyspace1";
-    private static final String MESSAGES_EVENT_COLUMNFAMILY = "Standard2";
-    private static final ConsistencyLevel MESSAGES_EVENT_CL_R = ConsistencyLevel.ONE;
-    private static final ConsistencyLevel MESSAGES_EVENT_CL_W = ConsistencyLevel.ALL;
-    
-    // waiting queue とか名前をつけたい
-    private static final String MESSAGES_QUEUE_PREFIX = "messages:queue";
-    private static final String MESSAGES_QUEUE_KEYSPACE = "Keyspace1";
-    private static final String MESSAGES_QUEUE_COLUMNFAMILY = "Super1";
-    private static final ConsistencyLevel MESSAGES_QUEUE_CL_R = ConsistencyLevel.ONE;
-    private static final ConsistencyLevel MESSAGES_QUEUE_CL_W = ConsistencyLevel.ALL;
-
-    private static final String MESSAGES_SENDING_PREFIX = "messages:sending";
-    private static final String MESSAGES_SENDING_KEYSPACE = "Keyspace1";
-    private static final String MESSAGES_SENDING_COLUMNFAMILY = "Standard2";
-    private static final ConsistencyLevel MESSAGES_SENDING_CL_R = ConsistencyLevel.ONE;
-    private static final ConsistencyLevel MESSAGES_SENDING_CL_W = ConsistencyLevel.ALL;
+//	// MESSAGE MASTER TABLE
+//    private static final String MESSAGES_PREFIX = "messages:id:";
+//    private static final String MESSAGES_KEYSPACE = "Keyspace1";
+//    private static final String MESSAGES_COLUMNFAMILY = "Standard2";
+//    private static final ConsistencyLevel MESSAGES_CL_R = ConsistencyLevel.ONE;
+//    private static final ConsistencyLevel MESSAGES_CL_W = ConsistencyLevel.ALL;
+//	
+//    private static final String MESSAGES_EVENT_PREFIX = "messages:event:";
+//    private static final String MESSAGES_EVENT_KEYSPACE = "Keyspace1";
+//    private static final String MESSAGES_EVENT_COLUMNFAMILY = "Standard2";
+//    private static final ConsistencyLevel MESSAGES_EVENT_CL_R = ConsistencyLevel.ONE;
+//    private static final ConsistencyLevel MESSAGES_EVENT_CL_W = ConsistencyLevel.ALL;
+//    
+//    // waiting queue とか名前をつけたい
+//    private static final String MESSAGES_QUEUE_PREFIX = "messages:queue";
+//    private static final String MESSAGES_QUEUE_KEYSPACE = "Keyspace1";
+//    private static final String MESSAGES_QUEUE_COLUMNFAMILY = "Super1";
+//    private static final ConsistencyLevel MESSAGES_QUEUE_CL_R = ConsistencyLevel.ONE;
+//    private static final ConsistencyLevel MESSAGES_QUEUE_CL_W = ConsistencyLevel.ALL;
+//
+//    private static final String MESSAGES_SENDING_PREFIX = "messages:sending";
+//    private static final String MESSAGES_SENDING_KEYSPACE = "Keyspace1";
+//    private static final String MESSAGES_SENDING_COLUMNFAMILY = "Standard2";
+//    private static final ConsistencyLevel MESSAGES_SENDING_CL_R = ConsistencyLevel.ONE;
+//    private static final ConsistencyLevel MESSAGES_SENDING_CL_W = ConsistencyLevel.ALL;
     
     private static final String MESSAGES_REMINDER_PREFIX = "messages:reminder";
     private static final String MESSAGES_REMINDER_KEYSPACE = "Keyspace1";

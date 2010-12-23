@@ -29,9 +29,6 @@ import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.SuperColumn;
-import org.apache.log4j.Logger;
-
-import me.prettyprint.cassandra.service.CassandraClient;
 
 /**
  * TABLE 構造
@@ -59,10 +56,8 @@ import me.prettyprint.cassandra.service.CassandraClient;
  * @author shinyak
  *
  */
-// TODO: temporarily public 
 class DirectMessageCassandraDao extends CassandraDao implements IDirectMessageAccess {
-    
-    private static final Logger logger = Logger.getLogger(DirectMessageCassandraDao.class);
+    // private static final Logger logger = Logger.getLogger(DirectMessageCassandraDao.class);
     
     // MASTER
     private static final String DIRECTMESSAGE_PREFIX = "directmessage:id:";
@@ -205,14 +200,10 @@ class DirectMessageCassandraDao extends CassandraDao implements IDirectMessageAc
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 
 
-        mutations.add(createColumnMutation("userId", embryo.getUserId(), time));
-        mutations.add(createColumnMutation("message", embryo.getMessage(), time));
-        if (embryo.getEventId() != null) {
-            mutations.add(createColumnMutation("eventId", embryo.getEventId(), time));
-        } else {
-            mutations.add(createDeleteMutation("eventId", time));
-        }        
-        mutations.add(createColumnMutation("createdAt", Util.getTimeString(time), time));
+        mutations.add(createMutation("userId", embryo.getUserId(), time));
+        mutations.add(createMutation("message", embryo.getMessage(), time));
+        mutations.add(createMutation("eventId", embryo.getEventId(), time));
+        mutations.add(createMutation("createdAt", Util.getTimeString(time), time));
         
         
         client.batch_mutate(DIRECTMESSAGE_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGE_COLUMNFAMILY, mutations)), DIRECTMESSAGE_CL_W);
@@ -222,7 +213,7 @@ class DirectMessageCassandraDao extends CassandraDao implements IDirectMessageAc
         String key = DIRECTMESSAGE_EVENT_PREFIX + eventId;
         
         List<Mutation> mutations = new ArrayList<Mutation>(); 
-        mutations.add(createColumnMutation(Util.getTimeString(time), messageId, time));
+        mutations.add(createMutation(Util.getTimeString(time), messageId, time));
 
         client.batch_mutate(DIRECTMESSAGE_EVENT_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGE_EVENT_COLUMNFAMILY, mutations)), DIRECTMESSAGE_EVENT_CL_W);
     }

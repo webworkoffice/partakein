@@ -34,7 +34,7 @@ public class EventEx extends Event {
     }
     
     public String getDefaultTwitterPromotionMessage() {
-        String shortenURL = Util.bitlyShortURL(getEventURL());
+        String shortenURL = Util.shortenURL(getEventURL());
         
         StringBuilder builder = new StringBuilder();
         builder.append(getTitle());

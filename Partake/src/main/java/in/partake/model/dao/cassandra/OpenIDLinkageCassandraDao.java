@@ -2,14 +2,11 @@ package in.partake.model.dao.cassandra;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
-
-import me.prettyprint.cassandra.service.CassandraClient;
 
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
@@ -20,7 +17,6 @@ import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.log4j.Logger;
 
-import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 // * OPEN ID LINKAGE MASTER

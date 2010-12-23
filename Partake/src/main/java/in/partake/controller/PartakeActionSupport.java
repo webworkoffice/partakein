@@ -131,6 +131,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     }
 
     public void addWarningMessage(String str) {
+        @SuppressWarnings("unchecked")
         List<String> warningMessage = (List<String>) this.session.get(Constants.ATTR_WARNING_MESSAGE);
         if (warningMessage == null) { warningMessage = new ArrayList<String>(); }
 
@@ -139,6 +140,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     }
     
     public Collection<String> getWarningMessages() {
+        @SuppressWarnings("unchecked")
         List<String> warningMessage = (List<String>) this.session.get(Constants.ATTR_WARNING_MESSAGE);
         if (warningMessage == null) { return new ArrayList<String>(); }
             

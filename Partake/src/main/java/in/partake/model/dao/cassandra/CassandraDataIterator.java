@@ -2,11 +2,9 @@ package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.PartakeModelFactory;
 
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 
-// TODO: should be renamed as CassandraDataIterator<T>
 class CassandraDataIterator<T> extends DataIterator<T> {
 	private ColumnIterator iterator;
 	private ColumnOrSuperColumnMapper<T> mapper;

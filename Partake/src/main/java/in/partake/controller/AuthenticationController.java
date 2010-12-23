@@ -177,6 +177,7 @@ public class AuthenticationController extends PartakeActionSupport {
         }
         
         try {
+            // TODO: UserEx が identifier から取れるべき
             User user = UserService.get().getUserFromOpenIDLinkage(identity);
             if (user != null) {
                 UserEx userEx = UserService.get().getPartakeUserByUser(user);

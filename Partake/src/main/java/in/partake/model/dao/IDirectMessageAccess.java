@@ -1,9 +1,6 @@
 package in.partake.model.dao;
 
 import java.util.Date;
-import java.util.UUID;
-
-import me.prettyprint.cassandra.service.CassandraClient;
 
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessageEnvelope;

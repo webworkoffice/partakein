@@ -20,6 +20,7 @@ public class Pair<F, S> {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Pair)) { return false; }
+        @SuppressWarnings("unchecked")
         Pair<F, S> pair = (Pair<F, S>) obj;
         return first.equals(pair.getFirst()) && second.equals(pair.getSecond());
     }
