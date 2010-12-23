@@ -76,7 +76,7 @@ public class EventsFeedController extends PartakeActionSupport {
 		feed.setEncoding("utf-8");
 		
 		feed.setTitle("Recent 100 events - " + EventCategory.getReadableCategoryName(category) + " - [PARTAKE]");
-		feed.setLink("http://partake.in/");
+		feed.setLink("http://partake.in/");	// TODO property から in.partake.toppath を取ってきて使うべき？
 		feed.setDescription("最近登録されたイベントを(最大100)フィードします。");
 		
 		try {
