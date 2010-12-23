@@ -56,6 +56,9 @@ public class EventEx extends Event {
         List<ParticipationEx> spareParticipations = new ArrayList<ParticipationEx>();
         List<ParticipationEx> cancelledParticipations = new ArrayList<ParticipationEx>();
         boolean timeover = isReservationTimeOver();
+        
+        int reservedEnrolled = 0;
+        int reservedSpare = 0;
 
         for (ParticipationEx participation : participations) {
             switch (participation.getStatus()) {
@@ -69,22 +72,24 @@ public class EventEx extends Event {
                     spareParticipations.add(participation);
                 }
                 break;
-            case NOT_ENROLLED: // TODO: shouldn't happen.
-                cancelledParticipations.add(participation);
-                break; 
             case RESERVED:
                 if (timeover) {
                     cancelledParticipations.add(participation);
                 } else if (getCapacity() == 0 || enrolledParticipations.size() < getCapacity()) {                   
                     enrolledParticipations.add(participation);
+                    ++reservedEnrolled;
                 } else {
                     spareParticipations.add(participation);
+                    ++reservedSpare;
                 }
                 break;
+            case NOT_ENROLLED: // TODO: shouldn't happen.
+                cancelledParticipations.add(participation);
+                break; 
             }
         }
         
-        return new ParticipationList(enrolledParticipations, spareParticipations, cancelledParticipations);
+        return new ParticipationList(enrolledParticipations, spareParticipations, cancelledParticipations, reservedEnrolled, reservedSpare);
     }
 
     public boolean hasPermission(UserEx user, UserPermission permission) {

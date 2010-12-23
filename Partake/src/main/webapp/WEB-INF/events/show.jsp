@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.ParticipationList"%>
 <%@page import="in.partake.model.dto.DirectMessage"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
@@ -162,12 +163,6 @@ body {
 	    <li><a id="open-reminder-reset-form" href="#">リマンダー送付状況をリセットする</a></li>
 	</ul>
 	 --%>
-	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付状況</h2>
-	<ul>
-        <li>締切２４時間前メッセージ：　<%= notificationStatus.isBeforeDeadlineOneday() ? "送付済" : "未送付" %></li>
-        <li>締切１２時間前メッセージ：　<%= notificationStatus.isBeforeDeadlineHalfday() ? "送付済" : "未送付" %></li>
-        <li>イベント１日前メッセージ：　<%= notificationStatus.isBeforeTheDay() ? "送付済" : "未送付" %></li>
-	</ul>
 	
 	<div id="event-edit-form" style="display: none">
         <s:form method="post" name="eventEditForm" action="edit">
@@ -221,15 +216,6 @@ body {
     --%>
 </div>
 <% } %>
-
-<div class="event-promotion">
-	<!--  twitter -->
-	<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-lang="ja">Tweet</a>
-	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-	<!-- facebook -->
-	<iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
-</div>
-
 
 <div class="event-enrollment">
 	<% if (deadlineOver) { %>
@@ -322,15 +308,36 @@ body {
 	<% } %>
 </div>
 
+<div class="event-promotion">
+	<!--  twitter -->
+	<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-lang="ja">Tweet</a>
+	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+	<!-- facebook -->
+	<iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+</div>
 
+<%
+	ParticipationList participationList = (ParticipationList) request.getAttribute(Constants.ATTR_PARTICIPATIONLIST);
+	List<ParticipationEx> enrolledParticipations = participationList.getEnrolledParticipations();
+	List<ParticipationEx> spareParticipations = participationList.getSpareParticipations();
+	List<ParticipationEx> cancelledParticipations = participationList.getCancelledParticipations();
+%>
+
+<div class="event-status">
+	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付状況</h2>
+	<ul>
+        <li>締切24時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineOneday() ? "送付済" : "未送付" %></li>
+        <li>締切12時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineHalfday() ? "送付済" : "未送付" %></li>
+        <li>イベント１日前：<%= notificationStatus.isBeforeTheDay() ? "送付済" : "未送付" %></li>
+	</ul>
+	<h2>参加者数</h2>
+	<ul>
+		<li>参加者: <%= enrolledParticipations.size() %> 人 (仮 <%= participationList.getReservedEnrolled() %> 人)</li>
+		<li>補欠者: <%= spareParticipations.size() %> 人 (仮 <%= participationList.getReservedSpare() %> 人)</li>
+	</ul>
+</div>
 
 <div class="event-participants">
-	<%
-	List<ParticipationEx> enrolledParticipations = (List<ParticipationEx>)request.getAttribute(Constants.ATTR_ENROLLED_PARTICIPATIONS);
-	List<ParticipationEx> spareParticipations = (List<ParticipationEx>)request.getAttribute(Constants.ATTR_SPARE_PARTICIPATIONS);
-	List<ParticipationEx> cancelledParticipations = (List<ParticipationEx>)request.getAttribute(Constants.ATTR_CANCELLED_PARTICIPATIONS);
-	%>
-
 	<h2><img src="<%= request.getContextPath() %>/images/circle.png" />参加者一覧 (<%= enrolledParticipations.size() %> 人)</h2>
 	<% if (enrolledParticipations != null && enrolledParticipations.size() > 0) { %>
 		<ul>

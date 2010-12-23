@@ -29,9 +29,7 @@ public final class Constants {
     public static final String ATTR_ENROLLED_EVENTSET = "enrolledeventset";
     public static final String ATTR_FINISHED_EVENTSET = "finishedeventset";
 
-    public static final String ATTR_ENROLLED_PARTICIPATIONS = "ENROLLED_PARTICIPANTS";
-    public static final String ATTR_SPARE_PARTICIPATIONS = "SPARE_PARTICIPANTS";
-    public static final String ATTR_CANCELLED_PARTICIPATIONS = "CANCELLED_PARTICIPANTS";
+    public static final String ATTR_PARTICIPATIONLIST = "PARTICIPATION_LIST";
     
     public static final String ATTR_REDIRECTURL = "redirectURL";
 
