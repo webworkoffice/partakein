@@ -26,6 +26,8 @@ class DirectMessageSendingTask extends TimerTask {
 }
 
 public final class TwitterMessageDaemon {
+	private static final Logger logger = Logger.getLogger(TwitterMessageDaemon.class);
+
 	// private static final int TIMER_INTERVAL_IN_MILLIS = 2 * 60 * 1000; // ２分
     // private static final int TIMER_INTERVAL_IN_MILLIS = 10000; // １０秒
     private static final int TIMER_INTERVAL_IN_MILLIS = 30000; // ３０秒
@@ -42,10 +44,12 @@ public final class TwitterMessageDaemon {
 	}
 	
 	public void schedule() {
+		logger.info("scheduled.");
 		timerForDirectMessage.schedule(new DirectMessageSendingTask(), 0, TIMER_INTERVAL_IN_MILLIS);
 	}
 	
 	public void cancel() {
+		logger.info("scheduled cancelled.");
 		timerForDirectMessage.cancel();
 	}
 }
