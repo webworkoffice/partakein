@@ -57,7 +57,7 @@ class TwitterReminderTask extends TimerTask {
 			}
 			
 		} catch (DAOException e) {
-			e.printStackTrace();			
+			logger.warn("run() failed.", e);
 		}
 		logger.info("TwitterReminderTask END");
 	}
