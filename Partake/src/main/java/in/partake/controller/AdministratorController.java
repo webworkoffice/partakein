@@ -53,7 +53,7 @@ public class AdministratorController extends PartakeActionSupport {
             UserEx owner = getLoginUser();
             List<String> managers = Collections.emptyList(); 
             Event embryo = new Event("demo", "demo", "demo", EventCategory.CATEGORIES.get(0).getKey(), date, date, date, 0,
-                            "http://partake.in/", "", "", "demo", "#partake", owner.getId(), managers, false, null, now);
+                            "http://partake.in/", "", "", "demo", "#partake", owner.getId(), managers, false, null, now, null);
             
             EventService.get().createAsDemo(embryo, null, null);
             
