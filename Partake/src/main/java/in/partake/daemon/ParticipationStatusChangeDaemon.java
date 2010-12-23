@@ -121,6 +121,7 @@ class ParticipationStatusChangeTask extends TimerTask {
 }
 
 public class ParticipationStatusChangeDaemon {
+	private static final Logger logger = Logger.getLogger(ParticipationStatusChangeDaemon.class);
     private static final int TIMER_INTERVAL_IN_MILLIS = 120000; // ２分
     
     private static ParticipationStatusChangeDaemon instance = new ParticipationStatusChangeDaemon();
@@ -135,10 +136,12 @@ public class ParticipationStatusChangeDaemon {
     }
     
     public void schedule() {
+    	logger.info("scheduled.");
         timerForParticipationStatusMessages.schedule(new ParticipationStatusChangeTask(), 0, TIMER_INTERVAL_IN_MILLIS); 
     }
     
     public void cancel() {
+    	logger.info("scheduled cancelled.");
         timerForParticipationStatusMessages.cancel();
     }
 }
