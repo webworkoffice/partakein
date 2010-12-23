@@ -10,6 +10,16 @@ import com.opensymphony.xwork2.Action;
 
 public final class EventsEditControllerTest {
 
+	/**
+	 * {@link EventsEditController#editNew()}メソッドについて、以下のように
+	 * 実装されていることを保証する。
+	 * <ul>
+	 * <li>EventsEditControllerが正常にインスタンス化できること
+	 * <li>開始時刻・終了時刻・締切時刻が現在の24時間後になっていること
+	 * </ul>
+	 * 
+	 * @author skypencil (@eller86)
+	 */
 	@Test
 	public void editNewTest() {
 		EventsEditController controller = null;
