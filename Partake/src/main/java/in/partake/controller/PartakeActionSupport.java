@@ -106,8 +106,11 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 	        if (strs.length == 0) { return null; }
 	        return strs;
 	    }
-	    
-	    // TODO: should be logged.
+
+		logger.warn(String.format(
+				"Type of the parameter(%s) is not expected one. The given key is '%s'.",
+				param.getClass().toString(),
+				key));
 	    return null;
 	}
 	

@@ -38,7 +38,7 @@ public class UsersController extends PartakeActionSupport {
 	    	
 	    	UserPreference pref = UserService.get().getUserPreference(userId);
 	    	if (pref == null) {
-	    	    // TODO: should be logged. something wrong.
+	    	    logger.error("UserPreference is null. Something wrong.");
 	    	    return NOT_FOUND;
 	    	}
 	    	
