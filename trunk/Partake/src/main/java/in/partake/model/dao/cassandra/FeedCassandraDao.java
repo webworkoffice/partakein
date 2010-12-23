@@ -14,7 +14,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.PartakeConnection;
 
-import static me.prettyprint.cassandra.utils.StringUtils.bytes;
+// import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 /**

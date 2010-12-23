@@ -3,8 +3,6 @@ package in.partake.model.dao.cassandra;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import me.prettyprint.cassandra.service.CassandraClient;
 
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;

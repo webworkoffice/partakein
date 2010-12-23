@@ -147,6 +147,8 @@ class TwitterReminderTask extends TimerTask {
         Date deadline = event.getDeadline();
         if (deadline == null) { deadline = event.getBeginDate(); }
         
+        // TODO: 判定には participationlist を使うべき。
+        // TODO: あと、補欠者にも送った方がいいんじゃなイカ？
         List<Participation> participations = EventService.get().getParticipation(event.getId());
         for (Participation participation : participations) {
             boolean sendsMessage = false;

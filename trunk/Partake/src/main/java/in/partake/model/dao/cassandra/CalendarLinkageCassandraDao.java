@@ -51,7 +51,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
         String key = CALENDAR_PREFIX + calendarId;
         
         List<Mutation> mutations = new ArrayList<Mutation>(); 
-        mutations.add(createColumnMutation("userId", embryo.getUserId(), time));
+        mutations.add(createMutation("userId", embryo.getUserId(), time));
 
         client.batch_mutate(CALENDAR_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(CALENDAR_COLUMNFAMILY, mutations)), CALENDAR_CL_W);        
     }

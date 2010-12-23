@@ -1,7 +1,6 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.User;
 
 import java.util.List;

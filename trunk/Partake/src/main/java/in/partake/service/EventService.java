@@ -118,6 +118,7 @@ public final class EventService extends PartakeService {
 	 * @return
 	 * @throws DAOException
 	 */
+	// TODO: KeyIterato should not be exposed. 
 	public KeyIterator getAllEventKeysIterator() throws DAOException {
 	    return getFactory().getEventAccess().getAllEventKeys(getFactory());
 	}
@@ -530,7 +531,6 @@ public final class EventService extends PartakeService {
 	    }
 	}
 	
-	// TODO: なんで DataIterator なんだ？
     public List<Comment> getCommentsByEvent(String eventId) throws DAOException {
         return convertToList(getFactory().getCommentAccess().getCommentsByEvent(getFactory(), eventId));
     }

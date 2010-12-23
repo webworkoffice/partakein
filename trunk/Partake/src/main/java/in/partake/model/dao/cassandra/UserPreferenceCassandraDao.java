@@ -9,12 +9,9 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.UserPreference;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import me.prettyprint.cassandra.service.CassandraClient;
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;

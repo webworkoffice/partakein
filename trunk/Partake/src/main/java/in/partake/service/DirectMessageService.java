@@ -86,8 +86,7 @@ public class DirectMessageService extends PartakeService {
     	try {
 	        List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
 	        DataIterator<DirectMessage> it = factory.getDirectMessageAccess().getUserMessageIterator(factory, eventId);
-	
-	        
+
 	        while (it.hasNext()) {
 	        	DirectMessage message = it.next();
 	        	messages.add(new DirectMessageEx(message, getUserEx(con, message.getUserId())));

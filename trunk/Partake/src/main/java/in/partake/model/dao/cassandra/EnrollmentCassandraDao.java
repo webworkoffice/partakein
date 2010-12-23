@@ -126,7 +126,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     // TODO: DAO が仕事しすぎ
     @Override
     public int getNumOfParticipants(PartakeConnection con, String eventId, boolean isReservationTimeOver) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        // PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
         try {
             List<Participation> participations = getParticipation(con, eventId);
             
@@ -151,7 +151,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     // TODO: DAO が仕事しすぎ
     @Override
     public int getOrderOfEnrolledEvent(PartakeConnection con, String eventId, String userId, boolean isReservationTimeOver) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        // PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
         try {
             List<Participation> participations = getParticipation(con, eventId);
 
