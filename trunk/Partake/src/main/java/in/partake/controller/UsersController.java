@@ -2,7 +2,6 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.Constants;

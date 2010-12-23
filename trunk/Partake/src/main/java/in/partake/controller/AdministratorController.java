@@ -102,20 +102,20 @@ public class AdministratorController extends PartakeActionSupport {
         }     
     }
     
-    private int getNumOfAllEvents() {
-        try {
-            int result = 0;            
-            KeyIterator key = EventService.get().getAllEventKeysIterator();
-            while (key.hasNext()) {
-                Event event = EventService.get().getEventById(key.next());
-                if (event == null) { continue; }
-                ++result;
-            }
-            
-            return result;
-        } catch (DAOException e) {
-            logger.warn("getNumOfAllEvents", e);
-            return -1;
-        }
-    }
+//    private int getNumOfAllEvents() {
+//        try {
+//            int result = 0;            
+//            KeyIterator key = EventService.get().getAllEventKeysIterator();
+//            while (key.hasNext()) {
+//                Event event = EventService.get().getEventById(key.next());
+//                if (event == null) { continue; }
+//                ++result;
+//            }
+//            
+//            return result;
+//        } catch (DAOException e) {
+//            logger.warn("getNumOfAllEvents", e);
+//            return -1;
+//        }
+//    }
 }

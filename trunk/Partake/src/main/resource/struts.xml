@@ -108,7 +108,7 @@
 		
 		<action name="preference" method="showPreference" class="in.partake.controller.UsersPreferenceController">
 			<interceptor-ref name="authenticateStack" />
-			<result name="success">/WEB-INF/setting.jsp</result>
+			<result name="success">/WEB-INF/preference.jsp</result>
 		</action>
 		
 		<action name="setPreference" method="setPreference" class="in.partake.controller.UsersPreferenceController">

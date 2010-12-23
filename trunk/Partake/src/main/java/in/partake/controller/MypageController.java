@@ -1,7 +1,6 @@
 package in.partake.controller;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
@@ -29,7 +28,7 @@ public class MypageController extends PartakeActionSupport implements SessionAwa
 	
 	public String show() {
 		User user = getLoginUser();
-		if (user == null) { return ERROR; }
+		if (user == null) { return LOGIN; }
 
         try {
             List<Event> ownedEvents = EventService.get().getEventsOwnedBy(user);

@@ -8,9 +8,7 @@ import in.partake.model.ParticipationEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
 import in.partake.model.dto.Comment;
-import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.UserPermission;
@@ -322,13 +320,13 @@ public class EventsController extends PartakeActionSupport implements Validateab
     	String right;
         switch (status) {
         case ENROLLED:
-        	right = " (" + Util.bitlyShortURL(event.getEventURL()) + ") へ参加します。";
+        	right = " (" + Util.shortenURL(event.getEventURL()) + ") へ参加します。";
         	break;
         case RESERVED:
-        	right = " (" + Util.bitlyShortURL(event.getEventURL()) + ") へ参加予定です。";
+        	right = " (" + Util.shortenURL(event.getEventURL()) + ") へ参加予定です。";
         	break;
         case CANCELLED:
-        	right = " (" + Util.bitlyShortURL(event.getEventURL()) + ") への参加を取りやめました。";
+        	right = " (" + Util.shortenURL(event.getEventURL()) + ") への参加を取りやめました。";
         	break;
         default:
         	right = null;
