@@ -227,7 +227,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	    Date oneDayAfter = new Date(new Date().getTime() + 1000 * 3600 * 24);
 		
 		// TODO: Calendar を使え。
-		syear  = eyear  = dyear  = oneDayAfter.getYear();
+		syear  = eyear  = dyear  = oneDayAfter.getYear() + 1900;	// Dateが返す「年」はあらかじめ1900を引いてある
 		smonth = emonth = dmonth = oneDayAfter.getMonth() + 1;
 		sday   = eday   = dday   = oneDayAfter.getDate();
 		shour  = ehour  = dhour  = oneDayAfter.getHours();
@@ -578,6 +578,10 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		return category;
 	}
 
+	/**
+     * 開始日時の年を西暦で返す
+     * @return 開始日時の年
+     */
 	public int getSyear() {
 		return syear;
 	}
@@ -604,6 +608,10 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		return usesEndDate;
 	}
 
+    /**
+     * 終了日時の年を西暦で返す
+     * @return 終了日時の年
+     */
 	public int getEyear() {
 		return eyear;
 	}
@@ -628,6 +636,10 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		return usesDeadline;
 	}
 
+    /**
+     * 申込締切時刻の年を西暦で返す
+     * @return 申込締切時刻の年
+     */
 	public int getDyear() {
 		return dyear;
 	}
