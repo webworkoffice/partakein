@@ -224,13 +224,13 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	// GET /orders/new
     @SkipValidation
     public String editNew() {
-	    Date oneDayAfter = new Date(new Date().getTime() + 1000 * 3600 * 24);
-		
-		// TODO: Calendar を使え。
-		syear  = eyear  = dyear  = oneDayAfter.getYear() + 1900;	// Dateが返す「年」はあらかじめ1900を引いてある
-		smonth = emonth = dmonth = oneDayAfter.getMonth() + 1;
-		sday   = eday   = dday   = oneDayAfter.getDate();
-		shour  = ehour  = dhour  = oneDayAfter.getHours();
+		Calendar oneDayAfter = Calendar.getInstance();	// TODO use Locale
+		oneDayAfter.setTimeInMillis(new Date().getTime() + 1000 * 3600 * 24);
+
+		syear  = eyear  = dyear  = oneDayAfter.get(Calendar.YEAR);
+		smonth = emonth = dmonth = oneDayAfter.get(Calendar.MONTH) + 1;
+		sday   = eday   = dday   = oneDayAfter.get(Calendar.DAY_OF_MONTH);
+		shour  = ehour  = dhour  = oneDayAfter.get(Calendar.HOUR_OF_DAY);
 		smin   = emin   = dmin   = 0;
 		
     	return INPUT;
