@@ -229,7 +229,8 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         mutations.add(createMutation("backImageId", embryo.getBackImageId(), time));
         mutations.add(createColumnMutation("secret", embryo.isPrivate() ? TRUE : FALSE, time)); 
         mutations.add(createMutation("passcode", embryo.getPasscode(), time));
-        mutations.add(createMutation("createdAt", embryo.getCreatedAt(), time)); // TODO: おいこれ createdAt と modifiedAt が区別されてないぞ
+        mutations.add(createMutation("createdAt", embryo.getCreatedAt(), time));
+        mutations.add(createMutation("modifiedAt", embryo.getModifiedAt(), time));
         
         client.batch_mutate(EVENTS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENTS_COLUMNFAMILY, mutations)), EVENTS_CL_W);
     }
@@ -358,6 +359,8 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
                 event.setPasscode(value);
             } else if ("createdAt".equals(name)) {
                 event.setCreatedAt(Util.dateFromTimeString(value));
+            } else if ("modifiedAt".equals(name)) {
+            	event.setModifiedAt(Util.dateFromTimeString(value));
             } else if ("deleted".equals(name)) {
             	if ("false".equals(value)) {
             		// "false" の場合は無視する

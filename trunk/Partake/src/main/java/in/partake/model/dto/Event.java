@@ -38,6 +38,7 @@ public class Event extends PartakeModel<Event> {
     private String passcode;    // passcode to show (if not public)
     
     private Date createdAt;
+    private Date modifiedAt;
     
     // begin date 順に並べる comparator 
     public static Comparator<Event> getComparatorBeginDateAsc() {
@@ -75,7 +76,7 @@ public class Event extends PartakeModel<Event> {
     
     public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, List<String> managerScreenNames,
-            boolean isPrivate, String passcode, Date createdAt) {
+            boolean isPrivate, String passcode, Date createdAt, Date modifiedAt) {
         this.id = null;
         this.shortId = shortId;
         this.title = title;
@@ -98,13 +99,15 @@ public class Event extends PartakeModel<Event> {
         
         this.isPrivate = isPrivate;
         this.passcode = passcode;
+        
         this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
     
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, List<String> managerScreenNames, 
             String foreImageId, String backImageId,
-            boolean isPrivate, String passcode, Date createdAt) {
+            boolean isPrivate, String passcode, Date createdAt, Date modifiedAt) {
         this.id = id;
         this.shortId = shortId;
         this.title = title;
@@ -128,6 +131,7 @@ public class Event extends PartakeModel<Event> {
         this.isPrivate = isPrivate;
         this.passcode = passcode;
         this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
     
     public String getId() {
@@ -220,6 +224,10 @@ public class Event extends PartakeModel<Event> {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+    
+    public Date getModifiedAt() {
+    	return modifiedAt;
     }
     
     // ----------------------------------------------------------------------
@@ -317,6 +325,11 @@ public class Event extends PartakeModel<Event> {
     public void setCreatedAt(Date createdAt) {
         checkFrozen();
         this.createdAt = createdAt;
+    }
+    
+    public void setModifiedAt(Date modifiedAt) {
+    	checkFrozen();
+    	this.modifiedAt = modifiedAt;
     }
     
     // ----------------------------------------------------------------------
