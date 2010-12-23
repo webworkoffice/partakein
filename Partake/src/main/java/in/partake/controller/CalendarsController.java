@@ -1,7 +1,6 @@
 package in.partake.controller;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.KeyIterator;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
@@ -17,6 +16,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,10 +30,11 @@ import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.ValidationException;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.LastModified;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Sequence;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.model.property.Version;
@@ -43,9 +44,15 @@ public class CalendarsController extends PartakeActionSupport {
 	/** */
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(CalendarsController.class);
+        
+    private static final TimeZone JST_TIMEZONE;
+    static {
+        TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
+        JST_TIMEZONE = registry.getTimeZone("Asia/Tokyo");    	
+    }
     
     private ByteArrayInputStream inputStream = null;
-	
+    
 	public ByteArrayInputStream getInputStream() {
         return inputStream;
     }
@@ -136,29 +143,27 @@ public class CalendarsController extends PartakeActionSupport {
     }
 
     private Calendar createCalendarSkeleton() {
+    	// TODO: calendar を cache するようになったときは、now, lastmodified をちゃんとする。
+    	// sequence はとりあえず lastmodified と同じでよかろう。
+    	
         Calendar calendar = new Calendar();
+        
         calendar.getProperties().add(new ProdId("-//Events Calendar//iCal4j 1.0//EN"));
         calendar.getProperties().add(Version.VERSION_2_0);
         calendar.getProperties().add(CalScale.GREGORIAN);
+        calendar.getComponents().add(JST_TIMEZONE.getVTimeZone());
         
-        // set timezone
-        TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-        TimeZone timezone = registry.getTimeZone("Asia/Tokyo");
-        if (timezone == null) {
-        	logger.warn("timezone is null.");
-        } else {
-        	VTimeZone tz = timezone.getVTimeZone();
-        	calendar.getComponents().add(tz);    			
-        }
         return calendar;
     }
     
     private void addToCalendar(Calendar calendar, Event event) {
         DateTime beginDate = new DateTime(event.getBeginDate().getTime());
+        beginDate.setTimeZone(JST_TIMEZONE);
 
         VEvent vEvent;
         if (event.getEndDate() != null) {
             DateTime endDate = new DateTime(event.getEndDate().getTime());
+            endDate.setTimeZone(JST_TIMEZONE);
             vEvent = new VEvent(beginDate, endDate, event.getTitle());
         } else {
             vEvent = new VEvent(beginDate, event.getTitle());
@@ -178,6 +183,11 @@ public class CalendarsController extends PartakeActionSupport {
                 e.printStackTrace();
             }
         }
+        
+        // TODO: sequence と last modifed をあとで付ける。
+        // last modified
+        // DateTime lastModified = new DateTime(event.get)
+        // vEvent.getProperties().add(new LastModified(lastModified));
         
         calendar.getComponents().add(vEvent);
     }
