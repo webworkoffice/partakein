@@ -276,9 +276,7 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        Event event = EventService.get().getEventById(eventId);
 	        if (event == null) { return ERROR; }
 
-	        // TODO: calculated deadline を使うように変更する。
-	        Date deadline = event.getDeadline();
-	        if (deadline == null) { deadline = event.getBeginDate(); }
+	        Date deadline = event.getCalculatedDeadline();
 	        
 	        // もし、締め切りを過ぎている場合、変更が出来なくなる。
 	        if (deadline.before(new Date())) {
