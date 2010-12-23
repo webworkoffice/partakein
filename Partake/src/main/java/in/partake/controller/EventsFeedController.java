@@ -20,15 +20,10 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
 import in.partake.model.CommentEx;
-import in.partake.model.EventEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
-import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
-import in.partake.model.dto.Participation;
 import in.partake.service.EventService;
-import in.partake.util.Pair;
 import in.partake.util.Util;
 
 public class EventsFeedController extends PartakeActionSupport {

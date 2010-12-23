@@ -58,7 +58,7 @@
 </div>
 
 <div class="setting-set">
-<s:form method="post" action="%{#request.contextPath}/setPreference">
+<s:form method="post" action="setPreference">
 	<s:token />
 	<s:checkbox name="receivingTwitterMessage" />twitter 経由のリマインダーを受け取る (default:受け取る)<br />
 	<s:checkbox name="profilePublic" />マイページを他人にも公開する (default：公開)<br />
@@ -85,7 +85,7 @@
 
 <p><span class="accent">＞＞ </span><span class="bold">カレンダーIDを再生成する</span></p><p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。<br>
 ただし、これまでのカレンダー URL は無効になるので気をつけてください。</p>
-<s:form method="post" action="%{#request.contextPath}/revokeCalendar">
+<s:form method="post" action="revokeCalendar">
 	<s:token />
 	<s:submit value="カレンダー ID を再生成する" />
 </s:form>
