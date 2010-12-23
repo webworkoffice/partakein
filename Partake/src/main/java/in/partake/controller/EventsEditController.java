@@ -231,7 +231,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		smonth = emonth = dmonth = oneDayAfter.getMonth() + 1;
 		sday   = eday   = dday   = oneDayAfter.getDate();
 		shour  = ehour  = dhour  = oneDayAfter.getHours();
-		smin   = emin   = dmin   = oneDayAfter.getMinutes();
+		smin   = emin   = dmin   = 0;
 		
     	return INPUT;
     }
