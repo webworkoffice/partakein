@@ -229,6 +229,10 @@ public final class Util {
 		}
     }
     
+    public static String shortenURL(String sourceURL) {
+        return bitlyShortURL(sourceURL);
+    }
+    
     public static String bitlyShortURL(Bitly bitly, String sourceURL) {
         try {
             BitlyUrl bUrl = bitly.shorten(sourceURL);
@@ -239,6 +243,15 @@ public final class Util {
         }
     }
     
+    /**
+     * URL を bitly で短縮する。
+     * 名前が良くないので、deprecated 扱い。これからは shortenURL を使うこと。
+     * TODO: あと、これがここにいるのはよくないんじゃないかなー。URLService 的なものを作った方がよいような気がする。
+     * 
+     * @param sourceURL
+     * @return
+     */
+    @Deprecated
     public static String bitlyShortURL(String sourceURL) {
         final String bitlyUserName = PartakeProperties.get().getBitlyUserName();
         final String bitlyAPIKey = PartakeProperties.get().getBitlyAPIKey();

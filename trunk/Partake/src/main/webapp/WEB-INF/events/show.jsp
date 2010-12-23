@@ -170,7 +170,7 @@ body {
 	</ul>
 	
 	<div id="event-edit-form" style="display: none">
-        <s:form method="post" name="eventEditForm" action="%{#request.contextPath}/events/edit">
+        <s:form method="post" name="eventEditForm" action="edit">
 			<s:token />
             <s:hidden name="eventId" value="%{eventId}" />
             <s:submit value="イベントを編集する" />
@@ -178,41 +178,16 @@ body {
 	</div>
     <div id="event-delete-form" title="イベントを削除しようとしています" style="display: none">
         <p>イベントを削除しようとしています。この操作は取り消せません。本当に削除しますか？</p>
-        <s:form method="post" action="%{#request.contextPath}/events/destroy">
+        <s:form method="post" action="destroy">
             <s:token />
             <s:hidden name="eventId" value="%{eventId}" />
             <s:submit value="イベントを削除する" />
         </s:form>
     </div>
-    
-	<div id="subevent-new-form" style="display: none">
-		<s:form method="post" name="eventSubeventNewForm" action="%{#request.contextPath}/events/newSubevent">
-			<s:token />
-			<s:hidden name="eventId" value="%{eventId}" />
-			<s:submit value="サブイベントを追加する" />
-		</s:form>
-	</div>
-    <div id="subevent-edit-form" style="display: none">
-        <s:form method="post" name="eventSubeventEditForm" action="%{#request.contextPath}/events/editSubevent">
-            <s:token />
-            <s:hidden name="eventId" value="%{eventId}" />
-            <s:submit value="サブイベントを編集する" />
-        </s:form>
-    </div>
-    <div id="subevent-delete-form" title="サブイベントを削除しようとしています" style="display: none">
-        <p>サブイベントを削除しようとしています。この操作は取り消せません。本当に削除しますか？</p>
-        <s:form method="post" name="eventSubeventDeleteForm" action="%{#request.contextPath}/events/destroySubevent">
-            <s:token />
-            <s:hidden name="eventId" value="%{eventId}" />
-            <s:submit value="サブイベントを削除する" />
-        </s:form>
-    </div>
-	
-	
 
     <div id="message-form" title="参加者にメッセージを送信します">
         <p>参加者に twitter 経由でメッセージを送ることが出来ます。メッセージは、１００文字以内で記述してください。最大で１時間３回１日５回まで送ることが出来ます。</p>
-        <s:form method="post" action="%{#request.contextPath}/events/send">
+        <s:form method="post" action="send">
             <s:token />
             <s:hidden name="eventId" value="%{eventId}" />
             <s:textarea name="message"></s:textarea>
@@ -221,7 +196,7 @@ body {
     </div>
     <div id="twitter-promotion-form" title="twitter に宣言を流す">
         <p>twitter に宣伝を流すことが出来ます。</p>
-        <s:form method="post" action="%{#request.contextPath}/events/twitterPromotion">
+        <s:form method="post" action="twitterPromotion">
             <s:token />
             <s:hidden name="eventId" value="%{eventId}" />
             <s:textarea name="message" value="%{event.defaultTwitterPromotionMessage}"></s:textarea>
@@ -232,7 +207,7 @@ body {
     <div id="reminder-reset-form" title="リマインダー送付状況をリセットする">
         <p>リマインダーを未送付の状態にします。</p>
         <p>開催日付を誤るなどしてリマインダーが送られてしまった状態になった場合に利用できます。</p>
-        <s:form method="post" action="%{#request.contextPath}/events/resetReminder">
+        <s:form method="post" action="resetReminder">
             <s:token />
             <s:hidden name="eventId" value="%{eventId}" />
             <ul>
@@ -304,7 +279,7 @@ body {
 		
 		<%-- 参加登録フォーム --%>
 		<div id="enroll-form" title="参加登録フォーム" style="display: none">
-			<s:form method="post" action="%{#request.contextPath}/events/enroll">
+			<s:form method="post" action="enroll">
 				<s:token />
 				<s:hidden name="eventId" value="%{eventId}" />
 				<p>イベントに<strong>参加</strong>しようとしています。</p>
@@ -314,7 +289,7 @@ body {
 		</div>
 		<%-- 仮参加フォーム --%>
 		<div id="reserve-form" title="仮参加登録フォーム" style="display: none">
-			<s:form method="post" action="%{#request.contextPath}/events/reserve">
+			<s:form method="post" action="reserve">
 				<s:token />
 				<s:hidden name="eventId" value="%{eventId}" />
 				<p>イベントに<strong>仮参加</strong>しようとしています。</p>
@@ -325,7 +300,7 @@ body {
 		</div>
 		<%-- キャンセルフォーム --%>
 		<div id="cancel-form" title="参加キャンセルフォーム" style="display: none">
-            <s:form method="post" action="%{#request.contextPath}/events/cancel">
+            <s:form method="post" action="cancel">
                 <s:token />
                 <s:hidden name="eventId" value="%{eventId}" />
                 <p>イベントへの参加を<strong>キャンセル</strong>しようとしています。</p>
@@ -336,7 +311,7 @@ body {
 		</div>
 		<%-- コメント変更フォーム --%>
 		<div id="change-comment-form" title="コメント変更フォーム" style="display: none">
-            <s:form method="post" action="%{#request.contextPath}/events/changeComment">
+            <s:form method="post" action="changeComment">
                 <s:token />
                 <s:hidden name="eventId" value="%{eventId}" />
                 <p>コメントを変更します。</p>

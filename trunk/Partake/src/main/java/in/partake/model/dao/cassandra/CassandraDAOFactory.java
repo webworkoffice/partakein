@@ -47,7 +47,7 @@ public class CassandraDAOFactory extends PartakeModelFactory {
             CassandraClient client = pool.borrowClient(host, port);
             
             logger.debug("borrowing... " + name + " : " + client.toString());
-            return new PartakeCassandraConnection(this, client, now);
+            return new PartakeCassandraConnection(this, name, client, now);
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -55,10 +55,17 @@ public class CassandraDAOFactory extends PartakeModelFactory {
     
     @Override
     public void releaseConnection(PartakeConnection connection) {
+        int tenSeconds = 1000 * 10;
+        Date now = new Date();
+        
+        if (connection.getAcquiredTime() + tenSeconds < now.getTime()) {
+            logger.warn("connection [" + connection.getName() + "] have been acquired for " + (now.getTime() - connection.getAcquiredTime()) + " milliseconds.");
+        }
+        
     	if (connection instanceof PartakeCassandraConnection) {
     		releaseConnectionImpl((PartakeCassandraConnection) connection);
     	} else {
-    		logger.warn("connection should be PartakeCassandraConnection");
+    		logger.warn("connection should be PartakeCassandraConnection. This may cause resource leak.");
     	}
     }
     

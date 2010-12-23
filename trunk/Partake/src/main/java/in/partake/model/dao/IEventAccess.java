@@ -15,6 +15,7 @@ public interface IEventAccess {
     public abstract void addEvent(PartakeConnection con, String eventId, Event embryo) throws DAOException;
     public abstract void addEventAsDemo(PartakeConnection con, Event embryo) throws DAOException;
     public abstract void updateEvent(PartakeConnection con, Event original, Event embryo) throws DAOException;
+    public abstract void updateEventRevision(PartakeConnection con, String eventId) throws DAOException;
     public abstract void removeEvent(PartakeConnection con, Event event) throws DAOException;    
     
     // feed
