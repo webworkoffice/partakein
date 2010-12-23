@@ -229,7 +229,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         mutations.add(createMutation("backImageId", embryo.getBackImageId(), time));
         mutations.add(createColumnMutation("secret", embryo.isPrivate() ? TRUE : FALSE, time)); 
         mutations.add(createMutation("passcode", embryo.getPasscode(), time));
-        mutations.add(createMutation("createdAt", embryo.getCreatedAt(), time));
+        mutations.add(createMutation("createdAt", embryo.getCreatedAt(), time)); // TODO: おいこれ createdAt と modifiedAt が区別されてないぞ
         
         client.batch_mutate(EVENTS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENTS_COLUMNFAMILY, mutations)), EVENTS_CL_W);
     }
