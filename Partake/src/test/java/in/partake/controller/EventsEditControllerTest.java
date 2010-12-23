@@ -17,7 +17,10 @@ public final class EventsEditControllerTest {
 	 * <ul>
 	 * <li>EventsEditControllerが正常にインスタンス化できること
 	 * <li>開始時刻・終了時刻・締切時刻が現在の24時間後になっていること
+	 * <li>開始時刻・終了時刻・締切時刻の分（minute）が0になっていること
 	 * </ul>
+	 * 
+	 * 既知の問題：午前にテストケースを実行した場合、時（hour）が24時間表記になっていることをテストできない
 	 * 
 	 * @author skypencil (@eller86)
 	 * @throws InterruptedException 
