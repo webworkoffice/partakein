@@ -143,9 +143,6 @@ public class CalendarsController extends PartakeActionSupport {
     }
 
     private Calendar createCalendarSkeleton() {
-    	// TODO: calendar を cache するようになったときは、now, lastmodified をちゃんとする。
-    	// sequence はとりあえず lastmodified と同じでよかろう。
-    	
         Calendar calendar = new Calendar();
         
         calendar.getProperties().add(new ProdId("-//Events Calendar//iCal4j 1.0//EN"));
@@ -184,10 +181,20 @@ public class CalendarsController extends PartakeActionSupport {
             }
         }
         
-        // TODO: sequence と last modifed をあとで付ける。
-        // last modified
-        // DateTime lastModified = new DateTime(event.get)
-        // vEvent.getProperties().add(new LastModified(lastModified));
+        // modified
+        DateTime modifiedAt = null;
+        if (event.getModifiedAt() != null) {
+        	modifiedAt = new DateTime(event.getModifiedAt());
+        } else if (event.getCreatedAt() != null){
+        	modifiedAt = new DateTime(event.getCreatedAt());
+        }
+        if (modifiedAt != null) {
+	        modifiedAt.setTimeZone(JST_TIMEZONE);
+	        vEvent.getProperties().add(new LastModified(modifiedAt));
+        }        
+        
+        // sequence
+       	vEvent.getProperties().add(new Sequence(event.getRevision()));
         
         calendar.getComponents().add(vEvent);
     }

@@ -13,7 +13,7 @@
 
 <h1 id="pastel-line13ji"><img src="<%= request.getContextPath() %>/images/line-yellow.png" alt="">新しいイベントを作成します</h1>
 
-<s:form method="post" action="%{#request.contextPath}/events/create" enctype="multipart/form-data">
+<s:form method="post" action="create" enctype="multipart/form-data">
 	<s:token />
 	<%@ include file="/WEB-INF/events/inner-form.jsp" %>
 

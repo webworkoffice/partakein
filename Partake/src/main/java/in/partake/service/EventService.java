@@ -319,6 +319,8 @@ public final class EventService extends PartakeService {
     
     		// master を update
     		factory.getEventAccess().updateEvent(con, event, eventEmbryo);
+    		// event の revision を update
+    		factory.getEventAccess().updateEventRevision(con, event.getId());
     		
     		// その後に image たちを update
     		if (updatesForeImage) {

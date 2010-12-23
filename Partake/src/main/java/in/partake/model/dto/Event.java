@@ -36,9 +36,10 @@ public class Event extends PartakeModel<Event> {
 
     private boolean isPrivate;  // true if the event is private.
     private String passcode;    // passcode to show (if not public)
-    
+   
     private Date createdAt;
     private Date modifiedAt;
+    private int revision;
     
     // begin date 順に並べる comparator 
     public static Comparator<Event> getComparatorBeginDateAsc() {
@@ -102,12 +103,13 @@ public class Event extends PartakeModel<Event> {
         
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+        this.revision = 0;
     }
     
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, List<String> managerScreenNames, 
             String foreImageId, String backImageId,
-            boolean isPrivate, String passcode, Date createdAt, Date modifiedAt) {
+            boolean isPrivate, String passcode, Date createdAt, Date modifiedAt, int revision) {
         this.id = id;
         this.shortId = shortId;
         this.title = title;
@@ -132,6 +134,7 @@ public class Event extends PartakeModel<Event> {
         this.passcode = passcode;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+        this.revision = revision;
     }
     
     public String getId() {
@@ -228,6 +231,10 @@ public class Event extends PartakeModel<Event> {
     
     public Date getModifiedAt() {
     	return modifiedAt;
+    }
+    
+    public int getRevision() {
+        return revision;
     }
     
     // ----------------------------------------------------------------------
@@ -330,6 +337,11 @@ public class Event extends PartakeModel<Event> {
     public void setModifiedAt(Date modifiedAt) {
     	checkFrozen();
     	this.modifiedAt = modifiedAt;
+    }
+    
+    public void setRevision(int revision) {
+        checkFrozen();
+        this.revision = revision;
     }
     
     // ----------------------------------------------------------------------
