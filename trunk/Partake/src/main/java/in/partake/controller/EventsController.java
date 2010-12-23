@@ -106,9 +106,7 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        List<DirectMessageEx> messages = DirectMessageService.get().getUserMessagesByEventId(eventId);
 	        
 	        attributes.put(Constants.ATTR_EVENT, event);
-	        attributes.put(Constants.ATTR_ENROLLED_PARTICIPATIONS, participationList.getEnrolledParticipations());
-	        attributes.put(Constants.ATTR_SPARE_PARTICIPATIONS, participationList.getSpareParticipations());
-	        attributes.put(Constants.ATTR_CANCELLED_PARTICIPATIONS, participationList.getCancelledParticipations());
+	        attributes.put(Constants.ATTR_PARTICIPATIONLIST, participationList);
 	        
 	        if (user != null) {
 	        	attributes.put(Constants.ATTR_PARTICIPATION_STATUS, UserService.get().getParticipationStatus(user, event));
