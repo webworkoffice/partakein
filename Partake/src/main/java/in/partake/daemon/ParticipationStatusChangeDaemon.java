@@ -7,7 +7,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.KeyIterator;
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessagePostingType;
-import in.partake.model.dto.Event;
 import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
 import in.partake.service.DirectMessageService;
@@ -26,9 +25,10 @@ class ParticipationStatusChangeTask extends TimerTask {
     
     @Override
     public void run() {
-    	logger.info("articipationStatusChangeTask START.");
+    	logger.info("ParticipationStatusChangeTask START.");
         Date now = new Date();
         try {
+        	// TODO: 開催前のイベントだけiterateすれば充分かも
             KeyIterator it = EventService.get().getAllEventKeysIterator();
             while (it.hasNext()) {
                 EventEx event = EventService.get().getEventExById(it.next());
@@ -113,9 +113,9 @@ class ParticipationStatusChangeTask extends TimerTask {
             }
             
         } catch (DAOException e) {
-            e.printStackTrace();
+            logger.warn("run() failed.", e);
         }     
-        logger.info("articipationStatusChangeTask END.");
+        logger.info("ParticipationStatusChangeTask END.");
     }
     
 }
