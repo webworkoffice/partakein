@@ -24,6 +24,7 @@ import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 
+// TOOD: This class will be merged into MessageService later.
 public class DirectMessageService extends PartakeService {
     private static DirectMessageService instance = new DirectMessageService();
     private static final Logger logger = Logger.getLogger(DirectMessageService.class);

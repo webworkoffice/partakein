@@ -41,6 +41,8 @@ public abstract class PartakeService {
         return result;
     }
     
+    
+    
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
         User user = getFactory().getUserAccess().getUserById(con, userId);
         if (user == null) { return null; }

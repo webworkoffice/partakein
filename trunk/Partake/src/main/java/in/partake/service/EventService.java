@@ -1,5 +1,6 @@
 package in.partake.service;
 
+import in.partake.functional.Function;
 import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
@@ -118,9 +119,33 @@ public final class EventService extends PartakeService {
 	 * @return
 	 * @throws DAOException
 	 */
-	// TODO: KeyIterato should not be exposed. 
+	// TODO: KeyIterator should not be exposed. Use applyForAllEvents() instead.
+	@Deprecated
 	public KeyIterator getAllEventKeysIterator() throws DAOException {
 	    return getFactory().getEventAccess().getAllEventKeys(getFactory());
+	}
+	
+	/**
+	 * apply a function f to all event.
+	 * @param f
+	 * @throws DAOException
+	 */
+	public void applyForAllEvents(Function<Event, Void> f) throws DAOException {
+        PartakeModelFactory factory = getFactory();
+        PartakeConnection con = factory.getConnection();
+        
+        try {
+            KeyIterator it = factory.getEventAccess().getAllEventKeys(factory);
+            while (it.hasNext()) {
+                String eventId = it.next();
+                if (eventId == null) { continue; }
+                Event event = factory.getEventAccess().getEventById(con, eventId);
+                if (event == null) { continue; }
+                f.apply(event);
+            }
+        } finally {
+            con.invalidate();
+        }
 	}
 	
 	/**

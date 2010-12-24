@@ -2,9 +2,10 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+// TODO: This class will be renamed as Message later.
 public class DirectMessage extends PartakeModel<DirectMessage> {
     private String id;
-    private String userId;		// senderId にすべきだな
+    private String userId;		// TODO: senderId にすべきだな
     private String message;
     private String eventId;
     private Date   createdAt;
