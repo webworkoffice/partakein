@@ -30,6 +30,13 @@ import in.partake.resource.PartakeProperties;
 public class CassandraDAOFactory extends PartakeModelFactory {
     private static final Logger logger = Logger.getLogger(CassandraDAOFactory.class);
 
+    // 同じ thread が複数の connection を取ると deadlock の可能性があるため、修正すること。
+    private ThreadLocal<Integer> numAcquiredConnection;
+    
+    public CassandraDAOFactory() {
+        this.numAcquiredConnection = new ThreadLocal<Integer>();
+    }
+    
     @Override
     @Deprecated
     public PartakeConnection getConnection() throws DAOException {
@@ -41,6 +48,15 @@ public class CassandraDAOFactory extends PartakeModelFactory {
         try {
             long now = new Date().getTime();
             CassandraClientPool pool = CassandraClientPoolFactory.INSTANCE.get();
+            
+            if (numAcquiredConnection.get() == null) {
+                numAcquiredConnection.set(new Integer(1));
+            } else {
+                numAcquiredConnection.set(numAcquiredConnection.get() + 1);
+            }
+            if (numAcquiredConnection.get() > 1) {
+                logger.warn(name + " : The same thread has taken multiple connections. This may cause a bug");
+            }
             
             String host = PartakeProperties.get().getCassandraHost();
             int port = PartakeProperties.get().getCassandraPort();
@@ -62,6 +78,8 @@ public class CassandraDAOFactory extends PartakeModelFactory {
         if (connection.getAcquiredTime() + tenSeconds < now.getTime()) {
             logger.warn("connection [" + connection.getName() + "] have been acquired for " + (now.getTime() - connection.getAcquiredTime()) + " milliseconds.");
         }
+        
+        numAcquiredConnection.set(numAcquiredConnection.get() - 1);
         
     	if (connection instanceof PartakeCassandraConnection) {
     		releaseConnectionImpl((PartakeCassandraConnection) connection);

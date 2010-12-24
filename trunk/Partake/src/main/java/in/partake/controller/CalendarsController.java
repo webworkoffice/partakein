@@ -1,14 +1,13 @@
 package in.partake.controller;
 
+import in.partake.functional.Function;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.KeyIterator;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
 import in.partake.model.dto.User;
 import in.partake.resource.I18n;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
-import in.partake.util.Util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -77,15 +76,23 @@ public class CalendarsController extends PartakeActionSupport {
         try {
             Calendar calendar = createCalendarSkeleton();
             
-            KeyIterator it = EventService.get().getAllEventKeysIterator();
-            while (it.hasNext()) {
-                String eventId = it.next();
-                Event event = EventService.get().getEventById(eventId);
-                if (event == null) { continue; }
-                if (event.isPrivate()) { continue; } // private calendar should not be displayed.
-                if (!"all".equals(categoryName) && !categoryName.equals(event.getCategory())) { continue; }
-                addToCalendar(calendar, event);
+            class F implements Function<Event, Void> {
+                private String categoryName;
+                private Calendar calendar;
+                public F(String categoryName, Calendar calendar) {
+                    this.categoryName = categoryName;
+                    this.calendar = calendar;
+                }
+                public Void apply(Event event) {
+                    if (event == null) { return null; }
+                    if (event.isPrivate()) { return null; } // private calendar should not be displayed.
+                    if (!"all".equals(categoryName) && !categoryName.equals(event.getCategory())) { return null; }
+                    addToCalendar(calendar, event);
+                    return null;
+                }
             }
+            
+            EventService.get().applyForAllEvents(new F(categoryName, calendar));
             
             outputCalendar(calendar);
             return SUCCESS;
@@ -107,7 +114,7 @@ public class CalendarsController extends PartakeActionSupport {
 	// TODO: why not cache?
     public String show() {
     	String calendarId = getParameter("calendarId");
-    	if (Util.isEmpty(calendarId)) { return ERROR; }
+    	if (StringUtils.isEmpty(calendarId)) { return ERROR; }
     	
     	try {
     	    // TODO: これは CalendarService.get().getEnrolledEventsByCalendarId 的ななにかにしなければならない。
