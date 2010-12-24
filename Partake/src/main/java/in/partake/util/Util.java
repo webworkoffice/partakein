@@ -167,7 +167,7 @@ public final class Util {
             case '"': builder.append("&quot;"); break;
             case '\'': builder.append("&apos;"); break;
             	default:  
-            	if (Character.isISOControl(s.codePointAt(i))) {
+            	if (Character.isIdentifierIgnorable(s.codePointAt(i))) {
             		// ignore.
             	} else {
             		for (int j = 0; j < Character.charCount(s.codePointAt(i)); ++j) {
