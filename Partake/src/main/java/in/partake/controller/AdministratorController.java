@@ -2,7 +2,6 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.KeyIterator;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
 import in.partake.resource.PartakeProperties;
@@ -85,16 +84,7 @@ public class AdministratorController extends PartakeActionSupport {
     	
         ensureAdmin();
     	try {
-    		KeyIterator it = EventService.get().getAllEventKeysIterator();
-    		while (it.hasNext()) {
-    		    String eventId = it.next();
-    		    if (eventId == null) { continue; }
-    			Event event = EventService.get().getEventById(eventId);
-    			if (event == null) { continue; }
-    			
-    			EventService.get().appendFeedIfAbsent(eventId);
-    		}
-    		
+    	    EventService.get().addFeedIdToAllEvents();
     		return SUCCESS;
     	} catch (DAOException e) {
     		e.printStackTrace();

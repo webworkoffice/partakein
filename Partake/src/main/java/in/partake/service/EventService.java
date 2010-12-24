@@ -115,38 +115,42 @@ public final class EventService extends PartakeService {
 	}
 
 	/**
-	 * get an iterator which iterates the key of all events.
-	 * @return
-	 * @throws DAOException
-	 */
-	// TODO: KeyIterator should not be exposed. Use applyForAllEvents() instead.
-	@Deprecated
-	public KeyIterator getAllEventKeysIterator() throws DAOException {
-	    return getFactory().getEventAccess().getAllEventKeys(getFactory());
-	}
-	
-	/**
-	 * apply a function f to all event.
+	 * 全ての event に、関数 f を適用する。f 中では ～～Service を呼ばないように注意。
 	 * @param f
 	 * @throws DAOException
 	 */
 	public void applyForAllEvents(Function<Event, Void> f) throws DAOException {
-        PartakeModelFactory factory = getFactory();
-        PartakeConnection con = factory.getConnection();
-        
-        try {
-            KeyIterator it = factory.getEventAccess().getAllEventKeys(factory);
-            while (it.hasNext()) {
-                String eventId = it.next();
-                if (eventId == null) { continue; }
-                Event event = factory.getEventAccess().getEventById(con, eventId);
-                if (event == null) { continue; }
-                f.apply(event);
-            }
-        } finally {
-            con.invalidate();
+	    PartakeModelFactory factory = getFactory();
+	    PartakeConnection con = factory.getConnection();
+	    
+	    KeyIterator it = factory.getEventAccess().getAllEventKeys(factory);	    
+	    while (it.hasNext()) {
+	        String eventId = it.next();
+	        if (eventId == null) { continue; }
+	        Event event = factory.getEventAccess().getEventById(con, eventId);
+	        if (event == null) { continue; }
+	        f.apply(event);
+	    }
+	}
+	
+	/**
+	 * feed id がついてない event に feed id をつける。
+	 * @throws DAOException
+	 */
+	public void addFeedIdToAllEvents() throws DAOException {
+	    PartakeModelFactory factory = getFactory();
+	    
+	    KeyIterator it = factory.getEventAccess().getAllEventKeys(factory);
+        while (it.hasNext()) {
+            String eventId = it.next();
+            if (eventId == null) { continue; }
+            Event event = EventService.get().getEventById(eventId);
+            if (event == null) { continue; }
+            
+            EventService.get().appendFeedIfAbsent(eventId);
         }
 	}
+	
 	
 	/**
 	 * search events.
