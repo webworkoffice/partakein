@@ -6,7 +6,10 @@ This page describes what committers must know.
 
 = Details =
 
-  * DataIterator will become un-exposed from SomethingService.
-    * because it is difficult to keep transactions.
+  * DataIterator will become un-exposed from SomethingService(in.partake.service.`*`).
+    * Because it is difficult to keep transactions.
     * When an operation requires DataIterator, it should be closed in SomethingService.
- 
+
+  * Connection will become un-exposed from SomethingService.
+    * Because it will take 2+ connections per thread, and bring dead-lock.
+    * When an operation requires creating Connection, it should be closed in SomethingService.
