@@ -11,7 +11,7 @@ This page describes what committers must know.
     * When an operation requires DataIterator, it should be closed in SomethingService.
 
   * Creating Connection will become un-exposed from SomethingService.
-    * Because it will take 2+ connections per thread, and bring dead-lock.
+    * Because it may take 2+ connections per thread. It brings dead-lock.
     * When an operation requires Connection, create it in SomethingService and give it for other objects.
 
 = 注意事項（和訳） =
