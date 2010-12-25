@@ -10,6 +10,15 @@ This page describes what committers must know.
     * Because it is difficult to keep transactions.
     * When an operation requires DataIterator, it should be closed in SomethingService.
 
-  * Connection will become un-exposed from SomethingService.
+  * Creating Connection will become un-exposed from SomethingService.
     * Because it will take 2+ connections per thread, and bring dead-lock.
-    * When an operation requires creating Connection, it should be closed in SomethingService.
+    * When an operation requires Connection, create it in SomethingService and give it for other objects.
+
+= 注意事項（和訳） =
+
+  * DateIteratorはServiceクラス(in.partake.service.`*`)以外から呼び出さないでください。
+    * トランザクション管理が困難になるため、DataIteratorを必要とする処理はServiceクラス内に実装してください。
+
+  * Connectionも同様に、Serviceクラス以外では生成しないでください。
+    * Connectionを1スレッドあたり複数所有する可能性を生み、コネクションのデッドロックを引き起こします。
+    * Service内でConnectionを生成し、他のオブジェクトに渡すようにしてください。
