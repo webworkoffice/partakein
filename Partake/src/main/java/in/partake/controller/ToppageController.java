@@ -1,8 +1,10 @@
 package in.partake.controller;
 
+import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.resource.Constants;
+import in.partake.resource.I18n;
 import in.partake.service.EventService;
 
 import java.util.Collections;
@@ -26,6 +28,17 @@ public class ToppageController extends PartakeActionSupport {
 		} catch (DAOException e) {
 			logger.warn("Loading recent events failed.", e);
 			attributes.put(Constants.ATTR_RECENT_EVENTS, Collections.EMPTY_LIST);
+		}
+		
+		// もしログインしていれば、最近のイベントを表示する。
+		UserEx user = getLoginUser();
+		if (user != null) {
+		    try {
+		        attributes.put(Constants.ATTR_OWNED_EVENTSET, EventService.get().getUnfinishedEventsOwnedBy(user.getId())); 
+		        attributes.put(Constants.ATTR_ENROLLED_EVENTSET, EventService.get().getUnfinishedEnrolledEvents(user.getId())); 
+		    } catch (DAOException e) {
+		        logger.error(I18n.t(I18n.DATABASE_ERROR));
+		    }
 		}
 		
 		return SUCCESS;

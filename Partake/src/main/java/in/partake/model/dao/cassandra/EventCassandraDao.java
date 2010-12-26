@@ -133,9 +133,14 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     
     @Override
     public List<Event> getEventsByOwner(PartakeConnection con, User owner) throws DAOException {
+        return getEventsByOwner(con, owner.getId());
+    }
+    
+    @Override
+    public List<Event> getEventsByOwner(PartakeConnection con, String userId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getEventsByOwner(ccon, owner);
+            return getEventsByOwnerImpl(ccon, userId);
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -300,9 +305,9 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     // retrieval
     
     // TODO: DAO が仕事しすぎ
-    private List<Event> getEventsByOwner(CassandraConnection con, User owner) throws Exception {
+    private List<Event> getEventsByOwnerImpl(CassandraConnection con, String userId) throws Exception {
         Client client = con.getClient();
-    	String key = EVENTS_BYOWNER_PREFIX + owner.getId();
+    	String key = EVENTS_BYOWNER_PREFIX + userId;
 
         SlicePredicate predicate = new SlicePredicate();
         SliceRange sliceRange = new SliceRange(new byte[0], new byte[0], false, 1000); // TODO: 1000 件以上ある場合はどうしたらいい？

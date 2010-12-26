@@ -23,6 +23,8 @@ import in.partake.model.dto.User;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -187,16 +189,6 @@ public final class EventService extends PartakeService {
 	}
 	
 	/**
-	 * get 5 events recently created.
-	 * @return
-	 * @throws DAOException
-	 */
-	@Deprecated
-	public List<Event> getRecentEvents() throws DAOException {
-		return getRecentEvents(5);
-	}
-	
-	/**
 	 * get events recently created.
 	 * @param num
 	 * @return
@@ -214,6 +206,7 @@ public final class EventService extends PartakeService {
 	
 	/**
 	 * get events owned by the specified user.
+	 * TODO: user じゃなくて user id をとるようにする
 	 * @param owner
 	 * @return
 	 * @throws DAOException
@@ -222,10 +215,57 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            return factory.getEventAccess().getEventsByOwner(con, owner);
+            return factory.getEventAccess().getEventsByOwner(con, owner.getId());
         } finally {
             con.invalidate();
         }	    
+	}
+	
+	/**
+	 * userId が管理している event で開始時刻が現在より後のものを、開始時刻順に得る。
+	 * @param userId
+	 * @return
+	 * @throws DAOException
+	 */
+	public List<Event> getUnfinishedEventsOwnedBy(String userId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            Date now = new Date();
+            List<Event> events = factory.getEventAccess().getEventsByOwner(con, userId);
+            List<Event> result = new ArrayList<Event>();
+            for (Event event : events) {
+                if (!event.getBeginDate().before(now)) {
+                    result.add(event);
+                }
+            }
+            return result;
+        } finally {
+            con.invalidate();
+        }	    
+	}
+	
+	public List<Event> getUnfinishedEnrolledEvents(String userId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            List<Event> result = new ArrayList<Event>();
+            Date now = new Date();
+            
+            DataIterator<Event> it = factory.getEnrollmentAccess().getEnrolledEvents(con, userId);
+            while (it.hasNext()) {
+                Event e = it.next();
+                if (e == null) { continue; }
+                if (!e.getBeginDate().before(now)) {
+                    result.add(e);
+                }
+            }
+            
+            Collections.sort(result, Event.getComparatorBeginDateAsc());
+            return result;            
+        } finally {
+            con.invalidate();
+        }
 	}
 	
 	/**
