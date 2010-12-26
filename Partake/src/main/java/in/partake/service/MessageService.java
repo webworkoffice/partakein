@@ -10,7 +10,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
+import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessagePostingType;
 import in.partake.model.dto.Event;
@@ -40,20 +40,25 @@ public final class MessageService extends PartakeService {
         String topPath = PartakeProperties.get().getTopPath();      
         Date now = new Date();
 
-        DataIterator<EventNotificationStatus> iterator = getFactory().getMessageAccess().getNotificationStatuses(getFactory()); 
-        while (iterator.hasNext()) {                
-            EventNotificationStatus status = iterator.next();
-            
-            boolean changed = sendEventNotification(status, topPath, now);
-            
-            // remove で落ちると無限に message が送られるので、update() を別にしておく
-            if (changed) {
-                iterator.update(status);
+        PartakeConnection con = getPool().getConnection();
+        try {
+            DataIterator<EventNotificationStatus> iterator = getFactory().getMessageAccess().getNotificationStatuses(con); 
+            while (iterator.hasNext()) {                
+                EventNotificationStatus status = iterator.next();
+                
+                boolean changed = sendEventNotification(status, topPath, now);
+                
+                // remove で落ちると無限に message が送られるので、update() を別にしておく
+                if (changed) {
+                    iterator.update(status);
+                }
+                
+                if (status.isBeforeDeadlineOneday() && status.isBeforeDeadlineHalfday() && status.isBeforeTheDay()) {
+                    iterator.remove();
+                }
             }
-            
-            if (status.isBeforeDeadlineOneday() && status.isBeforeDeadlineHalfday() && status.isBeforeTheDay()) {
-                iterator.remove();
-            }
+        } finally {
+            con.invalidate();
         }
     }
     
@@ -176,8 +181,8 @@ public final class MessageService extends PartakeService {
      */
     // TODO: should this be here? EventService?
     public EventNotificationStatus getNotificationStatus(String eventId) throws DAOException {
-        PartakeModelFactory factory = getFactory();
-        PartakeConnection con = factory.getConnection();
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
         try {
             return factory.getMessageAccess().getNotificationStatus(con, eventId);
         } finally {
@@ -189,10 +194,10 @@ public final class MessageService extends PartakeService {
     public void sendParticipationStatusChangeNotifications() throws DAOException {
         Date now = new Date();
         
-        PartakeModelFactory factory = getFactory();
-        PartakeConnection con = factory.getConnection();
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
         try {
-            KeyIterator it = factory.getEventAccess().getAllEventKeys(factory);
+            KeyIterator it = factory.getEventAccess().getAllEventKeys(con);
             while (it.hasNext()) {
                 String eventId = it.next();
                 if (eventId == null) { continue; }

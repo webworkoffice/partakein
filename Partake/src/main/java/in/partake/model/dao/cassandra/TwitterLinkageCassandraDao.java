@@ -32,10 +32,13 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
     private static final ConsistencyLevel TWITTER_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel TWITTER_CL_W = ConsistencyLevel.ALL;
 
+    TwitterLinkageCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
 
 	@Override
 	public int addTwitterLinkage(PartakeConnection con, TwitterLinkage embryo) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return addTwitterLinkage(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -45,7 +48,7 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
 
     @Override
     public TwitterLinkage getTwitterLinkageById(PartakeConnection con, int twitterId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getTwitterLinkageById(ccon.getClient(), twitterId);
         } catch (Exception e) {

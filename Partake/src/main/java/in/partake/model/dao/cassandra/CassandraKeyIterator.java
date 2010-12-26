@@ -29,14 +29,13 @@ class CassandraKeyIterator extends KeyIterator {
     private String rangeEndKey;
     private boolean shouldExcludeNextStartKey;
     
-    private CassandraDAOFactory factory;
+    private CassandraConnection connection;
     
     private int pos;
     private List<KeySlice> keySlice;
     
     // package private
-    // TODO: temporarily public. should be package private.
-    public CassandraKeyIterator(CassandraDAOFactory factory, String keyspace, String keyPrefix, String columnFamily, ConsistencyLevel readConsistencyLevel) {
+    CassandraKeyIterator(CassandraConnection connection, String keyspace, String keyPrefix, String columnFamily, ConsistencyLevel readConsistencyLevel) {
         this.keyspace = keyspace;
         this.columnParent = new ColumnParent(columnFamily);        
         this.readConsistencyLevel = readConsistencyLevel;
@@ -53,7 +52,7 @@ class CassandraKeyIterator extends KeyIterator {
             this.rangeEndKey = new String(t);
         }
             
-        this.factory = factory;
+        this.connection = connection;
         
         this.pos = 0;
         this.keySlice = null;
@@ -63,9 +62,8 @@ class CassandraKeyIterator extends KeyIterator {
         if (keySlice != null && pos < keySlice.size()) { return true; }
         if (nextStartKey == null) { return false; }
 
-        PartakeCassandraConnection con = factory.getConnection("CassandraKeyIterator");
         try {
-            Client cassandra = con.getClient();
+            Client cassandra = connection.getClient();
             
             SlicePredicate slicePredicate = new SlicePredicate();
             SliceRange sliceRange = new SliceRange(new byte[0], new byte[0], false, 100);
@@ -102,8 +100,6 @@ class CassandraKeyIterator extends KeyIterator {
         } catch (Exception e) {
             e.printStackTrace();
             throw new DAOException(e);
-        } finally {
-            con.invalidate();
         }
     }
     

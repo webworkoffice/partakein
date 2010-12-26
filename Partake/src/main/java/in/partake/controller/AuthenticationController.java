@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.openid4java.OpenIDException;
@@ -22,7 +23,6 @@ import in.partake.model.dto.User;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.UserService;
-import in.partake.util.Util;
 
 import com.opensymphony.xwork2.ActionContext;
 
@@ -134,7 +134,7 @@ public class AuthenticationController extends PartakeActionSupport {
             return ERROR;
         }
         
-        if (Util.isEmpty(redirectURL)) {
+        if (StringUtils.isEmpty(redirectURL)) {
         	return SUCCESS;
         } else {
         	setRedirectURL(redirectURL);

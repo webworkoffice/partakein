@@ -194,7 +194,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     	
     	// secret が設定されているのに passcode が空であってはならない。
     	if (isSecret()) {
-    		if (Util.isEmpty(getPasscode())) {
+    		if (StringUtils.isEmpty(getPasscode())) {
     			addFieldError("passcode", "パスコードが空です");
     		}
     	} else {
@@ -209,7 +209,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     	}
     	
     	// hashtag は # から始まり、 a-zA-Z0-9_- のいずれかで構成されているべき
-    	if (!Util.isEmpty(hashTag) && !Util.isValidHashtag(hashTag)) {
+    	if (!StringUtils.isEmpty(hashTag) && !Util.isValidHashtag(hashTag)) {
     		addFieldError("hashtag", "ハッシュタグは # から始まる英数字のみが指定できます。");
     	}
     	

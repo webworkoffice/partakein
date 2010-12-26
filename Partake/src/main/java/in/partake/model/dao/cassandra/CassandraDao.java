@@ -26,10 +26,16 @@ import org.apache.cassandra.thrift.Cassandra.Client;
  *
  */
 abstract class CassandraDao {
-
+    // utility constants.
     public static final byte[] TRUE = bytes("true"); //$NON-NLS-1$
     public static final byte[] FALSE = bytes("false"); //$NON-NLS-1$
     public static final byte[] EMPTY = bytes("");
+    
+    protected final CassandraDAOFactory factory;
+    
+    protected CassandraDao(CassandraDAOFactory factory) {
+        this.factory = factory;
+    }
     
     // ----------------------------------------------------------------------
     // Utility methods

@@ -16,7 +16,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
+import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessageEnvelope;
 import in.partake.model.dto.DirectMessagePostingType;
@@ -40,8 +40,8 @@ public class DirectMessageService extends PartakeService {
     // ----------------------------------------------------------------------
 
     public DirectMessage getMessageById(String messageId) throws DAOException {
-        PartakeModelFactory factory = getFactory();
-        PartakeConnection con = factory.getConnection();
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
         try {
             return factory.getDirectMessageAccess().getDirectMessageById(con, messageId);
         } finally {
@@ -58,8 +58,8 @@ public class DirectMessageService extends PartakeService {
      * @throws DAOException
      */
     public String addMessage(DirectMessage embryo, boolean isUserMessage) throws DAOException {
-        PartakeModelFactory factory = getFactory();
-        PartakeConnection con = factory.getConnection();
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
 
         try {
             String messageId = factory.getDirectMessageAccess().getFreshId(con);
@@ -81,12 +81,12 @@ public class DirectMessageService extends PartakeService {
      * @throws DAOException
      */
     public List<DirectMessageEx> getUserMessagesByEventId(String eventId) throws DAOException {
-    	PartakeModelFactory factory = getFactory();
-    	PartakeConnection con = factory.getConnection();
+        PartakeDAOFactory factory = getFactory();
+    	PartakeConnection con = getPool().getConnection();
     	
     	try {
 	        List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
-	        DataIterator<DirectMessage> it = factory.getDirectMessageAccess().getUserMessageIterator(factory, eventId);
+	        DataIterator<DirectMessage> it = factory.getDirectMessageAccess().getUserMessageIterator(con, eventId);
 
 	        while (it.hasNext()) {
 	        	DirectMessage message = it.next();
@@ -107,17 +107,22 @@ public class DirectMessageService extends PartakeService {
      * @throws DAOException
      */
     public List<DirectMessage> getRecentUserMessage(String eventId, int maxMessage) throws DAOException {
-        PartakeModelFactory factory = getFactory();
-
-        List<DirectMessage> messages = new ArrayList<DirectMessage>();
-        DataIterator<DirectMessage> it = factory.getDirectMessageAccess().getUserMessageIterator(factory, eventId);
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
         
-        for (int i = 0; i < maxMessage; ++i) {
-            if (!it.hasNext()) { break; }
-            messages.add(it.next());
+        try {
+            List<DirectMessage> messages = new ArrayList<DirectMessage>();
+            DataIterator<DirectMessage> it = factory.getDirectMessageAccess().getUserMessageIterator(con, eventId);
+            
+            for (int i = 0; i < maxMessage; ++i) {
+                if (!it.hasNext()) { break; }
+                messages.add(it.next());
+            }
+                    
+            return messages;
+        } finally {
+            con.invalidate();
         }
-                
-        return messages;
     }
     
     /**
@@ -127,8 +132,8 @@ public class DirectMessageService extends PartakeService {
      * @throws DAOException
      */
     public void tweetMessage(User user, String messageStr) throws DAOException {
-        PartakeModelFactory factory = getFactory();
-        PartakeConnection con = factory.getConnection();
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
 
         try {
             DirectMessage embryo = new DirectMessage(user.getId(), messageStr);
@@ -151,8 +156,8 @@ public class DirectMessageService extends PartakeService {
      * @throws DAOException
      */
     public void sendEnvelope(String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType) throws DAOException {
-        PartakeModelFactory factory = getFactory();
-        PartakeConnection con = factory.getConnection();
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
 
         try {
             factory.getDirectMessageAccess().sendEnvelope(con, messageId, senderId, receiverId, deadline, postingType);
@@ -166,38 +171,43 @@ public class DirectMessageService extends PartakeService {
      * @throws DAOException
      */
     public void sendEnvelopes() throws DAOException {
-        PartakeModelFactory factory = getFactory();
-        DataIterator<DirectMessageEnvelope> it = factory.getDirectMessageAccess().getEnvelopeIterator(factory);             
-        while (it.hasNext()) {
-            DirectMessageEnvelope envelope = it.next();
-            if (envelope == null) { it.remove(); continue; }
-
-            logger.debug("run : Try to send... " + envelope.getEnvelopeId());
-            
-            // deadline を超えていれば送らない。
-            Date now = new Date();
-            if (envelope.getDeadline() != null && envelope.getDeadline().before(now)) {
-                logger.warn("run : envelope id " + envelope.getEnvelopeId() + " could not be sent : Time out.");
-                it.remove();
-                continue;
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            DataIterator<DirectMessageEnvelope> it = factory.getDirectMessageAccess().getEnvelopeIterator(con);             
+            while (it.hasNext()) {
+                DirectMessageEnvelope envelope = it.next();
+                if (envelope == null) { it.remove(); continue; }
+    
+                logger.debug("run : Try to send... " + envelope.getEnvelopeId());
+                
+                // deadline を超えていれば送らない。
+                Date now = new Date();
+                if (envelope.getDeadline() != null && envelope.getDeadline().before(now)) {
+                    logger.warn("run : envelope id " + envelope.getEnvelopeId() + " could not be sent : Time out.");
+                    it.remove();
+                    continue;
+                }
+                
+                // tryAfter 前であれば送らない。
+                if (envelope.getTryAfter() != null && !envelope.getTryAfter().before(now)) {
+                    logger.debug("run : envelope id " + envelope.getEnvelopeId() + " should be sent after " + envelope.getTryAfter());
+                    continue;
+                }
+    
+                
+                switch (envelope.getPostingType()) {
+                case POSTING_TWITTER_DIRECT:
+                    if (sendDirectMessage(it, envelope)) { it.remove(); }
+                    break;
+                case POSTING_TWITTER:
+                    if (sendTwitterMessage(it, envelope)) { it.remove(); }
+                    break;
+                }
             }
-            
-            // tryAfter 前であれば送らない。
-            if (envelope.getTryAfter() != null && !envelope.getTryAfter().before(now)) {
-                logger.debug("run : envelope id " + envelope.getEnvelopeId() + " should be sent after " + envelope.getTryAfter());
-                continue;
-            }
-
-            
-            switch (envelope.getPostingType()) {
-            case POSTING_TWITTER_DIRECT:
-                if (sendDirectMessage(it, envelope)) { it.remove(); }
-                break;
-            case POSTING_TWITTER:
-                if (sendTwitterMessage(it, envelope)) { it.remove(); }
-                break;
-            }
-        }        
+        } finally {
+            con.invalidate();
+        }
     }
     
     // ----------------------------------------------------------------------

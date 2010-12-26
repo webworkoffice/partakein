@@ -4,7 +4,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.User;
 import in.partake.util.Util;
 
@@ -59,8 +58,11 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     
     // ----------------------------------------------------------------------
     
+    UserCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
+    
     // fresh な user id を１つ作成して返す。
-    // TODO: これ public じゃなくて UserService に任せるべき。これは公開しちゃだめだ。
     @Override
     public String getFreshUserId(PartakeConnection con) throws DAOException {
         return UUID.randomUUID().toString();
@@ -68,7 +70,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     
     @Override
     public void addUser(PartakeConnection con, String userId, int twitterId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             addUserWithId(ccon.getClient(), userId, twitterId, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -78,7 +80,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     
     @Override
     public User getUserById(PartakeConnection con, String id) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getUserById(ccon.getClient(), id);
         } catch (Exception e) {
@@ -88,7 +90,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     
     @Override
     public void updateLastLogin(PartakeConnection con, User user) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             updateUserField(ccon.getClient(), user.getId(), "lastLoginAt", Util.getTimeString(ccon.getAcquiredTime()), ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -98,7 +100,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     
     @Override
     public void updateCalendarId(PartakeConnection con, User user, String calendarId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             updateUserField(ccon.getClient(), user.getId(), "calendarId", calendarId, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -108,7 +110,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     
     @Override
     public List<User> getUsersByIds(PartakeConnection con, List<String> ids) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             ArrayList<User> users = new ArrayList<User>();
             for (String id : ids) {
@@ -130,7 +132,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
      */
     @Override
     public void addOpenID(PartakeConnection con, String userId, String identity) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             addOpenID(ccon.getClient(), userId, identity, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -143,9 +145,9 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
      */
     // TODO: DataIterator じゃなくて List<String> 返すべきじゃないかなあ...。
     @Override
-    public DataIterator<String> getOpenIDIdentifiers(PartakeModelFactory factory, String userId) throws DAOException {
+    public DataIterator<String> getOpenIDIdentifiers(PartakeConnection connection, String userId) throws DAOException {
         try { 
-            return getOpenIDIdentitiesImpl((CassandraDAOFactory) factory, userId);
+            return getOpenIDIdentitiesImpl((CassandraConnection) connection, userId);
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -153,7 +155,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     
     @Override
     public void removeOpenID(PartakeConnection con, String userId, String identifier) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             removeOpenID(ccon.getClient(), userId, identifier, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -247,11 +249,11 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
         client.batch_mutate(USERS_OPENID_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_OPENID_COLUMNFAMILY, mutations)), USERS_OPENID_CL_W);
     }
     
-    private CassandraDataIterator<String> getOpenIDIdentitiesImpl(CassandraDAOFactory factory, String userId) throws Exception {
+    private CassandraDataIterator<String> getOpenIDIdentitiesImpl(CassandraConnection con, String userId) throws Exception {
         String key = USERS_OPENID_PREFIX + userId;
         
-        ColumnIterator iterator = new ColumnIterator(factory, USERS_OPENID_KEYSPACE, key, USERS_OPENID_COLUMNFAMILY, false, USERS_OPENID_CL_R, USERS_OPENID_CL_W);
-        return new CassandraDataIterator<String>(iterator, new ColumnOrSuperColumnMapper<String>(factory) {
+        ColumnIterator iterator = new ColumnIterator(con, factory, USERS_OPENID_KEYSPACE, key, USERS_OPENID_COLUMNFAMILY, false, USERS_OPENID_CL_R, USERS_OPENID_CL_W);
+        return new CassandraDataIterator<String>(iterator, new ColumnOrSuperColumnMapper<String>(con, factory) {
             @Override
             public String map(ColumnOrSuperColumn cosc) throws DAOException {
                 Column column = cosc.getColumn();

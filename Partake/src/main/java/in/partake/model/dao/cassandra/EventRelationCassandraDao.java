@@ -36,9 +36,13 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
     private static final ConsistencyLevel EVENT_RELATION_CL_W = ConsistencyLevel.ALL;
 
     
+    EventRelationCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
+    
 	@Override
 	public List<EventRelation> getEventRelations(PartakeConnection con, String eventId) throws DAOException {		
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
         	return getEventRelations(ccon.getClient(), eventId);
         } catch (Exception e) {
@@ -48,7 +52,7 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	
 	@Override
 	public void setEventRelations(PartakeConnection con, String eventId, List<EventRelation> relations) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
         	setEventRelations(ccon.getClient(), eventId, relations, con.getAcquiredTime());
         } catch (Exception e) {
@@ -84,13 +88,13 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	}	
 }
 
-class EventRelationMapper extends CassandraDao {
-	
+class EventRelationMapper {
+    
 	public Mutation map(EventRelation relation, long time) {
 		SuperColumn superColumn = new SuperColumn();
 		superColumn.setName(bytes(relation.getEventId()));
-		superColumn.addToColumns(new Column(bytes("required"), relation.isRequired() ? TRUE : FALSE, time));
-		superColumn.addToColumns(new Column(bytes("priority"), relation.hasPriority() ? TRUE : FALSE, time));
+		superColumn.addToColumns(new Column(bytes("required"), relation.isRequired() ? CassandraDao.TRUE : CassandraDao.FALSE, time));
+		superColumn.addToColumns(new Column(bytes("priority"), relation.hasPriority() ? CassandraDao.TRUE : CassandraDao.FALSE, time));
 
 		ColumnOrSuperColumn cosc = new ColumnOrSuperColumn().setSuper_column(superColumn);
 		return new Mutation().setColumn_or_supercolumn(cosc);

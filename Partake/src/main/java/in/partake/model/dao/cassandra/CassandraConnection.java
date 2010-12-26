@@ -5,19 +5,18 @@ import org.apache.log4j.Logger;
 
 import me.prettyprint.cassandra.service.CassandraClient;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
 
-class PartakeCassandraConnection extends PartakeConnection {
-    private static final Logger logger = Logger.getLogger(PartakeCassandraConnection.class);
+class CassandraConnection extends PartakeConnection {
+    private static final Logger logger = Logger.getLogger(CassandraConnection.class);
 
-	private PartakeModelFactory factory;
+	private CassandraConnectionPool pool;
 	private String name;
     private CassandraClient client;
     private long time;
     private int refCount;
     
-    public PartakeCassandraConnection(PartakeModelFactory factory, String name, CassandraClient client, long time) {
-    	this.factory = factory;
+    public CassandraConnection(CassandraConnectionPool pool, String name, CassandraClient client, long time) {
+    	this.pool = pool;
     	this.name = name;
         this.client = client;
         this.time = time;
@@ -61,7 +60,7 @@ class PartakeCassandraConnection extends PartakeConnection {
         --refCount;
         
         if (refCount == 0) {
-            factory.releaseConnection(this);
+            pool.releaseConnection(this);
         } else if (refCount < 0) {
             logger.error("invalidate() called too much!");
         }

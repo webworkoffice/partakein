@@ -34,8 +34,8 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
     private static final ConsistencyLevel OPENID_LINKAGE_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel OPENID_LINKAGE_CL_W = ConsistencyLevel.ALL;
 
-    public OpenIDLinkageCassandraDao() {
-        // nothing to do for now.
+    public OpenIDLinkageCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
     }
     
     /* (non-Javadoc)
@@ -43,7 +43,7 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
      */
     @Override
     public void addOpenID(PartakeConnection con, String identifier, String userId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             addOpenID(ccon.getClient(), identifier, userId, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -56,7 +56,7 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
      */
     @Override
     public String getUserId(PartakeConnection con, String identifier) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getUserId(ccon.getClient(), identifier);
         } catch (Exception e) {
@@ -66,7 +66,7 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
     
     @Override
     public void removeOpenID(PartakeConnection con, String identifier, String userId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             removeOpenId(ccon.getClient(), identifier, userId, con.getAcquiredTime());
         } catch (Exception e) {

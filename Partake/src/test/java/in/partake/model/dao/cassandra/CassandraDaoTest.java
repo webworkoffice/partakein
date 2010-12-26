@@ -5,12 +5,12 @@ import in.partake.model.dao.DAOException;
 import org.junit.Test;
 
 class ConnectionGetter implements Runnable {
-    private CassandraDAOFactory factory;
+    private CassandraConnectionPool pool;
     private int howMany;
     private boolean doubly;
     
-    public ConnectionGetter(CassandraDAOFactory factory, int howMany, boolean doubly) {
-        this.factory = factory;
+    public ConnectionGetter(CassandraConnectionPool pool, int howMany, boolean doubly) {
+        this.pool = pool;
         this.howMany = howMany;
         this.doubly = doubly;
     }
@@ -23,16 +23,16 @@ class ConnectionGetter implements Runnable {
             for (int i = 0; i < howMany; ++i) {
                 if (doubly) {
                     System.out.println(name);
-                    PartakeCassandraConnection con1 = factory.getConnection(Thread.currentThread().getName());
+                    CassandraConnection con1 = pool.getConnection();
                     System.out.println(name + " -1");
-                    PartakeCassandraConnection con2 = factory.getConnection(Thread.currentThread().getName());
+                    CassandraConnection con2 = pool.getConnection();
                     System.out.println(name + " -2");
                     con2.invalidate();
                     System.out.println(name + " -3");
                     con1.invalidate();               
                     System.out.println(name + " -4");
                 } else {
-                    PartakeCassandraConnection con = factory.getConnection(Thread.currentThread().getName());
+                    CassandraConnection con = pool.getConnection();
                     con.invalidate();
                 }
             }
@@ -46,25 +46,26 @@ public class CassandraDaoTest {
     
     @Test
     public void testToGetConnectionAndInvalidate() throws DAOException {
-        CassandraDAOFactory factory = new CassandraDAOFactory();
-        PartakeCassandraConnection con = factory.getConnection("Thread1");
+        CassandraConnectionPool pool = new CassandraConnectionPool();
+        
+        CassandraConnection con = pool.getConnection();
         con.invalidate();
     }
     
     @Test
     public void testToGetALotOfConnection1() throws DAOException {
-        CassandraDAOFactory factory = new CassandraDAOFactory();
+        CassandraConnectionPool pool = new CassandraConnectionPool();
         for (int i = 0; i < 10000; ++i) {
-            PartakeCassandraConnection con = factory.getConnection("Thread1");
+            CassandraConnection con = pool.getConnection();
             con.invalidate();
         }
     }
     
     @Test
-    public void testToGetALotOfConnection2() throws DAOException {       
+    public void testToGetALotOfConnection2() throws DAOException {
         for (int i = 0; i < 10000; ++i) {
-            CassandraDAOFactory factory = new CassandraDAOFactory();
-            PartakeCassandraConnection con = factory.getConnection("Thread1");
+            CassandraConnectionPool pool = new CassandraConnectionPool();
+            CassandraConnection con = pool.getConnection();
             con.invalidate();
         }
     }
@@ -92,7 +93,7 @@ public class CassandraDaoTest {
     private void testToGetALotOfConnectionUsingMultiThreads(int N, int M, boolean doubly) {
         Thread[] ts = new Thread[N];
         for (int i = 0; i < N; ++i) {
-            ts[i] = new Thread(new ConnectionGetter(new CassandraDAOFactory(), M, doubly));
+            ts[i] = new Thread(new ConnectionGetter(new CassandraConnectionPool(), M, doubly));
         }
         
         
