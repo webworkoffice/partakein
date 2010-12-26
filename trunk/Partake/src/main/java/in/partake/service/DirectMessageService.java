@@ -221,7 +221,7 @@ public class DirectMessageService extends PartakeService {
             return true;
         }
         
-        UserEx sender = UserService.get().getUserExById(senderId);
+        UserEx sender = UserService.get().getUserExById(senderId); // TODO: con はこっちで取れ。
         if (sender == null) {
             logger.warn("sendTwitterMessage : sender is null.");
             return true;

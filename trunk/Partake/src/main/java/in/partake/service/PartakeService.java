@@ -1,10 +1,14 @@
 package in.partake.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
+import in.partake.model.ParticipationEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -15,6 +19,8 @@ import in.partake.model.dao.cassandra.CassandraConnectionPool;
 import in.partake.model.dao.cassandra.CassandraDAOFactory;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventRelation;
+import in.partake.model.dto.Participation;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 
@@ -48,7 +54,8 @@ public abstract class PartakeService {
         return result;
     }
     
-    
+    // これがここにいるのはなんかおかしいような気がする。
+    // 階層化が足りないのではないか。
     
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
         User user = getFactory().getUserAccess().getUserById(con, userId);
@@ -75,5 +82,42 @@ public abstract class PartakeService {
     	EventEx event = getEventEx(con, comment.getEventId());
     	if (event == null) { return null; }
     	return new CommentEx(comment, event, user);
+    }
+    
+    protected List<ParticipationEx> getParticipationsEx(PartakeConnection con, String eventId) throws DAOException {
+     // priority のあるイベントに参加している場合、priority に 1 を付加する。
+        Map<String, Integer> priorityMap = new HashMap<String, Integer>();
+        
+        List<EventRelation> eventRelations = factory.getEventRelationAccess().getEventRelations(con, eventId); 
+        for (EventRelation relation : eventRelations) {
+            if (!relation.hasPriority()) { continue; }
+            EventEx ev = getEventEx(con, relation.getEventId()); 
+            if (ev == null) { continue; }
+            List<Participation> ps = factory.getEnrollmentAccess().getParticipation(con, relation.getEventId());
+            for (Participation p : ps) {
+                if (!p.getStatus().isEnrolled()) { continue; }
+                if (priorityMap.containsKey(p.getUserId())) {
+                    priorityMap.put(p.getUserId(), priorityMap.get(p.getUserId()) + 1);
+                } else {
+                    priorityMap.put(p.getUserId(), Integer.valueOf(1));
+                }
+            }
+        }
+        
+        List<Participation> ps = factory.getEnrollmentAccess().getParticipation(con, eventId);
+        List<ParticipationEx> result = new ArrayList<ParticipationEx>(); 
+        for (Participation p : ps) {
+            UserEx user = getUserEx(con, p.getUserId()); 
+            ParticipationEx pe = new ParticipationEx(p, user);
+            if (priorityMap.containsKey(p.getUserId())) {
+                pe.setPriority(priorityMap.get(p.getUserId()));
+            }
+            pe.freeze();
+            result.add(pe);
+        }
+        
+        Collections.sort(result, Participation.getPriorityBasedComparator());       
+        
+        return result;
     }
 }

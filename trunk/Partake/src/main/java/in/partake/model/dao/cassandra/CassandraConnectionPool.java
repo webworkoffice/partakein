@@ -27,8 +27,8 @@ public class CassandraConnectionPool extends PartakeConnectionPool {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         
         String name = "unknown";
-        if (stackTrace != null && stackTrace.length > 0) {
-            name = stackTrace[0].getClassName() + "#" + stackTrace[0].getMethodName();
+        if (stackTrace != null && stackTrace.length > 3) {
+            name = stackTrace[3].getClassName() + "#" + stackTrace[3].getMethodName();
         }
         
         return getConnectionImpl(name);
