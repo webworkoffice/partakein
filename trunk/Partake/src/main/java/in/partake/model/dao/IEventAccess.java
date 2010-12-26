@@ -25,6 +25,7 @@ public interface IEventAccess {
     // event utilities
     public abstract List<Event> getEventsByIds(PartakeConnection con, List<String> ids) throws DAOException;
     public abstract KeyIterator getAllEventKeys(PartakeConnection con) throws DAOException;
+    @Deprecated
     public abstract List<Event> getEventsByOwner(PartakeConnection con, User owner) throws DAOException;
-    
+    public abstract List<Event> getEventsByOwner(PartakeConnection con, String userId) throws DAOException;
 }

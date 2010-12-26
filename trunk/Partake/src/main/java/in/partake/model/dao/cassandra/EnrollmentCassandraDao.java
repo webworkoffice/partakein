@@ -196,9 +196,9 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
      * @throws Exception
      */
     @Override
-    public DataIterator<Event> getEnrolledEvents(PartakeConnection connection, User user) throws DAOException {
+    public DataIterator<Event> getEnrolledEvents(PartakeConnection connection, String userId) throws DAOException {
         try {
-            return getEnrolledEventsImpl((CassandraConnection) connection, user);
+            return getEnrolledEventsImpl((CassandraConnection) connection, userId);
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -381,8 +381,8 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
      * @return
      * @throws Exception
      */
-    private CassandraDataIterator<Event> getEnrolledEventsImpl(CassandraConnection connection, User user) throws Exception {
-    	String key = EVENTS_ENROLLMENT_PREFIX + user.getId();
+    private CassandraDataIterator<Event> getEnrolledEventsImpl(CassandraConnection connection, String userId) throws Exception {
+    	String key = EVENTS_ENROLLMENT_PREFIX + userId;
 
         ColumnIterator iterator = new ColumnIterator(connection, factory, 
         		EVENTS_ENROLLMENT_KEYSPACE, key, EVENTS_ENROLLMENT_COLUMNFAMILY, false, EVENTS_ENROLLMENT_CL_R, EVENTS_ENROLLMENT_CL_W);

@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
@@ -9,6 +10,7 @@
 <%@page import="static in.partake.util.Util.h"%>
 
 <%
+	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
     List<Event> recentEvents = (List<Event>)request.getAttribute(Constants.ATTR_RECENT_EVENTS);
 %>
 
@@ -92,6 +94,32 @@
 	   </ul>
 	</div>
 </div>
+
+<%-- ログインしていれば、直近のイベントを表示する --%>
+<% if (user != null) { %>
+	<div class="top-user-events">
+		<h2>直近の登録イベント</h2>
+		<% List<Event> enrolled = (List<Event>) request.getAttribute(Constants.ATTR_ENROLLED_EVENTSET); %>		
+		<% if (enrolled != null && !enrolled.isEmpty()) { %>			
+			<% for (int i = 0; i < 3 && i < enrolled.size(); ++i) { %>
+				<% Event event = enrolled.get(i); %>
+				<p><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></p>
+			<% } %>
+		<% } else { %>
+			<p>直近の登録イベントはありません。</p>
+		<% } %>
+		<h2>直近の管理イベント</h2>
+		<% List<Event> owned = (List<Event>) request.getAttribute(Constants.ATTR_OWNED_EVENTSET); %>		
+		<% if (owned != null && !owned.isEmpty()) { %>			
+			<% for (int i = 0; i < 3 && i < owned.size(); ++i) { %>
+				<% Event event = owned.get(i); %>
+				<p><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></p>
+			<% } %>
+		<% } else { %>
+			<p>直近の登録イベントはありません。</p>
+		<% } %>
+	</div>
+<% } %>
 
 <div class="top-recent-events">
     <h2><img class="top-pin" src="<%= request.getContextPath() %>/images/pin.png" alt="" />新着イベント</h2>

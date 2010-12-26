@@ -193,16 +193,18 @@ public final class UserService extends PartakeService {
     // ----------------------------------------------------------------------
     // Event Participation
     
-    // TODO: should this be in UserService or EventService?
+    // TODO: should this be in UserService or EventService? Hmmm... I think this is suitable to EventService.
     public List<Event> getEnrolledEvents(User user) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            return convertToList(factory.getEnrollmentAccess().getEnrolledEvents(con, user));
+            return convertToList(factory.getEnrollmentAccess().getEnrolledEvents(con, user.getId()));
         } finally {
             con.invalidate();
         }
     }
+    
+    
     
     public ParticipationStatus getParticipationStatus(User user, Event event) throws DAOException {
         PartakeDAOFactory factory = getFactory();
