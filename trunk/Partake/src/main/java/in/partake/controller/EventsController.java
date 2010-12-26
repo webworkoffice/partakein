@@ -85,8 +85,6 @@ public class EventsController extends PartakeActionSupport implements Validateab
 	        attributes.put(Constants.ATTR_REQUIRED_EVENTS, requiredEvents);
 	        
 	        // ----- participants を反映
-	        // TODO: FIXME: 優先イベントへの参加の状況を反映させる必要がある。
-	        // TODO: あれだ、リストを取ってくるところも同じように直さないとだめなんじゃなイカ？
 	        List<ParticipationEx> participations = EventService.get().getParticipationEx(event.getId());
 	        if (participations == null) { 
 	            logger.error("Getting participation failed.");

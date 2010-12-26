@@ -85,7 +85,7 @@ public abstract class PartakeService {
     }
     
     protected List<ParticipationEx> getParticipationsEx(PartakeConnection con, String eventId) throws DAOException {
-     // priority のあるイベントに参加している場合、priority に 1 を付加する。
+        // priority のあるイベントに参加している場合、priority に 1 を負荷する。
         Map<String, Integer> priorityMap = new HashMap<String, Integer>();
         
         List<EventRelation> eventRelations = factory.getEventRelationAccess().getEventRelations(con, eventId); 
@@ -110,7 +110,7 @@ public abstract class PartakeService {
             UserEx user = getUserEx(con, p.getUserId()); 
             ParticipationEx pe = new ParticipationEx(p, user);
             if (priorityMap.containsKey(p.getUserId())) {
-                pe.setPriority(priorityMap.get(p.getUserId()));
+                pe.setPriority(priorityMap.get(p.getUserId())); // TODO: 元の priority にたさないといけないんじゃないか？
             }
             pe.freeze();
             result.add(pe);
