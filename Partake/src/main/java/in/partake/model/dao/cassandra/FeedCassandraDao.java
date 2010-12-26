@@ -121,7 +121,11 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
         String key = FEED_RELATION_PREFIX + eventId;
 
         ColumnOrSuperColumn cosc = get(client, FEED_RELATION_KEYSPACE, FEED_RELATION_COLUMNFAMILY, "eventId", key, FEED_RELATION_CL_R);
-        return string(cosc.getColumn().getValue());
+        if (cosc == null) {
+            return null;
+        } else {
+            return string(cosc.getColumn().getValue());
+        }
     }
 }
 

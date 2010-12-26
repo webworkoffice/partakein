@@ -149,7 +149,6 @@ public final class MessageService extends PartakeService {
         if (deadline == null) { deadline = event.getBeginDate(); }
         
         // TODO: あと、補欠者にも送った方がいいんじゃなイカ？
-        
         List<ParticipationEx> participations = getParticipationsEx(con, event.getId()); 
         ParticipationList list = event.calculateParticipationList(participations);
         

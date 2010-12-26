@@ -144,7 +144,7 @@ public final class EventService extends PartakeService {
                 Event event = factory.getEventAccess().getEventById(con, eventId);
                 if (event == null) { continue; }
                 
-                EventService.get().appendFeedIfAbsent(factory, con, eventId);
+                appendFeedIfAbsent(factory, con, eventId);
             }
 	    } finally {
 	        con.invalidate();
@@ -581,7 +581,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();       
         PartakeConnection con = getPool().getConnection();
         try {
-            Event event = EventService.get().getEventById(eventId);
+            Event event = factory.getEventAccess().getEventById(con, eventId);           
             return factory.getEnrollmentAccess().getNumOfParticipants(con, eventId, event.isReservationTimeOver());
         } finally {
             con.invalidate();
@@ -595,7 +595,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();       
         PartakeConnection con = getPool().getConnection();
         try {
-            Event event = EventService.get().getEventById(eventId);
+            Event event = factory.getEventAccess().getEventById(con, eventId);           
             return factory.getEnrollmentAccess().getOrderOfEnrolledEvent(con, eventId, userId, event.isReservationTimeOver());
         } finally {
             con.invalidate();

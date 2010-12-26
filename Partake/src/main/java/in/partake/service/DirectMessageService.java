@@ -198,10 +198,10 @@ public class DirectMessageService extends PartakeService {
                 
                 switch (envelope.getPostingType()) {
                 case POSTING_TWITTER_DIRECT:
-                    if (sendDirectMessage(it, envelope)) { it.remove(); }
+                    if (sendDirectMessage(con, it, envelope)) { it.remove(); }
                     break;
                 case POSTING_TWITTER:
-                    if (sendTwitterMessage(it, envelope)) { it.remove(); }
+                    if (sendTwitterMessage(con, it, envelope)) { it.remove(); }
                     break;
                 }
             }
@@ -213,7 +213,7 @@ public class DirectMessageService extends PartakeService {
     // ----------------------------------------------------------------------
     
     
-    private boolean sendTwitterMessage(DataIterator<DirectMessageEnvelope> it, DirectMessageEnvelope envelope) throws DAOException {
+    private boolean sendTwitterMessage(PartakeConnection con, DataIterator<DirectMessageEnvelope> it, DirectMessageEnvelope envelope) throws DAOException {
         String senderId = envelope.getSenderId();
         assert (envelope.getReceiverId() == null);
         if (senderId == null) {
@@ -221,7 +221,7 @@ public class DirectMessageService extends PartakeService {
             return true;
         }
         
-        UserEx sender = UserService.get().getUserExById(senderId); // TODO: con はこっちで取れ。
+        UserEx sender = getUserEx(con, senderId);
         if (sender == null) {
             logger.warn("sendTwitterMessage : sender is null.");
             return true;
@@ -231,7 +231,7 @@ public class DirectMessageService extends PartakeService {
         Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(accessToken);
         
         try {
-            DirectMessage message = DirectMessageService.get().getMessageById(envelope.getMessageId());
+            DirectMessage message = getFactory().getDirectMessageAccess().getDirectMessageById(con, envelope.getMessageId());             
             twitter.updateStatus(message.getMessage());
             return true;
         } catch (TwitterException e) {
@@ -258,14 +258,18 @@ public class DirectMessageService extends PartakeService {
      * @param envelope
      * @return
      */
-    private boolean sendDirectMessage(DataIterator<DirectMessageEnvelope> it, DirectMessageEnvelope envelope) throws DAOException {        
+    private boolean sendDirectMessage(PartakeConnection con, DataIterator<DirectMessageEnvelope> it, DirectMessageEnvelope envelope) throws DAOException {        
         String receiverId = envelope.getReceiverId();
 
         // twitter message を受け取らない設定になっていれば送らない。
-        UserPreference pref = UserService.get().getUserPreference(receiverId);
+        UserPreference pref = getFactory().getUserPreferenceAccess().getPreference(con, receiverId);
+        if (pref == null) {
+            pref = UserPreference.getDefaultPreference();
+        }
+        
         if (!pref.isReceivingTwitterMessage()) { return true; }
 
-        UserEx user = UserService.get().getUserExById(receiverId);
+        UserEx user = getUserEx(con, receiverId);
         TwitterLinkage twitterLinkage = user.getTwitterLinkage();
         
         if (twitterLinkage.getAccessToken() == null || twitterLinkage.getAccessTokenSecret() == null) {
@@ -278,7 +282,8 @@ public class DirectMessageService extends PartakeService {
         if (twitter == null) { return true; }
 
         try {
-            DirectMessage message = DirectMessageService.get().getMessageById(envelope.getMessageId());
+            DirectMessage message = getFactory().getDirectMessageAccess().getDirectMessageById(con, envelope.getMessageId()); 
+                        
             twitter.sendDirectMessage(user.getTwitterId(), message.getMessage());
             logger.info("sendDirectMessage : direct message has been sent to " + twitterLinkage.getScreenName());
             return true;
