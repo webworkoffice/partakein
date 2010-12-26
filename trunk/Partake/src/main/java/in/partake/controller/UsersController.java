@@ -8,13 +8,13 @@ import in.partake.resource.Constants;
 import in.partake.service.CalendarService;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
-import in.partake.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -31,7 +31,7 @@ public class UsersController extends PartakeActionSupport {
     public String show() {
     	try {
 	    	String userId = getParameter("userId");
-	    	if (Util.isEmpty(userId)) { return ERROR; }
+	    	if (StringUtils.isEmpty(userId)) { return ERROR; }
 	    	    	
 	    	UserEx user = UserService.get().getUserExById(userId);
 	    	if (user == null) { return NOT_FOUND; }

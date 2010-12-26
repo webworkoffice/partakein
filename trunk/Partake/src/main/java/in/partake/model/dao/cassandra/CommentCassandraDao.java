@@ -22,7 +22,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.ICommentAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.Comment;
 import in.partake.util.Util;
 
@@ -40,6 +39,11 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     private static final ConsistencyLevel COMMENTS_EVENT_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel COMMENTS_EVENT_CL_W = ConsistencyLevel.ALL;
     
+    CommentCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
+    
+    
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
         return UUID.randomUUID().toString();
@@ -48,7 +52,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     @Override
     public void addCommentWithId(PartakeConnection con, String commentId, Comment embryo) throws DAOException {
         try {
-            PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+            CassandraConnection ccon = (CassandraConnection) con;
             addCommentWithId(ccon.getClient(), commentId, embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
@@ -58,7 +62,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     @Override
     public Comment getCommentById(PartakeConnection con, String commentId) throws DAOException {
         try {
-            PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+            CassandraConnection ccon = (CassandraConnection) con;
             return getCommentByIdImpl(ccon, commentId);
         } catch (Exception e) {
             throw new DAOException(e);
@@ -68,7 +72,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     @Override
     public void removeComment(PartakeConnection con, String commentId) throws DAOException {
         try {
-            PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+            CassandraConnection ccon = (CassandraConnection) con;
             removeComment(ccon.getClient(), commentId, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
@@ -78,17 +82,26 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     @Override
     public void addCommentToEvent(PartakeConnection con, String commentId, String eventId) throws DAOException {
         try {
-            PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+            CassandraConnection ccon = (CassandraConnection) con;
             addCommentToEvent(ccon.getClient(), commentId, eventId, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public DataIterator<String> getCommentIdsByEvent(PartakeConnection con, String eventId) throws DAOException {
+        try {
+            return getCommentIdsByEventImpl((CassandraConnection) con, eventId);
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
     @Override
-    public DataIterator<Comment> getCommentsByEvent(PartakeModelFactory factory, String eventId) throws DAOException {
+    public DataIterator<Comment> getCommentsByEvent(PartakeConnection con, String eventId) throws DAOException {
         try {
-            return getCommentsByEvent((CassandraDAOFactory) factory, eventId);
+            return getCommentsByEventImpl((CassandraConnection) con, eventId);
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -128,7 +141,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
         client.insert(COMMENTS_EVENT_KEYSPACE, key, columnPath, bytes(id), time, COMMENTS_EVENT_CL_W);
     }
     
-    private Comment getCommentByIdImpl(PartakeCassandraConnection ccon, String id) throws Exception {
+    private Comment getCommentByIdImpl(CassandraConnection ccon, String id) throws Exception {
         String key = COMMENTS_PREFIX + id;
         Client client = ccon.getClient();
         
@@ -170,23 +183,39 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
         return comment.freeze();
     }
     
-    private CassandraDataIterator<Comment> getCommentsByEvent(CassandraDAOFactory factory, String eventId) throws Exception {
+    private CassandraDataIterator<String> getCommentIdsByEventImpl(CassandraConnection connection, String eventId) throws Exception {
         String key = COMMENTS_EVENT_PREFIX + eventId;
         
-        ColumnIterator iterator = new ColumnIterator(factory, COMMENTS_EVENT_KEYSPACE, key, COMMENTS_EVENT_COLUMNFAMILY, false, COMMENTS_EVENT_CL_R, COMMENTS_EVENT_CL_W);
+        ColumnIterator iterator = new ColumnIterator(connection, factory, COMMENTS_KEYSPACE, key, COMMENTS_EVENT_COLUMNFAMILY, false, COMMENTS_EVENT_CL_R, COMMENTS_EVENT_CL_W); 
         
-        return new CassandraDataIterator<Comment>(iterator, new ColumnOrSuperColumnMapper<Comment>(factory) {
+        return new CassandraDataIterator<String>(iterator, new ColumnOrSuperColumnMapper<String>(connection, factory) {
+            @Override
+            public String map(ColumnOrSuperColumn cosc) throws DAOException {
+                Column column = cosc.column;
+                String commentId = string(column.value);
+                return commentId;
+            }
+
+            @Override
+            public ColumnOrSuperColumn unmap(String t) throws DAOException {
+                throw new UnsupportedOperationException();
+            }           
+        });
+    }
+    
+    private CassandraDataIterator<Comment> getCommentsByEventImpl(CassandraConnection connection, String eventId) throws Exception {
+        String key = COMMENTS_EVENT_PREFIX + eventId;
+        
+        ColumnIterator iterator = new ColumnIterator(connection, factory, COMMENTS_KEYSPACE, key, COMMENTS_EVENT_COLUMNFAMILY, false, COMMENTS_EVENT_CL_R, COMMENTS_EVENT_CL_W); 
+        
+        return new CassandraDataIterator<Comment>(iterator, new ColumnOrSuperColumnMapper<Comment>(connection, factory) {
             @Override
             public Comment map(ColumnOrSuperColumn cosc) throws DAOException {
                 Column column = cosc.column;
                 String commentId = string(column.value);
                 
-                PartakeConnection con = getFactory().getConnection("CommnetCassandraDao#getCommentsByEvent");
-                try {
-                    return getCommentById(con, commentId);
-                } finally {
-                    con.invalidate();
-                }
+                
+                return getCommentById(connection, commentId);
             }
 
             @Override

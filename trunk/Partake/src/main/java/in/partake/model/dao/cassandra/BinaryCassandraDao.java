@@ -30,8 +30,8 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     private static final ConsistencyLevel BINARY_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel BINARY_CL_W = ConsistencyLevel.ALL;
 
-    BinaryCassandraDao() {
-        // do nothing for now.
+    BinaryCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
     }
     
     @Override
@@ -41,7 +41,7 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
 
     @Override
     public void addBinaryWithId(PartakeConnection con, String id, BinaryData embryo) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             addBinaryWithId(ccon.getClient(), id, embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -63,7 +63,7 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     
     @Override
     public BinaryData getBinaryById(PartakeConnection con, String id) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getBinaryById(ccon.getClient(), id);
         } catch (Exception e) {
@@ -102,7 +102,7 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
 
     @Override
     public void removeBinary(PartakeConnection con, String id) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             removeBinary(ccon.getClient(), id, ccon.getAcquiredTime());
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.PartakeDAOFactory;
 
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 
@@ -8,11 +9,12 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
  * O/R Mapper for CassandraDAO. 
  * @author shinyak
  */
-// TODO: temporarily public. should be package local.
 abstract class ColumnOrSuperColumnMapper<T> {
-    private CassandraDAOFactory factory;
+    protected PartakeDAOFactory factory;
+    protected CassandraConnection connection;
     
-    public ColumnOrSuperColumnMapper(CassandraDAOFactory factory) {
+    public ColumnOrSuperColumnMapper(CassandraConnection connection, PartakeDAOFactory factory) {
+        this.connection = connection;
         this.factory = factory;
     }
     
@@ -29,12 +31,4 @@ abstract class ColumnOrSuperColumnMapper<T> {
 	 * @return
 	 */
 	public abstract ColumnOrSuperColumn unmap(T t) throws DAOException;
-
-	/**
-	 * get a factory.
-	 * @return
-	 */
-	protected CassandraDAOFactory getFactory() {
-	    return factory;
-	}
 }

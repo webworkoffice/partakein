@@ -8,7 +8,6 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
@@ -64,13 +63,16 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     private static final ConsistencyLevel EVENTS_ENROLLMENT_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel EVENTS_ENROLLMENT_CL_W = ConsistencyLevel.ALL;
 
+    EnrollmentCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
     
     // TODO: changesOnlyComment がださいのでなんとかする
     // TODO: DAO が仕事しすぎ -- Service がやるべき仕事が入りすぎ
     @Override
     public void enroll(PartakeConnection con, User user, Event event, ParticipationStatus status, String comment, boolean changesOnlyComment,
                     boolean forceChangeModifiedAt) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             ParticipationStatus oldStatus = getParticipationStatus(ccon, event, user); 
             
@@ -95,7 +97,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     
     @Override
     public List<Participation> getParticipation(PartakeConnection con, String eventId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getParticipation(ccon, eventId);
         } catch (Exception e) {
@@ -105,7 +107,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     
     @Override
     public void addUserEnrollment(PartakeConnection con, String eventId, Participation p) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             addUserEnrollment(ccon.getClient(), p.getUserId(), eventId, p.getStatus(), p.getLastStatus(), p.getComment(), ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -115,7 +117,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     
     @Override
     public void setLastStatus(PartakeConnection con, String eventId, Participation p, LastParticipationStatus lastStatus) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             addUserEnrollment(ccon.getClient(), p.getUserId(), eventId, p.getStatus(), lastStatus, p.getComment(), ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -194,9 +196,9 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
      * @throws Exception
      */
     @Override
-    public DataIterator<Event> getEnrolledEvents(PartakeModelFactory factory, User user) throws DAOException {
+    public DataIterator<Event> getEnrolledEvents(PartakeConnection connection, User user) throws DAOException {
         try {
-            return getEnrolledEventsImpl((CassandraDAOFactory) factory, user);
+            return getEnrolledEventsImpl((CassandraConnection) connection, user);
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -204,7 +206,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     
     @Override
     public ParticipationStatus getParticipationStatus(PartakeConnection con, Event event, User user) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getParticipationStatus(ccon.getClient(), event, user);
         } catch (Exception e) {
@@ -290,7 +292,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     	client.insert(EVENTS_ENROLLMENT_KEYSPACE, key, columnPath, bytes(status.toString()), time, EVENTS_ENROLLMENT_CL_W);
 	}
 
-    private List<Participation> getParticipation(PartakeCassandraConnection con, String eventId) throws Exception {
+    private List<Participation> getParticipation(CassandraConnection con, String eventId) throws Exception {
         Client client = con.getClient();
         String key = USERS_ENROLLMENT_PREFIX + eventId;
 
@@ -318,7 +320,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             int priority = 0;
             
             // TODO: 歴史的負の遺産が多すぎるのであとで直す。
-            IUserAccess userDao = new UserCassandraDao(); // TODO: なんでここで Dao がでてくるんだ
+            IUserAccess userDao = factory.getUserAccess(); 
             for (Column column : superColumn.getColumns()) {
                 String name = string(column.getName());
                 if ("status".equals(name)) {
@@ -379,13 +381,13 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
      * @return
      * @throws Exception
      */
-    private CassandraDataIterator<Event> getEnrolledEventsImpl(CassandraDAOFactory factory, User user) throws Exception {
+    private CassandraDataIterator<Event> getEnrolledEventsImpl(CassandraConnection connection, User user) throws Exception {
     	String key = EVENTS_ENROLLMENT_PREFIX + user.getId();
 
-        ColumnIterator iterator = new ColumnIterator(factory, 
+        ColumnIterator iterator = new ColumnIterator(connection, factory, 
         		EVENTS_ENROLLMENT_KEYSPACE, key, EVENTS_ENROLLMENT_COLUMNFAMILY, false, EVENTS_ENROLLMENT_CL_R, EVENTS_ENROLLMENT_CL_W);
         
-        return new CassandraDataIterator<Event>(iterator, new ColumnOrSuperColumnMapper<Event>(factory) {
+        return new CassandraDataIterator<Event>(iterator, new ColumnOrSuperColumnMapper<Event>(connection, factory) {
         	@Override
         	public Event map(ColumnOrSuperColumn cosc) throws DAOException {
         		Column column = cosc.column;
@@ -394,12 +396,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         		String eventId = string(column.getName());
         		ParticipationStatus status = ParticipationStatus.valueOf(string(column.getValue()));
         		if (status.isEnrolled()) {
-        		    PartakeConnection con = getFactory().getConnection("EnrollmentCassandraDao#getEnrolledEventsImpl");
-        		    try {
-        		        return new EventCassandraDao().getEventById(con, eventId);
-        		    } finally {
-        		        con.invalidate();
-        		    }
+        		    return factory.getEventAccess().getEventById(connection, eventId);
         		} else {
         			return null;
         		}

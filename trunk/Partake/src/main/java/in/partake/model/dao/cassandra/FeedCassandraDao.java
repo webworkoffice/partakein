@@ -45,6 +45,10 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
     private static final ConsistencyLevel FEED_RELATION_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel FEED_RELATION_CL_W = ConsistencyLevel.ALL;
 
+    FeedCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
+    
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
         return UUID.randomUUID().toString();
@@ -52,7 +56,7 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
     
     @Override
     public void addFeedId(PartakeConnection con, String feedId, String eventId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             addToEvent(ccon.getClient(), eventId, feedId, ccon.getAcquiredTime());
             addToFeed(ccon.getClient(), feedId, eventId, ccon.getAcquiredTime());
@@ -63,7 +67,7 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
     
     @Override
     public String getEventIdByFeedId(PartakeConnection con, String feedId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getEventIdByFeedId(ccon.getClient(), feedId);
         } catch (Exception e) {
@@ -73,7 +77,7 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
     
     @Override
     public String getFeedIdByEventId(PartakeConnection con, String eventId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getFeedIdByEventId(ccon.getClient(), eventId);
         } catch (Exception e) {

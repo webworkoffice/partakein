@@ -45,9 +45,11 @@
         UsersPreferenceController pref = (UsersPreferenceController) request.getSession().getAttribute(Constants.ATTR_ACTION);
         List<String> associatedOpenIds = pref.getAssociateOpenIds();
         if (associatedOpenIds != null && !associatedOpenIds.isEmpty()) {
+            %> <ul> <%
             for (String openid : associatedOpenIds) { %>
                 <li><%= openid %></li>
             <% } %>
+            </ul>
     <% } %>
 </div>
 

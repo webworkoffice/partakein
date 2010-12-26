@@ -9,7 +9,9 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
+import in.partake.model.dao.PartakeConnectionPool;
+import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.cassandra.CassandraConnectionPool;
 import in.partake.model.dao.cassandra.CassandraDAOFactory;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
@@ -17,14 +19,19 @@ import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 
 public abstract class PartakeService {
-    private static PartakeModelFactory factory = new CassandraDAOFactory();
+    private static PartakeDAOFactory factory = new CassandraDAOFactory();
+    private static PartakeConnectionPool pool = new CassandraConnectionPool();
     
-    public static void setDAOFactory(PartakeModelFactory factory) {
+    public static void setDAOFactory(PartakeDAOFactory factory) {
         PartakeService.factory = factory;
     }
     
-    protected static PartakeModelFactory getFactory() {
+    protected static PartakeDAOFactory getFactory() {
         return factory;
+    }
+    
+    protected static PartakeConnectionPool getPool() {
+        return pool;
     }
     
     // ----------------------------------------------------------------------

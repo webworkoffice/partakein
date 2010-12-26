@@ -32,7 +32,7 @@ public interface IEnrollmentAccess {
      * @return
      * @throws Exception
      */
-    public DataIterator<Event> getEnrolledEvents(PartakeModelFactory factory, User user) throws DAOException;
+    public DataIterator<Event> getEnrolledEvents(PartakeConnection connection, User user) throws DAOException;
 
     
     public ParticipationStatus getParticipationStatus(PartakeConnection con, Event event, User user) throws DAOException;

@@ -31,9 +31,14 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
     private static final ConsistencyLevel PREFERENCES_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel PREFERENCES_CL_W = ConsistencyLevel.ALL;
 	
+
+    UserPreferenceCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
+    
 	@Override
 	public UserPreference getPreference(PartakeConnection con, String userId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getPreference(ccon.getClient(), userId);            
         } catch (Exception e) {
@@ -43,7 +48,7 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
 	
 	@Override
 	public void setPreference(PartakeConnection con, String userId, UserPreference embryo) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             setPreference(ccon.getClient(), userId, embryo, ccon.getAcquiredTime());
         } catch (Exception e) {

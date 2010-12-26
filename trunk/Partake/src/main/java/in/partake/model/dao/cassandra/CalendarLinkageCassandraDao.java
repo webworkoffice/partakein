@@ -29,6 +29,10 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     private static final ConsistencyLevel CALENDAR_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel CALENDAR_CL_W = ConsistencyLevel.ALL;
 
+    CalendarLinkageCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
+    
     @Override
     public String getFreshCalendarId(PartakeConnection con) throws DAOException {
         return UUID.randomUUID().toString();
@@ -40,7 +44,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     @Override
     public void addCalendarLinkageWithId(PartakeConnection con, String calendarId, CalendarLinkage embryo) throws DAOException {
         try {
-            PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+            CassandraConnection ccon = (CassandraConnection) con;
             addCalendarLinkageWithId(ccon.getClient(), calendarId, embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
@@ -62,7 +66,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     @Override
     public CalendarLinkage getCalendarLinkageById(PartakeConnection con, String calendarId) throws DAOException {
         try {
-            PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+            CassandraConnection ccon = (CassandraConnection) con;
             return getCalendarLinkageById(ccon.getClient(), calendarId, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
@@ -103,7 +107,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     @Override
     public void removeCalendarLinkageById(PartakeConnection con, String calendarId) throws DAOException {
         try {
-            PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+            CassandraConnection ccon = (CassandraConnection) con;
             removeCalendarLinkageById(ccon.getClient(), calendarId, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);

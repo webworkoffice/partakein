@@ -19,7 +19,6 @@ import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.Cassandra.Client;
-import org.apache.cassandra.thrift.SuperColumn;
 
 // これは user がいじるべきクラスではないので、public class ではない。
 class ColumnIterator {
@@ -33,15 +32,14 @@ class ColumnIterator {
 	boolean shouldExcludeNextStartKey; 
 	boolean reverseOrder;
 	
-	// either connection or factory should be null. 
-	private PartakeCassandraConnection connection;
+	private CassandraConnection connection;
 	private CassandraDAOFactory factory;
 	
 	private int pos;
 	private List<ColumnOrSuperColumn> cached;
 	private ColumnOrSuperColumn current;
 
-    public ColumnIterator(PartakeCassandraConnection connection, String keyspace, String key, String columnFamily, boolean reverseOrder, 
+    public ColumnIterator(CassandraConnection connection, CassandraDAOFactory factory, String keyspace, String key, String columnFamily, boolean reverseOrder, 
                     ConsistencyLevel readConsistencyLevel, ConsistencyLevel writeConsistencyLevel) {
         this.keyspace = keyspace;
         this.key = key;
@@ -54,33 +52,12 @@ class ColumnIterator {
         this.reverseOrder = reverseOrder;
         
         this.connection = connection;
-        this.factory = null;
+        this.factory = factory;
         
         this.pos = 0;
         this.cached = new ArrayList<ColumnOrSuperColumn>();
         this.current = null;
     }
-	
-	
-	public ColumnIterator(CassandraDAOFactory factory, String keyspace, String key, String columnFamily, boolean reverseOrder, 
-						  ConsistencyLevel readConsistencyLevel, ConsistencyLevel writeConsistencyLevel) {
-	    this.keyspace = keyspace;
-	    this.key = key;
-	    this.parent = new ColumnParent(columnFamily);
-	    this.readConsistencyLevel = readConsistencyLevel;
-	    this.writeConsistencyLevel = writeConsistencyLevel;
-
-	    this.nextStartKey = new byte[0];
-	    this.shouldExcludeNextStartKey = false;
-	    this.reverseOrder = reverseOrder;
-
-	    this.connection = null;
-	    this.factory = factory;
-
-	    this.pos = 0;
-	    this.cached = new ArrayList<ColumnOrSuperColumn>();
-	    this.current = null;
-	}
 	
     public CassandraDAOFactory getFactory() {
         return this.factory;
@@ -90,9 +67,8 @@ class ColumnIterator {
 	    if (pos < cached.size()) { return true; }
 		if (nextStartKey == null) { return false; }
 
-		PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#hasNext");
 		try {
-			Client cassandra = con.getClient();
+			Client cassandra = connection.getClient();
 			
 			SliceRange range = new SliceRange(nextStartKey, new byte[0], reverseOrder, 1000);
 			
@@ -122,8 +98,6 @@ class ColumnIterator {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new DAOException(e);
-		} finally {
-		    if (this.connection == null) { con.invalidate(); }
 		}
 	}
 	
@@ -141,9 +115,8 @@ class ColumnIterator {
 	 * @throws DAOException
 	 */
 	public void remove() throws DAOException {
-        PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#remove()");
 		try {
-			Client cassandra = con.getClient();
+			Client cassandra = connection.getClient();
 			ColumnPath columnPath = new ColumnPath(parent.column_family);
 			if (parent.super_column != null) {
 				columnPath.setSuper_column(parent.super_column);
@@ -156,8 +129,6 @@ class ColumnIterator {
 			cassandra.remove(keyspace, key, columnPath, timestamp, writeConsistencyLevel);
 		} catch (Exception e) {
 			throw new DAOException(e);
-		} finally {
-		    if (this.connection == null) { con.invalidate(); }
 		}
 	}
 	
@@ -168,9 +139,8 @@ class ColumnIterator {
 			throw new DAOException("NAME cannot be updated."); // もうちょっと具体的な IllegalArgument とかそのへん。update は byte[] value に限っても良いかもしれない。
 		}
 		
-		PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#update");
 		try {
-			Client cassandra = con.getClient();
+			Client cassandra = connection.getClient();
 			
 	        Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
 	        List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();
@@ -181,52 +151,46 @@ class ColumnIterator {
 			cassandra.batch_insert(keyspace, key, cfmap, writeConsistencyLevel);			
 		} catch (Exception e) {
 			throw new DAOException(e);
-		} finally {
-		    if (this.connection == null) { con.invalidate(); }
 		}
 	}
 	
-	// TODO: the argument should be a ColumnOrSuperColumn object instead of <code>value</code>.
-	@Deprecated
-	public void update(byte[] value) throws DAOException {
-	    PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#update");
-		try {
-			Client cassandra = con.getClient();
-			ColumnPath columnPath = new ColumnPath(parent.column_family);
-			if (parent.super_column != null) {
-				columnPath.setSuper_column(parent.super_column);
-			}
-			columnPath.setColumn(current.column.name);
-			
-			long timestamp = new Date().getTime();
-			cassandra.insert(keyspace, key, columnPath, value, timestamp, writeConsistencyLevel);
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-		    if (this.connection == null) { con.invalidate(); }
-		}
-	}
+//	// TODO: the argument should be a ColumnOrSuperColumn object instead of <code>value</code>.
+//	@Deprecated
+//	public void update(byte[] value) throws DAOException {
+//		try {
+//			Client cassandra = connection.getClient();
+//			ColumnPath columnPath = new ColumnPath(parent.column_family);
+//			if (parent.super_column != null) {
+//				columnPath.setSuper_column(parent.super_column);
+//			}
+//			columnPath.setColumn(current.column.name);
+//			
+//			long timestamp = new Date().getTime();
+//			cassandra.insert(keyspace, key, columnPath, value, timestamp, writeConsistencyLevel);
+//		} catch (Exception e) {
+//			throw new DAOException(e);
+//		} finally {
+//		    if (this.connection == null) { connection.invalidate(); }
+//		}
+//	}
 	
-	// SuperColumn を iterate している場合のみ call してよい。それ以外のときの結果は未定義
-	@Deprecated
-	public void updateSuperColumn(SuperColumn superColumn) throws DAOException {
-	    PartakeCassandraConnection con = this.connection != null ? this.connection : (PartakeCassandraConnection)factory.getConnection("ColumnIterator#updateSuperColumn");       
-		try {
-			Client cassandra = con.getClient();
-			
-	        Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
-	        List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();
-	        
-	        columns.add(new ColumnOrSuperColumn().setSuper_column(superColumn));
-	        cfmap.put(parent.column_family, columns);
-			
-			cassandra.batch_insert(keyspace, key, cfmap, writeConsistencyLevel);			
-		} catch (Exception e) {
-			throw new DAOException(e);
-		} finally {
-		    if (this.connection == null) { con.invalidate(); }
-		}
-	}
+//	// SuperColumn を iterate している場合のみ call してよい。それ以外のときの結果は未定義
+//	@Deprecated
+//	public void updateSuperColumn(SuperColumn superColumn) throws DAOException {
+//		try {
+//			Client cassandra = con.getClient();
+//			
+//	        Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
+//	        List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();
+//	        
+//	        columns.add(new ColumnOrSuperColumn().setSuper_column(superColumn));
+//	        cfmap.put(parent.column_family, columns);
+//			
+//			cassandra.batch_insert(keyspace, key, cfmap, writeConsistencyLevel);			
+//		} catch (Exception e) {
+//			throw new DAOException(e);
+//		}
+//	}
 		
 	// ----------------------------------------------------------------------
 	

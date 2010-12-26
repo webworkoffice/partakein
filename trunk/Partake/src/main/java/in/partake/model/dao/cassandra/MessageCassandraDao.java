@@ -7,7 +7,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeModelFactory;
 import in.partake.model.dto.EventNotificationStatus;
 
 import java.util.ArrayList;
@@ -128,12 +127,17 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     private static final String MESSAGES_REMINDER_KEY_BEFORE_DEADLINE_HALFDAY = "beforeDeadlineHalfday";
     private static final String MESSAGES_REMINDER_KEY_BEFORE_THEDAY           = "beforeTheDay";
 
+    
+    MessageCassandraDao(CassandraDAOFactory factory) {
+        super(factory);
+    }
+    
 	/* (non-Javadoc)
      * @see in.partake.dao.cassandra.IMessageAccess#addNotification(java.lang.String)
      */
 	@Override
 	public void addNotification(PartakeConnection con, String eventId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             addNotification(ccon.getClient(), eventId, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -146,7 +150,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
      */
 	@Override
 	public EventNotificationStatus getNotificationStatus(PartakeConnection con, String eventId) throws DAOException {
-        PartakeCassandraConnection ccon = (PartakeCassandraConnection) con;
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
             EventNotificationStatus eventNotificationStatus = getNotificationStatus(ccon.getClient(), eventId);
             if (eventNotificationStatus == null) {
@@ -160,9 +164,9 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
 	}
 	
 	@Override
-	public DataIterator<EventNotificationStatus> getNotificationStatuses(PartakeModelFactory factory) throws DAOException {
+	public DataIterator<EventNotificationStatus> getNotificationStatuses(PartakeConnection connection) throws DAOException {
 	    try {
-	        return getNotificationStatusesImpl((CassandraDAOFactory) factory);
+	        return getNotificationStatusesImpl((CassandraConnection) connection);
 	    } catch (Exception e) {
 	        throw new DAOException(e);
 	    }
@@ -228,12 +232,12 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
 		
 	}
 	
-	private DataIterator<EventNotificationStatus> getNotificationStatusesImpl(CassandraDAOFactory factory) throws Exception {
+	private DataIterator<EventNotificationStatus> getNotificationStatusesImpl(CassandraConnection connection) throws Exception {
 		String key = MESSAGES_REMINDER_PREFIX;
 
-		ColumnIterator iterator = new ColumnIterator(factory, MESSAGES_REMINDER_KEYSPACE, key, MESSAGES_REMINDER_COLUMNFAMILY, false, MESSAGES_REMINDER_CL_R, MESSAGES_REMINDER_CL_W);
+		ColumnIterator iterator = new ColumnIterator(connection, factory, MESSAGES_REMINDER_KEYSPACE, key, MESSAGES_REMINDER_COLUMNFAMILY, false, MESSAGES_REMINDER_CL_R, MESSAGES_REMINDER_CL_W);
 		
-		return new CassandraDataIterator<EventNotificationStatus>(iterator, new ColumnOrSuperColumnMapper<EventNotificationStatus>(factory) {
+		return new CassandraDataIterator<EventNotificationStatus>(iterator, new ColumnOrSuperColumnMapper<EventNotificationStatus>(connection, factory) {
 		    @Override
 		    public EventNotificationStatus map(ColumnOrSuperColumn cosc) throws DAOException {
                 // TODO: なんでこれ getNotificationStatus() を読んでないの？
