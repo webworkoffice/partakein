@@ -211,7 +211,7 @@ text-indent:-9999px;
 /* 最近のイベント
 ---------------------------*/
 
-.top-recent-events {
+.top-recent-events, .top-user-events {
   /*  background-color: #f6f5f5; */
     background: transparent url(../images/texture.png);
     padding:5px 18px 18px 18px;
@@ -225,6 +225,10 @@ text-indent:-9999px;
     -webkit-border-radius: 9px; /* Safari,Chrome */
     -moz-border-radius: 9px; /* FireFox */
     behavior: url(border-radius.htc); /* google code forIE */
+}
+
+.more {
+	text-align: right;
 }
 
 

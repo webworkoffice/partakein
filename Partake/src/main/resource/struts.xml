@@ -343,15 +343,6 @@
                 <param name="allowCaching">true</param>
             </result>
         </action>
-        
-        <!-- Event Promotion -->
-        <action name="twitterPromotion" method="twitterPromotion" class="in.partake.controller.EventsController">
-            <interceptor-ref name="checkTokenStack" />
-            
-            <result name="success" type="redirectAction">
-                <param name="actionName">${eventId}</param>
-            </result>
-        </action>
 		
 		<action name="*" method="show" class="in.partake.controller.EventsController">
 			<interceptor-ref name="partakeStack"/>		
