@@ -27,7 +27,7 @@
 <div id="event-search-form">
 	<img src="<%= request.getContextPath() %>/images/search-icon.png" alt="" />タイトル、本文からイベントを検索します。
 	<div class="line-space">
-		<s:form action="%{#request.contextPath}/events/search">
+		<s:form action="search">
             <dl>
                 <dt>検索語句：</dt><dd><s:textfield id="searchTerm" name="searchTerm" /></dd>
                 <dt>カテゴリ：</dt><dd><s:select id="category" name="category" list="categories" listKey="key" listValue="value"></s:select></dd>
