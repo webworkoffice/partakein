@@ -19,9 +19,11 @@ public class CassandraConnectionPool extends PartakeConnectionPool {
     
     // 同じ thread が複数の connection を取ると deadlock の可能性があるため、修正すること。
     private ThreadLocal<Integer> numAcquiredConnection;
+    private ThreadLocal<String>  firstConnectionName;
     
     public CassandraConnectionPool() {
         this.numAcquiredConnection = new ThreadLocal<Integer>();
+        this.firstConnectionName = new ThreadLocal<String>();
     }
     
     @Override
@@ -47,7 +49,13 @@ public class CassandraConnectionPool extends PartakeConnectionPool {
                 numAcquiredConnection.set(numAcquiredConnection.get() + 1);
             }
             if (numAcquiredConnection.get() > 1) {
-                logger.warn(name + " : The same thread has taken multiple connections. This may cause a bug");
+                logger.warn(name + " : The same thread has taken multiple connections. This may cause a bug. ");
+                if (firstConnectionName.get() != null) {
+                    logger.warn(firstConnectionName.get() + " is the first connection.");
+                }
+            }
+            if (firstConnectionName.get() == null) {
+                firstConnectionName.set(name);
             }
             
             String host = PartakeProperties.get().getCassandraHost();
@@ -72,6 +80,9 @@ public class CassandraConnectionPool extends PartakeConnectionPool {
         }
         
         numAcquiredConnection.set(numAcquiredConnection.get() - 1);
+        if (numAcquiredConnection.get() == 0) {
+            firstConnectionName.set(null);
+        }
         
         if (connection instanceof CassandraConnection) {
             releaseConnectionImpl((CassandraConnection) connection);
