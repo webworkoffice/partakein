@@ -103,7 +103,7 @@ public final class EventService extends PartakeService {
         try {
         	String eventId = factory.getFeedAccess().getEventIdByFeedId(con, feedId);
             if (eventId == null) { return null; }
-            return getEventExById(eventId);
+            return getEventEx(con, eventId);
         } finally {
             con.invalidate();
         }	    
