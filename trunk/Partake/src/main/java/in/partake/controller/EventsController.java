@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.xwork.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.validation.SkipValidation;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -52,6 +53,7 @@ public class EventsController extends PartakeActionSupport {
     }
 
     // GET /events/:id
+    @SkipValidation
     public String show() {
     	String eventId = getParameter("eventId");        
         if (eventId == null) { return NOT_FOUND; }
@@ -73,7 +75,7 @@ public class EventsController extends PartakeActionSupport {
 	        	} else {
 	        		// public でなければ、passcode を入れなければ見ることが出来ない
 		        	this.eventId = eventId;
-		        	return INPUT; // passcode required.	 
+		        	return "passcode"; // passcode required.	 
 	        	}
 	        }
 	        
@@ -133,7 +135,6 @@ public class EventsController extends PartakeActionSupport {
     public String comment() throws PartakeResultException {
         // In order to comment, a user should be logged in.
         UserEx user = ensureLogin();
-        
         if (user == null) { return LOGIN; }
 
         this.eventId = getParameter("eventId");
@@ -151,7 +152,8 @@ public class EventsController extends PartakeActionSupport {
 	   		
 	   		String comment = getParameter("comment");
 	   		if (StringUtils.isEmpty(comment)) {
-	   		    addFieldError("comment", "コメントを入力してください。");
+	   		    // addFieldError("comment", "コメントを入力してください。");
+	   		    addWarningMessage("コメントを入力してください。");
 	   		    return INPUT;
 	   		}
 	   		
