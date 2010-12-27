@@ -100,23 +100,27 @@
 	<div class="top-user-events">
 		<h2>直近の登録イベント</h2>
 		<% List<Event> enrolled = (List<Event>) request.getAttribute(Constants.ATTR_ENROLLED_EVENTSET); %>		
-		<% if (enrolled != null && !enrolled.isEmpty()) { %>			
+		<% if (enrolled != null && !enrolled.isEmpty()) { %>
+		  <ul>
 			<% for (int i = 0; i < 3 && i < enrolled.size(); ++i) { %>
 				<% Event event = enrolled.get(i); %>
-				<p><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></p>
+				<li><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></li>
 			<% } %>
-			<p><a href="<%= request.getContextPath() %>/mypage">more...</a></p>
+			</ul>            
+			<p class="more"><a href="<%= request.getContextPath() %>/mypage">more...</a></p>
 		<% } else { %>
 			<p>直近の登録イベントはありません。</p>
 		<% } %>
 		<h2>直近の管理イベント</h2>
 		<% List<Event> owned = (List<Event>) request.getAttribute(Constants.ATTR_OWNED_EVENTSET); %>		
-		<% if (owned != null && !owned.isEmpty()) { %>			
+		<% if (owned != null && !owned.isEmpty()) { %>
+		    <ul>
 			<% for (int i = 0; i < 3 && i < owned.size(); ++i) { %>
 				<% Event event = owned.get(i); %>
-				<p><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></p>
+				<li><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></li>
 			<% } %>
-			<p><a href="<%= request.getContextPath() %>/mypage">more...</a></p>
+			</ul>            
+			<p class="more"><a href="<%= request.getContextPath() %>/mypage">more...</a></p>
 		<% } else { %>
 			<p>直近の登録イベントはありません。</p>
 		<% } %>

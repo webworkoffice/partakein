@@ -220,40 +220,6 @@ public class EventsController extends PartakeActionSupport {
     public String changeComment() throws PartakeResultException {
         return changeParticipationStatus(null, true);
     }
-    
-    public String twitterPromotion() {
-        eventId = getParameter("eventId");
-        String message = getParameter("message");
-        if (eventId == null || message == null) { return INPUT; }
-        
-        UserEx user = getLoginUser();
-        if (user == null) { return LOGIN; }
-        
-        try {
-            event = EventService.get().getEventExById(eventId);
-            if (event == null) { return NOT_FOUND; }
-        } catch (DAOException e) {
-            e.printStackTrace();
-            addActionError("データベースに接続できません。");
-            return ERROR;
-        }
-
-        // Only owner can promote the event.
-        if (!event.hasPermission(user, UserPermission.EVENT_PROMOTE)) { return PROHIBITED; }
-
-        AccessToken accessToken = new AccessToken(user.getTwitterLinkage().getAccessToken(),
-                        user.getTwitterLinkage().getAccessTokenSecret());
-        Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(accessToken);
-
-        try {
-            twitter.updateStatus(message);
-            return SUCCESS;
-        } catch (TwitterException e) {
-            e.printStackTrace();
-            addActionError("twitter へのメッセージ送信時にエラーが発生しました。");
-            return ERROR;
-        }
-    }
 
     // ----------------------------------------------------------------------
     

@@ -156,8 +156,13 @@ body {
     <h2><img src="<%= request.getContextPath() %>/images/bird.png"/>メッセージ</h2>
     <ul>
 		<li><a id="open-message-form" href="#">参加者へメッセージを送信する</a></li>
-		<li><a id="open-twitter-promotion-form" href="#">twitter で宣伝する</a></li>
 	</ul>
+	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付状況</h2>
+    <ul>
+        <li>締切24時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineOneday() ? "送付済" : "未送付" %></li>
+        <li>締切12時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineHalfday() ? "送付済" : "未送付" %></li>
+        <li>イベント１日前：<%= notificationStatus.isBeforeTheDay() ? "送付済" : "未送付" %></li>
+    </ul>
 	<%--
 	<ul>
 	    <li><a id="open-reminder-reset-form" href="#">リマンダー送付状況をリセットする</a></li>
@@ -189,15 +194,7 @@ body {
             <s:submit value="メッセージ送信" />
         </s:form>
     </div>
-    <div id="twitter-promotion-form" title="twitter に宣言を流す">
-        <p>twitter に宣伝を流すことが出来ます。</p>
-        <s:form method="post" action="twitterPromotion">
-            <s:token />
-            <s:hidden name="eventId" value="%{eventId}" />
-            <s:textarea name="message" value="%{event.defaultTwitterPromotionMessage}"></s:textarea>
-            <s:submit value="宣伝を流す" />
-        </s:form>
-    </div>
+    
     <%-- 
     <div id="reminder-reset-form" title="リマインダー送付状況をリセットする">
         <p>リマインダーを未送付の状態にします。</p>
@@ -324,12 +321,6 @@ body {
 %>
 
 <div class="event-status">
-	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付状況</h2>
-	<ul>
-        <li>締切24時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineOneday() ? "送付済" : "未送付" %></li>
-        <li>締切12時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineHalfday() ? "送付済" : "未送付" %></li>
-        <li>イベント１日前：<%= notificationStatus.isBeforeTheDay() ? "送付済" : "未送付" %></li>
-	</ul>
 	<h2>参加者数</h2>
 	<ul>
 		<li>参加者: <%= enrolledParticipations.size() %> 人 (仮 <%= participationList.getReservedEnrolled() %> 人)</li>
