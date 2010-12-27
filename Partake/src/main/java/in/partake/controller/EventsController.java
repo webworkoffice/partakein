@@ -35,7 +35,7 @@ import twitter4j.http.AccessToken;
 
 import com.opensymphony.xwork2.Validateable;
 
-public class EventsController extends PartakeActionSupport implements Validateable {
+public class EventsController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;		
     private static final Logger logger = Logger.getLogger(EventsController.class);
@@ -255,9 +255,6 @@ public class EventsController extends PartakeActionSupport implements Validateab
         }
     }
 
-    public void validate() {
-    }
-    
     // ----------------------------------------------------------------------
     
     private String changeParticipationStatus(ParticipationStatus status, boolean changesOnlyComment) throws PartakeResultException {

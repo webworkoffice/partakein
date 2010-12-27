@@ -328,9 +328,7 @@
             <result name="success" type="redirectAction">
                 <param name="actionName">${eventId}</param>
             </result>
-            <result name="input" type="redirectAction">
-                <param name="actionName">${eventId}</param>
-            </result>
+            <result name="input">/WEB-INF/events/passcode.jsp</result>
 		</action>
 		
 		<!-- Event Participants -->
@@ -360,7 +358,10 @@
 
 	        <param name="eventId">{1}</param>
 			<result name="success">/WEB-INF/events/show.jsp</result>
-			<result name="input">/WEB-INF/events/passcode.jsp</result>
+			<result name="input" type="redirectAction">
+			    <param name="actionName">passcode</param>
+			    <param name="eventId">${eventId}</param>
+			</result>
 		</action>
 	</package>
 		

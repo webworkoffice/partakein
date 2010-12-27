@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
     
-    
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -13,10 +12,10 @@
 
 <h1>イベントを表示するためにパスコードを入れてください。</h1>
 
-<s:form method="post" action="%{#request.contextPath}/events/passcode">
+<s:form method="post" action="passcode">
 	<s:token />
     <s:hidden id="eventId" name="eventId" value="%{eventId}" />
-    <label for="passcode">PassCode:</label><s:textfield id="passcode" name="passcode" label="Passcode"/><br />
+    <label for="passcode">パスコード:</label><s:textfield id="passcode-checking" name="passcode" label="Passcode"/><br />
     <s:submit />
 </s:form>
 

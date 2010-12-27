@@ -105,6 +105,7 @@
 				<% Event event = enrolled.get(i); %>
 				<p><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></p>
 			<% } %>
+			<p><a href="<%= request.getContextPath() %>/mypage">more...</a></p>
 		<% } else { %>
 			<p>直近の登録イベントはありません。</p>
 		<% } %>
@@ -115,6 +116,7 @@
 				<% Event event = owned.get(i); %>
 				<p><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></p>
 			<% } %>
+			<p><a href="<%= request.getContextPath() %>/mypage">more...</a></p>
 		<% } else { %>
 			<p>直近の登録イベントはありません。</p>
 		<% } %>
