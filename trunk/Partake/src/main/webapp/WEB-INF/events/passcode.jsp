@@ -12,7 +12,7 @@
 
 <h1>イベントを表示するためにパスコードを入れてください。</h1>
 
-<s:form method="post" action="passcode">
+<s:form method="post" action="passcode" id="passcode-checking-form">
 	<s:token />
     <s:hidden id="eventId" name="eventId" value="%{eventId}" />
     <label for="passcode">パスコード:</label><s:textfield id="passcode-checking" name="passcode" label="Passcode"/><br />
