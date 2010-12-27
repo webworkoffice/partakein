@@ -122,7 +122,7 @@
 			</ul>            
 			<p class="more"><a href="<%= request.getContextPath() %>/mypage">more...</a></p>
 		<% } else { %>
-			<p>直近の登録イベントはありません。</p>
+			<p>直近の管理イベントはありません。</p>
 		<% } %>
 	</div>
 <% } %>
