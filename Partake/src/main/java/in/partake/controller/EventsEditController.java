@@ -399,9 +399,9 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        // TODO: これはひどい
 	        // related event を登録        
 	        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
-	        if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
-	        if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
-	        if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }
+	        if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(Util.removeHash(relatedEventID1), relatedEventRequired1, relatedEventPriority1)); }
+	        if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(Util.removeHash(relatedEventID2), relatedEventRequired2, relatedEventPriority2)); }
+	        if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(Util.removeHash(relatedEventID3), relatedEventRequired3, relatedEventPriority3)); }
 
 	        EventService.get().update(event, eventEmbryo,
 	        		foreImageEmbryo != null || removingForeImage, foreImageEmbryo, 
