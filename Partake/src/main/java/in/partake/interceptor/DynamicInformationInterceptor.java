@@ -20,15 +20,22 @@ public class DynamicInformationInterceptor extends AbstractInterceptor {
 	public String intercept(ActionInvocation invocation) throws Exception {
 
 		Object action = invocation.getAction();
+		String currentURL = ServletActionContext.getRequest().getRequestURL().toString();
+		
 		if (action instanceof PartakeActionSupport) {
 			PartakeActionSupport pas = (PartakeActionSupport) action;
-			String currentURL = ServletActionContext.getRequest().getRequestURL().toString(); 
 			pas.setCurrentURL(currentURL);
 			ServletActionContext.getRequest().setAttribute(Constants.ATTR_CURRENT_URL, currentURL);
 		} else {
 			logger.warn("action is not extended from PartakeActionSupport");
 		}
 		
-		return invocation.invoke();
+		long begin = System.currentTimeMillis();
+		String result = invocation.invoke(); 
+		long end = System.currentTimeMillis();
+		
+		logger.info(currentURL + " took "+ (end - begin) + "[msec] to process.");
+		
+		return result;
 	}
 }
