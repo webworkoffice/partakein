@@ -107,6 +107,12 @@ public final class Util {
         return substring(substring(message, 0, Math.max(maxLength - 3, 0)) + "...", 0, maxLength);
     }
     
+    public static String removeHash(String str) {
+        if (str == null) { return null; }
+        return str.replaceAll("#.*", "");
+    }
+    
+    
     // ----------------------------------------------------------------------
 	// Image
     
