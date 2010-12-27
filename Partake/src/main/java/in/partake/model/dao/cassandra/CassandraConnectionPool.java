@@ -4,6 +4,8 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import com.opensymphony.xwork2.ActionContext;
+
 import me.prettyprint.cassandra.service.CassandraClient;
 import me.prettyprint.cassandra.service.CassandraClientPool;
 import me.prettyprint.cassandra.service.CassandraClientPoolFactory;
@@ -53,7 +55,7 @@ public class CassandraConnectionPool extends PartakeConnectionPool {
             
             CassandraClient client = pool.borrowClient(host, port);
             
-            logger.debug("borrowing... " + name + " : " + client.toString());
+            logger.debug("borrowing... " + name + " : " + numAcquiredConnection.get());
             return new CassandraConnection(this, name, client, now);
         } catch (Exception e) {
             throw new DAOException(e);
@@ -81,7 +83,7 @@ public class CassandraConnectionPool extends PartakeConnectionPool {
     private void releaseConnectionImpl(CassandraConnection connection) {
         CassandraClientPool pool = CassandraClientPoolFactory.INSTANCE.get();
         try {
-            logger.debug("releasing... " + connection.getClient().toString());
+            logger.debug("releasing... " + connection.getName() + " : " + numAcquiredConnection.get());
             pool.releaseClient(connection.getCassandraClient());
         } catch (Exception e) {
             logger.warn("releaseConnectionImpl failed by an exception.", e);

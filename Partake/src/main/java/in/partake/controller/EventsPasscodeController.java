@@ -21,9 +21,6 @@ public class EventsPasscodeController extends PartakeActionSupport implements Va
 	
 	// /events/passcode
 	public String passcode() {
-	    logger.info("passcode() called.");
-		// validate() was already called, so it should be OK now.
-		
 	    try {
 	        if (passcode == null) {
 	            return INPUT;
@@ -55,8 +52,6 @@ public class EventsPasscodeController extends PartakeActionSupport implements Va
 	
 	@Override
 	public void validate() {
-	    logger.info("validate() called. " + eventId);
-	    
 		if (StringUtils.isEmpty(eventId)) {
 			addActionError("event が指定されていません。");			
 		}
