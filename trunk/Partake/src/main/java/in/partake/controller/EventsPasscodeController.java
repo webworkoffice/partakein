@@ -2,9 +2,10 @@ package in.partake.controller;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
+import in.partake.resource.I18n;
 import in.partake.service.EventService;
 
-import org.apache.commons.lang.xwork.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.opensymphony.xwork2.Validateable;
@@ -20,31 +21,44 @@ public class EventsPasscodeController extends PartakeActionSupport implements Va
 	
 	// /events/passcode
 	public String passcode() {
+	    logger.info("passcode() called.");
 		// validate() was already called, so it should be OK now.
 		
+	    try {
+	        if (passcode == null) {
+	            return INPUT;
+	        }
+	        
+	        Event event = EventService.get().getEventById(eventId);
+	        if (event == null) {
+	            logger.info("無効な eventId です。");
+	            return ERROR;
+	        }
+	        
+            String pass = StringUtils.trim(passcode);
+            
+            if (!pass.equals(event.getPasscode())) {
+                addWarningMessage("passcode が一致しませんでした。");
+                return INPUT;
+            }
+            
+            session.put("event:" + eventId, passcode);
+            return SUCCESS;
+	    } catch (DAOException e) {
+            logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
+            addActionError(I18n.t(I18n.DATABASE_ERROR));
+	    }
+	    
 		session.put("event:" + eventId, passcode);
 		return SUCCESS;
 	}
 	
 	@Override
 	public void validate() {
-		if (eventId == null) {
-			addActionError("event が指定されていません。");
-		}
-		if (passcode == null) {
-			addActionError("passcode が指定されていません");
-		}
-
-		try {
-			Event event = EventService.get().getEventById(eventId);
-			String pass = StringUtils.trim(passcode);
-			
-			if (!pass.equals(event.getPasscode())) {
-				addFieldError("passcode", "passcode が一致しませんでした。");
-			}
-		} catch (DAOException e) {
-		    logger.warn("validate() failed", e);
-			addActionError("event を取得中にエラーが発生しました");
+	    logger.info("validate() called. " + eventId);
+	    
+		if (StringUtils.isEmpty(eventId)) {
+			addActionError("event が指定されていません。");			
 		}
 	}
 	
