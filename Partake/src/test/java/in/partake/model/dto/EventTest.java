@@ -1,10 +1,13 @@
 package in.partake.model.dto;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Date;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -12,22 +15,27 @@ import org.junit.Test;
  * @author skypencil (@eller86)
  */
 public final class EventTest {
-	@Test
-	public void testCopyConstructor() {
-		Event[] samples = new Event[] {
+	Event[] samples;
+
+	@Before
+	public void createSamples() {
+		samples = new Event[] {
 				new Event(),
 				new Event("id", "shortId", "title", "summary", "category",
 						new Date(), new Date(), new Date(), 0, "url", "place",
 						"address", "description", "#hashTag", "ownerId", null,
 						"foreImageId", "backImageId", true, "passcode",
 						new Date(), new Date(), -1),
-				new Event("id2", "shortId2", "title2", "summary2", "category2",
-						new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
-						"address2", "description2", "#hashTag2", "ownerId2", new ArrayList<String>(),
-						"foreImageId2", "backImageId2", false, "passcode2",
-						new Date(4), new Date(5), 1)
+						new Event("id2", "shortId2", "title2", "summary2", "category2",
+								new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
+								"address2", "description2", "#hashTag2", "ownerId2", new ArrayList<String>(),
+								"foreImageId2", "backImageId2", false, "passcode2",
+								new Date(4), new Date(5), 1)
 		};
+	}
 
+	@Test
+	public void testCopyConstructor() {
 		for (Event source : samples) {
 			// Event class doesn't override #equals() method.
 			// Assert.assertEquals(source, new Event(source));
@@ -55,6 +63,20 @@ public final class EventTest {
 			Assert.assertEquals(source.getCreatedAt(), new Event(source).getCreatedAt());
 			Assert.assertEquals(source.getModifiedAt(), new Event(source).getModifiedAt());
 			Assert.assertEquals(source.getRevision(), new Event(source).getRevision());
+		}
+	}
+
+	@Test
+	public void testCopyConstructorByReflection() throws IllegalArgumentException, IllegalAccessException {
+		for (Event source : samples) {
+			Event copy = new Event(source);
+
+			for (Field field : Event.class.getDeclaredFields()) {
+				if (!Modifier.isStatic(field.getModifiers())) {
+					field.setAccessible(true);
+					Assert.assertEquals(field.get(source), field.get(copy));
+				}
+			}
 		}
 	}
 
