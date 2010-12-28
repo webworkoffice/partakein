@@ -1,0 +1,76 @@
+package in.partake.model.dto;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+
+/**
+ * 
+ * @author skypencil (@eller86)
+ */
+public final class EventTest {
+	@Test
+	public void testCopyConstructor() {
+		Event[] samples = new Event[] {
+				new Event(),
+				new Event("id", "shortId", "title", "summary", "category",
+						new Date(), new Date(), new Date(), 0, "url", "place",
+						"address", "description", "#hashTag", "ownerId", null,
+						"foreImageId", "backImageId", true, "passcode",
+						new Date(), new Date(), -1),
+				new Event("id2", "shortId2", "title2", "summary2", "category2",
+						new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
+						"address2", "description2", "#hashTag2", "ownerId2", new ArrayList<String>(),
+						"foreImageId2", "backImageId2", false, "passcode2",
+						new Date(4), new Date(5), 1)
+		};
+
+		for (Event source : samples) {
+			// Event class doesn't override #equals() method.
+			// Assert.assertEquals(source, new Event(source));
+
+			Assert.assertEquals(source.getId(), new Event(source).getId());
+			Assert.assertEquals(source.getShortId(), new Event(source).getShortId());
+			Assert.assertEquals(source.getTitle(), new Event(source).getTitle());
+			Assert.assertEquals(source.getSummary(), new Event(source).getSummary());
+			Assert.assertEquals(source.getCategory(), new Event(source).getCategory());
+			Assert.assertEquals(source.getDeadline(), new Event(source).getDeadline());
+			Assert.assertEquals(source.getBeginDate(), new Event(source).getBeginDate());
+			Assert.assertEquals(source.getEndDate(), new Event(source).getEndDate());
+			Assert.assertEquals(source.getCapacity(), new Event(source).getCapacity());
+			Assert.assertEquals(source.getUrl(), new Event(source).getUrl());
+			Assert.assertEquals(source.getPlace(), new Event(source).getPlace());
+			Assert.assertEquals(source.getAddress(), new Event(source).getAddress());
+			Assert.assertEquals(source.getDescription(), new Event(source).getDescription());
+			Assert.assertEquals(source.getHashTag(), new Event(source).getHashTag());
+			Assert.assertEquals(source.getOwnerId(), new Event(source).getOwnerId());
+			Assert.assertEquals(source.getManagerScreenNames(), new Event(source).getManagerScreenNames());
+			Assert.assertEquals(source.getForeImageId(), new Event(source).getForeImageId());
+			Assert.assertEquals(source.getBackImageId(), new Event(source).getBackImageId());
+			Assert.assertEquals(source.isPrivate(), new Event(source).isPrivate());
+			Assert.assertEquals(source.getPasscode(), new Event(source).getPasscode());
+			Assert.assertEquals(source.getCreatedAt(), new Event(source).getCreatedAt());
+			Assert.assertEquals(source.getModifiedAt(), new Event(source).getModifiedAt());
+			Assert.assertEquals(source.getRevision(), new Event(source).getRevision());
+		}
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testCopyConstructorByNullValue() {
+		new Event(null);
+	}
+
+	@Test
+	public void testCopyConstructorByFlozenInstance() {
+		Event source = new Event();
+		Assert.assertFalse(source.isFrozen());
+
+		source.freeze();
+		Assert.assertTrue(source.isFrozen());
+
+		Assert.assertFalse(new Event(source).isFrozen());
+	}
+}
