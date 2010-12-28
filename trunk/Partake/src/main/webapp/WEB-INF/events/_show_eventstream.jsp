@@ -95,7 +95,7 @@ var tab = {
 	        <% if (user != null) { %>
 		        <s:form action="comment">
 			        <s:token />
-			        <s:hidden name="eventId" value="%{eventId}" />Yout comment:<br>
+			        <s:hidden name="eventId" value="%{eventId}" />Your comment:<br>
 			        <textarea id="comment" name="comment"></textarea><br />
 			        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>
 			        <s:submit type="image" src="%{#request.contextPath}/images/postcomment.png" value="コメントを投稿"  />
