@@ -1,9 +1,12 @@
 package in.partake.model.dto;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Date;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -11,14 +14,19 @@ import org.junit.Test;
  * @author skypencil (@eller86)
  */
 public final class CommentTest {
+	Comment[] samples;
+	
+	@Before
+	public void createSamples() {
+		samples = new Comment[] {
+			new Comment(),
+			new Comment("id1", "eventId1", "userId1", "comment1", new Date()),
+			new Comment("id2", "eventId2", "userId2", "comment2", new Date(1)),
+		};
+	}
+
 	@Test
 	public void testCopyConstructor() {
-		Comment[] samples = new Comment[] {
-				new Comment(),
-				new Comment("id1", "eventId1", "userId1", "comment1", new Date()),
-				new Comment("id2", "eventId2", "userId2", "comment2", new Date(1)),
-		};
-
 		for (Comment source : samples) {
 			// Comment class doesn't override #equals() method.
 			// Assert.assertEquals(source, new Comment(source));
@@ -28,6 +36,20 @@ public final class CommentTest {
 			Assert.assertEquals(source.getUserId(), new Comment(source).getUserId());
 			Assert.assertEquals(source.getComment(), new Comment(source).getComment());
 			Assert.assertEquals(source.getCreatedAt(), new Comment(source).getCreatedAt());
+		}
+	}
+
+	@Test
+	public void testCopyConstructorByReflection() throws IllegalArgumentException, IllegalAccessException {
+		for (Comment source : samples) {
+			Comment copy = new Comment(source);
+
+			for (Field field : Comment.class.getDeclaredFields()) {
+				if (!Modifier.isStatic(field.getModifiers())) {
+					field.setAccessible(true);
+					Assert.assertEquals(field.get(source), field.get(copy));
+				}
+			}
 		}
 	}
 
