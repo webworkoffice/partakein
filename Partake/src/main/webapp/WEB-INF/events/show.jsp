@@ -118,8 +118,8 @@ body {
 	           <% for (EventRelationEx eventRelation : eventRelations) { %>
 	               <dd>
 	                   <a href="<%= h(eventRelation.getEvent().getEventURL()) %>"><%= h(eventRelation.getEvent().getTitle()) %></a>
-                       <% if (eventRelation.isRequired()) { %>(このイベントへの登録が必須です)<% } %>
-                       <% if (eventRelation.hasPriority()) { %>(このイベントへ登録した方は優先的にこのイベントへ参加できます)<% } %>
+                       <% if (eventRelation.isRequired()) { %><br>(こちらの関連イベントへの登録が必須です)<% } %>
+                       <% if (eventRelation.hasPriority()) { %><br>(こちらの関連イベントへ登録した方は優先的に本イベントへ参加できます)<% } %>
 	               </dd>
 	           <% } %>
 	        <% }%>
