@@ -7,7 +7,7 @@
 <dt><label for="summary">概要</label>:</dt>
 	<dd><s:textfield id="summary" name="summary" cssClass="text-input" /><br />
 	   <span class="accent">＞</span> 概要は 100 文字以内で記述してください。</dd>
-<dt><label for="category">カテゴリー</label>:</dt>
+<dt><label for="category">カテゴリ</label>:</dt>
 	<dd><s:select id="category" name="category" list="categories" listKey="key" listValue="value"></s:select></dd>
 <dt><label for="description">説明</label>:</dt>
 	<dd><s:textarea id="description" name="description" cssClass="text-input" /><br />
