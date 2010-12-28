@@ -85,7 +85,7 @@ var tab = {
 				<p><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>"><%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>
 				: <%= Helper.readableDate(comment.getCreatedAt()) %>
 				<% if (user != null && (event.hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT) || user.getId().equals(comment.getUserId()))) { %>
-					<a href="#" onclick="removeComment('<%= h(comment.getId()) %>')">[x]</a>
+					<a href="#" title="コメントを削除" onclick="removeComment('<%= h(comment.getId()) %>')">[x]</a>
 				<% } %></p>
 				<p><%= h(comment.getComment()) %></p>
 			</div>
@@ -131,7 +131,7 @@ var tab = {
 		  title: 'Twitter Hashtag Live Feed',
 		  subject: '<%= h(event.getHashTag()) %>',
 		  width: 'auto',
-		  height: 345,
+		  height: 520,
 		  theme: {
 		    shell: {
 		      background: 'none',

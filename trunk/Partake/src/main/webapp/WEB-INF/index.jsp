@@ -20,7 +20,7 @@
 <head>
 	<jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
 	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed/all" />
-		
+
 	<title>[PARTAKE]</title>
 </head>
 <body>
@@ -87,10 +87,11 @@
 	</div>
 	
 	<div class="top-explanation">
+	   <img src="<%= request.getContextPath() %>/images/feature-04.png" alt="" />
 	   <h3>ご要望をお聞きしています</h3>
 	   <ul class="top-feature">
-	       <li>バグを発見したり、ご要望がある場合は <a href="http://code.google.com/p/partakein/issues/list">Issue Tracker</a> までお寄せください。日本語で記述していただいて構いません。あるいは、<a href="http://twitter.com/partakein">@partakein</a> まで tweet をお願いします。</li>
-	       <li>開発者を募集しています。PARTAKE のソースは <a href="http://code.google.com/p/partakein/">Google Code</a> で(極一部の画像を除いて)公開中です。</li>
+	       <li>ご要望・バグ報告は <a href="http://code.google.com/p/partakein/issues/list">Issue Tracker</a> まで。あるいは、<br><a href="http://twitter.com/partakein">@partakein</a> まで tweet をお願いします。</li>
+	       <li>開発者を募集中。PARTAKE のソースは <a href="http://code.google.com/p/partakein/">Google Code</a> <br>で(極一部の画像を除き)公開中です。</li>
 	   </ul>
 	</div>
 </div>
@@ -128,7 +129,7 @@
 <% } %>
 
 <div class="top-recent-events">
-    <h2><img class="top-pin" src="<%= request.getContextPath() %>/images/pin.png" alt="" />新着イベント</h2>
+    <h2>新着イベント</h2>
     <% if (recentEvents != null) { %>
         <% for (Event event : recentEvents) { %>
             <% if (event == null) { continue; } %>

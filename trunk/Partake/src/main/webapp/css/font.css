@@ -11,17 +11,16 @@ body {
       font-size: 13px;
 }
 
-.top-recent-events h2 {
-      font-size: 15px;
+.top-recent-events h2,.top-user-events h2 {
+      font-size: 14px;
 }
 
 .top-recent-events h3 a {
       color:#494440;
-      font-size: 14px;
+      font-size: 13px;
 }
 
 .top-recent-events h3 a:hover {
-
       border-bottom:2px dotted #ffbf0D;
 }
 
@@ -86,15 +85,15 @@ body {
 }
 
 .event-participants h2 {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .event-owner-information h2 {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .event-comments h2 {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 ul.actionMessage, ul.warningMessage, ul.errorMessage {
