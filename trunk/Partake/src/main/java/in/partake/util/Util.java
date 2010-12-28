@@ -107,6 +107,12 @@ public final class Util {
         return substring(substring(message, 0, Math.max(maxLength - 3, 0)) + "...", 0, maxLength);
     }
     
+    /**
+     * URLから # + fragment を取り除いたものを返す。
+     * 
+     * @param str 改行を含まない加工対象文字列
+     * @return # + fragment を取り除いたURL
+     */
     public static String removeHash(String str) {
         if (str == null) { return null; }
         return str.replaceAll("#.*", "");
@@ -219,6 +225,12 @@ public final class Util {
 		}
     }
     
+    /**
+     * validなHTMLから、HTMLタグとコメントを取り除く。
+     * 
+     * @param html 加工するHTML文字列（非null）
+     * @return HTMLタグとコメントを取り除いた文字列
+     */
     public static String removeTags(String html) {
         return REMOVETAG_PATTERN.matcher(html).replaceAll("");
     }
