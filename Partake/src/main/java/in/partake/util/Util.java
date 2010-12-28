@@ -108,10 +108,11 @@ public final class Util {
     }
     
     /**
-     * URLから # + fragment を取り除いたものを返す。
+     * 文字列から'#'と後続の文字列を取り除いたものを返す。
+     * URLから # + fragment を取り除区などの用途を想定。
      * 
      * @param str 改行を含まない加工対象文字列
-     * @return # + fragment を取り除いたURL
+     * @return '#'と後続の文字列を取り除いた文字列
      */
     public static String removeHash(String str) {
         if (str == null) { return null; }
