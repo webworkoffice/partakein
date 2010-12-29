@@ -1,4 +1,4 @@
-#How to test PARTAKE.
+#summary How to test PARTAKE.
 
 = Introduction =
 
@@ -9,5 +9,3 @@ This page describes how to test PARTAKE.
 NOTE! The test of PARTAKE is under construction. The test might not work correctly. Be patient.
 
 Change the mode of partake.properties to "test", and Run JUnit Test.
-
-
