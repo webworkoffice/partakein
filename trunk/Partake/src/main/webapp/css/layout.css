@@ -7,7 +7,7 @@
 
 /* {
     border: 1px dashed green;
-}*/ 
+} */  
 
 #logo {
     margin-right:10px;
@@ -154,7 +154,7 @@ text-indent:-9999px;
     background-repeat:repeat;
     float: left;
     width: 400px;
-    padding:5px 11px 0 15px;
+    padding:5px 7px 0 13px;
     border-radius: 3px; /* CSS3 */
     -webkit-border-radius: 3px; /* Safari,Chrome */
     -moz-border-radius: 3px; /* FireFox */
@@ -186,9 +186,19 @@ text-indent:-9999px;
     top: -15px;
     z-index: 1;
 }
+
+.top-feature {
+	margin-bottom:3px;
+    padding: 4px 0 0 52px;
+    width: 300px;
+}
+
+
 .top-explanation li {
+	margin:0;
     margin-bottom:3px;
 }
+
 .top-explanation h3 {
     position: relative;
     border-bottom: 2px dotted #bfbfbf;	
@@ -212,7 +222,8 @@ text-indent:-9999px;
 ---------------------------*/
 
 .top-recent-events, .top-user-events {
-  /*  background-color: #f6f5f5; */
+	word-break: break-all;
+	word-wrap:break-word;
     background: transparent url(../images/texture.png);
     padding:5px 18px 18px 18px;
     margin-top:20px;
@@ -225,12 +236,10 @@ text-indent:-9999px;
     -webkit-border-radius: 9px; /* Safari,Chrome */
     -moz-border-radius: 9px; /* FireFox */
     behavior: url(border-radius.htc); /* google code forIE */
+    
+    list-style: none;
+    list-style-image: url(../images/mark.png);
 }
-
-.more {
-	text-align: right;
-}
-
 
 .top-recent-events h2 img {
     position: relative;
@@ -238,6 +247,12 @@ text-indent:-9999px;
     top: -25px;
     width: auto;
     height: auto;
+}
+
+.top-recent-events h3 {
+    margin-top:8px;
+    margin-bottom:6px;
+    word-break: break-all;
 }
 
 .top-recent-event {
@@ -250,8 +265,8 @@ text-indent:-9999px;
 
 .top-recent-event-image img {
     float: left;
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 92px;
+    max-height: 92px;
     margin: 0 10px 10px 0;
     border: 1px outset #F5F5F5;
     border-radius: 5px; /* CSS3 */
@@ -259,13 +274,14 @@ text-indent:-9999px;
     -moz-border-radius: 5px; /* FireFox */
     behavior:url(border-radius.htc); /* google code forIE */
 
-    -moz-box-shadow: 1px 1px 1px #666666; /* firefox */
-    -webkit-box-shadow: 1px 1px 1px #666666;/* Safari,Chrome */
-    box-shadow: 1px 1px 1px #666666; /* CSS3 */
+    -moz-box-shadow: 1px 1px 1px #bcbcbc; /* firefox */
+    -webkit-box-shadow: 1px 1px 1px #bcbcbc;/* Safari,Chrome */
+    box-shadow: 1px 1px 1px #bcbcbc; /* CSS3 */
 }
 
 .top-recent-event-content {
     margin-left: 110px;
+    width:290px;
 }
 
 .top-recent-event-content p {
@@ -285,19 +301,45 @@ text-indent:-9999px;
 }
 
 .top-recent-event dd {
+    width:280px;
     float: left;
     margin-left: 0;
 }
 
-.top-feature {
-    padding: 4px 0 0 70px;
-    width: 300px;
+
+/* 直近のマイイベント top-user-events
+---------------------------*/
+
+.top-user-events {
+	    background-color:#FFF8DC;
+    background: transparent url(../images/texture.png);
+    border-radius: 3px; /* CSS3 */
+    -webkit-border-radius: 3px; /* Safari,Chrome */
+    -moz-border-radius: 3px; /* FireFox */
+    behavior: url(border-radius.htc); /* google code forIE */
 }
 
+.top-user-events p {
+	margin:2px;
+	padding:0 0 0 33px;
+}
+
+.top-user-events h2 {
+	font-size:10px;
+}
+
+.more {
+	text-align: right;
+}
 
 /*----------------------------------------------------
   イベント画面
 ----------------------------------------------------*/
+#wrapper h1 {
+	word-break: break-all;
+	word-wrap:break-word;
+	}
+
 .summary {
     padding: 0 10px 10px 10px;
 }
@@ -318,6 +360,8 @@ text-indent:-9999px;
 .event-content {
     float: left;
     width: 610px;
+    word-break: break-all;
+	word-wrap:break-word;
 }
 
 .event-information {
@@ -351,7 +395,7 @@ text-indent:-9999px;
 
 .event-comments {
 	color:#282828;
-    height:350px;
+    height:525px;
     overflow:auto;
     margin-bottom:5px;
     background-color: #ffffff;
@@ -364,7 +408,7 @@ text-indent:-9999px;
 
 .comment {
     border-bottom: 1px dotted #cccccc;
-    margin: 0 7px 3px 7px;
+    margin: 0 5px 0px 8px;
 }
 
 .event-comments textarea#comment {
@@ -373,9 +417,9 @@ text-indent:-9999px;
 }
 
 .comment-form textarea {
-	margin:auto;
+	margin-left:8px;
 	height: 40px;
-	width:450px;
+	width:510px;
 }
 
 /* Tab- LiveFeed,CommentBoard
@@ -384,8 +428,8 @@ text-indent:-9999px;
 border:0
 }
 #tab-wrapper {
-width:560px;
-height:620px;
+width:580px;
+height:/*620*/880px;
 margin: 0 auto;
 text-align: left;
 padding-top:30px;
@@ -430,7 +474,7 @@ overflow: auto;
 clear:both;
 border:1px solid #cccccc;
 padding:14px;
-height:510px;
+height:675px;
 color:#666;
 border-radius: 5px;
 -webkit-border-radius: 5px;
@@ -491,7 +535,7 @@ behavior:url(border-radius.htc);
 .event-promotion iframe#facebook-like-button {
 	border: none;
 	overflow: hidden;
-	width: 100px;
+	width: 90px;
 	height: 21px;
 }
 
@@ -779,6 +823,8 @@ table.associated-event input[type='text'] {
 }
 
 .event-searched {
+	word-wrap:break-word;
+    word-break: break-all;
     position: relative;
     min-height: 180px;
     margin: 0 12px;
@@ -854,6 +900,8 @@ table.associated-event input[type='text'] {
 }
 
 .mypage-tbl {
+    word-break: break-all;
+	word-wrap:break-word;
     table-layout:fixed;
     width:825px;
     line-height: 2em;
