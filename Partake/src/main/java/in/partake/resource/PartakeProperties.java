@@ -34,6 +34,24 @@ public class PartakeProperties {
 	    return properties.getProperty("in.partake.bitly.username");
 	}
 	
+	public String getDAOFactoryClassName() {
+	    String str = properties.getProperty("in.partake.database.daofactory");
+	    if (str == null) {
+	        return "in.partake.model.dao.cassandra.CassandraDAOFactory";
+	    } else {
+	        return str;
+	    }
+	}
+	
+	public String getConnectionPoolClassName() {
+	    String str = properties.getProperty("in.partake.database.pool");
+        if (str == null) {
+            return "in.partake.model.dao.cassandra.CassandraConnectionPool";
+        } else {
+            return str;
+        }
+	}
+	
 	public String getBitlyAPIKey() {
 	    return properties.getProperty("in.partake.bitly.apikey");
 	}

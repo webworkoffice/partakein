@@ -15,21 +15,33 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeConnectionPool;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.cassandra.CassandraConnectionPool;
-import in.partake.model.dao.cassandra.CassandraDAOFactory;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.Participation;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
+import in.partake.resource.PartakeProperties;
 
 public abstract class PartakeService {
-    private static PartakeDAOFactory factory = new CassandraDAOFactory();
-    private static PartakeConnectionPool pool = new CassandraConnectionPool();
+    private static final PartakeDAOFactory factory;
+    private static final PartakeConnectionPool pool;
     
-    public static void setDAOFactory(PartakeDAOFactory factory) {
-        PartakeService.factory = factory;
+    static {
+        try {
+            Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
+            factory = (PartakeDAOFactory) factoryClass.newInstance();
+            
+            Class<?> poolClass = Class.forName(PartakeProperties.get().getConnectionPoolClassName());
+            pool = (PartakeConnectionPool) poolClass.newInstance();
+            
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     protected static PartakeDAOFactory getFactory() {
@@ -54,8 +66,7 @@ public abstract class PartakeService {
         return result;
     }
     
-    // これがここにいるのはなんかおかしいような気がする。
-    // 階層化が足りないのではないか。
+    // TODO: これがここにいるのはなんかおかしいような気がする。階層化が足りないのではないか。
     
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
         User user = getFactory().getUserAccess().getUserById(con, userId);
