@@ -23,7 +23,7 @@ public class MockDaoFactory extends PartakeDAOFactory {
     @Mock IEventAccess eventAccess;
     
     public MockDaoFactory() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(this);       
     }    
     
     @Override
