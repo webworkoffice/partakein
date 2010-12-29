@@ -17,6 +17,10 @@ public class Participation extends PartakeModel<PartakeModel<?>> {
         return new Comparator<Participation>() {
             @Override
             public int compare(Participation lhs, Participation rhs) {
+            	if (lhs == rhs) return 0;
+                if (lhs == null) { return -1; }
+                if (rhs == null) { return 1; }
+
                 if (lhs.getPriority() > rhs.getPriority()) { return -1; }
                 if (lhs.getPriority() < rhs.getPriority()) { return 1; }
                 int x = lhs.getModifiedAt().compareTo(rhs.getModifiedAt());
