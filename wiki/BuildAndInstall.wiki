@@ -1,4 +1,4 @@
-# How to build and run PARTAKE.
+#summary How to build and run PARTAKE.
 
 = Introduction =
 
