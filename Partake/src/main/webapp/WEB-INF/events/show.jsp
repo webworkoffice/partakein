@@ -152,11 +152,9 @@ body {
 		    <li><a id="open-event-delete-form" href="#">イベントを削除する</a></li>
 		<% } %>
 		 <li><a href="<%= request.getContextPath() %>/events/participants/<%= event.getId() %>.csv">参加者リスト (CSV 形式, UTF-8)</a></li>
+         <li><a id="open-message-form" href="#">参加者へメッセージを送信する</a></li>
     </ul>
-    <h2><img src="<%= request.getContextPath() %>/images/bird.png"/>メッセージ</h2>
-    <ul>
-		<li><a id="open-message-form" href="#">参加者へメッセージを送信する</a></li>
-	</ul>
+
 	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付状況</h2>
     <ul>
         <li>締切24時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineOneday() ? "送付済" : "未送付" %></li>
@@ -320,15 +318,17 @@ body {
 	List<ParticipationEx> cancelledParticipations = participationList.getCancelledParticipations();
 %>
 
+
+
+<div class="event-participants">
 <div class="event-status">
 	<h2>参加者数</h2>
 	<ul>
-		<li>参加者: <%= enrolledParticipations.size() %> 人 (仮 <%= participationList.getReservedEnrolled() %> 人)</li>
-		<li>補欠者: <%= spareParticipations.size() %> 人 (仮 <%= participationList.getReservedSpare() %> 人)</li>
+		<li>参加: <%= enrolledParticipations.size() %> 人 (仮 <%= participationList.getReservedEnrolled() %> 人)
+　／　補欠: <%= spareParticipations.size() %> 人 (仮 <%= participationList.getReservedSpare() %> 人)</li>
 	</ul>
 </div>
 
-<div class="event-participants">
 	<h2><img src="<%= request.getContextPath() %>/images/circle.png" />参加者一覧 (<%= enrolledParticipations.size() %> 人)</h2>
 	<% if (enrolledParticipations != null && enrolledParticipations.size() > 0) { %>
 		<ul>

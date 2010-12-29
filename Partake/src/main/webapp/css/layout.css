@@ -7,7 +7,7 @@
 
 /* {
     border: 1px dashed green;
-} */  
+} */   
 
 #logo {
     margin-right:10px;
@@ -241,6 +241,7 @@ text-indent:-9999px;
     list-style-image: url(../images/mark.png);
 }
 
+/*
 .top-recent-events h2 img {
     position: relative;
     left: -25px;
@@ -248,6 +249,7 @@ text-indent:-9999px;
     width: auto;
     height: auto;
 }
+*/
 
 .top-recent-events h3 {
     margin-top:8px;
@@ -496,7 +498,7 @@ behavior:url(border-radius.htc);
     behavior:url(border-radius.htc); /* google code forIE */
 }
 
-.event-owner-information h2 {
+.event-owner-information h2, .event-status h2 {
     margin: 8px 0 4px 0.5em;
     padding: 0;
 }
@@ -591,24 +593,23 @@ behavior:url(border-radius.htc);
 
 .event-participants h2 {
     width: 150px;
-    margin: 0 0 0 0;
+    margin: 4px 0 0 0;
     padding: 0 0 0 0.4em;
 }
 
 .event-participation {
     float: right;
-    width: 250px;
+    width: 260px;
 }
 
 .event-participants ul {
     display: block;
     list-style: none;
     margin: 2px 0 0 0;
-    padding: 5px 1px 22px 9px;
+    padding: 5px 1px 8px 9px;
 }
 
 .event-participants li {
-    /* border: 1px dashed; */
     display: block;
     margin: 0;
     padding: 0;
@@ -660,6 +661,11 @@ behavior:url(border-radius.htc);
     padding: 10px 0;
     word-break: break-all;
 }
+
+.event-status {
+    list-style: none;
+    list-style-image: url(../images/mark.png);
+	}
 
 /*----------------------------------------------------
   イベント作成画面

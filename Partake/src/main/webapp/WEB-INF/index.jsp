@@ -129,7 +129,7 @@
 <% } %>
 
 <div class="top-recent-events">
-    <h2>新着イベント</h2>
+    <img src="<%= request.getContextPath() %>/images/recent-events.png" />
     <% if (recentEvents != null) { %>
         <% for (Event event : recentEvents) { %>
             <% if (event == null) { continue; } %>
