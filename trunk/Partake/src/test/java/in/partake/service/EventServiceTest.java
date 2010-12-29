@@ -3,6 +3,7 @@ package in.partake.service;
 import junit.framework.Assert;
 import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.mock.MockConnection;
+import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
 
 import org.junit.Before;
@@ -25,5 +26,12 @@ public class EventServiceTest extends ServiceTestBase {
     public void testToGetEventById() throws Exception {
         Event event = EventService.get().getEventById("event1");
         Assert.assertEquals("event1", event.getId());
+        
+        assureAllConnectionsAreReleased();
+    }
+    
+    private void assureAllConnectionsAreReleased() {
+        MockConnectionPool pool = (MockConnectionPool) PartakeService.getPool();
+        Assert.assertTrue(pool.areAllConnectionsReleased());
     }
 }
