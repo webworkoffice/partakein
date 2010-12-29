@@ -26,11 +26,11 @@ public final class EventTest {
 						"address", "description", "#hashTag", "ownerId", null,
 						"foreImageId", "backImageId", true, "passcode",
 						new Date(), new Date(), -1),
-						new Event("id2", "shortId2", "title2", "summary2", "category2",
-								new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
-								"address2", "description2", "#hashTag2", "ownerId2", new ArrayList<String>(),
-								"foreImageId2", "backImageId2", false, "passcode2",
-								new Date(4), new Date(5), 1)
+				new Event("id2", "shortId2", "title2", "summary2", "category2",
+						new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
+						"address2", "description2", "#hashTag2", "ownerId2", new ArrayList<String>(),
+						"foreImageId2", "backImageId2", false, "passcode2",
+						new Date(4), new Date(5), 1)
 		};
 	}
 
