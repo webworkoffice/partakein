@@ -1,5 +1,6 @@
 package in.partake.service;
 
+import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
 
 import java.util.Calendar;
@@ -7,7 +8,14 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import junit.framework.Assert;
+
 public class ServiceTestBase {
+    
+    protected void assureAllConnectionsAreReleased() {
+        MockConnectionPool pool = (MockConnectionPool) PartakeService.getPool();
+        Assert.assertTrue(pool.areAllConnectionsReleased());
+    }
     
     protected Event createEvent(String id) {
         Date now = new Date();

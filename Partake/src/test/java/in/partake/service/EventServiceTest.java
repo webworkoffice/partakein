@@ -3,7 +3,6 @@ package in.partake.service;
 import junit.framework.Assert;
 import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.mock.MockConnection;
-import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
 
 import org.junit.Before;
@@ -14,6 +13,7 @@ import static org.mockito.Mockito.*;
 public class EventServiceTest extends ServiceTestBase {
     @Before
     public void setup() throws Exception {
+        // TODO: PartakeService を reset するべき。同じ mock object になんども値が入ってしまう。
         createFixtures();
     }
     
@@ -28,10 +28,5 @@ public class EventServiceTest extends ServiceTestBase {
         Assert.assertEquals("event1", event.getId());
         
         assureAllConnectionsAreReleased();
-    }
-    
-    private void assureAllConnectionsAreReleased() {
-        MockConnectionPool pool = (MockConnectionPool) PartakeService.getPool();
-        Assert.assertTrue(pool.areAllConnectionsReleased());
     }
 }
