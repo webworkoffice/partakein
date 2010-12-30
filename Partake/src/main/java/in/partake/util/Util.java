@@ -193,6 +193,11 @@ public final class Util {
         return builder.toString();
     }
     
+	/**
+	 * Javascriptの同名関数と同様、
+	 * 文字列をURIのパラメータとして使用できるようにエンコードを施す。
+	 * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/encodeURIComponent
+	 */
     public static String encodeURIComponent(String uri) {
     	try {
     		return URLEncoder.encode(uri, "UTF-8")
@@ -239,6 +244,7 @@ public final class Util {
     // ----------------------------------------------------------------------
 	// URI
     
+    // TODO rename to 'encodeURI'
     public static String escapeURI(String s) {
     	if (s == null) { return ""; }
     	try {
