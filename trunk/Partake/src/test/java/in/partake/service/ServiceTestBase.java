@@ -2,6 +2,8 @@ package in.partake.service;
 
 import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.User;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -12,11 +14,19 @@ import junit.framework.Assert;
 
 public class ServiceTestBase {
     
+    /**
+     * assert that all connections are released.
+     */
     protected void assureAllConnectionsAreReleased() {
         MockConnectionPool pool = (MockConnectionPool) PartakeService.getPool();
         Assert.assertTrue(pool.areAllConnectionsReleased());
     }
     
+    /**
+     * utility function to create an event.
+     * @param id
+     * @return
+     */
     protected Event createEvent(String id) {
         Date now = new Date();
         Date createdAt = now;
@@ -27,6 +37,16 @@ public class ServiceTestBase {
         return event;
     }
     
+    /**
+     * utility function to create an event.
+     * @param id
+     * @param beginYear
+     * @param beginMonth
+     * @param beginDay
+     * @param beginHour
+     * @param beginMin
+     * @return
+     */
     protected Event createEvent(String id, int beginYear, int beginMonth, int beginDay, int beginHour, int beginMin) {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("JST"), Locale.JAPANESE);
         Date createdAt = calendar.getTime();
@@ -42,5 +62,15 @@ public class ServiceTestBase {
         Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", createdAt, null);
         event.setId(id);
         return event;
+    }
+    
+    protected User createUser(String userId) {
+        User user = new User(userId, new Date(), -1, null);
+        return user;
+    }
+    
+    protected TwitterLinkage createTwitterLinkage(int twitterId, String userId) {
+        TwitterLinkage linkage = new TwitterLinkage(-1, "screenName", "name", "accessToken", "accessTokenSecret", "http://example.com/profile.image.jpg", userId);
+        return linkage;
     }
 }
