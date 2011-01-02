@@ -119,7 +119,6 @@ var tab = {
 	</div>
 </div>
 <div id="news3">
-<p>
 	<% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	<div class="event-twitter-hashtag-stream">	
 	<script>
@@ -157,7 +156,6 @@ var tab = {
 	</script>
 	</div>
 	<% } %>
-</p>
 </div>
 
 <script type="text/javascript">
