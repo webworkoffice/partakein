@@ -21,7 +21,7 @@ import org.apache.cassandra.thrift.SliceRange;
  */
 class CassandraKeyIterator extends KeyIterator {
     private String keyspace;
-    private ColumnParent columnParent; // TODO: ColumnFamily をとるべき
+    private ColumnParent columnParent;
     private ConsistencyLevel readConsistencyLevel;
 
     private String keyPrefix;

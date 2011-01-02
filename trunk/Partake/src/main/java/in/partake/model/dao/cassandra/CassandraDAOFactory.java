@@ -1,6 +1,7 @@
 package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.IBinaryAccess;
+import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.ICalendarLinkageAccess;
 import in.partake.model.dao.ICommentAccess;
 import in.partake.model.dao.IDirectMessageAccess;
@@ -16,68 +17,104 @@ import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeDAOFactory;
 
 public class CassandraDAOFactory extends PartakeDAOFactory {
+    private ICacheAccess cacheAccess;
+    private ICalendarLinkageAccess calendarLinkageAccess;    
+    private IBinaryAccess binaryAccess;
+    private ICommentAccess commentAccess;
+    private IDirectMessageAccess directMessageAccess;
+    private IEnrollmentAccess enrollmentAccess;
+    private IEventAccess eventAccess;
+    private IEventRelationAccess eventRelationAccess;
+    private IFeedAccess feedAccess;
+    private IMessageAccess messageAccess;
+    private IOpenIDLinkageAccess openIDLinkageAccess;
+    private ITwitterLinkageAccess twitterLinkageAccess;
+    private IUserAccess userAccess;
+    private IUserPreferenceAccess userPreferenceAccess;
+    
+    public CassandraDAOFactory() {
+        cacheAccess = new CassandraCacheDao(this);
+        calendarLinkageAccess = new CalendarLinkageCassandraDao(this);
+        binaryAccess = new BinaryCassandraDao(this);
+        commentAccess = new CommentCassandraDao(this);
+        directMessageAccess = new DirectMessageCassandraDao(this);
+        enrollmentAccess = new EnrollmentCassandraDao(this);
+        eventAccess = new EventCassandraDao(this);
+        feedAccess = new FeedCassandraDao(this);
+        messageAccess = new MessageCassandraDao(this);
+        openIDLinkageAccess = new OpenIDLinkageCassandraDao(this);
+        twitterLinkageAccess = new TwitterLinkageCassandraDao(this);
+        userAccess = new UserCassandraDao(this);
+        userPreferenceAccess = new UserPreferenceCassandraDao(this);
+    }
+    
+    @Override
+    public ICacheAccess getCacheAccess() {
+        return cacheAccess;
+    }
+    
     @Override
     public ICalendarLinkageAccess getCalendarAccess() {
-        return new CalendarLinkageCassandraDao(this);
+        return calendarLinkageAccess;
     }
     
     @Override
     public IBinaryAccess getBinaryAccess() {
-        return new BinaryCassandraDao(this);
+        return binaryAccess;
     }
     
     @Override
     public ICommentAccess getCommentAccess() {
-        return new CommentCassandraDao(this);
+        return commentAccess;
     }
 
     @Override
     public IDirectMessageAccess getDirectMessageAccess() {
-        return new DirectMessageCassandraDao(this);
+        return directMessageAccess;
     }
 
     @Override
     public IEnrollmentAccess getEnrollmentAccess() {
-        return new EnrollmentCassandraDao(this);
+        return enrollmentAccess;
     }
 
     @Override
     public IEventAccess getEventAccess() {
-        return new EventCassandraDao(this);
+        return eventAccess;
     }
     
     @Override
     public IEventRelationAccess getEventRelationAccess() {
-    	return new EventRelationCassandraDao(this);
+    	return eventRelationAccess;
     }
 
     @Override
     public IFeedAccess getFeedAccess() {
-        return new FeedCassandraDao(this);
+        return feedAccess;
     }
 
     @Override
     public IMessageAccess getMessageAccess() {
-        return new MessageCassandraDao(this);
+        return messageAccess;
     }
 
     @Override
     public IOpenIDLinkageAccess getOpenIDLinkageAccess() {
-        return new OpenIDLinkageCassandraDao(this);
+        return openIDLinkageAccess;
     }
 
     @Override
     public ITwitterLinkageAccess getTwitterLinkageAccess() {
-        return new TwitterLinkageCassandraDao(this);
+        return twitterLinkageAccess;
     }
 
     @Override
     public IUserAccess getUserAccess() {
-        return new UserCassandraDao(this);
+        return userAccess;
     }
     
     @Override
     public IUserPreferenceAccess getUserPreferenceAccess() {
-        return new UserPreferenceCassandraDao(this);
+        return userPreferenceAccess;
     }
 }

@@ -33,7 +33,7 @@ import org.apache.cassandra.thrift.SuperColumn;
  * TABLE 構造
  * 
  * directmessage:id:<message id>
- *    senderId/<user id> (optional) <-- TODO: これ user id にしたほうがよかったかなあ...。
+ *    senderId/<user id> (optional) <-- TODO: これ userId にしたほうがよかったかなあ...。
  *    message/<string>
  *    eventId/<event id> (optional)
  *    createdAt/<time string>

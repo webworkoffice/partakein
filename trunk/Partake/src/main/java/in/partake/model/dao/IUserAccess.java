@@ -7,7 +7,6 @@ import java.util.List;
 public interface IUserAccess {
 
     // fresh な user id を１つ作成して返す。
-    // TODO: これ public じゃなくて UserService に任せるべきじゃないかね？
     public abstract String getFreshUserId(PartakeConnection con) throws DAOException;
 
     /**
