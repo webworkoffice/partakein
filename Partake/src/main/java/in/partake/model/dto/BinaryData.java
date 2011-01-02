@@ -1,7 +1,13 @@
 package in.partake.model.dto;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class BinaryData extends PartakeModel<BinaryData> {
+    @Id
     private String id;
+    
     private String type;
     private byte[] data;
     

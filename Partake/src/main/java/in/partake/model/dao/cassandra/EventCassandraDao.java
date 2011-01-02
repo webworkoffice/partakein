@@ -38,15 +38,6 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 //      events:id:<event id>
 //          <event information>
 //
-// DEPRECATED
-// * recent events
-//      events:recent
-//          <createdAt>/<event id>
-//          (When more than 10 events, older events should be removed when reading.)
-//          TODO: <event> が消去されているならば、recent からも消すべき？　これはそのうち消えるので問題ない。
-//			TODO: <event> が途中から　private になるかもしれないし public になるかもしれない。
-//			この機能いらないかもね。いらないような気がしてきた。
-//
 // * from owner id (events whose owner is the user)
 //      events:owner:<user id>
 //			<event id>/""
@@ -304,13 +295,14 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     // ----------------------------------------------------------------------
     // retrieval
     
-    // TODO: DAO が仕事しすぎ
+    // TODO: DAO が仕事しすぎ。EventId のリストを返すに止めれば良い．
     private List<Event> getEventsByOwnerImpl(CassandraConnection con, String userId) throws Exception {
         Client client = con.getClient();
     	String key = EVENTS_BYOWNER_PREFIX + userId;
 
+    	// TODO: 1000 件以上ある場合はどうしたらいい？ -> DataIterator 使え
         SlicePredicate predicate = new SlicePredicate();
-        SliceRange sliceRange = new SliceRange(new byte[0], new byte[0], false, 1000); // TODO: 1000 件以上ある場合はどうしたらいい？
+        SliceRange sliceRange = new SliceRange(new byte[0], new byte[0], false, 1000); 
         predicate.setSlice_range(sliceRange);
 
         ColumnParent columnParent = new ColumnParent(EVENTS_BYOWNER_COLUMNFAMILY);

@@ -324,7 +324,6 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             for (Column column : superColumn.getColumns()) {
                 String name = string(column.getName());
                 if ("status".equals(name)) {
-                    // XXX: getUserById をここで呼ぶのはおかしい。
                 	user = userDao.getUserById(con, string(superColumn.getName()));
                 	status = ParticipationStatus.safeValueOf(string(column.getValue()));
                 	modifiedAt2 = new Date(column.timestamp);

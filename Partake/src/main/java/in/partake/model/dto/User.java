@@ -11,6 +11,13 @@ public class User extends PartakeModel<User> {
     public User() {        
     }
     
+    public User(String id, Date lastLoginAt, int twitterId, String calendarId) {
+        this.id = id;
+        this.lastLoginAt = lastLoginAt;
+        this.twitterId = twitterId;
+        this.calendarId = calendarId;
+    }
+    
     public User(User user) {
         this.id = user.id;
         this.lastLoginAt = user.lastLoginAt;

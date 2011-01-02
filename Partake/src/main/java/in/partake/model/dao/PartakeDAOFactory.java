@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 public abstract class PartakeDAOFactory {
+    public abstract ICacheAccess getCacheAccess();
     public abstract IBinaryAccess getBinaryAccess();
     public abstract ICalendarLinkageAccess getCalendarAccess();
     public abstract ICommentAccess getCommentAccess();
