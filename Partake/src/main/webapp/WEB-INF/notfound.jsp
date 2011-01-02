@@ -1,3 +1,4 @@
+<%@page import="in.partake.resource.Constants"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
     
 <!DOCTYPE html>
@@ -8,7 +9,9 @@
 	<title>リソースが見つかりませんでした</title>
 </head>
 <body>
-<jsp:include page="/WEB-INF/internal/header-nomessage.jsp" flush="true" />
+<jsp:include page="/WEB-INF/internal/header.jsp" flush="true">
+	<jsp:param value="NO_HEADER_MESSAGES" name="true" />
+</jsp:include>
 
 <h1>リソースが見つかりませんでした</h1>
 
