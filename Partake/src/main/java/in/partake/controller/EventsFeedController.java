@@ -8,8 +8,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -23,13 +21,14 @@ import in.partake.model.CommentEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventCategory;
+import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
 import in.partake.util.Util;
 
 public class EventsFeedController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
-	private static final Logger logger = Logger.getLogger(EventsFeedController.class);
+	// private static final Logger logger = Logger.getLogger(EventsFeedController.class);
 	
 	private String contentType = null;
 	private ByteArrayInputStream inputStream = null;
@@ -76,7 +75,7 @@ public class EventsFeedController extends PartakeActionSupport {
 		feed.setEncoding("utf-8");
 		
 		feed.setTitle("Recent 100 events - " + EventCategory.getReadableCategoryName(category) + " - [PARTAKE]");
-		feed.setLink("http://partake.in/");	// TODO property から in.partake.toppath を取ってきて使うべき？
+		feed.setLink(PartakeProperties.get().getTopPath() + "/");
 		feed.setDescription("最近登録されたイベントを(最大100)フィードします。");
 		
 		try {
