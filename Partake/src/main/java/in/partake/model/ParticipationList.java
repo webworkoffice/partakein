@@ -2,6 +2,11 @@ package in.partake.model;
 
 import java.util.List;
 
+/**
+ * participation list. 
+ * @author shinyak
+ *
+ */
 public class ParticipationList {
     private List<ParticipationEx> enrolledParticipations;
     private List<ParticipationEx> spareParticipations;

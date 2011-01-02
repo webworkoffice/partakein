@@ -4,6 +4,11 @@ import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
 
+/**
+ * user with related data.
+ * @author shinyak
+ *
+ */
 public class UserEx extends User {
     private TwitterLinkage twitterLinkage;
     

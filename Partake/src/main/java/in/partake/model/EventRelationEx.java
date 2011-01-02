@@ -2,6 +2,11 @@ package in.partake.model;
 
 import in.partake.model.dto.EventRelation;
 
+/**
+ * event relation with related data.
+ * @author shinyak
+ *
+ */
 public class EventRelationEx extends EventRelation {
     private EventEx event;
     
