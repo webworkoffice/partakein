@@ -1,9 +1,11 @@
 package in.partake.model.dao.mock;
 
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import in.partake.model.dao.IBinaryAccess;
+import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.ICalendarLinkageAccess;
 import in.partake.model.dao.ICommentAccess;
 import in.partake.model.dao.IDirectMessageAccess;
@@ -19,88 +21,99 @@ import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeDAOFactory;
 
 public class MockDaoFactory extends PartakeDAOFactory {
-    // あとでちゃんと書く
-    @Mock IEventAccess eventAccess;
-    
+    @Mock private ICacheAccess cacheAccess;
+    @Mock private ICalendarLinkageAccess calendarLinkageAccess;    
+    @Mock private IBinaryAccess binaryAccess;
+    @Mock private ICommentAccess commentAccess;
+    @Mock private IDirectMessageAccess directMessageAccess;
+    @Mock private IEnrollmentAccess enrollmentAccess;
+    @Mock private IEventAccess eventAccess;
+    @Mock private IEventRelationAccess eventRelationAccess;
+    @Mock private IFeedAccess feedAccess;
+    @Mock private IMessageAccess messageAccess;
+    @Mock private IOpenIDLinkageAccess openIDLinkageAccess;
+    @Mock private ITwitterLinkageAccess twitterLinkageAccess;
+    @Mock private IUserAccess userAccess;
+    @Mock private IUserPreferenceAccess userPreferenceAccess;
+
     public MockDaoFactory() {
         MockitoAnnotations.initMocks(this);       
-    }    
+    }
+    
+    public void resetAll() {
+        Mockito.reset(cacheAccess, calendarLinkageAccess, binaryAccess, commentAccess, directMessageAccess, enrollmentAccess);
+        Mockito.reset(eventAccess, eventRelationAccess, feedAccess, messageAccess, openIDLinkageAccess, twitterLinkageAccess);
+        Mockito.reset(userAccess, userPreferenceAccess);
+    }
+    
+    @Override
+    public ICacheAccess getCacheAccess() {
+        return cacheAccess;
+    }
     
     @Override
     public IBinaryAccess getBinaryAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return binaryAccess;
     }
 
     @Override
     public ICalendarLinkageAccess getCalendarAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return calendarLinkageAccess;
     }
 
     @Override
     public ICommentAccess getCommentAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return commentAccess;
     }
 
     @Override
     public IDirectMessageAccess getDirectMessageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return directMessageAccess;
     }
 
     @Override
     public IEnrollmentAccess getEnrollmentAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return enrollmentAccess;
     }
 
     @Override
-    public IEventAccess getEventAccess() {
+    public IEventAccess getEventAccess() {        
         return eventAccess;
     }
 
     @Override
     public IEventRelationAccess getEventRelationAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return eventRelationAccess;
     }
 
     @Override
     public IFeedAccess getFeedAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return feedAccess;
     }
 
     @Override
     public IMessageAccess getMessageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return messageAccess;
     }
 
     @Override
     public IOpenIDLinkageAccess getOpenIDLinkageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return openIDLinkageAccess;
     }
 
     @Override
     public ITwitterLinkageAccess getTwitterLinkageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return twitterLinkageAccess;
     }
 
     @Override
     public IUserAccess getUserAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return userAccess;
     }
 
     @Override
     public IUserPreferenceAccess getUserPreferenceAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return userPreferenceAccess;
     }
 
 }

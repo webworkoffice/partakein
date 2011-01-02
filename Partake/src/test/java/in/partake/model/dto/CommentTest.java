@@ -55,7 +55,7 @@ public final class CommentTest {
 
 	@Test(expected = NullPointerException.class)
 	public void testCopyConstructorByNullValue() {
-		new Event(null);
+		new Comment(null);
 	}
 
 	@Test
