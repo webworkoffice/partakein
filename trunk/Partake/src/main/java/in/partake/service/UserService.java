@@ -16,6 +16,7 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.http.AccessToken;
 
 /**
  * User に関連するもの。
@@ -70,82 +71,79 @@ public final class UserService extends PartakeService {
         }
     }
     
-    @Deprecated
-    public UserEx getPartakeUserByUser(User user) throws DAOException {
-        return getUserExByUser(user);
-    }
-    
     // ----------------------------------------------------------------------
     // Authentication
     
-    public void updateLastLogin(User user) throws DAOException {
+    public UserEx loginUserByTwitter(Twitter twitter, AccessToken accessToken) throws DAOException, TwitterException {
+        twitter4j.User twitterUser = twitter.showUser(twitter.getId()); 
+        TwitterLinkage twitterLinkageEmbryo = new TwitterLinkage(
+                twitter.getId(), twitter.getScreenName(), twitterUser.getName(), accessToken.getToken(), accessToken.getTokenSecret(),
+                twitter.showUser(twitter.getId()).getProfileImageURL().toString(), null
+        );
+
+        // Twitter Linkage から User を引いてくる。
+        // 対応する user がいない場合は、user を作成して Twitter Linkage を付与する
+        
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            factory.getUserAccess().updateLastLogin(con, user);
-        } finally {
-            con.invalidate();
-        }
-    }
-    
-    // ----------------------------------------------------------------------
-    // Twitter Authentication
-    
-    public User getUserFromTwitterLinkage(TwitterLinkage twitterLinkage, Twitter twitter, boolean createsIfAbsent) throws DAOException, TwitterException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            String userId = twitterLinkage.getUserId();
-            User user = null;
-            if (userId == null) {
-                userId = factory.getUserAccess().getFreshUserId(con);
-            } else {
-                user = factory.getUserAccess().getUserById(con, userId);
-            }
+            // 1. まず TwitterLinkage を作成 / アップデート
+            TwitterLinkage twitterLinkage = updateTwitterLinkage(con, factory, twitterLinkageEmbryo, twitter); 
+
+            // 2. 対応するユーザーを生成
+            UserEx user = getUserFromTwitterLinkage(con, factory, twitterLinkage, twitter, true);
             
-            if (user == null && createsIfAbsent) {
-                factory.getUserAccess().addUser(con, userId, twitter.getId());
-                user = factory.getUserAccess().getUserById(con, userId);
-            }
+            // 3. lastlogin の update
+            factory.getUserAccess().updateLastLogin(con, user);
             
             return user;
         } finally {
             con.invalidate();
-        }
+        }        
     }
     
-    public TwitterLinkage updateTwitterLinkage(TwitterLinkage twitterLinkageEmbryo, Twitter twitter) throws DAOException, TwitterException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            TwitterLinkage twitterLinkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitter.getId()); 
-            
-            if (twitterLinkage == null || twitterLinkage.getUserId() == null) {
-                String userId = factory.getUserAccess().getFreshUserId(con); 
-                twitterLinkageEmbryo.setUserId(userId);
-            } else {
-                twitterLinkageEmbryo.setUserId(twitterLinkage.getUserId());
-            }
-            
-            factory.getTwitterLinkageAccess().addTwitterLinkage(con, twitterLinkageEmbryo);
-            return factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitter.getId());
-        } finally {
-            con.invalidate();
+    private UserEx getUserFromTwitterLinkage(PartakeConnection con, PartakeDAOFactory factory, TwitterLinkage twitterLinkage, Twitter twitter, boolean createsIfAbsent) throws DAOException, TwitterException {
+        String userId = twitterLinkage.getUserId();
+        UserEx user = null;
+        if (userId == null) {
+            userId = factory.getUserAccess().getFreshUserId(con);
+        } else {
+            user = getUserEx(con, userId); 
         }
+        
+        if (user == null && createsIfAbsent) {
+            factory.getUserAccess().addUser(con, userId, twitter.getId());
+            user = getUserEx(con, userId);
+        }
+        
+        return user;
+    }
+    
+    private TwitterLinkage updateTwitterLinkage(PartakeConnection con, PartakeDAOFactory factory, TwitterLinkage twitterLinkageEmbryo, Twitter twitter) throws DAOException, TwitterException {
+        TwitterLinkage twitterLinkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitter.getId()); 
+        
+        if (twitterLinkage == null || twitterLinkage.getUserId() == null) {
+            String userId = factory.getUserAccess().getFreshUserId(con); 
+            twitterLinkageEmbryo.setUserId(userId);
+        } else {
+            twitterLinkageEmbryo.setUserId(twitterLinkage.getUserId());
+        }
+        
+        factory.getTwitterLinkageAccess().addTwitterLinkage(con, twitterLinkageEmbryo);
+        return factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitter.getId());
     }
     
     // ----------------------------------------------------------------------
     // OpenID Authentication
-
-    public User getUserFromOpenIDLinkage(String identifier) throws DAOException {
+    
+    public UserEx loginByOpenID(String identifier) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             String userId = factory.getOpenIDLinkageAccess().getUserId(con, identifier); 
             if (userId == null) { return null; }
             
-            User user = factory.getUserAccess().getUserById(con, userId);
-            return user;
+            return getUserEx(con, userId);
         } finally {
             con.invalidate();
         }     

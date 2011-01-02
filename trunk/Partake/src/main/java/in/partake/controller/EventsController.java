@@ -29,13 +29,6 @@ import org.apache.commons.lang.xwork.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.http.AccessToken;
-
-import com.opensymphony.xwork2.Validateable;
-
 public class EventsController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;		

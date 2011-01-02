@@ -49,11 +49,12 @@ public final class Constants {
     public static final String ATTR_OPENID_PURPOSE = "OPENID_PURPOSE";
     
     public static final String ATTR_WARNING_MESSAGE = "WARNING_MESSAGE";
+    public static final String ATTR_ERROR_MESSAGE = "ERROR_MESSAGE";
     
     public static final String ATTR_REQUIRED_EVENTS = "REQUIRED_EVENTS";
     public static final String ATTR_EVENT_RELATIONS = "ATTR_EVENT_RELATIONS";
     
-    
+    public static final String ATTR_NO_HEADER_MESSAGES = "NO_HEADER_MESSAGES";
     
     private Constants() {
     	// prevent from instantiation.

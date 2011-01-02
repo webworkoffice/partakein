@@ -18,9 +18,9 @@ import org.openid4java.message.ParameterList;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
+import in.partake.resource.I18n;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.UserService;
 
@@ -103,27 +103,9 @@ public class AuthenticationController extends PartakeActionSupport {
             session.remove("requestToken");
             session.remove("redirectURL");
 
-            twitter4j.User twitterUser = twitter.showUser(twitter.getId()); 
-            TwitterLinkage twitterLinkageEmbryo = new TwitterLinkage(
-        			twitter.getId(), twitter.getScreenName(), twitterUser.getName(), accessToken.getToken(), accessToken.getTokenSecret(),
-        			twitter.showUser(twitter.getId()).getProfileImageURL().toString(), null
-        	);
-
-            // Twitter Linkage から User を引いてくる。
-            // 対応する user がいない場合は、user を作成して Twitter Linkage を付与する
-            
-            // 1. まず TwitterLinkage を作成 / アップデート            
-            TwitterLinkage twitterLinkage = UserService.get().updateTwitterLinkage(twitterLinkageEmbryo, twitter); 
-
-            // 2. 対応するユーザーを生成　TODO: UserSerivce で一気にやってしまうべき、というか、そもそも 1 ~ 3 は一気にやるべきでしょう。
-            // TODO: embryo も Service 内で作るべきじゃないかなー？
-        	User user = UserService.get().getUserFromTwitterLinkage(twitterLinkage, twitter, true);
-            UserEx userEx = UserService.get().getPartakeUserByUser(user);
+            UserEx user = UserService.get().loginUserByTwitter(twitter, accessToken);
+            session.put(Constants.ATTR_USER, user);
         	
-            // 3. lastlogin の update
-        	UserService.get().updateLastLogin(user);
-        	
-            session.put(Constants.ATTR_USER, userEx);
             addActionMessage("ログインしました");
             
         } catch (TwitterException e) {
@@ -178,18 +160,17 @@ public class AuthenticationController extends PartakeActionSupport {
         
         try {
             // TODO: UserEx が identifier から取れるべき
-            User user = UserService.get().getUserFromOpenIDLinkage(identity);
+            UserEx user = UserService.get().loginByOpenID(identity);
             if (user != null) {
-                UserEx userEx = UserService.get().getPartakeUserByUser(user);
-                session.put(Constants.ATTR_USER, userEx);
+                session.put(Constants.ATTR_USER, user);
                 return SUCCESS;
             } else {
                 addWarningMessage("ログインに失敗しました。OpenID と twitter ID が結び付けられていません。 Twitter でログイン後、設定から Open ID との結び付けを行ってください。");
                 return RETURNTOP;
             }
         } catch (DAOException e) {
-            logger.error("DAOException", e);
-            addActionError("データベースエラーが発生しました。"); // TODO: なんか ActionError の使い方が間違っているきがするんだよなあ...。
+            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
+            addWarningMessage(I18n.t(I18n.DATABASE_ERROR));
             return ERROR;
         }
     }

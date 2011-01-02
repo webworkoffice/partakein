@@ -470,6 +470,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 
 	// TODO: これ Event をそのままもてばえんじゃないの？
 	// TODO: date 系は汚いよなあ、なんとかなるはず。
+	// copy constructor でなんとかなりませんか。
 	private void copyFromEvent(Event event) {
 		assert (event != null);
 		

@@ -82,8 +82,8 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 			if (strs.length == 0) { return null; }
 			else { return strs[0]; }
 		} else {
-			// TODO: should be logged.
-			return null; // Hmm... Something wrong?
+		    logger.warn("shouldn't happen.");
+			return null;
 		}
 	}
 	
@@ -131,26 +131,46 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     }
 
     public void addWarningMessage(String str) {
-        @SuppressWarnings("unchecked")
-        List<String> warningMessage = (List<String>) this.session.get(Constants.ATTR_WARNING_MESSAGE);
-        if (warningMessage == null) { warningMessage = new ArrayList<String>(); }
-
-        warningMessage.add(str);
-        this.session.put(Constants.ATTR_WARNING_MESSAGE, warningMessage);
+        addMessage(Constants.ATTR_WARNING_MESSAGE, str);
     }
     
     public Collection<String> getWarningMessages() {
+        return getMessages(Constants.ATTR_WARNING_MESSAGE);
+    }
+    
+    public void addErrorMessage(String str) {
+        addMessage(Constants.ATTR_ERROR_MESSAGE, str);
+    }
+    
+    public Collection<String> getErrorMessages() {
+        return getMessages(Constants.ATTR_ERROR_MESSAGE);
+    }
+    
+    private void addMessage(String key, String message) {
         @SuppressWarnings("unchecked")
-        List<String> warningMessage = (List<String>) this.session.get(Constants.ATTR_WARNING_MESSAGE);
+        List<String> warningMessage = (List<String>) this.session.get(key);
+        if (warningMessage == null) { warningMessage = new ArrayList<String>(); }
+
+        warningMessage.add(message);
+        this.session.put(key, warningMessage);
+    }
+    
+    private Collection<String> getMessages(String key) {
+        @SuppressWarnings("unchecked")
+        List<String> warningMessage = (List<String>) this.session.get(key);
         if (warningMessage == null) { return new ArrayList<String>(); }
             
-        this.session.put(Constants.ATTR_WARNING_MESSAGE, null);
-    	return Collections.unmodifiableCollection(warningMessage);
+        this.session.put(key, null);
+        return Collections.unmodifiableCollection(warningMessage);
     }
     
     // ----------------------------------------------------------------------
     // Utility function
     
+    /**
+     * get logged in user. If a user is not logged in, null is returned.
+     * @return the logged in user. null if a user is not logged in.  
+     */
     public UserEx getLoginUser() {
     	if (session == null) { return null; }
         return (UserEx) session.get(Constants.ATTR_USER);
