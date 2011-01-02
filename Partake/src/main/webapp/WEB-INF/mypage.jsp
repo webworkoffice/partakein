@@ -45,7 +45,7 @@
 			    <tr>
 			    	<td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
 			    	<td><%= Helper.readableDate(event.getBeginDate()) %></td>
-			    	<td><%= event.fetchNumOfEnrolledUsers() %> 人/ <%= h(event.getCapacity()) %> 人</td>
+			    	<td><%= event.fetchNumOfEnrolledUsers() %> 人/ <%= h(String.valueOf(event.getCapacity())) %> 人</td>
 			    </tr>
 				<% } %>
 			</tbody>

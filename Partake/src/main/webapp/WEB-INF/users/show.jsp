@@ -49,8 +49,7 @@
 			    <tr>
 			    	<td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
 			    	<td><%= Helper.readableDate(event.getBeginDate()) %></td>
-			    	<% // TODO: これはひどい。service をここでよんじゃだめでしょう。 %>
-			    	<td><%= EventService.get().getNumOfEnrolledUsers(event.getId()) %> 人/ <%= h(event.getCapacity()) %> 人</td>
+			    	<td><%= EventService.get().getNumOfEnrolledUsers(event.getId()) %> 人/ <%= h(String.valueOf(event.getCapacity())) %> 人</td>
 			    </tr>
 				<% } %>
 			</tbody>

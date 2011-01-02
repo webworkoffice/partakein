@@ -64,7 +64,7 @@ body {
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <h1><%= h(event.getTitle()) %></h1>
-<% if (!Util.isEmpty(event.getSummary())) { %>
+<% if (!StringUtils.isEmpty(event.getSummary())) { %>
 	<p class="summary"><%= h(event.getSummary()) %></p>
 <% } %>
 
@@ -88,11 +88,11 @@ body {
 			<dt>定員：</dt>
 				<dd><%= event.getCapacity() != 0 ? String.valueOf(event.getCapacity()) : "-" %></dd>
 			<dt>会場：</dt>
-				<dd><%= h(Util.isEmpty(event.getPlace()) ? "-" : event.getPlace()) %></dd>
+				<dd><%= h(StringUtils.isEmpty(event.getPlace()) ? "-" : event.getPlace()) %></dd>
 			<dt>住所：</dt>
-				<dd><%= h(Util.isEmpty(event.getAddress()) ? "-" : event.getAddress()) %></dd>
+				<dd><%= h(StringUtils.isEmpty(event.getAddress()) ? "-" : event.getAddress()) %></dd>
 			<dt>URL：</dt>
-				<dd><% if (!Util.isEmpty(event.getUrl())) { %>
+				<dd><% if (!StringUtils.isEmpty(event.getUrl())) { %>
 					<a href="<%= h(event.getUrl()) %>"><%= h(event.getUrl()) %></a>             
 				<% } else { %>
 				    -
@@ -106,12 +106,12 @@ body {
 	                    <%= h(event.getOwner().getTwitterLinkage().getScreenName()) %>
 	                <% } %>
 	                </a></dd>
-	        <% if (!Util.isEmpty(event.getHashTag())) { %>
+	        <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	        <dt>ハッシュタグ：</dt>
 	            <dd><a href="http://twitter.com/#search?q=<%= escapeURI(event.getHashTag()) %>"><%= h(event.getHashTag()) %></a></dd>
 	        <% } %>         
 	        <dt>このページへの<br>短縮 URL：</dt>
-	           <% String shortenURL = Util.bitlyShortURL(event.getEventURL()); %>
+	           <% String shortenURL = Util.shortenURL(event.getEventURL()); %>
 	           <dd><a href="<%= h(shortenURL) %>"><%= h(shortenURL) %></a></dd>
 	        <% if (eventRelations != null && !eventRelations.isEmpty()) { %>
 	        <dt>関連イベント</dt>
@@ -125,7 +125,7 @@ body {
 	        <% }%>
 		</dl>
 		
-	    <% if (!Util.isEmpty(event.getAddress())) { %>
+	    <% if (!StringUtils.isEmpty(event.getAddress())) { %>
 	    <div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(escapeURI(event.getAddress())) %>">
 	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=200x200&center=<%= h(escapeURI(event.getAddress())) %>&zoom=17&sensor=false" />      
 	    </a></div>
