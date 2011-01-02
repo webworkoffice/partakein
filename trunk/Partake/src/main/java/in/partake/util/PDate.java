@@ -1,6 +1,8 @@
 package in.partake.util;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Partake 用の時刻。Immutable Object として実装すること。
@@ -14,6 +16,24 @@ public class PDate {
     
     public PDate(Date date) {
         this.date = date;
+    }
+    
+    public PDate(long time) {
+        this.date = new Date(time);
+    }
+    
+    public PDate(int year, int month, int day, int hour, int min, int sec, TimeZone timeZone) {
+        // TODO locale
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.DATE, day);
+        calendar.set(Calendar.HOUR, hour);
+        calendar.set(Calendar.MINUTE, min);
+        calendar.set(Calendar.SECOND, sec);
+        calendar.setTimeZone(timeZone);
+        
+        date = calendar.getTime();
     }
     
     /**
@@ -58,5 +78,10 @@ public class PDate {
         return lhs.date.equals(rhs.date);
     }
     
+    @Override
+    public int hashCode() {
+        if (date == null) { return 0; }
+        return date.hashCode();
+    }
     
 }

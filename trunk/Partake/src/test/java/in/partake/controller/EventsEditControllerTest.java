@@ -1,7 +1,10 @@
 package in.partake.controller;
 
+import in.partake.util.PDate;
+
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
@@ -26,33 +29,30 @@ public final class EventsEditControllerTest {
 	 * @throws InterruptedException 
 	 */
 	@Test
-	public void editNewTest() throws InterruptedException {
-		try {
-			editNewTestInner();
+	public void editNewTest() throws InterruptedException {		
+	    TimeZone timeZone = TimeZone.getDefault();
+	    
+	    // 現在時刻に依存するテストケースであるため、少なくとも分（minute）が異なる2点でテストする必要がある
+	    PDate.setCurrentDate(new PDate(2010, 1, 1, 0, 0, 0, timeZone));
+		editNewTestInner();
 
-			// 現在時刻に依存するテストケースであるため、少なくとも分（minute）が異なる2点でテストする必要がある
-			TimeUnit.SECONDS.sleep(70);
-			editNewTestInner();
-		} catch (InterruptedException e) {
-			// we cannot ignore this exception
-			// because this exception means that our testcase didn't run twice.
-			throw e;
-		}
+		PDate.setCurrentDate(new PDate(2010, 1, 1, 0, 1, 20, timeZone));
+        editNewTestInner();
+
+        PDate.setCurrentDate(new PDate(2015, 12, 31, 23, 59, 59, timeZone));
+        editNewTestInner();
+
+        PDate.setCurrentDate(new PDate(2000, 10, 30, 23, 59, 48, timeZone));
+        editNewTestInner();
+
+        PDate.resetCurrentDate();
 	}
 	
 	private void editNewTestInner() {
-		EventsEditController controller = null;
-		Date oneDayAfter = null;
+		EventsEditController controller = new EventsEditController();
+		Date oneDayAfter = new Date(PDate.getCurrentTime() + 1000 * 3600 * 24);
 		final Calendar oneDayAfterCalendar = Calendar.getInstance();
-		for (int i = 0; i < 20 && (controller == null || oneDayAfterCalendar.get(Calendar.HOUR_OF_DAY) != controller.getShour()); ++i) {
-			oneDayAfter = new Date(new Date().getTime() + 1000 * 3600 * 24);
-
-			// ここで他のプロセスにCPU取られると、Controller内部のoneDayAfterとここで宣言したローカル変数のoneDayAfterが
-			// equalsじゃなくなる可能性があるので、forで何度か試行する
-
-			controller = new EventsEditController();
-			oneDayAfterCalendar.setTime(oneDayAfter);
-		}
+		oneDayAfterCalendar.setTime(oneDayAfter);
 
 		final String result = controller.editNew();
 		Assert.assertEquals(Action.INPUT, result);
