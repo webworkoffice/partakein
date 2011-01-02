@@ -43,4 +43,20 @@ public class PDate {
     public static void resetCurrentDate() {
         PDate.currentDate = null;
     }
+    
+    // ----------------------------------------------------------------------
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof PDate)) { return false; }
+            
+        PDate lhs = this;
+        PDate rhs = (PDate) obj;
+        
+        if (lhs.date == rhs.date) { return true; }
+        if (lhs.date == null || rhs.date == null) { return false; }
+        return lhs.date.equals(rhs.date);
+    }
+    
+    
 }
