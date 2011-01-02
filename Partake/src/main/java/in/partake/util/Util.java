@@ -193,26 +193,6 @@ public final class Util {
         return builder.toString();
     }
     
-	/**
-	 * Javascriptの同名関数と同様、
-	 * 文字列をURIのパラメータとして使用できるようにエンコードを施す。
-	 * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/encodeURIComponent
-	 */
-    public static String encodeURIComponent(String uri) {
-    	try {
-    		return URLEncoder.encode(uri, "UTF-8")
-    	                         .replaceAll("\\+", "%20")
-    	                         .replaceAll("\\%21", "!")
-    	                         .replaceAll("\\%27", "'")
-    	                         .replaceAll("\\%28", "(")
-    	                         .replaceAll("\\%29", ")")
-    	                         .replaceAll("\\%7E", "~");
-    	} catch (UnsupportedEncodingException e) {
-    		logger.warn("Util#encodeURIComponent() safely returns empty string.");
-    		return "";
-    	}
-    }
-    
     public static String cleanupHTML(String dirtyHTML) {
     	try {
     		String fileName = ServletActionContext.getServletContext().getRealPath(Constants.ANTISAMY_POLICY_FILE_RELATIVE_LOCATION);     			
@@ -244,15 +224,40 @@ public final class Util {
     // ----------------------------------------------------------------------
 	// URI
     
-    // TODO rename to 'encodeURI'
+    // escapeURI の代わりに encodeURI を使うこと。encodeURIComponent
+    @Deprecated
     public static String escapeURI(String s) {
-    	if (s == null) { return ""; }
-    	try {
-			return URLEncoder.encode(s, "utf-8");
-		} catch (UnsupportedEncodingException e) {			
-			e.printStackTrace();
-			return "(encoding-error)";
-		}
+        return encodeURI(s);
+    }
+    
+    public static String encodeURI(String s) {
+        if (s == null) { return ""; }
+        try {
+            return URLEncoder.encode(s, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.warn("safely returns empty string.", e);
+            return "";
+        }
+    }
+    
+    /**
+     * Javascriptの同名関数と同様、
+     * 文字列をURIのパラメータとして使用できるようにエンコードを施す。
+     * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/encodeURIComponent
+     */
+    public static String encodeURIComponent(String uri) {
+        try {
+            return URLEncoder.encode(uri, "UTF-8")
+                                 .replaceAll("\\+", "%20")
+                                 .replaceAll("\\%21", "!")
+                                 .replaceAll("\\%27", "'")
+                                 .replaceAll("\\%28", "(")
+                                 .replaceAll("\\%29", ")")
+                                 .replaceAll("\\%7E", "~");
+        } catch (UnsupportedEncodingException e) {
+            logger.warn("safely returns empty string.", e);
+            return "";
+        }
     }
     
     public static String shortenURL(String sourceURL) {
