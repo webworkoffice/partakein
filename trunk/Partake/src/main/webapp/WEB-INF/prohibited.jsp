@@ -8,7 +8,9 @@
 	<title>権限がありません [PARTAKE]</title>
 </head>
 <body>
-<jsp:include page="/WEB-INF/internal/header-nomessage.jsp" flush="true" />
+<jsp:include page="/WEB-INF/internal/header.jsp" flush="true">
+	<jsp:param value="NO_HEADER_MESSAGES" name="true" />
+</jsp:include>
 
 <h1>権限がありません</h1>
 

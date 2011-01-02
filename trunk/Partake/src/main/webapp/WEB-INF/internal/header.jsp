@@ -62,20 +62,36 @@
 
 <div id="content"><%-- </div> will appear in footer.jsp --%>
 
+<%-- header-nomessages.jsp をけす　 --%>
+<% if ("true".equals(request.getAttribute(Constants.ATTR_NO_HEADER_MESSAGES))) { %>
 <div class="message">
     <%-- action error --%>
     <s:fielderror />
     <s:actionerror />
 
-    <%-- warning  --%>
+    <%-- warning / error --%>
     <% 
         PartakeActionSupport pas = (PartakeActionSupport) request.getSession().getAttribute(Constants.ATTR_ACTION);
         if (pas != null) {
+            Collection<String> errors = pas.getErrorMessages();
+            if (!errors.isEmpty()) {
+                out.print("<ul class=\"errorMessage\">");
+                for (String message : errors) {
+                    out.print("<li>");
+                    out.print(h(message));
+                    out.print("</li>");
+                }
+                out.print("</ul>");
+            }
+
+            
             Collection<String> warnings = pas.getWarningMessages();
             if (!warnings.isEmpty()) {
                 out.print("<ul class=\"warningMessage\">");
                 for (String message : warnings) {
+                    out.print("<li>");
                     out.print(h(message));
+                    out.print("</li>");
                 }
                 out.print("</ul>");
             }
@@ -85,5 +101,5 @@
     <%-- action message --%>
     <s:actionmessage />    
 </div>
-
+<% } %>
 
