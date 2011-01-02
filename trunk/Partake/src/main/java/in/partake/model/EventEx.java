@@ -8,6 +8,11 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.UserPermission;
 import in.partake.util.Util;
 
+/**
+ * event with related data.
+ * @author shinyak
+ *
+ */
 public class EventEx extends Event {
     
     private UserEx owner;
