@@ -315,7 +315,7 @@ public class UtilTest {
 	public void testEncodeURIComponent() {
 //		Assert.assertEquals("", Util.encodeURIComponent(null));
 		Assert.assertEquals("", Util.encodeURIComponent(""));
-		Assert.assertEquals("%20!%22%23%24%25%26'()*%2B%2C-.%2F%3B%3F%3A%40%3D", Util.encodeURIComponent(" !\"#$%&'()*+,-./;?:@="));
+		Assert.assertEquals("%20!%22%23%24%25%26'()*%2B%2C-.%2F%3B%3F%3A%40%3D~", Util.encodeURIComponent(" !\"#$%&'()*+,-./;?:@=~"));
 		Assert.assertEquals("Thyme%20%26time%3Dagain", Util.encodeURIComponent("Thyme &time=again"));
 		Assert.assertEquals("%2521", Util.encodeURIComponent("%21"));
 	}
