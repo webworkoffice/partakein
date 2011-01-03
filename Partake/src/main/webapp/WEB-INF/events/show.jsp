@@ -27,7 +27,6 @@
 <%@page import="in.partake.resource.Constants"%>
 
 <%@page import="static in.partake.util.Util.h"%>
-<%@page import="static in.partake.util.Util.escapeURI"%>
 <%@page import="static in.partake.util.Util.cleanupHTML"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.EventRelationEx"%>
@@ -108,7 +107,7 @@ body {
 	                </a></dd>
 	        <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	        <dt>ハッシュタグ：</dt>
-	            <dd><a href="http://twitter.com/#search?q=<%= escapeURI(event.getHashTag()) %>"><%= h(event.getHashTag()) %></a></dd>
+	            <dd><a href="http://twitter.com/#search?q=<%= Util.encodeURIComponent(event.getHashTag()) %>"><%= h(event.getHashTag()) %></a></dd>
 	        <% } %>         
 	        <dt>このページへの<br>短縮 URL：</dt>
 	           <% String shortenURL = Util.shortenURL(event.getEventURL()); %>
@@ -126,8 +125,8 @@ body {
 		</dl>
 		
 	    <% if (!StringUtils.isEmpty(event.getAddress())) { %>
-	    <div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(escapeURI(event.getAddress())) %>">
-	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=200x200&center=<%= h(escapeURI(event.getAddress())) %>&zoom=17&sensor=false" />      
+	    <div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(Util.encodeURIComponent(event.getAddress())) %>">
+	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=200x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />      
 	    </a></div>
 	    <% } %>
 </div>
