@@ -230,6 +230,8 @@ public final class Util {
         return encodeURI(s);
     }
     
+    // URLへの文字列埋込みではencodeURIComponentを使うべき＆他の使い道がない
+    @Deprecated
     public static String encodeURI(String s) {
         if (s == null) { return ""; }
         try {
