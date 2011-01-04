@@ -39,6 +39,9 @@ public final class ParticipationTest {
 			Assert.assertEquals(source.getPriority(), new Participation(source).getPriority());
 			Assert.assertEquals(source.getLastStatus(), new Participation(source).getLastStatus());
 			Assert.assertEquals(source.getModifiedAt(), new Participation(source).getModifiedAt());
+			if (source.getModifiedAt() != null) {
+				Assert.assertNotSame(source.getModifiedAt(), new Participation(source).getModifiedAt());
+			}
 		}
 	}
 

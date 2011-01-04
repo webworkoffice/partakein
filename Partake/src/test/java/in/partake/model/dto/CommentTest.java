@@ -36,6 +36,10 @@ public final class CommentTest {
 			Assert.assertEquals(source.getUserId(), new Comment(source).getUserId());
 			Assert.assertEquals(source.getComment(), new Comment(source).getComment());
 			Assert.assertEquals(source.getCreatedAt(), new Comment(source).getCreatedAt());
+
+			if (source.getCreatedAt() != null) {
+				Assert.assertNotSame(source.getCreatedAt(), new Comment(source).getCreatedAt());
+			}
 		}
 	}
 

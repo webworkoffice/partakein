@@ -1,7 +1,5 @@
 package in.partake.model.dto;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Date;
 
 public class Comment extends PartakeModel<Comment> {
@@ -28,15 +26,11 @@ public class Comment extends PartakeModel<Comment> {
     }
     
     public Comment(Comment comment) {
-        try {
-            Field[] fields = Comment.class.getDeclaredFields();
-            for (Field field : fields) {
-                if (Modifier.isStatic(field.getModifiers())) { continue; }
-                field.set(this, field.get(comment));
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    	this.id = comment.id;
+    	this.eventId = comment.eventId;
+    	this.userId = comment.userId;
+    	this.comment = comment.comment;
+    	this.createdAt = comment.createdAt == null ? null : (Date) comment.createdAt.clone();
     }
 
 	public String getId() {
