@@ -5,8 +5,7 @@ import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
 import in.partake.util.Util;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -64,15 +63,29 @@ public class Event extends PartakeModel<Event> {
     }
     
     public Event(Event event) {
-        try {
-            Field[] fields = Event.class.getDeclaredFields();
-            for (Field field : fields) {
-                if (Modifier.isStatic(field.getModifiers())) { continue; }
-                field.set(this, field.get(event));
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    	this.id = event.id;
+    	this.shortId = event.shortId;
+    	this.title = event.title;
+    	this.summary = event.summary;
+    	this.category = event.category;
+    	this.deadline = event.deadline == null ? null : (Date) event.deadline.clone();
+    	this.beginDate = event.beginDate == null ? null : (Date) event.beginDate.clone();
+    	this.endDate = event.endDate == null ? null : (Date) event.endDate.clone();
+    	this.capacity = event.capacity;
+    	this.url = event.url;
+    	this.place = event.place;
+    	this.address = event.address;
+    	this.description = event.description;
+    	this.hashTag = event.hashTag;
+    	this.ownerId = event.ownerId;
+    	this.managerScreenNames = event.managerScreenNames == null ? null : new ArrayList<String>(event.managerScreenNames);
+    	this.foreImageId = event.foreImageId;
+    	this.backImageId = event.backImageId;
+    	this.isPrivate = event.isPrivate;
+    	this.passcode = event.passcode;
+    	this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
+    	this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
+    	this.revision = event.revision;
     }
     
     public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,

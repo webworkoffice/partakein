@@ -1,6 +1,5 @@
 package in.partake.model.dto;
 
-import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.Date;
 
@@ -43,14 +42,12 @@ public class Participation extends PartakeModel<PartakeModel<?>> {
     }
     
     public Participation(Participation p) {
-        try {
-            Field[] fields = Participation.class.getDeclaredFields();
-            for (Field field : fields) {
-                field.set(this, field.get(p));
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }        
+        this.userId = p.userId;
+        this.comment = p.comment;
+        this.status = p.status;
+        this.priority = p.priority;
+        this.lastStatus = p.lastStatus;
+        this.modifiedAt = p.modifiedAt == null ? null : (Date) p.modifiedAt.clone();
     }
     
     public String getUserId() {
