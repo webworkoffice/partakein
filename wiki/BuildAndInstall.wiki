@@ -6,7 +6,7 @@ This page describes how to build PARTAKE on eclipse and run on Tomcat 6.
 
 = Details =
 
-We use eclipse 3.6 (Java EE platform) with m2eclipse plugin.
+We use eclipse 3.6 (Java EE platform) with [http://www.eclipse.org/m2e/ m2eclipse] plugin.
 
   # checkout PARTAKE from http://code.google.com/p/partakein/source/checkout 
   # On eclipse, select File -> New -> Dynamic Web Project. Set Project name as you like (we recommend to use "Partake"), and set Project location where you saved the file, and press Next >.
