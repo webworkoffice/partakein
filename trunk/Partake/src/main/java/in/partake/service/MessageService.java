@@ -67,8 +67,7 @@ public final class MessageService extends PartakeService {
         if (event == null) { return false; }
 
         Date beginDate = event.getBeginDate();
-        Date deadline = event.getDeadline();
-        if (deadline == null) { deadline = beginDate; }
+        Date deadline = event.getCalculatedDeadline();
         
         boolean changed = false;
         
@@ -122,8 +121,7 @@ public final class MessageService extends PartakeService {
         getFactory().getDirectMessageAccess().addMessage(con, messageId, embryo); 
         
         List<Participation> participations = getFactory().getEnrollmentAccess().getParticipation(con, event.getId()); 
-        Date deadline = event.getDeadline();
-        if (deadline == null) { deadline = event.getBeginDate(); }
+        Date deadline = event.getCalculatedDeadline();
         for (Participation participation : participations) {
             if (ParticipationStatus.RESERVED.equals(participation.getStatus())){
                 getFactory().getDirectMessageAccess().sendEnvelope(con,
@@ -145,8 +143,7 @@ public final class MessageService extends PartakeService {
         String messageId = getFactory().getDirectMessageAccess().getFreshId(con);
         getFactory().getDirectMessageAccess().addMessage(con, messageId, embryo); 
         
-        Date deadline = event.getDeadline();
-        if (deadline == null) { deadline = event.getBeginDate(); }
+        Date deadline = event.getCalculatedDeadline();
         
         // TODO: あと、補欠者にも送った方がいいんじゃなイカ？
         List<ParticipationEx> participations = getParticipationsEx(con, event.getId()); 
