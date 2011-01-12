@@ -1,7 +1,6 @@
 package in.partake.servlet.listener;
 
-import in.partake.daemon.TwitterMessageDaemon;
-import in.partake.daemon.TwitterReminderDaemon;
+import in.partake.daemon.TwitterDaemon;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -14,24 +13,16 @@ public class InitializationListener implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
-		TwitterMessageDaemon.getInstance().schedule();
-		TwitterReminderDaemon.getInstance().schedule();
+		TwitterDaemon.getInstance().schedule();
 	};
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		try {
-			TwitterMessageDaemon.getInstance().cancel();
+			TwitterDaemon.getInstance().cancel();
 		} catch (Throwable ignore) {
 			// catch and ignore for shutdown other daemons.
-			logger.warn("TwitterMessageDaemon#cancel() throws a Throwable instance.", ignore);
-		}
-
-		try {
-			TwitterReminderDaemon.getInstance().cancel();
-		} catch (Throwable ignore) {
-			// catch and ignore for shutdown other daemons.
-			logger.warn("TwitterReminderDaemon#cancel() throws a Throwable instance.", ignore);
+			logger.warn("TwitterMessageDaemon#cancel() threw a Throwable instance.", ignore);
 		}
 	}
 }
