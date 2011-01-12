@@ -84,6 +84,8 @@ public class EventNotificationStatusTestWithMessageCassandraDao {
 				Assert.assertNotNull(status);
 	
 				if (eventId.equals(status.getEventId())) {
+					found = true;
+
 					Assert.assertFalse(status.isBeforeDeadlineOneday());
 					Assert.assertFalse(status.isBeforeDeadlineHalfday());
 					Assert.assertFalse(status.isBeforeTheDay());
