@@ -6,7 +6,6 @@ import in.partake.model.dao.DAOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,14 +117,15 @@ class ColumnIterator {
 		try {
 			Client cassandra = connection.getClient();
 			ColumnPath columnPath = new ColumnPath(parent.column_family);
-			if (parent.super_column != null) {
-				columnPath.setSuper_column(parent.super_column);
-			}
-			if (current.column != null) {
-				columnPath.setColumn(current.column.name);
+			if (current.getSuper_column() != null) {
+			    columnPath.setSuper_column(current.getSuper_column().getName());
+			} else if (current.getColumn() != null) {
+			    columnPath.setColumn(current.getColumn().getName());
+			} else {
+			    throw new DAOException("ColumnPath does not have a super column or column.", new IllegalStateException());
 			}
 			
-			long timestamp = new Date().getTime();
+			long timestamp = connection.getAcquiredTime() + 1; // update() に remove() が上書きされないように、+1 しておく。			
 			cassandra.remove(keyspace, key, columnPath, timestamp, writeConsistencyLevel);
 		} catch (Exception e) {
 			throw new DAOException(e);
@@ -153,44 +153,6 @@ class ColumnIterator {
 			throw new DAOException(e);
 		}
 	}
-	
-//	// TODO: the argument should be a ColumnOrSuperColumn object instead of <code>value</code>.
-//	@Deprecated
-//	public void update(byte[] value) throws DAOException {
-//		try {
-//			Client cassandra = connection.getClient();
-//			ColumnPath columnPath = new ColumnPath(parent.column_family);
-//			if (parent.super_column != null) {
-//				columnPath.setSuper_column(parent.super_column);
-//			}
-//			columnPath.setColumn(current.column.name);
-//			
-//			long timestamp = new Date().getTime();
-//			cassandra.insert(keyspace, key, columnPath, value, timestamp, writeConsistencyLevel);
-//		} catch (Exception e) {
-//			throw new DAOException(e);
-//		} finally {
-//		    if (this.connection == null) { connection.invalidate(); }
-//		}
-//	}
-	
-//	// SuperColumn を iterate している場合のみ call してよい。それ以外のときの結果は未定義
-//	@Deprecated
-//	public void updateSuperColumn(SuperColumn superColumn) throws DAOException {
-//		try {
-//			Client cassandra = con.getClient();
-//			
-//	        Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
-//	        List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();
-//	        
-//	        columns.add(new ColumnOrSuperColumn().setSuper_column(superColumn));
-//	        cfmap.put(parent.column_family, columns);
-//			
-//			cassandra.batch_insert(keyspace, key, cfmap, writeConsistencyLevel);			
-//		} catch (Exception e) {
-//			throw new DAOException(e);
-//		}
-//	}
 		
 	// ----------------------------------------------------------------------
 	

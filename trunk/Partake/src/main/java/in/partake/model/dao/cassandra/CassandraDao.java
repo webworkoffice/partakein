@@ -19,6 +19,7 @@ import org.apache.cassandra.thrift.NotFoundException;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.Cassandra.Client;
+import org.apache.cassandra.thrift.SuperColumn;
 
 /**
  * The base class of data access object for Cassandra.
@@ -90,6 +91,12 @@ abstract class CassandraDao {
     protected Mutation createColumnMutation(String key, byte[] value, long time) {
         Mutation mutation = new Mutation();
         mutation.setColumn_or_supercolumn(new ColumnOrSuperColumn().setColumn(new Column(bytes(key), value, time)));
+        return mutation;
+    }
+    
+    protected Mutation createSuperColumnMutation(SuperColumn superColumn) {
+        Mutation mutation = new Mutation();
+        mutation.setColumn_or_supercolumn(new ColumnOrSuperColumn().setSuper_column(superColumn));
         return mutation;
     }
     
