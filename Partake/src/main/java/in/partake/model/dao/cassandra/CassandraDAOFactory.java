@@ -17,20 +17,20 @@ import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeDAOFactory;
 
 public class CassandraDAOFactory extends PartakeDAOFactory {
-    private ICacheAccess cacheAccess;
-    private ICalendarLinkageAccess calendarLinkageAccess;    
-    private IBinaryAccess binaryAccess;
-    private ICommentAccess commentAccess;
-    private IDirectMessageAccess directMessageAccess;
-    private IEnrollmentAccess enrollmentAccess;
-    private IEventAccess eventAccess;
-    private IEventRelationAccess eventRelationAccess;
-    private IFeedAccess feedAccess;
-    private IMessageAccess messageAccess;
-    private IOpenIDLinkageAccess openIDLinkageAccess;
-    private ITwitterLinkageAccess twitterLinkageAccess;
-    private IUserAccess userAccess;
-    private IUserPreferenceAccess userPreferenceAccess;
+    private final ICacheAccess cacheAccess;
+    private final ICalendarLinkageAccess calendarLinkageAccess;    
+    private final IBinaryAccess binaryAccess;
+    private final ICommentAccess commentAccess;
+    private final IDirectMessageAccess directMessageAccess;
+    private final IEnrollmentAccess enrollmentAccess;
+    private final IEventAccess eventAccess;
+    private final IEventRelationAccess eventRelationAccess;
+    private final IFeedAccess feedAccess;
+    private final IMessageAccess messageAccess;
+    private final IOpenIDLinkageAccess openIDLinkageAccess;
+    private final ITwitterLinkageAccess twitterLinkageAccess;
+    private final IUserAccess userAccess;
+    private final IUserPreferenceAccess userPreferenceAccess;
     
     public CassandraDAOFactory() {
         cacheAccess = new CassandraCacheDao(this);
