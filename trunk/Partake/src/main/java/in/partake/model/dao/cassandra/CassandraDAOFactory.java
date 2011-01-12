@@ -40,6 +40,7 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
         directMessageAccess = new DirectMessageCassandraDao(this);
         enrollmentAccess = new EnrollmentCassandraDao(this);
         eventAccess = new EventCassandraDao(this);
+        eventRelationAccess = new EventRelationCassandraDao(this);
         feedAccess = new FeedCassandraDao(this);
         messageAccess = new MessageCassandraDao(this);
         openIDLinkageAccess = new OpenIDLinkageCassandraDao(this);
