@@ -84,6 +84,7 @@ public class EventNotificationStatusTestWithMessageCassandraDao {
 				Assert.assertNotNull(status);
 	
 				if (eventId.equals(status.getEventId())) {
+					Assert.assertFalse(found);
 					found = true;
 
 					Assert.assertFalse(status.isBeforeDeadlineOneday());
@@ -126,6 +127,7 @@ public class EventNotificationStatusTestWithMessageCassandraDao {
 					Assert.assertNotNull(status);
 
 					if (eventId.equals(status.getEventId())) {
+						Assert.assertFalse(found);
 						found = true;
 
 						Assert.assertFalse(status.isBeforeDeadlineOneday());
@@ -152,6 +154,7 @@ public class EventNotificationStatusTestWithMessageCassandraDao {
 					Assert.assertNotNull(status);
 		
 					if (eventId.equals(status.getEventId())) {
+						Assert.assertFalse(found);
 						found = true;
 
 						Assert.assertTrue(status.isBeforeDeadlineOneday());
@@ -175,7 +178,7 @@ public class EventNotificationStatusTestWithMessageCassandraDao {
 				EventNotificationStatus updatedStatus = dao.getNotificationStatus(conGet, eventId);
 				Assert.assertNotNull(updatedStatus);
 				Assert.assertEquals(eventId, updatedStatus.getEventId());
-				Assert.assertFalse(updatedStatus.isBeforeDeadlineOneday());	// TODO たまにここで失敗する→整合性が取れないため=仕様？
+				Assert.assertFalse(updatedStatus.isBeforeDeadlineOneday());	// TODO たまにここで失敗する→整合性が取れないため?=仕様？
 				Assert.assertTrue(updatedStatus.isBeforeDeadlineHalfday());
 				Assert.assertTrue(updatedStatus.isBeforeTheDay());
 			} finally {
@@ -197,6 +200,7 @@ public class EventNotificationStatusTestWithMessageCassandraDao {
 					Assert.assertNotNull(status);
 		
 					if (eventId.equals(status.getEventId())) {
+						Assert.assertFalse(found);
 						found = true;
 
 						status.setBeforeDeadlineOneday(true);
