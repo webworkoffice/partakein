@@ -247,7 +247,7 @@ public class DirectMessageService extends PartakeService {
                 it.update(envelope);
                 return false;
             } else {
-                logger.warn("sendTwitterMessage : Unknown Error", e);
+                logger.warn("sendTwitterMessage : Unknown Error : " + envelope.getEnvelopeId() + " was failed to deliver.", e);
                 return true;
             }
         }
@@ -300,7 +300,8 @@ public class DirectMessageService extends PartakeService {
                 it.update(envelope);
                 return false;
             } else {
-                logger.warn("sendDirectMessage : Unknown Error", e);
+                envelope.updateForSendingFailure();
+                logger.warn("sendDirectMessage : Unknown Error : " + envelope.getEnvelopeId() + " was failed to deliver.", e);
                 return true;
             }
         }

@@ -123,11 +123,10 @@ public final class MessageService extends PartakeService {
         List<Participation> participations = getFactory().getEnrollmentAccess().getParticipation(con, event.getId()); 
         Date deadline = event.getCalculatedDeadline();
         for (Participation participation : participations) {
-            if (ParticipationStatus.RESERVED.equals(participation.getStatus())){
-                getFactory().getDirectMessageAccess().sendEnvelope(con,
-                                messageId, participation.getUserId(), participation.getUserId(), deadline,                                
-                                DirectMessagePostingType.POSTING_TWITTER_DIRECT);
-            }
+            if (!ParticipationStatus.RESERVED.equals(participation.getStatus())) { continue; }
+            getFactory().getDirectMessageAccess().sendEnvelope(con,
+                            messageId, participation.getUserId(), participation.getUserId(), deadline,                                
+                            DirectMessagePostingType.POSTING_TWITTER_DIRECT);
         }
     }
     
@@ -145,11 +144,11 @@ public final class MessageService extends PartakeService {
         
         Date deadline = event.getCalculatedDeadline();
         
-        // TODO: あと、補欠者にも送った方がいいんじゃなイカ？
         List<ParticipationEx> participations = getParticipationsEx(con, event.getId()); 
         ParticipationList list = event.calculateParticipationList(participations);
         
         for (ParticipationEx p : list.getEnrolledParticipations()) {
+            if (!ParticipationStatus.ENROLLED.equals(p.getStatus())) { continue; }
             getFactory().getDirectMessageAccess().sendEnvelope(con,    
                     messageId, p.getUserId(), p.getUserId(), deadline,
                     DirectMessagePostingType.POSTING_TWITTER_DIRECT);

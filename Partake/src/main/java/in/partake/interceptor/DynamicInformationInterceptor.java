@@ -30,12 +30,16 @@ public class DynamicInformationInterceptor extends AbstractInterceptor {
 			logger.warn("action is not extended from PartakeActionSupport");
 		}
 		
+		logger.info("processing... " + currentURL);
 		long begin = System.currentTimeMillis();
-		String result = invocation.invoke(); 
-		long end = System.currentTimeMillis();
-		
-		logger.info(currentURL + " took "+ (end - begin) + "[msec] to process.");
-		
-		return result;
+		try {
+    		return invocation.invoke(); 
+    	} catch (Exception e) {
+		    logger.error(currentURL, e);
+		    throw e;
+		} finally {
+            long end = System.currentTimeMillis();
+            logger.info(currentURL + " took "+ (end - begin) + "[msec] to process.");		    
+		}
 	}
 }
