@@ -20,7 +20,7 @@ We use eclipse 3.6 (Java EE platform) with [http://www.eclipse.org/m2e/ m2eclips
   # right click on Partake project, and choose Maven -> enable project management.
   # right click on Partake project, and choose Maven -> update project configuration. This may take a minute.
   # The previous step may change your build path automatically. Check the build path again.
-    * src/main/java, src/main/resource, and src/test/java should be included. http://bts.partake.in/buildpath2.png
+    * src/main/java, src/main/resource, src/test/java, and src/test/resource should be included. http://bts.partake.in/buildpath2.png
     * In "Order and Export" pane, Maven dependencies and Web App Libraries should be checked. http://bts.partake.in/orderandexport.png
   # *On Markers pane, you may see Classpath Dependency Validator Message.*
      * *In this case, right click it and select Quick fix, and press Finish. This will fix the problem.*
