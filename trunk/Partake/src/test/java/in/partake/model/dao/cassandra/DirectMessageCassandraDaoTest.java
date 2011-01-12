@@ -1,7 +1,6 @@
 package in.partake.model.dao.cassandra;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -28,7 +27,7 @@ public class DirectMessageCassandraDaoTest {
 	public TestName name = new TestName();
 	private CassandraConnectionPool pool;
 	private DirectMessageCassandraDao dao;
-	private String envelopeId;
+	private String messageId;
 
 	@Before
 	public void setup() throws DAOException {
@@ -42,7 +41,7 @@ public class DirectMessageCassandraDaoTest {
 
 		CassandraConnection con = pool.getConnection();
 		try {
-			envelopeId = dao.getFreshId(con);
+			messageId = dao.getFreshId(con);
 		} finally {
 			con.invalidate();
 		}
@@ -56,14 +55,12 @@ public class DirectMessageCassandraDaoTest {
 			DirectMessage embryo = new DirectMessage(EVENT_OWNER_ID, MESSAGE);
 			CassandraConnection sendCon = pool.getConnection();
 			try {
-				dao.addMessage(sendCon, envelopeId, embryo);
-				dao.sendEnvelope(sendCon, envelopeId, TWITTER_ID, TWITTER_ID, deadline, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
+				dao.addMessage(sendCon, messageId, embryo);
+				dao.sendEnvelope(sendCon, messageId, TWITTER_ID, TWITTER_ID, deadline, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
 			} finally {
 				sendCon.invalidate();
 			}
 		}
-
-		TimeUnit.SECONDS.sleep(3);
 
 		{
 			CassandraConnection getCon = pool.getConnection();
@@ -76,7 +73,7 @@ public class DirectMessageCassandraDaoTest {
 					Assert.assertNotNull(envelope);
 					Assert.assertNotNull(envelope.getEnvelopeId());
 					Assert.assertNotNull(envelope.getDeadline());
-					if (envelope.getEnvelopeId().equals(envelopeId)) {
+					if (envelope.getMessageId().equals(messageId)) {
 						Assert.assertEquals(deadline, envelope.getDeadline());
 						found = true;
 					}
