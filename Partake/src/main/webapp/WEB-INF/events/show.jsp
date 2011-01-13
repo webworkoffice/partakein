@@ -304,7 +304,7 @@ body {
 
 <div class="event-promotion">
 	<!--  twitter -->
-	<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-lang="ja">Tweet</a>
+	<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-lang="ja" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>">Tweet</a>
 	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 	<!-- facebook -->
 	<iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
