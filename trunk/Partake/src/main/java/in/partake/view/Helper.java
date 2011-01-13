@@ -119,4 +119,9 @@ public class Helper {
 			begin.get(Calendar.MONTH) == end.get(Calendar.MONTH) &&
 			begin.get(Calendar.DAY_OF_MONTH) == end.get(Calendar.DAY_OF_MONTH);
 	}
+	
+	public static String readableCapacity(int enrolled, int capacity) {
+	    if (capacity == 0) { return String.format("%d 人 / -", enrolled); }
+	    else { return String.format("%d 人 / %d 人", enrolled, capacity); }	    
+	}
 }
