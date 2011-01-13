@@ -528,7 +528,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		this.ownerId = event.getOwnerId();
 		this.managers = "";
 		if (event.getManagerScreenNames() != null) {
-		    this.managers = StringUtils.join(event.getManagerScreenNames(), ",");		    
+		    this.managers = StringUtils.join(event.getManagerScreenNames().iterator(), ",");		    
 		}
 		this.foreImageId = event.getForeImageId();
 		this.backImageId = event.getBackImageId();

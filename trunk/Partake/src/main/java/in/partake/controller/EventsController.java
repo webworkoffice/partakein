@@ -98,6 +98,8 @@ public class EventsController extends PartakeActionSupport {
 	        List<CommentEx> comments = EventService.get().getCommentsExByEvent(eventId);
 	        List<DirectMessageEx> messages = DirectMessageService.get().getUserMessagesByEventId(eventId);
 	        
+	        
+	        
 	        attributes.put(Constants.ATTR_EVENT, event);
 	        attributes.put(Constants.ATTR_PARTICIPATIONLIST, participationList);
 	        

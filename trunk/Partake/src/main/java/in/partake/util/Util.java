@@ -24,9 +24,9 @@ import org.owasp.validator.html.Policy;
 import org.owasp.validator.html.PolicyException;
 import org.owasp.validator.html.ScanException;
 
-import com.rosaloves.net.shorturl.bitly.Bitly;
-import com.rosaloves.net.shorturl.bitly.BitlyFactory;
-import com.rosaloves.net.shorturl.bitly.url.BitlyUrl;
+import com.rosaloves.bitlyj.Bitly;
+import com.rosaloves.bitlyj.Bitly.Provider;
+import com.rosaloves.bitlyj.ShortenedUrl;
 import com.twitter.Regex;
 
 
@@ -266,14 +266,9 @@ public final class Util {
         return bitlyShortURL(sourceURL);
     }
     
-    public static String bitlyShortURL(Bitly bitly, String sourceURL) {
-        try {
-            BitlyUrl bUrl = bitly.shorten(sourceURL);
-            return bUrl.getShortUrl().toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static String bitlyShortURL(Provider bitly, String sourceURL) {        
+        ShortenedUrl bUrl = bitly.call(Bitly.shorten(sourceURL));
+        return bUrl.getShortUrl().toString();
     }
     
     /**
@@ -288,7 +283,7 @@ public final class Util {
     public static String bitlyShortURL(String sourceURL) {
         final String bitlyUserName = PartakeProperties.get().getBitlyUserName();
         final String bitlyAPIKey = PartakeProperties.get().getBitlyAPIKey();
-        final Bitly bitly = BitlyFactory.newInstance(bitlyUserName, bitlyAPIKey);
+        final Provider bitly = Bitly.as(bitlyUserName, bitlyAPIKey);
         
         return bitlyShortURL(bitly, sourceURL);
     }
