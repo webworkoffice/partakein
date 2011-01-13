@@ -1,6 +1,7 @@
 package in.partake.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import in.partake.model.dto.Event;
@@ -93,6 +94,8 @@ public class EventEx extends Event {
                 break; 
             }
         }
+        
+        // Collections.sort(enrolledParticipations, ParticipationList.);
         
         return new ParticipationList(enrolledParticipations, spareParticipations, cancelledParticipations, reservedEnrolled, reservedSpare);
     }

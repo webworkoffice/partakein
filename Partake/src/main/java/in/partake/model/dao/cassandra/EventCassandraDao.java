@@ -228,7 +228,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         mutations.add(createMutation("hashtag", embryo.getHashTag(), time));
         mutations.add(createMutation("owner", embryo.getOwnerId(), time));
         if (embryo.getManagerScreenNames() != null) {
-            mutations.add(createMutation("managers", StringUtils.join(embryo.getManagerScreenNames(), ","), time));
+            mutations.add(createMutation("managers", StringUtils.join(embryo.getManagerScreenNames().iterator(), ","), time));
         } else {
             mutations.add(createMutation("managers", "", time));
         }

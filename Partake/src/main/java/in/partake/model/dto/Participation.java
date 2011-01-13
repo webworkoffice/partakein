@@ -16,7 +16,7 @@ public class Participation extends PartakeModel<PartakeModel<?>> {
         return new Comparator<Participation>() {
             @Override
             public int compare(Participation lhs, Participation rhs) {
-            	if (lhs == rhs) return 0;
+            	if (lhs == rhs) { return 0; }
                 if (lhs == null) { return -1; }
                 if (rhs == null) { return 1; }
 
@@ -30,6 +30,7 @@ public class Participation extends PartakeModel<PartakeModel<?>> {
     }
     
     public Participation() {
+        this.priority = 0;
     }
     
     public Participation(String userId, String comment, ParticipationStatus status, int priority, LastParticipationStatus lastStatus, Date modifiedAt) {
