@@ -53,6 +53,18 @@ abstract class CassandraDao {
         }
     }
     
+    protected SuperColumn getSuperColumn(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
+        try {
+            ColumnPath columnPath = new ColumnPath();
+            columnPath.setColumn_family(columnFamily);
+            columnPath.setSuper_column(bytes(columnName));
+            return client.get(keySpace, key, columnPath, readConsistency).getSuper_column();        
+        } catch (NotFoundException e) {
+            // e is intentionally ignored.
+            return null;
+        }
+    }
+    
     /**
      * get a slice 
      */

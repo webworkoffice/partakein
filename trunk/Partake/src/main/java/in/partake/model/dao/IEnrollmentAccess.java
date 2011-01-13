@@ -15,7 +15,7 @@ public interface IEnrollmentAccess {
     
     public List<Participation> getParticipation(PartakeConnection con, String eventId) throws DAOException;
     
-    public void addUserEnrollment(PartakeConnection con, String eventId, Participation p) throws DAOException;
+    //public void addUserEnrollment(PartakeConnection con, String eventId, Participation p) throws DAOException;
     
     public void setLastStatus(PartakeConnection con, String eventId, Participation p, LastParticipationStatus lastStatus) throws DAOException;
     

@@ -27,6 +27,7 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;
 import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
+import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.NotFoundException;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
@@ -106,20 +107,12 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     }
     
     @Override
-    public void addUserEnrollment(PartakeConnection con, String eventId, Participation p) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            addUserEnrollment(ccon.getClient(), p.getUserId(), eventId, p.getStatus(), p.getLastStatus(), p.getComment(), ccon.getAcquiredTime());
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }        
-    }
-    
-    @Override
     public void setLastStatus(PartakeConnection con, String eventId, Participation p, LastParticipationStatus lastStatus) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addUserEnrollment(ccon.getClient(), p.getUserId(), eventId, p.getStatus(), lastStatus, p.getComment(), ccon.getAcquiredTime());
+         // TODO: 名前をなんとかする！
+            updateLastStatus(ccon.getClient(), p.getUserId(), eventId, lastStatus, ccon.getAcquiredTime());
+            
         } catch (Exception e) {
             throw new DAOException(e);
         }   
@@ -252,27 +245,23 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     	client.batch_insert(USERS_ENROLLMENT_KEYSPACE, key, cfmap, USERS_ENROLLMENT_CL_W);
     }
     
-    private void addUserEnrollment(Client client, String userId, String eventId, 
-                    ParticipationStatus status, LastParticipationStatus lastStatus, String comment, long time) throws Exception {
+    // TODO: 名前をなんとかする！
+    private void updateLastStatus(Client client, String userId, String eventId, LastParticipationStatus lastStatus, long time) throws Exception { 
         String key = USERS_ENROLLMENT_PREFIX + eventId;
         
-        Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
-        List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();
-
-        {
-            SuperColumn superColumn = new SuperColumn();
-            superColumn.setName(bytes(String.valueOf(userId)));
-            
-            superColumn.addToColumns(new Column(bytes("comment"), bytes(comment), time));
-            superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));
-            superColumn.addToColumns(new Column(bytes("lastStatus"), bytes(lastStatus.toString()), time));
-            superColumn.addToColumns(new Column(bytes("modifiedAt"), bytes(Util.getTimeString(time)), time));
-            
-            columns.add(new ColumnOrSuperColumn().setSuper_column(superColumn));
+        List<Mutation> mutations = new ArrayList<Mutation>();
+        
+        SuperColumn superColumn = getSuperColumn(client, USERS_ENROLLMENT_KEYSPACE, USERS_ENROLLMENT_COLUMNFAMILY, userId, key, USERS_ENROLLMENT_CL_R); 
+        if (superColumn == null) { return; }
+        
+        for (Column column : superColumn.getColumns()) {
+            if ("lastStatus".equals(string(column.getName()))) {
+                column.setValue(bytes(lastStatus.toString()));
+            }
         }
         
-        cfmap.put(USERS_ENROLLMENT_COLUMNFAMILY, columns);      
-        client.batch_insert(USERS_ENROLLMENT_KEYSPACE, key, cfmap, USERS_ENROLLMENT_CL_W);
+        mutations.add(createSuperColumnMutation(superColumn));
+        client.batch_mutate(USERS_ENROLLMENT_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_ENROLLMENT_COLUMNFAMILY, mutations)), USERS_ENROLLMENT_CL_W);
     }
     
     /**
