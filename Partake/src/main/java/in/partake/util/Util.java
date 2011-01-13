@@ -26,6 +26,7 @@ import org.owasp.validator.html.ScanException;
 
 import com.rosaloves.bitlyj.Bitly;
 import com.rosaloves.bitlyj.Bitly.Provider;
+import com.rosaloves.bitlyj.BitlyException;
 import com.rosaloves.bitlyj.ShortenedUrl;
 import com.twitter.Regex;
 
@@ -266,9 +267,14 @@ public final class Util {
         return bitlyShortURL(sourceURL);
     }
     
-    public static String bitlyShortURL(Provider bitly, String sourceURL) {        
-        ShortenedUrl bUrl = bitly.call(Bitly.shorten(sourceURL));
-        return bUrl.getShortUrl().toString();
+    public static String bitlyShortURL(Provider bitly, String sourceURL) {
+        try {
+            ShortenedUrl bUrl = bitly.call(Bitly.shorten(sourceURL));
+            return bUrl.getShortUrl().toString();
+        } catch (BitlyException e) {
+            logger.error(e);
+            return sourceURL;
+        }
     }
     
     /**
