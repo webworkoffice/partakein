@@ -66,7 +66,7 @@ public class EventsMessageController extends PartakeActionSupport {
 
 			assert (message != null && message.length() <= 100);
 			String left = "[PARTAKE] 「";
-			String right = String.format("」 %s の管理者(@%s)よりメッセージ：%s", Util.shortenURL(event.getEventURL()), user.getScreenName(), message);
+			String right = String.format("」 %s の管理者(@%s)よりメッセージ：%s", event.getShortenedURL(), user.getScreenName(), message);
 			if (Util.codePointCount(left) + Util.codePointCount(right) > 140) {
 				addWarningMessage("メッセージの長さをもう少し短くしてください。");
 				return INPUT;

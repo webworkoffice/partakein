@@ -15,6 +15,7 @@ import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.ITwitterLinkageAccess;
+import in.partake.model.dao.IURLShortenerAccess;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeDAOFactory;
@@ -33,6 +34,7 @@ public class MockDaoFactory extends PartakeDAOFactory {
     @Mock private ITwitterLinkageAccess twitterLinkageAccess;
     @Mock private IUserAccess userAccess;
     @Mock private IUserPreferenceAccess userPreferenceAccess;
+    @Mock private IURLShortenerAccess urlShortenerAccess;
 
     public MockDaoFactory() {
         MockitoAnnotations.initMocks(this);       
@@ -41,7 +43,7 @@ public class MockDaoFactory extends PartakeDAOFactory {
     public void resetAll() {
         Mockito.reset(cacheAccess, calendarLinkageAccess, binaryAccess, commentAccess, directMessageAccess, enrollmentAccess);
         Mockito.reset(eventAccess, eventRelationAccess, feedAccess, openIDLinkageAccess, twitterLinkageAccess);
-        Mockito.reset(userAccess, userPreferenceAccess);
+        Mockito.reset(userAccess, userPreferenceAccess, urlShortenerAccess);
     }
     
     @Override
@@ -109,4 +111,8 @@ public class MockDaoFactory extends PartakeDAOFactory {
         return userPreferenceAccess;
     }
 
+    @Override
+    public IURLShortenerAccess getURLShortenerAccess() {
+        return urlShortenerAccess;
+    }
 }

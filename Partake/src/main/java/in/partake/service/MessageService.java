@@ -83,7 +83,7 @@ public final class MessageService extends PartakeService {
         
         boolean changed = false;
         
-        String shortenedURL = Util.shortenURL(event.getEventURL());
+        String shortenedURL = event.getShortenedURL();
         
         // TODO: isBeforeDeadline() とかわかりにくいな。 
         // 締め切り１日前になっても RESERVED ステータスの人がいればメッセージを送付する。
@@ -199,8 +199,8 @@ public final class MessageService extends PartakeService {
                 List<ParticipationEx> participations = getParticipationsEx(con, eventId); 
                 ParticipationList list = event.calculateParticipationList(participations);
 
-                String enrollingMessage = "[PARTAKE] 補欠から参加者へ繰り上がりました。 " + Util.shortenURL(event.getEventURL()) + " " + event.getTitle(); 
-                String cancellingMessage = "[PARTAKE] 参加者から補欠扱い(あるいはキャンセル扱い)に変更になりました。 " + Util.shortenURL(event.getEventURL()) + " " + event.getTitle(); 
+                String enrollingMessage = "[PARTAKE] 補欠から参加者へ繰り上がりました。 " + event.getShortenedURL() + " " + event.getTitle(); 
+                String cancellingMessage = "[PARTAKE] 参加者から補欠扱い(あるいはキャンセル扱い)に変更になりました。 " + event.getShortenedURL() + " " + event.getTitle(); 
                 enrollingMessage = Util.shorten(enrollingMessage, 140);
                 cancellingMessage = Util.shorten(cancellingMessage, 140);
 

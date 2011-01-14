@@ -110,7 +110,7 @@ body {
 	            <dd><a href="http://twitter.com/#search?q=<%= Util.encodeURIComponent(event.getHashTag()) %>"><%= h(event.getHashTag()) %></a></dd>
 	        <% } %>         
 	        <dt>このページへの<br>短縮 URL：</dt>
-	           <% String shortenURL = Util.shortenURL(event.getEventURL()); %>
+	           <% String shortenURL = event.getShortenedURL(); %>
 	           <dd><a href="<%= h(shortenURL) %>"><%= h(shortenURL) %></a></dd>
 	        <% if (eventRelations != null && !eventRelations.isEmpty()) { %>
 	        <dt>関連イベント</dt>

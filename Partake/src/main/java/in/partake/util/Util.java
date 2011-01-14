@@ -263,20 +263,6 @@ public final class Util {
         }
     }
     
-    public static String shortenURL(String sourceURL) {
-        return bitlyShortURL(sourceURL);
-    }
-    
-    public static String bitlyShortURL(Provider bitly, String sourceURL) {
-        try {
-            ShortenedUrl bUrl = bitly.call(Bitly.shorten(sourceURL));
-            return bUrl.getShortUrl().toString();
-        } catch (BitlyException e) {
-            logger.error(e);
-            return sourceURL;
-        }
-    }
-    
     /**
      * URL を bitly で短縮する。
      * 名前が良くないので、deprecated 扱い。これからは shortenURL を使うこと。
@@ -285,12 +271,12 @@ public final class Util {
      * @param sourceURL
      * @return
      */
-    @Deprecated
-    public static String bitlyShortURL(String sourceURL) {
+    public static String callBitlyShortenURL(String sourceURL) throws BitlyException {
         final String bitlyUserName = PartakeProperties.get().getBitlyUserName();
         final String bitlyAPIKey = PartakeProperties.get().getBitlyAPIKey();
         final Provider bitly = Bitly.as(bitlyUserName, bitlyAPIKey);
         
-        return bitlyShortURL(bitly, sourceURL);
+        ShortenedUrl bUrl = bitly.call(Bitly.shorten(sourceURL));
+        return bUrl.getShortUrl().toString();
     }
 }
