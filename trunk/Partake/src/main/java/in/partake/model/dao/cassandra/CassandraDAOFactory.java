@@ -9,7 +9,6 @@ import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.IFeedAccess;
-import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.IUserAccess;
@@ -26,7 +25,6 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     private final IEventAccess eventAccess;
     private final IEventRelationAccess eventRelationAccess;
     private final IFeedAccess feedAccess;
-    private final IMessageAccess messageAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
@@ -42,7 +40,6 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
         eventAccess = new EventCassandraDao(this);
         eventRelationAccess = new EventRelationCassandraDao(this);
         feedAccess = new FeedCassandraDao(this);
-        messageAccess = new MessageCassandraDao(this);
         openIDLinkageAccess = new OpenIDLinkageCassandraDao(this);
         twitterLinkageAccess = new TwitterLinkageCassandraDao(this);
         userAccess = new UserCassandraDao(this);
@@ -92,11 +89,6 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     @Override
     public IFeedAccess getFeedAccess() {
         return feedAccess;
-    }
-
-    @Override
-    public IMessageAccess getMessageAccess() {
-        return messageAccess;
     }
 
     @Override
