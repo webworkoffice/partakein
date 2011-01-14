@@ -37,15 +37,22 @@ public class MessageServiceTest {
                         new PDate(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()).getDate()));
 
         Assert.assertTrue(needsToSend(
+                        new PDate(2000, 1, 10,  0,  0,  1, TimeZone.getDefault()).getDate(),
                         new PDate(2000, 1, 10,  0,  0,  0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9,  0,  0,  0, TimeZone.getDefault()).getDate(),
                         new PDate(2000, 1,  9, 22, 59, 59, TimeZone.getDefault()).getDate()));
 
         Assert.assertFalse(needsToSend(
                         new PDate(2000, 1, 10,  0, 0, 0, TimeZone.getDefault()).getDate(),
                         new PDate(2000, 1,  9,  0, 0, 0, TimeZone.getDefault()).getDate(),
                         new PDate(2000, 1,  9, 23, 0, 1, TimeZone.getDefault()).getDate()));
+        
+        Assert.assertFalse(needsToSend(
+                        new PDate(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()).getDate(),
+                        new PDate(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()).getDate(),
+                        new PDate(2000, 1,  9, 0, 0, 1, TimeZone.getDefault()).getDate()));
+
     }
+    
     
     private boolean needsToSend(Date now, Date targetDate, Date lastSent) throws Exception {
         Method method = MessageService.class.getDeclaredMethod("needsToSend", Date.class, Date.class, Date.class);
