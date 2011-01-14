@@ -63,7 +63,7 @@
 <div id="content"><%-- </div> will appear in footer.jsp --%>
 
 <%-- header-nomessages.jsp をけす　 --%>
-<% if ("true".equals(request.getAttribute(Constants.ATTR_NO_HEADER_MESSAGES))) { %>
+<% if (!"true".equals(request.getAttribute(Constants.ATTR_NO_HEADER_MESSAGES))) { %>
 <div class="message">
     <%-- action error --%>
     <s:fielderror />
