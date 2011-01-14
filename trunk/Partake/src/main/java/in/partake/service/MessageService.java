@@ -129,6 +129,7 @@ public final class MessageService extends PartakeService {
     private static boolean needsToSend(Date now, Date targetDate, Date lastSent) {
         if (now.before(targetDate)) { return false; }
         if (lastSent == null) { return true; }
+        if (targetDate.before(lastSent)) { return false; }
         if (now.before(new Date(lastSent.getTime() + 1000 * 3600))) { return false; }
         return true;
     }
