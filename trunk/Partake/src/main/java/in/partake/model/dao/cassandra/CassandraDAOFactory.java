@@ -11,6 +11,7 @@ import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.ITwitterLinkageAccess;
+import in.partake.model.dao.IURLShortenerAccess;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeDAOFactory;
@@ -29,6 +30,7 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
     private final IUserPreferenceAccess userPreferenceAccess;
+    private final IURLShortenerAccess urlShortenerAccess;
     
     public CassandraDAOFactory() {
         cacheAccess = new CassandraCacheDao(this);
@@ -44,6 +46,7 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
         twitterLinkageAccess = new TwitterLinkageCassandraDao(this);
         userAccess = new UserCassandraDao(this);
         userPreferenceAccess = new UserPreferenceCassandraDao(this);
+        urlShortenerAccess = new URLShortenerCassandraDao(this);
     }
     
     @Override
@@ -109,5 +112,10 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     @Override
     public IUserPreferenceAccess getUserPreferenceAccess() {
         return userPreferenceAccess;
+    }
+    
+    @Override
+    public IURLShortenerAccess getURLShortenerAccess() {
+        return urlShortenerAccess;
     }
 }

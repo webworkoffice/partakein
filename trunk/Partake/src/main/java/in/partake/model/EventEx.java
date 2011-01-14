@@ -3,7 +3,6 @@ package in.partake.model;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPermission;
-import in.partake.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +13,15 @@ import java.util.List;
  *
  */
 public class EventEx extends Event {
-    
     private UserEx owner;
     private String feedId;
+    private String cachedShortenedURL;
     
-    public EventEx(Event event, UserEx owner, String feedId) {
+    public EventEx(Event event, UserEx owner, String feedId, String cachedShortenedURL) {
         super(event);
         this.owner = owner;
         this.feedId = feedId;
+        this.cachedShortenedURL = cachedShortenedURL; 
     }
     
     public UserEx getOwner() {
@@ -32,6 +32,15 @@ public class EventEx extends Event {
         return feedId;
     }
     
+    public String getCachedShortenedURL() {
+        return cachedShortenedURL;
+    }
+    
+    public String getShortenedURL() {
+        if (cachedShortenedURL != null) { return cachedShortenedURL; }
+        return getEventURL();
+    }
+    
     // ----------------------------------------------------------------------
     
     public boolean hasEndDate() {
@@ -39,11 +48,11 @@ public class EventEx extends Event {
     }
     
     public String getDefaultTwitterPromotionMessage() {
-        String shortenURL = Util.shortenURL(getEventURL());
+        String shortenedURL = getShortenedURL(); 
         
         StringBuilder builder = new StringBuilder();
         builder.append(getTitle());
-        builder.append(" ").append(shortenURL).append(" ");
+        builder.append(" ").append(shortenedURL).append(" ");
         if (getHashTag() != null && !"".equals(getHashTag())) {
             builder.append(" ").append(getHashTag());
         }

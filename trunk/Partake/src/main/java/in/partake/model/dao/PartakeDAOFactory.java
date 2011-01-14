@@ -14,4 +14,5 @@ public abstract class PartakeDAOFactory {
     public abstract ITwitterLinkageAccess getTwitterLinkageAccess();
     public abstract IUserAccess getUserAccess();
     public abstract IUserPreferenceAccess getUserPreferenceAccess();
+    public abstract IURLShortenerAccess getURLShortenerAccess();
 }
