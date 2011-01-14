@@ -124,4 +124,9 @@ public class Helper {
 	    if (capacity == 0) { return String.format("%d 人 / -", enrolled); }
 	    else { return String.format("%d 人 / %d 人", enrolled, capacity); }	    
 	}
+	
+	public static String readableReminder(Date date) {
+	    if (date == null) { return "未送付"; }
+	    return String.format("送付済 (%s)", readableDate(date));
+	}
 }

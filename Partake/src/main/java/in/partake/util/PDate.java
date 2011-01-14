@@ -15,7 +15,7 @@ public class PDate {
     private Date date;
     
     public PDate(Date date) {
-        this.date = date;
+        this.date = new Date(date.getTime());
     }
     
     public PDate(long time) {
@@ -23,7 +23,6 @@ public class PDate {
     }
     
     public PDate(int year, int month, int day, int hour, int min, int sec, TimeZone timeZone) {
-        // TODO locale
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month - 1);
@@ -65,6 +64,10 @@ public class PDate {
     }
     
     // ----------------------------------------------------------------------
+    
+    public Date getDate() {
+        return (Date) date.clone();
+    }
     
     @Override
     public boolean equals(Object obj) {

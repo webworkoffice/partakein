@@ -40,6 +40,7 @@ public class ColumnIteratorTestForColumn extends CassandraDao {
     
     @Test
     public void testForColumnIteratorToGetSmall() throws DAOException {
+        testForColumnIteratorToGet(0);
         testForColumnIteratorToGet(1);
         testForColumnIteratorToGet(100);
         testForColumnIteratorToGet(999);

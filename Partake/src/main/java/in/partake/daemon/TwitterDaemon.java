@@ -41,6 +41,7 @@ class TwitterDaemonTask extends TimerTask {
         logger.info("ParticipationStatusChangeTask END.");
     }
     
+    /** queue 縺ｫ蜈･縺｣縺溘Γ繝�そ繝ｼ繧ｸ繧貞ｮ滄圀縺ｫ螻翫￠繧�*/
     private void runTwitterMessageSendingTask() {
         logger.info("DirectMessageSendingTask START");
         try {
