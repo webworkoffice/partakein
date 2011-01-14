@@ -30,11 +30,11 @@ public final class Constants {
     public static final String ATTR_FINISHED_EVENTSET = "finishedeventset";
 
     public static final String ATTR_PARTICIPATIONLIST = "PARTICIPATION_LIST";
+    public static final String ATTR_REMINDER_STATUS = "REMINDER_STATUS";
     
     public static final String ATTR_REDIRECTURL = "redirectURL";
 
     public static final String ATTR_PARTICIPATION_STATUS = "PARTICIPATION_STATUS";
-    public static final String ATTR_NOTIFICATION_STATUS = "NOTIFICATION_STATUS";
     
     public static final String ATTR_DEADLINE_OVER = "DEADLINE_OVER";
     

@@ -340,7 +340,7 @@ public final class EventService extends PartakeService {
     		    binaryAccess.addBinaryWithId(con, backImageId, backImageEmbryo);			
     		}
             
-    		factory.getMessageAccess().addNotification(con, eventId);
+    		// factory.getMessageAccess().addNotification(con, eventId);
 
         	// private でなければ Lucandra にデータ挿入して検索ができるようにする
         	if (!eventEmbryo.isPrivate()) {

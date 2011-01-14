@@ -7,18 +7,18 @@ import in.partake.model.EventEx;
 import in.partake.model.ParticipationEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessagePostingType;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventNotificationStatus;
+import in.partake.model.dto.EventReminderStatus;
 import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
 import in.partake.model.dto.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
+import in.partake.util.PDate;
 import in.partake.util.Util;
 
 public final class MessageService extends PartakeService {
@@ -32,29 +32,44 @@ public final class MessageService extends PartakeService {
         return instance;
     }
     
+    public EventReminderStatus gerReminderStatus(String eventId) throws DAOException {
+        PartakeConnection con = getPool().getConnection();
+        PartakeDAOFactory factory = getFactory();
+        try {
+            return factory.getDirectMessageAccess().getEventReminderStatus(con, eventId);
+        } finally {
+            con.invalidate();
+        }
+    }
+    
     /**
      * send a reminder for necessary events.
      * @throws DAOException
      */
     public void sendReminders() throws DAOException {
         String topPath = PartakeProperties.get().getTopPath();      
-        Date now = new Date();
+        Date now = PDate.getCurrentDate().getDate();
 
         PartakeConnection con = getPool().getConnection();
+        PartakeDAOFactory factory = getFactory();
         try {
-            DataIterator<EventNotificationStatus> iterator = getFactory().getMessageAccess().getNotificationStatuses(con); 
-            while (iterator.hasNext()) {                
-                EventNotificationStatus status = iterator.next();
+            // TODO: 開始時刻が現在時刻より後の event のみを取り出したい 
+            KeyIterator it = factory.getEventAccess().getAllEventKeys(con);
+            while (it.hasNext()) {
+                String eventId = it.next();
+                if (eventId == null) { continue; }
+                EventEx event = getEventEx(con, eventId);
+                if (event == null) { continue; }
+                if (event.getBeginDate().before(now)) { continue; }
                 
-                boolean changed = sendEventNotification(con, status, topPath, now);
+                // NOTE: Since the reminderStatus gotten from getEventReminderStatus is frozen,
+                //       the object should be copied to use. 
+                EventReminderStatus reminderStatus = 
+                    new EventReminderStatus(factory.getDirectMessageAccess().getEventReminderStatus(con, eventId));
                 
-                // remove で落ちると無限に message が送られるので、update() を別にしておく
+                boolean changed = sendEventNotification(con, event, reminderStatus, topPath, now);
                 if (changed) {
-                    iterator.update(status);
-                }
-                
-                if (status.isBeforeDeadlineOneday() && status.isBeforeDeadlineHalfday() && status.isBeforeTheDay()) {
-                    iterator.remove();
+                    factory.getDirectMessageAccess().updateEventReminderStatus(con, eventId, reminderStatus);
                 }
             }
         } finally {
@@ -62,10 +77,7 @@ public final class MessageService extends PartakeService {
         }
     }
     
-    private boolean sendEventNotification(PartakeConnection con, EventNotificationStatus status, String topPath, Date now) throws DAOException {
-        EventEx event = getEventEx(con, status.getEventId());
-        if (event == null) { return false; }
-
+    private boolean sendEventNotification(PartakeConnection con, EventEx event, EventReminderStatus reminderStatus, String topPath, Date now) throws DAOException {  
         Date beginDate = event.getBeginDate();
         Date deadline = event.getCalculatedDeadline();
         
@@ -75,39 +87,52 @@ public final class MessageService extends PartakeService {
         
         // TODO: isBeforeDeadline() とかわかりにくいな。 
         // 締め切り１日前になっても RESERVED ステータスの人がいればメッセージを送付する。
-        if (!status.isBeforeDeadlineOneday() && Util.oneDayBefore(deadline).before(now)) {
+        // 次の条件でメッセージを送付する
+        //  1. 現在時刻が締め切り２４時間前よりも後
+        //  2. 次の条件のいずれか満たす
+        //    2.1. まだメッセージが送られていない
+        //    2.2. 前回送った時刻が締め切り２４時間以上前で、かつ送った時刻より１時間以上経過している。
+        
+        if (needsToSend(now, Util.oneDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineOneday())) {
             String message = "[PARTAKE] 締め切り１日前です。参加・不参加を確定してください。 " + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
             sendNotificationOnlyForReservedParticipants(con, event, message);
                                 
-            status.setBeforeDeadlineOneday(true);
+            reminderStatus.setSentDateOfBeforeDeadlineOneday(now);
             changed = true;
         }
         
         // 締め切り１２時間前になっても RESERVED な人がいればメッセージを送付する。
-        if (!status.isBeforeDeadlineHalfday() && Util.halfDayBefore(deadline).before(now)) {
+        if (needsToSend(now, Util.halfDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineHalfday())) {
             String message = "[PARTAKE] 締め切り１２時間前です。参加・不参加を確定してください。 ３時間前までに確定されない場合、キャンセル扱いとなります。" + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
             sendNotificationOnlyForReservedParticipants(con, event, message);
-                                
-            status.setBeforeDeadlineHalfday(true);
+                    
+            reminderStatus.setSentDateOfBeforeDeadlineHalfday(now);
             changed = true;            
         }
         
         // イベント１日前で、参加が確定している人にはメッセージを送付する。
         // 参加が確定していない人には、RESERVED なメッセージが送られている。
-        if (!status.isBeforeTheDay() && Util.oneDayBefore(beginDate).before(now)) {
+        if (needsToSend(now, Util.oneDayBefore(beginDate), reminderStatus.getSentDateOfBeforeTheDay())) {
             String message = "[PARTAKE] イベントの１日前です。あなたの参加は確定しています。 " + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
             sendNotificationOnlyForParticipants(con, event, message);
             
-            status.setBeforeTheDay(true);
+            reminderStatus.setSentDateOfBeforeTheDay(now);
             changed = true;
         }
         
         return changed;
     }
 
+    private static boolean needsToSend(Date now, Date targetDate, Date lastSent) {
+        if (now.before(targetDate)) { return false; }
+        if (lastSent == null) { return true; }
+        if (now.before(new Date(lastSent.getTime() + 1000 * 3600))) { return false; }
+        return true;
+    }
+    
     /**
      * message の内容で、仮参加者にのみメッセージを送る。
      * @param event
@@ -152,24 +177,6 @@ public final class MessageService extends PartakeService {
             getFactory().getDirectMessageAccess().sendEnvelope(con,    
                     messageId, p.getUserId(), p.getUserId(), deadline,
                     DirectMessagePostingType.POSTING_TWITTER_DIRECT);
-        }
-    }
-    
-    
-    /**
-     * イベントIDから通知（リマインダ）の送信状況を取得する。
-     * @param eventId イベントのID
-     * @return 指定したイベントに関する通知の状況
-     * @throws DAOException
-     */
-    // TODO: should this be here? EventService?
-    public EventNotificationStatus getNotificationStatus(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            return factory.getMessageAccess().getNotificationStatus(con, eventId);
-        } finally {
-            con.invalidate();
         }
     }
     

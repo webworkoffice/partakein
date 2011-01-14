@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.dto.EventReminderStatus"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@page import="in.partake.model.dto.DirectMessage"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -15,7 +16,6 @@
 <%@page import="in.partake.model.dto.Participation"%>
 <%@page import="in.partake.service.UserService"%>
 <%@page import="in.partake.model.dto.EventCategory"%>
-<%@page import="in.partake.model.dto.EventNotificationStatus"%>
 <%@page import="in.partake.model.dto.Comment"%>
 <%@page import="in.partake.model.dto.ParticipationStatus"%>
 <%@page import="in.partake.model.dto.User"%>
@@ -37,7 +37,7 @@
 	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
 	ParticipationStatus status = (ParticipationStatus)request.getAttribute(Constants.ATTR_PARTICIPATION_STATUS);
 	Boolean deadlineOver = (Boolean)request.getAttribute(Constants.ATTR_DEADLINE_OVER);
-	EventNotificationStatus notificationStatus = (EventNotificationStatus)(request.getAttribute(Constants.ATTR_NOTIFICATION_STATUS));
+	EventReminderStatus reminderStatus = (EventReminderStatus) request.getAttribute(Constants.ATTR_REMINDER_STATUS);
 	List<EventRelationEx> eventRelations = (List<EventRelationEx>) request.getAttribute(Constants.ATTR_EVENT_RELATIONS);
 %>
 
@@ -155,16 +155,14 @@ body {
     </ul>
 
 	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付状況</h2>
-    <ul>
-        <li>締切24時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineOneday() ? "送付済" : "未送付" %></li>
-        <li>締切12時間前(仮参加者向)：<%= notificationStatus.isBeforeDeadlineHalfday() ? "送付済" : "未送付" %></li>
-        <li>イベント１日前：<%= notificationStatus.isBeforeTheDay() ? "送付済" : "未送付" %></li>
-    </ul>
-	<%--
-	<ul>
-	    <li><a id="open-reminder-reset-form" href="#">リマンダー送付状況をリセットする</a></li>
-	</ul>
-	 --%>
+    <dl>
+        <dt>締切24時間前(仮参加者向)</dt>
+            <dd><%= Helper.readableReminder(reminderStatus.getSentDateOfBeforeDeadlineOneday()) %></dd>
+        <dt>締切12時間前(仮参加者向)</dt>
+            <dd><%= Helper.readableReminder(reminderStatus.getSentDateOfBeforeDeadlineHalfday()) %></dd>
+        <dt>イベント１日前</dt>
+            <dd><%= Helper.readableReminder(reminderStatus.getSentDateOfBeforeTheDay()) %></dd>
+    </dl>
 	
 	<div id="event-edit-form" style="display: none">
         <s:form method="post" name="eventEditForm" action="edit">

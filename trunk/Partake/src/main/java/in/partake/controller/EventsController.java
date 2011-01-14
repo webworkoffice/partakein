@@ -109,9 +109,9 @@ public class EventsController extends PartakeActionSupport {
 	        	attributes.put(Constants.ATTR_PARTICIPATION_STATUS, ParticipationStatus.NOT_ENROLLED);
 	        }
 	        attributes.put(Constants.ATTR_DEADLINE_OVER, Boolean.valueOf(deadlineOver));
-	        attributes.put(Constants.ATTR_COMMENTSET, comments); // TODO: comment set DataIterator じゃなくて List だと思うんだよなあ...。本当は。
+	        attributes.put(Constants.ATTR_COMMENTSET, comments);
 	        attributes.put(Constants.ATTR_MESSAGESET, messages);
-	        attributes.put(Constants.ATTR_NOTIFICATION_STATUS, MessageService.get().getNotificationStatus(eventId));
+	        attributes.put(Constants.ATTR_REMINDER_STATUS, MessageService.get().gerReminderStatus(eventId));
 	        
 	        this.eventId = eventId;
 	        this.event = event;

@@ -43,7 +43,7 @@ public final class Util {
 		try {
 			return new Date(Long.parseLong(timeString));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+		    logger.error("dateFromTimeString failed.", e);
 			return null;
 		}
 	}

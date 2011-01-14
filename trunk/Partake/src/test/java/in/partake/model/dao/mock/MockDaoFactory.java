@@ -13,7 +13,6 @@ import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.IFeedAccess;
-import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.IUserAccess;
@@ -30,7 +29,6 @@ public class MockDaoFactory extends PartakeDAOFactory {
     @Mock private IEventAccess eventAccess;
     @Mock private IEventRelationAccess eventRelationAccess;
     @Mock private IFeedAccess feedAccess;
-    @Mock private IMessageAccess messageAccess;
     @Mock private IOpenIDLinkageAccess openIDLinkageAccess;
     @Mock private ITwitterLinkageAccess twitterLinkageAccess;
     @Mock private IUserAccess userAccess;
@@ -42,7 +40,7 @@ public class MockDaoFactory extends PartakeDAOFactory {
     
     public void resetAll() {
         Mockito.reset(cacheAccess, calendarLinkageAccess, binaryAccess, commentAccess, directMessageAccess, enrollmentAccess);
-        Mockito.reset(eventAccess, eventRelationAccess, feedAccess, messageAccess, openIDLinkageAccess, twitterLinkageAccess);
+        Mockito.reset(eventAccess, eventRelationAccess, feedAccess, openIDLinkageAccess, twitterLinkageAccess);
         Mockito.reset(userAccess, userPreferenceAccess);
     }
     
@@ -89,11 +87,6 @@ public class MockDaoFactory extends PartakeDAOFactory {
     @Override
     public IFeedAccess getFeedAccess() {
         return feedAccess;
-    }
-
-    @Override
-    public IMessageAccess getMessageAccess() {
-        return messageAccess;
     }
 
     @Override
