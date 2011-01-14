@@ -1,13 +1,12 @@
 package in.partake.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPermission;
 import in.partake.util.Util;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * event with related data.
@@ -94,8 +93,6 @@ public class EventEx extends Event {
                 break; 
             }
         }
-        
-        // Collections.sort(enrolledParticipations, ParticipationList.);
         
         return new ParticipationList(enrolledParticipations, spareParticipations, cancelledParticipations, reservedEnrolled, reservedSpare);
     }
