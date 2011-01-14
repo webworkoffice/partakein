@@ -40,7 +40,7 @@
     </jsp:include>
     
     <%-- TODO: 現在結び付けられている OpenID を表示する --%>
-    <h3>現在、次の URL と結び付けられています。</h3>
+    <h3><span class="accent">＞ </span>現在、次の URL と結び付けられています。</h3>
     <%
         UsersPreferenceController pref = (UsersPreferenceController) request.getSession().getAttribute(Constants.ATTR_ACTION);
         List<String> associatedOpenIds = pref.getAssociateOpenIds();
@@ -73,7 +73,7 @@
 <h2><img src="<%= request.getContextPath() %>/images/calendar.png" alt="">外部のカレンダーと連携</h2></div>
 
 <div class="setting-calendar">
-<span class="accent">＞＞ </span><span class="bold">自分の参加・管理イベントを、Googleなどのカレンダーに自動で登録させます</span>
+<span class="accent">＞ </span><span class="bold">自分の参加・管理イベントを、Googleなどのカレンダーに自動で登録させます</span>
 <br>
 <p>以下が、あなたのカレンダーID（URL）です。<br>
 これを、普段使っているカレンダーにインポートすればOK!</p>
@@ -85,7 +85,7 @@
 <p>IDは友人と共有することも可能です。</p>
 <br>
 
-<p><span class="accent">＞＞ </span><span class="bold">カレンダーIDを再生成する</span></p><p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。<br>
+<p><span class="accent">＞ </span><span class="bold">カレンダーIDを再生成する</span></p><p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。<br>
 ただし、これまでのカレンダー URL は無効になるので気をつけてください。</p>
 <s:form method="post" action="revokeCalendar">
 	<s:token />

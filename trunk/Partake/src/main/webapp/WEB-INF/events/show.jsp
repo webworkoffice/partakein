@@ -215,7 +215,8 @@ body {
 	<% } else { %>
 		<% if (user == null) {%>
 			<%-- login してない場合はなにもできない --%>
-			<p>参加を申し込むためには<br>ログインしてください。</p>
+			<p>参加を申し込むためには<br>ログインしてください。
+			</p>						
 		<% } else if (ParticipationStatus.ENROLLED.equals(status)) { %>
 			<%-- なんか stamp みたいな感じで「参加登録済み」とかいうアイコンを出せないモノだろうか。 --%>
 			<p>参加登録済みです。</p>
