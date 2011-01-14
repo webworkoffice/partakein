@@ -10,7 +10,6 @@ public abstract class PartakeDAOFactory {
     public abstract IEventAccess getEventAccess();
     public abstract IEventRelationAccess getEventRelationAccess();
     public abstract IFeedAccess getFeedAccess();
-    public abstract IMessageAccess getMessageAccess();
     public abstract IOpenIDLinkageAccess getOpenIDLinkageAccess();
     public abstract ITwitterLinkageAccess getTwitterLinkageAccess();
     public abstract IUserAccess getUserAccess();
