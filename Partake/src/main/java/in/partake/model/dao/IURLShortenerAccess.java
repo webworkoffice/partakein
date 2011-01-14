@@ -8,8 +8,8 @@ package in.partake.model.dao;
  *
  */
 public interface IURLShortenerAccess {
-    public abstract void addShortenedURL(PartakeConnection con, String url, String type, String shortenedURL) throws DAOException;
-    public abstract String getShortenedURL(PartakeConnection con, String type, String url) throws DAOException;
+    public abstract void addShortenedURL(PartakeConnection con, String originalURL, String type, String shortenedURL) throws DAOException;
+    public abstract String getShortenedURL(PartakeConnection con, String originalURL, String type) throws DAOException;
     
     /**
      * 特にどのサービスを利用しているのかを問わずに shortened URL を返す。
@@ -18,5 +18,5 @@ public interface IURLShortenerAccess {
      * @return
      * @throws DAOException
      */
-    public abstract String getShortenedURL(PartakeConnection con, String url) throws DAOException;
+    public abstract String getShortenedURL(PartakeConnection con, String originalURL) throws DAOException;
 }

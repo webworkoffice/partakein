@@ -95,16 +95,22 @@ public abstract class PartakeService {
         if (shortenedURL == null) {
             Date now = new Date();
             try {
+                
                 if (bitlyRateLimitExceededTime == null || now.before(new Date(bitlyRateLimitExceededTime.getTime() + 1000 * 1800))) { // rate limit が出ていたら 30 分待つ。
                     String bitlyShortenedURL = Util.callBitlyShortenURL(event.getEventURL());
                     getFactory().getURLShortenerAccess().addShortenedURL(con, event.getEventURL(), "bitly", bitlyShortenedURL);
                     shortenedURL = bitlyShortenedURL;
                 }
             } catch (BitlyException e) {
-                logger.error("failed to shorten URL", e);
-                if (e.getMessage().contains("RATE_LIMIT_EXCEEDED")) {
+                // TODO: debugging...
+                logger.info(bitlyRateLimitExceededTime != null ? bitlyRateLimitExceededTime : "bitlyRateLimitExceededTime is NULL now.");
+                logger.info("now = " + now.toString());
+                
+                logger.error("failed to shorten URL " + now.toString(), e);
+                
+                //if (e.getMessage().contains("RATE_LIMIT_EXCEEDED")) {
                     bitlyRateLimitExceededTime = now;
-                }
+                //}
             }
             
         }

@@ -28,36 +28,36 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
     }
     
     @Override
-    public void addShortenedURL(PartakeConnection con, String url, String type, String shortenedURL) throws DAOException {
+    public void addShortenedURL(PartakeConnection con, String originalURL, String type, String shortenedURL) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addShortenedURLImpl(ccon.getClient(), url, type, shortenedURL, ccon.getAcquiredTime());
+            addShortenedURLImpl(ccon.getClient(), originalURL, type, shortenedURL, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
     @Override
-    public String getShortenedURL(PartakeConnection con, String type, String url) throws DAOException {
+    public String getShortenedURL(PartakeConnection con, String originalURL, String type) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getShortenedURL(ccon.getClient(), url, type, ccon.getAcquiredTime());
+            return getShortenedURL(ccon.getClient(), originalURL, type, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
     @Override
-    public String getShortenedURL(PartakeConnection con, String url) throws DAOException {        
-        return getShortenedURL(con, null, url);
+    public String getShortenedURL(PartakeConnection con, String originalURL) throws DAOException {        
+        return getShortenedURL(con, originalURL, null);
     }
     
 
     
     // ----------------------------------------------------------------------
     
-    private void addShortenedURLImpl(Client client, String url, String type, String shortenedURL, long time) throws Exception {
-        String key = URLSHORTENER_PREFIX + url;
+    private void addShortenedURLImpl(Client client, String originalURL, String type, String shortenedURL, long time) throws Exception {
+        String key = URLSHORTENER_PREFIX + originalURL;
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 
         mutations.add(createMutation(type, shortenedURL, time));
@@ -65,8 +65,8 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
         client.batch_mutate(URLSHORTENER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(URLSHORTENER_COLUMNFAMILY, mutations)), URLSHORTENER_CL_W);
     }
     
-    private String getShortenedURL(Client client, String url, String type, long time) throws Exception {
-        String key = URLSHORTENER_PREFIX + url;
+    private String getShortenedURL(Client client, String originalURL, String type, long time) throws Exception {
+        String key = URLSHORTENER_PREFIX + originalURL;
 
         List<ColumnOrSuperColumn> results = getSlice(client, URLSHORTENER_KEYSPACE, URLSHORTENER_COLUMNFAMILY, key, URLSHORTENER_CL_R);
         if (results == null || results.isEmpty()) { return null; }
