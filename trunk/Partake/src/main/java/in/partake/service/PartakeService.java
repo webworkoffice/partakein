@@ -2,9 +2,14 @@ package in.partake.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.rosaloves.bitlyj.BitlyException;
 
 import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
@@ -22,10 +27,14 @@ import in.partake.model.dto.Participation;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
+import in.partake.util.Util;
 
 public abstract class PartakeService {
+    private static final Logger logger = Logger.getLogger(PartakeService.class);
+    
     private static final PartakeDAOFactory factory;
     private static final PartakeConnectionPool pool;
+    private static volatile Date bitlyRateLimitExceededTime;
     
     static {
         try {
@@ -81,8 +90,25 @@ public abstract class PartakeService {
         UserEx user = getUserEx(con, event.getOwnerId());
         if (user == null) { return null; }
         
-        String feedId = getFactory().getFeedAccess().getFeedIdByEventId(con, eventId);        
-        return new EventEx(event, user, feedId);
+        String feedId = getFactory().getFeedAccess().getFeedIdByEventId(con, eventId);
+        String shortenedURL = getFactory().getURLShortenerAccess().getShortenedURL(con, event.getEventURL());
+        if (shortenedURL == null) {
+            Date now = new Date();
+            try {
+                if (bitlyRateLimitExceededTime == null || now.before(new Date(bitlyRateLimitExceededTime.getTime() + 1000 * 1800))) { // rate limit が出ていたら 30 分待つ。
+                    String bitlyShortenedURL = Util.callBitlyShortenURL(event.getEventURL());
+                    getFactory().getURLShortenerAccess().addShortenedURL(con, event.getEventURL(), "bitly", bitlyShortenedURL);
+                    shortenedURL = bitlyShortenedURL;
+                }
+            } catch (BitlyException e) {
+                logger.error("failed to shorten URL", e);
+                if (e.getMessage().contains("RATE_LIMIT_EXCEEDED")) {
+                    bitlyRateLimitExceededTime = now;
+                }
+            }
+            
+        }
+        return new EventEx(event, user, feedId, shortenedURL);
     }
     
     protected CommentEx getCommentEx(PartakeConnection con, String commentId) throws DAOException {

@@ -9,7 +9,6 @@ import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Comment;
-import in.partake.model.dto.Event;
 import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.UserPermission;
 import in.partake.model.dto.UserPreference;
@@ -231,7 +230,7 @@ public class EventsController extends PartakeActionSupport {
 	    if (comment == null) { comment = ""; } 
 	    
 	    try {
-	        Event event = EventService.get().getEventById(eventId);
+	        EventEx event = EventService.get().getEventExById(eventId);
 	        if (event == null) { return ERROR; }
 
 	        Date deadline = event.getCalculatedDeadline();
@@ -266,7 +265,7 @@ public class EventsController extends PartakeActionSupport {
 	    }
     }
 
-    private void tweetEnrollment(UserEx user, Event event, ParticipationStatus status) throws DAOException {    	
+    private void tweetEnrollment(UserEx user, EventEx event, ParticipationStatus status) throws DAOException {    	
     	UserPreference pref = UserService.get().getUserPreference(user.getId());
     	if (pref == null || !pref.tweetsAttendanceAutomatically()) { return; }
     	
@@ -274,13 +273,13 @@ public class EventsController extends PartakeActionSupport {
     	String right;
         switch (status) {
         case ENROLLED:
-        	right = " (" + Util.shortenURL(event.getEventURL()) + ") へ参加します。";
+        	right = " (" + event.getShortenedURL() + ") へ参加します。";
         	break;
         case RESERVED:
-        	right = " (" + Util.shortenURL(event.getEventURL()) + ") へ参加予定です。";
+        	right = " (" + event.getShortenedURL() + ") へ参加予定です。";
         	break;
         case CANCELLED:
-        	right = " (" + Util.shortenURL(event.getEventURL()) + ") への参加を取りやめました。";
+        	right = " (" + event.getShortenedURL() + ") への参加を取りやめました。";
         	break;
         default:
         	right = null;

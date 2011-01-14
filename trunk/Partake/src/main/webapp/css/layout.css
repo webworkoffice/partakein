@@ -514,9 +514,18 @@ behavior:url(border-radius.htc);
     padding:2px;
 }
 
+.event-owner-information dt {
+	display: list-item;
+    margin-top: 0px;
+    margin-left:25px;
+    padding:2px;
+}
+
 .event-owner-information li {
     margin-top: 3px;
 }
+
+
 
 .event-participation {
     margin: 10px 0 0 0;

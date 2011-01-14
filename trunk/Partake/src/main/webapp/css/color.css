@@ -75,6 +75,10 @@ a:hover, a:active {
     list-style-image: url(../images/mark.png);
 }
 
+.event-owner-information dt {
+    list-style-image: url(../images/mark.png);
+}
+
 .event-participants {
     color: #555555;
     background-color: #efefef;
