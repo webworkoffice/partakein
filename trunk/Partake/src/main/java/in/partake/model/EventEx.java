@@ -129,6 +129,8 @@ public class EventEx extends Event {
             return isOwner(user) || isManager(user);
         case EVENT_REMOVE_COMMENT:
         	return isOwner(user) || isManager(user);
+        case EVENT_EDIT_PARTICIPANTS:
+            return isOwner(user) || isManager(user);
         }
         
         throw new RuntimeException("Unknown permission is being required... This must be a bug.");

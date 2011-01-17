@@ -47,7 +47,6 @@ import org.apache.cassandra.thrift.Cassandra.Client;
 //			<event id>/<participation status>
 //		まあここはあまり見られない情報なのでちょっとぐらい遅くても良い様な気がするのでこれで。
 //		TODO: event が消去されていれば消すべき。
-//		TODO: event が archived 基準であれば archived に移すべき
 //
 class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {    
     // USER PARTICIPATION TABLE

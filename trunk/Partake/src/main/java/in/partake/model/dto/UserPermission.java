@@ -8,6 +8,7 @@ public enum UserPermission {
     EVENT_REMOVE,
 
     /** can create/remove a subevent */
+    @Deprecated
     EVENT_MAKE_SUBEVENT,
     
     /** can edit a sub event */
@@ -20,11 +21,17 @@ public enum UserPermission {
     EVENT_PRIVATE_EVENT,
     
     /** can promote the event. */
+    @Deprecated
     EVENT_PROMOTE,
     
     /** can send message to participants */
     EVENT_SEND_MESSAGE,
     
     /** remove comment */
-    EVENT_REMOVE_COMMENT;
+    EVENT_REMOVE_COMMENT,
+    
+    /** edit participants */
+    EVENT_EDIT_PARTICIPANTS,
+    
+    ;
 }
