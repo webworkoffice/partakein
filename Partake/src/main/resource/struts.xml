@@ -275,7 +275,6 @@
             </result>
         </action>
 		
-		
 		<!-- Event Messaging -->
 		<action name="send" method="send" class="in.partake.controller.EventsMessageController">
 			<interceptor-ref name="authenticateStack" />
@@ -308,7 +307,6 @@
 			</result>
 		</action>
 		
-		
 		<!-- Event Image Showing -->
 		<action name="images/*" method="show" class="in.partake.controller.EventsImageController">
 			<param name="imageId">{1}</param>
@@ -332,8 +330,9 @@
 		</action>
 		
 		<!-- Event Participants -->
-		<action name="participants/*" method="show" class="in.partake.controller.EventParticipantsListController">
-		    <interceptor-ref name="partakeStack" />
+		<!-- URL はきれいにしたいな... -->
+		<action name="participants/*" method="showCSV" class="in.partake.controller.EventParticipantsController">
+            <interceptor-ref name="partakeStack" />
             <param name="eventId">{1}</param>
             
             <result name="success" type="stream">
@@ -343,7 +342,20 @@
                 <param name="allowCaching">true</param>
             </result>
         </action>
+        
+        <action name="showParticipants" method="showParticipants" class="in.partake.controller.EventParticipantsController">
+            <interceptor-ref name="partakeStack" />         
+            <result name="success">/WEB-INF/events/participants/show.jsp</result>
+        </action>
+        
+        <action name="editParticipants" method="editParticipants" class="in.partake.controller.EventParticipantsController"> 
+            <result name="success" type="redirectAction">
+                <param name="actionName">showParticipants</param>
+                <param name="eventId">${eventId}</param>
+            </result>
+        </action>
 		
+		<!-- Event Show -->
 		<action name="*" method="show" class="in.partake.controller.EventsController">
 			<interceptor-ref name="partakeStack"/>		
 

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.xwork.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
@@ -216,6 +216,26 @@ public class EventsController extends PartakeActionSupport {
     public String changeComment() throws PartakeResultException {
         return changeParticipationStatus(null, true);
     }
+    
+    public String changeEnrollment() throws PartakeResultException {
+        UserEx user = ensureLogin();
+        if (user == null) { return ERROR; }
+        
+        String eventId = getParameter("eventId");
+        if (StringUtils.isEmpty(eventId)) { return ERROR; }
+        
+        try {
+            EventEx event = EventService.get().getEventExById(eventId);
+            if (event == null) { return ERROR; }
+            
+            throw new RuntimeException("Not implemented yet.");
+            
+        } catch (DAOException e) {
+            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
+            return ERROR;
+        }
+        
+    }
 
     // ----------------------------------------------------------------------
     
@@ -260,7 +280,7 @@ public class EventsController extends PartakeActionSupport {
 	        this.eventId = eventId;
 	        return SUCCESS;
 	    } catch (DAOException e) {
-	    	e.printStackTrace();
+	        logger.error(I18n.t(I18n.DATABASE_ERROR), e);
 	        return ERROR;
 	    }
     }

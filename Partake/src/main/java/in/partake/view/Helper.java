@@ -1,15 +1,20 @@
 package in.partake.view;
 
+import in.partake.model.ParticipationEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.Participation;
 import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.User;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
+import in.partake.util.Util;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * view の help
