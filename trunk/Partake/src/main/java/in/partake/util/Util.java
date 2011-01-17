@@ -162,12 +162,7 @@ public final class Util {
     // ----------------------------------------------------------------------
 	// HTML  
     
-    @Deprecated
-    public static String h(Object o) {
-        if (o == null) { return ""; }
-        return h(o.toString());
-    }
-    
+    // TODO: These functions are should be moved to Helper.
     // HTML escape
     public static String h(String s) {
         if (s == null) { return ""; }
