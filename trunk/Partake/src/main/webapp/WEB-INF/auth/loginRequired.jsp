@@ -34,7 +34,7 @@
 <h2><img id="" src="<%= request.getContextPath() %>/images/bird2.png" alt="">Twitter アカウントを持っていませんか？</h2>
 </div>
 
-<div class="setting-calendar"> 
+<div class="setting-set"> 
 <p>PARTAKE では、Twitter アカウントをログインに使用します。</p>
 <p><a href="https://twitter.com/signup">このページで  Twitter のアカウントを取得してください。</a></p>
 </div>

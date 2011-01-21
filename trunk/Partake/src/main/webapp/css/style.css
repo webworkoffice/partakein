@@ -4,6 +4,7 @@
 @import "font.css";
 
 @import "openid.css";
+@import "print.css";
 
 /* IE reads non-doublequoted files */
 @import fixie.css;
