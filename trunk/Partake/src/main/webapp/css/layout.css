@@ -7,7 +7,8 @@
 
 /* {
     border: 1px dashed green;
-}  */
+}*/
+
 #logo {
     margin-right:10px;
     text-align:right;
@@ -17,6 +18,7 @@ body {
     margin: 0;
     padding: 0;
 }
+
 /* ==================================================================
  * structure
  * ==================================================================
@@ -321,6 +323,14 @@ text-indent:-9999px;
 .event-information {
     margin: 0 0 0 0px;
 }
+.event-information p {
+    padding:0;
+    margin:4px 0 0 8px;
+}
+.event-information p img {
+    padding:0;
+    vertical-align:middle;
+}
 .event-description {
     border-top: 2px solid #444;
     border-bottom: 2px double #444;
@@ -528,6 +538,7 @@ behavior:url(border-radius.htc);
 
 .event-participants img {
     padding: 0;
+    vertical-align:middle;
 }
 
 .event-participants h2 {
@@ -535,7 +546,10 @@ behavior:url(border-radius.htc);
     margin: 4px 0 0 0;
     padding: 0 0 0 0.4em;
 }
-
+.event-participants h2 img {
+    vertical-align:middle;
+    padding:0 0 3px 0;
+}
 .event-participation {
     float: right;
     width: 260px;
@@ -552,14 +566,17 @@ behavior:url(border-radius.htc);
     display: block;
     margin: 0;
     padding: 0;
-    min-height: 24px;
-    line-height: 24px;
     vertical-align: middle;
 }
 
 .event-participants li img {
     margin: 0;
     padding: 0;
+    vertical-align: middle;
+}
+.event-participants ul li img.userphoto {
+	/*min-height: 24px;
+    line-height: 24px;*/
     width: 24px;
     height: 24px;
     vertical-align: middle;
@@ -568,7 +585,6 @@ behavior:url(border-radius.htc);
     -moz-border-radius: 2px; /* FireFox */
     behavior:url(border-radius.htc); /* forIE */
 }
-
 .event-dashed {
     border-bottom: 1px dashed #adb7d1;
     margin: 10px;
