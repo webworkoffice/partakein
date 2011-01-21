@@ -47,6 +47,7 @@ class CassandraKeyIterator extends KeyIterator {
         if (keyPrefix.isEmpty()) {
             this.rangeEndKey = "";
         } else {
+        	// RandomPartitioner can't use rangeEndKey, so our Cassandra must use OrderPreservingPartitioner.
             char[] t = keyPrefix.toCharArray();
             t[t.length - 1]++;
             this.rangeEndKey = new String(t);
