@@ -16,20 +16,24 @@ public class JPABinaryDao extends JPADao implements IBinaryAccess {
     public String getFreshId(PartakeConnection con) throws DAOException {
         JPAConnection jcon = (JPAConnection) con;
 
-        while (true) {
-            String key = UUID.randomUUID().toString();
+        String key = null;
+        CacheData cd = null;
+        do {
+            key = UUID.randomUUID().toString();
             EntityManager em = jcon.getEntityManager();
             
-            CacheData cd = em.find(CacheData.class, key);
-            if (cd == null) { return key; }
-            // otherwise, generate another key.
-        }
+            cd = em.find(CacheData.class, key);
+        } while (cd != null);
+        
+        assert(key != null);
+        assert(cd == null);
+        
+        return key;
     }
 
     @Override
     public void addBinaryWithId(PartakeConnection con, String id, BinaryData data) throws DAOException {
         // TODO Auto-generated method stub
-        
     }
 
     @Override
