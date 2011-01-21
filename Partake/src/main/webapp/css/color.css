@@ -12,12 +12,14 @@ body {
 
 a:link {
     color: #1D2088;
+    text-decoration:none;
 }
 a:visited {
     color: #4F1F80;
+    text-decoration:none;
 }
-a:hover, a:active {
-    color: #282828;
+a:hover,a:active  {
+    color: #000000;
 }
 
 #wrapper {
@@ -64,11 +66,8 @@ a:hover, a:active {
     color: #555555;
     background-color: #FAF9CE;
 }
-.event-owner-information a, a:visited {
-    text-decoration:none;
-}
+
 .event-owner-information a:hover {
-    text-decoration:underline;
 }
 
 .event-owner-information ul {
@@ -178,6 +177,14 @@ a:hover, a:active {
     filter: alpha(opacity=85);
 }
 
+.output a {
+	color:#1D2088;
+	text-decoration:underline;
+}
+.output a:hover {
+	color:#000000;
+}
+
 /*----------------------------------------------------
   Top - �E�[icon
 ----------------------------------------------------*/
@@ -243,7 +250,6 @@ a:hover, a:active {
 }
 
 #signin-with-openid-part a {
-    text-decoration: underline; 
 }
 
 /* ==================================================================
@@ -289,7 +295,6 @@ a:hover, a:active {
 #footer ul li a {
     color:#999999;
     background: inherit;
-    text-decoration:none;
 }
 
 #footer ul li a:hover {

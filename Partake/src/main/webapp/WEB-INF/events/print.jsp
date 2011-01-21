@@ -29,29 +29,28 @@
 <html lang="ja">
 <head>
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
-    <title>参加者のステータスを編集</title>
+    <title><%= h(event.getTitle()) %> - 参加者リスト - [PARTAKE]</title>
 </head>
-<body id="status-edit">
+<body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
-<h1 id="pastel-line13ji"><img src="<%= request.getContextPath() %>/images/line-yellowgreen.png" alt="">参加者のステータスを編集</h1>  
-<div id="content-adjust">
-<p>
-特定の参加者を削除したり、優先的に参加できるようにしたりします。<br /></p>
-<p><strong>※優先度について</strong>： 「関連イベントの参加者を優先する」という設定をしている場合、該当者に「優先」と表示されています。
-</p>
-<h2><img src="<%= request.getContextPath() %>/images/feature-04.png" alt="" /><%= h(event.getTitle()) %> - 参加者リスト</h2>
 
+
+<h1><%= h(event.getTitle()) %> - 参加者リスト</h1>
+<div class="output">
+<ul>
+<li><a href="<%= request.getContextPath() %>/events/participants/print">印刷ページを開く</a></li>
+<li><a href="<%= request.getContextPath() %>/events/participants/<%= event.getId() %>.csv">CSVで出力(UTF-8)</a>
+</li>
+</ul>
+</div>
 <table class="mypage-tbl">
-    <colgroup><col width="32px" /></colgroup>
-    <colgroup><col width="85px" /></colgroup>
-    <colgroup><col width="58px" /></colgroup> 
-    <colgroup><col width="150px" /></colgroup>
-    <colgroup><col width="100px" /></colgroup>
-    <colgroup><col width="60px" /></colgroup> 
-    <colgroup><col width="120px" /></colgroup>
-    <colgroup><col width="120px" /></colgroup>
+    <colgroup> 
+      <col width="25px" /><col width="60px" /><col width="40px" /> 
+      <col width="100px" /><col width="50px" /><col width="50px" /> 
+      <col width="100px" />
+    </colgroup>
 <thead>
-    <tr><th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th class="print-del">登録日時</th><th>優先度</th><th class="print-del">操作</th><th>実際の出欠状況</th></tr>
+    <tr><th>順番</th><th>名前</th><th>参加状態</th><th>コメント</th><th>参加日時</th><th>優先</th><th>操作</th></tr>
 </thead>
 <tbody>
     <% 
@@ -62,24 +61,16 @@
         <td><%= h(p.getUser().getScreenName()) %></td>
         <td><%= ParticipationStatus.ENROLLED.equals(p.getStatus()) ? "参加" : "仮参加" %></td>
         <td><%= h(p.getComment()) %></td>
-        <td class="print-del"><%= h(p.getModifiedAt().toString()) %></td>
-        <td><%= p.getPriority() > 0 ? String.format(" 優先 %d", p.getPriority()) : "-" %></td>
-        <td class="print-del">
-        <ul class="status-control">
-        <li><a href="#">削除する</a></li>
-        <li><a href="#">優先度を上げる</a></li>
-        </ul>
-        </td>
-        　　　　<td class="print-del">
-        <input type="radio" name="q1" value=""　checked> 未選択<br />
-        <input type="radio" name="q1" value=""> 出席
-        <input type="radio" name="q1" value=""> 欠席
+        <td><%= h(p.getModifiedAt().toString()) %></td>
+        <td><%= p.getPriority() > 0 ? String.format("優先 (%d)", p.getPriority()) : "-" %></td>
+        <td>
+            参加者リストから取り除く / 優先順位を上げる
         </td>
     </tr>
     <% } %>
 </tbody>
 </table>
-</div>    
+    
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>

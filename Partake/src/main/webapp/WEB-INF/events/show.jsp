@@ -59,7 +59,6 @@ body {
 <% } %>	
 </head>
 <body class="event">
-
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <h1><%= h(event.getTitle()) %></h1>
@@ -146,13 +145,13 @@ body {
 <div class="event-owner-information">
 	<h2><img src="<%= request.getContextPath() %>/images/gear.png"/>イベント管理</h2>
 	<ul>
-		<li><a href="#" onclick="document.eventEditForm.submit();">イベントを編集する</a></li>
+		<li><a href="#" onclick="document.eventEditForm.submit();">イベントを編集</a></li>
 		<% if (event.hasPermission(user, UserPermission.EVENT_REMOVE)) { %>
-		    <li><a id="open-event-delete-form" href="#">イベントを削除する</a></li>
+		    <li><a id="open-event-delete-form" href="#">イベントを削除</a></li>
 		<% } %>
-		 <li><a href="<%= request.getContextPath() %>/events/participants/<%= event.getId() %>.csv">参加者リスト (CSV 形式, UTF-8)</a></li>
-         <li><a id="open-message-form" href="#">参加者へメッセージを送信する</a></li>
-         <li><a href="#" onclick="document.participantsForm.submit();">参加者の管理</a></li>
+         <li><a id="open-message-form" href="#">参加者へメッセージを送信</a></li>
+         <li><a href="#" onclick="document.participantsForm.submit();">参加者のステータスを編集</a></li>
+         <li><a href="#">参加者リストを出力</a></li>
     </ul>
 
 	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付時刻</h2>

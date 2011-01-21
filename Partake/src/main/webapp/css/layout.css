@@ -7,7 +7,7 @@
 
 /* {
     border: 1px dashed green;
-} */  
+}  */
 #logo {
     margin-right:10px;
     text-align:right;
@@ -38,6 +38,9 @@ body {
     overflow: auto;
     width: 880px;
     padding: 0 10px 10px 10px;
+}
+#content-adjust {
+    margin:0 1em 0 1em;
 }
 /*----------------------------------------------------
   top画面
@@ -137,7 +140,7 @@ text-indent:-9999px;
     border-radius: 3px; /* CSS3 */
     -webkit-border-radius: 3px; /* Safari,Chrome */
     -moz-border-radius: 3px; /* FireFox */
-    behavior: url(border-radius.htc); /* google code forIE */
+    behavior: url(border-radius.htc); /* forIE */
 }
 
 .top-explanations h2 {
@@ -199,7 +202,11 @@ text-indent:-9999px;
 
 /* 最近のイベント
 ---------------------------*/
-
+.top-recent-events h3 {
+    margin-top:8px;
+    margin-bottom:6px;
+    word-break: break-all;
+}
 .top-recent-events, .top-user-events {
 	word-break: break-all;word-wrap:break-word;
     background-color:#efefef;
@@ -213,15 +220,10 @@ text-indent:-9999px;
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior: url(border-radius.htc); /* google code forIE */
+    behavior: url(border-radius.htc); /* forIE */
     
     list-style: none;
     list-style-image: url(../images/mark.png);
-}
-.top-recent-events h3 {
-    margin-top:8px;
-    margin-bottom:6px;
-    word-break: break-all;
 }
 .top-recent-event {
     clear: both;
@@ -239,7 +241,7 @@ text-indent:-9999px;
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    behavior:url(border-radius.htc); /* forIE */
 
     -moz-box-shadow: 1px 1px 1px #bcbcbc; /* firefox */
     -webkit-box-shadow: 1px 1px 1px #bcbcbc;/* Safari,Chrome */
@@ -276,7 +278,7 @@ text-indent:-9999px;
     border-radius: 3px; /* CSS3 */
     -webkit-border-radius: 3px; /* Safari,Chrome */
     -moz-border-radius: 3px; /* FireFox */
-    behavior: url(border-radius.htc); /* google code forIE */
+    behavior: url(border-radius.htc); /* forIE */
 }
 
 .top-user-events p {
@@ -393,7 +395,7 @@ list-style-type: none;
     border-radius: 3px; /* CSS3 */
     -webkit-border-radius: 3px; /* Safari,Chrome */
     -moz-border-radius: 3px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    behavior:url(border-radius.htc); /* forIE */
 }
 #tab li a {
 display: block;
@@ -422,7 +424,6 @@ border-radius: 5px;
 -moz-border-radius: 5px; 
 behavior:url(border-radius.htc);
 }
-
 /* event-owner
 ---------------------------*/
 .event-owner-information {
@@ -433,7 +434,7 @@ behavior:url(border-radius.htc);
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    behavior:url(border-radius.htc); /* forIE */
 }
 .event-owner-information h2, .event-status h2 {
     margin: 8px 0 4px 0.5em;
@@ -459,7 +460,6 @@ behavior:url(border-radius.htc);
     margin-top: 3px;
 }
 
-
 .event-participation {
     margin: 10px 0 0 0;
 }
@@ -472,7 +472,7 @@ behavior:url(border-radius.htc);
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    behavior:url(border-radius.htc); /* forIE */
 }
 .event-promotion iframe#facebook-like-button {
 	border: none;
@@ -492,7 +492,7 @@ behavior:url(border-radius.htc);
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    behavior:url(border-radius.htc); /* forIE */
 }
 
 .event-enrollment ul li {
@@ -518,7 +518,7 @@ behavior:url(border-radius.htc);
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior: url(border-radius.htc); /* google code forIE */
+    behavior: url(border-radius.htc); /* forIE */
 }
 
 .event-participants p {
@@ -566,7 +566,7 @@ behavior:url(border-radius.htc);
     border-radius: 2px; /* CSS3 */
     -webkit-border-radius: 2px; /* Safari,Chrome */
     -moz-border-radius: 2px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    behavior:url(border-radius.htc); /* forIE */
 }
 
 .event-dashed {
@@ -600,10 +600,15 @@ behavior:url(border-radius.htc);
     padding: 10px 0;
     word-break: break-all;
 }
-
 .event-status {
     list-style: none;
     list-style-image: url(../images/mark.png);
+	}
+
+/* output
+---------------------------*/
+#printout h2 {
+	margin-top:30px;
 	}
 
 /*----------------------------------------------------
@@ -670,7 +675,6 @@ table.associated-event input[type='text'] {
 	margin-left:10px;
 	font-weight:bold;
     color:#DB4984;
-    text-decoration: underline;	
 }
 
 .switchDetail {
@@ -682,7 +686,7 @@ table.associated-event input[type='text'] {
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior: url(border-radius.htc); /* google code forIE */	
+    behavior: url(border-radius.htc); /* forIE */	
 }
 
 /*----------------------------------------------------
@@ -709,7 +713,7 @@ table.associated-event input[type='text'] {
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    behavior:url(border-radius.htc); /* forIE */
 }
 
 #event-search-form dl {
@@ -764,7 +768,7 @@ table.associated-event input[type='text'] {
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */ 
+    behavior:url(border-radius.htc); /* forIE */ 
 }
 
 .event-searched {
@@ -812,7 +816,7 @@ table.associated-event input[type='text'] {
     border-radius: 5px; /* CSS3 */
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */  
+    behavior:url(border-radius.htc); /* forIE */  
 }
 
 .event-searched-content {
@@ -835,7 +839,7 @@ table.associated-event input[type='text'] {
 }
 
 .mypage-mine {
-    margin: 10px;
+    margin: 4px 10px;
     padding: 10px 0px 5px 15px;
 }
 
@@ -845,37 +849,31 @@ table.associated-event input[type='text'] {
 }
 
 .mypage-tbl {
+	margin: 7px 0 8px 0;
+	width:825px;
+	line-height: 1.8em;
     word-break: break-all;
 	word-wrap:break-word;
     table-layout:fixed;
-    width:825px;
-    line-height: 2em;
-    margin: 5px 0 10px 0;
-    font-size: 13px;
     border-collapse:collapse;
     border-spacing:0;
 }
 
 .mypage-tbl th {
     line-height:20px;
-    padding: 2px 14px;    
+    padding: 2px;    
     color: #F5F5F5;
     background-color: #494440;
     border-radius: 4px; /* CSS3 */
     -webkit-border-radius: 4px; /* Safari,Chrome */
     -moz-border-radius: 4px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    behavior:url(border-radius.htc); /* forIE */
 }
 
 .mypage-tbl td {
-    padding: 2px 14px;
-    margin: 0;
-    cellpadding: 0;
+	margin: 0;
+    padding: 2px 8px;
     border-bottom: 1px dotted #b8b8b8;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
 }
 
 .mypage-mine img {
@@ -926,6 +924,9 @@ width:50px;
   setting
 ----------------------------------------------------*/
 
+.setting-set h3 {
+	font-size:1em;
+	}
 #setting-content {
     margin-left: 15px;
 }
@@ -937,14 +938,12 @@ width:50px;
     margin: 0 5px 0 0;
     vertical-align: middle;
 }
-
 .setting-set {
     border-bottom: 2px dotted #bfbfbf;
     width: 83%; 
     padding: 0 0 30px 10px;
     margin: 0px 0 0 60px ;     
 }
-
 .setting-set ul {
     list-style: none;
     padding: 8px 0px 8px 3px;
@@ -952,37 +951,22 @@ width:50px;
 .setting-set ul img {
     vertical-align:middle; 
 }
-.setting-calendar {
-    padding: 5px;
-    margin: 0px 0 0 60px ;
-}
-.setting-calendar p {
-    margin-left:5px;
-}
-.setting-set h3 {
-	font-size:1em;
-	}
-
 .setting-set fieldset {
 	font-size: 0.82em;
 	}
 /*----------------------------------------------------
   login
 ----------------------------------------------------*/
-
 #login-content {
     margin-left: 15px;
 }
-
 /*----------------------------------------------------
   another
 ----------------------------------------------------*/
-
 .providers li:hover {
 	opacity:0.77;
     filter: alpha(opacity=77);
 }
-
 /* お問い合わせ画面  */
 .biglogo {
     margin-top:60px;
@@ -990,8 +974,15 @@ width:50px;
     text-align:center;
 }
 
-
-
+/* participants-status-edit */
+#status-edit h2 {
+    margin:30px 0 5px 0;  	
+}
+#status-edit .status-control {
+    list-style: none;
+    list-style-image: url(../images/mark.png); 
+    padding:0 0 0 17px;	
+}
 
 /* ==================================================================
  * header
@@ -1083,7 +1074,7 @@ width:50px;
         border-radius: 5px; /* CSS3 */
         -webkit-border-radius: 5px; /* Safari,Chrome */
         -moz-border-radius: 5px; /* FireFox */
-        behavior:url(border-radius.htc); /* google code forIE */
+        behavior:url(border-radius.htc); /* forIE */
 }
 
 div#signin-with-twitter-part form {
@@ -1117,7 +1108,7 @@ body.event #subtitle {
      border-radius: 5px; /* CSS3 */
      -webkit-border-radius: 5px; /* Safari,Chrome */
      -moz-border-radius: 5px; /* FireFox */
-     behavior:url(border-radius.htc); /* google code forIE */  
+     behavior:url(border-radius.htc); /* forIE */  
 }
 
 .loggedin-name {
@@ -1143,8 +1134,8 @@ ul.actionMessage, ul.errorMessage, ul.warningMessage {
     list-style: none;
     border-radius: 3px; /* CSS3 */
     -webkit-border-radius: 3px; /* Safari,Chrome */
-    -moz-border-radius: 3px; /* FireFox */
-    behavior:url(border-radius.htc); /* google code forIE */
+    -moz-border-radius: 3px; /* FirexFox */
+    behavior:url(border-radius.htc); /* forIE */
 }
 
 ul.actionMessage, ul.errorMessage, ul.warningMessage {
@@ -1175,6 +1166,19 @@ ul.actionMessage, ul.errorMessage, ul.warningMessage {
 .twitter-share-button {
 	margin-right:0;
 	}
+	
+.output {
+	margin-bottom:10px;
+	}
+.output a {
+	text-decoration:underline;
+}
+.output li {
+	float: left;
+    display: block; 
+	list-style: none;
+    margin:10px 13px 20px 0;
+}
 
 /* ==================================================================
  * footer
@@ -1199,6 +1203,11 @@ ul.actionMessage, ul.errorMessage, ul.warningMessage {
     display: inline-block;
     margin-right: 3px;
 }
+#footer a {
+    text-decoration: none;
+}
+
+
 
 /* ==================================================================
  * dialog
@@ -1247,6 +1256,11 @@ h1 {
     position: relative;
 }
 
+h2 img {
+    vertical-align:middle;
+    margin-right:5px;
+	}
+
 h1 a:link, h1 a:visited, h1 a:hover, h1 a:active,
 h2 a:link, h2 a:visited, h2 a:hover, h2 a:active,
 h3 a:link, h3 a:visited, h3 a:hover, h3 a:active { 
@@ -1267,7 +1281,16 @@ h3 a:link, h3 a:visited, h3 a:hover, h3 a:active {
     width: 325px;
     height: 11px;
 }
-
+#pastel-line11ji {   
+    margin: 0 0 30px 15px;
+}
+#pastel-line11ji img {   
+    position: absolute;
+    top: 1.2em;
+    left: -0.5em;
+    width: 300px;
+    height: 11px;
+}
 #pastel-line10ji {   
     margin: 0 0 30px 15px;
 }
@@ -1278,7 +1301,6 @@ h3 a:link, h3 a:visited, h3 a:hover, h3 a:active {
     width: 253px;
     height: 11px;
 }
-
 #pastel-line5ji {   
     margin: 0 0 30px 15px;
 }
@@ -1312,6 +1334,9 @@ blockquote {
  * inline elements
  * ==================================================================
  */
+p {
+   margin-left:10px;
+}
 
 kbd {
 	border-width: 2px;
@@ -1356,6 +1381,3 @@ a img {
  * forms
  * ==================================================================
  */
-
-
-

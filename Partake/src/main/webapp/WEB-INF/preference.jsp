@@ -31,8 +31,9 @@
 </div>
 
 <div class="setting-set">
-<p><span class="bold"><span class="accent">＞ </span>Open ID でログインできるように</span><br />
-<br />何らかの理由でtwitter が使用できないとき、役立ちます。<br />設定には、Google や mixi などのOpenID と Twitterを結び付ける必要があります。下のリンクをクリックして twitter と OpenID を結びつけることができます！<br />
+<h3><span class="bold"><span class="accent">＞ </span>Open ID の設定</span></h3>
+<p>
+何らかの理由でtwitter が使用できないとき、役立ちます。<br />設定には、Google や mixi などのOpenID と Twitterを結び付ける必要があります。下のリンクをクリックして twitter と OpenID を結びつけることができます！<br />
 </p>
     <jsp:include page="/WEB-INF/internal/_openid_innerform.jsp" >
         <jsp:param name="callingURL" value="/auth/connectWithOpenID" />
@@ -41,6 +42,7 @@
     
     <%-- TODO: 現在結び付けられている OpenID を表示する --%>
     <h3><span class="accent">＞ </span>現在、次の URL と結び付けられています。</h3>
+    <p>
     <%
         UsersPreferenceController pref = (UsersPreferenceController) request.getSession().getAttribute(Constants.ATTR_ACTION);
         List<String> associatedOpenIds = pref.getAssociateOpenIds();
@@ -51,6 +53,7 @@
             <% } %>
             </ul>
     <% } %>
+    </p>
 </div>
 
 
@@ -72,10 +75,9 @@
 <div class="setting-subtitle"> 
 <h2><img src="<%= request.getContextPath() %>/images/calendar.png" alt="">外部のカレンダーと連携</h2></div>
 
-<div class="setting-calendar">
-<span class="accent">＞ </span><span class="bold">自分の参加・管理イベントを、Googleなどのカレンダーに自動で登録させます</span>
-<br>
-<p>以下が、あなたのカレンダーID（URL）です。<br>
+<div class="setting-set">
+<h3><span class="accent">＞ </span><span class="bold">自分の参加・管理イベントを、Googleなどのカレンダーに自動で登録させます</span></h3>
+<p>以下が、あなたのカレンダーID（URL）です。<br />
 これを、普段使っているカレンダーにインポートすればOK!</p>
 
 <% if (user.getCalendarId() != null && !"".equals(user.getCalendarId())) { %>
@@ -85,12 +87,14 @@
 <p>IDは友人と共有することも可能です。</p>
 <br>
 
-<p><span class="accent">＞ </span><span class="bold">カレンダーIDを再生成する</span></p><p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。<br>
-ただし、これまでのカレンダー URL は無効になるので気をつけてください。</p>
+<h3><span class="accent">＞ </span><span class="bold">カレンダーIDを再生成する</span></h3>
+<p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。<br />
+ただし、これまでのカレンダー URL は無効になるので気をつけてください。
 <s:form method="post" action="revokeCalendar">
 	<s:token />
 	<s:submit value="カレンダー ID を再生成する" />
 </s:form>
+</p>
 </div>
 </div>
 

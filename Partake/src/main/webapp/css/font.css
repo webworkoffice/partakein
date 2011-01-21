@@ -104,6 +104,7 @@ ul.actionMessage, ul.warningMessage, ul.errorMessage {
     font-size: 14px;
     font-weight: bold;
 }
+
 /* ==================================================================
  * header
  * ==================================================================
@@ -138,10 +139,12 @@ h1 {
 h2 {
     font-size: 1.2em;
     font-weight: bold;
+    margin-left:6px;
 }
 
 h3 {
     font-size: 1.2em;
+    margin-left:8px;
 }
 
 /* ==================================================================

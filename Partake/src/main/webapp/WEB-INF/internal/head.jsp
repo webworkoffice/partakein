@@ -2,7 +2,7 @@
     
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/style.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/style.css" media="screen,print" />
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" />
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
