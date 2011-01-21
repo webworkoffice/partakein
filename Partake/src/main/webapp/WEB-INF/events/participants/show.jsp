@@ -36,8 +36,10 @@
 <h1 id="pastel-line13ji"><img src="<%= request.getContextPath() %>/images/line-yellowgreen.png" alt="">参加者のステータスを編集</h1>  
 <div id="content-adjust">
 <p>
-特定の参加者を削除したり、優先的に参加できるようにしたりします。<br /></p>
-<p><strong>※優先度について</strong>： 「関連イベントの参加者を優先する」という設定をしている場合、該当者に「優先」と表示されています。
+特定の参加者を削除したり、優先的に参加できるようにしたりします。<br />
+</p>
+<p>「関連イベントの参加者を優先参加させる設定」を有効にしている場合、該当者の優先度は「<img src="<%= request.getContextPath() %>/images/crown.png" alt="優先" />」と表示されます。<br />
+優先度をもう一段階上げることが可能です。
 </p>
 <h2><img src="<%= request.getContextPath() %>/images/feature-04.png" alt="" /><%= h(event.getTitle()) %> - 参加者リスト</h2>
 
@@ -63,7 +65,11 @@
         <td><%= ParticipationStatus.ENROLLED.equals(p.getStatus()) ? "参加" : "仮参加" %></td>
         <td><%= h(p.getComment()) %></td>
         <td class="print-del"><%= h(p.getModifiedAt().toString()) %></td>
-        <td><%= p.getPriority() > 0 ? String.format(" 優先 %d", p.getPriority()) : "-" %></td>
+        <td>
+        <%--　↓イメージを伝えるために、王冠アイコンをベタっと貼ってます1/18 --%>
+        <img src="<%= request.getContextPath() %>/images/crown.png" alt="優先" />
+        <%= p.getPriority() > 0 ? String.format("%d", p.getPriority()) : "-" %>
+        </td>
         <td class="print-del">
         <ul class="status-control">
         <li><a href="#">削除する</a></li>

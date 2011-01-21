@@ -112,12 +112,14 @@ body {
 	           <% String shortenURL = event.getShortenedURL(); %>
 	           <dd><a href="<%= h(shortenURL) %>"><%= h(shortenURL) %></a></dd>
 	        <% if (eventRelations != null && !eventRelations.isEmpty()) { %>
-	        <dt>関連イベント</dt>
+	        <dt>関連イベント：</dt>
 	           <% for (EventRelationEx eventRelation : eventRelations) { %>
 	               <dd>
+	                   <img src="<%= request.getContextPath() %>/images/mark.png" class=""　alt="" />
 	                   <a href="<%= h(eventRelation.getEvent().getEventURL()) %>"><%= h(eventRelation.getEvent().getTitle()) %></a>
-                       <% if (eventRelation.isRequired()) { %><br>(こちらの関連イベントへの登録が必須です)<% } %>
-                       <% if (eventRelation.hasPriority()) { %><br>(こちらの関連イベントへ登録した方は優先的に本イベントへ参加できます)<% } %>
+	                   <p><% if (eventRelation.isRequired()) { %><img src="<%= request.getContextPath() %>/images/attention.png" class=""　alt="" /> この関連イベントへの参加が必須です<% } %>
+                       <% if (eventRelation.hasPriority()) { %><br><img src="<%= request.getContextPath() %>/images/crown.png" class=""　alt="" /> 参加すると本イベントへ優先的に参加可<% } %>
+	               </p>
 	               </dd>
 	           <% } %>
 	        <% }%>
@@ -341,21 +343,21 @@ body {
 			<%-- TODO: 仮参加は色をかえるべき --%>
 			<% if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) { %>
 				<li>
-					<img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
+					<img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					    <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.getPriority() > 0) { %>(優先)<% } %>
+					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="優先的に参加できます" alt="優先" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
 			<% } else { %>
 				<li>
-					<img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
+					<img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					(仮参加)
-					<% if (participation.getPriority() > 0) { %>(優先)<% } %>
+					<img src="<%= request.getContextPath() %>/images/reserved.png"　title="仮参加者です" alt="仮参加" />
+					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/crown.png"　title="優先的に参加できます" alt="優先" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
 			<% } %>
@@ -366,27 +368,27 @@ body {
 	<% } %>
 	
 	<% if (spareParticipations != null && spareParticipations.size() > 0) { %>
-		<h2><img src="<%= request.getContextPath() %>/images/triangle.png" />補欠者一覧 (<%= spareParticipations.size() %> 人)</h2>
+		<h2><img src="<%= request.getContextPath() %>/images/reserved.png" />補欠者一覧 (<%= spareParticipations.size() %> 人)</h2>
 		<ul>
 		<% for (ParticipationEx participation : spareParticipations) { %>
 			<% 		// TODO: 仮参加は色をかえるべき		 %>
 			<% if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) { %>
 				<li>
-					<img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
+					<img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.getPriority() > 0) { %>(優先)<% } %>
+					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="優先的に参加できます" alt="優先" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
 			<% } else { %>
 				<li>
-					<img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
+					<img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.getPriority() > 0) { %>(優先)<% } %>
-					(仮参加)
+					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="優先的に参加できます" alt="優先" /><% } %>
+					<img src="<%= request.getContextPath() %>/images/reserved.png" title="仮参加者です" alt="仮参加" />
 					: <%= h(participation.getComment()) %>
 				</li>
 			<% } %>
@@ -401,12 +403,12 @@ body {
 		<% for (ParticipationEx participation : cancelledParticipations) { %>
 		    <% if (ParticipationStatus.RESERVED.equals(participation.getStatus())) { %>
                 <li>
-                    <img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
+                    <img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
                     <a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> (仮参加後の参加表明なし) : <%= h(participation.getComment()) %>
                 </li>           		    
 		    <% } else { %>
                 <li>
-                    <img src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
+                    <img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
                     <a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> : <%= h(participation.getComment()) %>
                 </li>           
 		    <% } %>
