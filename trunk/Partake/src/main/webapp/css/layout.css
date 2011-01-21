@@ -543,7 +543,7 @@ behavior:url(border-radius.htc);
 
 .event-participants h2 {
     width: 150px;
-    margin: 4px 0 0 0;
+    margin: 12px 0 0 0;
     padding: 0 0 0 0.4em;
 }
 .event-participants h2 img {
@@ -569,17 +569,17 @@ behavior:url(border-radius.htc);
     vertical-align: middle;
 }
 
-.event-participants li img {
+.event-participants ul li img {
     margin: 0;
     padding: 0;
     vertical-align: middle;
+    padding:0 0 2px 0;
 }
 .event-participants ul li img.userphoto {
 	/*min-height: 24px;
     line-height: 24px;*/
     width: 24px;
     height: 24px;
-    vertical-align: middle;
     border-radius: 2px; /* CSS3 */
     -webkit-border-radius: 2px; /* Safari,Chrome */
     -moz-border-radius: 2px; /* FireFox */
