@@ -151,6 +151,9 @@ body {
 		<% if (event.hasPermission(user, UserPermission.EVENT_REMOVE)) { %>
 		    <li><a id="open-event-delete-form" href="#">イベントを削除</a></li>
 		<% } %>
+	</ul>
+	<h2><img src="<%= request.getContextPath() %>/images/momonga1.png"/>参加者管理</h2>
+    <ul>
          <li><a id="open-message-form" href="#">参加者へメッセージを送信</a></li>
          <li><a href="#" onclick="document.participantsForm.submit();">参加者のステータスを編集</a></li>
          <li><a href="#">参加者リストを出力</a></li>
@@ -368,7 +371,7 @@ body {
 	<% } %>
 	
 	<% if (spareParticipations != null && spareParticipations.size() > 0) { %>
-		<h2><img src="<%= request.getContextPath() %>/images/reserved.png" />補欠者一覧 (<%= spareParticipations.size() %> 人)</h2>
+		<h2><img src="<%= request.getContextPath() %>/images/square.png" />補欠者一覧 (<%= spareParticipations.size() %> 人)</h2>
 		<ul>
 		<% for (ParticipationEx participation : spareParticipations) { %>
 			<% 		// TODO: 仮参加は色をかえるべき		 %>
