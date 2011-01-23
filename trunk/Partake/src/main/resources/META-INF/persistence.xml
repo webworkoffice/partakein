@@ -18,18 +18,22 @@
 
   <persistence-unit name="partake-unittest">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>in.partake.model.dto.BinaryData</class>
     <properties>
       <property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource"/>
       <property name="openjpa.ConnectionProperties" value="DriverClassName=org.postgresql.Driver,Url=jdbc:postgresql:partake-unittest,Username=partake,Password=partake"/>
       <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
 
-	  <property name="openjpa.SynchronizeMappings" value="buildSchema(SchemaAction=add,deleteTableContents)"/>
-        
+	  <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='drop,add,deleteTableContents')"/> 
+      <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
+      
       <property name="openjpa.DataCache" value="true"/>
       <property name="openjpa.RemoteCommitProvider" value="sjvm"/>          
     </properties>
   </persistence-unit>
 
 </persistence>
+
+
 
 
