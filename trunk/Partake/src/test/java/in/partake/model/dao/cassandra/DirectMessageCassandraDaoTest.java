@@ -38,7 +38,7 @@ public class DirectMessageCassandraDaoTest extends CassandraDaoTestBase {
 		pool = new CassandraConnectionPool();
 		dao = new DirectMessageCassandraDao(factory);
 
-		CassandraConnection con = pool.getConnection();
+		CassandraConnection con = (CassandraConnection) pool.getConnection();
 		try {
 			messageId = dao.getFreshId(con);
 		} finally {
@@ -52,7 +52,7 @@ public class DirectMessageCassandraDaoTest extends CassandraDaoTestBase {
 
 		{
 			DirectMessage embryo = new DirectMessage(EVENT_OWNER_ID, MESSAGE);
-			CassandraConnection sendCon = pool.getConnection();
+			CassandraConnection sendCon = (CassandraConnection) pool.getConnection();
 			try {
 				dao.addMessage(sendCon, messageId, embryo);
 				dao.sendEnvelope(sendCon, messageId, TWITTER_ID, TWITTER_ID, deadline, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
@@ -62,7 +62,7 @@ public class DirectMessageCassandraDaoTest extends CassandraDaoTestBase {
 		}
 
 		{
-			CassandraConnection getCon = pool.getConnection();
+		    CassandraConnection getCon = (CassandraConnection) pool.getConnection();
 			boolean found = false;
 			try {
 				DataIterator<DirectMessageEnvelope> iter = dao.getEnvelopeIterator(getCon);

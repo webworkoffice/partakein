@@ -54,7 +54,7 @@ public class ColumnIteratorTestForSuperColumn extends CassandraDao {
     }
     
     private void testForColumnIteratorToGet(int n) throws DAOException {
-        CassandraConnection con = pool.getConnection();
+        CassandraConnection con = (CassandraConnection) pool.getConnection();
         try {
             // create
             String id = PREFIX + UUID.randomUUID().toString();
@@ -89,7 +89,7 @@ public class ColumnIteratorTestForSuperColumn extends CassandraDao {
     
     @Test
     public void testForColumnIteratorToUpdate() throws DAOException {
-        CassandraConnection con = pool.getConnection();
+        CassandraConnection con = (CassandraConnection) pool.getConnection();
         try {
             final int n = 1001;
             
@@ -150,7 +150,7 @@ public class ColumnIteratorTestForSuperColumn extends CassandraDao {
     
     @Test
     public void testForColumnIteratorToRemove() throws DAOException {
-        CassandraConnection con = pool.getConnection();    
+        CassandraConnection con = (CassandraConnection) pool.getConnection();
         try {
            final int n = 1001;
            
