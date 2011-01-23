@@ -17,105 +17,77 @@ import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeDAOFactory;
 
 public class CassandraDAOFactory extends PartakeDAOFactory {
-    private final ICacheAccess cacheAccess;
-    private final ICalendarLinkageAccess calendarLinkageAccess;    
-    private final IBinaryAccess binaryAccess;
-    private final ICommentAccess commentAccess;
-    private final IDirectMessageAccess directMessageAccess;
-    private final IEnrollmentAccess enrollmentAccess;
-    private final IEventAccess eventAccess;
-    private final IEventRelationAccess eventRelationAccess;
-    private final IFeedAccess feedAccess;
-    private final IOpenIDLinkageAccess openIDLinkageAccess;
-    private final ITwitterLinkageAccess twitterLinkageAccess;
-    private final IUserAccess userAccess;
-    private final IUserPreferenceAccess userPreferenceAccess;
-    private final IURLShortenerAccess urlShortenerAccess;
-    
-    public CassandraDAOFactory() {
-        cacheAccess = new CassandraCacheDao(this);
-        calendarLinkageAccess = new CalendarLinkageCassandraDao(this);
-        binaryAccess = new BinaryCassandraDao(this);
-        commentAccess = new CommentCassandraDao(this);
-        directMessageAccess = new DirectMessageCassandraDao(this);
-        enrollmentAccess = new EnrollmentCassandraDao(this);
-        eventAccess = new EventCassandraDao(this);
-        eventRelationAccess = new EventRelationCassandraDao(this);
-        feedAccess = new FeedCassandraDao(this);
-        openIDLinkageAccess = new OpenIDLinkageCassandraDao(this);
-        twitterLinkageAccess = new TwitterLinkageCassandraDao(this);
-        userAccess = new UserCassandraDao(this);
-        userPreferenceAccess = new UserPreferenceCassandraDao(this);
-        urlShortenerAccess = new URLShortenerCassandraDao(this);
-    }
     
     @Override
-    public ICacheAccess getCacheAccess() {
-        return cacheAccess;
-    }
-    
-    @Override
-    public ICalendarLinkageAccess getCalendarAccess() {
-        return calendarLinkageAccess;
-    }
-    
-    @Override
-    public IBinaryAccess getBinaryAccess() {
-        return binaryAccess;
-    }
-    
-    @Override
-    public ICommentAccess getCommentAccess() {
-        return commentAccess;
+    protected ICacheAccess createCacheAccess() {
+        return new CassandraCacheDao(this);
     }
 
     @Override
-    public IDirectMessageAccess getDirectMessageAccess() {
-        return directMessageAccess;
+    protected ICalendarLinkageAccess createCalendarLinkageAccess() {
+        return new CalendarLinkageCassandraDao(this);
     }
 
     @Override
-    public IEnrollmentAccess getEnrollmentAccess() {
-        return enrollmentAccess;
+    protected IBinaryAccess createBinaryAccess() {
+        return new BinaryCassandraDao(this);
     }
 
     @Override
-    public IEventAccess getEventAccess() {
-        return eventAccess;
-    }
-    
-    @Override
-    public IEventRelationAccess getEventRelationAccess() {
-    	return eventRelationAccess;
+    protected ICommentAccess createCommentAccess() {
+        return new CommentCassandraDao(this);
     }
 
     @Override
-    public IFeedAccess getFeedAccess() {
-        return feedAccess;
+    protected IDirectMessageAccess createDirectMessageAccess() {
+        return new DirectMessageCassandraDao(this);
     }
 
     @Override
-    public IOpenIDLinkageAccess getOpenIDLinkageAccess() {
-        return openIDLinkageAccess;
+    protected IEnrollmentAccess createEnrollmentAccess() {
+        return new EnrollmentCassandraDao(this);
     }
 
     @Override
-    public ITwitterLinkageAccess getTwitterLinkageAccess() {
-        return twitterLinkageAccess;
+    protected IEventAccess createEventAccess() {
+        return new EventCassandraDao(this);
     }
 
     @Override
-    public IUserAccess getUserAccess() {
-        return userAccess;
+    protected IEventRelationAccess createEventRelationAccess() {
+        return new EventRelationCassandraDao(this);
     }
-    
+
     @Override
-    public IUserPreferenceAccess getUserPreferenceAccess() {
-        return userPreferenceAccess;
+    protected IFeedAccess createFeedAccess() {
+        return new FeedCassandraDao(this);
     }
-    
+
     @Override
-    public IURLShortenerAccess getURLShortenerAccess() {
-        return urlShortenerAccess;
+    protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
+        return new OpenIDLinkageCassandraDao(this);
     }
+
+    @Override
+    protected ITwitterLinkageAccess createTwitterLinkageAccess() {
+        return new TwitterLinkageCassandraDao(this);
+    }
+
+    @Override
+    protected IUserAccess creataeUserAccess() {
+        return new UserCassandraDao(this);
+    }
+
+    @Override
+    protected IUserPreferenceAccess createUserPreferenceAccess() {
+        return new UserPreferenceCassandraDao(this);
+
+    }
+
+    @Override
+    protected IURLShortenerAccess createUrlShortenerAccess() {
+        return new URLShortenerCassandraDao(this);
+    }
+
+
 }

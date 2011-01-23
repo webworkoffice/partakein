@@ -1,18 +1,38 @@
-package in.partake.service;
+package in.partake.service.mock;
 
 import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
+import in.partake.resource.PartakeProperties;
+import in.partake.service.PartakeService;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+
+
+
 import junit.framework.Assert;
 
-public class ServiceTestBase {
+public class MockServiceTestBase extends PartakeService {
+    
+    @BeforeClass
+    public static void setUpOnce() {
+        PartakeProperties.get().reset("mock");
+        PartakeService.reset();
+    }
+
+    @AfterClass
+    public static void tearDownOnce() {
+        PartakeProperties.get().reset();
+        PartakeService.reset();        
+    }
+
     
     /**
      * assert that all connections are released.

@@ -1,5 +1,6 @@
-package in.partake.service;
+package in.partake.service.mock;
 
+import in.partake.service.MessageService;
 import in.partake.util.PDate;
 
 import java.lang.reflect.Method;
@@ -9,8 +10,8 @@ import java.util.TimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class MessageServiceTest {
-
+public class MessageServiceTest extends MockServiceTestBase {
+        
     @Test
     public void testNeedsToSendWhenLastSentDateIsNull() throws Exception {
         Assert.assertTrue(needsToSend(

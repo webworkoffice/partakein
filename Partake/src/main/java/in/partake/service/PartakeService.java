@@ -49,9 +49,11 @@ public abstract class PartakeService {
     }
     
     /**
-     * PartakeService に必要なデータを読み直す。ユニットテスト用途のみを想定。
+     * PartakeService に必要なデータを読み直す。最初の初期化とユニットテスト用途のみを想定。
+     * TODO: public にしたくないんだけど、どうしようか... reflection でも使うしか...。
+     * 
      */
-    static void reset() {
+    public static void reset() {
         try {
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();

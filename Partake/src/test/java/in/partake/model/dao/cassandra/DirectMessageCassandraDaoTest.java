@@ -18,8 +18,7 @@ import org.junit.rules.TestName;
  * @see DirectMessageCassandraDao
  * @author skypencil(@eller86)
  */
-// FIXME in.partake.mode=test で実行できない。というかMockのテストをやりたいわけではないしなぁ。
-public class DirectMessageCassandraDaoTest {
+public class DirectMessageCassandraDaoTest extends CassandraDaoTestBase {
 	private static final String TWITTER_ID = "eller86";
 	private static final String MESSAGE = "message";
 	private static final String EVENT_OWNER_ID = "owner_id";
