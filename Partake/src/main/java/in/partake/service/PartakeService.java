@@ -3,9 +3,9 @@ package in.partake.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -32,11 +32,26 @@ import in.partake.util.Util;
 public abstract class PartakeService {
     private static final Logger logger = Logger.getLogger(PartakeService.class);
     
-    private static final PartakeDAOFactory factory;
-    private static final PartakeConnectionPool pool;
+    private static PartakeDAOFactory factory;
+    private static PartakeConnectionPool pool;
     private static volatile Date bitlyRateLimitExceededTime;
     
     static {
+        reset();
+    }
+    
+    protected static PartakeDAOFactory getFactory() {
+        return factory;
+    }
+    
+    protected static PartakeConnectionPool getPool() {
+        return pool;
+    }
+    
+    /**
+     * PartakeService に必要なデータを読み直す。ユニットテスト用途のみを想定。
+     */
+    static void reset() {
         try {
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();
@@ -50,15 +65,7 @@ public abstract class PartakeService {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }
-    }
-    
-    protected static PartakeDAOFactory getFactory() {
-        return factory;
-    }
-    
-    protected static PartakeConnectionPool getPool() {
-        return pool;
+        }        
     }
     
     // ----------------------------------------------------------------------
@@ -128,39 +135,52 @@ public abstract class PartakeService {
     }
     
     protected List<ParticipationEx> getParticipationsEx(PartakeConnection con, String eventId) throws DAOException {
-        // priority のあるイベントに参加している場合、priority に 1 を負荷する。
-        Map<String, Integer> priorityMap = new HashMap<String, Integer>();
+        // priority のあるイベントに参加している場合、priority に 1 を付加する。
         
+        // --- まず、ParticipationEx を作成
+        List<ParticipationEx> ps = new ArrayList<ParticipationEx>();
+        for (Participation p : factory.getEnrollmentAccess().getParticipation(con, eventId)) {
+            if (p == null) { continue; }
+            UserEx user = getUserEx(con, p.getUserId());
+            if (user == null) { continue; }
+            ParticipationEx pe = new ParticipationEx(p, user);
+            ps.add(pe);
+        }
+        
+        // --- 各 related event に対して、参加しているかどうかを調査。
         List<EventRelation> eventRelations = factory.getEventRelationAccess().getEventRelations(con, eventId); 
         for (EventRelation relation : eventRelations) {
-            if (!relation.hasPriority()) { continue; }
-            EventEx ev = getEventEx(con, relation.getEventId()); 
+            EventEx ev = getEventEx(con, relation.getEventId());
             if (ev == null) { continue; }
-            List<Participation> ps = factory.getEnrollmentAccess().getParticipation(con, relation.getEventId());
-            for (Participation p : ps) {
-                if (!p.getStatus().isEnrolled()) { continue; }
-                if (priorityMap.containsKey(p.getUserId())) {
-                    priorityMap.put(p.getUserId(), priorityMap.get(p.getUserId()) + 1);
-                } else {
-                    priorityMap.put(p.getUserId(), Integer.valueOf(1));
+            
+            // related event の参加者を Set で取得
+            Set<String> relatedEventParticipantsIds = new HashSet<String>();
+            {
+                List<Participation> relatedEventParticipations = factory.getEnrollmentAccess().getParticipation(con, relation.getEventId());
+                for (Participation p : relatedEventParticipations) {
+                    if (p.getStatus().isEnrolled()) {
+                        relatedEventParticipantsIds.add(p.getUserId());
+                    }
                 }
             }
-        }
-        
-        List<Participation> ps = factory.getEnrollmentAccess().getParticipation(con, eventId);
-        List<ParticipationEx> result = new ArrayList<ParticipationEx>(); 
-        for (Participation p : ps) {
-            UserEx user = getUserEx(con, p.getUserId()); 
-            ParticipationEx pe = new ParticipationEx(p, user);
-            if (priorityMap.containsKey(p.getUserId())) {
-                pe.setPriority(priorityMap.get(p.getUserId())); // TODO: 元の priority にたさないといけないんじゃないか？
+            
+            // 参加していれば、それを追加。priority があれば、+1 する。
+            for (ParticipationEx p : ps) {
+                if (!relatedEventParticipantsIds.contains(p.getUserId())) { continue; }
+                p.addRelatedEventId(relation.getEventId());
+                if (relation.hasPriority()) {
+                    p.setPriority(p.getPriority() + 1);
+                }
             }
-            pe.freeze();
-            result.add(pe);
+
         }
         
-        Collections.sort(result, Participation.getPriorityBasedComparator());       
+        for (ParticipationEx p : ps) {
+            p.freeze();
+        }
         
-        return result;
+        Collections.sort(ps, Participation.getPriorityBasedComparator());       
+        
+        return ps;
     }
 }

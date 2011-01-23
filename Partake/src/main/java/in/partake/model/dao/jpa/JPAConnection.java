@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import in.partake.model.dao.PartakeConnection;
 
 public class JPAConnection extends PartakeConnection { 
-    private static final Logger logger = Logger.getLogger(JPAConnection.class);
+    // private static final Logger logger = Logger.getLogger(JPAConnection.class);
     
     
     

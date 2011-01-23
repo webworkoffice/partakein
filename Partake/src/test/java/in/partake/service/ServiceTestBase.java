@@ -32,7 +32,7 @@ public class ServiceTestBase {
         Date createdAt = now;
         Date beginDate = now;
         
-        Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", createdAt, null);
+        Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", false, createdAt, null);
         event.setId(id);
         return event;
     }
@@ -59,7 +59,7 @@ public class ServiceTestBase {
         calendar.set(Calendar.MINUTE, beginMin);
         Date beginDate = calendar.getTime();
 
-        Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", createdAt, null);
+        Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", false, createdAt, null);
         event.setId(id);
         return event;
     }

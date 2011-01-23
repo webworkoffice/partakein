@@ -1,6 +1,8 @@
 package in.partake.daemon;
 
 import in.partake.model.dao.DAOException;
+import in.partake.resource.I18n;
+import in.partake.resource.PartakeProperties;
 import in.partake.service.DirectMessageService;
 import in.partake.service.MessageService;
 
@@ -15,9 +17,11 @@ class TwitterDaemonTask extends TimerTask {
     
     @Override
     public void run() {
-        runTwitterReminderTask();
-        runStatusChangeTask();
-        runTwitterMessageSendingTask();
+        if (PartakeProperties.get().isEnabledTwitterDaemon()) {
+            runTwitterReminderTask();
+            runStatusChangeTask();
+            runTwitterMessageSendingTask();
+        }
     }
     
     private void runTwitterReminderTask() {
@@ -25,7 +29,7 @@ class TwitterDaemonTask extends TimerTask {
         try {
             MessageService.get().sendReminders();
         } catch (DAOException e) {
-            logger.warn("run() failed.", e);
+            logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
         }
         logger.info("TwitterReminderTask END");
     }
@@ -36,18 +40,18 @@ class TwitterDaemonTask extends TimerTask {
         try {
             MessageService.get().sendParticipationStatusChangeNotifications();
         } catch (DAOException e) {
-            logger.warn("run() failed.", e);
+            logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
         }     
         logger.info("ParticipationStatusChangeTask END.");
     }
     
-    /** queue 縺ｫ蜈･縺｣縺溘Γ繝�そ繝ｼ繧ｸ繧貞ｮ滄圀縺ｫ螻翫￠繧�*/
+    
     private void runTwitterMessageSendingTask() {
         logger.info("DirectMessageSendingTask START");
         try {
             DirectMessageService.get().sendEnvelopes();
         } catch (DAOException e) {
-            logger.warn("run() failed.", e);
+            logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
         }        
         logger.info("DirectMessageSendingTask END");
     }
@@ -69,12 +73,12 @@ public class TwitterDaemon {
     }
     
     public void schedule() {
-        logger.info("scheduled.");
+        logger.info("Twitter daemons are scheduled.");
         timer.schedule(new TwitterDaemonTask(), 0, TIMER_INTERVAL_IN_MILLIS); 
     }
     
     public void cancel() {
-        logger.info("scheduled cancelled.");
+        logger.info("Scheduled twitter daemons are cancelled.");
         timer.cancel();
     }
 }

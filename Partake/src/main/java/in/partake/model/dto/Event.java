@@ -35,10 +35,14 @@ public class Event extends PartakeModel<Event> {
 
     private boolean isPrivate;  // true if the event is private.
     private String passcode;    // passcode to show (if not public)
+    
+    private boolean isPreview;    // true if the event is preview.
    
-    private Date createdAt;
-    private Date modifiedAt;
-    private int revision;
+    private Date createdAt;     //
+    private Date modifiedAt;    // 
+    private int revision;       // used for RSS.
+    
+    
     
     // begin date 順に並べる comparator 
     public static Comparator<Event> getComparatorBeginDateAsc() {
@@ -83,14 +87,16 @@ public class Event extends PartakeModel<Event> {
     	this.backImageId = event.backImageId;
     	this.isPrivate = event.isPrivate;
     	this.passcode = event.passcode;
+    	this.isPreview = event.isPreview;
     	this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
     	this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
     	this.revision = event.revision;
+    	
     }
     
     public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, List<String> managerScreenNames,
-            boolean isPrivate, String passcode, Date createdAt, Date modifiedAt) {
+            boolean isPrivate, String passcode, boolean isPreview, Date createdAt, Date modifiedAt) {
         this.id = null;
         this.shortId = shortId;
         this.title = title;
@@ -114,6 +120,8 @@ public class Event extends PartakeModel<Event> {
         this.isPrivate = isPrivate;
         this.passcode = passcode;
         
+        this.isPreview = isPreview;
+        
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.revision = 0;
@@ -122,7 +130,7 @@ public class Event extends PartakeModel<Event> {
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, List<String> managerScreenNames, 
             String foreImageId, String backImageId,
-            boolean isPrivate, String passcode, Date createdAt, Date modifiedAt, int revision) {
+            boolean isPrivate, String passcode, boolean isPreview, Date createdAt, Date modifiedAt, int revision) {
         this.id = id;
         this.shortId = shortId;
         this.title = title;
@@ -145,6 +153,8 @@ public class Event extends PartakeModel<Event> {
         
         this.isPrivate = isPrivate;
         this.passcode = passcode;
+        this.isPreview = isPreview;
+        
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.revision = revision;
@@ -236,6 +246,10 @@ public class Event extends PartakeModel<Event> {
 
     public String getPasscode() {
         return passcode;
+    }
+    
+    public boolean isPreview() {
+        return isPreview;
     }
 
     public Date getCreatedAt() {
@@ -340,6 +354,11 @@ public class Event extends PartakeModel<Event> {
     public void setPasscode(String passcode) {
         checkFrozen();
         this.passcode = passcode;
+    }
+
+    public void setPreview(boolean isPreview) {
+        checkFrozen();
+        this.isPreview = isPreview;
     }
 
     public void setCreatedAt(Date createdAt) {

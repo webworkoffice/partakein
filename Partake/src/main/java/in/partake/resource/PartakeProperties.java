@@ -72,6 +72,13 @@ public class PartakeProperties {
 		return properties.getProperty("in.partake.analytics.google");
 	}
 	
+	public boolean isEnabledTwitterDaemon() {
+	    String str = properties.getProperty("in.partake.twitterdaemon.disabled");
+	    if (str == null) { return true; }
+	    if ("true".equals(str)) { return false; }
+	    return true;
+	}
+	
 	// --------------------------------------------------
 	
 	/** read partake.properties and load.*/

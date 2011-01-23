@@ -155,8 +155,8 @@ body {
 	<h2><img src="<%= request.getContextPath() %>/images/momonga1.png"/>参加者管理</h2>
     <ul>
          <li><a id="open-message-form" href="#">参加者へメッセージを送信</a></li>
-         <li><a href="#" onclick="document.participantsForm.submit();">参加者のステータスを編集</a></li>
-         <li><a href="#">参加者リストを出力</a></li>
+         <li><a href="<%= request.getContextPath() %>/events/showParticipants/<%= h(event.getId()) %>">参加者のステータスを編集</a></li>
+         <li><a href="<%= request.getContextPath() %>/events/printParticipants/<%= h(event.getId()) %>">参加者リストを出力</a></li>
     </ul>
 
 	<h2><img src="<%= request.getContextPath() %>/images/mail.png"/>リマインダー送付時刻</h2>
@@ -176,13 +176,6 @@ body {
             <s:submit value="イベントを編集する" />
         </s:form>
 	</div>
-	<div id="participants-form" style="display: none">
-        <s:form method="post" name="participantsForm" action="showParticipants">
-            <s:token />
-            <s:hidden name="eventId" value="%{eventId}" />
-            <s:submit value="参加者を管理する" />
-        </s:form>
-    </div>
     <div id="event-delete-form" title="イベントを削除しようとしています" style="display: none">
         <p>イベントを削除しようとしています。この操作は取り消せません。本当に削除しますか？</p>
         <s:form method="post" action="destroy">
