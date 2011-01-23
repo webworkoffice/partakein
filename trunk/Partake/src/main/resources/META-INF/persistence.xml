@@ -23,6 +23,8 @@
       <property name="openjpa.ConnectionProperties" value="DriverClassName=org.postgresql.Driver,Url=jdbc:postgresql:partake-unittest,Username=partake,Password=partake"/>
       <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
 
+	  <property name="openjpa.SynchronizeMappings" value="buildSchema(SchemaAction=add,deleteTableContents)"/>
+        
       <property name="openjpa.DataCache" value="true"/>
       <property name="openjpa.RemoteCommitProvider" value="sjvm"/>          
     </properties>

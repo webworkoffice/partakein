@@ -32,8 +32,7 @@ public class JPADAOFactory extends PartakeDAOFactory {
 
     @Override
     protected IBinaryAccess createBinaryAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPABinaryDao();
     }
 
     @Override
