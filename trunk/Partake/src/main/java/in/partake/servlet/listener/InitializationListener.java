@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 
 public class InitializationListener implements ServletContextListener {
-	private static final Logger logger = Logger.getLogger(InitializationListener.class);
+    private static final Logger logger = Logger.getLogger(InitializationListener.class);
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
@@ -22,7 +22,7 @@ public class InitializationListener implements ServletContextListener {
 			TwitterDaemon.getInstance().cancel();
 		} catch (Throwable ignore) {
 			// catch and ignore for shutdown other daemons.
-			logger.warn("TwitterMessageDaemon#cancel() threw a Throwable instance.", ignore);
+			logger.warn("Unintentional exception is thrown.", ignore);
 		}
 	}
 }

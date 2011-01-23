@@ -8,7 +8,7 @@
 	<!-- For Debugging. These setting should be removed when releasing. -->
 	<!-- constant name="struts.devMode" value="true" -->
 	<!-- Use partake theme -->
-	<constant name="struts.ui.theme" value="partake" />
+	<constant name="struts.ui.theme" value="simple" />
 
 	<constant name="struts.enable.SlashesInActionNames" value="true" />
 	<constant name="struts.mapper.alwaysSelectFullNamespace" value="false" />
@@ -343,10 +343,19 @@
             </result>
         </action>
         
-        <action name="showParticipants" method="showParticipants" class="in.partake.controller.EventParticipantsController">
-            <interceptor-ref name="partakeStack" />         
+        <action name="showParticipants/*" method="showParticipants" class="in.partake.controller.EventParticipantsController">
+            <interceptor-ref name="partakeStack" />
+            <param name="eventId">{1}</param>
+            
             <result name="success">/WEB-INF/events/participants/show.jsp</result>
         </action>
+        
+        <action name="printParticipants/*" method="showParticipants" class="in.partake.controller.EventParticipantsController">
+            <interceptor-ref name="partakeStack" />
+            <param name="eventId">{1}</param>
+                     
+            <result name="success">/WEB-INF/events/participants/print.jsp</result>
+        </action>        
         
         <action name="editParticipants" method="editParticipants" class="in.partake.controller.EventParticipantsController"> 
             <result name="success" type="redirectAction">

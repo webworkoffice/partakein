@@ -119,12 +119,8 @@ public class EventEx extends Event {
             return isOwner(user) || isManager(user);
         case EVENT_PRIVATE_EVENT:
             return isOwner(user) || isManager(user);
-        case EVENT_PROMOTE:
-            return isOwner(user) || isManager(user);
         case EVENT_SEND_MESSAGE:
             return isOwner(user) || isManager(user);
-        case EVENT_MAKE_SUBEVENT:
-            return isOwner(user);
         case EVENT_EDIT_SUBEVENT:
             return isOwner(user) || isManager(user);
         case EVENT_REMOVE_COMMENT:

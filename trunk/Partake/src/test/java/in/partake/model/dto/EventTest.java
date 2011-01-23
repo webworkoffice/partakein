@@ -24,12 +24,12 @@ public final class EventTest {
 				new Event("id", "shortId", "title", "summary", "category",
 						new Date(), new Date(), new Date(), 0, "url", "place",
 						"address", "description", "#hashTag", "ownerId", null,
-						"foreImageId", "backImageId", true, "passcode",
+						"foreImageId", "backImageId", true, "passcode", false, 
 						new Date(), new Date(), -1),
 				new Event("id2", "shortId2", "title2", "summary2", "category2",
 						new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
 						"address2", "description2", "#hashTag2", "ownerId2", new ArrayList<String>(),
-						"foreImageId2", "backImageId2", false, "passcode2",
+						"foreImageId2", "backImageId2", false, "passcode2", false, 
 						new Date(4), new Date(5), 1)
 		};
 	}
@@ -60,6 +60,7 @@ public final class EventTest {
 			Assert.assertEquals(source.getBackImageId(), new Event(source).getBackImageId());
 			Assert.assertEquals(source.isPrivate(), new Event(source).isPrivate());
 			Assert.assertEquals(source.getPasscode(), new Event(source).getPasscode());
+			Assert.assertEquals(source.isPreview(), new Event(source).isPreview());
 			Assert.assertEquals(source.getCreatedAt(), new Event(source).getCreatedAt());
 			Assert.assertEquals(source.getModifiedAt(), new Event(source).getModifiedAt());
 			Assert.assertEquals(source.getRevision(), new Event(source).getRevision());

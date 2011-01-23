@@ -3,6 +3,8 @@ package in.partake.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import in.partake.model.EventEx;
 import in.partake.model.ParticipationEx;
 import in.partake.model.ParticipationList;
@@ -22,6 +24,7 @@ import in.partake.util.PDate;
 import in.partake.util.Util;
 
 public final class MessageService extends PartakeService {
+    private static final Logger logger = Logger.getLogger(MessageService.class);
     private static MessageService instance = new MessageService();
     
     private MessageService() {
@@ -153,6 +156,7 @@ public final class MessageService extends PartakeService {
             getFactory().getDirectMessageAccess().sendEnvelope(con,
                             messageId, participation.getUserId(), participation.getUserId(), deadline,                                
                             DirectMessagePostingType.POSTING_TWITTER_DIRECT);
+            logger.info("sendEnvelope : " + participation.getUserId() + " : " + embryo.getMessage());
         }
     }
     
@@ -178,6 +182,7 @@ public final class MessageService extends PartakeService {
             getFactory().getDirectMessageAccess().sendEnvelope(con,    
                     messageId, p.getUserId(), p.getUserId(), deadline,
                     DirectMessagePostingType.POSTING_TWITTER_DIRECT);
+            logger.info("sendEnvelope : " + p.getUser().getScreenName() + " : " + embryo.getMessage());
         }
     }
     
@@ -210,6 +215,8 @@ public final class MessageService extends PartakeService {
 
                 // TODO: ここのソース汚い。同一化できる。とくに、あとの２つは一緒。
                 for (Participation p : list.getEnrolledParticipations()) {
+                    // -- 参加者向
+                    
                     LastParticipationStatus status = p.getLastStatus();
                     if (status == null) { continue; }
 
@@ -226,6 +233,7 @@ public final class MessageService extends PartakeService {
 
                         factory.getEnrollmentAccess().setLastStatus(con, eventId, p, LastParticipationStatus.ENROLLED);
                         factory.getDirectMessageAccess().sendEnvelope(con, okMessageId, p.getUserId(), p.getUserId(), event.getBeginDate(), DirectMessagePostingType.POSTING_TWITTER_DIRECT);
+                        
                         break;
                     case ENROLLED:
                         break;

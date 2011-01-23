@@ -282,10 +282,11 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         BinaryData foreImageEmbryo = createBinaryDataEmbryo(foreImage, foreImageContentType);
         BinaryData backImageEmbryo = createBinaryDataEmbryo(backImage, backImageContentType);
         
+        // TODO: preview を仕様に組み込む
         Event embryo = new Event(
         		shortId, title, summary, category, deadline, beginDate, endDate, capacity, url, place, address, description,
         		hashTag, owner.getId(), managerShortNames,
-        		secret, passcode, createdAt, null
+        		secret, passcode, false, createdAt, null
         );
         
         // TODO: これはひどい
@@ -391,10 +392,11 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		Date now = new Date();
     		BinaryData foreImageEmbryo = createBinaryDataEmbryo(foreImage, foreImageContentType);
     		BinaryData backImageEmbryo = createBinaryDataEmbryo(backImage, backImageContentType);
+    		// TODO: preview
 	        Event eventEmbryo = new Event(
 	        		shortId, title, summary, category, deadline, beginDate, endDate, capacity, url, place, address, description,
 	        		hashTag, event.getOwnerId(), managerShortNames,
-	        		secret, passcode, event.getCreatedAt(), now
+	        		secret, passcode, false, event.getCreatedAt(), now
 	        );
 
 	        // TODO: これはひどい
