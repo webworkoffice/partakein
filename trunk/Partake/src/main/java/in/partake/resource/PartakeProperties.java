@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/** Partake の動作に必要なデータを、partake.properties, 及び {mode}.partake.properties から読み出す。*/
 public class PartakeProperties {
 	private static final PartakeProperties instance = new PartakeProperties();
 	private String mode;
@@ -14,9 +15,21 @@ public class PartakeProperties {
 	}
 
 	private PartakeProperties() {
-	    this.mode = fetchMode();
-		this.properties = readFrom("/" + mode + ".partake.properties");
+	    reset();
 	}
+	
+	/** mode 名を用いて読みなおす。初期化及びユニットテスト用途。 */
+	public void reset(String mode) {
+	    this.mode = mode;
+        this.properties = readFrom("/" + mode + ".partake.properties");
+	}
+	
+	/** mode 名を fetch してから読みなおす。初期化及びユニットテスト用途。 */
+	public void reset() {
+	    reset(fetchMode());
+	}
+	
+	// ----------------------------------------------------------------------
 	
 	public String getMode() {
 	    return this.mode;

@@ -9,10 +9,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public final class EventCassandraDaoTest {
+public final class EventCassandraDaoTest extends CassandraDaoTestBase {
 	private CassandraConnectionPool pool;
 	private EventCassandraDao dao;
-
+	
 	@Before
 	public void setup() throws DAOException {
 		if (!PartakeProperties.get().getDAOFactoryClassName().endsWith("CassandraDAOFactory")) {

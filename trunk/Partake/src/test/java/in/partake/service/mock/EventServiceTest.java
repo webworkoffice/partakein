@@ -1,4 +1,4 @@
-package in.partake.service;
+package in.partake.service.mock;
 
 import junit.framework.Assert;
 import in.partake.model.EventEx;
@@ -8,13 +8,16 @@ import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.mock.MockConnection;
 import in.partake.model.dao.mock.MockDaoFactory;
 import in.partake.model.dto.Event;
+import in.partake.service.EventService;
+import in.partake.service.PartakeService;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
-public class EventServiceTest extends ServiceTestBase {
+public class EventServiceTest extends MockServiceTestBase {
+    
     @Before
     public void setup() throws Exception {
         // reset all mocks first.

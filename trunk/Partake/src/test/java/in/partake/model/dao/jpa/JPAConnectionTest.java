@@ -1,5 +1,5 @@
 package in.partake.model.dao.jpa;
 
-abstract class JPADao {
+public class JPAConnectionTest {
 
 }
