@@ -6,7 +6,7 @@ import in.partake.service.PartakeService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public class JPADaoTestBase extends JPADao {
+public class JPADaoTestBase extends PartakeService {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("jpa");
