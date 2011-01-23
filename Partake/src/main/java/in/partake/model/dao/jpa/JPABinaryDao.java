@@ -33,19 +33,22 @@ public class JPABinaryDao extends JPADao implements IBinaryAccess {
 
     @Override
     public void addBinaryWithId(PartakeConnection con, String id, BinaryData data) throws DAOException {
-        // TODO Auto-generated method stub
+        EntityManager em = getEntityManager(con);
+        
+        data.setId(id);
+        em.persist(data);
     }
 
     @Override
     public BinaryData getBinaryById(PartakeConnection con, String id) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager em = getEntityManager(con);        
+        return em.find(BinaryData.class, id).freeze();
     }
 
     @Override
     public void removeBinary(PartakeConnection con, String id) throws DAOException {
-        // TODO Auto-generated method stub
-        
+        EntityManager em = getEntityManager(con);
+        em.remove(em.find(BinaryData.class, id));        
     }
 
 }
