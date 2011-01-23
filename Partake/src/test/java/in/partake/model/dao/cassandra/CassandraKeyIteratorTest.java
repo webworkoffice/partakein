@@ -49,7 +49,7 @@ public class CassandraKeyIteratorTest extends CassandraDao {
     }
     
     private void testToIterate(int n) throws DAOException {
-        CassandraConnection con = pool.getConnection();
+        CassandraConnection con = (CassandraConnection) pool.getConnection();
         String prefix = PREFIX + UUID.randomUUID().toString();
         
         try {

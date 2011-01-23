@@ -15,17 +15,17 @@ public class MockConnectionPool extends PartakeConnectionPool {
     }
     
     @Override
-    public synchronized PartakeConnection getConnection() throws DAOException {
+    protected PartakeConnection getConnectionImpl(String name) throws DAOException {
         PartakeConnection con = new MockConnection(this);
         connections.add(con);
-        return con;
+        return con;        
     }
-
+    
     @Override
-    public synchronized void releaseConnection(PartakeConnection connection) {
+    protected void releaseConnectionImpl(PartakeConnection connection) {
         connections.remove(connection);
     }
-
+    
     public boolean areAllConnectionsReleased() {
         return connections.isEmpty();
     }
