@@ -104,7 +104,7 @@ public class EnrollmentCassandraDaoTest {
 		}
 	}
 
-	Event createEvent() {
+	private Event createEvent() {
 		Date beginDate = PDate.getCurrentDate().getDate();
 		Date now = PDate.getCurrentDate().getDate();
 		String url = "http://localhost:8080/";
