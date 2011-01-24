@@ -3,6 +3,7 @@ package in.partake.model.dao.jpa;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IBinaryAccess;
@@ -32,10 +33,9 @@ public class JPABinaryDao extends JPADao implements IBinaryAccess {
     }
 
     @Override
-    public void addBinaryWithId(PartakeConnection con, String id, BinaryData data) throws DAOException {
+    public void addBinaryWithId(PartakeConnection con, BinaryData data) throws DAOException {
+        if (data.getId() == null) { throw new DAOException("id should be specified."); }
         EntityManager em = getEntityManager(con);
-        
-        data.setId(id);
         em.persist(data);
     }
 
@@ -51,4 +51,10 @@ public class JPABinaryDao extends JPADao implements IBinaryAccess {
         em.remove(em.find(BinaryData.class, id));        
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createNativeQuery("truncate binarydata");
+        q.executeUpdate();
+    }
 }

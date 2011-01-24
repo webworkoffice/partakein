@@ -27,6 +27,16 @@ public class JPAConnection extends PartakeConnection {
         entityManager.getTransaction().rollback();        
     }
         
+    @Override
+    public synchronized void invalidate() {
+        // If the transaction is active, the transaction will be rolled back.
+        if (entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().rollback();
+        }
+
+        super.invalidate();
+    }
+    
     public EntityManager getEntityManager() {
         return entityManager;
     }

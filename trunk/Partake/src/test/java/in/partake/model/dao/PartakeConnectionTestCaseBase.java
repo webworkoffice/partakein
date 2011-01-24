@@ -1,14 +1,12 @@
 package in.partake.model.dao;
 
-import in.partake.service.PartakeService;
-
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * Connection 関連のテストケースベース。
  */
-public abstract class PartakeConnectionTestCaseBase extends PartakeService {
+public abstract class PartakeConnectionTestCaseBase extends AbstractDaoTestCaseBase {
     protected PartakeConnectionPool pool;
     
     @Test

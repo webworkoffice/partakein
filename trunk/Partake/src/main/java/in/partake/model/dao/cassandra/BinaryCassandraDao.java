@@ -4,6 +4,7 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IBinaryAccess;
+import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.BinaryData;
 
@@ -40,17 +41,18 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     }
 
     @Override
-    public void addBinaryWithId(PartakeConnection con, String id, BinaryData embryo) throws DAOException {
+    public void addBinaryWithId(PartakeConnection con, BinaryData embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addBinaryWithId(ccon.getClient(), id, embryo, ccon.getAcquiredTime());
+            if (embryo.getId() == null) { throw new DAOException("id should not be null."); }
+            addBinaryWithId(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
 
-    private void addBinaryWithId(Client client, String id, BinaryData embryo, long time) throws Exception {
-        String key = BINARY_PREFIX + id;
+    private void addBinaryWithId(Client client, BinaryData embryo, long time) throws Exception {
+        String key = BINARY_PREFIX + embryo.getId();
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 
 
@@ -115,6 +117,24 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
         
         ColumnPath columnPath = new ColumnPath(BINARY_COLUMNFAMILY);
         client.remove(BINARY_KEYSPACE, key, columnPath, time, BINARY_CL_W);
+    }
+    
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            truncateImpl(ccon);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+    
+    private void truncateImpl(CassandraConnection con) throws Exception {
+        KeyIterator it = new CassandraKeyIterator(con, BINARY_KEYSPACE, BINARY_PREFIX, BINARY_COLUMNFAMILY, BINARY_CL_R);
+        while (it.hasNext()) {
+            String id = it.next();
+            removeBinary(con.getClient(), id, con.getAcquiredTime());
+        }
     }
 }
 
