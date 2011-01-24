@@ -1,6 +1,7 @@
 package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
@@ -41,7 +42,7 @@ public class EnrollmentCassandraDaoTest {
 
 	@Test
 	public void testGetEmptyPaticipationList() throws DAOException {
-		CassandraConnection con = pool.getConnection();
+		PartakeConnection con = pool.getConnection();
 
 		try {
 			List<Participation> list = dao.getParticipation(con, eventId);
@@ -57,7 +58,7 @@ public class EnrollmentCassandraDaoTest {
 		User user = createDummyUser();
 		Event event = createEvent();
 
-		CassandraConnection con = pool.getConnection();
+		PartakeConnection con = pool.getConnection();
 		try {
 			new CassandraDAOFactory().getEventAccess().addEvent(con, eventId, event);
 			new CassandraDAOFactory().getUserAccess().addUser(con, userId, 0);
