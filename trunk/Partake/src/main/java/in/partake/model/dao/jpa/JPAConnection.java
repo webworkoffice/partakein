@@ -48,7 +48,7 @@ public class JPAConnection extends PartakeConnection {
     @Override
     public synchronized void retain() {
         if (refCount <= 0) {
-            throw new IllegalStateException("refCount should not less than or equal to 0 to retain the connection.");
+            throw new IllegalStateException("refCount should not be less than or equal to 0 to retain the connection.");
         }
         
         ++refCount;
