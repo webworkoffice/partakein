@@ -23,6 +23,7 @@ public class PartakeProperties {
 
     /** mode 名を用いて読みなおす。初期化及びユニットテスト用途。 */
     public void reset(String mode) {
+        logger.info("Loading " + mode + ".partake.properties...");
         this.mode = mode;
         this.properties = readFrom("/" + mode + ".partake.properties");
     }

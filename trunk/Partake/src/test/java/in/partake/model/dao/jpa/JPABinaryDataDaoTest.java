@@ -15,19 +15,19 @@ import org.junit.Test;
 
 public class JPABinaryDataDaoTest extends JPADaoTestBase {
 
-
     @Before
     public void setup() throws DAOException {
         // --- remove all data before starting test.
         JPAConnection con = (JPAConnection) getPool().getConnection();
-        con.beginTransaction();
+        
         try {
+            con.beginTransaction();
             EntityManager em = con.getEntityManager();
             
             Query q = em.createNativeQuery("truncate binarydata");
             q.executeUpdate();
-        } finally {
             con.commit();
+        } finally {            
             con.invalidate();
         }
     }
@@ -70,8 +70,8 @@ public class JPABinaryDataDaoTest extends JPADaoTestBase {
             longString = builder.toString();
         }
         
-        // should accept at least 5 MiB
-        int N = 1024 * 1024 * 5;
+        // should accept at least 20 MiB
+        int N = 1024 * 1024 * 20;
         byte[] longArray = new byte[N];
         for (int i = 0; i < N; ++i) { 
             longArray[i] = (byte)(i % 100);
@@ -82,7 +82,6 @@ public class JPABinaryDataDaoTest extends JPADaoTestBase {
         createAndGetInTransactionImpl(id, original);
     }
 
-    
     private void createAndGetInTransactionImpl(String id, BinaryData original) throws DAOException, Exception {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
