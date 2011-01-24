@@ -1,13 +1,10 @@
-package in.partake.model.dao.cassandra;
+package in.partake.model.dao;
 
-import in.partake.model.dao.DAOException;
-import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
 import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.User;
-import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;
 
 import java.util.Date;
@@ -19,30 +16,24 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-public class EnrollmentCassandraDaoTest {
+public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBase {
 	@Rule
 	public TestName name = new TestName();
 
-	private CassandraConnectionPool pool;
-	private EnrollmentCassandraDao dao;
+	private IEnrollmentAccess dao;
 	private String eventId;
 	private String userId;
 
 	@Before
 	public void setup() throws DAOException {
-		if (!PartakeProperties.get().getDAOFactoryClassName().endsWith("CassandraDAOFactory")) {
-			Assert.fail("This test doesn't run because properties file isn't ready.");
-		}
-
-		pool = new CassandraConnectionPool();
-		dao = (EnrollmentCassandraDao) new CassandraDAOFactory().getEnrollmentAccess();
+		dao = getFactory().getEnrollmentAccess();
 		eventId = name.getMethodName() + System.currentTimeMillis();
 		userId = name.getMethodName() + System.currentTimeMillis();
 	}
 
 	@Test
 	public void testGetEmptyPaticipationList() throws DAOException {
-		PartakeConnection con = pool.getConnection();
+		PartakeConnection con = getPool().getConnection();
 
 		try {
 			List<Participation> list = dao.getParticipation(con, eventId);
@@ -58,10 +49,10 @@ public class EnrollmentCassandraDaoTest {
 		User user = createDummyUser();
 		Event event = createEvent();
 
-		PartakeConnection con = pool.getConnection();
+		PartakeConnection con = getPool().getConnection();
 		try {
-			new CassandraDAOFactory().getEventAccess().addEvent(con, eventId, event);
-			new CassandraDAOFactory().getUserAccess().addUser(con, userId, 0);
+			getFactory().getEventAccess().addEvent(con, eventId, event);
+			getFactory().getUserAccess().addUser(con, userId, 0);
 
 			dao.enroll(con, user, event, status, "", false, false);
 			List<Participation> list = dao.getParticipation(con, eventId);
@@ -81,7 +72,7 @@ public class EnrollmentCassandraDaoTest {
 	public void testPutAndUpdatePaticipationList() throws DAOException {
 		testPutAndGetPaticipationList();
 
-		PartakeConnection con = pool.getConnection();
+		PartakeConnection con = getPool().getConnection();
 		try {
 			List<Participation> storedList = dao.getParticipation(con, eventId);
 			Assert.assertEquals(1, storedList.size());
