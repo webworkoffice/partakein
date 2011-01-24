@@ -18,4 +18,6 @@ public class CassandraCacheDaoTest extends BinaryAccessTestCaseBase {
         PartakeProperties.get().reset();
         reset();
     }
+    
+    // common test cases are written in the super class. 
 }
