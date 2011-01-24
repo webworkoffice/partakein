@@ -1,7 +1,6 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.BinaryData;
-import in.partake.service.PartakeService;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -9,7 +9,6 @@ import in.partake.model.dao.mock.MockConnection;
 import in.partake.model.dao.mock.MockDaoFactory;
 import in.partake.model.dto.Event;
 import in.partake.service.EventService;
-import in.partake.service.PartakeService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,15 +20,15 @@ public class EventServiceTest extends MockServiceTestBase {
     @Before
     public void setup() throws Exception {
         // reset all mocks first.
-        ((MockDaoFactory) PartakeService.getFactory()).resetAll();
+        ((MockDaoFactory) getFactory()).resetAll();
         // then, create fixtures.
         createFixtures();
     }
     
     private void createFixtures() throws Exception {
-        IEventAccess eventAccess = PartakeService.getFactory().getEventAccess();
-        IUserAccess userAccess = PartakeService.getFactory().getUserAccess();
-        ITwitterLinkageAccess twitterAccess = PartakeService.getFactory().getTwitterLinkageAccess();
+        IEventAccess eventAccess = getFactory().getEventAccess();
+        IUserAccess userAccess = getFactory().getUserAccess();
+        ITwitterLinkageAccess twitterAccess = getFactory().getTwitterLinkageAccess();
         
         when(eventAccess.getEventById(any(MockConnection.class), eq("event1"))).thenReturn(createEvent("event1"));
         when(userAccess.getUserById(any(MockConnection.class), eq("ownerId"))).thenReturn(createUser("ownerId"));

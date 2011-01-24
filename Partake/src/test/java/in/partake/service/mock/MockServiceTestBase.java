@@ -1,11 +1,11 @@
 package in.partake.service.mock;
 
+import in.partake.model.dao.AbstractDaoTestCaseBase;
 import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.PartakeService;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -19,18 +19,18 @@ import org.junit.BeforeClass;
 
 import junit.framework.Assert;
 
-public class MockServiceTestBase extends PartakeService {
+public class MockServiceTestBase extends AbstractDaoTestCaseBase {
     
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("mock");
-        PartakeService.reset();
+        reset();
     }
 
     @AfterClass
     public static void tearDownOnce() {
         PartakeProperties.get().reset();
-        PartakeService.reset();        
+        reset();
     }
 
     
@@ -38,7 +38,7 @@ public class MockServiceTestBase extends PartakeService {
      * assert that all connections are released.
      */
     protected void assureAllConnectionsAreReleased() {
-        MockConnectionPool pool = (MockConnectionPool) PartakeService.getPool();
+        MockConnectionPool pool = (MockConnectionPool) getPool();
         Assert.assertTrue(pool.areAllConnectionsReleased());
     }
     
