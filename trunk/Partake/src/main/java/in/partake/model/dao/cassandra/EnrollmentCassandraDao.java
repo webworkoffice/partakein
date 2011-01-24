@@ -227,9 +227,11 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             } else if (ParticipationStatus.RESERVED.equals(oldStatus) && ParticipationStatus.ENROLLED.equals(status) && !forceChangeModifiedAt) {
                 // RESERVED -> ENROLLED の場合、modifiedAt のみ変更しない
                 superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));                
+                // XXX why lastStatus isn't edited?
             } else if (ParticipationStatus.ENROLLED.equals(oldStatus) && ParticipationStatus.RESERVED.equals(status) && !forceChangeModifiedAt) {
                 // ENROLLED -> RESERVED の場合、modifiedAt のみ変更しない                
-                superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));                
+                superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));
+                // XXX why lastStatus isn't edited?
             } else {
                 // それ以外の場合は両方更新
                 superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));
