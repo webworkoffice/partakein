@@ -2,7 +2,13 @@ package in.partake.model.dao;
 
 import in.partake.resource.PartakeProperties;
 
-
+/**
+ * Dao のテストケースのベース。extends して、BeforeClass, AfterClass で
+ * 利用する Connection の種類を設定のこと。
+ * 
+ * @author shinyak
+ *
+ */
 public abstract class AbstractDaoTestCaseBase {
     private static PartakeDAOFactory factory;
     private static PartakeConnectionPool pool;

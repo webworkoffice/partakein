@@ -25,4 +25,9 @@ class JPACacheDao extends JPADao implements ICacheAccess {
         throw new RuntimeException("Not implemented yet.");
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("Not implemented yet.");
+    }
 }

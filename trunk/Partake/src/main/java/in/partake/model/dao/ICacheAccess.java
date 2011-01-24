@@ -27,4 +27,10 @@ public interface ICacheAccess {
      * @throws DAOException
      */
     public CacheData getCache(PartakeConnection con, String cacheId) throws DAOException;
+    
+    /**
+     * remove all data in the cache access. 
+     * Use ONLY in unit tests.
+     */
+    public void truncate(PartakeConnection con) throws DAOException;
 }

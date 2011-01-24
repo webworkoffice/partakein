@@ -42,14 +42,16 @@ import org.apache.cassandra.thrift.SuperColumn;
  * directmessage:event:<event id>
  *     <time>/<message Id>
  *
- * directmessage:envelope:<envelope id>
- *     id/<message id>
- *     sender/<user id>
- *     receiver/<user id>
- *     deadline/<date>
- *     numTried/<int>
- *     lastTriedAt/<date string>
- *     postingType/<posting type>
+ * directmessage:envelope
+ *     <envelope id> {
+ *         id/<message id>
+ *         sender/<user id>
+ *         receiver/<user id>
+ *         deadline/<date>
+ *         numTried/<int>
+ *         lastTriedAt/<date string>
+ *         postingType/<posting type>
+ *     }
  *
  * directmessage:reminder:<event id>
  *     "beforeDeadline"/<date>
