@@ -1,21 +1,21 @@
 package in.partake.model.dao.jpa;
 
+import in.partake.model.dao.AbstractDaoTestCaseBase;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.PartakeService;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public class JPADaoTestBase extends PartakeService {
+public class JPADaoTestBase extends AbstractDaoTestCaseBase {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("jpa");
-        PartakeService.reset();
+        reset();
     }
     
     @AfterClass
     public static void tearDownOnce() {
         PartakeProperties.get().reset();
-        PartakeService.reset();        
+        reset();        
     }
 }
