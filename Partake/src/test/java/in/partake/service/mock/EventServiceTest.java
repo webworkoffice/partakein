@@ -6,7 +6,6 @@ import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.mock.MockConnection;
-import in.partake.model.dao.mock.MockDaoFactory;
 import in.partake.model.dto.Event;
 import in.partake.service.EventService;
 
@@ -19,9 +18,7 @@ public class EventServiceTest extends MockServiceTestBase {
     
     @Before
     public void setup() throws Exception {
-        // reset all mocks first.
-        ((MockDaoFactory) getFactory()).resetAll();
-        // then, create fixtures.
+        // create fixtures.
         createFixtures();
     }
     
