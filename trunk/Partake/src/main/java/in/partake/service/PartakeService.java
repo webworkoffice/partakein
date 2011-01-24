@@ -32,25 +32,12 @@ import in.partake.util.Util;
 public abstract class PartakeService {
     private static final Logger logger = Logger.getLogger(PartakeService.class);
     
-    private static final PartakeDAOFactory factory;
-    private static final PartakeConnectionPool pool;
+    private static PartakeDAOFactory factory;
+    private static PartakeConnectionPool pool;
     private static volatile Date bitlyRateLimitExceededTime;
     
     static {
-        try {
-            Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
-            factory = (PartakeDAOFactory) factoryClass.newInstance();
-            
-            Class<?> poolClass = Class.forName(PartakeProperties.get().getConnectionPoolClassName());
-            pool = (PartakeConnectionPool) poolClass.newInstance();
-            
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }  
+        reset();
     }
     
     protected static PartakeDAOFactory getFactory() {
@@ -60,6 +47,23 @@ public abstract class PartakeService {
     protected static PartakeConnectionPool getPool() {
         return pool;
     }
+    
+    protected static void reset() {
+        try {
+            Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
+            factory = (PartakeDAOFactory) factoryClass.newInstance();
+            
+            Class<?> poolClass = Class.forName(PartakeProperties.get().getConnectionPoolClassName());
+            pool = (PartakeConnectionPool) poolClass.newInstance();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }  
+    }
+   
     
     // ----------------------------------------------------------------------
     // Utility functions

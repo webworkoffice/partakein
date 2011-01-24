@@ -1,11 +1,11 @@
 package in.partake.service.mock;
 
-import in.partake.model.dao.AbstractDaoTestCaseBase;
 import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
+import in.partake.service.PartakeService;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 
 import junit.framework.Assert;
 
-public class MockServiceTestBase extends AbstractDaoTestCaseBase {
+public class MockServiceTestBase extends PartakeService {
     
     @BeforeClass
     public static void setUpOnce() {
