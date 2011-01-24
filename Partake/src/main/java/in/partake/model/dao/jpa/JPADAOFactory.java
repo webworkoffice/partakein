@@ -20,14 +20,12 @@ public class JPADAOFactory extends PartakeDAOFactory {
 
     @Override
     protected ICacheAccess createCacheAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPACacheDao();
     }
 
     @Override
     protected ICalendarLinkageAccess createCalendarLinkageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPACalendarLinkageDao();        
     }
 
     @Override
@@ -37,68 +35,57 @@ public class JPADAOFactory extends PartakeDAOFactory {
 
     @Override
     protected ICommentAccess createCommentAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPACommentDao();
     }
 
     @Override
     protected IDirectMessageAccess createDirectMessageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPADirectMessageDao();
     }
 
     @Override
     protected IEnrollmentAccess createEnrollmentAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAEnrollmentDao();
     }
 
     @Override
     protected IEventAccess createEventAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAEventDao();
     }
 
     @Override
     protected IEventRelationAccess createEventRelationAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAEventRelationDao();
     }
 
     @Override
     protected IFeedAccess createFeedAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAFeedDao();
     }
 
     @Override
     protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAOpenIDLinkageDao();
     }
 
     @Override
     protected ITwitterLinkageAccess createTwitterLinkageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPATwitterLinkageDao();
     }
 
     @Override
     protected IUserAccess creataeUserAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAUserDao();
     }
 
     @Override
     protected IUserPreferenceAccess createUserPreferenceAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAUserPreferenceDao();
     }
 
     @Override
     protected IURLShortenerAccess createUrlShortenerAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new JPAURLShortenerDao();
     }
 
     
