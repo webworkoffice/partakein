@@ -228,6 +228,8 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
                 // RESERVED -> ENROLLED の場合、modifiedAt のみ変更しない
                 superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));                
                 // XXX why lastStatus isn't edited?
+                //   --> last Status は PARTAKE が最後にこのステータスだと思っているステータスなので、ここでは変更しない。
+                //   --> reminder が送られるときに変更される。
             } else if (ParticipationStatus.ENROLLED.equals(oldStatus) && ParticipationStatus.RESERVED.equals(status) && !forceChangeModifiedAt) {
                 // ENROLLED -> RESERVED の場合、modifiedAt のみ変更しない                
                 superColumn.addToColumns(new Column(bytes("status"), bytes(status.toString()), time));
@@ -255,10 +257,17 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         SuperColumn superColumn = getSuperColumn(client, USERS_ENROLLMENT_KEYSPACE, USERS_ENROLLMENT_COLUMNFAMILY, userId, key, USERS_ENROLLMENT_CL_R); 
         if (superColumn == null) { return; }
         
+        boolean found = false;
         for (Column column : superColumn.getColumns()) {
             if ("lastStatus".equals(string(column.getName()))) {
                 column.setValue(bytes(lastStatus.toString()));
+                column.setTimestamp(time);
+                found = true;
             }
+        }
+        // if lastStatus does not found, add it.
+        if (!found) {
+            superColumn.getColumns().add(new Column(bytes("lastStatus"), bytes(lastStatus.toString()), time));
         }
         
         mutations.add(createSuperColumnMutation(superColumn));
