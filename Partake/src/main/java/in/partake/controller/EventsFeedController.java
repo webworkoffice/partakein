@@ -144,6 +144,7 @@ public class EventsFeedController extends PartakeActionSupport {
 		List<SyndEntry> entries = new ArrayList<SyndEntry>();
 		
 		for (Event event : events) {
+		    if (event == null) { continue; }
 			SyndEntry entry = new SyndEntryImpl();
 			entry.setTitle(event.getTitle());
 			entry.setLink(event.getEventURL());
