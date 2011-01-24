@@ -334,10 +334,12 @@ public final class EventService extends PartakeService {
     		}
     		
     		if (foreImageEmbryo != null) {
-    		    binaryAccess.addBinaryWithId(con, foreImageId, foreImageEmbryo);			
+    		    foreImageEmbryo.setId(foreImageId);
+    		    binaryAccess.addBinaryWithId(con, foreImageEmbryo);			
     		}
     		if (backImageEmbryo != null) {
-    		    binaryAccess.addBinaryWithId(con, backImageId, backImageEmbryo);			
+    		    backImageEmbryo.setId(backImageId);
+    		    binaryAccess.addBinaryWithId(con, backImageEmbryo);			
     		}
             
     		// factory.getMessageAccess().addNotification(con, eventId);
@@ -395,15 +397,17 @@ public final class EventService extends PartakeService {
     		// その後に image たちを update
     		if (updatesForeImage) {
     			if (foreImageEmbryo != null) {
-    				binaryAccess.addBinaryWithId(con, eventEmbryo.getForeImageId(), foreImageEmbryo);
-    			} else if (event.getForeImageId() != null) {
+    			    foreImageEmbryo.setId(eventEmbryo.getForeImageId());
+    				binaryAccess.addBinaryWithId(con, foreImageEmbryo);
+    			} else if (event.getForeImageId() != null) {    			    
     				binaryAccess.removeBinary(con, event.getForeImageId());
     			}
     		}
     		
     		if (updatesBackImage) {
     			if (backImageEmbryo != null) {
-    				binaryAccess.addBinaryWithId(con, eventEmbryo.getBackImageId(), backImageEmbryo);
+    			    backImageEmbryo.setId(eventEmbryo.getBackImageId());
+    				binaryAccess.addBinaryWithId(con, backImageEmbryo);
     			} else if (event.getBackImageId() != null) {
     				binaryAccess.removeBinary(con, event.getBackImageId());
     			}		

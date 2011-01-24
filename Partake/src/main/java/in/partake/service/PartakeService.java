@@ -32,28 +32,11 @@ import in.partake.util.Util;
 public abstract class PartakeService {
     private static final Logger logger = Logger.getLogger(PartakeService.class);
     
-    private static PartakeDAOFactory factory;
-    private static PartakeConnectionPool pool;
+    private static final PartakeDAOFactory factory;
+    private static final PartakeConnectionPool pool;
     private static volatile Date bitlyRateLimitExceededTime;
     
     static {
-        reset();
-    }
-    
-    protected static PartakeDAOFactory getFactory() {
-        return factory;
-    }
-    
-    protected static PartakeConnectionPool getPool() {
-        return pool;
-    }
-    
-    /**
-     * PartakeService に必要なデータを読み直す。最初の初期化とユニットテスト用途のみを想定。
-     * TODO: public にしたくないんだけど、どうしようか... reflection でも使うしか...。
-     * 
-     */
-    public static void reset() {
         try {
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();
@@ -67,7 +50,15 @@ public abstract class PartakeService {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        }        
+        }  
+    }
+    
+    protected static PartakeDAOFactory getFactory() {
+        return factory;
+    }
+    
+    protected static PartakeConnectionPool getPool() {
+        return pool;
     }
     
     // ----------------------------------------------------------------------
