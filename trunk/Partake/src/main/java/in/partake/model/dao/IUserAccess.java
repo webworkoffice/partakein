@@ -12,7 +12,7 @@ public interface IUserAccess {
     /**
      * add a new user from UserEmbryo.
      */
-    public abstract void addUser(PartakeConnection con, String usreId, int twitterId) throws DAOException;
+    public abstract void addUser(PartakeConnection con, String userId, int twitterId) throws DAOException;
 
     /**
      * get user by specifying id.
