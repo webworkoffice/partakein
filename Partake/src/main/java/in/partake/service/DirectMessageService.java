@@ -228,7 +228,7 @@ public class DirectMessageService extends PartakeService {
         }
         
         AccessToken accessToken = new AccessToken(sender.getTwitterLinkage().getAccessToken(), sender.getTwitterLinkage().getAccessTokenSecret());
-        Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(accessToken);
+        Twitter twitter = new TwitterFactory().getInstance(accessToken);
         
         try {
             DirectMessage message = getFactory().getDirectMessageAccess().getDirectMessageById(con, envelope.getMessageId());             
@@ -278,7 +278,7 @@ public class DirectMessageService extends PartakeService {
         }
         
         AccessToken accessToken = new AccessToken(twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret());
-        Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(accessToken);
+        Twitter twitter = new TwitterFactory().getInstance(accessToken);
         if (twitter == null) { return true; }
 
         try {
