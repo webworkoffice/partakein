@@ -13,14 +13,16 @@ We use eclipse 3.6 (Java EE platform) with [http://www.eclipse.org/m2e/ m2eclips
     * set Target runtime to Apache Tomcat v6.0
     * set Dynamic web module version to 2.5
   # Now we are on "build path" page, set the following configurations, and press Next >.
-    * set "Source folders on build path" as "src/main/java", "src/main/resource", "src/test/java", and "src/test/resource". 
-    * set "Default output folder:" to "target/classes".  http://bts.partake.in/buildpath.png
+    * set "Source folders on build path" as "src/main/java", "src/main/resources", "src/test/java", and "src/test/resources". 
+    * set "Default output folder:" to "target/classes". 
+    * NOTE: The following picture may contain src/main/resource and  src/test/resource, but *src/main/resources* and *src/test/resources* are correct.
+http://bts.partake.in/buildpath.png
   # set Context root as "/", and set "Content directory" as "src/main/webapp", then press Finish. http://bts.partake.in/webmodule.png
   # If you are using Windows, do not forget to set project encoding to utf-8.
   # right click on Partake project, and choose Maven -> enable project management.
   # right click on Partake project, and choose Maven -> update project configuration. This may take a minute.
   # The previous step may change your build path automatically. Check the build path again.
-    * src/main/java, src/main/resource, src/test/java, and src/test/resource should be included. http://bts.partake.in/buildpath2.png
+    * src/main/java, src/main/resources, src/test/java, and src/test/resources should be included. NOTE: *src/main/resources* and *src/test/resources* are correct. http://bts.partake.in/buildpath2.png
     * In "Order and Export" pane, Maven dependencies and Web App Libraries should be checked. http://bts.partake.in/orderandexport.png
   # *On Markers pane, you may see Classpath Dependency Validator Message.*
      * *In this case, right click it and select Quick fix, and press Finish. This will fix the problem.*
