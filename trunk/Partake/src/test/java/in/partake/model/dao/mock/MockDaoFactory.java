@@ -23,9 +23,6 @@ public class MockDaoFactory extends PartakeDAOFactory {
     public MockDaoFactory() {
     }
     
-    public void resetAll() {
-    }
-
     @Override
     protected ICacheAccess createCacheAccess() {
         return Mockito.mock(ICacheAccess.class);
