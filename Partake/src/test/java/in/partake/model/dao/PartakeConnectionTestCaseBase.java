@@ -5,6 +5,7 @@ import org.junit.Test;
 
 /**
  * Connection 関連のテストケースベース。
+ * extends して、BeforeClass, AfterClass で Connection などを設定のこと。
  */
 public abstract class PartakeConnectionTestCaseBase extends AbstractDaoTestCaseBase {
     protected PartakeConnectionPool pool;
