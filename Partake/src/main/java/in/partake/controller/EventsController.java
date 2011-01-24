@@ -326,9 +326,10 @@ public class EventsController extends PartakeActionSupport {
 		for (EventRelationEx relation : relations) {
 			if (!relation.isRequired()) { continue; }
 			if (relation.getEvent() == null) { continue; }
-			
-			ParticipationStatus status = UserService.get().getParticipationStatus(user, relation.getEvent());
-			if (status.isEnrolled()) { continue; }			
+			if (user != null) {
+    			ParticipationStatus status = UserService.get().getParticipationStatus(user, relation.getEvent());
+    			if (status.isEnrolled()) { continue; }
+			}
 			requiredEvents.add(relation.getEvent());
 		}
 		
