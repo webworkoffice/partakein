@@ -8,7 +8,7 @@
 	<!-- For Debugging. These setting should be removed when releasing. -->
 	<!-- constant name="struts.devMode" value="true" -->
 	<!-- Use partake theme -->
-	<constant name="struts.ui.theme" value="simple" />
+	<constant name="struts.ui.theme" value="partake" />
 
 	<constant name="struts.enable.SlashesInActionNames" value="true" />
 	<constant name="struts.mapper.alwaysSelectFullNamespace" value="false" />
