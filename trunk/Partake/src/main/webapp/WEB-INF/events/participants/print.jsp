@@ -37,7 +37,7 @@
 <div id="content-adjust">
 
 <p class="output">
-<a href="#">印刷する</a>
+<%-- TODO: 一時的にコメントアウト a href="#">印刷する</a --%>
 <a href="<%= request.getContextPath() %>/events/participants/<%= event.getId() %>.csv">CSVで出力する(UTF-8)</a>
 </p>
 <h2><%= h(event.getTitle()) %> - 参加者リスト</h2>

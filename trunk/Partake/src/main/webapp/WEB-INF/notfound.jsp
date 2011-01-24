@@ -1,4 +1,5 @@
 <%@page import="in.partake.resource.Constants"%>
+<%@taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
     
 <!DOCTYPE html>
