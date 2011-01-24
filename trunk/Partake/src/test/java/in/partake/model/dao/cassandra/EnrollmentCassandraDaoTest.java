@@ -77,6 +77,33 @@ public class EnrollmentCassandraDaoTest {
 		}
 	}
 
+	@Test
+	public void testPutAndUpdatePaticipationList() throws DAOException {
+		testPutAndGetPaticipationList();
+
+		PartakeConnection con = pool.getConnection();
+		try {
+			List<Participation> storedList = dao.getParticipation(con, eventId);
+			Assert.assertEquals(1, storedList.size());
+
+			Participation storedParticipation = storedList.get(0);
+			ParticipationStatus status = storedParticipation.getStatus();
+			Assert.assertNotNull(storedParticipation);
+			LastParticipationStatus newStatus = LastParticipationStatus.NOT_ENROLLED;
+			Assert.assertFalse(newStatus.equals(storedParticipation.getLastStatus()));
+			dao.setLastStatus(con, eventId, storedParticipation, newStatus);
+
+			List<Participation> updatedList = dao.getParticipation(con, eventId);
+			Assert.assertEquals(1, updatedList.size());
+			Participation updatedParticipation = updatedList.get(0);
+			Assert.assertEquals(userId, updatedParticipation.getUserId());
+			Assert.assertEquals(newStatus, updatedParticipation.getLastStatus());
+			Assert.assertEquals(status, updatedParticipation.getStatus());
+		} finally {
+			con.invalidate();
+		}
+	}
+
 	Event createEvent() {
 		Date beginDate = PDate.getCurrentDate().getDate();
 		Date now = PDate.getCurrentDate().getDate();
