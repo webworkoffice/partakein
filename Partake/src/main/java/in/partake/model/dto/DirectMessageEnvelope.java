@@ -2,6 +2,8 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+import org.apache.commons.lang.ObjectUtils;
+
 public class DirectMessageEnvelope {
     private String envelopeId;
     private String senderId;
@@ -40,6 +42,46 @@ public class DirectMessageEnvelope {
         this.tryAfter = envelope.tryAfter != null ? (Date) envelope.tryAfter.clone() : null;
         this.postingType = envelope.postingType;
     }
+    
+    // ----------------------------------------------------------------------
+    // equals method
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DirectMessageEnvelope)) { return false; }
+        
+        DirectMessageEnvelope lhs = this;
+        DirectMessageEnvelope rhs = (DirectMessageEnvelope) obj;
+        
+        if (!ObjectUtils.equals(lhs.envelopeId,  rhs.envelopeId))  { return false; }
+        if (!ObjectUtils.equals(lhs.senderId,    rhs.senderId))    { return false; }
+        if (!ObjectUtils.equals(lhs.receiverId,  rhs.receiverId))  { return false; }
+        if (!ObjectUtils.equals(lhs.messageId,   rhs.messageId))   { return false; }
+        if (!ObjectUtils.equals(lhs.deadline,    rhs.deadline))    { return false; }
+        if (!ObjectUtils.equals(lhs.numTried,    rhs.numTried))    { return false; }
+        if (!ObjectUtils.equals(lhs.lastTriedAt, rhs.lastTriedAt)) { return false; }
+        if (!ObjectUtils.equals(lhs.tryAfter,    rhs.tryAfter))    { return false; }
+        if (!ObjectUtils.equals(lhs.postingType, rhs.postingType)) { return false; }
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(envelopeId);
+        code = code * 37 + ObjectUtils.hashCode(senderId);
+        code = code * 37 + ObjectUtils.hashCode(receiverId);
+        code = code * 37 + ObjectUtils.hashCode(messageId);
+        code = code * 37 + ObjectUtils.hashCode(deadline);
+        code = code * 37 + ObjectUtils.hashCode(numTried);
+        code = code * 37 + ObjectUtils.hashCode(lastTriedAt);
+        code = code * 37 + ObjectUtils.hashCode(tryAfter);
+        code = code * 37 + ObjectUtils.hashCode(postingType);
+        
+        return code;
+    }
+
     
     // ----------------------------------------------------------------------
     // accessors

@@ -2,13 +2,16 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+import org.apache.commons.lang.ObjectUtils;
+
 public class User extends PartakeModel<User> {
     private String  id;          // 
     private Date    lastLoginAt; // 
     private int     twitterId;
     private String  calendarId;
     
-    public User() {        
+    public User() {
+        // do nothing
     }
     
     public User(String id, Date lastLoginAt, int twitterId, String calendarId) {
@@ -24,6 +27,40 @@ public class User extends PartakeModel<User> {
         this.twitterId = user.twitterId;
         this.calendarId = user.calendarId;
     }
+
+    // ----------------------------------------------------------------------
+    // equal methods
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof User)) { return false; }
+        
+        User lhs = this;
+        User rhs = (User) obj;
+        
+        if (!ObjectUtils.equals(lhs.id,          rhs.id))          { return false; }
+        if (!ObjectUtils.equals(lhs.lastLoginAt, rhs.lastLoginAt)) { return false; }
+        if (!ObjectUtils.equals(lhs.twitterId,   rhs.twitterId))   { return false; }
+        if (!ObjectUtils.equals(lhs.calendarId,  rhs.calendarId))  { return false; }
+        return true;       
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(id);
+        code = code * 37 + ObjectUtils.hashCode(lastLoginAt);
+        code = code * 37 + ObjectUtils.hashCode(twitterId);
+        code = code * 37 + ObjectUtils.hashCode(calendarId);
+        
+        return code;
+    }
+    
+
+    
+    // ----------------------------------------------------------------------
+    // accessors
 
     public String getId() {
         return id;

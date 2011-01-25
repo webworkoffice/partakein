@@ -27,7 +27,7 @@ public final class CalendarService extends PartakeService {
             // If the calendar already exists, remove it first.
             String calendarId = user.getCalendarId();
             if (calendarId != null) {
-                factory.getCalendarAccess().removeCalendarLinkageById(con, calendarId);
+                factory.getCalendarAccess().removeCalendarLinkage(con, calendarId);
             }
     
             // 新しくカレンダー id を作成して保存
@@ -37,7 +37,7 @@ public final class CalendarService extends PartakeService {
             // カレンダーを master に書き込み
             {
                 CalendarLinkage embryo = new CalendarLinkage(calendarId, user.getId());
-                factory.getCalendarAccess().addCalendarLinkageWithId(con, embryo);
+                factory.getCalendarAccess().addCalendarLinkage(con, embryo);
             }
         } finally {
             con.invalidate();

@@ -221,7 +221,7 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            CalendarLinkage calendarLinkage = factory.getCalendarAccess().getCalendarLinkageById(con, calendarId); 
+            CalendarLinkage calendarLinkage = factory.getCalendarAccess().getCalendarLinkage(con, calendarId); 
             if (calendarLinkage == null) { return null; }
             
             String userId = calendarLinkage.getUserId();

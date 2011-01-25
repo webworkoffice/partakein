@@ -2,12 +2,17 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Comment extends PartakeModel<Comment> {
-    private String id;
-    private String eventId;
-    private String userId;    
-    private String comment;
-    private Date   createdAt;
+    @Id     private String id;          // comment id
+    @Column private String eventId;     // どの event へのコメントか
+    @Column private String userId;      // だれが書いたコメントか
+    @Column private String comment;     // コメントの内容    
+    @Column private Date   createdAt;   // コメント日時
     
     public Comment() {
         this(null, null, null, null, null);
