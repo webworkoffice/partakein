@@ -310,13 +310,21 @@ body {
 </div>
 
 <div class="event-promotion">
+
 	<!--  twitter -->
-	<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-lang="ja" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>">Tweet</a>
+
+	<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>">Tweet</a>
+
 	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+
 	<!-- facebook -->
+
 	<iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+
 </div>
 
+
+ 
 <%
 	ParticipationList participationList = (ParticipationList) request.getAttribute(Constants.ATTR_PARTICIPATIONLIST);
 	List<ParticipationEx> enrolledParticipations = participationList.getEnrolledParticipations();
@@ -346,7 +354,7 @@ body {
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					    <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先的に参加できます" alt="優先" /><% } %>
+					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
 			<% } else { %>
@@ -355,8 +363,8 @@ body {
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<img src="<%= request.getContextPath() %>/images/reserved.png"　title="仮参加者" alt="仮参加" />
-					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png"　title="優先的に参加できます" alt="優先" /><% } %>
+					<img src="<%= request.getContextPath() %>/images/reserved1.png"　title="仮参加" alt="仮参加者" />
+					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png"　title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
 			<% } %>
@@ -377,7 +385,7 @@ body {
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先的に参加できます" alt="優先" /><% } %>
+					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
 			<% } else { %>
@@ -386,8 +394,8 @@ body {
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先的に参加できます" alt="優先" /><% } %>
-					<img src="<%= request.getContextPath() %>/images/reserved.png" title="仮参加者" alt="仮参加" />
+					<% if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
+					<img src="<%= request.getContextPath() %>/images/reserved1.png" title="仮参加" alt="仮参加者" />
 					: <%= h(participation.getComment()) %>
 				</li>
 			<% } %>
