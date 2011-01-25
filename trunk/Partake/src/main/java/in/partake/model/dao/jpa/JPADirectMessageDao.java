@@ -15,62 +15,62 @@ public class JPADirectMessageDao extends JPADao implements IDirectMessageAccess 
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
+        throw new RuntimeException("Not implemented yet.");
         // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
     public DirectMessage getDirectMessageById(PartakeConnection con, String messageId) throws DAOException {
+        throw new RuntimeException("Not implemented yet.");
         // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
     public void addMessage(PartakeConnection con, String messageId, DirectMessage embryo) throws DAOException {
         // TODO Auto-generated method stub
-        
+        throw new RuntimeException("Not implemented yet.");
     }
 
     @Override
     public void addUserMessage(PartakeConnection con, String messageId, String eventId) throws DAOException {
         // TODO Auto-generated method stub
-        
+        throw new RuntimeException("Not implemented yet.");
     }
 
     @Override
     public DataIterator<DirectMessage> getUserMessageIterator(PartakeConnection con, String eventId) throws DAOException {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Not implemented yet.");
     }
 
     @Override
     public void sendEnvelope(PartakeConnection con, String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType)
                     throws DAOException {
         // TODO Auto-generated method stub
-        
+        throw new RuntimeException("Not implemented yet.");
     }
 
     @Override
     public DataIterator<DirectMessageEnvelope> getEnvelopeIterator(PartakeConnection con) throws DAOException {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Not implemented yet.");
     }
 
     @Override
     public void updateEventReminderStatus(PartakeConnection con, String eventId, EventReminderStatus reminderStatus) throws DAOException {
         // TODO Auto-generated method stub
-        
+        throw new RuntimeException("Not implemented yet.");
     }
 
     @Override
     public EventReminderStatus getEventReminderStatus(PartakeConnection con, String eventId) throws DAOException {
         // TODO Auto-generated method stub
-        return null;
+        throw new RuntimeException("Not implemented yet.");
     }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         // TODO Auto-generated method stub
-        
+        throw new RuntimeException("Not implemented yet.");
     }
 }

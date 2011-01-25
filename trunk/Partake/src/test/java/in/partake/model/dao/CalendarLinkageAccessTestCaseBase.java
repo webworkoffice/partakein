@@ -39,14 +39,14 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
             CalendarLinkage original;
             {
                 original = new CalendarLinkage("id", "userId");
-                factory.getCalendarAccess().addCalendarLinkageWithId(con, original);
+                factory.getCalendarAccess().addCalendarLinkage(con, original);
                 Assert.assertFalse(original.isFrozen());
             }
             
             // --- get
             CalendarLinkage target;
             {
-                target = factory.getCalendarAccess().getCalendarLinkageById(con, "id");
+                target = factory.getCalendarAccess().getCalendarLinkage(con, "id");
                 Assert.assertTrue(target.isFrozen());
             }
 
