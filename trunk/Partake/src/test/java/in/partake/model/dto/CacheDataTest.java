@@ -24,15 +24,26 @@ public class CacheDataTest {
     @Test
     public void testCopyConstructor() {
         for (CacheData source : samples) {
-            // CacheData class doesn't override #equals() method.
-            // Assert.assertEquals(source, new CacheData(source));
-
             Assert.assertEquals(source.getId(), new CacheData(source).getId());
             Assert.assertArrayEquals(source.getData(), new CacheData(source).getData());
             Assert.assertEquals(source.getInvalidAfter(), new CacheData(source).getInvalidAfter());
         }
     }
 
+    @Test
+    public void testEqualsMethod() {
+        for (CacheData source : samples) {
+            Assert.assertEquals(source, new CacheData(source));
+        }
+        
+        for (CacheData d1 : samples) {
+            for (CacheData d2 : samples) {
+                if (d1 == d2) { continue; }
+                Assert.assertFalse(d1.equals(d2));
+            }
+        }
+    }
+    
     @Test
     public void testCopyConstructorByReflection() throws IllegalArgumentException, IllegalAccessException {
         for (CacheData source : samples) {

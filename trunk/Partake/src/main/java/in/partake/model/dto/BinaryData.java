@@ -1,5 +1,7 @@
 package in.partake.model.dto;
 
+import java.util.Arrays;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,6 +29,20 @@ public class BinaryData extends PartakeModel<BinaryData> {
         this.type = type;
         this.data = data;
     }
+    
+    public BinaryData(BinaryData src) {
+        this.id = src.id;
+        this.type = src.type;
+        this.data = src.data != null ? Arrays.copyOf(src.data, src.data.length) : null;
+    }
+    
+    // ----------------------------------------------------------------------
+    // equals / hashCode
+    
+    // TODO: should be implemented.
+    
+    // ----------------------------------------------------------------------
+    // accessors
     
     public String getId() {
         return id;

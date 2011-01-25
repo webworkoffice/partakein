@@ -31,7 +31,7 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
             con.beginTransaction();
             
             BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
-            factory.getBinaryAccess().addBinaryWithId(con, data);
+            factory.getBinaryAccess().addBinary(con, data);
             con.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,8 +76,8 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
         try {
             con.beginTransaction();
 
-            factory.getBinaryAccess().addBinaryWithId(con, original);
-            BinaryData target = factory.getBinaryAccess().getBinaryById(con, "test");
+            factory.getBinaryAccess().addBinary(con, original);
+            BinaryData target = factory.getBinaryAccess().getBinary(con, "test");
             
             Assert.assertEquals(original.getId(), target.getId());
             Assert.assertEquals(original.getType(), target.getType());
@@ -100,10 +100,74 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
         try {
             con.beginTransaction();
             BinaryData data = new BinaryData(null, "test-type", new byte[] {1, 2, 3});
-            factory.getBinaryAccess().addBinaryWithId(con, data);
+            factory.getBinaryAccess().addBinary(con, data);
             con.commit();
         } finally {
             con.invalidate();
         }
+    }
+    
+    @Test
+    public void testToRemoveBinaryData() throws Exception {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            {
+                con.beginTransaction();
+                BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
+                factory.getBinaryAccess().addBinary(con, data);
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                factory.getBinaryAccess().removeBinary(con, "test");
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                BinaryData data = factory.getBinaryAccess().getBinary(con, "test");
+                Assert.assertNull(data);
+                con.commit();
+            }
+            
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
+    @Test
+    public void testToIgnoreInvalIdWhenRemovingData() throws Exception {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            {
+                con.beginTransaction();
+                BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
+                factory.getBinaryAccess().addBinary(con, data);
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                factory.getBinaryAccess().removeBinary(con, "invalid-id");
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                BinaryData data = factory.getBinaryAccess().getBinary(con, "test");
+                Assert.assertNotNull(data);
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                BinaryData data = factory.getBinaryAccess().getBinary(con, "invalid-id");
+                Assert.assertNull(data);
+                con.commit();
+            }
+            
+        } finally {
+            con.invalidate();
+        }    
     }
 }

@@ -1,5 +1,8 @@
 package in.partake.model.dao.jpa;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.PartakeConnection;
@@ -9,25 +12,33 @@ class JPACacheDao extends JPADao implements ICacheAccess {
 
     @Override
     public void addCache(PartakeConnection con, CacheData cacheData) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        if (cacheData.getId() == null) { throw new DAOException("id should be specified."); }
+        EntityManager em = getEntityManager(con);
+        em.persist(cacheData);
     }
 
     @Override
     public void removeCache(PartakeConnection con, String cacheId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        EntityManager em = getEntityManager(con);
+        CacheData data = em.find(CacheData.class, cacheId);
+        if (data != null) { em.remove(data); }
     }
 
     @Override
     public CacheData getCache(PartakeConnection con, String cacheId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        EntityManager em = getEntityManager(con);
+        CacheData data = em.find(CacheData.class, cacheId);
+        if (data != null) {
+            return data.freeze();
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        EntityManager em = getEntityManager(con);
+        Query q = em.createNativeQuery("truncate cachedata");
+        q.executeUpdate();
     }
 }

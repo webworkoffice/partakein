@@ -43,17 +43,20 @@ public abstract class DirectMessageDaoTestCaseBase extends AbstractDaoTestCaseBa
 			DirectMessage embryo = new DirectMessage(EVENT_OWNER_ID, MESSAGE);
 			PartakeConnection sendCon = pool.getConnection();
 			try {
+			    sendCon.beginTransaction();
 				dao.addMessage(sendCon, messageId, embryo);
 				dao.sendEnvelope(sendCon, messageId, TWITTER_ID, TWITTER_ID, deadline, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
+				sendCon.commit();
 			} finally {
 				sendCon.invalidate();
 			}
 		}
 
 		{
-		PartakeConnection getCon = pool.getConnection();
+		    PartakeConnection getCon = pool.getConnection();
 			boolean found = false;
 			try {
+			    getCon.beginTransaction();
 				DataIterator<DirectMessageEnvelope> iter = dao.getEnvelopeIterator(getCon);
 
 				while (iter.hasNext()) {
@@ -68,6 +71,8 @@ public abstract class DirectMessageDaoTestCaseBase extends AbstractDaoTestCaseBa
 				}
 
 				Assert.assertTrue(found);
+				
+				getCon.commit();
 			} finally {
 				getCon.invalidate();
 			}

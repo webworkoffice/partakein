@@ -42,17 +42,18 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     // add
     
     @Override
-    public void addCalendarLinkageWithId(PartakeConnection con, String calendarId, CalendarLinkage embryo) throws DAOException {
+    public void addCalendarLinkageWithId(PartakeConnection con, CalendarLinkage embryo) throws DAOException {
         try {
+            if (embryo.getId() == null) { throw new DAOException("id should be specified."); }
             CassandraConnection ccon = (CassandraConnection) con;
-            addCalendarLinkageWithId(ccon.getClient(), calendarId, embryo, ccon.getAcquiredTime());
+            addCalendarLinkageWithId(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
-    private void addCalendarLinkageWithId(Client client, String calendarId, CalendarLinkage embryo, long time) throws Exception {
-        String key = CALENDAR_PREFIX + calendarId;
+    private void addCalendarLinkageWithId(Client client, CalendarLinkage embryo, long time) throws Exception {
+        String key = CALENDAR_PREFIX + embryo.getId();
         
         List<Mutation> mutations = new ArrayList<Mutation>(); 
         mutations.add(createMutation("userId", embryo.getUserId(), time));

@@ -14,7 +14,7 @@ class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
     }
 
     @Override
-    public void addCalendarLinkageWithId(PartakeConnection con, String calendarId, CalendarLinkage embryo) throws DAOException {
+    public void addCalendarLinkageWithId(PartakeConnection con, CalendarLinkage embryo) throws DAOException {
         // TODO Auto-generated method stub
         throw new RuntimeException("Not implemented yet.");
     }

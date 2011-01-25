@@ -3,9 +3,20 @@ package in.partake.model.dto;
 import java.util.Arrays;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+
+import org.apache.commons.lang.ObjectUtils;
+
+@Entity
 public class CacheData extends PartakeModel<CacheData> {
+    @Id
     private String id;
+    @Column @Lob
     private byte[] data;
+    @Column
     private Date   invalidAfter;
     
     public CacheData() {
@@ -31,6 +42,32 @@ public class CacheData extends PartakeModel<CacheData> {
             this.invalidAfter = null;
         }
     }
+
+    // ----------------------------------------------------------------------
+    // equals
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CacheData)) { return false; }
+        
+        CacheData lhs = this;
+        CacheData rhs = (CacheData) obj;
+        
+        return ObjectUtils.equals(lhs.id, rhs.id) &&
+            Arrays.equals(lhs.data, rhs.data) &&
+            ObjectUtils.equals(lhs.invalidAfter, rhs.invalidAfter);
+    }
+    
+    @Override
+    public int hashCode() {
+        return ObjectUtils.hashCode(id) * 37 * 37 +
+            ObjectUtils.hashCode(data) * 37 +
+            ObjectUtils.hashCode(invalidAfter);
+    }
+    
+    
+    // ----------------------------------------------------------------------
+    // accessors
     
     public String getId() {
         return this.id;
