@@ -1,13 +1,12 @@
 package in.partake.model.dao.cassandra;
 
+import in.partake.model.dao.UserPreferenceTestCaseBase;
+import in.partake.resource.PartakeProperties;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import in.partake.model.dao.BinaryAccessTestCaseBase;
-import in.partake.model.dao.CacheAccessTestCaseBase;
-import in.partake.resource.PartakeProperties;
-
-public class CassandraCacheDaoTest extends CacheAccessTestCaseBase {
+public class CassandraUserPreferenceDaoTest extends UserPreferenceTestCaseBase {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("cassandra");

@@ -55,6 +55,12 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
             throw new DAOException(e);
         }
     }
+    
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 	
 	// ----------------------------------------------------------------------
 	

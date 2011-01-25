@@ -56,6 +56,12 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
         }
 	}
 	
+	@Override
+	public void truncate(PartakeConnection con) throws DAOException {
+	    // TODO Auto-generated method stub
+	    
+	}
+	
 	// ----------------------------------------------------------------------
 	
 	private UserPreference getPreference(Client client, String userId) throws Exception {

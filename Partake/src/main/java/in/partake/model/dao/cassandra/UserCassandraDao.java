@@ -163,6 +163,12 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
         }
     }
     
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
+    
     // ----------------------------------------------------------------------
     // insertion
     

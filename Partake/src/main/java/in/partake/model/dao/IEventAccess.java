@@ -28,4 +28,7 @@ public interface IEventAccess {
     @Deprecated
     public abstract List<Event> getEventsByOwner(PartakeConnection con, User owner) throws DAOException;
     public abstract List<Event> getEventsByOwner(PartakeConnection con, String userId) throws DAOException;
+    
+    /** Use ONLY in unit tests.*/
+    public abstract void truncate(PartakeConnection con) throws DAOException;
 }

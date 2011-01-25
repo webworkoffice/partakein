@@ -19,4 +19,7 @@ public interface IDirectMessageAccess {
     // EventReminderStatus
     public void updateEventReminderStatus(PartakeConnection con, String eventId, EventReminderStatus reminderStatus) throws DAOException;
     public EventReminderStatus getEventReminderStatus(PartakeConnection con, String eventId) throws DAOException;
+    
+    /** Use ONLY in unit tests.*/
+    public abstract void truncate(PartakeConnection con) throws DAOException;
 }

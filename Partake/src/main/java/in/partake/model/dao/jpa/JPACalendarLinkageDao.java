@@ -31,4 +31,9 @@ class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
         throw new RuntimeException("Not implemented yet.");
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

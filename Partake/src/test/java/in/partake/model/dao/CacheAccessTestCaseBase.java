@@ -82,6 +82,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             
             Assert.assertEquals(original.getId(), target.getId());
             Assert.assertArrayEquals(original.getData(), target.getData());
+            Assert.assertTrue(target.isFrozen());
             
             con.commit();
         } catch (Exception e) {
@@ -107,7 +108,29 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
         }
     }
     
-    // TODO: invalidAfter のテストケースを記述する。
+    /** null should be returned if the expired data is retrieved. */
+    public void testToCreateAndGetExpiredData() throws Exception {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            {
+                con.beginTransaction();
+                CacheData data = new CacheData("test", new byte[] {1, 2, 3}, oneHourBefore());
+                factory.getCacheAccess().addCache(con, data);
+                con.commit();
+            }
+            
+            {
+                con.beginTransaction();
+                CacheData data = factory.getCacheAccess().getCache(con, "test");
+                Assert.assertNull(data);
+                con.commit();
+            }
+        } finally {
+            con.invalidate();
+        }
+    }
     
     
 }

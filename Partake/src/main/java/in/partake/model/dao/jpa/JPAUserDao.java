@@ -64,4 +64,9 @@ class JPAUserDao extends JPADao implements IUserAccess {
         return null;
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

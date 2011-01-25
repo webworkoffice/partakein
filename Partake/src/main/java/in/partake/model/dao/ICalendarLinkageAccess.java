@@ -12,4 +12,7 @@ public interface ICalendarLinkageAccess {
     public void addCalendarLinkageWithId(PartakeConnection con, String calendarId, CalendarLinkage embryo) throws DAOException;
     public CalendarLinkage getCalendarLinkageById(PartakeConnection con, String calendarId) throws DAOException;
     public void removeCalendarLinkageById(PartakeConnection con, String calendarId) throws DAOException;
+    
+    /** Use ONLY in unit tests.*/
+    public abstract void truncate(PartakeConnection con) throws DAOException;
 }

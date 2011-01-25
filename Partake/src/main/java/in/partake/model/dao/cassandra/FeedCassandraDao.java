@@ -127,5 +127,11 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
             return string(cosc.getColumn().getValue());
         }
     }
+    
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }
 

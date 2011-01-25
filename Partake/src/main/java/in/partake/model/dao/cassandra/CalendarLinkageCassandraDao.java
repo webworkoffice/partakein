@@ -121,6 +121,10 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     }
     
     
-    
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 
 }

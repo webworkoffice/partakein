@@ -19,4 +19,9 @@ class JPAUserPreferenceDao extends JPADao implements IUserPreferenceAccess {
         
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

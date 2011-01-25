@@ -74,6 +74,12 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
         }  
     }
     
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
+    
     // ----------------------------------------------------------------------
     
     private void addOpenID(Client client, String identity, String userId, long time) throws Exception {

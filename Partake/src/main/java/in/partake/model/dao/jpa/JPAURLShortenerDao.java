@@ -24,4 +24,9 @@ class JPAURLShortenerDao extends JPADao implements IURLShortenerAccess {
         return null;
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

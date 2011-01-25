@@ -12,4 +12,7 @@ public interface ICommentAccess {
     public void addCommentToEvent(PartakeConnection con, String commentId, String eventId) throws DAOException;
     public DataIterator<String> getCommentIdsByEvent(PartakeConnection con, String eventId) throws DAOException;
     public DataIterator<Comment> getCommentsByEvent(PartakeConnection con, String eventId) throws DAOException;
+    
+    /** Use ONLY in unit tests.*/
+    public abstract void truncate(PartakeConnection con) throws DAOException;
 }
