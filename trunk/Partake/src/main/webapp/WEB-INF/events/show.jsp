@@ -156,7 +156,7 @@ body {
     <ul>
          <li><a id="open-message-form" href="#">参加者へメッセージを送信</a></li>
          <%-- 一時的にコメントアウト --%>
-         <%-- li><a href="<%= request.getContextPath() %>/events/showParticipants/<%= h(event.getId()) %>">参加者のステータスを編集</a></li --%>
+         <li><a href="<%= request.getContextPath() %>/events/showParticipants/<%= h(event.getId()) %>">参加者のステータスを編集</a></li>
          <li><a href="<%= request.getContextPath() %>/events/printParticipants/<%= h(event.getId()) %>">参加者リストを出力</a></li>
     </ul>
 
