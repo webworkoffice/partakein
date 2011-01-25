@@ -17,8 +17,8 @@
 <h1>リソースが見つかりませんでした</h1>
 
 <p>お探しのリソースが見つかりませんでした。URL を確認してください。</p>
-<p><a href="<%= request.getContextPath() %>/">トップに戻る</a></p>
-
+<p><a href="<%= request.getContextPath() %>/"><strong>トップに戻る</strong></a></p>
+<img class="musangas" src="<%= request.getContextPath() %>/images/musangas.png" alt="" />
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>
