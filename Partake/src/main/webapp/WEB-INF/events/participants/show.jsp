@@ -38,8 +38,9 @@
 <p>
 特定の参加者を削除したり、優先的に参加できるようにしたりします。<br />
 </p>
-<p>「関連イベントの参加者を優先参加させる設定」を有効にしている場合、該当者の優先度は「<img src="<%= request.getContextPath() %>/images/crown.png" alt="優先" />」と表示されます。<br />
-優先度をもう一段階上げることが可能です。
+<p>＜優先度マーク＞<br />
+<img class="adjust1" src="<%= request.getContextPath() %>/images/star.png" alt="優先参加" /> ：優先参加マーク。関連イベントに参加することにより、優先参加権を得た人です。<br />
+<img src="<%= request.getContextPath() %>/images/crown.png" alt="VIP" /> ：VIPマーク。あなたがVIPに指名した人は、誰よりも優先的に参加させることができます。<br />
 </p>
 <h2><img src="<%= request.getContextPath() %>/images/feature-04.png" alt="" /><%= h(event.getTitle()) %> - 参加者リスト</h2>
 
@@ -66,14 +67,14 @@
         <td><%= h(p.getComment()) %></td>
         <td class="print-del"><%= h(p.getModifiedAt().toString()) %></td>
         <td>
-        <%--　↓イメージを伝えるために、王冠アイコンをベタっと貼ってます1/18 --%>
-        <img src="<%= request.getContextPath() %>/images/crown.png" alt="優先" />
+        <%--　↓イメージを伝えるために、アイコンをベタっと貼ってます1/18 --%>
+        <img src="<%= request.getContextPath() %>/images/star.png" alt="優先" />
         <%= p.getPriority() > 0 ? String.format("%d", p.getPriority()) : "-" %>
         </td>
         <td class="print-del">
         <ul class="status-control">
-        <li><a href="#">削除する</a></li>
-        <li><a href="#">優先度を上げる</a></li>
+        <li><a href="#" title="参加者リストから削除します">削除する</a></li>
+        <li><a href="#" title="最も優先度を高くします">VIPにする</a></li>
         </ul>
         </td>
         　　　　<td class="print-del">
