@@ -63,7 +63,7 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	@Override
 	public void truncate(PartakeConnection con) throws DAOException {
 	    // TODO Auto-generated method stub
-	    
+	    throw new RuntimeException("Not Implemented Yet.");
 	}
 	
 	// ----------------------------------------------------------------------
