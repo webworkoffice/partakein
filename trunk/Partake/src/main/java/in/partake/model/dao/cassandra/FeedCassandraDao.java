@@ -131,7 +131,7 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         // TODO Auto-generated method stub
-        
+        throw new RuntimeException("Not Implemented Yet.");
     }
 }
 
