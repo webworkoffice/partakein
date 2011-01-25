@@ -19,6 +19,8 @@
   <persistence-unit name="partake-unittest">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>in.partake.model.dto.BinaryData</class>
+    <class>in.partake.model.dto.CacheData</class>
+    
     <properties>
       <property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource"/>
       <property name="openjpa.ConnectionProperties" value="DriverClassName=org.postgresql.Driver,Url=jdbc:postgresql:partake-unittest,Username=partake,Password=partake"/>

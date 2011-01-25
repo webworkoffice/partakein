@@ -3,7 +3,6 @@ package in.partake.model.dao.cassandra;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import in.partake.model.dao.BinaryAccessTestCaseBase;
 import in.partake.model.dao.CacheAccessTestCaseBase;
 import in.partake.resource.PartakeProperties;
 

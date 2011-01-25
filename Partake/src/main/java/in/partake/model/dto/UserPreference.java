@@ -15,6 +15,18 @@ public class UserPreference extends PartakeModel<UserPreference>{
         this.tweetingAttendanceAutomatically = tweetingAttendanceAutomatically;
     }
 
+    public UserPreference(UserPreference pref) {
+        this.profilePublic = pref.profilePublic;
+        this.receivingTwitterMessage = pref.receivingTwitterMessage;
+        this.tweetingAttendanceAutomatically = pref.tweetingAttendanceAutomatically;
+    }
+    
+    // ---------------------------------------------------------------
+    // accessors
+    
+    // ---------------------------------------------------------------
+    // accessors
+    
     public boolean isProfilePublic() {
         return profilePublic;
     }

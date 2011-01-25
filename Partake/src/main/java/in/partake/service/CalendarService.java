@@ -36,8 +36,8 @@ public final class CalendarService extends PartakeService {
             
             // カレンダーを master に書き込み
             {
-                CalendarLinkage embryo = new CalendarLinkage(user.getId());
-                factory.getCalendarAccess().addCalendarLinkageWithId(con, calendarId, embryo);
+                CalendarLinkage embryo = new CalendarLinkage(calendarId, user.getId());
+                factory.getCalendarAccess().addCalendarLinkageWithId(con, embryo);
             }
         } finally {
             con.invalidate();

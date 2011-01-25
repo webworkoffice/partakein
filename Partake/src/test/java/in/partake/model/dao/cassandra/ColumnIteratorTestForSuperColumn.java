@@ -7,7 +7,9 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
+import in.partake.model.dao.AbstractDaoTestCaseBase;
 import in.partake.model.dao.DAOException;
+import in.partake.resource.PartakeProperties;
 
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.Column;
@@ -15,28 +17,30 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SuperColumn;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
-public class ColumnIteratorTestForSuperColumn extends CassandraDao {
+public class ColumnIteratorTestForSuperColumn extends AbstractDaoTestCaseBase {
     private final String PREFIX = "columniteratortest:supercolumn:id:";
     private static final String KEYSPACE = "Keyspace1";
     private static final String COLUMNFAMILY = "Super1";
     private static final ConsistencyLevel CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel CL_W = ConsistencyLevel.ALL;
     
-    private CassandraConnectionPool pool;
-    
-    public ColumnIteratorTestForSuperColumn() {
-        super(null);
+    @BeforeClass
+    public static void setUpOnce() {
+        PartakeProperties.get().reset("cassandra");
+        reset();
     }
-    
-    @Before
-    public void setup() {
-        pool = new CassandraConnectionPool();
+
+    @AfterClass
+    public static void tearDownOnce() {
+        PartakeProperties.get().reset();
+        reset();
     }
     
     @Test
@@ -54,7 +58,7 @@ public class ColumnIteratorTestForSuperColumn extends CassandraDao {
     }
     
     private void testForColumnIteratorToGet(int n) throws DAOException {
-        CassandraConnection con = (CassandraConnection) pool.getConnection();
+        CassandraConnection con = (CassandraConnection) getPool().getConnection();
         try {
             // create
             String id = PREFIX + UUID.randomUUID().toString();
@@ -89,7 +93,7 @@ public class ColumnIteratorTestForSuperColumn extends CassandraDao {
     
     @Test
     public void testForColumnIteratorToUpdate() throws DAOException {
-        CassandraConnection con = (CassandraConnection) pool.getConnection();
+        CassandraConnection con = (CassandraConnection) getPool().getConnection();
         try {
             final int n = 1001;
             
@@ -150,7 +154,7 @@ public class ColumnIteratorTestForSuperColumn extends CassandraDao {
     
     @Test
     public void testForColumnIteratorToRemove() throws DAOException {
-        CassandraConnection con = (CassandraConnection) pool.getConnection();
+        CassandraConnection con = (CassandraConnection) getPool().getConnection();
         try {
            final int n = 1001;
            
@@ -201,7 +205,7 @@ public class ColumnIteratorTestForSuperColumn extends CassandraDao {
             superColumn.addToColumns(new Column(bytes("v3"), bytes(value), time));
             
             List<Mutation> mutations = new ArrayList<Mutation>();
-            mutations.add(createSuperColumnMutation(superColumn));
+            mutations.add(CassandraDaoUtils.createSuperColumnMutation(superColumn));
             client.batch_mutate(KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(COLUMNFAMILY, mutations)), CL_W);
         } catch (Exception e) {
             throw new DAOException(e);

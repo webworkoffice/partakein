@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author skypencil (@eller86)
  */
 public final class CommentTest {
-	Comment[] samples;
+	private Comment[] samples;
 	
 	@Before
 	public void createSamples() {

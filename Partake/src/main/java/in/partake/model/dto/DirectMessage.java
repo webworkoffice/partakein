@@ -10,6 +10,10 @@ public class DirectMessage extends PartakeModel<DirectMessage> {
     private String eventId;
     private Date   createdAt;
     
+    public DirectMessage() {
+        // do nothing
+    }
+    
     public DirectMessage(String userId, String message) {
         this(userId, message, null);
     }

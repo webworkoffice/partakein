@@ -13,6 +13,37 @@ public class DirectMessageEnvelope {
     private Date tryAfter;
     private DirectMessagePostingType postingType;
         
+    public DirectMessageEnvelope() {
+        // do nothing
+    }
+    
+    public DirectMessageEnvelope(String id, String senderId, String receiverId, String messageId, Date deadline, int numTried, Date lastTriedAt, Date tryAfter, DirectMessagePostingType postingType) {
+        this.envelopeId = id;
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.messageId = messageId;
+        this.deadline = (Date) deadline.clone();
+        this.numTried = numTried;
+        this.lastTriedAt = (Date) lastTriedAt.clone();
+        this.tryAfter = (Date) tryAfter.clone();
+        this.postingType = postingType;
+    }
+    
+    public DirectMessageEnvelope(DirectMessageEnvelope envelope) {
+        this.envelopeId = envelope.envelopeId;
+        this.senderId = envelope.senderId;
+        this.receiverId = envelope.receiverId;
+        this.messageId = envelope.messageId;
+        this.deadline = envelope.getDeadline() != null ? (Date) envelope.getDeadline().clone() : null;
+        this.numTried = envelope.numTried;
+        this.lastTriedAt = envelope.lastTriedAt != null ? (Date) envelope.lastTriedAt.clone() : null;
+        this.tryAfter = envelope.tryAfter != null ? (Date) envelope.tryAfter.clone() : null;
+        this.postingType = envelope.postingType;
+    }
+    
+    // ----------------------------------------------------------------------
+    // accessors
+    
     public String getEnvelopeId() { return envelopeId; }
     public String getSenderId()   { return senderId; }
     public String getReceiverId() { return receiverId; }

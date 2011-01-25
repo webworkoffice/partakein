@@ -1,7 +1,16 @@
 package in.partake.model.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import org.apache.commons.lang.ObjectUtils;
+
+@Entity
 public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
+    @Id
     private String id;
+    @Column
     private String userId;
     
     public CalendarLinkage() {
@@ -16,6 +25,35 @@ public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
         this.id = id;
         this.userId = userId;
     }
+    
+    public CalendarLinkage(CalendarLinkage src) {
+        this.id = src.id;
+        this.userId = src.userId;
+    }
+    
+    // ----------------------------------------------------------------------
+    // equals methods
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CalendarLinkage)) { return false; }
+        
+        CalendarLinkage lhs = this;
+        CalendarLinkage rhs = (CalendarLinkage) obj;
+
+        return ObjectUtils.equals(lhs.id, rhs.id) && ObjectUtils.equals(lhs.userId, rhs.userId);
+    }
+    
+    @Override
+    public int hashCode() {
+        int x = id == null ? 0 : id.hashCode();
+        int y = userId == null ? 0 : id.hashCode();
+        
+        return x * 37 + y;
+    }
+    
+    // ----------------------------------------------------------------------
+    // accessors
     
     public String getId() {
         return id;
