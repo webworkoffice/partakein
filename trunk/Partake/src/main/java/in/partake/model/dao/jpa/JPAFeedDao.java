@@ -30,4 +30,9 @@ class JPAFeedDao extends JPADao implements IFeedAccess {
         
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

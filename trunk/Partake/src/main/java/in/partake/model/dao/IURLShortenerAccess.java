@@ -19,4 +19,8 @@ public interface IURLShortenerAccess {
      * @throws DAOException
      */
     public abstract String getShortenedURL(PartakeConnection con, String originalURL) throws DAOException;
+    
+    /** Use ONLY in unit tests.*/
+    public abstract void truncate(PartakeConnection con) throws DAOException;
+
 }

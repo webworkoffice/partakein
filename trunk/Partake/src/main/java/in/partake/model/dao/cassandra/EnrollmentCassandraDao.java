@@ -206,6 +206,11 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         }        
     }
     
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
     
     // ----------------------------------------------------------------------
 

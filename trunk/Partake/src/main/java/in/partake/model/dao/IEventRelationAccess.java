@@ -16,4 +16,6 @@ public interface IEventRelationAccess {
      */
     public abstract List<EventRelation> getEventRelations(PartakeConnection con, String eventId) throws DAOException;
 
+    /** Use ONLY in unit tests.*/
+    public abstract void truncate(PartakeConnection con) throws DAOException;
 }

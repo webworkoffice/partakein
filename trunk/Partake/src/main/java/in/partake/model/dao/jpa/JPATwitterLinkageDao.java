@@ -19,4 +19,9 @@ class JPATwitterLinkageDao extends JPADao implements ITwitterLinkageAccess {
         return null;
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -8,4 +8,7 @@ public interface ITwitterLinkageAccess {
 
     public abstract TwitterLinkage getTwitterLinkageById(PartakeConnection con, int twitterId) throws DAOException;
 
+    /** Use ONLY in unit tests.*/
+    public abstract void truncate(PartakeConnection con) throws DAOException;
+
 }

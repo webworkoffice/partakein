@@ -52,7 +52,11 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
         return getShortenedURL(con, originalURL, null);
     }
     
-
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("Not implemented yet");
+    }
     
     // ----------------------------------------------------------------------
     

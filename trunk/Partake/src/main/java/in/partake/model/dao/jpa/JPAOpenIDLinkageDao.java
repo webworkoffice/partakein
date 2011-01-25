@@ -24,4 +24,9 @@ class JPAOpenIDLinkageDao extends JPADao implements IOpenIDLinkageAccess {
         
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

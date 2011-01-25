@@ -235,6 +235,12 @@ class DirectMessageCassandraDao extends CassandraDao implements IDirectMessageAc
         client.batch_mutate(DIRECTMESSAGES_REMINDER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGES_REMINDER_COLUMNFAMILY, mutations)), DIRECTMESSAGES_REMINDER_CL_W);        
     }
     
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
+    
     // ----------------------------------------------------------------------
     
     private DirectMessage getMessageById(Client client, String messageId, long time) throws Exception {

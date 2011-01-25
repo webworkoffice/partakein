@@ -21,4 +21,9 @@ class JPAEventRelationDao extends JPADao implements IEventRelationAccess {
         return null;
     }
 
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -35,4 +35,6 @@ public interface IEnrollmentAccess {
     public DataIterator<Event> getEnrolledEvents(PartakeConnection connection, String userId) throws DAOException;
     public ParticipationStatus getParticipationStatus(PartakeConnection con, Event event, User user) throws DAOException;
 
+    /** Use ONLY in unit tests.*/
+    public abstract void truncate(PartakeConnection con) throws DAOException;
 }

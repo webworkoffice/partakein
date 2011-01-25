@@ -60,6 +60,12 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
         }
 	}
 	
+	@Override
+	public void truncate(PartakeConnection con) throws DAOException {
+	    // TODO Auto-generated method stub
+	    
+	}
+	
 	// ----------------------------------------------------------------------
 	
 	private List<EventRelation> getEventRelations(Client client, String eventId) throws Exception {
