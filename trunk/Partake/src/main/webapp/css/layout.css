@@ -999,6 +999,13 @@ width:50px;
     list-style-image: url(../images/mark.png); 
     padding:0 0 0 17px;	
 }
+#status-edit img {
+    vertical-align:middle;
+    margin-right:1px;	
+}
+.adjust1 {
+    margin:0 4px;	
+}
 
 /* ==================================================================
  * header
@@ -1061,20 +1068,21 @@ width:50px;
         width: 100px;
         line-height: 58px;
 }
-
+.head-gr a {
+	display:block;
+}
 #header-navi li:hover {
-        background: transparent url(../images/footprint.png);
+	    background: transparent url(../images/footprint.png);
         background-repeat:no-repeat;
         z-index:5;
 }
-
 #menu ul li#sign-in-with-twitter-menu {
         width: 186px;
 }
 
 #menu ul li#sign-in-with-openid-menu {
 	width: 30px;
-        border-left-style: none;
+    border-left-style: none;
 }
 
 #menu ul li#loggedin-menu {

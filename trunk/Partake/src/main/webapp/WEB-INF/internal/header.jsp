@@ -24,11 +24,11 @@
  	<div id="menu">
 		<ul id="header-navi">
 		<% if (user != null) { %>
-			<li><a href="<%= request.getContextPath() %>/events/new">イベント作成</a></li>
-			<li><a href="<%= request.getContextPath() %>/events/search">イベント検索</a></li>
-			<li><a href="<%= request.getContextPath() %>/mypage">マイページ</a></li>
+			<li class="head-gr"><a href="<%= request.getContextPath() %>/events/new">イベント作成</a></li>
+			<li class="head-gr"><a href="<%= request.getContextPath() %>/events/search">イベント検索</a></li>
+			<li class="head-gr"><a href="<%= request.getContextPath() %>/mypage">マイページ</a></li>
 			<% if (user.isAdministrator()) { %>
-			<li><a href="<%= request.getContextPath() %>/admin/">管理</a></li>
+			<li class="head-gr"><a href="<%= request.getContextPath() %>/admin/">管理</a></li>
 			<% } %>
 			<li id="loggedin-menu">
 				<img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image" alt="profile image" width="48" height="48" />
