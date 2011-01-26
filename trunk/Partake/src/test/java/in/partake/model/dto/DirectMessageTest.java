@@ -14,8 +14,8 @@ public class DirectMessageTest {
         Date now = new Date();
         samples = new DirectMessage[] {
             new DirectMessage(),
-            new DirectMessage("id1", "userId1", "message", "eventId", now),
-            new DirectMessage("id1", "userId1", "message", "eventId", now),
+            new DirectMessage("id1", "userId1", "message1", "eventId1", now),
+            new DirectMessage("id2", "userId2", "message2", "eventId2", now),
         };
     }
     

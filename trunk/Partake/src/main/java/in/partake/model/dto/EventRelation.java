@@ -1,5 +1,7 @@
 package in.partake.model.dto;
 
+import org.apache.commons.lang.ObjectUtils;
+
 public class EventRelation extends PartakeModel<EventRelation> {
 	private String eventId;
 	private boolean required; // true if the original event requires this event. 
@@ -19,7 +21,37 @@ public class EventRelation extends PartakeModel<EventRelation> {
         this.priority = priority;
     }
 
-	// ----------------------------------------------------------------------
+    // ----------------------------------------------------------------------
+    // equals methods
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof EventRelation)) { return false; }
+        
+        EventRelation lhs = this;
+        EventRelation rhs = (EventRelation) obj;
+        
+        if (!(ObjectUtils.equals(lhs.eventId, rhs.eventId)))   { return false; }
+        if (!(ObjectUtils.equals(lhs.required, rhs.required))) { return false; }
+        if (!(ObjectUtils.equals(lhs.priority, rhs.priority))) { return false; }
+        
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(eventId);
+        code = code * 37 + ObjectUtils.hashCode(required);
+        code = code * 37 + ObjectUtils.hashCode(priority);
+        
+        return code;
+    }
+
+    
+    // ----------------------------------------------------------------------
+    // accessors
 	
 	public String getEventId() {
 		return eventId;
