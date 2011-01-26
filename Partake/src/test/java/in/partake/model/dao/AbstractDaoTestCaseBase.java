@@ -1,5 +1,7 @@
 package in.partake.model.dao;
 
+import org.junit.Test;
+
 import in.partake.resource.PartakeProperties;
 
 /**
@@ -43,5 +45,11 @@ public abstract class AbstractDaoTestCaseBase {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }        
+    }
+    
+    @Test
+    public final void shouldAlwaysSucceed() {
+        // do nothing
+        // NOTE: this method ensures the setup method is called when no other test methods are defined. 
     }
 }
