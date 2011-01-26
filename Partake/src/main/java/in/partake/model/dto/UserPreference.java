@@ -1,5 +1,7 @@
 package in.partake.model.dto;
 
+import org.apache.commons.lang.ObjectUtils;
+
 public class UserPreference extends PartakeModel<UserPreference>{
     private boolean profilePublic;
     private boolean receivingTwitterMessage;
@@ -22,7 +24,32 @@ public class UserPreference extends PartakeModel<UserPreference>{
     }
     
     // ---------------------------------------------------------------
-    // accessors
+    // equals method
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof UserPreference)) { return false; }
+        
+        UserPreference lhs = this;
+        UserPreference rhs = (UserPreference) obj;
+        
+        if (!ObjectUtils.equals(lhs.profilePublic, rhs.profilePublic)) { return false; }
+        if (!ObjectUtils.equals(lhs.receivingTwitterMessage, rhs.receivingTwitterMessage)) { return false; }
+        if (!ObjectUtils.equals(lhs.tweetingAttendanceAutomatically, rhs.tweetingAttendanceAutomatically)) { return false; }
+        
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(profilePublic);
+        code = code * 37 + ObjectUtils.hashCode(receivingTwitterMessage);
+        code = code * 37 + ObjectUtils.hashCode(tweetingAttendanceAutomatically);
+        
+        return code;
+    }
     
     // ---------------------------------------------------------------
     // accessors

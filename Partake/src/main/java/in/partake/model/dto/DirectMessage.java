@@ -2,6 +2,8 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+import org.apache.commons.lang.ObjectUtils;
+
 // TODO: This class will be renamed as Message later.
 public class DirectMessage extends PartakeModel<DirectMessage> {
     private String id;
@@ -33,6 +35,40 @@ public class DirectMessage extends PartakeModel<DirectMessage> {
         this.eventId = eventId;
         this.createdAt = createdAt;
     }
+    
+    // ----------------------------------------------------------------------
+    // equals method
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DirectMessage)) { return false; }
+        
+        DirectMessage lhs = this;
+        DirectMessage rhs = (DirectMessage) obj;
+        
+        if (!(ObjectUtils.equals(lhs.id,        rhs.id)))        { return false; }
+        if (!(ObjectUtils.equals(lhs.userId,    rhs.userId)))    { return false; }
+        if (!(ObjectUtils.equals(lhs.message,   rhs.message)))   { return false; }
+        if (!(ObjectUtils.equals(lhs.eventId,   rhs.eventId)))   { return false; }
+        if (!(ObjectUtils.equals(lhs.createdAt, rhs.createdAt))) { return false; }
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(id);
+        code = code * 37 + ObjectUtils.hashCode(userId);
+        code = code * 37 + ObjectUtils.hashCode(message);
+        code = code * 37 + ObjectUtils.hashCode(eventId);
+        code = code * 37 + ObjectUtils.hashCode(createdAt);
+        
+        return code;
+    }
+    
+    // ----------------------------------------------------------------------
+    // accessors
 
     public String getId() {
         return id;

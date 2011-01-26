@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
+import org.apache.commons.lang.ObjectUtils;
+
 @Entity
 public class BinaryData extends PartakeModel<BinaryData> {
     @Id
@@ -39,7 +41,30 @@ public class BinaryData extends PartakeModel<BinaryData> {
     // ----------------------------------------------------------------------
     // equals / hashCode
     
-    // TODO: should be implemented.
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof BinaryData)) { return false; }
+        
+        BinaryData lhs = this;
+        BinaryData rhs = (BinaryData) obj;
+        
+        if (!ObjectUtils.equals(lhs.id, rhs.id))     { return false; }
+        if (!ObjectUtils.equals(lhs.type, rhs.type)) { return false; }
+        if (!Arrays.equals(lhs.data, rhs.data))      { return false; }
+        
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(id);
+        code = code * 37 + ObjectUtils.hashCode(type);
+        code = code * 37 + ObjectUtils.hashCode(data);
+        
+        return code;
+    }
     
     // ----------------------------------------------------------------------
     // accessors
