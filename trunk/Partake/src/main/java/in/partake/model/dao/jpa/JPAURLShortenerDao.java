@@ -1,5 +1,7 @@
 package in.partake.model.dao.jpa;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -34,15 +36,23 @@ class JPAURLShortenerDao extends JPADao implements IURLShortenerAccess {
     @Override
     public String getShortenedURL(PartakeConnection con, String originalURL) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT surl FROM shortenedurldata surl where originalurl := ?");
-        q.setParameter(1, originalURL);
+        Query q = em.createQuery("SELECT data FROM ShortenedURLData data WHERE data.originalURL = :ourl");
+        q.setParameter("ourl", originalURL);
+
+        List<?> objs = q.getResultList();
+        if (objs.isEmpty()) { return null; }
         
-        throw new RuntimeException("not implemented yet.");
+        Object obj = objs.get(0);
+        if (obj == null) { return null; }
+        
+        ShortenedURLData data = (ShortenedURLData) obj;
+        return data.getShortenedURL();
     }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("not implemented yet.");
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM ShortenedURLData");
+        q.executeUpdate();
     }
 }

@@ -62,12 +62,33 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
             String bitlyShortened = "http://bit.ly/example";
             String tcoShortened   = "http://t.co/example";
             factory.getURLShortenerAccess().addShortenedURL(con, "http://www.example.com/", "bitly", bitlyShortened);
-            factory.getURLShortenerAccess().addShortenedURL(con, "http://www.example.com/", "bitly", tcoShortened);
+            factory.getURLShortenerAccess().addShortenedURL(con, "http://www.example.com/", "tco", tcoShortened);
             
             Assert.assertEquals(bitlyShortened, factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "bitly")); 
             Assert.assertEquals(tcoShortened,   factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "tco"));
             String shortened = factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/");
             Assert.assertTrue(bitlyShortened.equals(shortened) || tcoShortened.equals(shortened));
+            con.commit();
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    @Test
+    public void testCreateDeleteGet() throws Exception {
+        
+    }
+    
+    @Test
+    public void testToGetNull() throws Exception {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            con.beginTransaction();            
+            Assert.assertNull(factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "bitly")); 
+            Assert.assertNull(factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "tco")); 
+            Assert.assertNull(factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "google")); 
             con.commit();
         } finally {
             con.invalidate();

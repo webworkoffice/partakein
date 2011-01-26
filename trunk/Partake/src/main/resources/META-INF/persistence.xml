@@ -11,6 +11,7 @@
       <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
       
       <property name="openjpa.DataCache" value="true"/>
+      <property name="openjpa.QueryCache" value="true"/>
       <property name="openjpa.RemoteCommitProvider" value="sjvm"/>          
     </properties>
     
@@ -20,7 +21,7 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>in.partake.model.dto.BinaryData</class>
     <class>in.partake.model.dto.CacheData</class>
-    <class>in.partake.model.dto.ShortenedURL</class>
+    <class>in.partake.model.dto.ShortenedURLData</class>
     
     <properties>
       <property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource"/>
@@ -31,7 +32,9 @@
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
       
       <property name="openjpa.DataCache" value="true"/>
-      <property name="openjpa.RemoteCommitProvider" value="sjvm"/>          
+      <property name="openjpa.QueryCache" value="true"/>
+      <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+      
     </properties>
   </persistence-unit>
 
