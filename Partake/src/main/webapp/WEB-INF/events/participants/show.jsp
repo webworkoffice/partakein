@@ -44,7 +44,7 @@
 </p>
 <h2><img src="<%= request.getContextPath() %>/images/feature-04.png" alt="" /><%= h(event.getTitle()) %> - 参加者リスト</h2>
 
-<table class="mypage-tbl">
+<table class="table0">
     <colgroup><col width="32px" /></colgroup>
     <colgroup><col width="85px" /></colgroup>
     <colgroup><col width="58px" /></colgroup> 

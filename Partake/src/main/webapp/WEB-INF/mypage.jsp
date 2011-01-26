@@ -30,7 +30,7 @@
 <% 
 	List<Event> ownedEvents = (List<Event>)request.getAttribute(Constants.ATTR_OWNED_EVENTSET);
 	if (ownedEvents != null && !ownedEvents.isEmpty()) { %>
-		<table class="mypage-tbl">
+		<table class="table0">
     <colgroup>
       <col width="100px" /><col width="50px" /><col width="50px" />
     </colgroup>
@@ -61,7 +61,7 @@
 <% 
 	List<Event> enrolledEvents = (List<Event>)request.getAttribute(Constants.ATTR_ENROLLED_EVENTSET);
 	if (enrolledEvents != null && !enrolledEvents.isEmpty()) { %>
-		<table class="mypage-tbl">
+		<table class="table0">
     <colgroup>
       <col width="100px" /><col width="50px" /><col width="50px" />
     </colgroup>
@@ -90,7 +90,7 @@
 <%
     List<Event> finishedEvents = (List<Event>)request.getAttribute(Constants.ATTR_FINISHED_EVENTSET);
     if (finishedEvents != null && !finishedEvents.isEmpty()) { %>
-        <table class="mypage-tbl">
+        <table class="table0">
     <colgroup>
       <col width="100px" /><col width="50px" /><col width="50px" />
     </colgroup>

@@ -144,7 +144,7 @@ body {
 
 <%-- Owner はイベントを削除できる。Manager はイベントを編集することが出来る。 --%>
 <% if (event.hasPermission(user, UserPermission.EVENT_EDIT)) { %>
-<div class="event-owner-information">
+<div class="event-owner-information rad">
 	<h2><img src="<%= request.getContextPath() %>/images/gear.png"/>イベント管理</h2>
 	<ul>
 		<li><a href="#" onclick="document.eventEditForm.submit();">イベントを編集</a></li>
@@ -215,7 +215,7 @@ body {
 </div>
 <% } %>
 
-<div class="event-enrollment">
+<div class="event-enrollment rad">
 	<% if (deadlineOver) { %>
 		<p>締め切りを過ぎているため<br>参加変更が行えません</p>
 	<% } else { %>
@@ -309,7 +309,7 @@ body {
 	<% } %>
 </div>
 
-<div class="event-promotion">
+<div class="event-promotion rad">
 
 	<!--  twitter -->
 
@@ -334,7 +334,7 @@ body {
 
 
 
-<div class="event-participants">
+<div class="event-participants rad">
 <div class="event-status">
 	<h2>参加者数</h2>
 	<ul>
