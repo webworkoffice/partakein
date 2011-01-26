@@ -8,11 +8,10 @@ import org.junit.Test;
  * extends して、BeforeClass, AfterClass で Connection などを設定のこと。
  */
 public abstract class PartakeConnectionTestCaseBase extends AbstractDaoTestCaseBase {
-    protected PartakeConnectionPool pool;
     
     @Test
     public void testToConnectAndRelease() throws DAOException {
-        PartakeConnection con = pool.getConnection();
+        PartakeConnection con = getPool().getConnection();
         try {
             // do nothing.
         } finally {
@@ -22,7 +21,7 @@ public abstract class PartakeConnectionTestCaseBase extends AbstractDaoTestCaseB
     
     @Test
     public void testToRetain() throws DAOException {
-        PartakeConnection con = pool.getConnection();
+        PartakeConnection con = getPool().getConnection();
         try {
             con.retain();
             try {
@@ -35,16 +34,12 @@ public abstract class PartakeConnectionTestCaseBase extends AbstractDaoTestCaseB
         }
     }
     
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void testToRetain2() throws DAOException {
-        PartakeConnection con = pool.getConnection();
+        PartakeConnection con = getPool().getConnection();
         con.invalidate();
         
-        try {
-            con.retain(); // should throw IllegalStateException.
-            Assert.fail(); // NOT REACHED
-        } catch (IllegalStateException e) {
-            // ignore e.
-        }
+        con.retain(); // should throw IllegalStateException.
+        Assert.fail(); // SHOULD NOT REACHED
     }
 }

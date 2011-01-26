@@ -23,11 +23,6 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
     }
     
     @Test
-    public void testToAlwaysSucceed() {
-        // do nothing.
-    }
-    
-    @Test
     public void testToAddAndGet() throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
