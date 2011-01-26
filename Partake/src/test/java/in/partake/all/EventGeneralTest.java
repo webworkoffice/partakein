@@ -12,7 +12,7 @@ public class EventGeneralTest {
         // 3. the event should be searchable. (This needs lucene...)
         // 4. the RSS should be published.
         
-        // TODO: test のことを考えると、現在時刻を取得するコードを抽象化しておいたほうがいいな。
+        throw new RuntimeException("Not implemented yet.");
     }
     
     @Test
@@ -22,5 +22,7 @@ public class EventGeneralTest {
         // 2. run the reminder task. The reminder should NOT be sent.
         // 3. change the current time to just before the event.
         // 4. run the reminder task again. The reminder should be sent this time.
+        
+        throw new RuntimeException("Not implemented yet.");
     }
 }
