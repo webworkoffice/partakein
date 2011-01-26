@@ -20,6 +20,7 @@ import org.apache.cassandra.thrift.ColumnParent;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
+import org.apache.commons.collections.CollectionUtils;
 
 
 
@@ -97,6 +98,8 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
 
         List<ColumnOrSuperColumn> results = client.get_slice(TWITTER_KEYSPACE, key, parent, predicate, TWITTER_CL_R);
 
+        if (CollectionUtils.isEmpty(results)) { return null; }
+        
         TwitterLinkage linkage = new TwitterLinkage();
         for (ColumnOrSuperColumn result : results) {
             Column column = result.column;

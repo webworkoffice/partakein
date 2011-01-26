@@ -14,12 +14,16 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
+import in.partake.model.dto.DirectMessage;
+import in.partake.model.dto.DirectMessagePostingType;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
 import in.partake.model.dto.ParticipationStatus;
+import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
+import in.partake.resource.PartakeProperties;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
@@ -344,14 +348,22 @@ public final class EventService extends PartakeService {
             
     		// factory.getMessageAccess().addNotification(con, eventId);
 
-        	// private でなければ Lucandra にデータ挿入して検索ができるようにする
+        	// private でなければ Lucene にデータ挿入して検索ができるようにする
         	if (!eventEmbryo.isPrivate()) {
     	    	Document doc = makeDocument(eventId, eventEmbryo);
     	    	LuceneDao.get().addDocument(doc);
         	}
         	
         	// Feed Dao にも挿入。
-        	appendFeedIfAbsent(factory, con, eventId);
+        	// private 設定がなされている場合は導入しない。
+        	if (!eventEmbryo.isPrivate()) {
+        	    appendFeedIfAbsent(factory, con, eventId);
+        	}
+        	
+        	// さらに、twitter bot がつぶやく
+        	if (!eventEmbryo.isPrivate()) {
+        	    tweetNewEventArrival(factory, con, eventEmbryo);
+        	}
         	
         	return eventId;
 	    } finally {
@@ -728,5 +740,39 @@ public final class EventService extends PartakeService {
         }
 	}
 	
-
+	private void tweetNewEventArrival(PartakeDAOFactory factory, PartakeConnection con, Event event) { 
+	    try {
+	        String shortenedURL = getShortenedURL(con, event);
+	        String hashTag = event.getHashTag() != null ? event.getHashTag() : "";
+            String messagePrefix = "[PARTAKE] 新しいイベントが追加されました :";
+            int length = (messagePrefix.length() + 1) + (shortenedURL.length() + 1) + (hashTag.length() + 1);
+            String title = Util.shorten(event.getTitle(), 140 - length);
+            
+            String message = messagePrefix + " " + title + " " + shortenedURL + " " + hashTag;
+            int twitterId = PartakeProperties.get().getTwitterBotTwitterId();
+            if (twitterId < 0) {
+                logger.info("No bot id.");
+                return;
+            }
+            TwitterLinkage linkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitterId);
+            if (linkage == null) {
+                logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
+                return;
+            }
+            String userId = linkage.getUserId();
+            if (userId == null) {
+                logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
+                return; 
+            }
+            
+            DirectMessage embryo = new DirectMessage(userId, message);
+            String messageId = factory.getDirectMessageAccess().getFreshId(con);
+            factory.getDirectMessageAccess().addMessage(con, messageId, embryo);
+            factory.getDirectMessageAccess().sendEnvelope(con, messageId, userId, null, null, DirectMessagePostingType.POSTING_TWITTER);
+            logger.info("bot will tweet: " + message);
+    	} catch (Exception e) {
+    	    logger.error("Something happened.", e);
+    	    
+    	}
+	}
 }

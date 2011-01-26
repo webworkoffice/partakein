@@ -108,11 +108,25 @@ public class PartakeProperties {
     }
 
     // ----------------------------------------------------------------------
+    // Twitter Bot
+
+    public int getTwitterBotTwitterId() {
+        try {
+            return Integer.parseInt(properties.getProperty("in.partake.twitterbot.twitterid"));
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+    
+    
+    // ----------------------------------------------------------------------
     // JPA Connection properties
 
     public String getJPAPersistenceUnitName() {
         return properties.getProperty("in.partake.database.jpa.persistenceunit");
     }
+    
+    
 
     // --------------------------------------------------
 
