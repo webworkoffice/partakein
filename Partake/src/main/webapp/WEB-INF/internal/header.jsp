@@ -16,7 +16,7 @@
     } 
 %>
 
-<div id="wrapper">
+<div id="wrapper" class="rad">
 
 <div id="header">
 	<div id="sitetitle"><a href="<%= request.getContextPath() %>/"><img src="<%= request.getContextPath() %>/images/logo.png" alt="PARTAKE" /></a></div>
@@ -31,7 +31,7 @@
 			<li class="head-gr"><a href="<%= request.getContextPath() %>/admin/">管理</a></li>
 			<% } %>
 			<li id="loggedin-menu">
-				<img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image curv sdw" alt="profile image" width="48" height="48" />
+				<img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image rad sdw" alt="profile image" width="48" height="48" />
 				<span class="loggedin-name">
 					<a href="<%= request.getContextPath() %>/users/<%= h(user.getId()) %>"><%= h(user.getTwitterLinkage().getScreenName()) %></a>
 				</span>

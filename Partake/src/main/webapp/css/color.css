@@ -11,15 +11,13 @@
     -webkit-border-radius: 5px; /* Safari,Chrome */
     -moz-border-radius: 5px; /* FireFox */
     behavior: url(border-radius.htc); /* forIE */
-	}
-	
+	}	
 /* drop shadow */	
 .sdw {
 	-moz-box-shadow: 2px 2px 2px #bcbcbc; /* firefox */
     -webkit-box-shadow: 2px 2px 2px #bcbcbc;/* Safari,Chrome */
     box-shadow: 2px 2px 2px #bcbcbc; /* CSS3 */
 	}
-
 
 /* ==================================================================
  * color layout
@@ -28,7 +26,7 @@
 
 body {
     color: #2a2a2a;
-    background: top left repeat-x #afd8e2;
+    background: top left repeat-x /*#afd8e2;*/#9AD5E2;
 }
 
 a:link {
@@ -37,15 +35,16 @@ a:link {
 }
 a:visited {
     color: #4F1F80;
-    text-decoration:none;
 }
 a:hover,a:active  {
     color: #000000;
 }
-
 #wrapper {
     color: inherit;
+    margin-bottom:5px;
     background: transparent;
+    background-color:#FEFEFE;
+    border:1px solid #dddddd;
     -moz-box-shadow: 1px 1px 15px #B8B8B8; /* firefox */
     -webkit-box-shadow: 1px 1px 15px #B8B8B8;/* Safari,Chrome */
     box-shadow: 1px 1px 15px #B8B8B8; /* CSS3 */
@@ -53,12 +52,12 @@ a:hover,a:active  {
 
 #header {
 	color: inherit;
-	background: transparent url(../images/back-top.png) no-repeat top;
+	/*background: transparent url(../images/back-top.png) no-repeat top;*/
 }
 
 #content {
     color: inherit;
-    background: transparent url(../images/back-middle.png) repeat-y bottom;
+    /*background: transparent url(../images/back-middle.png) repeat-y bottom;*/
 }
 
 .top-introduction {
@@ -316,11 +315,11 @@ a:hover,a:active  {
 	color: #A9A9A9;	
     background: inherit;
 }
-
+/*
 #footer {
-	background: transparent url(../images/back-bottom.png) no-repeat bottom
+	background: transparent url(../images/back-bottom.png) no-repeat bottom;
 }
-
+*/
 #footer ul {
     background: transparent;
 }
