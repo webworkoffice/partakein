@@ -98,7 +98,7 @@
 
 <%-- ログインしていれば、直近のイベントを表示する --%>
 <% if (user != null) { %>
-	<div class="top-user-events">
+	<div class="top-user-events rad">
 		<h2>直近の登録イベント</h2>
 		<% List<Event> enrolled = (List<Event>) request.getAttribute(Constants.ATTR_ENROLLED_EVENTSET); %>		
 		<% if (enrolled != null && !enrolled.isEmpty()) { %>
@@ -128,7 +128,7 @@
 	</div>
 <% } %>
 
-<div class="top-recent-events">
+<div class="top-recent-events rad">
     <img src="<%= request.getContextPath() %>/images/recent-events.png" />
     <% if (recentEvents != null) { %>
         <% for (Event event : recentEvents) { %>
@@ -139,10 +139,10 @@
 				<div class="<%= h(classPrefix) %>-image">
 				    <% if (event.getForeImageId() != null) { %>
 				<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-				        <img src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
+				        <img class="rad sdw" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
 				    <% } else { %>
 				<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-				        <img src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
+				        <img class="rad sdw" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
 				    <% } %>
 				</div>
 				<div class="<%= h(classPrefix) %>-content">

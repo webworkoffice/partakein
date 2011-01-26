@@ -31,7 +31,7 @@
 			<li class="head-gr"><a href="<%= request.getContextPath() %>/admin/">管理</a></li>
 			<% } %>
 			<li id="loggedin-menu">
-				<img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image" alt="profile image" width="48" height="48" />
+				<img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image curv sdw" alt="profile image" width="48" height="48" />
 				<span class="loggedin-name">
 					<a href="<%= request.getContextPath() %>/users/<%= h(user.getId()) %>"><%= h(user.getTwitterLinkage().getScreenName()) %></a>
 				</span>

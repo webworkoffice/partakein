@@ -42,7 +42,7 @@
 </p>
 <h2><%= h(event.getTitle()) %> - 参加者リスト</h2>
 
-<table class="mypage-tbl">
+<table class="table0">
     <colgroup><col width="32px" /></colgroup>
     <colgroup><col width="85px" /></colgroup>
     <colgroup><col width="48px" /></colgroup> 

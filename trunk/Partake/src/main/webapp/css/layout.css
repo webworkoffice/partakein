@@ -139,10 +139,6 @@ text-indent:-9999px;
     float: left;
     width: 400px;
     padding:5px 7px 0 13px;
-    border-radius: 3px; /* CSS3 */
-    -webkit-border-radius: 3px; /* Safari,Chrome */
-    -moz-border-radius: 3px; /* FireFox */
-    behavior: url(border-radius.htc); /* forIE */
 }
 
 .top-explanations h2 {
@@ -216,13 +212,7 @@ text-indent:-9999px;
     float: right;
     width: 405px;
     border : 1px solid #dddddd;
-    border-bottom : 1px solid #C0C0C0;
-
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior: url(border-radius.htc); /* forIE */
-    
+    border-bottom : 1px solid #C0C0C0;  
     list-style: none;
     list-style-image: url(../images/mark.png);
 }
@@ -238,15 +228,6 @@ text-indent:-9999px;
     max-width: 92px;
     max-height: 92px;
     margin: 0 10px 10px 0;
-    border: 1px outset #F5F5F5;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* forIE */
-
-    -moz-box-shadow: 1px 1px 1px #bcbcbc; /* firefox */
-    -webkit-box-shadow: 1px 1px 1px #bcbcbc;/* Safari,Chrome */
-    box-shadow: 1px 1px 1px #bcbcbc; /* CSS3 */
 }
 .top-recent-event-content {
     margin-left: 110px;
@@ -274,12 +255,8 @@ text-indent:-9999px;
 ---------------------------*/
 
 .top-user-events {
-	    background-color:#FFF8DC;
+	background-color:#FFF8DC;
     background: transparent url(../images/texture.png);
-    border-radius: 3px; /* CSS3 */
-    -webkit-border-radius: 3px; /* Safari,Chrome */
-    -moz-border-radius: 3px; /* FireFox */
-    behavior: url(border-radius.htc); /* forIE */
 }
 
 .top-user-events p {
@@ -300,7 +277,7 @@ text-indent:-9999px;
 	word-wrap:break-word;
 	}
 .summary {
-    padding: 0 10px 0px 10px;
+    padding: 0 0px 20px 15px;
     margin-bottom:0;
 }
 .event-wrapper {
@@ -359,10 +336,6 @@ text-indent:-9999px;
     margin-bottom:5px;
     background-color: #ffffff;
     border: 1px solid #e5e5e5;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px; 
-    behavior:url(border-radius.htc);
 }
 .comment {
     border-bottom: 1px dotted #cccccc;
@@ -429,10 +402,6 @@ border:1px solid #cccccc;
 padding:14px;
 height:675px;
 color:#666;
-border-radius: 5px;
--webkit-border-radius: 5px;
--moz-border-radius: 5px; 
-behavior:url(border-radius.htc);
 }
 /* event-owner
 ---------------------------*/
@@ -441,10 +410,6 @@ behavior:url(border-radius.htc);
     padding: 11px 5px 5px 12px;
     border-bottom : 1px solid #C0C0C0;
     border-right : 1px solid #C0C0C0;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* forIE */
 }
 .event-owner-information h2, .event-status h2 {
     margin: 8px 0 4px 0.5em;
@@ -473,7 +438,7 @@ behavior:url(border-radius.htc);
 .event-participation {
     margin: 10px 0 0 0;
 }
-/* event-promotion 実験中
+/* event-promotion 
 ---------------------------*/
 .event-promotion {
     margin: 1px 0 0 0px;
@@ -481,10 +446,6 @@ behavior:url(border-radius.htc);
     text-align: center;
     border-bottom : 1px solid #C0C0C0;
     border-right : 1px solid #C0C0C0;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* forIE */
 }
 .event-promotion iframe#facebook-like-button {
 	border: none;
@@ -502,10 +463,6 @@ behavior:url(border-radius.htc);
     text-align: center;
     border-bottom : 1px solid #C0C0C0;
     border-right : 1px solid #C0C0C0;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* forIE */
 }
 
 .event-enrollment ul li {
@@ -528,10 +485,6 @@ behavior:url(border-radius.htc);
     padding: 15px 0.4em 10px 0.4em;
     border-bottom : 1px solid #C0C0C0;
     border-right : 1px solid #C0C0C0;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior: url(border-radius.htc); /* forIE */
 }
 
 .event-participants p {
@@ -702,10 +655,6 @@ table.associated-event input[type='text'] {
     margin-top:8px;
     margin-bottom:10px;
     padding:0 5px;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior: url(border-radius.htc); /* forIE */	
 }
 
 /*----------------------------------------------------
@@ -729,10 +678,6 @@ table.associated-event input[type='text'] {
     border: 1px #EAEAEA solid;
     border-bottom : 1px solid #C0C0C0;
     border-right : 1px solid #C0C0C0;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* forIE */
 }
 
 #event-search-form dl {
@@ -778,18 +723,6 @@ table.associated-event input[type='text'] {
     filter: alpha(opacity=82);
 }
 
-.event-searched-head {
-    border: 1px #c9c9c9 ;
-    padding: 4px 12px;
-    margin: 25px 0 5px 0px;
-    line-height : 20px
-
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* forIE */ 
-}
-
 .event-searched {
     margin: 0 12px;
     padding:0;
@@ -829,10 +762,6 @@ table.associated-event input[type='text'] {
     max-height: 130px;
     margin: 0 auto 0;
     border: 1px outset #F5F5F5;
-    border-radius: 5px; /* CSS3 */
-    -webkit-border-radius: 5px; /* Safari,Chrome */
-    -moz-border-radius: 5px; /* FireFox */
-    behavior:url(border-radius.htc); /* forIE */  
 }
 
 .event-searched h3 {
@@ -867,34 +796,6 @@ table.associated-event input[type='text'] {
 .mypage-mine img {
     margin: 0 5px 4px 0;
     vertical-align: middle;
-}
-
-.mypage-tbl {
-	margin: 7px 0 8px 0;
-	width:825px;
-	line-height: 1.8em;
-    word-break: break-all;
-	word-wrap:break-word;
-    table-layout:fixed;
-    border-collapse:collapse;
-    border-spacing:0;
-}
-
-.mypage-tbl th {
-    line-height:20px;
-    padding: 2px;    
-    color: #F5F5F5;
-    background-color: #494440;
-    border-radius: 4px; /* CSS3 */
-    -webkit-border-radius: 4px; /* Safari,Chrome */
-    -moz-border-radius: 4px; /* FireFox */
-    behavior:url(border-radius.htc); /* forIE */
-}
-
-.mypage-tbl td {
-	margin: 0;
-    padding: 2px 8px;
-    border-bottom: 1px dotted #b8b8b8;
 }
 
 .mypage-mine img {
@@ -1098,25 +999,20 @@ width:50px;
 }
 
 #menu ul li img.profile-image {
-	float: left;
+	margin: 5px 1px 7px 7px;
 	width: 37px;
 	height: 37px;
-	margin: 5px 1px 7px 7px;
-        border: 1px solid #dcdcdc;
-        border-radius: 5px; /* CSS3 */
-        -webkit-border-radius: 5px; /* Safari,Chrome */
-        -moz-border-radius: 5px; /* FireFox */
-        behavior:url(border-radius.htc); /* forIE */
+	float: left;
 }
 
 div#signin-with-twitter-part form {
 	display: block;
-        line-height: 20px;
+    line-height: 20px;
 	margin: 0;
-        margin-top:5px;
+    margin-top:5px;
  	padding: 0;
-        height: 28px;
-        background : none;
+    height: 28px;
+    background : none;
 }
 
 div#signin-with-openid-part a {
@@ -1299,9 +1195,54 @@ h3 a:link, h3 a:visited, h3 a:hover, h3 a:active {
     text-decoration: none;
 }
 
+/* ==================================================================
+ * COMMON PARTS
+ * ==================================================================
+ */
+.table0 {
+	margin: 7px 0 8px 0;
+	width:825px;
+	line-height: 1.8em;
+    word-break: break-all;
+	word-wrap:break-word;
+    table-layout:fixed;
+    border-collapse:collapse;
+    border-spacing:0;
+}
 
-/* h1タイトルのパステル風ライン - 文字長別 
-----------------------------------------------------*/
+.table0 th {
+    line-height:20px;
+    padding: 2px;    
+    color: #F5F5F5;
+    background-color: #494440;
+    border-radius: 4px; /* CSS3 */
+    -webkit-border-radius: 4px; /* Safari,Chrome */
+    -moz-border-radius: 4px; /* FireFox */
+    behavior:url(border-radius.htc); /* forIE */
+}
+
+.table0 td {
+	margin: 0;
+    padding: 2px 8px;
+    border-bottom: 1px dotted #b8b8b8;
+}
+
+/* brown head */
+.head0 {
+    padding: 4px 12px;
+    margin: 25px 0 5px 0px;
+    line-height : 20px;
+    border: 1px #c9c9c9;
+    color: #F5F5F5;
+    background-color: #494440;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    behavior:url(border-radius.htc);
+    font-size: 15px;    
+}
+
+/* h1 パステルライン */
 
 #pastel-line13ji {   
     margin: 0 0 30px 15px;

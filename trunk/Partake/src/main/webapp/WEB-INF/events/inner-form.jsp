@@ -83,7 +83,7 @@
 
 <a title="関連イベント　,　複数の管理者"><span class="switchHat">▼ 詳細な設定</span></a>
 
-<div class="switchDetail">
+<div class="switchDetail rad">
 <dl class="event-form">
 <dt>関連イベント：</dt>
 	<dd>

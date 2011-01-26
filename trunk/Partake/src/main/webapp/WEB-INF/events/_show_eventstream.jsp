@@ -65,9 +65,9 @@ var tab = {
 	<li><a href="#news2" _fcksavedurl="#news2">Messages</a></li>
 	<li><a href="#news3" _fcksavedurl="#news3">Twitter Feed</a></li>
 </ul>
-<div id="news1">
+<div id="news1" class="curv">
 	<h2>Comments</h2>
-	<div class="event-comments">
+	<div class="event-comments curv">
 		<s:form action="removeComment" id="removeCommentForm" name="removeCommentForm">
 			<s:token />
 			<s:hidden id="removeCommentId" name="commentId" value="" />
@@ -106,7 +106,7 @@ var tab = {
 		</div>
 	
 </div>
-<div id="news2">
+<div id="news2" class="curv">
 	<h2>管理者からのメッセージ</h2>
 	<div class="event-comments">
 	<% for (DirectMessageEx message : messages) { %>
@@ -118,7 +118,7 @@ var tab = {
 	<% } %>
 	</div>
 </div>
-<div id="news3">
+<div id="news3" class="curv">
 	<% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	<div class="event-twitter-hashtag-stream">	
 	<script>

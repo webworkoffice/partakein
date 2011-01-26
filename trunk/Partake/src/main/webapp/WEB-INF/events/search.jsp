@@ -24,7 +24,7 @@
 
 <h1 id="pastel-line10ji"><img src="<%= request.getContextPath() %>/images/line-yellow.png" alt="" />イベントを検索します</h1>
 
-<div id="event-search-form">
+<div id="event-search-form" class="rad">
 	<img src="<%= request.getContextPath() %>/images/search-icon.png" alt="" />タイトル、本文からイベントを検索します。
 	<div class="line-space">
 		<s:form action="search">
@@ -42,7 +42,7 @@
 </div>
 
 <% if (events == null) { %>
-	<h2 class="event-searched-head">最近登録された締め切り前のイベント</h2>	
+	<h2 class="head0">最近登録された締め切り前のイベント</h2>	
 	<% if (recentEvents != null) {
 		for (Event event : recentEvents) { %>
             <% if (event == null) { continue; } %>
@@ -51,10 +51,10 @@
 				<div class="event-searched-image">
 				    <% if (event.getForeImageId() != null) { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-				        <img src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
+				        <img class="rad" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
 				    <% } else { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-				        <img src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
+				        <img class="rad" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
 				    <% } %>
 				</div>
 				<div class="event-searched-content">
@@ -70,10 +70,10 @@
 		<p>最近登録された締め切り前のイベントはありません。</p>
 	<% } %>
 <% } else if (events.isEmpty()) { %>
-	<h2 class="event-searched-head">検索結果</h2>
+	<h2 class="head0 rad">検索結果</h2>
 	<p>検索にヒットしませんでした。</p>
 <% } else { %>
-	<h2 class="event-searched-head">検索結果</h2>
+	<h2 class="head0 rad">検索結果</h2>
 	<% for (Event event : events) { %>
 		<% if (event == null) { continue; } %>
 		<div class="event-searched">
@@ -81,10 +81,10 @@
 			<div class="event-searched-image">
                 <% if (event.getForeImageId() != null) { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-                    <img src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
+                    <img class="rad" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
                 <% } else { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-                    <img src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
+                    <img class="rad" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
                 <% } %>
             </div>
             <div class="event-searched-content">

@@ -1,6 +1,27 @@
 @charset "UTF-8";
 
 /* ==================================================================
+ * deco
+ * ==================================================================
+ */
+
+/* curved corner */
+.rad {
+	border-radius: 5px; /* CSS3 */
+    -webkit-border-radius: 5px; /* Safari,Chrome */
+    -moz-border-radius: 5px; /* FireFox */
+    behavior: url(border-radius.htc); /* forIE */
+	}
+	
+/* drop shadow */	
+.sdw {
+	-moz-box-shadow: 2px 2px 2px #bcbcbc; /* firefox */
+    -webkit-box-shadow: 2px 2px 2px #bcbcbc;/* Safari,Chrome */
+    box-shadow: 2px 2px 2px #bcbcbc; /* CSS3 */
+	}
+
+
+/* ==================================================================
  * color layout
  * ==================================================================
  */
@@ -125,12 +146,6 @@ a:hover,a:active  {
 
 .line-space {
     color: #2a2a2a;
-}
-
-
-.event-searched-head {
-    color: #F5F5F5;
-    background-color: #494440;
 }
 
 #mypage-title img {
