@@ -145,6 +145,8 @@ public class EventsFeedController extends PartakeActionSupport {
 		
 		for (Event event : events) {
 		    if (event == null) { continue; }
+		    if (event.isPrivate()) { continue; }
+		    
 			SyndEntry entry = new SyndEntryImpl();
 			entry.setTitle(event.getTitle());
 			entry.setLink(event.getEventURL());
