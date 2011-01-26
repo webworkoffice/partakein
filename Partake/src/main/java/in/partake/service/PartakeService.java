@@ -95,6 +95,12 @@ public abstract class PartakeService {
         if (user == null) { return null; }
         
         String feedId = getFactory().getFeedAccess().getFeedIdByEventId(con, eventId);
+        String shortenedURL = getShortenedURL(con, event);
+        
+        return new EventEx(event, user, feedId, shortenedURL);
+    }
+
+    protected String getShortenedURL(PartakeConnection con, Event event) throws DAOException {
         String shortenedURL = getFactory().getURLShortenerAccess().getShortenedURL(con, event.getEventURL());
         if (shortenedURL == null) {
             Date now = new Date();
@@ -118,8 +124,10 @@ public abstract class PartakeService {
             }
             
         }
-        return new EventEx(event, user, feedId, shortenedURL);
+        return shortenedURL;
     }
+    
+
     
     protected CommentEx getCommentEx(PartakeConnection con, String commentId) throws DAOException {
     	Comment comment = getFactory().getCommentAccess().getCommentById(con, commentId);
