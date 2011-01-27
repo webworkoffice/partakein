@@ -45,13 +45,13 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             if (embryo.getId() == null) { throw new DAOException("id should not be null."); }
-            addBinaryWithId(ccon.getClient(), embryo, ccon.getAcquiredTime());
+            addBinaryImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
 
-    private void addBinaryWithId(Client client, BinaryData embryo, long time) throws Exception {
+    private void addBinaryImpl(Client client, BinaryData embryo, long time) throws Exception {
         String key = BINARY_PREFIX + embryo.getId();
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 

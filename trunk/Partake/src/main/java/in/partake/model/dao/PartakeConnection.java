@@ -60,9 +60,9 @@ public abstract class PartakeConnection {
         super.finalize();
     }
 
-    public abstract void beginTransaction();
-    public abstract void commit();
-    public abstract void rollback();
+    public abstract void beginTransaction() throws DAOException;
+    public abstract void commit() throws DAOException;
+    public abstract void rollback() throws DAOException;
     
 }
 
