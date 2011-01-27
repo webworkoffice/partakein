@@ -336,6 +336,7 @@ public final class EventService extends PartakeService {
     		    eventId = factory.getEventAccess().getFreshId(con);
     		    factory.getEventAccess().addEvent(con, eventId, eventEmbryo);
     		}
+    		eventEmbryo.setId(eventId);
     		
     		if (foreImageEmbryo != null) {
     		    foreImageEmbryo.setId(foreImageId);
@@ -355,12 +356,10 @@ public final class EventService extends PartakeService {
         	}
         	
         	// Feed Dao にも挿入。
-        	// private 設定がなされている場合は導入しない。
-        	if (!eventEmbryo.isPrivate()) {
-        	    appendFeedIfAbsent(factory, con, eventId);
-        	}
+        	appendFeedIfAbsent(factory, con, eventId);
         	
-        	// さらに、twitter bot がつぶやく
+        	
+        	// さらに、twitter bot がつぶやく (private の場合はつぶやかない)
         	if (!eventEmbryo.isPrivate()) {
         	    tweetNewEventArrival(factory, con, eventEmbryo);
         	}
