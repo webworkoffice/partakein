@@ -50,6 +50,26 @@ class JPAURLShortenerDao extends JPADao implements IURLShortenerAccess {
     }
 
     @Override
+    public void removeShortenedURL(PartakeConnection con, String originalURL) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM ShortenedURLData data WHERE data.originalURL = :ourl");
+        q.setParameter("ourl", originalURL);
+        
+        q.executeUpdate();
+    }
+    
+    @Override
+    public void removeShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException {
+        // TODO Auto-generated method stub
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM ShortenedURLData data WHERE data.originalURL = :orl AND data.serviceType = :st");
+        q.setParameter("ourl", originalURL);
+        q.setParameter("st", serviceType);
+        
+        q.executeUpdate();
+    }
+    
+    @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("DELETE FROM ShortenedURLData");
