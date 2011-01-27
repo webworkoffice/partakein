@@ -35,6 +35,23 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
             con.invalidate();
         }
     }
+
+    @Test
+    public void testToCreateAndGetLongURL() throws Exception {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            con.beginTransaction();
+            String shortened = "http://bit.ly/example";
+            factory.getURLShortenerAccess().addShortenedURL(con, "http://www.example.com/", "bitly", shortened);
+            Assert.assertEquals(shortened, factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "bitly")); 
+            con.commit();
+        } finally {
+            con.invalidate();
+        }
+    }
+
     
     @Test
     public void testToCreateAndGet2() throws Exception {
@@ -74,10 +91,25 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
         }
     }
     
+    
     @Test
-    public void testCreateDeleteGet() throws Exception {
-        
+    public void testToCreateDeleteAndGet() throws Exception {
+        // 1. create
+        // 2. delete it.
+        // 3. get
+        throw new RuntimeException("Not implemented yet.");
     }
+
+    
+    @Test
+    public void testToCreateDeleteCreateGet() throws Exception {
+        // 1. create
+        // 2. delete it.
+        // 3. create the same as #1.
+        // 4. get
+        throw new RuntimeException("Not implemented yet.");
+    }
+
     
     @Test
     public void testToGetNull() throws Exception {

@@ -1,15 +1,9 @@
 package in.partake.model.dto.pk;
 
-import javax.persistence.Id;
-
-import org.apache.commons.lang.xwork.ObjectUtils;
-import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.commons.lang.ObjectUtils;
 
 public class ShortenedURLDataPK {
-    @Id @Index
     private String originalURL;
-
-    @Id 
     private String serviceType;
     
     // ----------------------------------------------------------------------
