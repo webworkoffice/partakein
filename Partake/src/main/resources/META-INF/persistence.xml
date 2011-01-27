@@ -21,6 +21,7 @@
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <class>in.partake.model.dto.BinaryData</class>
     <class>in.partake.model.dto.CacheData</class>
+    <class>in.partake.model.dto.CalendarLinkage</class>
     <class>in.partake.model.dto.ShortenedURLData</class>
     
     <properties>

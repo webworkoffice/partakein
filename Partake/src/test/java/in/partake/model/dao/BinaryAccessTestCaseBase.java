@@ -170,4 +170,38 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
             con.invalidate();
         }    
     }
+    
+    @Test
+    public void testToCreateDeleteCreateGet() throws Exception {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            {
+                con.beginTransaction();
+                BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
+                factory.getBinaryAccess().addBinary(con, data);
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                factory.getBinaryAccess().removeBinary(con, "test");
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
+                factory.getBinaryAccess().addBinary(con, data);
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                BinaryData data = factory.getBinaryAccess().getBinary(con, "test");
+                Assert.assertNotNull(data);
+                con.commit();
+            }            
+        } finally {
+            con.invalidate();
+        }
+    }
 }

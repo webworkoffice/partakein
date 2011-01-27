@@ -234,5 +234,42 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
         }    
     }
     
-
+    @Test
+    public void testToCreateDeleteCreateGet() throws Exception {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        
+        long now = new Date().getTime();
+        try {
+            PDate.setCurrentDate(new PDate(now));
+            {
+                con.beginTransaction();
+                CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
+                factory.getCacheAccess().addCache(con, data);
+                con.commit();
+            }
+            PDate.setCurrentDate(new PDate(now + 10));
+            {
+                con.beginTransaction();
+                factory.getCacheAccess().removeCache(con, "test");
+                con.commit();
+            }
+            PDate.setCurrentDate(new PDate(now + 20));
+            {
+                con.beginTransaction();
+                CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
+                factory.getCacheAccess().addCache(con, data);
+                con.commit();
+            }
+            PDate.setCurrentDate(new PDate(now + 30));
+            {
+                con.beginTransaction();
+                CacheData data = factory.getCacheAccess().getCache(con, "test");
+                Assert.assertNotNull(data);
+                con.commit();
+            }
+        } finally {
+            con.invalidate();
+        }   
+    }
 }
