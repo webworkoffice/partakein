@@ -59,7 +59,7 @@ class TwitterDaemonTask extends TimerTask {
 
 public class TwitterDaemon {
     private static final Logger logger = Logger.getLogger(TwitterDaemon.class);
-    private static final int TIMER_INTERVAL_IN_MILLIS = 30000; // 30 secs.
+    private static final int TIMER_INTERVAL_IN_MILLIS = 30000; // 30 secs. TODO: magic number!
     
     private static TwitterDaemon instance = new TwitterDaemon();
     private Timer timer;

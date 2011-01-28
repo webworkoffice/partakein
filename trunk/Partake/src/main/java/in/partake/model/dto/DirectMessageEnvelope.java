@@ -4,6 +4,12 @@ import java.util.Date;
 
 import org.apache.commons.lang.ObjectUtils;
 
+/**
+ * DirectMessage を、「他に人に送る」ことを表現するクラス。
+ * 
+ * @author shinyak
+ *
+ */
 public class DirectMessageEnvelope {
     private String envelopeId;
     private String senderId;
