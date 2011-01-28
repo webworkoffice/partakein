@@ -2,6 +2,9 @@ package in.partake.model.dao.jpa;
 
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IDirectMessageAccess;
@@ -70,7 +73,8 @@ public class JPADirectMessageDao extends JPADao implements IDirectMessageAccess 
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM DirectMessage");
+        q.executeUpdate();
     }
 }

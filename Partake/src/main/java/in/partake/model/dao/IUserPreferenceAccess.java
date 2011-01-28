@@ -4,9 +4,8 @@ import in.partake.model.dto.UserPreference;
 
 public interface IUserPreferenceAccess {
 
+    public void setPreference(PartakeConnection con, UserPreference embryo) throws DAOException;
     public UserPreference getPreference(PartakeConnection con, String userId) throws DAOException;
-
-    public void setPreference(PartakeConnection con, String userId, UserPreference embryo) throws DAOException;
 
     /** Use ONLY in unit tests.*/
     public abstract void truncate(PartakeConnection con) throws DAOException;

@@ -15,6 +15,7 @@ import junit.framework.Assert;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,6 +36,11 @@ public class CassandraKeyIteratorTest extends AbstractDaoTestCaseBase {
     public static void tearDownOnce() {
         PartakeProperties.get().reset();
         reset();
+    }
+    
+    @Before
+    public void setup() throws DAOException {
+        super.setup();
     }
     
     @Test

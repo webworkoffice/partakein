@@ -2,6 +2,9 @@ package in.partake.model.dao.jpa;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IUserAccess;
@@ -66,7 +69,8 @@ class JPAUserDao extends JPADao implements IUserAccess {
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM User");
+        q.executeUpdate();
     }
 }

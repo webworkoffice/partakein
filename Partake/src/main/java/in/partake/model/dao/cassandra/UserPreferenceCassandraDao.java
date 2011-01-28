@@ -47,10 +47,13 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
 	}
 	
 	@Override
-	public void setPreference(PartakeConnection con, String userId, UserPreference embryo) throws DAOException {
+	public void setPreference(PartakeConnection con, UserPreference embryo) throws DAOException {
+	    if (embryo == null) { throw new IllegalArgumentException("embryo should not be null"); }
+	    if (embryo.getUserId() == null) { throw new IllegalArgumentException("userId should not be null."); }
+	    
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            setPreference(ccon.getClient(), userId, embryo, ccon.getAcquiredTime());
+            setPreferenceImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -95,12 +98,12 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
             }
         }
         
-        UserPreference impl = new UserPreference(profilePublic, receivingTwitterMessage, tweetingAttendanceAutomatically);
+        UserPreference impl = new UserPreference(userId, profilePublic, receivingTwitterMessage, tweetingAttendanceAutomatically);
         return impl.freeze();
 	}
 	
-	private void setPreference(Client client, String userId, UserPreference embryo, long time) throws Exception {
-		String key = PREFERENCES_PREFIX + userId;
+	private void setPreferenceImpl(Client client, UserPreference embryo, long time) throws Exception {
+		String key = PREFERENCES_PREFIX + embryo.getUserId();
 		
         Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
         List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();

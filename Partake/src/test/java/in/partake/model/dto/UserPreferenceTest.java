@@ -10,10 +10,10 @@ public class UserPreferenceTest {
     @Before
     public void createSamples() {
         samples = new UserPreference[] {
-            new UserPreference(true, true, false),
-            new UserPreference(true, true, true),
-            new UserPreference(false, false, false),
-            new UserPreference(false, true, false),
+            new UserPreference("id1", true, true, false),
+            new UserPreference("id2", true, true, true),
+            new UserPreference("id3", false, false, false),
+            new UserPreference("id4", false, true, false),
         };
     }
     

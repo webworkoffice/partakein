@@ -26,6 +26,8 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 
 	@Before
 	public void setup() throws DAOException {
+	    super.setup();
+	    
 		dao = getFactory().getEnrollmentAccess();
 		eventId = name.getMethodName() + System.currentTimeMillis();
 		userId = name.getMethodName() + System.currentTimeMillis();

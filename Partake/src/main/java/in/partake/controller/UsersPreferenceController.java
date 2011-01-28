@@ -44,8 +44,8 @@ public class UsersPreferenceController extends PartakeActionSupport {
 		    UserEx user = getLoginUser();
 			if (user == null) { return LOGIN; }
 			
-			UserPreference embryo = new UserPreference(profilePublic, receivingTwitterMessage, tweetingAttendanceAutomatically);
-			UserService.get().setUserPreference(user.getId(), embryo);
+			UserPreference embryo = new UserPreference(user.getId(), profilePublic, receivingTwitterMessage, tweetingAttendanceAutomatically);
+			UserService.get().setUserPreference(embryo);
 			
 			return SUCCESS;
 		} catch (DAOException e) {

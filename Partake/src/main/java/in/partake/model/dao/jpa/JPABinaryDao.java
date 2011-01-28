@@ -60,7 +60,7 @@ public class JPABinaryDao extends JPADao implements IBinaryAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createNativeQuery("truncate binarydata");
+        Query q = em.createQuery("DELETE FROM BinaryData");
         q.executeUpdate();
     }
 }

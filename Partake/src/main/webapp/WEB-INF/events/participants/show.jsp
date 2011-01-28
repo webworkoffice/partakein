@@ -29,6 +29,7 @@
 <html lang="ja">
 <head>
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
+    <script type="text/javascript" src="<%= request.getContextPath() %>/js/events/editAttendants.js"></script>
     <title>参加者のステータスを編集</title>
 </head>
 <body id="status-edit">
@@ -59,34 +60,37 @@
 <tbody>
     <% 
     int order = 0;
-    for (ParticipationEx p : ps) { %>
-    <tr>
+    for (ParticipationEx p : ps) {
+        %>
+    <tr id="attendant-<%= h(p.getUserId()) %>">
         <td><%= ++order %></td>
         <td><%= h(p.getUser().getScreenName()) %></td>
         <td><%= ParticipationStatus.ENROLLED.equals(p.getStatus()) ? "参加" : "仮参加" %></td>
         <td><%= h(p.getComment()) %></td>
         <td class="print-del"><%= h(p.getModifiedAt().toString()) %></td>
         <td>
-        <%--　↓イメージを伝えるために、アイコンをベタっと貼ってます1/18 --%>
-        <img src="<%= request.getContextPath() %>/images/star.png" alt="優先" />
-        <%= p.getPriority() > 0 ? String.format("%d", p.getPriority()) : "-" %>
+	        <%--　↓イメージを伝えるために、アイコンをベタっと貼ってます1/18 --%>
+	        <img src="<%= request.getContextPath() %>/images/star.png" alt="優先" />
+	        <%= p.getPriority() > 0 ? String.format("%d", p.getPriority()) : "-" %>
         </td>
         <td class="print-del">
-        <ul class="status-control">
-        <li><a href="#" title="参加者リストから削除します">削除する</a></li>
-        <li><a href="#" title="最も優先度を高くします">VIPにする</a></li>
-        </ul>
+	        <ul class="status-control">
+		        <li><a href="#" title="参加者リストから削除します" onclick="deleteAttendant('<%= h(p.getUserId()) %>')">削除する</a></li>
+		        <li><a href="#" title="最も優先度を高くします" onclick="makeAttendantVIP('<%= h(p.getUserId()) %>')">VIPにする</a></li>
+	        </ul>
         </td>
+        <%-- ちょっと ajax 使ってみる予定。 --%>
         　　　　<td class="print-del">
-        <input type="radio" name="q1" value=""　checked> 未選択<br />
-        <input type="radio" name="q1" value=""> 出席
-        <input type="radio" name="q1" value=""> 欠席
+	        <input type="radio" name="present-<%= h(p.getUserId()) %>" value="unknown"　checked="checked"> 未選択<br />
+	        <input type="radio" name="present-<%= h(p.getUserId()) %>" value="present"> 出席
+	        <input type="radio" name="present-<%= h(p.getUserId()) %>" value="absent"> 欠席
         </td>
     </tr>
     <% } %>
 </tbody>
 </table>
-</div>    
+</div>
+
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>

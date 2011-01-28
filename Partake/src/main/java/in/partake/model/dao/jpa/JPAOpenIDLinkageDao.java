@@ -1,5 +1,8 @@
 package in.partake.model.dao.jpa;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
@@ -26,7 +29,8 @@ class JPAOpenIDLinkageDao extends JPADao implements IOpenIDLinkageAccess {
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM OpenIDLinkage");
+        q.executeUpdate();   
     }
 }

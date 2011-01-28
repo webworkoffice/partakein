@@ -155,7 +155,6 @@ body {
 	<h2><img src="<%= request.getContextPath() %>/images/momonga1.png"/>参加者管理</h2>
     <ul>
          <li><a id="open-message-form" href="#">参加者へメッセージを送信</a></li>
-         <%-- 一時的にコメントアウト --%>
          <li><a href="<%= request.getContextPath() %>/events/showParticipants/<%= h(event.getId()) %>">参加者のステータスを編集</a></li>
          <li><a href="<%= request.getContextPath() %>/events/printParticipants/<%= h(event.getId()) %>">参加者リストを出力</a></li>
     </ul>
@@ -195,23 +194,6 @@ body {
             <s:submit value="メッセージ送信" />
         </s:form>
     </div>
-    
-    <%-- 
-    <div id="reminder-reset-form" title="リマインダー送付状況をリセットする">
-        <p>リマインダーを未送付の状態にします。</p>
-        <p>開催日付を誤るなどしてリマインダーが送られてしまった状態になった場合に利用できます。</p>
-        <s:form method="post" action="resetReminder">
-            <s:token />
-            <s:hidden name="eventId" value="%{eventId}" />
-            <ul>
-                <li><s:checkbox name="isBeforeDeadlineOneday"></s:checkbox>締切２４時間前メッセージを未送付の状態にする</li>
-                <li><s:checkbox name="isBeforeDeadlineHalfday"></s:checkbox>締切１２時間前メッセージを未送付の状態にする</li>
-                <li><s:checkbox name="isBeforeTheDay"></s:checkbox>イベント１日前メッセージを未送付の状態にする</li>
-            </ul>
-            <s:submit value="リマインダーをリセットする" />
-        </s:form>        
-    </div>
-    --%>
 </div>
 <% } %>
 

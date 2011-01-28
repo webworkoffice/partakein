@@ -14,6 +14,8 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
 
 	@Before
 	public void setup() throws DAOException {
+	    super.setup();
+	    
 		dao = getFactory().getEventAccess();
 	}
 

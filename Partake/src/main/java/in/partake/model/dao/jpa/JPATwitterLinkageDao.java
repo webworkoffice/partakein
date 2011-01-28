@@ -1,5 +1,8 @@
 package in.partake.model.dao.jpa;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
@@ -21,7 +24,8 @@ class JPATwitterLinkageDao extends JPADao implements ITwitterLinkageAccess {
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM TwitterLinkage");
+        q.executeUpdate();
     }
 }

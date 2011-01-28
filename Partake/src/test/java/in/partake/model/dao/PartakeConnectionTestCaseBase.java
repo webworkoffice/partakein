@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -8,6 +9,11 @@ import org.junit.Test;
  * extends して、BeforeClass, AfterClass で Connection などを設定のこと。
  */
 public abstract class PartakeConnectionTestCaseBase extends AbstractDaoTestCaseBase {
+
+    @Before
+    public void setup() throws DAOException {
+        super.setup();
+    }
     
     @Test
     public void testToConnectAndRelease() throws DAOException {

@@ -245,7 +245,7 @@ public final class UserService extends PartakeService {
         try {
             UserPreference pref = factory.getUserPreferenceAccess().getPreference(con, userId);
             if (pref == null) {
-                pref = UserPreference.getDefaultPreference();
+                pref = UserPreference.getDefaultPreference(userId);
             }
             return pref;
         } finally {
@@ -253,11 +253,11 @@ public final class UserService extends PartakeService {
         }
     }
     
-    public void setUserPreference(String userId, UserPreference embryo) throws DAOException {
+    public void setUserPreference(UserPreference embryo) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            factory.getUserPreferenceAccess().setPreference(con, userId, embryo);
+            factory.getUserPreferenceAccess().setPreference(con,  embryo);
         } finally {
             con.invalidate();
         }

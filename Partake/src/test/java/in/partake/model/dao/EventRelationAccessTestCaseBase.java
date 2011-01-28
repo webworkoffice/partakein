@@ -5,6 +5,8 @@ import org.junit.Before;
 public abstract class EventRelationAccessTestCaseBase extends AbstractDaoTestCaseBase {
     @Before
     public void setup() throws DAOException {
+        super.setup();
+        
         // --- remove all data before starting test.
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
