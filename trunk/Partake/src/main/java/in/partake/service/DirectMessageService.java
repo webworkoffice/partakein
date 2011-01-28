@@ -264,7 +264,7 @@ public class DirectMessageService extends PartakeService {
         // twitter message を受け取らない設定になっていれば送らない。
         UserPreference pref = getFactory().getUserPreferenceAccess().getPreference(con, receiverId);
         if (pref == null) {
-            pref = UserPreference.getDefaultPreference();
+            pref = UserPreference.getDefaultPreference(receiverId);
         }
         
         if (!pref.isReceivingTwitterMessage()) { return true; }

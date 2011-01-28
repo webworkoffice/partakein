@@ -1,5 +1,8 @@
 package in.partake.model.dao.jpa;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.PartakeConnection;
@@ -32,7 +35,8 @@ class JPAFeedDao extends JPADao implements IFeedAccess {
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM FeedLinkage");
+        q.executeUpdate();
     }
 }

@@ -38,7 +38,7 @@ class JPACacheDao extends JPADao implements ICacheAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createNativeQuery("truncate cachedata");
+        Query q = em.createQuery("DELETE FROM CacheData");
         q.executeUpdate();
     }
 }

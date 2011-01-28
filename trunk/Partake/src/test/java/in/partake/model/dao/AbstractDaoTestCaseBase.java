@@ -3,6 +3,7 @@ package in.partake.model.dao;
 import org.junit.Test;
 
 import in.partake.resource.PartakeProperties;
+import in.partake.util.PDate;
 
 /**
  * Dao のテストケースのベース。extends して、BeforeClass, AfterClass で
@@ -51,5 +52,9 @@ public abstract class AbstractDaoTestCaseBase {
     public final void shouldAlwaysSucceed() {
         // do nothing
         // NOTE: this method ensures the setup method is called when no other test methods are defined. 
+    }
+    
+    protected void setup() throws DAOException {
+        PDate.resetCurrentDate();
     }
 }

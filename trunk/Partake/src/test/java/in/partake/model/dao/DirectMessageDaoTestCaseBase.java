@@ -23,6 +23,8 @@ public abstract class DirectMessageDaoTestCaseBase extends AbstractDaoTestCaseBa
 
 	@Before
 	public void setup() throws DAOException {
+	    super.setup();
+	    
 		PartakeDAOFactory factory = getFactory();
 		pool = getPool();
 		dao = factory.getDirectMessageAccess();

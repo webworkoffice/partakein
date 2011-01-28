@@ -9,6 +9,8 @@ import org.junit.Test;
 public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestCaseBase {
     @Before
     public void setup() throws DAOException {
+        super.setup();
+        
         // --- remove all data before starting test.
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();

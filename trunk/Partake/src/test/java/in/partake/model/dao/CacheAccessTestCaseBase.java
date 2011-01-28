@@ -21,6 +21,8 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
     
     @Before
     public void setup() throws DAOException {
+        super.setup();
+        
         // --- remove all data before starting test.
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
@@ -270,6 +272,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             }
         } finally {
             con.invalidate();
-        }   
+        }
+        PDate.resetCurrentDate();
     }
 }

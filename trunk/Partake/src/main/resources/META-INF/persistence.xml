@@ -29,7 +29,7 @@
       <property name="openjpa.ConnectionProperties" value="DriverClassName=org.postgresql.Driver,Url=jdbc:postgresql:partake-unittest,Username=partake,Password=partake"/>
       <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
 
-	  <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='drop,add,deleteTableContents')"/> 
+	  <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='drop,add')"/> 
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
       
       <property name="openjpa.DataCache" value="true"/>
