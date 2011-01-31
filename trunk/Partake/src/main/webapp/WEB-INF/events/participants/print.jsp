@@ -1,7 +1,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="in.partake.model.ParticipationEx"%>
 <%@page import="java.util.List"%>
-<%@page import="in.partake.model.dto.ParticipationStatus"%>
+<%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.dto.EventReminderStatus"%>

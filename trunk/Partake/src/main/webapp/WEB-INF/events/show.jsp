@@ -12,12 +12,12 @@
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dao.DataIterator"%>
-<%@page import="in.partake.model.dto.UserPermission"%>
+<%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
 <%@page import="in.partake.model.dto.Participation"%>
 <%@page import="in.partake.service.UserService"%>
-<%@page import="in.partake.model.dto.EventCategory"%>
+<%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
 <%@page import="in.partake.model.dto.Comment"%>
-<%@page import="in.partake.model.dto.ParticipationStatus"%>
+<%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.model.dto.User"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@page import="in.partake.view.Helper"%>

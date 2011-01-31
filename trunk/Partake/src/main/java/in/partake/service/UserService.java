@@ -13,7 +13,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
-import in.partake.model.dto.aux.ParticipationStatus;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.http.AccessToken;

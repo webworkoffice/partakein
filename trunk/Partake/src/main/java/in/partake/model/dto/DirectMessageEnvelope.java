@@ -1,6 +1,6 @@
 package in.partake.model.dto;
 
-import in.partake.model.dto.aux.DirectMessagePostingType;
+import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
 import java.util.Date;
 

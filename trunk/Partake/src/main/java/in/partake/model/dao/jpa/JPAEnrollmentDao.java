@@ -12,8 +12,8 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.Participation;
 import in.partake.model.dto.User;
-import in.partake.model.dto.aux.LastParticipationStatus;
-import in.partake.model.dto.aux.ParticipationStatus;
+import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
 
 class JPAEnrollmentDao extends JPADao implements IEnrollmentAccess {
 

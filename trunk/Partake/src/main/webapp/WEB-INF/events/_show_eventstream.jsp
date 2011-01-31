@@ -1,4 +1,4 @@
-<%@page import="in.partake.model.dto.UserPermission"%>
+<%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
 <%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="in.partake.model.dto.DirectMessage"%>
 <%@page import="java.util.List"%>
