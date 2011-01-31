@@ -3,7 +3,7 @@ package in.partake.view;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
-import in.partake.model.dto.aux.ParticipationStatus;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
 

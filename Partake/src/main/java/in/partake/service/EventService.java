@@ -20,9 +20,9 @@ import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.Participation;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
-import in.partake.model.dto.aux.DirectMessagePostingType;
-import in.partake.model.dto.aux.LastParticipationStatus;
-import in.partake.model.dto.aux.ParticipationStatus;
+import in.partake.model.dto.auxiliary.DirectMessagePostingType;
+import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
 import in.partake.util.Util;
 

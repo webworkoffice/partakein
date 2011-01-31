@@ -22,7 +22,7 @@ import in.partake.model.dto.DirectMessageEnvelope;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
-import in.partake.model.dto.aux.DirectMessagePostingType;
+import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
 // TOOD: This class will be merged into MessageService later.
 public class DirectMessageService extends PartakeService {

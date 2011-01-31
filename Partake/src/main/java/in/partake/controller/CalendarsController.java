@@ -4,7 +4,7 @@ import in.partake.functional.Function;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
-import in.partake.model.dto.aux.EventCategory;
+import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.I18n;
 import in.partake.service.EventService;
 import in.partake.service.UserService;

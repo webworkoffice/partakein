@@ -5,7 +5,7 @@ import java.util.Date;
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessageEnvelope;
 import in.partake.model.dto.EventReminderStatus;
-import in.partake.model.dto.aux.DirectMessagePostingType;
+import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
 public interface IDirectMessageAccess extends ITruncatable {
     public String getFreshId(PartakeConnection con) throws DAOException;

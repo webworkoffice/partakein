@@ -9,7 +9,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessageEnvelope;
 import in.partake.model.dto.EventReminderStatus;
-import in.partake.model.dto.aux.DirectMessagePostingType;
+import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.util.Util;
 
 import java.util.ArrayList;

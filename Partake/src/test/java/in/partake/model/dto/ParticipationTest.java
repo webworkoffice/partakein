@@ -1,7 +1,7 @@
 package in.partake.model.dto;
 
-import in.partake.model.dto.aux.LastParticipationStatus;
-import in.partake.model.dto.aux.ParticipationStatus;
+import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

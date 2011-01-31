@@ -2,7 +2,7 @@ package in.partake.model;
 
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
-import in.partake.model.dto.aux.UserPermission;
+import in.partake.model.dto.auxiliary.UserPermission;
 
 import java.util.ArrayList;
 import java.util.List;

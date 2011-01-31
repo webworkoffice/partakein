@@ -2,7 +2,7 @@ package in.partake.model.dao;
 
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessageEnvelope;
-import in.partake.model.dto.aux.DirectMessagePostingType;
+import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
 import java.util.Date;
 
