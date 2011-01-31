@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Unique;
 
-@Entity
+@Entity(name = "CalendarLinkages")
 public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
     @Id
     private String id;

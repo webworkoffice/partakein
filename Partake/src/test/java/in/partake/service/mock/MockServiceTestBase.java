@@ -85,7 +85,7 @@ public class MockServiceTestBase extends PartakeService {
     }
     
     protected User createUser(String userId) {
-        User user = new User(userId, new Date(), -1, null);
+        User user = new User(userId, -1, new Date(), null);
         return user;
     }
     

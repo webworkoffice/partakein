@@ -27,7 +27,7 @@ class JPAEventRelationDao extends JPADao implements IEventRelationAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM EventRelation");
+        Query q = em.createQuery("DELETE FROM EventRelations");
         q.executeUpdate();
     }
 }

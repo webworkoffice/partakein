@@ -78,7 +78,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEventById(con, eventId);
+                target = dao.getEvent(con, eventId);
                 con.commit();
             }
 
@@ -117,7 +117,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEventById(con, eventId);
+                target = dao.getEvent(con, eventId);
                 con.commit();
             }
 
@@ -159,7 +159,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEventById(con, eventId);
+                target = dao.getEvent(con, eventId);
                 con.commit();
             }
 
@@ -192,7 +192,42 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
     
     @Test
     public void testToAddUpdateGet() throws DAOException {
-        throw new RuntimeException("Not implemeneted yet.");
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            String userId = "userId" + System.currentTimeMillis();
+            String eventId;
+            
+            Event original = createEvent(null, userId);
+            {
+                con.beginTransaction();
+                eventId = dao.getFreshId(con);
+                original.setId(eventId);
+                dao.addEvent(con, original);
+                con.commit();
+            }
+            
+            Event updated = new Event(original);
+            {
+                updated.setTitle("updated title");
+                con.beginTransaction();
+                dao.updateEvent(con, updated);
+                con.commit();
+            }
+            
+            Event target;
+            {
+                con.beginTransaction();
+                target = dao.getEvent(con, eventId);
+                con.commit();
+            }
+
+            Assert.assertNotNull(target);
+            Assert.assertEquals(updated, target);
+            Assert.assertFalse(original.equals(target));
+        } finally {
+            con.invalidate();
+        }
     }
 
     
@@ -206,7 +241,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEventById(con, eventId);
+                target = dao.getEvent(con, eventId);
                 con.commit();
             }
 

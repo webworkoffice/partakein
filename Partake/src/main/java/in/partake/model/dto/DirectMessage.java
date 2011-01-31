@@ -10,7 +10,7 @@ import javax.persistence.Lob;
 import org.apache.commons.lang.ObjectUtils;
 
 // TODO: This class will be renamed as Message later.
-@Entity
+@Entity(name = "DirectMessages")
 public class DirectMessage extends PartakeModel<DirectMessage> {
     @Id
     private String id;

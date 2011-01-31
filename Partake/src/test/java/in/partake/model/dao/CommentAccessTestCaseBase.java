@@ -204,7 +204,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
         
     }
     
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testToUpdateByIterator() throws Exception {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();

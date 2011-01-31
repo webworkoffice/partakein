@@ -9,7 +9,7 @@ import javax.persistence.Lob;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity
+@Entity(name = "BinaryData")
 public class BinaryData extends PartakeModel<BinaryData> {
     @Id
     private String id;

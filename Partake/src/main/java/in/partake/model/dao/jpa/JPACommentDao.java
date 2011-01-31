@@ -30,23 +30,22 @@ class JPACommentDao extends JPADao implements ICommentAccess {
     @Override
     public Comment getComment(PartakeConnection con, String commentId) throws DAOException {
         EntityManager em = getEntityManager(con);        
-        return em.find(Comment.class, commentId);
+        return freeze(em.find(Comment.class, commentId));
     }
 
     @Override
     public void removeComment(PartakeConnection con, String commentId) throws DAOException {
         EntityManager em = getEntityManager(con);
-        
-        Query q = em.createQuery("DELETE FROM Comment c WHERE c.id = :id");
-        q.setParameter("id", commentId);
-        q.executeUpdate();
+        Comment comment = em.find(Comment.class, commentId);
+        if (comment == null) { return; }
+        em.remove(comment);
     }
 
     @Override
     public DataIterator<Comment> getCommentsByEvent(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
         
-        Query q = em.createQuery("SELECT FROM Comment c WHERE c.eventId = :eventId");
+        Query q = em.createQuery("SELECT c FROM Comments AS c WHERE c.eventId = :eventId");
         q.setParameter("eventId", eventId);
         
         @SuppressWarnings("unchecked")
@@ -58,7 +57,7 @@ class JPACommentDao extends JPADao implements ICommentAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM Comment");
+        Query q = em.createQuery("DELETE FROM Comments");
         q.executeUpdate();
     }
 }

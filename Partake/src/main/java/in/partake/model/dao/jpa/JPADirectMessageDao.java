@@ -73,7 +73,7 @@ public class JPADirectMessageDao extends JPADao implements IDirectMessageAccess 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM DirectMessage");
+        Query q = em.createQuery("DELETE FROM DirectMessages");
         q.executeUpdate();
     }
 }

@@ -9,7 +9,7 @@ import javax.persistence.Lob;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity
+@Entity(name = "Comments")
 public class Comment extends PartakeModel<Comment> {
     @Id 
     private String id;          // comment id

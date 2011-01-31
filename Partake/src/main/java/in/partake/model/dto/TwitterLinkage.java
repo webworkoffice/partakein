@@ -6,7 +6,7 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity
+@Entity(name = "TwitterLinkages")
 public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     @Id
     private int twitterId;

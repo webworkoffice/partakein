@@ -7,17 +7,17 @@ import in.partake.model.dto.User;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;
 import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
+import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.Cassandra.Client;
@@ -45,8 +45,6 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     private static final ConsistencyLevel USERS_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel USERS_CL_W = ConsistencyLevel.ALL;
     
-
-    
     // ----------------------------------------------------------------------
     
     UserCassandraDao(CassandraDAOFactory factory) {
@@ -55,22 +53,25 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     
     // fresh な user id を１つ作成して返す。
     @Override
-    public String getFreshUserId(PartakeConnection con) throws DAOException {
+    public String getFreshId(PartakeConnection con) throws DAOException {
         return UUID.randomUUID().toString();
     }
     
     @Override
-    public void addUser(PartakeConnection con, String userId, int twitterId) throws DAOException {
+    public void addUser(PartakeConnection con, User user) throws DAOException {
+        if (user == null) { throw new NullPointerException(); }
+        if (user.getId() == null) { throw new NullPointerException(); }
+        
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addUserWithId(ccon.getClient(), userId, twitterId, ccon.getAcquiredTime());
+            addUserImpl(ccon.getClient(), user, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
     @Override
-    public User getUserById(PartakeConnection con, String id) throws DAOException {
+    public User getUser(PartakeConnection con, String id) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getUserById(ccon.getClient(), id);
@@ -80,26 +81,10 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     }
     
     @Override
-    public void updateLastLogin(PartakeConnection con, User user) throws DAOException {
+    public void updateLastLogin(PartakeConnection con, User user, Date now) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            updateUserField(ccon.getClient(), user.getId(), "lastLoginAt", Util.getTimeString(ccon.getAcquiredTime()), ccon.getAcquiredTime());
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-    }
-    
-    @Override
-    public List<User> getUsersByIds(PartakeConnection con, List<String> ids) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            ArrayList<User> users = new ArrayList<User>();
-            for (String id : ids) {
-                User user = getUserById(ccon.getClient(), id);
-                users.add(user);
-            }
-            
-            return users;
+            updateUserField(ccon.getClient(), user.getId(), "lastLoginAt", Util.getTimeString(now.getTime()), ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -113,21 +98,15 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     // ----------------------------------------------------------------------
     // insertion
     
-    private String addUserWithId(Client client, String id, int twitterId, long time) throws Exception {
-    	String key = USERS_PREFIX + id;
+    private void addUserImpl(Client client, User user, long time) throws Exception {
+        String key = USERS_PREFIX + user.getId();
 
-        Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
-        List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();
-
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("id"), bytes(id), time)));
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("twitterId"), bytes(String.valueOf(twitterId)), time)));
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("lastLoginAt"), bytes(Util.getTimeString(time)), time)));
+        List<Mutation> mutations = new ArrayList<Mutation>();
+        mutations.add(createMutation("twitterId", String.valueOf(user.getTwitterId()), time));
+        mutations.add(createMutation("calendarId", user.getCalendarId(), time));
+        mutations.add(createMutation("lastLoginAt", user.getLastLoginAt(), time));
         
-        cfmap.put(USERS_COLUMNFAMILY, columns);
-        
-        client.batch_insert(USERS_KEYSPACE, key, cfmap, USERS_CL_W);
-        
-        return id;
+        client.batch_mutate(USERS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_COLUMNFAMILY, mutations)), USERS_CL_W);
     }
     
     private void updateUserField(Client client, String userId, String name, String value, long time) throws Exception {
@@ -156,14 +135,14 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
         if (results.isEmpty()) { return null; }
         
         User user = new User();
+        user.setId(id);
+        
         for (ColumnOrSuperColumn result : results) {
             Column column = result.column;
             String name = string(column.getName());
             String value = string(column.getValue());
             
-            if ("id".equals(name)) {
-                user.setId(value);
-            } else if ("twitterId".equals(name)) {
+            if ("twitterId".equals(name)) {
                 user.setTwitterId(Integer.parseInt(value));
             } else if ("lastLoginAt".equals(name)) {
             	user.setLastLoginAt(Util.dateFromTimeString(string(column.getValue())));
@@ -172,7 +151,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
             }
         }
         
-        return user;
+        return user.freeze();
     }
 
 }

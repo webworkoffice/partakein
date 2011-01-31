@@ -6,7 +6,7 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity
+@Entity(name = "UserPreferences")
 public class UserPreference extends PartakeModel<UserPreference> {
     @Id
     private String  userId;

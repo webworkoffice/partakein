@@ -37,5 +37,4 @@ public class ParticipationPK {
         
         return code;
     }
-    
 }
