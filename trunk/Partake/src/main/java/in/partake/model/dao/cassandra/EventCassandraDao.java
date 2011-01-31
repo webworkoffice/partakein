@@ -5,7 +5,6 @@ import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.User;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
@@ -84,31 +83,31 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     };
     
     @Override
-    public Event getEventById(PartakeConnection con, String id) throws DAOException {
+    public Event getEvent(PartakeConnection con, String id) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getEventById(ccon, id);
+            return getEventImpl(ccon, id);
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
-    /* (non-Javadoc)
-     * @see in.partake.dao.cassandra.IEventAccess#getEventsByIds(java.util.List)
-     */
-    @Override
-    public List<Event> getEventsByIds(PartakeConnection con, List<String> ids) throws DAOException {
-        try {
-            List<Event> events = new ArrayList<Event>();
-            for (String id : ids) {
-                Event event = getEventById(con, id);
-                if (event != null) { events.add(event); }
-            }
-            return events;
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-    }
+//    /* (non-Javadoc)
+//     * @see in.partake.dao.cassandra.IEventAccess#getEventsByIds(java.util.List)
+//     */
+//    @Override
+//    public List<Event> getEventsByIds(PartakeConnection con, List<String> ids) throws DAOException {
+//        try {
+//            List<Event> events = new ArrayList<Event>();
+//            for (String id : ids) {
+//                Event event = getEvent(con, id);
+//                if (event != null) { events.add(event); }
+//            }
+//            return events;
+//        } catch (Exception e) {
+//            throw new DAOException(e);
+//        }
+//    }
     
     /* (non-Javadoc)
      * @see in.partake.dao.cassandra.IEventAccess#getAllEventKeys()
@@ -116,13 +115,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     @Override
     public KeyIterator getAllEventKeys(PartakeConnection connection) throws DAOException {
         return new CassandraKeyIterator((CassandraConnection) connection, EVENTS_KEYSPACE, EVENTS_PREFIX, EVENTS_COLUMNFAMILY, EVENTS_CL_R);
-    }
-    
-
-    
-    @Override
-    public List<Event> getEventsByOwner(PartakeConnection con, User owner) throws DAOException {
-        return getEventsByOwner(con, owner.getId());
     }
     
     @Override
@@ -145,6 +137,9 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     }    
     
     private void addEventImpl(PartakeConnection con, Event embryo) throws DAOException {
+        if (embryo == null) { throw new IllegalArgumentException(); }
+        if (embryo.getId() == null) { throw new IllegalArgumentException(); }
+        
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             // addToEvents を最後にする。(Event Master Table に最後に入るようにする。)
@@ -153,27 +148,22 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
             
             long time = ccon.getAcquiredTime();
             addToEventsByOwner(ccon.getClient(), embryo.getId(), embryo.getOwnerId(), time);
-            addEvent(ccon.getClient(), embryo.getId(), embryo, time);
+            addEventImpl(ccon.getClient(), embryo, time);
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
     @Override
-    public void updateEvent(PartakeConnection con, Event original, Event embryo) throws DAOException {
+    public void updateEvent(PartakeConnection con, Event embryo) throws DAOException {
+        // TODO: これむしろ null po を投げないとだめか
+        if (embryo == null) { throw new IllegalArgumentException(); }
+        if (embryo.getId() == null) { throw new IllegalArgumentException(); }
+        
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addEvent(ccon.getClient(), original.getId(), embryo, ccon.getAcquiredTime());
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-    }
-
-    @Override
-    public void updateEventRevision(PartakeConnection con, String eventId) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            updateEventRevision(ccon.getClient(), eventId, con.getAcquiredTime());
+            addEventImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
+            updateEventRevision(ccon.getClient(), embryo.getId(), con.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -189,15 +179,15 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         }
     }
     
-    @Override
-    public boolean appendFeedId(PartakeConnection con, String eventId, String feedId) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            return appendFeedId(ccon, eventId, feedId, ccon.getAcquiredTime());
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-    }
+//    @Override
+//    public boolean appendFeedId(PartakeConnection con, String eventId, String feedId) throws DAOException {
+//        CassandraConnection ccon = (CassandraConnection) con;
+//        try {
+//            return appendFeedId(ccon, eventId, feedId, ccon.getAcquiredTime());
+//        } catch (Exception e) {
+//            throw new DAOException(e);
+//        }
+//    }
         
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
@@ -207,12 +197,11 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     // ----------------------------------------------------------------------
     // insertion
 
-    private void addEvent(Client client, String id, Event embryo, long time) throws Exception {
-        String key = EVENTS_PREFIX + id;
+    private void addEventImpl(Client client, Event embryo, long time) throws Exception {
+        String key = EVENTS_PREFIX + embryo.getId();
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 
 
-        mutations.add(createMutation("id", id, time));
         mutations.add(createMutation("title", embryo.getTitle(), time));
         mutations.add(createMutation("summary", embryo.getSummary(), time));
         mutations.add(createMutation("category", embryo.getCategory(), time));
@@ -261,22 +250,22 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         client.batch_mutate(EVENTS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENTS_COLUMNFAMILY, mutations)), EVENTS_CL_W);
     }
 
-    private boolean appendFeedId(CassandraConnection con, String eventId, String feedId, long time) throws Exception {        
-    	// first, confirm that the event exists.
-        Client client = con.getClient();
-    	Event event = getEventById(con, eventId);
-    	if (event == null) { return false; }
-    	
-    	String key = EVENTS_PREFIX + eventId;
-    	
-    	ColumnPath columnPath = new ColumnPath(EVENTS_COLUMNFAMILY);
-    	columnPath.setColumn(bytes("feedId"));
-    	
-    	byte[] value = bytes(feedId);
-    	
-    	client.insert(EVENTS_KEYSPACE, key, columnPath, value, time, EVENTS_CL_W);
-    	return true;
-    }
+//    private boolean appendFeedId(CassandraConnection con, String eventId, String feedId, long time) throws Exception {        
+//    	// first, confirm that the event exists.
+//        Client client = con.getClient();
+//    	Event event = getEventById(con, eventId);
+//    	if (event == null) { return false; }
+//    	
+//    	String key = EVENTS_PREFIX + eventId;
+//    	
+//    	ColumnPath columnPath = new ColumnPath(EVENTS_COLUMNFAMILY);
+//    	columnPath.setColumn(bytes("feedId"));
+//    	
+//    	byte[] value = bytes(feedId);
+//    	
+//    	client.insert(EVENTS_KEYSPACE, key, columnPath, value, time, EVENTS_CL_W);
+//    	return true;
+//    }
 
     private void addToEventsByOwner(Client client, String id, String ownerId, long time) throws Exception {
         String key = EVENTS_BYOWNER_PREFIX + ownerId;
@@ -291,7 +280,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     // ----------------------------------------------------------------------
     // retrieval
     
-    // TODO: DAO が仕事しすぎ。EventId のリストを返すに止めれば良い．
     private List<Event> getEventsByOwnerImpl(CassandraConnection con, String userId) throws Exception {
         Client client = con.getClient();
     	String key = EVENTS_BYOWNER_PREFIX + userId;
@@ -306,14 +294,17 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         List<ColumnOrSuperColumn> columns =
         	client.get_slice(EVENTS_BYOWNER_KEYSPACE, key, columnParent, predicate, EVENTS_BYOWNER_CL_R);
         
-        ArrayList<String> ids = new ArrayList<String>();
+        List<Event> events = new ArrayList<Event>();
         for (ColumnOrSuperColumn result : columns) {
             Column column = result.column;
-            if (column == null) { continue; }            
-            ids.add(string(column.getName()));
+            if (column == null) { continue; }
+            String id = string(column.getName());
+            if (id == null) { continue; }
+            Event event = getEventImpl(con, id);
+            if (event == null) { continue; }
+            events.add(event);
         }
         
-        List<Event> events = getEventsByIds(con, ids);
         Collections.sort(events, Event.getComparatorBeginDateAsc());
         
         return events;
@@ -329,7 +320,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         client.insert(EVENTS_KEYSPACE, key, columnPath, TRUE, time, EVENTS_CL_W);
     }    
 
-    private Event getEventById(CassandraConnection con, String id) throws Exception {
+    private Event getEventImpl(CassandraConnection con, String id) throws Exception {
         String key = EVENTS_PREFIX + id;
 
         List<ColumnOrSuperColumn> results = getSlice(con.getClient(), EVENTS_KEYSPACE, EVENTS_COLUMNFAMILY, key, EVENTS_CL_R);
@@ -338,14 +329,14 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         
         // TODO: これは本当にひどいのでなんとかするべき。目が腐るよ！　みちゃだめ！
         Event event = new Event();
+        event.setId(id);
+        
         for (ColumnOrSuperColumn result : results) {
             Column column = result.column;
             String name = string(column.getName());
             String value = string(column.getValue());
             
-            if ("id".equals(name)) {
-                event.setId(value);
-            } else if ("shortId".equals(name)) {
+            if ("shortId".equals(name)) {
                 event.setShortId(value);
             } else if ("title".equals(name)) {
                 event.setTitle(value);
@@ -394,9 +385,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
                 // otherwise, 
             }
         }
-        
-        // if there is no id, the event must not exist. So we should return null.
-        if (event.getId() == null) { return null; }
         
         return event.freeze();
     }

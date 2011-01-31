@@ -6,7 +6,7 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity
+@Entity(name = "FeedLinkages")
 public class FeedLinkage extends PartakeModel<FeedLinkage> {
     @Id
     private String id;

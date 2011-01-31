@@ -13,9 +13,9 @@ public class User extends PartakeModel<User> {
     @Id
     private String  id;
     @Column
-    private Date    lastLoginAt; //
-    @Column
     private int     twitterId;
+    @Column
+    private Date    lastLoginAt; //
     @Column
     private String  calendarId; // TODO: なんでここに calendarId がいるんだっけ...
     
@@ -23,7 +23,7 @@ public class User extends PartakeModel<User> {
         // do nothing
     }
     
-    public User(String id, Date lastLoginAt, int twitterId, String calendarId) {
+    public User(String id, int twitterId, Date lastLoginAt, String calendarId) {
         this.id = id;
         this.lastLoginAt = lastLoginAt;
         this.twitterId = twitterId;

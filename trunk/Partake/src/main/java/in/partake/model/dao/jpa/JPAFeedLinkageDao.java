@@ -8,7 +8,7 @@ import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.FeedLinkage;
 
-class JPAFeedDao extends JPADao implements IFeedAccess {
+class JPAFeedLinkageDao extends JPADao implements IFeedAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
@@ -36,7 +36,7 @@ class JPAFeedDao extends JPADao implements IFeedAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM FeedLinkage");
+        Query q = em.createQuery("DELETE FROM FeedLinkages");
         q.executeUpdate();
     }
 }

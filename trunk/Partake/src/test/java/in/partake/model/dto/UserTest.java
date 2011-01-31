@@ -14,8 +14,8 @@ public class UserTest {
         Date now = new Date(); 
         samples = new User[] {
                 new User(),
-                new User("id1", now, 1, "calendarId1"),
-                new User("id2", now, 2, "calendarId2")
+                new User("id1", 1, now, "calendarId1"),
+                new User("id2", 2, now, "calendarId2")
         };
     }
     

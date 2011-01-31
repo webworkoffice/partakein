@@ -6,7 +6,7 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity
+@Entity(name = "OpenIDLinkages")
 public class OpenIDLinkage extends PartakeModel<OpenIDLinkage> {
     @Id @Column(length = 4096)
     private String id;

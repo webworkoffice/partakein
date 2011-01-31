@@ -327,7 +327,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             for (Column column : superColumn.getColumns()) {
                 String name = string(column.getName());
                 if ("status".equals(name)) {
-                	user = userDao.getUserById(con, string(superColumn.getName()));
+                	user = userDao.getUser(con, string(superColumn.getName()));
                 	status = ParticipationStatus.safeValueOf(string(column.getValue()));
                 	modifiedAt2 = new Date(column.timestamp);
                 } else if ("lastStatus".equals(name)) {
@@ -398,7 +398,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         		String eventId = string(column.getName());
         		ParticipationStatus status = ParticipationStatus.valueOf(string(column.getValue()));
         		if (status.isEnrolled()) {
-        		    return factory.getEventAccess().getEventById(connection, eventId);
+        		    return factory.getEventAccess().getEvent(connection, eventId);
         		} else {
         			return null;
         		}

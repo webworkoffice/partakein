@@ -1,6 +1,7 @@
 package in.partake.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import in.partake.model.UserEx;
@@ -14,6 +15,7 @@ import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.util.PDate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.http.AccessToken;
@@ -44,7 +46,7 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            User user = factory.getUserAccess().getUserById(con, userId); 
+            User user = factory.getUserAccess().getUser(con, userId); 
             if (user == null) { return null; }
             
             // TODO: そのうち、user.getCalendarId() を廃止する予定。
@@ -105,7 +107,7 @@ public final class UserService extends PartakeService {
             UserEx user = getUserFromTwitterLinkage(con, factory, twitterLinkage, twitter, true);
             
             // 3. lastlogin の update
-            factory.getUserAccess().updateLastLogin(con, user);
+            factory.getUserAccess().updateLastLogin(con, user, PDate.getCurrentDate().getDate());
             
             return user;
         } finally {
@@ -117,13 +119,13 @@ public final class UserService extends PartakeService {
         String userId = twitterLinkage.getUserId();
         UserEx user = null;
         if (userId == null) {
-            userId = factory.getUserAccess().getFreshUserId(con);
+            userId = factory.getUserAccess().getFreshId(con);
         } else {
             user = getUserEx(con, userId); 
         }
         
         if (user == null && createsIfAbsent) {
-            factory.getUserAccess().addUser(con, userId, twitter.getId());
+            factory.getUserAccess().addUser(con, new User(userId, twitter.getId(), new Date(), null));
             user = getUserEx(con, userId);
         }
         
@@ -134,7 +136,7 @@ public final class UserService extends PartakeService {
         TwitterLinkage twitterLinkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitter.getId()); 
         
         if (twitterLinkage == null || twitterLinkage.getUserId() == null) {
-            String userId = factory.getUserAccess().getFreshUserId(con); 
+            String userId = factory.getUserAccess().getFreshId(con); 
             twitterLinkageEmbryo.setUserId(userId);
         } else {
             twitterLinkageEmbryo.setUserId(twitterLinkage.getUserId());
@@ -236,7 +238,7 @@ public final class UserService extends PartakeService {
             String userId = calendarLinkage.getUserId();
             if (userId == null) { return null; }
             
-            User user = factory.getUserAccess().getUserById(con, userId);
+            User user = factory.getUserAccess().getUser(con, userId);
             if (user == null) { return null; }
             
             return user;

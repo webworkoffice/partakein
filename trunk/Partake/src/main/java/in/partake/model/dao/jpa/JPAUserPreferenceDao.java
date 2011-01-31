@@ -13,7 +13,7 @@ class JPAUserPreferenceDao extends JPADao implements IUserPreferenceAccess {
     @Override
     public UserPreference getPreference(PartakeConnection con, String userId) throws DAOException {
         EntityManager em = getEntityManager(con);
-        return em.find(UserPreference.class, userId);
+        return freeze(em.find(UserPreference.class, userId)); 
     }
 
     @Override
@@ -28,7 +28,7 @@ class JPAUserPreferenceDao extends JPADao implements IUserPreferenceAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM UserPreference");
+        Query q = em.createQuery("DELETE FROM UserPreferences");
         q.executeUpdate();
     }
 }

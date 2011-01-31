@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 
 @IdClass(ParticipationPK.class)
-@Entity
+@Entity(name = "Participations")
 public class Participation extends PartakeModel<Participation> {
     @Id
     private String userId;

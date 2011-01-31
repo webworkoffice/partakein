@@ -63,7 +63,7 @@ class JPAEnrollmentDao extends JPADao implements IEnrollmentAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM Enrollment");
+        Query q = em.createQuery("DELETE FROM Enrollments");
         q.executeUpdate();
     }
 }

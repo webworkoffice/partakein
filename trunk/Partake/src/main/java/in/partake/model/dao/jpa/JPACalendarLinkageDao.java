@@ -52,7 +52,7 @@ class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM CalendarLinkage");
+        Query q = em.createQuery("DELETE FROM CalendarLinkages");
         q.executeUpdate();
     }
 }

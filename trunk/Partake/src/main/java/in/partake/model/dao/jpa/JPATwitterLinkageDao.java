@@ -25,7 +25,7 @@ class JPATwitterLinkageDao extends JPADao implements ITwitterLinkageAccess {
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM TwitterLinkage");
+        Query q = em.createQuery("DELETE FROM TwitterLinkages");
         q.executeUpdate();
     }
 }

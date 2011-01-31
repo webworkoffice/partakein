@@ -10,7 +10,7 @@ import javax.persistence.Lob;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity
+@Entity(name = "CacheData")
 public class CacheData extends PartakeModel<CacheData> {
     @Id
     private String id;

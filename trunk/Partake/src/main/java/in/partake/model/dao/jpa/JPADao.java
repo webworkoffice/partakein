@@ -37,7 +37,10 @@ abstract class JPADao {
         } else {
             return key;
         }
-        
-        
+    }
+    
+    protected <T extends PartakeModel<T>> T freeze(T t) {
+        if (t == null) { return null; }
+        return t.freeze();
     }
 }

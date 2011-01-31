@@ -74,7 +74,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            return factory.getEventAccess().getEventById(con, eventId);
+            return factory.getEventAccess().getEvent(con, eventId);
         } finally {
             con.invalidate();
         }
@@ -126,7 +126,7 @@ public final class EventService extends PartakeService {
     	    while (it.hasNext()) {
     	        String eventId = it.next();
     	        if (eventId == null) { continue; }
-    	        Event event = factory.getEventAccess().getEventById(con, eventId);
+    	        Event event = factory.getEventAccess().getEvent(con, eventId);
     	        if (event == null) { continue; }
     	        f.apply(event);
     	    }
@@ -147,7 +147,7 @@ public final class EventService extends PartakeService {
             while (it.hasNext()) {
                 String eventId = it.next();
                 if (eventId == null) { continue; }
-                Event event = factory.getEventAccess().getEventById(con, eventId);
+                Event event = factory.getEventAccess().getEvent(con, eventId);
                 if (event == null) { continue; }
                 
                 appendFeedIfAbsent(factory, con, eventId);
@@ -183,7 +183,7 @@ public final class EventService extends PartakeService {
                 	continue;
                 }
                 
-                events.add(factory.getEventAccess().getEventById(con, id));
+                events.add(factory.getEventAccess().getEvent(con, id));
             }
             
             return events;
@@ -400,9 +400,8 @@ public final class EventService extends PartakeService {
     		}
     
     		// master を update
-    		factory.getEventAccess().updateEvent(con, event, eventEmbryo);
-    		// event の revision を update
-    		factory.getEventAccess().updateEventRevision(con, event.getId());
+    		eventEmbryo.setId(event.getId());
+    		factory.getEventAccess().updateEvent(con, eventEmbryo);
     		
     		// その後に image たちを update
     		if (updatesForeImage) {
@@ -643,7 +642,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();       
         PartakeConnection con = getPool().getConnection();
         try {
-            Event event = factory.getEventAccess().getEventById(con, eventId);           
+            Event event = factory.getEventAccess().getEvent(con, eventId);           
             return factory.getEnrollmentAccess().getNumOfParticipants(con, eventId, event.isReservationTimeOver());
         } finally {
             con.invalidate();
@@ -657,7 +656,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();       
         PartakeConnection con = getPool().getConnection();
         try {
-            Event event = factory.getEventAccess().getEventById(con, eventId);           
+            Event event = factory.getEventAccess().getEvent(con, eventId);           
             return factory.getEnrollmentAccess().getOrderOfEnrolledEvent(con, eventId, userId, event.isReservationTimeOver());
         } finally {
             con.invalidate();
@@ -737,7 +736,7 @@ public final class EventService extends PartakeService {
                 String id = document.get("ID");
                 if (id == null) { continue; }
 
-                events.add(factory.getEventAccess().getEventById(con, id));
+                events.add(factory.getEventAccess().getEvent(con, id));
             }
             return events;
         } finally {

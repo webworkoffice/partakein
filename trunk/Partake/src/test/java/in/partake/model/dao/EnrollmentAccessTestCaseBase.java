@@ -55,7 +55,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 		try {
 		    event.setId(eventId);
 			getFactory().getEventAccess().addEvent(con, event);
-			getFactory().getUserAccess().addUser(con, userId, 0);
+			getFactory().getUserAccess().addUser(con, new User(userId, 0, new Date(), null)); 
 
 			dao.enroll(con, user, event, status, "", false, false);
 			List<Participation> list = dao.getParticipation(con, eventId);
@@ -114,7 +114,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 		Date lastLoginAt = PDate.getCurrentDate().getDate();
 		int twitterId = 0;
 		String calendarId = "";
-		User user = new User(userId, lastLoginAt, twitterId, calendarId);
+		User user = new User(userId, twitterId, lastLoginAt, calendarId);
 		return user;
 	}
 }

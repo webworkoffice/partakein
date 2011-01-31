@@ -60,7 +60,7 @@ public class JPADAOFactory extends PartakeDAOFactory {
 
     @Override
     protected IFeedAccess createFeedAccess() {
-        return new JPAFeedDao();
+        return new JPAFeedLinkageDao();
     }
 
     @Override

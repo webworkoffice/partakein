@@ -16,7 +16,7 @@ import org.apache.commons.lang.ObjectUtils;
  * @author shinyak
  *
  */
-@Entity
+@Entity(name = "DirectMessageEnvelopes")
 public class DirectMessageEnvelope extends PartakeModel<DirectMessageEnvelope> {
     @Id
     private String envelopeId;

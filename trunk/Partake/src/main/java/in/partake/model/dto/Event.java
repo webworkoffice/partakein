@@ -14,7 +14,7 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity
+@Entity(name = "Events")
 public class Event extends PartakeModel<Event> {
     @Id
     private String id;

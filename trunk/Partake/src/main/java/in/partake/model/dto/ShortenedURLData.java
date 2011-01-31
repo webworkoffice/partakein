@@ -10,8 +10,8 @@ import javax.persistence.IdClass;
 import org.apache.commons.lang.xwork.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-@Entity
 @IdClass(ShortenedURLDataPK.class)
+@Entity(name = "ShortenedURLData")
 public class ShortenedURLData extends PartakeModel<ShortenedURLData> {
     @Id @Index
     private String originalURL;

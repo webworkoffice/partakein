@@ -82,14 +82,14 @@ public abstract class PartakeService {
     // TODO: これがここにいるのはなんかおかしいような気がする。階層化が足りないのではないか。
     
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
-        User user = getFactory().getUserAccess().getUserById(con, userId);
+        User user = getFactory().getUserAccess().getUser(con, userId);
         if (user == null) { return null; }
         TwitterLinkage linkage = getFactory().getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
         return new UserEx(user, linkage); 
     }
     
     protected EventEx getEventEx(PartakeConnection con, String eventId) throws DAOException {
-        Event event = getFactory().getEventAccess().getEventById(con, eventId);
+        Event event = getFactory().getEventAccess().getEvent(con, eventId);
         if (event == null) { return null; }
         UserEx user = getUserEx(con, event.getOwnerId());
         if (user == null) { return null; }

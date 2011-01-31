@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name = "EventReminderStatuses")
 public class EventReminderStatus extends PartakeModel<EventReminderStatus> {
     @Id
     private String eventId;
