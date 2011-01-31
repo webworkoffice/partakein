@@ -9,19 +9,7 @@ import org.junit.Test;
 public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
     @Before
     public void setup() throws DAOException {
-        super.setup();
-        
-        // --- remove all data before starting test.
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
-        
-        try {
-            con.beginTransaction();
-            factory.getBinaryAccess().truncate(con);
-            con.commit();
-        } finally {            
-            con.invalidate();
-        }
+        super.setup(getFactory().getBinaryAccess()); 
     }
 
     @Test
@@ -174,7 +162,7 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
     }
     
     @Test
-    public void testToCreateDeleteCreateGet() throws Exception {
+    public void testToAddRemoveAddGet() throws Exception {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         

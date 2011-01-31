@@ -40,7 +40,7 @@ public class CassandraKeyIteratorTest extends AbstractDaoTestCaseBase {
     
     @Before
     public void setup() throws DAOException {
-        super.setup();
+        super.setup(null);
     }
     
     @Test

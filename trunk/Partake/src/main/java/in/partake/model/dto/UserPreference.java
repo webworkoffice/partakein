@@ -39,6 +39,11 @@ public class UserPreference extends PartakeModel<UserPreference> {
         this.tweetingAttendanceAutomatically = pref.tweetingAttendanceAutomatically;
     }
     
+    @Override
+    public Object getPrimaryKey() {
+        return userId;
+    }
+    
     // ---------------------------------------------------------------
     // equals method
     

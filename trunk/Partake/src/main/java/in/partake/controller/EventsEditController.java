@@ -5,9 +5,9 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventCategory;
 import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.UserPermission;
+import in.partake.model.dto.aux.EventCategory;
+import in.partake.model.dto.aux.UserPermission;
 import in.partake.service.EventService;
 import in.partake.util.KeyValuePair;
 import in.partake.util.PDate;
@@ -264,14 +264,6 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		deadline = null;
     	}
     	
-        String[] managerShortNamesArray = managers.split(",");
-        List<String> managerShortNames = new ArrayList<String>();
-        for (int i = 0; i < managerShortNamesArray.length; ++i) {
-            String s = StringUtils.trim(managerShortNamesArray[i]);
-            if ("".equals(s)) { continue; }
-            managerShortNames.add(s);
-        }
-    	
     	// login しているはずなので owner が null なことはないはず
         UserEx owner = getLoginUser(); 
         if (owner == null) { return ERROR; }
@@ -285,7 +277,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         // TODO: preview を仕様に組み込む
         Event embryo = new Event(
         		shortId, title, summary, category, deadline, beginDate, endDate, capacity, url, place, address, description,
-        		hashTag, owner.getId(), managerShortNames,
+        		hashTag, owner.getId(), managers,
         		secret, passcode, false, createdAt, null
         );
         
@@ -379,14 +371,6 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		deadline = null;
     	}
     	
-        String[] managerShortNamesArray = managers.split(",");
-        List<String> managerShortNames = new ArrayList<String>();
-        for (int i = 0; i < managerShortNamesArray.length; ++i) {
-            String s = StringUtils.trim(managerShortNamesArray[i]);
-            if ("".equals(s)) { continue; }
-            managerShortNames.add(s);
-        }
-    	
     	// 
     	try {
     		Date now = new Date();
@@ -395,7 +379,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		// TODO: preview
 	        Event eventEmbryo = new Event(
 	        		shortId, title, summary, category, deadline, beginDate, endDate, capacity, url, place, address, description,
-	        		hashTag, event.getOwnerId(), managerShortNames,
+	        		hashTag, event.getOwnerId(), managers,
 	        		secret, passcode, false, event.getCreatedAt(), now
 	        );
 
@@ -436,7 +420,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
             if (event == null) { return NOT_FOUND; }
             if (!event.hasPermission(user, UserPermission.EVENT_REMOVE)) { return PROHIBITED; }
             
-            EventService.get().remove(event);
+            EventService.get().remove(eventId);
             
             return SUCCESS;
         } catch (DAOException e) {
@@ -528,10 +512,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		this.url = event.getUrl();
 		this.description = event.getDescription();
 		this.ownerId = event.getOwnerId();
-		this.managers = "";
-		if (event.getManagerScreenNames() != null) {
-		    this.managers = StringUtils.join(event.getManagerScreenNames().iterator(), ",");		    
-		}
+		this.managers = event.getManagerScreenNames();
 		this.foreImageId = event.getForeImageId();
 		this.backImageId = event.getBackImageId();
 		this.secret = event.isPrivate();

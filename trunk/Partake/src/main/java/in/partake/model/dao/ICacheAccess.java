@@ -2,7 +2,7 @@ package in.partake.model.dao;
 
 import in.partake.model.dto.CacheData;
 
-public interface ICacheAccess {
+public interface ICacheAccess extends ITruncatable {
     /**
      * create or update cache data. 
      * @param con
@@ -27,10 +27,4 @@ public interface ICacheAccess {
      * @throws DAOException
      */
     public CacheData getCache(PartakeConnection con, String cacheId) throws DAOException;
-    
-    /**
-     * remove all data in the cache access. 
-     * Use ONLY in unit tests.
-     */
-    public void truncate(PartakeConnection con) throws DAOException;
 }

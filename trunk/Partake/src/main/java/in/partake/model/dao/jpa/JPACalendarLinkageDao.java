@@ -1,7 +1,5 @@
 package in.partake.model.dao.jpa;
 
-import java.util.UUID;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -14,21 +12,7 @@ class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
 
     @Override
     public String getFreshCalendarId(PartakeConnection con) throws DAOException {
-        JPAConnection jcon = (JPAConnection) con;
-
-        String key = null;
-        CalendarLinkage linkage = null;
-        do {
-            key = UUID.randomUUID().toString();
-            EntityManager em = jcon.getEntityManager();
-            
-            linkage = em.find(CalendarLinkage.class, key);
-        } while (linkage != null);
-        
-        assert(key != null);
-        assert(linkage == null);
-        
-        return key;
+        return getFreshIdImpl(con, CalendarLinkage.class);
     }
 
     @Override
@@ -49,6 +33,13 @@ class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
         } else {
             return null;
         }
+    }
+    
+    @Override
+    public CalendarLinkage getCalendarLinkageByUserId(PartakeConnection con, String userId) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT cl FROM CalendarLinkage WHERE userId = :userId");
+        return (CalendarLinkage) q.getSingleResult();
     }
 
     @Override

@@ -5,21 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
+    private IURLShortenerAccess dao;
+    
     @Before
     public void setup() throws DAOException {
-        super.setup();
-        
-        // --- remove all data before starting test.
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
-        
-        try {
-            con.beginTransaction();
-            factory.getURLShortenerAccess().truncate(con);
-            con.commit();
-        } finally {            
-            con.invalidate();
-        }
+        super.setup(getFactory().getURLShortenerAccess());
+        dao = getFactory().getURLShortenerAccess();
     }
     
     @Test
@@ -95,7 +86,7 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
     
     
     @Test
-    public void testToCreateDeleteAndGet() throws Exception {
+    public void testToAddRemoveGet() throws Exception {
         // 1. create
         // 2. delete it.
         // 3. get
@@ -104,7 +95,7 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
 
     
     @Test
-    public void testToCreateDeleteCreateGet() throws Exception {
+    public void testToAddRemvoeAddGet() throws Exception {
         // 1. create
         // 2. delete it.
         // 3. create the same as #1.
@@ -115,14 +106,14 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
     
     @Test
     public void testToGetNull() throws Exception {
-        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         
         try {
-            con.beginTransaction();            
-            Assert.assertNull(factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "bitly")); 
-            Assert.assertNull(factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "tco")); 
-            Assert.assertNull(factory.getURLShortenerAccess().getShortenedURL(con, "http://www.example.com/", "google")); 
+            String postfix = String.valueOf(System.currentTimeMillis());
+            con.beginTransaction();
+            Assert.assertNull(dao.getShortenedURL(con, "http://www.example.com/" + postfix, "bitly")); 
+            Assert.assertNull(dao.getShortenedURL(con, "http://www.example.com/" + postfix, "tco")); 
+            Assert.assertNull(dao.getShortenedURL(con, "http://www.example.com/" + postfix, "google")); 
             con.commit();
         } finally {
             con.invalidate();

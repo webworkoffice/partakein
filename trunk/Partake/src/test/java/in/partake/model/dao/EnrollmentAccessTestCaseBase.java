@@ -1,10 +1,10 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.Event;
-import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
-import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.User;
+import in.partake.model.dto.aux.LastParticipationStatus;
+import in.partake.model.dto.aux.ParticipationStatus;
 import in.partake.util.PDate;
 
 import java.util.Date;
@@ -26,7 +26,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 
 	@Before
 	public void setup() throws DAOException {
-	    super.setup();
+	    super.setup(getFactory().getEnrollmentAccess());
 	    
 		dao = getFactory().getEnrollmentAccess();
 		eventId = name.getMethodName() + System.currentTimeMillis();
@@ -53,7 +53,8 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 
 		PartakeConnection con = getPool().getConnection();
 		try {
-			getFactory().getEventAccess().addEvent(con, eventId, event);
+		    event.setId(eventId);
+			getFactory().getEventAccess().addEvent(con, event);
 			getFactory().getUserAccess().addUser(con, userId, 0);
 
 			dao.enroll(con, user, event, status, "", false, false);

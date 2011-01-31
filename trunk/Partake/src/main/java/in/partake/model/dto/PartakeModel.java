@@ -7,6 +7,8 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
         this.frozen = false;
     }
     
+    public abstract Object getPrimaryKey();
+    
     protected void checkFrozen() {
         if (frozen) { throw new UnsupportedOperationException(); }
     }

@@ -2,7 +2,7 @@ package in.partake.model.dao;
 
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessageEnvelope;
-import in.partake.model.dto.DirectMessagePostingType;
+import in.partake.model.dto.aux.DirectMessagePostingType;
 
 import java.util.Date;
 
@@ -17,35 +17,26 @@ public abstract class DirectMessageDaoTestCaseBase extends AbstractDaoTestCaseBa
 	private static final String EVENT_OWNER_ID = "owner_id";
 
 	public TestName name = new TestName();
-	private PartakeConnectionPool pool;
 	private IDirectMessageAccess dao;
-	private String messageId;
 
 	@Before
 	public void setup() throws DAOException {
-	    super.setup();
-	    
-		PartakeDAOFactory factory = getFactory();
-		pool = getPool();
-		dao = factory.getDirectMessageAccess();
-
-		PartakeConnection con = pool.getConnection();
-		try {
-			messageId = dao.getFreshId(con);
-		} finally {
-			con.invalidate();
-		}
+	    super.setup(getFactory().getDirectMessageAccess());
+		dao = getFactory().getDirectMessageAccess();
 	}
 
 	@Test
 	public void testSendAndGet() throws DAOException, InterruptedException {
 		Date deadline = new Date();
+		String messageId;
 
 		{
 			DirectMessage embryo = new DirectMessage(EVENT_OWNER_ID, MESSAGE);
-			PartakeConnection sendCon = pool.getConnection();
+			PartakeConnection sendCon = getPool().getConnection();
+			
 			try {
 			    sendCon.beginTransaction();
+			    messageId = dao.getFreshId(sendCon);
 				dao.addMessage(sendCon, messageId, embryo);
 				dao.sendEnvelope(sendCon, messageId, TWITTER_ID, TWITTER_ID, deadline, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
 				sendCon.commit();
@@ -55,7 +46,7 @@ public abstract class DirectMessageDaoTestCaseBase extends AbstractDaoTestCaseBa
 		}
 
 		{
-		    PartakeConnection getCon = pool.getConnection();
+		    PartakeConnection getCon = getPool().getConnection();
 			boolean found = false;
 			try {
 			    getCon.beginTransaction();

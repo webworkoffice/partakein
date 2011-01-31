@@ -19,5 +19,5 @@ public class JPACommentDaoTest extends CommentAccessTestCaseBase {
         reset();
     }
     
-    // common test cases are written in the super class. 
+ // common test cases are written in the super class. 
 }

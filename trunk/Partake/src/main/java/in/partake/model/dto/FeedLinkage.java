@@ -1,9 +1,16 @@
 package in.partake.model.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import org.apache.commons.lang.ObjectUtils;
 
+@Entity
 public class FeedLinkage extends PartakeModel<FeedLinkage> {
+    @Id
     private String id;
+    @Column
     private String userId; 
     
     public FeedLinkage() {
@@ -18,6 +25,11 @@ public class FeedLinkage extends PartakeModel<FeedLinkage> {
     public FeedLinkage(FeedLinkage linkage) {
         this.id = linkage.id;
         this.userId = linkage.userId;
+    }
+    
+    @Override
+    public Object getPrimaryKey() {
+        return id;
     }
 
     // ----------------------------------------------------------------------

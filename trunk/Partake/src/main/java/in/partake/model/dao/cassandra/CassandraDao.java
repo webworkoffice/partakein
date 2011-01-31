@@ -2,6 +2,8 @@ package in.partake.model.dao.cassandra;
 
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 
+import in.partake.model.dao.DAOException;
+
 import java.util.Date;
 import java.util.List;
 
@@ -69,5 +71,30 @@ abstract class CassandraDao {
     
     protected Mutation createDeleteMutation(String key, long time) {
         return CassandraDaoUtils.createDeleteMutation(key, time);
+    }
+    
+    // ----------------------------------------------------------------------
+    //
+    
+    protected void removeAllData(CassandraConnection con) throws DAOException {
+        
+        long now = new Date().getTime();
+        try {
+            removeAllData(con, "Standard2", now);
+            removeAllData(con, "Super1", now);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+        
+    }
+    
+    private void removeAllData(CassandraConnection con, String columnFamily, long now) throws Exception {
+        // TODO: Since it takes too much time, we do not remove the data for now.
+//        KeyIterator it = new CassandraKeyIterator(con, "Keyspace1", "", columnFamily, ConsistencyLevel.ALL);
+//        while (it.hasNext()) {
+//            String key = it.nextWithPrefix();
+//            ColumnPath columnPath = new ColumnPath(columnFamily);
+//            con.getClient().remove("Keyspace1", key, columnPath, now, ConsistencyLevel.ALL);
+//        }        
     }
 }

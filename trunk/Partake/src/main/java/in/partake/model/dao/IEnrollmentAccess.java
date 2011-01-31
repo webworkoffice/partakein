@@ -1,21 +1,19 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.Event;
-import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
-import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.User;
+import in.partake.model.dto.aux.LastParticipationStatus;
+import in.partake.model.dto.aux.ParticipationStatus;
 
 import java.util.List;
 
-public interface IEnrollmentAccess {
+public interface IEnrollmentAccess extends ITruncatable {
 
     // TODO: changesOnlyComment がださいのでなんとかする
     public void enroll(PartakeConnection con, User user, Event event, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean forceChangeModifiedAt) throws DAOException;
     
     public List<Participation> getParticipation(PartakeConnection con, String eventId) throws DAOException;
-    
-    //public void addUserEnrollment(PartakeConnection con, String eventId, Participation p) throws DAOException;
     
     public void setLastStatus(PartakeConnection con, String eventId, Participation p, LastParticipationStatus lastStatus) throws DAOException;
     
@@ -34,7 +32,4 @@ public interface IEnrollmentAccess {
      */
     public DataIterator<Event> getEnrolledEvents(PartakeConnection connection, String userId) throws DAOException;
     public ParticipationStatus getParticipationStatus(PartakeConnection con, Event event, User user) throws DAOException;
-
-    /** Use ONLY in unit tests.*/
-    public abstract void truncate(PartakeConnection con) throws DAOException;
 }

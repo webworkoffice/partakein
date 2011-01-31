@@ -62,8 +62,7 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	
 	@Override
 	public void truncate(PartakeConnection con) throws DAOException {
-	    // TODO Auto-generated method stub
-	    throw new RuntimeException("Not Implemented Yet.");
+	    removeAllData((CassandraConnection) con);
 	}
 	
 	// ----------------------------------------------------------------------
@@ -71,6 +70,7 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	private List<EventRelation> getEventRelations(Client client, String eventId) throws Exception {
 		String key = EVENT_RELATION_PREFIX + eventId;
 		List<ColumnOrSuperColumn> coscs = getSlice(client, EVENT_RELATION_KEYSPACE, EVENT_RELATION_COLUMNFAMILY, key, EVENT_RELATION_CL_R);
+		
 		List<EventRelation> result = new ArrayList<EventRelation>();
 		
 		EventRelationMapper mapper = new EventRelationMapper();

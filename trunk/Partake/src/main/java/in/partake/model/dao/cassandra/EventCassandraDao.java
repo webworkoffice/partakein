@@ -9,7 +9,6 @@ import in.partake.model.dto.User;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +26,6 @@ import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.TimedOutException;
 import org.apache.cassandra.thrift.UnavailableException;
 import org.apache.cassandra.thrift.Cassandra.Client;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 
@@ -139,17 +137,14 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     
     // id が返却される。
     @Override
-    public void addEvent(PartakeConnection con, String eventId, Event embryo) throws DAOException {
-        addEventImpl(con, eventId, embryo);
+    public void addEvent(PartakeConnection con, Event embryo) throws DAOException {
+        if (embryo == null) { throw new IllegalArgumentException(); }
+        if (embryo.getId() == null) { throw new IllegalArgumentException(); }
+        
+        addEventImpl(con, embryo);
     }    
     
-    @Override
-    public void addEventAsDemo(PartakeConnection con, Event embryo) throws DAOException {
-        addEventImpl(con, "demo", embryo);
-    }
-    
-    // TODO: DAO が仕事しすぎ?
-    private String addEventImpl(PartakeConnection con, String eventId, Event embryo) throws DAOException {
+    private void addEventImpl(PartakeConnection con, Event embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             // addToEvents を最後にする。(Event Master Table に最後に入るようにする。)
@@ -157,9 +152,8 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
             // (RecentEvents と eventsByOwner で、eventId から event データが取れなかった場合は無視するようにすればよい。)
             
             long time = ccon.getAcquiredTime();
-            addToEventsByOwner(ccon.getClient(), eventId, embryo.getOwnerId(), time);
-            addEvent(ccon.getClient(), eventId, embryo, time);
-            return eventId;
+            addToEventsByOwner(ccon.getClient(), embryo.getId(), embryo.getOwnerId(), time);
+            addEvent(ccon.getClient(), embryo.getId(), embryo, time);
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -186,10 +180,10 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     }
     
     @Override
-    public void removeEvent(PartakeConnection con, Event event) throws DAOException {
+    public void removeEvent(PartakeConnection con, String eventId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            removeEvent(ccon.getClient(), event, ccon.getAcquiredTime());
+            removeEvent(ccon.getClient(), eventId, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -207,8 +201,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not Implemented Yet.");
+        removeAllData((CassandraConnection) con);
     }
     
     // ----------------------------------------------------------------------
@@ -233,17 +226,14 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         mutations.add(createMutation("description", embryo.getDescription(), time));
         mutations.add(createMutation("hashtag", embryo.getHashTag(), time));
         mutations.add(createMutation("owner", embryo.getOwnerId(), time));
-        if (embryo.getManagerScreenNames() != null) {
-            mutations.add(createMutation("managers", StringUtils.join(embryo.getManagerScreenNames().iterator(), ","), time));
-        } else {
-            mutations.add(createMutation("managers", "", time));
-        }
+        mutations.add(createMutation("managers", embryo.getManagerScreenNames(), time));
 	    mutations.add(createMutation("foreImageId", embryo.getForeImageId(), time));
         mutations.add(createMutation("backImageId", embryo.getBackImageId(), time));
         mutations.add(createColumnMutation("secret", embryo.isPrivate() ? TRUE : FALSE, time)); 
         mutations.add(createMutation("passcode", embryo.getPasscode(), time));
         mutations.add(createMutation("createdAt", embryo.getCreatedAt(), time));
         mutations.add(createMutation("modifiedAt", embryo.getModifiedAt(), time));
+        mutations.add(createMutation("deleted", "false", time));
         
         client.batch_mutate(EVENTS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENTS_COLUMNFAMILY, mutations)), EVENTS_CL_W);
     }
@@ -330,8 +320,8 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     }
     
     // 削除フラグをたてるのみで、実際には消さないようにする。(このほうが Cassandra が死んでて null だったのか消えたのかの区別が楽)
-    private void removeEvent(Client client, Event event, long time) throws InvalidRequestException, UnavailableException, TimedOutException, TException {
-        String key = EVENTS_PREFIX + event.getId();
+    private void removeEvent(Client client, String eventId, long time) throws InvalidRequestException, UnavailableException, TimedOutException, TException {
+        String key = EVENTS_PREFIX + eventId;
         
         ColumnPath columnPath = new ColumnPath(EVENTS_COLUMNFAMILY);
         columnPath.setColumn(bytes("deleted"));
@@ -384,8 +374,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
             } else if ("owner".equals(name)) {
                 event.setOwnerId(value);
             } else if ("managers".equals(name)) {
-                String[] strs = value.split(",");
-                event.setManagerScreenNames(Arrays.asList(strs));
+                event.setManagerScreenNames(value);
             } else if ("foreImageId".equals(name)) {
                 event.setForeImageId(value);
             } else if ("backImageId".equals(name)) {
@@ -401,12 +390,8 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
             } else if ("revision".equals(name)) {
                 event.setRevision(Integer.parseInt(value));
             } else if ("deleted".equals(name)) {
-            	if ("false".equals(value)) {
-            		// "false" の場合は無視する
-            	} else {
-                    // deleted flag が立っている場合、null を返す。
-            		return null;
-            	}                
+                if ("true".equals(value)) { return null; }
+                // otherwise, 
             }
         }
         

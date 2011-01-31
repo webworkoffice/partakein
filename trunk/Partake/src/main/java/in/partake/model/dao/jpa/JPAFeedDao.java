@@ -6,13 +6,13 @@ import javax.persistence.Query;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dto.FeedLinkage;
 
 class JPAFeedDao extends JPADao implements IFeedAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        return getFreshIdImpl(con, FeedLinkage.class);
     }
 
     @Override

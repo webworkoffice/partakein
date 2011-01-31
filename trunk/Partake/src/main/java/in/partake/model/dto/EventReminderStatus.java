@@ -2,10 +2,19 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class EventReminderStatus extends PartakeModel<EventReminderStatus> {
+    @Id
     private String eventId;
+    @Column
     private Date sentDateOfBeforeDeadlineOneday;
+    @Column
     private Date sentDateOfBeforeDeadlineHalfday;
+    @Column
     private Date sentDateOfBeforeTheDay;
     
     public EventReminderStatus() {
@@ -27,6 +36,19 @@ public class EventReminderStatus extends PartakeModel<EventReminderStatus> {
     public EventReminderStatus(EventReminderStatus status) {
         this(status.eventId, status.sentDateOfBeforeDeadlineOneday, status.sentDateOfBeforeDeadlineHalfday, status.sentDateOfBeforeTheDay);
     }
+
+    @Override
+    public Object getPrimaryKey() {
+        return eventId;
+    }
+    
+    // ----------------------------------------------------------------------
+    // 
+
+    // TODO: equals should be implemented.
+    
+    // ----------------------------------------------------------------------
+    // 
     
     public String getEventId() {
         return eventId;

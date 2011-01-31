@@ -21,19 +21,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
     
     @Before
     public void setup() throws DAOException {
-        super.setup();
-        
-        // --- remove all data before starting test.
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
-        
-        try {
-            con.beginTransaction();
-            factory.getCacheAccess().truncate(con);
-            con.commit();
-        } finally {            
-            con.invalidate();
-        }
+        super.setup(getFactory().getCacheAccess()); 
     }
 
     @Test

@@ -3,14 +3,12 @@ package in.partake.controller;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventCategory;
+import in.partake.model.dto.aux.EventCategory;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -52,9 +50,8 @@ public class AdministratorController extends PartakeActionSupport {
             Date date = createDemoEventDate();
             Date now = new Date();
             UserEx owner = getLoginUser();
-            List<String> managers = Collections.emptyList(); 
             Event embryo = new Event("demo", "demo", "demo", EventCategory.CATEGORIES.get(0).getKey(), date, date, date, 0,
-                            "http://partake.in/", "", "", "demo", "#partake", owner.getId(), managers, false, null, false, now, null);
+                            "http://partake.in/", "", "", "demo", "#partake", owner.getId(), null, false, null, false, now, null);
             
             EventService.get().createAsDemo(embryo, null, null);
             

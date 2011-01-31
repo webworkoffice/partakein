@@ -10,11 +10,13 @@ import in.partake.util.PDate;
 class CassandraConnection extends PartakeConnection {
     private CassandraClient client;
     private long transactionAcquiredTime;
+    private long lastTransactionAcquiredTime;
     
     public CassandraConnection(CassandraConnectionPool pool, String name, CassandraClient client, long time) {
         super(name, pool, time);
         this.client = client;
         this.transactionAcquiredTime = -1;
+        this.lastTransactionAcquiredTime = -1;
     }
     
     public Client getClient() {
@@ -44,6 +46,11 @@ class CassandraConnection extends PartakeConnection {
     public void beginTransaction() throws DAOException {
         long now = PDate.getCurrentTime();
         this.transactionAcquiredTime = now;
+        if (transactionAcquiredTime == lastTransactionAcquiredTime) {
+            transactionAcquiredTime = lastTransactionAcquiredTime + 1;
+        }
+        
+        lastTransactionAcquiredTime = transactionAcquiredTime;
     }
     
     @Override

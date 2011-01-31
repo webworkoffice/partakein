@@ -9,19 +9,7 @@ import org.junit.Test;
 public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestCaseBase {
     @Before
     public void setup() throws DAOException {
-        super.setup();
-        
-        // --- remove all data before starting test.
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
-        
-        try {
-            con.beginTransaction();
-            factory.getCalendarAccess().truncate(con);
-            con.commit();
-        } finally {            
-            con.invalidate();
-        }
+        super.setup(getFactory().getCalendarAccess());
     }
     
     @Test
@@ -75,6 +63,7 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
             }
             
             {
+                con.beginTransaction();
                 CalendarLinkage target = factory.getCalendarAccess().getCalendarLinkage(con, "id");
                 Assert.assertNull(target);
                 con.commit();
@@ -85,7 +74,7 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
     }
     
     @Test
-    public void testToAddDeleteAddGet() throws DAOException {
+    public void testToAddRemoveAddGet() throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         
