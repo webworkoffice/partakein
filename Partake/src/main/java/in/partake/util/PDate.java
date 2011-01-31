@@ -59,6 +59,10 @@ public class PDate {
         PDate.currentDate = currentDate;
     }
     
+    public static void setCurrentTime(long time) {
+        PDate.currentDate = new PDate(time);
+    }
+    
     public static void resetCurrentDate() {
         PDate.currentDate = null;
     }

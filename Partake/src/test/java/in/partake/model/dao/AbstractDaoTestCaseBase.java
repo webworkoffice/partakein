@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import org.junit.After;
 import org.junit.Test;
 
 import in.partake.resource.PartakeProperties;
@@ -54,7 +55,25 @@ public abstract class AbstractDaoTestCaseBase {
         // NOTE: this method ensures the setup method is called when no other test methods are defined. 
     }
     
-    protected void setup() throws DAOException {
+    @After
+    public void tearDown() throws DAOException {
+        
+    }
+    
+    protected void setup(ITruncatable t) throws DAOException {
+        // remove the current data
         PDate.resetCurrentDate();
+        
+        if (t != null) {
+            // truncate all data.
+            PartakeConnection con = pool.getConnection();
+            try {
+                con.beginTransaction();
+                t.truncate(con);
+                con.commit();
+            } finally {
+                con.invalidate();
+            }
+        }
     }
 }

@@ -1,5 +1,9 @@
 package in.partake.model.dao;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class PartakeDAOFactory {
     private final ICacheAccess cacheAccess;
     private final ICalendarLinkageAccess calendarLinkageAccess;    
@@ -16,22 +20,41 @@ public abstract class PartakeDAOFactory {
     private final IUserPreferenceAccess userPreferenceAccess;
     private final IURLShortenerAccess urlShortenerAccess;
     
+    private final List<ITruncatable> truncatables;
+    
     public PartakeDAOFactory() {
-        cacheAccess           = createCacheAccess();
-        calendarLinkageAccess = createCalendarLinkageAccess();
-        binaryAccess          = createBinaryAccess();
-        commentAccess         = createCommentAccess();
-        directMessageAccess   = createDirectMessageAccess();
-        enrollmentAccess      = createEnrollmentAccess();
-        eventAccess           = createEventAccess();
-        eventRelationAccess   = createEventRelationAccess();
-        feedAccess            = createFeedAccess();
-        openIDLinkageAccess   = createOpenIDLinkageAccess();
-        twitterLinkageAccess  = createTwitterLinkageAccess();
-        userAccess            = creataeUserAccess();
-        userPreferenceAccess  = createUserPreferenceAccess();
-        urlShortenerAccess    = createUrlShortenerAccess();
+        truncatables = new ArrayList<ITruncatable>();
+        
+        addTruncatable(cacheAccess           = createCacheAccess());
+        addTruncatable(calendarLinkageAccess = createCalendarLinkageAccess());
+        addTruncatable(binaryAccess          = createBinaryAccess());
+        addTruncatable(commentAccess         = createCommentAccess());
+        addTruncatable(directMessageAccess   = createDirectMessageAccess());
+        addTruncatable(enrollmentAccess      = createEnrollmentAccess());
+        addTruncatable(eventAccess           = createEventAccess());
+        addTruncatable(eventRelationAccess   = createEventRelationAccess());
+        addTruncatable(feedAccess            = createFeedAccess());
+        addTruncatable(openIDLinkageAccess   = createOpenIDLinkageAccess());
+        addTruncatable(twitterLinkageAccess  = createTwitterLinkageAccess());
+        addTruncatable(userAccess            = creataeUserAccess());
+        addTruncatable(userPreferenceAccess  = createUserPreferenceAccess());
+        addTruncatable(urlShortenerAccess    = createUrlShortenerAccess());
     }
+    
+    // ----------------------------------------------------------------------
+    // 
+    
+    private void addTruncatable(ITruncatable t) {
+        truncatables.add(t);
+    }
+    
+    public List<ITruncatable> getTruncatables() {
+        return Collections.unmodifiableList(truncatables);
+    }
+    
+    
+    // ----------------------------------------------------------------------
+    // accessors
     
     public final ICacheAccess getCacheAccess() {
         return cacheAccess;
@@ -88,6 +111,9 @@ public abstract class PartakeDAOFactory {
     public final IURLShortenerAccess getURLShortenerAccess() {
         return urlShortenerAccess;
     }
+    
+    // ----------------------------------------------------------------------
+    // abstract factory
     
     protected abstract ICacheAccess createCacheAccess();
     protected abstract ICalendarLinkageAccess createCalendarLinkageAccess();

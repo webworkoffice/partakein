@@ -28,6 +28,12 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     private static final String CALENDAR_COLUMNFAMILY = "Standard2";
     private static final ConsistencyLevel CALENDAR_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel CALENDAR_CL_W = ConsistencyLevel.ALL;
+    
+    private static final String CALENDAR_USER_PREFIX = "calendar:user:";
+    private static final String CALENDAR_USER_KEYSPACE = "Keyspace1";
+    private static final String CALENDAR_USER_COLUMNFAMILY = "Standard2";
+    private static final ConsistencyLevel CALENDAR_USER_CL_R = ConsistencyLevel.ONE;
+    private static final ConsistencyLevel CALENDAR_USER_CL_W = ConsistencyLevel.ALL;
 
     CalendarLinkageCassandraDao(CassandraDAOFactory factory) {
         super(factory);
@@ -46,19 +52,29 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
         try {
             if (embryo.getId() == null) { throw new DAOException("id should be specified."); }
             CassandraConnection ccon = (CassandraConnection) con;
-            addCalendarLinkageWithId(ccon.getClient(), embryo, ccon.getAcquiredTime());
+            addCalendarLinkageToMasterTable(ccon.getClient(), embryo, ccon.getAcquiredTime());
+            addCalendarLinkageToUserTable(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
-    private void addCalendarLinkageWithId(Client client, CalendarLinkage embryo, long time) throws Exception {
+    private void addCalendarLinkageToMasterTable(Client client, CalendarLinkage embryo, long time) throws Exception {
         String key = CALENDAR_PREFIX + embryo.getId();
         
         List<Mutation> mutations = new ArrayList<Mutation>(); 
         mutations.add(createMutation("userId", embryo.getUserId(), time));
 
         client.batch_mutate(CALENDAR_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(CALENDAR_COLUMNFAMILY, mutations)), CALENDAR_CL_W);        
+    }
+    
+    private void addCalendarLinkageToUserTable(Client client, CalendarLinkage embryo, long time) throws Exception {
+        String key = CALENDAR_USER_PREFIX + embryo.getUserId();
+        
+        List<Mutation> mutations = new ArrayList<Mutation>(); 
+        mutations.add(createMutation("calendarId", embryo.getId(), time));
+
+        client.batch_mutate(CALENDAR_USER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(CALENDAR_USER_COLUMNFAMILY, mutations)), CALENDAR_USER_CL_W); 
     }
     
     // ----------------------------------------------------------------------
@@ -102,6 +118,45 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
         return calendarLinkage.freeze();
     }
     
+    @Override
+    public CalendarLinkage getCalendarLinkageByUserId(PartakeConnection con, String userId) throws DAOException {
+        try {
+            CassandraConnection ccon = (CassandraConnection) con;
+            return getCalendarLinkageByUserId(ccon.getClient(), userId, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+    
+    private CalendarLinkage getCalendarLinkageByUserId(Client client, String userId, long time) throws Exception {
+        String key = CALENDAR_USER_PREFIX + userId;
+
+        SlicePredicate predicate = new SlicePredicate();
+        SliceRange sliceRange = new SliceRange(new byte[0], new byte[0], false, 100);
+        predicate.setSlice_range(sliceRange);
+
+        ColumnParent parent = new ColumnParent(CALENDAR_USER_COLUMNFAMILY);
+        List<ColumnOrSuperColumn> results = client.get_slice(CALENDAR_USER_KEYSPACE, key, parent, predicate, CALENDAR_USER_CL_R);
+
+        if (results == null || results.isEmpty()) { return null; }
+        
+        CalendarLinkage calendarLinkage = new CalendarLinkage();
+        calendarLinkage.setUserId(userId);
+        
+        for (ColumnOrSuperColumn result : results) {
+            Column column = result.column;
+            String name = string(column.getName());
+            String value = string(column.getValue());
+            
+            if ("calendarId".equals(name)) {
+                calendarLinkage.setId(value);
+            }
+        }
+        
+        if (calendarLinkage.getId() == null) { return null; }
+        return calendarLinkage.freeze();
+    }
+    
     // ----------------------------------------------------------------------
     // remove
     
@@ -124,8 +179,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        
+        removeAllData((CassandraConnection) con);
     }
 
 }

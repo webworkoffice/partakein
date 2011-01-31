@@ -11,15 +11,14 @@ import in.partake.model.dao.IDirectMessageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.DirectMessageEnvelope;
-import in.partake.model.dto.DirectMessagePostingType;
 import in.partake.model.dto.EventReminderStatus;
+import in.partake.model.dto.aux.DirectMessagePostingType;
 
 public class JPADirectMessageDao extends JPADao implements IDirectMessageAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
-        throw new RuntimeException("Not implemented yet.");
-        // TODO Auto-generated method stub
+        return getFreshIdImpl(con, DirectMessage.class);
     }
 
     @Override

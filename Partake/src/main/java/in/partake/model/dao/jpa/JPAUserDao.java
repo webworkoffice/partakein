@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.User;
@@ -15,8 +14,7 @@ class JPAUserDao extends JPADao implements IUserAccess {
 
     @Override
     public String getFreshUserId(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        return getFreshIdImpl(con, User.class);
     }
 
     @Override
@@ -38,31 +36,7 @@ class JPAUserDao extends JPADao implements IUserAccess {
     }
 
     @Override
-    public void updateCalendarId(PartakeConnection con, User user, String calendarId) throws DAOException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public List<User> getUsersByIds(PartakeConnection con, List<String> ids) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void addOpenID(PartakeConnection con, String userId, String identifier) throws DAOException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void removeOpenID(PartakeConnection con, String userId, String identifier) throws DAOException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public DataIterator<String> getOpenIDIdentifiers(PartakeConnection con, String userId) throws DAOException {
         // TODO Auto-generated method stub
         return null;
     }

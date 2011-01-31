@@ -5,12 +5,13 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.openjpa.persistence.jdbc.Unique;
 
 @Entity
 public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
     @Id
     private String id;
-    @Column
+    @Column @Unique
     private String userId;
     
     public CalendarLinkage() {
@@ -29,6 +30,11 @@ public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
     public CalendarLinkage(CalendarLinkage src) {
         this.id = src.id;
         this.userId = src.userId;
+    }
+    
+    @Override
+    public Object getPrimaryKey() {
+        return id;
     }
     
     // ----------------------------------------------------------------------

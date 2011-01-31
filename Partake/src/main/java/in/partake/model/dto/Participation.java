@@ -1,14 +1,34 @@
 package in.partake.model.dto;
 
+import in.partake.model.dto.aux.LastParticipationStatus;
+import in.partake.model.dto.aux.ParticipationStatus;
+import in.partake.model.dto.pk.ParticipationPK;
+
 import java.util.Comparator;
 import java.util.Date;
 
-public class Participation extends PartakeModel<PartakeModel<?>> {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+
+@IdClass(ParticipationPK.class)
+@Entity
+public class Participation extends PartakeModel<Participation> {
+    @Id
     private String userId;
+    @Id
+    private String eventId;
+    
+    @Column
     private String comment;
+    @Column
     private int priority;
+    @Column
     private ParticipationStatus status;
+    @Column
     private LastParticipationStatus lastStatus;
+    @Column
     private Date modifiedAt;
 
     // priority, modifiedAt 順に並べる comparator 
@@ -29,12 +49,16 @@ public class Participation extends PartakeModel<PartakeModel<?>> {
         };        
     }
     
+    // ----------------------------------------------------------------------
+    // constructors
+    
     public Participation() {
         this.priority = 0;
     }
     
-    public Participation(String userId, String comment, ParticipationStatus status, int priority, LastParticipationStatus lastStatus, Date modifiedAt) {
+    public Participation(String userId, String eventId, String comment, ParticipationStatus status, int priority, LastParticipationStatus lastStatus, Date modifiedAt) {
         this.userId = userId;
+        this.eventId = eventId;
         this.comment = comment;
         this.status = status;
         this.priority = priority;
@@ -44,15 +68,33 @@ public class Participation extends PartakeModel<PartakeModel<?>> {
     
     public Participation(Participation p) {
         this.userId = p.userId;
+        this.eventId = p.eventId;
         this.comment = p.comment;
         this.status = p.status;
         this.priority = p.priority;
         this.lastStatus = p.lastStatus;
         this.modifiedAt = p.modifiedAt == null ? null : (Date) p.modifiedAt.clone();
     }
+
+    @Override
+    public Object getPrimaryKey() {
+        return new ParticipationPK(userId, eventId);
+    }
+    
+    // ----------------------------------------------------------------------
+    // equals method     
+    
+    // TODO: equals method should be implemented.
+    
+    // ----------------------------------------------------------------------
+    // 
     
     public String getUserId() {
         return userId;
+    }
+    
+    public String getEventId() {
+        return eventId;
     }
 
     public String getComment() {

@@ -46,7 +46,7 @@ public class ColumnIteratorTestForSuperColumn extends AbstractDaoTestCaseBase {
     
     @Before
     public void setup() throws DAOException {
-        super.setup();
+        super.setup(null);
     }
     
     @Test

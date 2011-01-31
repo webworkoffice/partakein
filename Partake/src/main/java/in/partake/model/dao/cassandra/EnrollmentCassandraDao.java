@@ -9,10 +9,10 @@ import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
-import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.User;
+import in.partake.model.dto.aux.LastParticipationStatus;
+import in.partake.model.dto.aux.ParticipationStatus;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
@@ -208,8 +208,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not Implemented Yet.");
+        removeAllData((CassandraConnection) con);
     }
     
     // ----------------------------------------------------------------------
@@ -343,9 +342,9 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             }
                         
             if (user != null && modifiedAt != null) {
-            	participations.add(new Participation(user.getId(), comment, status, priority, lastStatus, modifiedAt));
+            	participations.add(new Participation(user.getId(), eventId, comment, status, priority, lastStatus, modifiedAt));
             } else {
-            	participations.add(new Participation(user.getId(), comment, status, priority, lastStatus, modifiedAt2));
+            	participations.add(new Participation(user.getId(), eventId, comment, status, priority, lastStatus, modifiedAt2));
             }
         }
 

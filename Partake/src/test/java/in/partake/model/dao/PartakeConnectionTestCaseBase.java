@@ -12,7 +12,7 @@ public abstract class PartakeConnectionTestCaseBase extends AbstractDaoTestCaseB
 
     @Before
     public void setup() throws DAOException {
-        super.setup();
+        super.setup(null);
     }
     
     @Test

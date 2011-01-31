@@ -1,5 +1,8 @@
 package in.partake.model.dto;
 
+import in.partake.model.dto.aux.LastParticipationStatus;
+import in.partake.model.dto.aux.ParticipationStatus;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,8 +37,8 @@ public final class ParticipationComparatorTest {
 	@Test
 	public void sortAscSortedValues() {
 		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID", "comment", null, 0, null, null),
-				new Participation("userID", "comment", null, 1, null, null)
+				new Participation("userID", "eventId", "comment", null, 0, null, null),
+				new Participation("userID", "eventId", "comment", null, 1, null, null)
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() > list.get(1).getPriority());
@@ -44,8 +47,8 @@ public final class ParticipationComparatorTest {
 	@Test
 	public void sortDescSortedValues() {
 		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID", "comment", null, 1, null, null),
-				new Participation("userID", "comment", null, 0, null, null)
+				new Participation("userID", "eventId", "comment", null, 1, null, null),
+				new Participation("userID", "eventId", "comment", null, 0, null, null)
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() > list.get(1).getPriority());
@@ -54,8 +57,8 @@ public final class ParticipationComparatorTest {
 	@Test
 	public void sortSamePriorityValues() {
 		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID", "comment", null, 0, null, new Date(0)),
-				new Participation("userID", "comment", null, 0, null, new Date(1))
+				new Participation("userID", "eventId", "comment", null, 0, null, new Date(0)),
+				new Participation("userID", "eventId", "comment", null, 0, null, new Date(1))
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() == list.get(1).getPriority());
@@ -65,8 +68,8 @@ public final class ParticipationComparatorTest {
 	@Test
 	public void sortSamePriorityAndDateValues() {
 		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID2", "comment", null, 0, null, new Date(0)),
-				new Participation("userID1", "comment", null, 0, null, new Date(0))
+				new Participation("userID2", "eventId", "comment", null, 0, null, new Date(0)),
+				new Participation("userID1", "eventId", "comment", null, 0, null, new Date(0))
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() == list.get(1).getPriority());
@@ -77,8 +80,8 @@ public final class ParticipationComparatorTest {
 	@Test
 	public void sortAllSameValues() {
 		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID", "comment", null, 0, null, new Date(0)),
-				new Participation("userID", "comment", null, 0, null, new Date(0))
+				new Participation("userID", "eventId", "comment", null, 0, null, new Date(0)),
+				new Participation("userID", "eventId", "comment", null, 0, null, new Date(0))
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() == list.get(1).getPriority());
@@ -100,7 +103,7 @@ public final class ParticipationComparatorTest {
 	@Test
 	public void sortParicipationAndNull() {
 		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation(null, "comment", null, 0, null, null),
+				new Participation(null, null, "comment", null, 0, null, null),
 				null
 		});
 		Collections.sort(list, comparator);
@@ -112,8 +115,8 @@ public final class ParticipationComparatorTest {
 	@Test(expected = NullPointerException.class)
 	public void sortNullId() {
 		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation(null, "comment", ParticipationStatus.CANCELLED, 0, LastParticipationStatus.CHANGED, null),
-				new Participation(null, "comment", ParticipationStatus.CANCELLED, 0, LastParticipationStatus.CHANGED, null)
+				new Participation(null, null, "comment", ParticipationStatus.CANCELLED, 0, LastParticipationStatus.CHANGED, null),
+				new Participation(null, null, "comment", ParticipationStatus.CANCELLED, 0, LastParticipationStatus.CHANGED, null)
 		});
 		Collections.sort(list, comparator);
 	}

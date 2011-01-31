@@ -18,4 +18,6 @@ public class JPADirectMessageDaoTest extends DirectMessageDaoTestCaseBase {
         PartakeProperties.get().reset();
         reset();
     }
+    
+    // common test cases are written in the super class. 
 }

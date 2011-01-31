@@ -15,14 +15,14 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.DirectMessage;
-import in.partake.model.dto.DirectMessagePostingType;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.LastParticipationStatus;
 import in.partake.model.dto.Participation;
-import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
+import in.partake.model.dto.aux.DirectMessagePostingType;
+import in.partake.model.dto.aux.LastParticipationStatus;
+import in.partake.model.dto.aux.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
 import in.partake.util.Util;
 
@@ -328,15 +328,14 @@ public final class EventService extends PartakeService {
 //    			eventEmbryo.setFeedId(new FeedDao().getFreshId());
 //    		}
     		
-    		String eventId;
     		if (asDemo) {
-    		    eventId = DEMO_EVENT_ID;
-    		    factory.getEventAccess().addEventAsDemo(con, eventEmbryo);
+    		    eventEmbryo.setId(DEMO_EVENT_ID);
     		} else {
-    		    eventId = factory.getEventAccess().getFreshId(con);
-    		    factory.getEventAccess().addEvent(con, eventId, eventEmbryo);
+    		    String eventId = factory.getEventAccess().getFreshId(con);
+    		    eventEmbryo.setId(eventId);
     		}
-    		eventEmbryo.setId(eventId);
+    		factory.getEventAccess().addEvent(con, eventEmbryo);
+    		
     		
     		if (foreImageEmbryo != null) {
     		    foreImageEmbryo.setId(foreImageId);
@@ -351,12 +350,12 @@ public final class EventService extends PartakeService {
 
         	// private でなければ Lucene にデータ挿入して検索ができるようにする
         	if (!eventEmbryo.isPrivate()) {
-    	    	Document doc = makeDocument(eventId, eventEmbryo);
+    	    	Document doc = makeDocument(eventEmbryo.getId(), eventEmbryo);
     	    	LuceneDao.get().addDocument(doc);
         	}
         	
         	// Feed Dao にも挿入。
-        	appendFeedIfAbsent(factory, con, eventId);
+        	appendFeedIfAbsent(factory, con, eventEmbryo.getId());
         	
         	
         	// さらに、twitter bot がつぶやく (private の場合はつぶやかない)
@@ -364,7 +363,7 @@ public final class EventService extends PartakeService {
         	    tweetNewEventArrival(factory, con, eventEmbryo);
         	}
         	
-        	return eventId;
+        	return eventEmbryo.getId();
 	    } finally {
 	        con.invalidate();
 	    }
@@ -436,12 +435,11 @@ public final class EventService extends PartakeService {
         }
 	}
 
-	public void remove(Event event) throws DAOException {
+	public void remove(String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();       
         PartakeConnection con = getPool().getConnection();
         try {
-            String eventId = event.getId();
-            factory.getEventAccess().removeEvent(con, event);
+            factory.getEventAccess().removeEvent(con, eventId);
 
             // Lucandra のデータを抜く
             LuceneDao.get().removeDocument(eventId);            
@@ -542,7 +540,7 @@ public final class EventService extends PartakeService {
 	    PartakeDAOFactory factory = getFactory(); 
 	    PartakeConnection con = getPool().getConnection();
 	    try {
-	    	return factory.getCommentAccess().getCommentById(con, commentId);
+	    	return factory.getCommentAccess().getComment(con, commentId);
 	    } finally {
 	        con.invalidate();
 	    }
@@ -557,14 +555,12 @@ public final class EventService extends PartakeService {
 	    }		
 	}
 	
-	public String addComment(Comment embryo) throws DAOException {
+	public void addComment(Comment embryo) throws DAOException {
 	    PartakeDAOFactory factory = getFactory(); 
 	    PartakeConnection con = getPool().getConnection();
 	    try {
-    	    String commentId = factory.getCommentAccess().getFreshId(con);
-    	    factory.getCommentAccess().addCommentToEvent(con, commentId, embryo.getEventId());
-    	    factory.getCommentAccess().addCommentWithId(con, commentId, embryo);    	    
-    	    return commentId;
+    	    embryo.setId(factory.getCommentAccess().getFreshId(con));
+    	    factory.getCommentAccess().addComment(con, embryo);
 	    } finally {
 	        con.invalidate();
 	    }
@@ -585,8 +581,17 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory(); 
         PartakeConnection con = getPool().getConnection();
         try {
+            List<Comment> result = new ArrayList<Comment>();
+            
             DataIterator<Comment> it = factory.getCommentAccess().getCommentsByEvent(con, eventId);
-            return convertToList(it);
+            if (it == null) { return result; }
+            
+            while (it.hasNext()) {
+                Comment comment = it.next();
+                result.add(comment);
+            }
+            
+            return result;
         } finally {
             con.invalidate();
         }
@@ -596,15 +601,16 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory(); 
         PartakeConnection con = getPool().getConnection();
         try {
-            DataIterator<String> iterator = factory.getCommentAccess().getCommentIdsByEvent(con, eventId);
+            DataIterator<Comment> iterator = factory.getCommentAccess().getCommentsByEvent(con, eventId);
             
             List<CommentEx> result = new ArrayList<CommentEx>();
             while (iterator.hasNext()) {
-                String commentId = iterator.next();
+                Comment comment = iterator.next();
+                String commentId = comment.getComment();
                 if (commentId == null) { continue; }
-                CommentEx comment = getCommentEx(con, commentId);
-                if (comment == null) { continue; }
-                result.add(comment);
+                CommentEx commentEx = getCommentEx(con, commentId);
+                if (commentEx == null) { continue; }
+                result.add(commentEx);
             }
             
             return result;

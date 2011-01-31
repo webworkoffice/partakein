@@ -22,12 +22,25 @@
     <class>in.partake.model.dto.BinaryData</class>
     <class>in.partake.model.dto.CacheData</class>
     <class>in.partake.model.dto.CalendarLinkage</class>
+    <class>in.partake.model.dto.Comment</class>
+    <class>in.partake.model.dto.DirectMessage</class>
+    <class>in.partake.model.dto.DirectMessageEnvelope</class>
+    <class>in.partake.model.dto.Event</class>
+    <class>in.partake.model.dto.EventRelation</class>
+    <class>in.partake.model.dto.EventReminderStatus</class>
+    <class>in.partake.model.dto.FeedLinkage</class>
+    <class>in.partake.model.dto.Participation</class>
     <class>in.partake.model.dto.ShortenedURLData</class>
+    <class>in.partake.model.dto.TwitterLinkage</class>
+    <class>in.partake.model.dto.User</class>
+    <class>in.partake.model.dto.UserPreference</class>
     
     <properties>
       <property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource"/>
       <property name="openjpa.ConnectionProperties" value="DriverClassName=org.postgresql.Driver,Url=jdbc:postgresql:partake-unittest,Username=partake,Password=partake"/>
       <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+
+	  <property name="openjpa.jdbc.DBDictionary" value="postgres" />
 
 	  <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='drop,add')"/> 
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>

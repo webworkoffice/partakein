@@ -2,7 +2,7 @@ package in.partake.controller;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventCategory;
+import in.partake.model.dto.aux.EventCategory;
 import in.partake.resource.Constants;
 import in.partake.service.EventService;
 import in.partake.util.KeyValuePair;

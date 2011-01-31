@@ -4,7 +4,7 @@ import in.partake.model.dto.EventRelation;
 
 import java.util.List;
 
-public interface IEventRelationAccess {
+public interface IEventRelationAccess extends ITruncatable {
 
 	/**
      *  event の event relation を、<code>relations</code> に設定します。
@@ -15,7 +15,4 @@ public interface IEventRelationAccess {
      *  event の relation を取得します。
      */
     public abstract List<EventRelation> getEventRelations(PartakeConnection con, String eventId) throws DAOException;
-
-    /** Use ONLY in unit tests.*/
-    public abstract void truncate(PartakeConnection con) throws DAOException;
 }

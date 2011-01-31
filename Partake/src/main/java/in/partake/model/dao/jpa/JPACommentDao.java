@@ -1,5 +1,7 @@
 package in.partake.model.dao.jpa;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -13,44 +15,44 @@ class JPACommentDao extends JPADao implements ICommentAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        return getFreshIdImpl(con, Comment.class);
     }
 
     @Override
-    public void addCommentWithId(PartakeConnection con, String commentId, Comment embryo) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");        
+    public void addComment(PartakeConnection con, Comment embryo) throws DAOException {
+        if (embryo == null) { throw new IllegalStateException(); }
+        if (embryo.getId() == null) { throw new IllegalStateException(); }
+
+        EntityManager em = getEntityManager(con);        
+        em.persist(embryo);
     }
 
     @Override
-    public Comment getCommentById(PartakeConnection con, String commentId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");        
+    public Comment getComment(PartakeConnection con, String commentId) throws DAOException {
+        EntityManager em = getEntityManager(con);        
+        return em.find(Comment.class, commentId);
     }
 
     @Override
     public void removeComment(PartakeConnection con, String commentId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");        
-    }
-
-    @Override
-    public void addCommentToEvent(PartakeConnection con, String commentId, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
-    }
-
-    @Override
-    public DataIterator<String> getCommentIdsByEvent(PartakeConnection con, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        EntityManager em = getEntityManager(con);
+        
+        Query q = em.createQuery("DELETE FROM Comment c WHERE c.id = :id");
+        q.setParameter("id", commentId);
+        q.executeUpdate();
     }
 
     @Override
     public DataIterator<Comment> getCommentsByEvent(PartakeConnection con, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        EntityManager em = getEntityManager(con);
+        
+        Query q = em.createQuery("SELECT FROM Comment c WHERE c.eventId = :eventId");
+        q.setParameter("eventId", eventId);
+        
+        @SuppressWarnings("unchecked")
+        List<Comment> list = q.getResultList();
+        
+        return new JPAPartakeModelDataIterator<Comment>(em, list);
     }
 
     @Override

@@ -2,11 +2,9 @@ package in.partake.model.dto;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Date;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +26,7 @@ public final class EventTest {
 						new Date(), new Date(), -1),
 				new Event("id2", "shortId2", "title2", "summary2", "category2",
 						new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
-						"address2", "description2", "#hashTag2", "ownerId2", new ArrayList<String>(),
+						"address2", "description2", "#hashTag2", "ownerId2", "hoge,fuga",
 						"foreImageId2", "backImageId2", false, "passcode2", false, 
 						new Date(4), new Date(5), 1)
 		};
@@ -73,9 +71,6 @@ public final class EventTest {
 			}
 			if (source.getEndDate() != null) {
 				Assert.assertNotSame(source.getEndDate(), new Event(source).getEndDate());
-			}
-			if (source.getManagerScreenNames() != null) {
-				Assert.assertNotSame(source.getManagerScreenNames(), new Event(source).getManagerScreenNames());
 			}
 			if (source.getCreatedAt() != null) {
 				Assert.assertNotSame(source.getCreatedAt(), new Event(source).getCreatedAt());

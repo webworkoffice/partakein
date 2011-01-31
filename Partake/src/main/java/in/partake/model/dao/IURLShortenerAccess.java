@@ -7,7 +7,7 @@ package in.partake.model.dao;
  * @author shinyak
  *
  */
-public interface IURLShortenerAccess {
+public interface IURLShortenerAccess extends ITruncatable {
     /**
      * originalURL をサービス serviceType で shorten した結果 shortenedURL を保持。
      * @param con
@@ -39,8 +39,4 @@ public interface IURLShortenerAccess {
     
     public abstract void removeShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException;
     public abstract void removeShortenedURL(PartakeConnection con, String originalURL) throws DAOException;
-    
-    /** Use ONLY in unit tests.*/
-    public abstract void truncate(PartakeConnection con) throws DAOException;
-
 }

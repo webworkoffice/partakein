@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 
@@ -22,10 +23,16 @@ class JPAOpenIDLinkageDao extends JPADao implements IOpenIDLinkageAccess {
     }
 
     @Override
-    public void removeOpenID(PartakeConnection con, String identifier, String userId) throws DAOException {
+    public void removeOpenID(PartakeConnection con, String identifier) throws DAOException {
         // TODO Auto-generated method stub
         
     }
+    
+    @Override
+    public DataIterator<String> getOpenIDIdentifiers(PartakeConnection con, String userId) throws DAOException {
+        // TODO Auto-generated method stub
+        return null;
+    }    
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {

@@ -38,6 +38,11 @@ public class BinaryData extends PartakeModel<BinaryData> {
         this.data = src.data != null ? Arrays.copyOf(src.data, src.data.length) : null;
     }
     
+    @Override
+    public Object getPrimaryKey() {
+        return id;
+    }
+    
     // ----------------------------------------------------------------------
     // equals / hashCode
     

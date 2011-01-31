@@ -5,44 +5,70 @@ import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
 import in.partake.util.Util;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+import org.apache.commons.lang.ObjectUtils;
+
+@Entity
 public class Event extends PartakeModel<Event> {
+    @Id
     private String id;
+    @Column
     private String shortId;     // event short id // TODO: short id が使えるように実装する
+    @Column
     private String title;       // event title
+    @Column
     private String summary;     // event summary
+    @Column
     private String category;    // event category
     
+    @Column
     private Date deadline;
+    @Column
     private Date beginDate;
+    @Column
     private Date endDate;
+    @Column
     private int capacity;       // how many people can attend?
+    @Column(length = 10000) 
     private String url;         // URL
+    @Column
     private String place;       // event place
+    @Column
     private String address;
+    @Column(length = 1024 * 1024)
     private String description; // event description
+    @Column
     private String hashTag;
+    @Column
     private String ownerId;
-    private List<String> managerScreenNames; 
+    @Column // TODO: これどうするんだ
+    private String managerScreenNames;
 
+    @Column
     private String foreImageId;
+    @Column
     private String backImageId;
 
+    @Column
     private boolean isPrivate;  // true if the event is private.
+    @Column
     private String passcode;    // passcode to show (if not public)
     
+    @Column
     private boolean isPreview;    // true if the event is preview.
    
+    @Column
     private Date createdAt;     //
-    private Date modifiedAt;    // 
+    @Column
+    private Date modifiedAt;    //
+    @Column
     private int revision;       // used for RSS.
-    
-    
     
     // begin date 順に並べる comparator 
     public static Comparator<Event> getComparatorBeginDateAsc() {
@@ -62,6 +88,8 @@ public class Event extends PartakeModel<Event> {
         };
     }
 
+    // ----------------------------------------------------------------------
+    // ctors
     
     public Event() {        
     }
@@ -82,7 +110,7 @@ public class Event extends PartakeModel<Event> {
     	this.description = event.description;
     	this.hashTag = event.hashTag;
     	this.ownerId = event.ownerId;
-    	this.managerScreenNames = event.managerScreenNames == null ? null : new ArrayList<String>(event.managerScreenNames);
+    	this.managerScreenNames = event.managerScreenNames;
     	this.foreImageId = event.foreImageId;
     	this.backImageId = event.backImageId;
     	this.isPrivate = event.isPrivate;
@@ -95,7 +123,7 @@ public class Event extends PartakeModel<Event> {
     }
     
     public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
-            String url, String place, String address, String description, String hashTag, String ownerId, List<String> managerScreenNames,
+            String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             boolean isPrivate, String passcode, boolean isPreview, Date createdAt, Date modifiedAt) {
         this.id = null;
         this.shortId = shortId;
@@ -128,7 +156,7 @@ public class Event extends PartakeModel<Event> {
     }
     
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
-            String url, String place, String address, String description, String hashTag, String ownerId, List<String> managerScreenNames, 
+            String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames, 
             String foreImageId, String backImageId,
             boolean isPrivate, String passcode, boolean isPreview, Date createdAt, Date modifiedAt, int revision) {
         this.id = id;
@@ -159,6 +187,86 @@ public class Event extends PartakeModel<Event> {
         this.modifiedAt = modifiedAt;
         this.revision = revision;
     }
+    
+    @Override
+    public Object getPrimaryKey() {
+        return id;
+    }
+
+    // ----------------------------------------------------------------------
+    // equals method 
+    
+    // TODO: should be implemented.
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Event)) { return false; }
+        
+        Event lhs = this;
+        Event rhs = (Event) obj;
+        
+        if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
+        if (!ObjectUtils.equals(lhs.shortId, rhs.shortId)) { return false; }
+        if (!ObjectUtils.equals(lhs.title, rhs.title)) { return false; }
+        if (!ObjectUtils.equals(lhs.summary, rhs.summary)) { return false; }
+        if (!ObjectUtils.equals(lhs.category, rhs.category)) { return false; }
+        if (!ObjectUtils.equals(lhs.deadline, rhs.deadline)) { return false; }
+        if (!ObjectUtils.equals(lhs.beginDate, rhs.beginDate)) { return false; }
+        if (!ObjectUtils.equals(lhs.endDate, rhs.endDate)) { return false; }
+        if (!ObjectUtils.equals(lhs.capacity, rhs.capacity)) { return false; }
+        if (!ObjectUtils.equals(lhs.url, rhs.url)) { return false; }
+        if (!ObjectUtils.equals(lhs.place, rhs.place)) { return false; }
+        if (!ObjectUtils.equals(lhs.address, rhs.address)) { return false; }
+        if (!ObjectUtils.equals(lhs.description, rhs.description)) { return false; }
+        if (!ObjectUtils.equals(lhs.hashTag, rhs.hashTag)) { return false; }
+        if (!ObjectUtils.equals(lhs.ownerId, rhs.ownerId)) { return false; }
+        if (!ObjectUtils.equals(lhs.managerScreenNames, rhs.managerScreenNames)) { return false; }
+        if (!ObjectUtils.equals(lhs.foreImageId, rhs.foreImageId)) { return false; }
+        if (!ObjectUtils.equals(lhs.backImageId, rhs.backImageId)) { return false; }
+        if (!ObjectUtils.equals(lhs.isPrivate, rhs.isPrivate)) { return false; }
+        if (!ObjectUtils.equals(lhs.passcode, rhs.passcode)) { return false; }
+        if (!ObjectUtils.equals(lhs.isPreview, rhs.isPreview)) { return false; }
+        if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
+        if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
+        if (!ObjectUtils.equals(lhs.revision, rhs.revision)) { return false; }
+        
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;        
+        
+        code = code * 37 + ObjectUtils.hashCode(id);
+        code = code * 37 + ObjectUtils.hashCode(shortId);
+        code = code * 37 + ObjectUtils.hashCode(title);
+        code = code * 37 + ObjectUtils.hashCode(summary);
+        code = code * 37 + ObjectUtils.hashCode(category);
+        code = code * 37 + ObjectUtils.hashCode(deadline);
+        code = code * 37 + ObjectUtils.hashCode(beginDate);
+        code = code * 37 + ObjectUtils.hashCode(endDate);
+        code = code * 37 + ObjectUtils.hashCode(capacity);
+        code = code * 37 + ObjectUtils.hashCode(url);
+        code = code * 37 + ObjectUtils.hashCode(place);
+        code = code * 37 + ObjectUtils.hashCode(address);
+        code = code * 37 + ObjectUtils.hashCode(description);
+        code = code * 37 + ObjectUtils.hashCode(hashTag);
+        code = code * 37 + ObjectUtils.hashCode(ownerId);
+        code = code * 37 + ObjectUtils.hashCode(managerScreenNames);
+        code = code * 37 + ObjectUtils.hashCode(foreImageId);
+        code = code * 37 + ObjectUtils.hashCode(backImageId);
+        code = code * 37 + ObjectUtils.hashCode(isPrivate);
+        code = code * 37 + ObjectUtils.hashCode(passcode);
+        code = code * 37 + ObjectUtils.hashCode(isPreview);
+        code = code * 37 + ObjectUtils.hashCode(createdAt);
+        code = code * 37 + ObjectUtils.hashCode(modifiedAt);
+        code = code * 37 + ObjectUtils.hashCode(revision);
+        
+        return code;
+    }
+    
+    // ----------------------------------------------------------------------
+    // 
     
     public String getId() {
         return this.id;
@@ -228,7 +336,7 @@ public class Event extends PartakeModel<Event> {
         return ownerId;
     }
     
-    public List<String> getManagerScreenNames() {
+    public String getManagerScreenNames() {
         return managerScreenNames;
     }
     
@@ -341,7 +449,7 @@ public class Event extends PartakeModel<Event> {
         this.ownerId = ownerId;
     }
 
-    public void setManagerScreenNames(List<String> managerScreenNames) {
+    public void setManagerScreenNames(String managerScreenNames) {
         checkFrozen();
         this.managerScreenNames = managerScreenNames;
     }

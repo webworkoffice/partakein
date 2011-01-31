@@ -1,6 +1,12 @@
 package in.partake.model.dto;
 
+import in.partake.model.dto.aux.DirectMessagePostingType;
+
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import org.apache.commons.lang.ObjectUtils;
 
@@ -10,15 +16,25 @@ import org.apache.commons.lang.ObjectUtils;
  * @author shinyak
  *
  */
-public class DirectMessageEnvelope {
+@Entity
+public class DirectMessageEnvelope extends PartakeModel<DirectMessageEnvelope> {
+    @Id
     private String envelopeId;
+    @Column
     private String senderId;
+    @Column
     private String receiverId;
+    @Column
     private String messageId;
+    @Column
     private Date deadline;
+    @Column
     private int numTried;
+    @Column
     private Date lastTriedAt;
+    @Column
     private Date tryAfter;
+    @Column
     private DirectMessagePostingType postingType;
         
     public DirectMessageEnvelope() {
@@ -47,6 +63,11 @@ public class DirectMessageEnvelope {
         this.lastTriedAt = envelope.lastTriedAt != null ? (Date) envelope.lastTriedAt.clone() : null;
         this.tryAfter = envelope.tryAfter != null ? (Date) envelope.tryAfter.clone() : null;
         this.postingType = envelope.postingType;
+    }
+    
+    @Override
+    public Object getPrimaryKey() {
+        return envelopeId;
     }
     
     // ----------------------------------------------------------------------

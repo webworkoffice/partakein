@@ -9,9 +9,9 @@ import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Comment;
-import in.partake.model.dto.ParticipationStatus;
-import in.partake.model.dto.UserPermission;
 import in.partake.model.dto.UserPreference;
+import in.partake.model.dto.aux.ParticipationStatus;
+import in.partake.model.dto.aux.UserPermission;
 import in.partake.resource.Constants;
 import in.partake.resource.I18n;
 import in.partake.service.DirectMessageService;
@@ -151,7 +151,7 @@ public class EventsController extends PartakeActionSupport {
 	   		    return INPUT;
 	   		}
 	   		
-	   		Comment embryo = new Comment(eventId, user.getId(), comment);
+	   		Comment embryo = new Comment(eventId, user.getId(), comment, new Date());
 	   		EventService.get().addComment(embryo);
 	   		
 	   		return SUCCESS;

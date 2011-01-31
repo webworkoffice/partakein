@@ -1,5 +1,8 @@
 package in.partake.model.dto;
 
+import in.partake.model.dto.aux.LastParticipationStatus;
+import in.partake.model.dto.aux.ParticipationStatus;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Date;
@@ -20,10 +23,10 @@ public final class ParticipationTest {
 	public void createSamples() {
 		samples = new Participation[]{
 				new Participation(),
-				new Participation("userId0", "comment-a", ParticipationStatus.NOT_ENROLLED, 0, LastParticipationStatus.NOT_ENROLLED, new Date()),
-				new Participation("userId1", "comment-b", ParticipationStatus.ENROLLED, 1, LastParticipationStatus.ENROLLED, new Date()),
-				new Participation("userId2", "comment-c", ParticipationStatus.RESERVED, 2, LastParticipationStatus.CHANGED, new Date()),
-				new Participation("userId3", "comment-d", ParticipationStatus.CANCELLED, -1, LastParticipationStatus.NOT_ENROLLED, new Date()),
+				new Participation("userId0", "eventId0", "comment-a", ParticipationStatus.NOT_ENROLLED, 0, LastParticipationStatus.NOT_ENROLLED, new Date()),
+				new Participation("userId1", "eventId1", "comment-b", ParticipationStatus.ENROLLED, 1, LastParticipationStatus.ENROLLED, new Date()),
+				new Participation("userId2", "eventId2", "comment-c", ParticipationStatus.RESERVED, 2, LastParticipationStatus.CHANGED, new Date()),
+				new Participation("userId3", "eventId3", "comment-d", ParticipationStatus.CANCELLED, -1, LastParticipationStatus.NOT_ENROLLED, new Date()),
 		};
 	}
 

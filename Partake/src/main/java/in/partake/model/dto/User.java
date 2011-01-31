@@ -2,13 +2,22 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import org.apache.commons.lang.ObjectUtils;
 
+@Entity(name = "Users")
 public class User extends PartakeModel<User> {
-    private String  id;          // 
-    private Date    lastLoginAt; // 
+    @Id
+    private String  id;
+    @Column
+    private Date    lastLoginAt; //
+    @Column
     private int     twitterId;
-    private String  calendarId;
+    @Column
+    private String  calendarId; // TODO: なんでここに calendarId がいるんだっけ...
     
     public User() {
         // do nothing
@@ -28,6 +37,11 @@ public class User extends PartakeModel<User> {
         this.calendarId = user.calendarId;
     }
 
+    @Override
+    public Object getPrimaryKey() {
+        return id;
+    }
+    
     // ----------------------------------------------------------------------
     // equal methods
     

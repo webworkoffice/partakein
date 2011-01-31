@@ -1,4 +1,4 @@
-package in.partake.model.dto;
+package in.partake.model.dto.aux;
 
 /**
  * 最後に行われたParticipationStatusの変更内容を表す

@@ -7,33 +7,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase {
+    
+    private IUserPreferenceAccess dao;
+    
     @Before
     public void setup() throws DAOException {
-        super.setup();
-        
-        // --- remove all data before starting test.
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
-        
-        try {
-            con.beginTransaction();
-            factory.getUserPreferenceAccess().truncate(con);
-            con.commit();
-        } finally {            
-            con.invalidate();
-        }
+        super.setup(getFactory().getUserPreferenceAccess());
+        this.dao = getFactory().getUserPreferenceAccess();
     }
     
     @Test
     public void testToSetAndGet() throws Exception {
         PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
         
         try {
             con.beginTransaction();
             UserPreference original = new UserPreference("userId", true, true, true);
-            factory.getUserPreferenceAccess().setPreference(con, original);
-            UserPreference target = factory.getUserPreferenceAccess().getPreference(con, "userId");
+            dao.setPreference(con, original);
+            UserPreference target = dao.getPreference(con, "userId");
             
             con.commit();
             
@@ -44,17 +35,57 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
         }
     }
     
+    @Test
+    public void testToSetGetSetGet() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            UserPreference original1 = new UserPreference("userId", true, true, true);
+            {
+                con.beginTransaction();
+                dao.setPreference(con, original1);
+                con.commit();
+            }
+            
+            {
+                con.beginTransaction();
+                UserPreference target = dao.getPreference(con, "userId");
+                Assert.assertTrue(target.isFrozen());
+                Assert.assertEquals(original1, target);
+                con.commit();
+            }
+
+
+            UserPreference original2 = new UserPreference("userId", true, true, false);
+            {
+                con.beginTransaction();
+                dao.setPreference(con, original2);
+                con.commit();
+            }
+
+            {
+                con.beginTransaction();
+                UserPreference target = dao.getPreference(con, "userId");
+                Assert.assertTrue(target.isFrozen());
+                Assert.assertEquals(original2, target);
+                con.commit();
+            }
+        } finally {            
+            con.invalidate();
+        }
+    }
+    
+    
     @Test(expected = IllegalArgumentException.class)
     public void testToSetNotHavingId() throws Exception {
         PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
         
         try {
             con.beginTransaction();
             UserPreference original = new UserPreference(null, true, true, true);
             
             // should throw IllegalArgumentException
-            factory.getUserPreferenceAccess().setPreference(con, original);
+            dao.setPreference(con, original);
             
             con.commit();
         } finally {            
@@ -65,11 +96,12 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
     @Test
     public void testToGetUnsetData() throws Exception {
         PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
         
         try {
             con.beginTransaction();
-            UserPreference target = factory.getUserPreferenceAccess().getPreference(con, "userId");
+            String unusedUserId = "userId" + System.currentTimeMillis();
+            
+            UserPreference target = dao.getPreference(con, unusedUserId);
             con.commit();
 
             Assert.assertNull(target);

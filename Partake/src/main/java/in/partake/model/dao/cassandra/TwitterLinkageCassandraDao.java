@@ -59,8 +59,7 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not Implemented Yet.");
+        removeAllData((CassandraConnection) con);
     }
 	
 	// ----------------------------------------------------------------------
@@ -101,6 +100,8 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
         if (CollectionUtils.isEmpty(results)) { return null; }
         
         TwitterLinkage linkage = new TwitterLinkage();
+        linkage.setTwitterId(twitterId);
+        
         for (ColumnOrSuperColumn result : results) {
             Column column = result.column;
             String name = string(column.getName());

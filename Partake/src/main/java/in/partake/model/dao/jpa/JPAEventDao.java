@@ -16,8 +16,7 @@ class JPAEventDao extends JPADao implements IEventAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        return getFreshIdImpl(con, Event.class);
     }
 
     @Override
@@ -27,13 +26,7 @@ class JPAEventDao extends JPADao implements IEventAccess {
     }
 
     @Override
-    public void addEvent(PartakeConnection con, String eventId, Event embryo) throws DAOException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void addEventAsDemo(PartakeConnection con, Event embryo) throws DAOException {
+    public void addEvent(PartakeConnection con, Event embryo) throws DAOException {
         // TODO Auto-generated method stub
         
     }
@@ -51,7 +44,7 @@ class JPAEventDao extends JPADao implements IEventAccess {
     }
 
     @Override
-    public void removeEvent(PartakeConnection con, Event event) throws DAOException {
+    public void removeEvent(PartakeConnection con, String eventId) throws DAOException {
         // TODO Auto-generated method stub
         
     }

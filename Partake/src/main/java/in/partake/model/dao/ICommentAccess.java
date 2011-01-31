@@ -2,18 +2,12 @@ package in.partake.model.dao;
 
 import in.partake.model.dto.Comment;
 
-public interface ICommentAccess {
+public interface ICommentAccess extends ITruncatable {
     public String getFreshId(PartakeConnection con) throws DAOException;
     
-    public void addCommentWithId(PartakeConnection con, String commentId, Comment embryo) throws DAOException;
-    public Comment getCommentById(PartakeConnection con, String commentId) throws DAOException;
+    public void addComment(PartakeConnection con, Comment embryo) throws DAOException;
+    public Comment getComment(PartakeConnection con, String commentId) throws DAOException;
     public void removeComment(PartakeConnection con, String commentId) throws DAOException;
     
-    // TODO: addCommentToEvent は addComment の中でやるべき。
-    public void addCommentToEvent(PartakeConnection con, String commentId, String eventId) throws DAOException;
-    public DataIterator<String> getCommentIdsByEvent(PartakeConnection con, String eventId) throws DAOException;
     public DataIterator<Comment> getCommentsByEvent(PartakeConnection con, String eventId) throws DAOException;
-    
-    /** Use ONLY in unit tests.*/
-    public abstract void truncate(PartakeConnection con) throws DAOException;
 }

@@ -1,5 +1,7 @@
 package in.partake.model.dto;
 
+import in.partake.model.dto.aux.DirectMessagePostingType;
+
 import java.util.Date;
 
 import org.junit.Assert;

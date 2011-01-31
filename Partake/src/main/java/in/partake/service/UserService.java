@@ -10,10 +10,10 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.ParticipationStatus;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
+import in.partake.model.dto.aux.ParticipationStatus;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.http.AccessToken;
@@ -44,7 +44,18 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            return factory.getUserAccess().getUserById(con, userId);
+            User user = factory.getUserAccess().getUserById(con, userId); 
+            if (user == null) { return null; }
+            
+            // TODO: そのうち、user.getCalendarId() を廃止する予定。
+            // とりあえずそれまでは user に書いてある calendarId より、こちらに書いてある calendarId を優先しておく。
+            CalendarLinkage linkage = factory.getCalendarAccess().getCalendarLinkageByUserId(con, userId);
+            if (linkage != null) {
+                user = new User(user);
+                user.setCalendarId(user.getCalendarId());
+                user.freeze();
+            }
+            return user;
         } finally {
             con.invalidate();            
         }
@@ -153,7 +164,6 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            factory.getUserAccess().addOpenID(con, userId, identifier);
             factory.getOpenIDLinkageAccess().addOpenID(con, identifier, userId);
         } finally {
             con.invalidate();
@@ -165,7 +175,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             List<String> result = new ArrayList<String>();
-            DataIterator<String> it = factory.getUserAccess().getOpenIDIdentifiers(con, userId);
+            DataIterator<String> it = factory.getOpenIDLinkageAccess().getOpenIDIdentifiers(con, userId);
             while (it.hasNext()) {
                 String s = it.next();
                 if (s == null) { continue; }
@@ -181,8 +191,7 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            factory.getUserAccess().removeOpenID(con, userId, identifier);
-            factory.getOpenIDLinkageAccess().removeOpenID(con, identifier, userId);
+            factory.getOpenIDLinkageAccess().removeOpenID(con, identifier);
         } finally {            
             con.invalidate();
         }         

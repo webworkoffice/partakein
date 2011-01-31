@@ -1,10 +1,18 @@
 package in.partake.model.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 import org.apache.commons.lang.ObjectUtils;
 
+@Entity
 public class EventRelation extends PartakeModel<EventRelation> {
+    @Id
 	private String eventId;
-	private boolean required; // true if the original event requires this event. 
+    @Column
+	private boolean required; // true if the original event requires this event.
+    @Column
 	private boolean priority; // true if the participants of the original event will be prioritized if participating this event.  
 	
 	public EventRelation() {
@@ -19,6 +27,11 @@ public class EventRelation extends PartakeModel<EventRelation> {
         this.eventId = eventId;
         this.required = required;
         this.priority = priority;
+    }
+    
+    @Override
+    public Object getPrimaryKey() {
+        return eventId;
     }
 
     // ----------------------------------------------------------------------

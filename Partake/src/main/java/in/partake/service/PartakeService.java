@@ -130,7 +130,7 @@ public abstract class PartakeService {
 
     
     protected CommentEx getCommentEx(PartakeConnection con, String commentId) throws DAOException {
-    	Comment comment = getFactory().getCommentAccess().getCommentById(con, commentId);
+    	Comment comment = getFactory().getCommentAccess().getComment(con, commentId);
     	if (comment == null) { return null; }
     	UserEx user = getUserEx(con, comment.getUserId());
     	if (user == null) { return null; }

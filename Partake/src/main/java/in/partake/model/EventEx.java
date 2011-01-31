@@ -2,10 +2,12 @@ package in.partake.model;
 
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
-import in.partake.model.dto.UserPermission;
+import in.partake.model.dto.aux.UserPermission;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * event with related data.
@@ -142,11 +144,11 @@ public class EventEx extends Event {
     private boolean isManager(UserEx user) {
         if (user == null || user.getId() == null) { return false; }
         if (user.getTwitterLinkage().getScreenName() == null) { return false; }
+        if (getManagerScreenNames() == null) { return false; }
         
-        List<String> screenNames = getManagerScreenNames();
-        if (screenNames == null) { return false; }
+        String[] screenNames = getManagerScreenNames().split(",");
         for (String screenName : screenNames) {
-            if (user.getTwitterLinkage().getScreenName().equals(screenName)) {
+            if (user.getTwitterLinkage().getScreenName().equals(StringUtils.trim(screenName))) {
                 return true;
             }
         }

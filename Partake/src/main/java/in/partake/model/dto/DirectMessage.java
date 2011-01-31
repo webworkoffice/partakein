@@ -2,14 +2,25 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+
 import org.apache.commons.lang.ObjectUtils;
 
 // TODO: This class will be renamed as Message later.
+@Entity
 public class DirectMessage extends PartakeModel<DirectMessage> {
+    @Id
     private String id;
+    @Column
     private String userId;		// TODO: senderId にすべきだな
+    @Column @Lob
     private String message;
+    @Column
     private String eventId;
+    @Column
     private Date   createdAt;
     
     public DirectMessage() {
@@ -34,6 +45,11 @@ public class DirectMessage extends PartakeModel<DirectMessage> {
         this.message = message;
         this.eventId = eventId;
         this.createdAt = createdAt;
+    }
+    
+    @Override
+    public Object getPrimaryKey() {
+        return id;
     }
     
     // ----------------------------------------------------------------------

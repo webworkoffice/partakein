@@ -18,4 +18,6 @@ public final class JPAEventCassandraDaoTest extends EventAccessTestCaseBase {
         PartakeProperties.get().reset();
         reset();
     }
+    
+    // common test cases are written in the super class. 
 }

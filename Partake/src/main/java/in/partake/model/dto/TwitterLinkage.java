@@ -1,12 +1,26 @@
 package in.partake.model.dto;
 
-public final class TwitterLinkage extends PartakeModel<TwitterLinkage> {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import org.apache.commons.lang.ObjectUtils;
+
+@Entity
+public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
+    @Id
     private int twitterId;
+    @Column
     private String screenName;
+    @Column
     private String name;
+    @Column
     private String accessToken;
+    @Column
     private String accessTokenSecret;
+    @Column(length = 4096)
     private String profileImageURL;
+    @Column
     private String userId;
     
     public TwitterLinkage() {
@@ -22,6 +36,52 @@ public final class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         this.profileImageURL = profileImageURL;
         this.userId = userId;
     }
+
+    @Override
+    public Object getPrimaryKey() {
+        return twitterId;
+    }
+    
+    // ----------------------------------------------------------------------
+    // equals method
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TwitterLinkage)) { return false; }
+        
+        TwitterLinkage lhs = this;
+        TwitterLinkage rhs = (TwitterLinkage) obj;
+        
+        if (!ObjectUtils.equals(lhs.twitterId,         rhs.twitterId)) { return false; }
+        if (!ObjectUtils.equals(lhs.screenName,        rhs.screenName)) { return false; }
+        if (!ObjectUtils.equals(lhs.name,              rhs.name)) { return false; }
+        if (!ObjectUtils.equals(lhs.accessToken,       rhs.accessToken)) { return false; }
+        if (!ObjectUtils.equals(lhs.accessTokenSecret, rhs.accessTokenSecret)) { return false; }
+        if (!ObjectUtils.equals(lhs.profileImageURL,   rhs.profileImageURL)) { return false; }
+        if (!ObjectUtils.equals(lhs.userId,            rhs.userId)) { return false; }
+        
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(twitterId);
+        code = code * 37 + ObjectUtils.hashCode(screenName);
+        code = code * 37 + ObjectUtils.hashCode(name);
+        code = code * 37 + ObjectUtils.hashCode(accessToken);
+        code = code * 37 + ObjectUtils.hashCode(accessTokenSecret);
+        code = code * 37 + ObjectUtils.hashCode(profileImageURL);
+        code = code * 37 + ObjectUtils.hashCode(userId);
+        
+        return code;
+    }
+    
+
+    
+    // ----------------------------------------------------------------------
+    // 
 
     public int getTwitterId() {
         return twitterId;

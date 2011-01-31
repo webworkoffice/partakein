@@ -18,4 +18,6 @@ public class JPAEnrollmentAccessTest extends EnrollmentAccessTestCaseBase {
         PartakeProperties.get().reset();
         reset();
     }
+    
+    // common test cases are written in the super class. 
 }

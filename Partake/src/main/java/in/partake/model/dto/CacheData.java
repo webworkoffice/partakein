@@ -43,6 +43,11 @@ public class CacheData extends PartakeModel<CacheData> {
         }
     }
 
+    @Override
+    public Object getPrimaryKey() {
+        return id;
+    }
+    
     // ----------------------------------------------------------------------
     // equals
     

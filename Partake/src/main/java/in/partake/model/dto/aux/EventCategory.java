@@ -1,4 +1,4 @@
-package in.partake.model.dto;
+package in.partake.model.dto.aux;
 
 import in.partake.util.KeyValuePair;
 
