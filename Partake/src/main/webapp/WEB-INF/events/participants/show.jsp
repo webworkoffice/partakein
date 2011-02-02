@@ -1,12 +1,12 @@
 <%@page import="java.util.ArrayList"%>
-<%@page import="in.partake.model.ParticipationEx"%>
+<%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.dto.EventReminderStatus"%>
 <%@page import="in.partake.model.ParticipationList"%>
-<%@page import="in.partake.model.dto.DirectMessage"%>
+<%@page import="in.partake.model.dto.Message"%>
 <%@page import="static in.partake.util.Util.h"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -17,11 +17,11 @@
     EventEx event = (EventEx) request.getAttribute(Constants.ATTR_EVENT);
     ParticipationList participationList = (ParticipationList) request.getAttribute(Constants.ATTR_PARTICIPATIONLIST);
     
-    List<ParticipationEx> enrolledParticipations = participationList.getEnrolledParticipations();
-    List<ParticipationEx> spareParticipations = participationList.getSpareParticipations();
-    List<ParticipationEx> cancelledParticipations = participationList.getCancelledParticipations();
+    List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
+    List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
+    List<EnrollmentEx> cancelledParticipations = participationList.getCancelledParticipations();
     
-    List<ParticipationEx> ps = new ArrayList<ParticipationEx>();
+    List<EnrollmentEx> ps = new ArrayList<EnrollmentEx>();
     ps.addAll(enrolledParticipations);
     ps.addAll(spareParticipations);
 %>
@@ -60,7 +60,7 @@
 <tbody>
     <% 
     int order = 0;
-    for (ParticipationEx p : ps) {
+    for (EnrollmentEx p : ps) {
         %>
     <tr id="attendant-<%= h(p.getUserId()) %>">
         <td><%= ++order %></td>

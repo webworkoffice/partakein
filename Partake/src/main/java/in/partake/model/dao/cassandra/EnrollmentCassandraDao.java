@@ -24,6 +24,7 @@ import org.apache.cassandra.thrift.ColumnParent;
 import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
+import org.apache.cassandra.thrift.NotFoundException;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.SuperColumn;
@@ -72,8 +73,27 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     
     @Override
     public Enrollment getEnrollment(PartakeConnection con, String userId, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            return getEnrollmentImpl(ccon, userId, eventId);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+        
+    }
+    
+    private Enrollment getEnrollmentImpl(CassandraConnection con, String userId, String eventId) throws Exception {
+        Client client = con.getClient();
+        String key = USERS_ENROLLMENT_PREFIX + eventId;
+        ColumnPath cp = new ColumnPath(USERS_ENROLLMENT_COLUMNFAMILY);
+        cp.setSuper_column(bytes(userId));
+        
+        try {
+            ColumnOrSuperColumn cosc = client.get(USERS_ENROLLMENT_KEYSPACE, key, cp, USERS_ENROLLMENT_CL_R);
+            return convertToEnrollment(con, eventId, cosc);
+        } catch (NotFoundException e) {
+            return null;
+        }
     }
     
     @Override
@@ -158,41 +178,12 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         
         ArrayList<Enrollment> participations = new ArrayList<Enrollment>();
         
-        for (ColumnOrSuperColumn result : results) {
-            SuperColumn superColumn = result.getSuper_column();
+        for (ColumnOrSuperColumn cosc : results) {
+            SuperColumn superColumn = cosc.getSuper_column();
             if (superColumn == null) { continue; }
-            
-            User user = null;
-            String comment = null;
-            ParticipationStatus status = null;
-            LastParticipationStatus lastStatus = LastParticipationStatus.CHANGED;
-            Date modifiedAt = null;
-            Date modifiedAt2 = null;
-            int priority = 0;
-            
-            // TODO: 歴史的負の遺産が多すぎるのであとで直す。
-            IUserAccess userDao = factory.getUserAccess(); 
-            for (Column column : superColumn.getColumns()) {
-                String name = string(column.getName());
-                if ("status".equals(name)) {
-                	user = userDao.getUser(con, string(superColumn.getName()));
-                	status = ParticipationStatus.safeValueOf(string(column.getValue()));
-                	modifiedAt2 = new Date(column.timestamp);
-                } else if ("lastStatus".equals(name)) {
-                    lastStatus = LastParticipationStatus.safeValueOf(string(column.getValue()));
-                } else if ("comment".equals(name)) {
-                    comment = string(column.getValue());
-                } else if ("priority".equals(name)) {
-                    priority = Integer.parseInt(string(column.getValue()));
-                } else if ("modifiedAt".equals(string(column.getName()))) {
-                	modifiedAt = Util.dateFromTimeString(string(column.getValue()));
-                }
-            }
-                        
-            if (user != null && modifiedAt != null) {
-            	participations.add(new Enrollment(user.getId(), eventId, comment, status, priority, lastStatus, modifiedAt));
-            } else {
-            	participations.add(new Enrollment(user.getId(), eventId, comment, status, priority, lastStatus, modifiedAt2));
+            Enrollment enrollment = convertToEnrollment(con, eventId, cosc);
+            if (enrollment != null) {
+                participations.add(enrollment);
             }
         }
 
@@ -221,5 +212,41 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         return enrollments;
     }
     
-    
+    private Enrollment convertToEnrollment(CassandraConnection con, String eventId, ColumnOrSuperColumn cosc) throws DAOException {
+        SuperColumn superColumn = cosc.getSuper_column();
+        if (superColumn == null) { return null; }
+        
+        User user = null;
+        String comment = null;
+        ParticipationStatus status = null;
+        LastParticipationStatus lastStatus = LastParticipationStatus.CHANGED;
+        Date modifiedAt = null;
+        Date modifiedAt2 = null;
+        int priority = 0;
+        
+        // TODO: 歴史的負の遺産が多すぎるのであとで直す。
+        IUserAccess userDao = factory.getUserAccess(); 
+        for (Column column : superColumn.getColumns()) {
+            String name = string(column.getName());
+            if ("status".equals(name)) {
+                user = userDao.getUser(con, string(superColumn.getName()));
+                status = ParticipationStatus.safeValueOf(string(column.getValue()));
+                modifiedAt2 = new Date(column.timestamp);
+            } else if ("lastStatus".equals(name)) {
+                lastStatus = LastParticipationStatus.safeValueOf(string(column.getValue()));
+            } else if ("comment".equals(name)) {
+                comment = string(column.getValue());
+            } else if ("priority".equals(name)) {
+                priority = Integer.parseInt(string(column.getValue()));
+            } else if ("modifiedAt".equals(string(column.getName()))) {
+                modifiedAt = Util.dateFromTimeString(string(column.getValue()));
+            }
+        }
+                    
+        if (user != null && modifiedAt != null) {
+            return new Enrollment(user.getId(), eventId, comment, status, priority, lastStatus, modifiedAt);
+        } else {
+            return new Enrollment(user.getId(), eventId, comment, status, priority, lastStatus, modifiedAt2);
+        }
+    }
 }
