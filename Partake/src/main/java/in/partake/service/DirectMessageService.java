@@ -43,7 +43,11 @@ public class DirectMessageService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            return factory.getDirectMessageAccess().getMessage(con, messageId);
+            con.beginTransaction();
+            Message message = factory.getDirectMessageAccess().getMessage(con, messageId);
+            con.commit();
+            
+            return message;
         } finally {
             con.invalidate();
         }
@@ -62,9 +66,12 @@ public class DirectMessageService extends PartakeService {
 
         
         try {
+            con.beginTransaction();
             String id = factory.getDirectMessageAccess().getFreshId(con);
             Message embryo = new Message(id, userId, message, isUserMessage ? eventId : null, new Date()); 
-            factory.getDirectMessageAccess().addMessage(con, embryo); 
+            factory.getDirectMessageAccess().addMessage(con, embryo);
+            con.commit();
+            
             return id;
         } finally {
             con.invalidate();
@@ -82,6 +89,8 @@ public class DirectMessageService extends PartakeService {
     	PartakeConnection con = getPool().getConnection();
     	
     	try {
+    	    con.beginTransaction();
+    	    
 	        List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
 	        DataIterator<Message> it = factory.getDirectMessageAccess().getMessagesByEventId(con, eventId);
 
@@ -89,6 +98,8 @@ public class DirectMessageService extends PartakeService {
 	        	Message message = it.next();
 	        	messages.add(new DirectMessageEx(message, getUserEx(con, message.getUserId())));
 	        }
+	        
+	        con.commit();
 	                
 	        return messages;
     	} finally {
@@ -108,6 +119,7 @@ public class DirectMessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         
         try {
+            con.beginTransaction();
             List<Message> messages = new ArrayList<Message>();
             DataIterator<Message> it = factory.getDirectMessageAccess().getMessagesByEventId(con, eventId);
             
@@ -115,6 +127,8 @@ public class DirectMessageService extends PartakeService {
                 if (!it.hasNext()) { break; }
                 messages.add(it.next());
             }
+            
+            con.commit();
                     
             return messages;
         } finally {
@@ -133,11 +147,13 @@ public class DirectMessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
 
         try {
+            con.beginTransaction();
             String messageId = factory.getDirectMessageAccess().getFreshId(con);
             Message embryo = new Message(messageId, user.getId(), messageStr, null, new Date());
             
             factory.getDirectMessageAccess().addMessage(con, embryo);
             factory.getDirectMessageAccess().sendEnvelope(con, messageId, user.getId(), null, null, DirectMessagePostingType.POSTING_TWITTER);
+            con.commit();
         } finally {
             con.invalidate();
         }
@@ -158,7 +174,9 @@ public class DirectMessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
 
         try {
+            con.beginTransaction();
             factory.getDirectMessageAccess().sendEnvelope(con, messageId, senderId, receiverId, deadline, postingType);
+            con.commit();
         } finally {
             con.invalidate();
         }
@@ -172,6 +190,7 @@ public class DirectMessageService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction();
             DataIterator<Envelope> it = factory.getDirectMessageAccess().getEnvelopeIterator(con);             
             while (it.hasNext()) {
                 Envelope envelope = it.next();
@@ -203,6 +222,7 @@ public class DirectMessageService extends PartakeService {
                     break;
                 }
             }
+            con.commit();
         } finally {
             con.invalidate();
         }

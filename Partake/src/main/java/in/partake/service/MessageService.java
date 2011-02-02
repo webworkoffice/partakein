@@ -39,7 +39,10 @@ public final class MessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
         try {
-            return factory.getDirectMessageAccess().getEventReminderStatus(con, eventId);
+            con.beginTransaction(); 
+            EventReminderStatus status = factory.getDirectMessageAccess().getEventReminderStatus(con, eventId);
+            con.commit();
+            return status;
         } finally {
             con.invalidate();
         }
@@ -56,6 +59,8 @@ public final class MessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
         try {
+            con.beginTransaction(); 
+            
             // TODO: 開始時刻が現在時刻より後の event のみを取り出したい
             DataIterator<Event> it = factory.getEventAccess().getAllEventIterators(con);
             while (it.hasNext()) {
@@ -77,6 +82,8 @@ public final class MessageService extends PartakeService {
                     factory.getDirectMessageAccess().updateEventReminderStatus(con, eventId, reminderStatus);
                 }
             }
+            
+            con.commit();
         } finally {
             con.invalidate();
         }
@@ -193,6 +200,7 @@ public final class MessageService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction(); 
             DataIterator<Event> it = factory.getEventAccess().getAllEventIterators(con); 
             while (it.hasNext()) {
                 Event e = it.next();
@@ -290,6 +298,8 @@ public final class MessageService extends PartakeService {
                     }                   
                 }
             }
+            
+            con.commit();
         } finally {
             con.invalidate();
         }

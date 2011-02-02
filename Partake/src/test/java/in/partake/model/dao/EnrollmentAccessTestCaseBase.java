@@ -53,6 +53,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 
 		PartakeConnection con = getPool().getConnection();
 		try {
+		    con.beginTransaction();
 		    event.setId(eventId);
 			getFactory().getEventAccess().addEvent(con, event);
 			getFactory().getUserAccess().addUser(con, new User(userId, 0, new Date(), null)); 
@@ -60,8 +61,9 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 			dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, 0, LastParticipationStatus.CHANGED, new Date()));
 			
 			List<Enrollment> list = dao.getEnrollmentsByEventId(con, eventId);
+			con.commit();
+			
 			Assert.assertEquals(1, list.size());
-
 			Enrollment storedParticipation = list.get(0);
 			Assert.assertNotNull(storedParticipation);
 			Assert.assertEquals(userId, storedParticipation.getUserId());
@@ -81,6 +83,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction();
             // create
             {
                 event.setId(eventId);
@@ -111,6 +114,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
                 Assert.assertEquals(ParticipationStatus.NOT_ENROLLED, updatedParticipation.getStatus());
             }
             
+            con.commit();
         } finally {
             con.invalidate();
         }

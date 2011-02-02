@@ -24,6 +24,8 @@ public final class CalendarService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction();
+            
             // If the calendar already exists, remove it first.
             String calendarId = user.getCalendarId();
             if (calendarId != null) {
@@ -34,6 +36,8 @@ public final class CalendarService extends PartakeService {
             calendarId = factory.getCalendarAccess().getFreshCalendarId(con);
             CalendarLinkage embryo = new CalendarLinkage(calendarId, user.getId());
             factory.getCalendarAccess().addCalendarLinkage(con, embryo);
+            
+            con.commit();
         } finally {
             con.invalidate();
         }
