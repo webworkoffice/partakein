@@ -252,6 +252,7 @@ public final class EventService extends PartakeService {
             
             List<Enrollment> enrollments = factory.getEnrollmentAccess().getEnrollmentsByUserId(con, userId); 
             for (Enrollment enrollment : enrollments) {
+                if (enrollment == null) { continue; }
                 Event e = factory.getEventAccess().getEvent(con, enrollment.getEventId());
                 if (e == null) { continue; }
                 if (!e.getBeginDate().before(now)) {
@@ -687,10 +688,20 @@ public final class EventService extends PartakeService {
     private void enrollImpl(PartakeConnection con, String userId, String eventId, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         Enrollment oldEnrollment = factory.getEnrollmentAccess().getEnrollment(con, userId, eventId);
-        Enrollment newEnrollment = new Enrollment(oldEnrollment);
+        Enrollment newEnrollment;
+        if (oldEnrollment == null) {
+            newEnrollment = new Enrollment(userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, 0, LastParticipationStatus.NOT_ENROLLED, new Date());
+        } else {
+            newEnrollment = new Enrollment(oldEnrollment);
+        }
+        
         
         newEnrollment.setComment(comment);
-        if (changesOnlyComment || status.equals(oldEnrollment.getStatus())) {
+        if (oldEnrollment == null) {
+            newEnrollment.setStatus(status);
+            newEnrollment.setLastStatus(LastParticipationStatus.CHANGED);
+            newEnrollment.setModifiedAt(new Date());
+        } else if (changesOnlyComment || status.equals(oldEnrollment.getStatus())) {        
             // 特に変更しない 
         } else if (status.isEnrolled() == oldEnrollment.getStatus().isEnrolled()) {
             // 参加する / しないの状況が変更されない場合は、status のみが更新される。

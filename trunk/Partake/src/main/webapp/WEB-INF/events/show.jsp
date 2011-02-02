@@ -1,6 +1,5 @@
 <%@page import="in.partake.model.dto.EventReminderStatus"%>
 <%@page import="in.partake.model.ParticipationList"%>
-<%@page import="in.partake.model.dto.DirectMessage"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>
@@ -8,12 +7,12 @@
 <%@taglib prefix="s" uri="/struts-tags" %>
 
 <%@page import="in.partake.model.CommentEx"%>
-<%@page import="in.partake.model.ParticipationEx"%>
+<%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dao.DataIterator"%>
 <%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
-<%@page import="in.partake.model.dto.Participation"%>
+<%@page import="in.partake.model.dto.Enrollment"%>
 <%@page import="in.partake.service.UserService"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
 <%@page import="in.partake.model.dto.Comment"%>
@@ -309,9 +308,9 @@ body {
  
 <%
 	ParticipationList participationList = (ParticipationList) request.getAttribute(Constants.ATTR_PARTICIPATIONLIST);
-	List<ParticipationEx> enrolledParticipations = participationList.getEnrolledParticipations();
-	List<ParticipationEx> spareParticipations = participationList.getSpareParticipations();
-	List<ParticipationEx> cancelledParticipations = participationList.getCancelledParticipations();
+	List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
+	List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
+	List<EnrollmentEx> cancelledParticipations = participationList.getCancelledParticipations();
 %>
 
 
@@ -328,7 +327,7 @@ body {
 	<h2><img src="<%= request.getContextPath() %>/images/circle.png" />参加者一覧 (<%= enrolledParticipations.size() %> 人)</h2>
 	<% if (enrolledParticipations != null && enrolledParticipations.size() > 0) { %>
 		<ul>
-		<% for (ParticipationEx participation : enrolledParticipations) { %>
+		<% for (EnrollmentEx participation : enrolledParticipations) { %>
 			<%-- TODO: 仮参加は色をかえるべき --%>
 			<% if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) { %>
 				<li>
@@ -359,7 +358,7 @@ body {
 	<% if (spareParticipations != null && spareParticipations.size() > 0) { %>
 		<h2><img src="<%= request.getContextPath() %>/images/square.png" />補欠者一覧 (<%= spareParticipations.size() %> 人)</h2>
 		<ul>
-		<% for (ParticipationEx participation : spareParticipations) { %>
+		<% for (EnrollmentEx participation : spareParticipations) { %>
 			<% 		// TODO: 仮参加は色をかえるべき		 %>
 			<% if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) { %>
 				<li>
@@ -389,7 +388,7 @@ body {
 	<% if (cancelledParticipations != null && cancelledParticipations.size() > 0) { %>
 		<h2><img src="<%= request.getContextPath() %>/images/cross.png" />キャンセル一覧 (<%= cancelledParticipations.size() %> 人)</h2>
 		<ul>
-		<% for (ParticipationEx participation : cancelledParticipations) { %>
+		<% for (EnrollmentEx participation : cancelledParticipations) { %>
 		    <% if (ParticipationStatus.RESERVED.equals(participation.getStatus())) { %>
                 <li>
                     <img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />

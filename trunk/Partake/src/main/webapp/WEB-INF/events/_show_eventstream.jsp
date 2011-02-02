@@ -1,6 +1,5 @@
 <%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
 <%@page import="in.partake.model.DirectMessageEx"%>
-<%@page import="in.partake.model.dto.DirectMessage"%>
 <%@page import="java.util.List"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.UserEx"%>
