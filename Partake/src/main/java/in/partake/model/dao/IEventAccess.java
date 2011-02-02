@@ -24,5 +24,5 @@ public interface IEventAccess extends ITruncatable {
     public abstract List<Event> getEventsByOwner(PartakeConnection con, String userId) throws DAOException;
     
     
-    public abstract KeyIterator getAllEventKeys(PartakeConnection con) throws DAOException;    
+    public abstract DataIterator<Event> getAllEventIterators(PartakeConnection con) throws DAOException;    
 }

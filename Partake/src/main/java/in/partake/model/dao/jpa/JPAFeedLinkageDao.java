@@ -16,22 +16,32 @@ class JPAFeedLinkageDao extends JPADao implements IFeedAccess {
     }
 
     @Override
+    public void addFeedId(PartakeConnection con, String feedId, String eventId) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        em.persist(new FeedLinkage(feedId, eventId));
+    }
+
+    
+    @Override
     public String getFeedIdByEventId(PartakeConnection con, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT feed FROM FeedLinkages AS feed WHERE feed.eventId = :eventId");
+        q.setParameter("eventId", eventId);
+        
+        FeedLinkage feed = (FeedLinkage) q.getSingleResult();
+        if (feed == null) { return null; }
+        return feed.getId();
     }
 
     @Override
     public String getEventIdByFeedId(PartakeConnection con, String feedId) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager em = getEntityManager(con);
+        FeedLinkage feed = em.find(FeedLinkage.class, feedId);
+
+        if (feed == null) { return null; }
+        return feed.getEventId();
     }
 
-    @Override
-    public void addFeedId(PartakeConnection con, String feedId, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {

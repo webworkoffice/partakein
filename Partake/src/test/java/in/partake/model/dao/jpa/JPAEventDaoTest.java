@@ -6,7 +6,7 @@ import in.partake.resource.PartakeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public final class JPAEventCassandraDaoTest extends EventAccessTestCaseBase {
+public final class JPAEventDaoTest extends EventAccessTestCaseBase {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("jpa");

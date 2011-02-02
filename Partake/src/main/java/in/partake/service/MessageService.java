@@ -6,16 +6,16 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import in.partake.model.EventEx;
-import in.partake.model.ParticipationEx;
+import in.partake.model.EnrollmentEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.KeyIterator;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dto.DirectMessage;
+import in.partake.model.dto.Message;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventReminderStatus;
-import in.partake.model.dto.Participation;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.LastParticipationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
@@ -56,10 +56,12 @@ public final class MessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
         try {
-            // TODO: 開始時刻が現在時刻より後の event のみを取り出したい 
-            KeyIterator it = factory.getEventAccess().getAllEventKeys(con);
+            // TODO: 開始時刻が現在時刻より後の event のみを取り出したい
+            DataIterator<Event> it = factory.getEventAccess().getAllEventIterators(con);
             while (it.hasNext()) {
-                String eventId = it.next();
+                Event e = it.next();
+                if (e == null) { continue; }
+                String eventId = e.getId();
                 if (eventId == null) { continue; }
                 EventEx event = getEventEx(con, eventId);
                 if (event == null) { continue; }
@@ -144,14 +146,13 @@ public final class MessageService extends PartakeService {
      * @throws DAOException
      */
     private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, Event event, String message) throws DAOException {
-        DirectMessage embryo = new DirectMessage(event.getOwnerId(), message);
-        
         String messageId = getFactory().getDirectMessageAccess().getFreshId(con);
-        getFactory().getDirectMessageAccess().addMessage(con, messageId, embryo); 
+        Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
+        getFactory().getDirectMessageAccess().addMessage(con, embryo); 
         
-        List<Participation> participations = getFactory().getEnrollmentAccess().getParticipation(con, event.getId()); 
+        List<Enrollment> participations = getFactory().getEnrollmentAccess().getEnrollmentsByEventId(con, event.getId());
         Date deadline = event.getCalculatedDeadline();
-        for (Participation participation : participations) {
+        for (Enrollment participation : participations) {
             if (!ParticipationStatus.RESERVED.equals(participation.getStatus())) { continue; }
             getFactory().getDirectMessageAccess().sendEnvelope(con,
                             messageId, participation.getUserId(), participation.getUserId(), deadline,                                
@@ -167,17 +168,16 @@ public final class MessageService extends PartakeService {
      * @throws DAOException
      */
     private void sendNotificationOnlyForParticipants(PartakeConnection con, EventEx event, String message) throws DAOException {
-        DirectMessage embryo = new DirectMessage(event.getOwnerId(), message);
-        
         String messageId = getFactory().getDirectMessageAccess().getFreshId(con);
-        getFactory().getDirectMessageAccess().addMessage(con, messageId, embryo); 
+        Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
+        getFactory().getDirectMessageAccess().addMessage(con, embryo); 
         
         Date deadline = event.getCalculatedDeadline();
         
-        List<ParticipationEx> participations = getParticipationsEx(con, event.getId()); 
+        List<EnrollmentEx> participations = getEnrollmentExs(con, event.getId()); 
         ParticipationList list = event.calculateParticipationList(participations);
         
-        for (ParticipationEx p : list.getEnrolledParticipations()) {
+        for (EnrollmentEx p : list.getEnrolledParticipations()) {
             if (!ParticipationStatus.ENROLLED.equals(p.getStatus())) { continue; }
             getFactory().getDirectMessageAccess().sendEnvelope(con,    
                     messageId, p.getUserId(), p.getUserId(), deadline,
@@ -193,16 +193,18 @@ public final class MessageService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            KeyIterator it = factory.getEventAccess().getAllEventKeys(con);
+            DataIterator<Event> it = factory.getEventAccess().getAllEventIterators(con); 
             while (it.hasNext()) {
-                String eventId = it.next();
+                Event e = it.next();
+                if (e == null) { continue; }                
+                String eventId = e.getId();
                 if (eventId == null) { continue; }
                 EventEx event = getEventEx(con, eventId); 
                 if (event == null) { continue; }
                 
                 if (!now.before(event.getBeginDate())) { continue; }
 
-                List<ParticipationEx> participations = getParticipationsEx(con, eventId); 
+                List<EnrollmentEx> participations = getEnrollmentExs(con, eventId); 
                 ParticipationList list = event.calculateParticipationList(participations);
 
                 String enrollingMessage = "[PARTAKE] 補欠から参加者へ繰り上がりました。 " + event.getShortenedURL() + " " + event.getTitle(); 
@@ -214,73 +216,75 @@ public final class MessageService extends PartakeService {
                 String ngMessageId = null;
 
                 // TODO: ここのソース汚い。同一化できる。とくに、あとの２つは一緒。
-                for (Participation p : list.getEnrolledParticipations()) {
+                for (Enrollment p : list.getEnrolledParticipations()) {
                     // -- 参加者向
                     
                     LastParticipationStatus status = p.getLastStatus();
                     if (status == null) { continue; }
 
                     switch (status) {
-                    case CHANGED: // 自分自身の力で変化させていた場合は status を enrolled にのみ変更して対応
-                        factory.getEnrollmentAccess().setLastStatus(con, eventId, p, LastParticipationStatus.ENROLLED);
+                    case CHANGED: { // 自分自身の力で変化させていた場合は status を enrolled にのみ変更して対応
+                        updateLastStatus(con, eventId, p, LastParticipationStatus.ENROLLED);
                         break;
-                    case NOT_ENROLLED:
+                    }
+                    case NOT_ENROLLED: {
                         if (okMessageId == null) {
-                            DirectMessage okEmbryo = new DirectMessage(event.getOwnerId(), enrollingMessage);
                             okMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                            factory.getDirectMessageAccess().addMessage(con, okMessageId, okEmbryo);
+                            Message okEmbryo = new Message(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date()); 
+                            factory.getDirectMessageAccess().addMessage(con, okEmbryo);
                         }
 
-                        factory.getEnrollmentAccess().setLastStatus(con, eventId, p, LastParticipationStatus.ENROLLED);
+                        updateLastStatus(con, eventId, p, LastParticipationStatus.ENROLLED);
                         factory.getDirectMessageAccess().sendEnvelope(con, okMessageId, p.getUserId(), p.getUserId(), event.getBeginDate(), DirectMessagePostingType.POSTING_TWITTER_DIRECT);
                         
                         break;
+                    }
                     case ENROLLED:
                         break;
                     }
                 }
 
-                for (Participation p : list.getSpareParticipations()) {
+                for (Enrollment p : list.getSpareParticipations()) {
                     LastParticipationStatus status = p.getLastStatus();
                     if (status == null) { continue; }
 
                     switch (status) {
                     case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
-                        factory.getEnrollmentAccess().setLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
+                        updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
                         break;
                     case NOT_ENROLLED:
                         break;
                     case ENROLLED:
                         if (ngMessageId == null) {
-                            DirectMessage ngEmbryo = new DirectMessage(event.getOwnerId(), cancellingMessage);
                             ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                            factory.getDirectMessageAccess().addMessage(con, ngMessageId, ngEmbryo); 
+                            Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
+                            factory.getDirectMessageAccess().addMessage(con, ngEmbryo); 
                         }
 
-                        factory.getEnrollmentAccess().setLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
+                        updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
                         factory.getDirectMessageAccess().sendEnvelope(con, ngMessageId, p.getUserId(), p.getUserId(), event.getBeginDate(), DirectMessagePostingType.POSTING_TWITTER_DIRECT);                    
                         break;
                     }
                 }
 
-                for (Participation p : list.getCancelledParticipations()) {
+                for (Enrollment p : list.getCancelledParticipations()) {
                     LastParticipationStatus status = p.getLastStatus();
                     if (status == null) { continue; }
 
                     switch (status) {
                     case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
-                        factory.getEnrollmentAccess().setLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
+                        updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
                         break;
                     case NOT_ENROLLED:
                         break;
                     case ENROLLED:
                         if (ngMessageId == null) {
-                            DirectMessage ngEmbryo = new DirectMessage(event.getOwnerId(), cancellingMessage);
                             ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                            factory.getDirectMessageAccess().addMessage(con, ngMessageId, ngEmbryo); 
+                            Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
+                            factory.getDirectMessageAccess().addMessage(con, ngEmbryo); 
                         }
 
-                        factory.getEnrollmentAccess().setLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
+                        updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
                         factory.getDirectMessageAccess().sendEnvelope(con, ngMessageId, p.getUserId(), p.getUserId(), event.getBeginDate(), DirectMessagePostingType.POSTING_TWITTER_DIRECT);                    
                         break;
                     }                   
@@ -289,5 +293,11 @@ public final class MessageService extends PartakeService {
         } finally {
             con.invalidate();
         }
+    }
+    
+    private void updateLastStatus(PartakeConnection con, String eventId, Enrollment enrollment, LastParticipationStatus status) throws DAOException {
+        Enrollment newEnrollment = new Enrollment(enrollment);
+        newEnrollment.setLastStatus(status);
+        getFactory().getEnrollmentAccess().addEnrollment(con, newEnrollment);
     }
 }

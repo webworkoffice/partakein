@@ -48,8 +48,8 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
 	
 	@Override
 	public void setPreference(PartakeConnection con, UserPreference embryo) throws DAOException {
-	    if (embryo == null) { throw new IllegalArgumentException("embryo should not be null"); }
-	    if (embryo.getUserId() == null) { throw new IllegalArgumentException("userId should not be null."); }
+	    if (embryo == null) { throw new NullPointerException("embryo should not be null"); }
+	    if (embryo.getUserId() == null) { throw new NullPointerException("userId should not be null."); }
 	    
         CassandraConnection ccon = (CassandraConnection) con;
         try {

@@ -8,15 +8,15 @@ import java.util.List;
  *
  */
 public class ParticipationList {
-    private List<ParticipationEx> enrolledParticipations;
-    private List<ParticipationEx> spareParticipations;
-    private List<ParticipationEx> cancelledParticipations;
+    private List<EnrollmentEx> enrolledParticipations;
+    private List<EnrollmentEx> spareParticipations;
+    private List<EnrollmentEx> cancelledParticipations;
     /** 参加者のうち、仮参加者の人数 */
     private int reservedEnrolled;
     /** 補欠のうち、仮参加者の人数 */
     private int reservedSpare;
 
-    public ParticipationList(List<ParticipationEx> enrolledParticipations, List<ParticipationEx> spareParticipations, List<ParticipationEx> cancelledParticipations, int reservedEnrolled, int reservedSpare) {
+    public ParticipationList(List<EnrollmentEx> enrolledParticipations, List<EnrollmentEx> spareParticipations, List<EnrollmentEx> cancelledParticipations, int reservedEnrolled, int reservedSpare) {
         this.enrolledParticipations = enrolledParticipations;
         this.spareParticipations = spareParticipations;
         this.cancelledParticipations = cancelledParticipations;
@@ -24,15 +24,15 @@ public class ParticipationList {
         this.reservedSpare = reservedSpare;
     }
 
-    public List<ParticipationEx> getEnrolledParticipations() {
+    public List<EnrollmentEx> getEnrolledParticipations() {
         return enrolledParticipations;
     }
 
-    public List<ParticipationEx> getSpareParticipations() {
+    public List<EnrollmentEx> getSpareParticipations() {
         return spareParticipations;
     }
 
-    public List<ParticipationEx> getCancelledParticipations() {
+    public List<EnrollmentEx> getCancelledParticipations() {
         return cancelledParticipations;
     }
 

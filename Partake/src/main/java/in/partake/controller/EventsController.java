@@ -4,7 +4,7 @@ import in.partake.model.CommentEx;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
-import in.partake.model.ParticipationEx;
+import in.partake.model.EnrollmentEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -79,7 +79,7 @@ public class EventsController extends PartakeActionSupport {
 	        attributes.put(Constants.ATTR_REQUIRED_EVENTS, requiredEvents);
 	        
 	        // ----- participants を反映
-	        List<ParticipationEx> participations = EventService.get().getParticipationEx(event.getId());
+	        List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(event.getId());
 	        if (participations == null) { 
 	            logger.error("Getting participation failed.");
 	        	return ERROR;
@@ -103,7 +103,7 @@ public class EventsController extends PartakeActionSupport {
 	        attributes.put(Constants.ATTR_PARTICIPATIONLIST, participationList);
 	        
 	        if (user != null) {
-	        	attributes.put(Constants.ATTR_PARTICIPATION_STATUS, UserService.get().getParticipationStatus(user, event));
+	        	attributes.put(Constants.ATTR_PARTICIPATION_STATUS, UserService.get().getParticipationStatus(user.getId(), event.getId()));
 	        } else {
 	        	attributes.put(Constants.ATTR_PARTICIPATION_STATUS, ParticipationStatus.NOT_ENROLLED);
 	        }
@@ -263,7 +263,7 @@ public class EventsController extends PartakeActionSupport {
 	        
 	        // 現在の状況が登録されていない場合、
 	        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
-	        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user, event);	        
+	        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user.getId(), event.getId());	        
 	        if (!currentStatus.isEnrolled()) {
 	        	List<EventEx> requiredEvents = getRequiredEventsNotEnrolled(user, relations); 
 	        	if (requiredEvents != null && !requiredEvents.isEmpty()) {
@@ -272,7 +272,7 @@ public class EventsController extends PartakeActionSupport {
 	        	}
 	        }
 	        
-	        EventService.get().enroll(user, event, status, comment, changesOnlyComment, event.isReservationTimeOver());
+	        EventService.get().enroll(user.getId(), event.getId(), status, comment, changesOnlyComment, event.isReservationTimeOver());
 	        
 	        // Twitter で参加をつぶやく
 	        if (!changesOnlyComment) { tweetEnrollment(user, event, status); }
@@ -327,7 +327,7 @@ public class EventsController extends PartakeActionSupport {
 			if (!relation.isRequired()) { continue; }
 			if (relation.getEvent() == null) { continue; }
 			if (user != null) {
-    			ParticipationStatus status = UserService.get().getParticipationStatus(user, relation.getEvent());
+    			ParticipationStatus status = UserService.get().getParticipationStatus(user.getId(), relation.getEvent().getId());
     			if (status.isEnrolled()) { continue; }
 			}
 			requiredEvents.add(relation.getEvent());

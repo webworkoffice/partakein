@@ -5,11 +5,11 @@ import in.partake.model.dao.DataIterator;
 
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 
-class CassandraDataIterator<T> extends DataIterator<T> {
+class CassandraColumnDataIterator<T> extends DataIterator<T> {
 	private ColumnIterator iterator;
 	private ColumnOrSuperColumnMapper<T> mapper;
 	
-	CassandraDataIterator(ColumnIterator iterator, ColumnOrSuperColumnMapper<T> mapper) {
+	CassandraColumnDataIterator(ColumnIterator iterator, ColumnOrSuperColumnMapper<T> mapper) {
 		this.iterator = iterator;
 		this.mapper = mapper;
 	}

@@ -1,8 +1,8 @@
 package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEventAccess;
-import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
 import in.partake.util.Util;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
@@ -39,19 +38,10 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 //      events:owner:<user id>
 //			<event id>/""
 //			NOTE: value に特に意味はないので new byte[0] を入れておく
-//          TODO: event が消去されていれば消すべき？
-//          TODO: event が archived 基準であれば archived に移すべき
 //
 // * event リストで、begin date で並べたものとかなんとか。
 //		archive されていない event で、現在時刻よりも前の event を列挙したい
 //		archive されているイベントは触ることが出来ない。
-//
-// コレより下は実装されていない。イベントが多くなる前に実装する必要がある。
-// * archived event by owner
-//      events:archived:owner:<user id>:<event id>
-//
-// * archived event by user
-//      events:archived:user:<user id>:<event id>
 //
 
 class EventCassandraDao extends CassandraDao implements IEventAccess {
@@ -92,29 +82,15 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         }
     }
     
-//    /* (non-Javadoc)
-//     * @see in.partake.dao.cassandra.IEventAccess#getEventsByIds(java.util.List)
-//     */
-//    @Override
-//    public List<Event> getEventsByIds(PartakeConnection con, List<String> ids) throws DAOException {
-//        try {
-//            List<Event> events = new ArrayList<Event>();
-//            for (String id : ids) {
-//                Event event = getEvent(con, id);
-//                if (event != null) { events.add(event); }
-//            }
-//            return events;
-//        } catch (Exception e) {
-//            throw new DAOException(e);
-//        }
-//    }
-    
-    /* (non-Javadoc)
-     * @see in.partake.dao.cassandra.IEventAccess#getAllEventKeys()
-     */
     @Override
-    public KeyIterator getAllEventKeys(PartakeConnection connection) throws DAOException {
-        return new CassandraKeyIterator((CassandraConnection) connection, EVENTS_KEYSPACE, EVENTS_PREFIX, EVENTS_COLUMNFAMILY, EVENTS_CL_R);
+    public DataIterator<Event> getAllEventIterators(PartakeConnection connection) throws DAOException {
+        CassandraKeyIterator it = new CassandraKeyIterator((CassandraConnection) connection, EVENTS_KEYSPACE, EVENTS_PREFIX, EVENTS_COLUMNFAMILY, EVENTS_CL_R); 
+        return new CassandraKeyDataIterator<Event>(it, new KeyMapper<Event>((CassandraConnection) connection) {
+            @Override
+            public Event map(String key) throws DAOException {
+                return factory.getEventAccess().getEvent(getConnection(), key);
+            }
+        });
     }
     
     @Override
@@ -130,15 +106,15 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     // id が返却される。
     @Override
     public void addEvent(PartakeConnection con, Event embryo) throws DAOException {
-        if (embryo == null) { throw new IllegalArgumentException(); }
-        if (embryo.getId() == null) { throw new IllegalArgumentException(); }
+        if (embryo == null) { throw new NullPointerException(); }
+        if (embryo.getId() == null) { throw new NullPointerException(); }
         
         addEventImpl(con, embryo);
     }    
     
     private void addEventImpl(PartakeConnection con, Event embryo) throws DAOException {
-        if (embryo == null) { throw new IllegalArgumentException(); }
-        if (embryo.getId() == null) { throw new IllegalArgumentException(); }
+        if (embryo == null) { throw new NullPointerException(); }
+        if (embryo.getId() == null) { throw new NullPointerException(); }
         
         CassandraConnection ccon = (CassandraConnection) con;
         try {
@@ -156,9 +132,8 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     
     @Override
     public void updateEvent(PartakeConnection con, Event embryo) throws DAOException {
-        // TODO: これむしろ null po を投げないとだめか
-        if (embryo == null) { throw new IllegalArgumentException(); }
-        if (embryo.getId() == null) { throw new IllegalArgumentException(); }
+        if (embryo == null) { throw new NullPointerException(); }
+        if (embryo.getId() == null) { throw new NullPointerException(); }
         
         CassandraConnection ccon = (CassandraConnection) con;
         try {
@@ -179,16 +154,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         }
     }
     
-//    @Override
-//    public boolean appendFeedId(PartakeConnection con, String eventId, String feedId) throws DAOException {
-//        CassandraConnection ccon = (CassandraConnection) con;
-//        try {
-//            return appendFeedId(ccon, eventId, feedId, ccon.getAcquiredTime());
-//        } catch (Exception e) {
-//            throw new DAOException(e);
-//        }
-//    }
-        
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         removeAllData((CassandraConnection) con);
@@ -382,7 +347,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
                 event.setRevision(Integer.parseInt(value));
             } else if ("deleted".equals(name)) {
                 if ("true".equals(value)) { return null; }
-                // otherwise, 
+                // otherwise, ignore it.
             }
         }
         

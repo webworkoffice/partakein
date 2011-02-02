@@ -124,7 +124,7 @@ public class CalendarsController extends PartakeActionSupport {
     		Calendar calendar = createCalendarSkeleton();
     		
     		// for all events the user will participate ...
-    		List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user);
+    		List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user.getId());
     		for (Event event : enrolledEvents) {
     			if (event == null) { continue; }
     			addToCalendar(calendar, event);

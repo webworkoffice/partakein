@@ -4,7 +4,6 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IBinaryAccess;
-import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.BinaryData;
 
@@ -121,21 +120,9 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            truncateImpl(ccon);
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+        removeAllData((CassandraConnection) con);
     }
     
-    private void truncateImpl(CassandraConnection con) throws Exception {
-        KeyIterator it = new CassandraKeyIterator(con, BINARY_KEYSPACE, BINARY_PREFIX, BINARY_COLUMNFAMILY, BINARY_CL_R);
-        while (it.hasNext()) {
-            String id = it.next();
-            removeBinary(con.getClient(), id, con.getAcquiredTime());
-        }
-    }
 }
 
 

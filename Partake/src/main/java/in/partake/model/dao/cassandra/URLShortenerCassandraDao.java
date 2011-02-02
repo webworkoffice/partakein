@@ -54,14 +54,22 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
     
     @Override
     public void removeShortenedURL(PartakeConnection con, String originalURL) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            removeShortenedURLAllImpl(ccon, originalURL, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
     }
     
     @Override
     public void removeShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            addShortenedURLImpl(ccon.getClient(), originalURL, serviceType, null, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
     }
     
     @Override
@@ -97,5 +105,14 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
         }
         
         return null;
+    }
+    
+    private void removeShortenedURLAllImpl(CassandraConnection con, String originalURL, long time) throws DAOException {
+        String key = URLSHORTENER_PREFIX + originalURL;
+        ColumnIterator it = new ColumnIterator(con, factory, URLSHORTENER_KEYSPACE, key, URLSHORTENER_COLUMNFAMILY, false, URLSHORTENER_CL_R, URLSHORTENER_CL_W);
+        while (it.hasNext()) { 
+            it.next();
+            it.remove();
+        }
     }
 }

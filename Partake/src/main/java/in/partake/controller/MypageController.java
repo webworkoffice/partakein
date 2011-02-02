@@ -31,7 +31,7 @@ public class MypageController extends PartakeActionSupport implements SessionAwa
 
         try {
             List<Event> ownedEvents = EventService.get().getEventsOwnedBy(user);
-            List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user);
+            List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user.getId());
             
             List<Event> enrolled = new ArrayList<Event>();
             List<Event> finished = new ArrayList<Event>();

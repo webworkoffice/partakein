@@ -6,7 +6,7 @@ import in.partake.resource.PartakeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public class JPAFeedDaoTest extends FeedAccessTestCaseBase {
+public class JPAFeedLinkageDaoTest extends FeedAccessTestCaseBase {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("jpa");

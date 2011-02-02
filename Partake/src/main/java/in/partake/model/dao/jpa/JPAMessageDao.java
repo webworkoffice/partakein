@@ -1,48 +1,48 @@
 package in.partake.model.dao.jpa;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IDirectMessageAccess;
+import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.DirectMessage;
-import in.partake.model.dto.DirectMessageEnvelope;
+import in.partake.model.dto.Message;
+import in.partake.model.dto.Envelope;
 import in.partake.model.dto.EventReminderStatus;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
-public class JPADirectMessageDao extends JPADao implements IDirectMessageAccess {
+public class JPAMessageDao extends JPADao implements IMessageAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
-        return getFreshIdImpl(con, DirectMessage.class);
+        return getFreshIdImpl(con, Message.class);
     }
 
     @Override
-    public DirectMessage getDirectMessageById(PartakeConnection con, String messageId) throws DAOException {
-        throw new RuntimeException("Not implemented yet.");
-        // TODO Auto-generated method stub
+    public Message getMessage(PartakeConnection con, String messageId) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        return freeze(em.find(Message.class, messageId));
     }
 
     @Override
-    public void addMessage(PartakeConnection con, String messageId, DirectMessage embryo) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+    public void addMessage(PartakeConnection con, Message embryo) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        em.persist(new Message(embryo));
     }
 
     @Override
-    public void addUserMessage(PartakeConnection con, String messageId, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
-    }
-
-    @Override
-    public DataIterator<DirectMessage> getUserMessageIterator(PartakeConnection con, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
+    public DataIterator<Message> getMessagesByEventId(PartakeConnection con, String eventId) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT m FROM Messages m WHERE m.eventId = :eventId");
+        q.setParameter("eventId", eventId);
+        
+        @SuppressWarnings("unchecked")
+        List<Message> messages = q.getResultList();
+        return new JPAPartakeModelDataIterator<Message>(em, messages, false);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class JPADirectMessageDao extends JPADao implements IDirectMessageAccess 
     }
 
     @Override
-    public DataIterator<DirectMessageEnvelope> getEnvelopeIterator(PartakeConnection con) throws DAOException {
+    public DataIterator<Envelope> getEnvelopeIterator(PartakeConnection con) throws DAOException {
         // TODO Auto-generated method stub
         throw new RuntimeException("Not implemented yet.");
     }
@@ -73,7 +73,7 @@ public class JPADirectMessageDao extends JPADao implements IDirectMessageAccess 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM DirectMessages");
+        Query q = em.createQuery("DELETE FROM Messages");
         q.executeUpdate();
     }
 }

@@ -1,7 +1,7 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.Event;
-import in.partake.model.dto.Participation;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.LastParticipationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
@@ -21,16 +21,12 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 	public TestName name = new TestName();
 
 	private IEnrollmentAccess dao;
-	private String eventId;
-	private String userId;
 
 	@Before
 	public void setup() throws DAOException {
 	    super.setup(getFactory().getEnrollmentAccess());
 	    
 		dao = getFactory().getEnrollmentAccess();
-		eventId = name.getMethodName() + System.currentTimeMillis();
-		userId = name.getMethodName() + System.currentTimeMillis();
 	}
 
 	@Test
@@ -38,7 +34,8 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 		PartakeConnection con = getPool().getConnection();
 
 		try {
-			List<Participation> list = dao.getParticipation(con, eventId);
+		    String eventId = "eventId" + System.currentTimeMillis();
+		    List<Enrollment> list = dao.getEnrollmentsByEventId(con, eventId);
 			Assert.assertTrue(list.isEmpty());
 		} finally {
 			con.invalidate();
@@ -48,8 +45,11 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 	@Test
 	public void testPutAndGetPaticipationList() throws DAOException {
 		ParticipationStatus status = ParticipationStatus.ENROLLED;
-		User user = createDummyUser();
-		Event event = createEvent();
+		
+		String eventId = "eventId-pagp-" + System.currentTimeMillis();
+		String userId  = "userId-pagp-"  + System.currentTimeMillis();
+		
+		Event event = createEvent(eventId, userId);
 
 		PartakeConnection con = getPool().getConnection();
 		try {
@@ -57,11 +57,12 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 			getFactory().getEventAccess().addEvent(con, event);
 			getFactory().getUserAccess().addUser(con, new User(userId, 0, new Date(), null)); 
 
-			dao.enroll(con, user, event, status, "", false, false);
-			List<Participation> list = dao.getParticipation(con, eventId);
+			dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, 0, LastParticipationStatus.CHANGED, new Date()));
+			
+			List<Enrollment> list = dao.getEnrollmentsByEventId(con, eventId);
 			Assert.assertEquals(1, list.size());
 
-			Participation storedParticipation = list.get(0);
+			Enrollment storedParticipation = list.get(0);
 			Assert.assertNotNull(storedParticipation);
 			Assert.assertEquals(userId, storedParticipation.getUserId());
 			Assert.assertEquals(LastParticipationStatus.CHANGED, storedParticipation.getLastStatus());
@@ -73,32 +74,49 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 
 	@Test
 	public void testPutAndUpdatePaticipationList() throws DAOException {
-		testPutAndGetPaticipationList();
+        String eventId = "eventId-paup-" + System.currentTimeMillis();
+        String userId  = "userId-paup-"  + System.currentTimeMillis();
+        
+        Event event = createEvent(eventId, userId);
 
-		PartakeConnection con = getPool().getConnection();
-		try {
-			List<Participation> storedList = dao.getParticipation(con, eventId);
-			Assert.assertEquals(1, storedList.size());
-
-			Participation storedParticipation = storedList.get(0);
-			ParticipationStatus status = storedParticipation.getStatus();
-			Assert.assertNotNull(storedParticipation);
-			LastParticipationStatus newStatus = LastParticipationStatus.NOT_ENROLLED;
-			Assert.assertFalse(newStatus.equals(storedParticipation.getLastStatus()));
-			dao.setLastStatus(con, eventId, storedParticipation, newStatus);
-
-			List<Participation> updatedList = dao.getParticipation(con, eventId);
-			Assert.assertEquals(1, updatedList.size());
-			Participation updatedParticipation = updatedList.get(0);
-			Assert.assertEquals(userId, updatedParticipation.getUserId());
-			Assert.assertEquals(newStatus, updatedParticipation.getLastStatus());
-			Assert.assertEquals(status, updatedParticipation.getStatus());
-		} finally {
-			con.invalidate();
-		}
+        PartakeConnection con = getPool().getConnection();
+        try {
+            // create
+            {
+                event.setId(eventId);
+                getFactory().getEventAccess().addEvent(con, event);
+                getFactory().getUserAccess().addUser(con, new User(userId, 0, new Date(), null));     
+                dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, 0, LastParticipationStatus.CHANGED, new Date()));
+            }
+            
+            // update
+            {
+                List<Enrollment> storedList = dao.getEnrollmentsByEventId(con, eventId);
+                Enrollment storedParticipation = storedList.get(0);
+                Assert.assertNotNull(storedParticipation);
+                LastParticipationStatus newStatus = LastParticipationStatus.NOT_ENROLLED;
+                Assert.assertFalse(newStatus.equals(storedParticipation.getLastStatus()));
+                Enrollment newStoredParticipation = new Enrollment(storedParticipation);
+                newStoredParticipation.setLastStatus(LastParticipationStatus.CHANGED);
+                dao.addEnrollment(con, newStoredParticipation);
+            }
+            
+            // get
+            {
+                List<Enrollment> updatedList = dao.getEnrollmentsByEventId(con, eventId);
+                Assert.assertEquals(1, updatedList.size());
+                Enrollment updatedParticipation = updatedList.get(0);
+                Assert.assertEquals(userId, updatedParticipation.getUserId());
+                Assert.assertEquals(LastParticipationStatus.CHANGED, updatedParticipation.getLastStatus());
+                Assert.assertEquals(ParticipationStatus.NOT_ENROLLED, updatedParticipation.getStatus());
+            }
+            
+        } finally {
+            con.invalidate();
+        }
 	}
 
-	private Event createEvent() {
+	private Event createEvent(String eventId, String userId) {
 		Date beginDate = PDate.getCurrentDate().getDate();
 		Date now = PDate.getCurrentDate().getDate();
 		String url = "http://localhost:8080/";
@@ -108,13 +126,5 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 		Event event = new Event(eventId, "DUMMY EVENT", "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", userId, null, true, "passcode", false, now, now);
 		event.setId(eventId);
 		return event;
-	}
-
-	private User createDummyUser() {
-		Date lastLoginAt = PDate.getCurrentDate().getDate();
-		int twitterId = 0;
-		String calendarId = "";
-		User user = new User(userId, twitterId, lastLoginAt, calendarId);
-		return user;
 	}
 }

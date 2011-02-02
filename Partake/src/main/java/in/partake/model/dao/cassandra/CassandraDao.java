@@ -3,10 +3,12 @@ package in.partake.model.dao.cassandra;
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 
 import in.partake.model.dao.DAOException;
+import in.partake.util.Util;
 
 import java.util.Date;
 import java.util.List;
 
+import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
@@ -46,6 +48,14 @@ abstract class CassandraDao {
      */
     protected List<ColumnOrSuperColumn> getSlice(Client client, String keySpace, String columnFamily, String key, ConsistencyLevel readConsistency) throws Exception {
         return CassandraDaoUtils.getSlice(client, keySpace, columnFamily, key, readConsistency);
+    }
+
+    protected Column createColumn(String name, String value, long time) {
+        return new Column(bytes(name), bytes(value), time);
+    }
+    
+    protected Column createColumn(String name, Date value, long time) {
+        return createColumn(name, Util.getTimeString(value), time);
     }
     
     protected Mutation createMutation(String key, String value, long time) {

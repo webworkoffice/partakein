@@ -2,8 +2,8 @@ package in.partake.controller;
 
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
-import in.partake.model.dto.DirectMessage;
-import in.partake.model.dto.Participation;
+import in.partake.model.dto.Message;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.service.DirectMessageService;
@@ -41,11 +41,11 @@ public class EventsMessageController extends PartakeActionSupport {
 			if (!event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE)) { return PROHIBITED; }
 			
 			// ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。
-			List<DirectMessage> messages = DirectMessageService.get().getRecentUserMessage(eventId, 5);
+			List<Message> messages = DirectMessageService.get().getRecentUserMessage(eventId, 5);
 			Date currentTime = new Date(); 
 
 			if (messages.size() >= 3) {
-				DirectMessage msg = messages.get(2);
+				Message msg = messages.get(2);
 				Date msgDate = msg.getCreatedAt();
 				Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60); // one hour later after the message was sent.
 				if (currentTime.before(thresholdDate)) { // NG
@@ -54,7 +54,7 @@ public class EventsMessageController extends PartakeActionSupport {
 				}
 			}
 			if (messages.size() >= 5) {
-				DirectMessage msg = messages.get(4);
+				Message msg = messages.get(4);
 				Date msgDate = msg.getCreatedAt();
 				Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60 * 24); // one day later after the message was sent.
 				
@@ -75,11 +75,10 @@ public class EventsMessageController extends PartakeActionSupport {
 			String msg = left + Util.shorten(event.getTitle(), 140 - Util.codePointCount(left) - Util.codePointCount(right)) + right;
 			assert (Util.codePointCount(msg) <= 140);
 			
-			DirectMessage embryo = new DirectMessage(user.getId(), msg, event.getId());
-			String messageId = DirectMessageService.get().addMessage(embryo, true);
+			String messageId = DirectMessageService.get().addMessage(user.getId(), msg,event.getId(), true);
 			
-			List<Participation> participations = EventService.get().getParticipation(event.getId());
-			for (Participation participation : participations) {
+			List<Enrollment> participations = EventService.get().getParticipation(event.getId());
+			for (Enrollment participation : participations) {
 			    boolean sendsMessage = false;
 			    switch (participation.getStatus()) {
 			    case ENROLLED:

@@ -67,16 +67,16 @@ public class EventEx extends Event {
      * @param participations
      * @return
      */
-    public ParticipationList calculateParticipationList(List<ParticipationEx> participations) {
-        List<ParticipationEx> enrolledParticipations = new ArrayList<ParticipationEx>();
-        List<ParticipationEx> spareParticipations = new ArrayList<ParticipationEx>();
-        List<ParticipationEx> cancelledParticipations = new ArrayList<ParticipationEx>();
+    public ParticipationList calculateParticipationList(List<EnrollmentEx> participations) {
+        List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>();
+        List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>();
+        List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>();
         boolean timeover = isReservationTimeOver();
         
         int reservedEnrolled = 0;
         int reservedSpare = 0;
 
-        for (ParticipationEx participation : participations) {
+        for (EnrollmentEx participation : participations) {
             switch (participation.getStatus()) {
             case CANCELLED:
                 cancelledParticipations.add(participation);

@@ -18,11 +18,15 @@ class JPAUserPreferenceDao extends JPADao implements IUserPreferenceAccess {
 
     @Override
     public void setPreference(PartakeConnection con, UserPreference embryo) throws DAOException {
-        if (embryo == null) { throw new IllegalArgumentException(); }
-        if (embryo.getUserId() == null) { throw new IllegalArgumentException(); }
+        if (embryo == null) { throw new NullPointerException(); }
+        if (embryo.getUserId() == null) { throw new NullPointerException(); }
         
         EntityManager em = getEntityManager(con);
-        em.persist(embryo);
+        if (em.find(UserPreference.class, embryo.getUserId()) != null) {
+            em.merge(embryo);
+        } else { 
+            em.persist(new UserPreference(embryo));
+        }
     }
 
     @Override

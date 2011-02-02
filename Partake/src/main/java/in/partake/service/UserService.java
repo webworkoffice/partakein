@@ -10,6 +10,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.CalendarLinkage;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
@@ -107,7 +108,7 @@ public final class UserService extends PartakeService {
             UserEx user = getUserFromTwitterLinkage(con, factory, twitterLinkage, twitter, true);
             
             // 3. lastlogin の update
-            factory.getUserAccess().updateLastLogin(con, user, PDate.getCurrentDate().getDate());
+            factory.getUserAccess().updateLastLogin(con, user.getId(), PDate.getCurrentDate().getDate());
             
             return user;
         } finally {
@@ -203,11 +204,21 @@ public final class UserService extends PartakeService {
     // Event Participation
     
     // TODO: should this be in UserService or EventService? Hmmm... I think this is suitable to EventService.
-    public List<Event> getEnrolledEvents(User user) throws DAOException {
+    public List<Event> getEnrolledEvents(String userId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            return convertToList(factory.getEnrollmentAccess().getEnrolledEvents(con, user.getId()));
+            List<Enrollment> enrollments = factory.getEnrollmentAccess().getEnrollmentsByUserId(con, userId);
+            List<Event> events = new ArrayList<Event>();
+            for (Enrollment e : enrollments) {
+                if (e.getStatus().isEnrolled()) {
+                    Event event = factory.getEventAccess().getEvent(con, e.getEventId());
+                    if (event == null) { continue; }
+                    events.add(event);
+                }
+            }
+            
+            return events;
         } finally {
             con.invalidate();
         }
@@ -215,11 +226,13 @@ public final class UserService extends PartakeService {
     
     
     
-    public ParticipationStatus getParticipationStatus(User user, Event event) throws DAOException {
+    public ParticipationStatus getParticipationStatus(String userId, String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            return factory.getEnrollmentAccess().getParticipationStatus(con, event, user);
+            Enrollment enrollment = factory.getEnrollmentAccess().getEnrollment(con, userId, eventId);
+            if (enrollment == null) { return ParticipationStatus.NOT_ENROLLED; }
+            return enrollment.getStatus();
         } finally {
             con.invalidate();
         }

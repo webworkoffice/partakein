@@ -2,7 +2,6 @@ package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.AbstractDaoTestCaseBase;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.KeyIterator;
 import in.partake.resource.PartakeProperties;
 
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public class CassandraKeyIteratorTest extends AbstractDaoTestCaseBase {
             createKeys(con, prefix, n);
             
             // iterate
-            KeyIterator it = new CassandraKeyIterator(con, KEYSPACE, prefix, COLUMNFAMILY, CL_R);
+            CassandraKeyIterator it = new CassandraKeyIterator(con, KEYSPACE, prefix, COLUMNFAMILY, CL_R);
             int i = 0;
             while (it.hasNext()) {
                 String s = String.format("%08d", i++);

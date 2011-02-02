@@ -13,7 +13,7 @@ import com.rosaloves.bitlyj.BitlyException;
 
 import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
-import in.partake.model.ParticipationEx;
+import in.partake.model.EnrollmentEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -23,7 +23,7 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.Participation;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
@@ -139,16 +139,16 @@ public abstract class PartakeService {
     	return new CommentEx(comment, event, user);
     }
     
-    protected List<ParticipationEx> getParticipationsEx(PartakeConnection con, String eventId) throws DAOException {
+    protected List<EnrollmentEx> getEnrollmentExs(PartakeConnection con, String eventId) throws DAOException {
         // priority のあるイベントに参加している場合、priority に 1 を付加する。
         
         // --- まず、ParticipationEx を作成
-        List<ParticipationEx> ps = new ArrayList<ParticipationEx>();
-        for (Participation p : factory.getEnrollmentAccess().getParticipation(con, eventId)) {
+        List<EnrollmentEx> ps = new ArrayList<EnrollmentEx>();
+        for (Enrollment p : factory.getEnrollmentAccess().getEnrollmentsByEventId(con, eventId)) {
             if (p == null) { continue; }
             UserEx user = getUserEx(con, p.getUserId());
             if (user == null) { continue; }
-            ParticipationEx pe = new ParticipationEx(p, user);
+            EnrollmentEx pe = new EnrollmentEx(p, user);
             ps.add(pe);
         }
         
@@ -161,8 +161,8 @@ public abstract class PartakeService {
             // related event の参加者を Set で取得
             Set<String> relatedEventParticipantsIds = new HashSet<String>();
             {
-                List<Participation> relatedEventParticipations = factory.getEnrollmentAccess().getParticipation(con, relation.getEventId());
-                for (Participation p : relatedEventParticipations) {
+                List<Enrollment> relatedEventParticipations = factory.getEnrollmentAccess().getEnrollmentsByEventId(con, relation.getEventId());
+                for (Enrollment p : relatedEventParticipations) {
                     if (p.getStatus().isEnrolled()) {
                         relatedEventParticipantsIds.add(p.getUserId());
                     }
@@ -170,7 +170,7 @@ public abstract class PartakeService {
             }
             
             // 参加していれば、それを追加。priority があれば、+1 する。
-            for (ParticipationEx p : ps) {
+            for (EnrollmentEx p : ps) {
                 if (!relatedEventParticipantsIds.contains(p.getUserId())) { continue; }
                 p.addRelatedEventId(relation.getEventId());
                 if (relation.hasPriority()) {
@@ -180,11 +180,11 @@ public abstract class PartakeService {
 
         }
         
-        for (ParticipationEx p : ps) {
+        for (EnrollmentEx p : ps) {
             p.freeze();
         }
         
-        Collections.sort(ps, Participation.getPriorityBasedComparator());       
+        Collections.sort(ps, Enrollment.getPriorityBasedComparator());       
         
         return ps;
     }

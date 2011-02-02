@@ -69,9 +69,10 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
             factory.getBinaryAccess().addBinary(con, original);
             BinaryData target = factory.getBinaryAccess().getBinary(con, "test");
             
-            Assert.assertEquals(original.getId(), target.getId());
-            Assert.assertEquals(original.getType(), target.getType());
-            Assert.assertArrayEquals(original.getData(), target.getData());
+            Assert.assertEquals(original, target);
+            Assert.assertNotSame(original, target);
+            Assert.assertTrue(target.isFrozen());
+            Assert.assertFalse(original.isFrozen());
             
             con.commit();
         } catch (Exception e) {

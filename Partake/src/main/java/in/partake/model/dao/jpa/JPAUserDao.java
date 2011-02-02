@@ -19,20 +19,27 @@ class JPAUserDao extends JPADao implements IUserAccess {
 
     @Override
     public void addUser(PartakeConnection con, User user) throws DAOException {
-        // TODO Auto-generated method stub
+        if (user == null) { throw new NullPointerException(); }
+        if (user.getId() == null) { throw new NullPointerException(); }
         
+        EntityManager em = getEntityManager(con);
+        em.persist(new User(user)); // use copy constructor to prevent using the same object in the cache.
     }
 
     @Override
     public User getUser(PartakeConnection con, String id) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager em = getEntityManager(con);
+        return freeze(em.find(User.class, id));
     }
 
     @Override
-    public void updateLastLogin(PartakeConnection con, User user, Date now) throws DAOException {
-        // TODO Auto-generated method stub
+    public void updateLastLogin(PartakeConnection con, String userId, Date now) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        User user = em.find(User.class, userId);
+        if (user == null) { throw new DAOException("No such element"); }
         
+        user.setLastLoginAt(now);
+        em.merge(user);
     }
 
     @Override

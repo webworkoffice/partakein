@@ -8,7 +8,6 @@ import java.util.Set;
 import in.partake.model.dao.AbstractDaoTestCaseBase;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.IEventAccess;
-import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
 import in.partake.util.PDate;
@@ -28,13 +27,13 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
 	}
 
 	@Test
-	public void loadAllEventKeys() throws DAOException {
+	public void loadAllEvents() throws DAOException {
 		PartakeConnection con = getPool().getConnection();
 
 		try {
-			for (KeyIterator iter = dao.getAllEventKeys(con); iter.hasNext();) {
-				iter.next();
-			}
+		    for (DataIterator<Event> it = dao.getAllEventIterators(con); it.hasNext(); ) {
+		        it.next();
+		    }
 		} finally {
 			con.invalidate();
 		}
@@ -47,7 +46,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
         try {
             Set<String> visited = new HashSet<String>(); 
             con.beginTransaction();
-            for (int i = 0; i < 10000; ++i) {
+            for (int i = 0; i < 10; ++i) {
                 String id = dao.getFreshId(con);
                 Assert.assertFalse(visited.contains(id));
                 visited.add(id);
@@ -172,7 +171,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testToAddEventWithoutId() throws DAOException {
         PartakeConnection con = getPool().getConnection();
         

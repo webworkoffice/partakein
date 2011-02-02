@@ -1,5 +1,6 @@
 package in.partake.model.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,14 +15,35 @@ class JPAEventRelationDao extends JPADao implements IEventRelationAccess {
 
     @Override
     public void setEventRelations(PartakeConnection con, String eventId, List<EventRelation> relations) throws DAOException {
-        // TODO Auto-generated method stub
+        EntityManager em = getEntityManager(con);
         
+        // remove event relations first.
+        {
+            Query q = em.createQuery("DELETE FROM EventRelations er WHERE er.eventId = :eventId");
+            q.setParameter("eventId", eventId);
+            q.executeUpdate();
+        }
+        
+        for (EventRelation er : relations) {
+            em.persist(er);
+        }
     }
 
     @Override
     public List<EventRelation> getEventRelations(PartakeConnection con, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT er FROM EventRelations er WHERE er.eventId = :eventId");
+        q.setParameter("eventId", eventId);
+        
+        @SuppressWarnings("unchecked")
+        List<EventRelation> relations = q.getResultList();
+        
+        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
+        for (EventRelation er : relations) {
+            eventRelations.add(er.freeze());
+        }
+        
+        return eventRelations;
     }
 
     @Override

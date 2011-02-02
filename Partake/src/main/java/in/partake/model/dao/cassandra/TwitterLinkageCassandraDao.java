@@ -38,10 +38,10 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
     }
 
 	@Override
-	public int addTwitterLinkage(PartakeConnection con, TwitterLinkage embryo) throws DAOException {
+	public void addTwitterLinkage(PartakeConnection con, TwitterLinkage embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return addTwitterLinkage(ccon.getClient(), embryo, ccon.getAcquiredTime());
+            addTwitterLinkage(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }

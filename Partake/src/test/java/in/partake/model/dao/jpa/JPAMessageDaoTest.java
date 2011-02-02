@@ -3,10 +3,10 @@ package in.partake.model.dao.jpa;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import in.partake.model.dao.DirectMessageDaoTestCaseBase;
+import in.partake.model.dao.MessageDaoTestCaseBase;
 import in.partake.resource.PartakeProperties;
 
-public class JPADirectMessageDaoTest extends DirectMessageDaoTestCaseBase {
+public class JPAMessageDaoTest extends MessageDaoTestCaseBase {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("jpa");

@@ -2,13 +2,13 @@ package in.partake.model.dto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.openjpa.persistence.jdbc.Index;
 
 @Entity(name = "EventRelations")
 public class EventRelation extends PartakeModel<EventRelation> {
-    @Id
+    @Column @Index
 	private String eventId;
     @Column
 	private boolean required; // true if the original event requires this event.

@@ -9,9 +9,8 @@ import javax.persistence.Lob;
 
 import org.apache.commons.lang.ObjectUtils;
 
-// TODO: This class will be renamed as Message later.
-@Entity(name = "DirectMessages")
-public class DirectMessage extends PartakeModel<DirectMessage> {
+@Entity(name = "Messages")
+public class Message extends PartakeModel<Message> {
     @Id
     private String id;
     @Column
@@ -23,23 +22,18 @@ public class DirectMessage extends PartakeModel<DirectMessage> {
     @Column
     private Date   createdAt;
     
-    public DirectMessage() {
+    public Message() {
         // do nothing
     }
-    
-    public DirectMessage(String userId, String message) {
-        this(userId, message, null);
-    }
 
-    public DirectMessage(String userId, String message, String eventId) {
-        this(null, userId, message, eventId, null);
-    }
-
-    public DirectMessage(DirectMessage message) {
+    public Message(Message message) {
     	this(message.id, message.userId, message.message, message.eventId, message.createdAt);
     }
     
-    public DirectMessage(String id, String userId, String message, String eventId, Date createdAt) {
+    /** eventId が null -> system からのメッセージ、null でない -> user からのメッセージ。
+     * これは直感的でないので後で直すこと。
+     */
+    public Message(String id, String userId, String message, String eventId, Date createdAt) {
         this.id = id;
         this.userId = userId;
         this.message = message;
@@ -57,10 +51,10 @@ public class DirectMessage extends PartakeModel<DirectMessage> {
     
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof DirectMessage)) { return false; }
+        if (!(obj instanceof Message)) { return false; }
         
-        DirectMessage lhs = this;
-        DirectMessage rhs = (DirectMessage) obj;
+        Message lhs = this;
+        Message rhs = (Message) obj;
         
         if (!(ObjectUtils.equals(lhs.id,        rhs.id)))        { return false; }
         if (!(ObjectUtils.equals(lhs.userId,    rhs.userId)))    { return false; }

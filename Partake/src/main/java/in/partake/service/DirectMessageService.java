@@ -17,8 +17,8 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dto.DirectMessage;
-import in.partake.model.dto.DirectMessageEnvelope;
+import in.partake.model.dto.Message;
+import in.partake.model.dto.Envelope;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
@@ -39,11 +39,11 @@ public class DirectMessageService extends PartakeService {
     
     // ----------------------------------------------------------------------
 
-    public DirectMessage getMessageById(String messageId) throws DAOException {
+    public Message getMessageById(String messageId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            return factory.getDirectMessageAccess().getDirectMessageById(con, messageId);
+            return factory.getDirectMessageAccess().getMessage(con, messageId);
         } finally {
             con.invalidate();
         }
@@ -51,24 +51,21 @@ public class DirectMessageService extends PartakeService {
     
     /**
      * message を DB に格納する。
-     * DB に格納するだけ。
+     * DB に格納するだけで送られない。
      * @param embryo
-     * @param isUserMessage ユーザーからのメッセージであれば true / system からのメッセージであれば false
      * @return message の ID を返す
      * @throws DAOException
      */
-    public String addMessage(DirectMessage embryo, boolean isUserMessage) throws DAOException {
+    public String addMessage(String userId, String message, String eventId, boolean isUserMessage) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
 
+        
         try {
-            String messageId = factory.getDirectMessageAccess().getFreshId(con);
-            factory.getDirectMessageAccess().addMessage(con, messageId, embryo); 
-            if (isUserMessage) {
-                factory.getDirectMessageAccess().addUserMessage(con, messageId, embryo.getEventId());
-            }
-
-            return messageId;
+            String id = factory.getDirectMessageAccess().getFreshId(con);
+            Message embryo = new Message(id, userId, message, isUserMessage ? eventId : null, new Date()); 
+            factory.getDirectMessageAccess().addMessage(con, embryo); 
+            return id;
         } finally {
             con.invalidate();
         }
@@ -86,10 +83,10 @@ public class DirectMessageService extends PartakeService {
     	
     	try {
 	        List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
-	        DataIterator<DirectMessage> it = factory.getDirectMessageAccess().getUserMessageIterator(con, eventId);
+	        DataIterator<Message> it = factory.getDirectMessageAccess().getMessagesByEventId(con, eventId);
 
 	        while (it.hasNext()) {
-	        	DirectMessage message = it.next();
+	        	Message message = it.next();
 	        	messages.add(new DirectMessageEx(message, getUserEx(con, message.getUserId())));
 	        }
 	                
@@ -106,13 +103,13 @@ public class DirectMessageService extends PartakeService {
      * @return
      * @throws DAOException
      */
-    public List<DirectMessage> getRecentUserMessage(String eventId, int maxMessage) throws DAOException {
+    public List<Message> getRecentUserMessage(String eventId, int maxMessage) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         
         try {
-            List<DirectMessage> messages = new ArrayList<DirectMessage>();
-            DataIterator<DirectMessage> it = factory.getDirectMessageAccess().getUserMessageIterator(con, eventId);
+            List<Message> messages = new ArrayList<Message>();
+            DataIterator<Message> it = factory.getDirectMessageAccess().getMessagesByEventId(con, eventId);
             
             for (int i = 0; i < maxMessage; ++i) {
                 if (!it.hasNext()) { break; }
@@ -136,9 +133,10 @@ public class DirectMessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
 
         try {
-            DirectMessage embryo = new DirectMessage(user.getId(), messageStr);
             String messageId = factory.getDirectMessageAccess().getFreshId(con);
-            factory.getDirectMessageAccess().addMessage(con, messageId, embryo);
+            Message embryo = new Message(messageId, user.getId(), messageStr, null, new Date());
+            
+            factory.getDirectMessageAccess().addMessage(con, embryo);
             factory.getDirectMessageAccess().sendEnvelope(con, messageId, user.getId(), null, null, DirectMessagePostingType.POSTING_TWITTER);
         } finally {
             con.invalidate();
@@ -174,9 +172,9 @@ public class DirectMessageService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            DataIterator<DirectMessageEnvelope> it = factory.getDirectMessageAccess().getEnvelopeIterator(con);             
+            DataIterator<Envelope> it = factory.getDirectMessageAccess().getEnvelopeIterator(con);             
             while (it.hasNext()) {
-                DirectMessageEnvelope envelope = it.next();
+                Envelope envelope = it.next();
                 if (envelope == null) { it.remove(); continue; }
     
                 logger.debug("run : Try to send... " + envelope.getEnvelopeId());
@@ -213,7 +211,7 @@ public class DirectMessageService extends PartakeService {
     // ----------------------------------------------------------------------
     
     
-    private boolean sendTwitterMessage(PartakeConnection con, DataIterator<DirectMessageEnvelope> it, DirectMessageEnvelope envelope) throws DAOException {
+    private boolean sendTwitterMessage(PartakeConnection con, DataIterator<Envelope> it, Envelope envelope) throws DAOException {
         String senderId = envelope.getSenderId();
         assert (envelope.getReceiverId() == null);
         if (senderId == null) {
@@ -231,7 +229,7 @@ public class DirectMessageService extends PartakeService {
         Twitter twitter = new TwitterFactory().getInstance(accessToken);
         
         try {
-            DirectMessage message = getFactory().getDirectMessageAccess().getDirectMessageById(con, envelope.getMessageId());             
+            Message message = getFactory().getDirectMessageAccess().getMessage(con, envelope.getMessageId());             
             twitter.updateStatus(message.getMessage());
             return true;
         } catch (TwitterException e) {
@@ -258,7 +256,7 @@ public class DirectMessageService extends PartakeService {
      * @param envelope
      * @return
      */
-    private boolean sendDirectMessage(PartakeConnection con, DataIterator<DirectMessageEnvelope> it, DirectMessageEnvelope envelope) throws DAOException {        
+    private boolean sendDirectMessage(PartakeConnection con, DataIterator<Envelope> it, Envelope envelope) throws DAOException {        
         String receiverId = envelope.getReceiverId();
 
         // twitter message を受け取らない設定になっていれば送らない。
@@ -282,7 +280,7 @@ public class DirectMessageService extends PartakeService {
         if (twitter == null) { return true; }
 
         try {
-            DirectMessage message = getFactory().getDirectMessageAccess().getDirectMessageById(con, envelope.getMessageId()); 
+            Message message = getFactory().getDirectMessageAccess().getMessage(con, envelope.getMessageId()); 
                         
             twitter.sendDirectMessage(user.getTwitterId(), message.getMessage());
             logger.info("sendDirectMessage : direct message has been sent to " + twitterLinkage.getScreenName());

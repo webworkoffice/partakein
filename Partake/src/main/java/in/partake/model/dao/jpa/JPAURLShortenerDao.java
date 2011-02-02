@@ -18,7 +18,11 @@ class JPAURLShortenerDao extends JPADao implements IURLShortenerAccess {
         ShortenedURLData data = new ShortenedURLData(originalURL, serviceType, shortenedURL);
         
         EntityManager em = getEntityManager(con);
-        em.persist(data);
+        if (em.contains(data)) {
+            em.merge(data);
+        } else { 
+            em.persist(data);
+        }
     }
 
     @Override
@@ -52,20 +56,23 @@ class JPAURLShortenerDao extends JPADao implements IURLShortenerAccess {
     @Override
     public void removeShortenedURL(PartakeConnection con, String originalURL) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM ShortenedURLData data WHERE data.originalURL = :ourl");
+        Query q = em.createQuery("SELECT data FROM ShortenedURLData as data WHERE data.originalURL = :ourl");
         q.setParameter("ourl", originalURL);
+        @SuppressWarnings("unchecked")
+        List<ShortenedURLData> list = (List<ShortenedURLData>) q.getResultList();
         
-        q.executeUpdate();
+        // delete で消すと cache から消えないんだよなあ...
+        
+        for (ShortenedURLData data : list) {
+            em.remove(data);
+        }
     }
     
     @Override
     public void removeShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM ShortenedURLData data WHERE data.originalURL = :orl AND data.serviceType = :st");
-        q.setParameter("ourl", originalURL);
-        q.setParameter("st", serviceType);
-        
-        q.executeUpdate();
+        ShortenedURLData data = em.find(ShortenedURLData.class, new ShortenedURLDataPK(originalURL, serviceType));
+        if (data != null) { em.remove(data); }
     }
     
     @Override
