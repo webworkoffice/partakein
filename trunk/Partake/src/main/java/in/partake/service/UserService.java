@@ -46,7 +46,10 @@ public final class UserService extends PartakeService {
     public UserEx getUserExById(String userId) throws DAOException {
         PartakeConnection con = getPool().getConnection();
         try {
-            return getUserEx(con, userId);
+            con.beginTransaction(); 
+            UserEx user = getUserEx(con, userId);
+            con.commit();
+            return user;
         } finally {
             con.invalidate();            
         }
@@ -57,7 +60,10 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction(); 
             TwitterLinkage linkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
+            con.commit();
+            
             return new UserEx(user, linkage);
         } finally {
             con.invalidate();            
@@ -80,6 +86,8 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction(); 
+            
             // 1. まず TwitterLinkage を作成 / アップデート
             TwitterLinkage twitterLinkage = updateTwitterLinkage(con, factory, twitterLinkageEmbryo, twitter); 
 
@@ -89,6 +97,7 @@ public final class UserService extends PartakeService {
             // 3. lastlogin の update
             factory.getUserAccess().updateLastLogin(con, user.getId(), PDate.getCurrentDate().getDate());
             
+            con.commit();
             return user;
         } finally {
             con.invalidate();
@@ -133,10 +142,13 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction(); 
             String userId = factory.getOpenIDLinkageAccess().getUserId(con, identifier); 
             if (userId == null) { return null; }
             
-            return getUserEx(con, userId);
+            UserEx user = getUserEx(con, userId);
+            con.commit();
+            return user;
         } finally {
             con.invalidate();
         }     
@@ -146,7 +158,9 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction(); 
             factory.getOpenIDLinkageAccess().addOpenID(con, identifier, userId);
+            con.commit();
         } finally {
             con.invalidate();
         }        
@@ -156,6 +170,7 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction(); 
             List<String> result = new ArrayList<String>();
             DataIterator<String> it = factory.getOpenIDLinkageAccess().getOpenIDIdentifiers(con, userId);
             while (it.hasNext()) {
@@ -163,6 +178,8 @@ public final class UserService extends PartakeService {
                 if (s == null) { continue; }
                 result.add(s);
             }
+            con.commit();
+            
             return result;
         } finally {
             con.invalidate();
@@ -173,7 +190,9 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction(); 
             factory.getOpenIDLinkageAccess().removeOpenID(con, identifier);
+            con.commit();
         } finally {            
             con.invalidate();
         }         
@@ -187,6 +206,7 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction(); 
             List<Enrollment> enrollments = factory.getEnrollmentAccess().getEnrollmentsByUserId(con, userId);
             List<Event> events = new ArrayList<Event>();
             for (Enrollment e : enrollments) {
@@ -196,6 +216,7 @@ public final class UserService extends PartakeService {
                     events.add(event);
                 }
             }
+            con.commit();
             
             return events;
         } finally {
@@ -209,9 +230,13 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction();
             Enrollment enrollment = factory.getEnrollmentAccess().getEnrollment(con, userId, eventId);
+            con.commit();
+            
             if (enrollment == null) { return ParticipationStatus.NOT_ENROLLED; }
             return enrollment.getStatus();
+            
         } finally {
             con.invalidate();
         }
@@ -224,7 +249,10 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            CalendarLinkage calendarLinkage = factory.getCalendarAccess().getCalendarLinkage(con, calendarId); 
+            con.beginTransaction();
+            CalendarLinkage calendarLinkage = factory.getCalendarAccess().getCalendarLinkage(con, calendarId);
+            con.commit();
+            
             if (calendarLinkage == null) { return null; }
             
             String userId = calendarLinkage.getUserId();
@@ -243,7 +271,10 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction();
             UserPreference pref = factory.getUserPreferenceAccess().getPreference(con, userId);
+            con.commit();
+            
             if (pref == null) {
                 pref = UserPreference.getDefaultPreference(userId);
             }
@@ -257,7 +288,9 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction();
             factory.getUserPreferenceAccess().setPreference(con,  embryo);
+            con.commit();
         } finally {
             con.invalidate();
         }

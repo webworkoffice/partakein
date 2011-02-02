@@ -2,7 +2,7 @@ package in.partake.model.dto;
 
 import in.partake.model.dto.auxiliary.LastParticipationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.dto.pk.ParticipationPK;
+import in.partake.model.dto.pk.EnrollmentPK;
 
 import java.util.Comparator;
 import java.util.Date;
@@ -14,7 +14,7 @@ import javax.persistence.IdClass;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@IdClass(ParticipationPK.class)
+@IdClass(EnrollmentPK.class)
 @Entity(name = "Enrollments")
 public class Enrollment extends PartakeModel<Enrollment> {
     @Id
@@ -80,7 +80,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
 
     @Override
     public Object getPrimaryKey() {
-        return new ParticipationPK(userId, eventId);
+        return new EnrollmentPK(userId, eventId);
     }
     
     // ----------------------------------------------------------------------

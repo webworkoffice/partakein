@@ -11,7 +11,7 @@ import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "Comments")
 public class Comment extends PartakeModel<Comment> {
-    @Id 
+    @Id
     private String id;          // comment id
     @Column
     private String eventId;     // the event id this comment is associated to

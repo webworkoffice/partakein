@@ -2,25 +2,25 @@ package in.partake.model.dto.pk;
 
 import org.apache.commons.lang.ObjectUtils;
 
-public class ParticipationPK {
+public class EnrollmentPK {
     private String userId;
     private String eventId;
     
-    public ParticipationPK() {
+    public EnrollmentPK() {
         
     }
     
-    public ParticipationPK(String userId, String eventId) {
+    public EnrollmentPK(String userId, String eventId) {
         this.userId = userId;
         this.eventId = eventId;
     }
     
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ParticipationPK)) { return false; }
+        if (!(obj instanceof EnrollmentPK)) { return false; }
         
-        ParticipationPK lhs = this;
-        ParticipationPK rhs = (ParticipationPK) obj;
+        EnrollmentPK lhs = this;
+        EnrollmentPK rhs = (EnrollmentPK) obj;
 
         if (!ObjectUtils.equals(lhs.userId, rhs.userId)) { return false; }
         if (!ObjectUtils.equals(lhs.eventId, rhs.eventId)) { return false; }
