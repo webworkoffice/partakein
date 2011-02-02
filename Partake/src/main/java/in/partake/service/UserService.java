@@ -43,27 +43,6 @@ public final class UserService extends PartakeService {
     // ----------------------------------------------------------------------
     // User
     
-    public User getUserById(String userId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            User user = factory.getUserAccess().getUser(con, userId); 
-            if (user == null) { return null; }
-            
-            // TODO: そのうち、user.getCalendarId() を廃止する予定。
-            // とりあえずそれまでは user に書いてある calendarId より、こちらに書いてある calendarId を優先しておく。
-            CalendarLinkage linkage = factory.getCalendarAccess().getCalendarLinkageByUserId(con, userId);
-            if (linkage != null) {
-                user = new User(user);
-                user.setCalendarId(user.getCalendarId());
-                user.freeze();
-            }
-            return user;
-        } finally {
-            con.invalidate();            
-        }
-    }
-    
     public UserEx getUserExById(String userId) throws DAOException {
         PartakeConnection con = getPool().getConnection();
         try {
@@ -241,7 +220,7 @@ public final class UserService extends PartakeService {
     // ----------------------------------------------------------------------
     // Calendar
     
-    public User getUserFromCalendarId(String calendarId) throws DAOException {
+    public UserEx getUserFromCalendarId(String calendarId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
@@ -251,10 +230,7 @@ public final class UserService extends PartakeService {
             String userId = calendarLinkage.getUserId();
             if (userId == null) { return null; }
             
-            User user = factory.getUserAccess().getUser(con, userId);
-            if (user == null) { return null; }
-            
-            return user;
+            return getUserEx(con, userId);
         } finally {
             con.invalidate();
         }

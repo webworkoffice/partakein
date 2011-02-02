@@ -102,7 +102,7 @@ public class UsersController extends PartakeActionSupport {
             user = UserService.get().getUserExById(user.getId());
             session.put(Constants.ATTR_USER, user);
     		
-    		return SUCCESS;    		
+    		return SUCCESS;
     	} catch (DAOException e) {
     	    logger.warn("revokeCalendar() failed.", e);
     		return ERROR;
