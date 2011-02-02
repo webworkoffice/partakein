@@ -22,5 +22,5 @@ public interface IUserAccess extends ITruncatable {
      */
     public abstract User getUser(PartakeConnection con, String id) throws DAOException;
 
-    public abstract void updateLastLogin(PartakeConnection con, User user, Date now) throws DAOException;
+    public abstract void updateLastLogin(PartakeConnection con, String userId, Date now) throws DAOException;
 }

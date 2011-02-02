@@ -4,7 +4,7 @@ import in.partake.model.dao.IBinaryAccess;
 import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.ICalendarLinkageAccess;
 import in.partake.model.dao.ICommentAccess;
-import in.partake.model.dao.IDirectMessageAccess;
+import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.IEventRelationAccess;
@@ -39,8 +39,8 @@ public class JPADAOFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected IDirectMessageAccess createDirectMessageAccess() {
-        return new JPADirectMessageDao();
+    protected IMessageAccess createDirectMessageAccess() {
+        return new JPAMessageDao();
     }
 
     @Override

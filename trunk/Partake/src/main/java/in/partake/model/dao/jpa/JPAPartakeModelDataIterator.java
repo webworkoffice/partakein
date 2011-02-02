@@ -1,5 +1,6 @@
 package in.partake.model.dao.jpa;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -12,25 +13,25 @@ import in.partake.model.dto.PartakeModel;
 public class JPAPartakeModelDataIterator<T extends PartakeModel<T>> extends DataIterator<T> {
     private EntityManager em;
     private T current;
-    private List<T> list;
-    private int pos;
+    private Iterator<T> it;
+    private boolean allowsUpdate;
 
-    public JPAPartakeModelDataIterator(EntityManager em, List<T> list) {
+    public JPAPartakeModelDataIterator(EntityManager em, List<T> list, boolean allowsUpdate) {
         this.em = em;
         this.current = null;
-        this.list = list;
-        this.pos = 0;
+        this.it = list.iterator();
+        this.allowsUpdate = allowsUpdate;
     }
     
     @Override
     public boolean hasNext() throws DAOException {
-        return (list != null && pos < list.size());
+        return it.hasNext();
     }
 
     @Override
     public T next() throws DAOException {
         if (hasNext()) {
-            return current = list.get(pos++);
+            return current = it.next();
         } else {
             current = null;
             throw new NoSuchElementException();
@@ -39,6 +40,8 @@ public class JPAPartakeModelDataIterator<T extends PartakeModel<T>> extends Data
 
     @Override
     public void remove() throws DAOException, UnsupportedOperationException {
+        if (!allowsUpdate) { throw new UnsupportedOperationException(); }
+
         if (current == null) {
             em.remove(current.getPrimaryKey());
         } else {
@@ -48,6 +51,8 @@ public class JPAPartakeModelDataIterator<T extends PartakeModel<T>> extends Data
 
     @Override
     public void update(T t) throws DAOException, UnsupportedOperationException {
+        if (!allowsUpdate) { throw new UnsupportedOperationException(); }
+
         if (current == null) {
             throw new IllegalStateException();
         } else if (!current.getPrimaryKey().equals(t.getPrimaryKey())) {

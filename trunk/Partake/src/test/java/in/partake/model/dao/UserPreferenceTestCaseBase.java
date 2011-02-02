@@ -55,7 +55,6 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
                 con.commit();
             }
 
-
             UserPreference original2 = new UserPreference("userId", true, true, false);
             {
                 con.beginTransaction();
@@ -76,7 +75,7 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
     }
     
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testToSetNotHavingId() throws Exception {
         PartakeConnection con = getPool().getConnection();
         

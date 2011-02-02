@@ -47,7 +47,7 @@ public class UsersController extends PartakeActionSupport {
 		    	
 		    	try {
 		            List<Event> owned = EventService.get().getEventsOwnedBy(user); 
-		            List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user);
+		            List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user.getId());
 		            
 		            List<Event> enrolled = new ArrayList<Event>();
 		            List<Event> finished = new ArrayList<Event>();

@@ -25,7 +25,7 @@ public class Helper {
 	/** 参加ステータスを表示します */
 	public static String enrollmentStatus(User user, Event event) {
 		try {
-		    ParticipationStatus status = UserService.get().getParticipationStatus(user, event);
+		    ParticipationStatus status = UserService.get().getParticipationStatus(user.getId(), event.getId());
 		    
 			switch (status) {
 			case ENROLLED: {

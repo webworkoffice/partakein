@@ -33,8 +33,12 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
             Comment target = factory.getCommentAccess().getComment(con, commentId);
             con.commit();
             
+            Assert.assertNotNull(target);
             Assert.assertTrue(target.isFrozen());
+            Assert.assertFalse(original.isFrozen());
             Assert.assertEquals(original, target);
+            Assert.assertNotSame(original, target);
+
         } finally {
             con.invalidate();
         }
@@ -171,6 +175,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
         PartakeDAOFactory factory = getFactory();
         
         try {
+            con.beginTransaction();
             String prefix = factory.getCommentAccess().getFreshId(con);
             
             for (int i = 0; i < 10; ++i) {
@@ -197,7 +202,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
                     Assert.assertEquals(prefix + "commentId-" + i + "-" + j, strs.get(j));
                 }
             }
-            
+            con.commit();
         } finally {
             con.invalidate();
         }
@@ -210,6 +215,8 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
         PartakeDAOFactory factory = getFactory();
         
         try {
+            con.beginTransaction();
+            
             String prefix = factory.getCommentAccess().getFreshId(con);
             
             // create 
@@ -239,6 +246,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
                 }                
             }
             
+            con.commit();            
         } finally {
             con.invalidate();
         }

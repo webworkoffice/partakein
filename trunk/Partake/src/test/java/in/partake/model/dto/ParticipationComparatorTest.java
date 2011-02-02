@@ -14,31 +14,31 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test the comparator which created by {@link Participation#getPriorityBasedComparator()}.
+ * Test the comparator which created by {@link Enrollment#getPriorityBasedComparator()}.
  * 
- * @see Participation#getPriorityBasedComparator()
+ * @see Enrollment#getPriorityBasedComparator()
  * @author skypencil (@eller86)
  */
 public final class ParticipationComparatorTest {
-	private Comparator<Participation> comparator;
+	private Comparator<Enrollment> comparator;
 
 	@Before
 	public void createComparator() {
-		comparator = Participation.getPriorityBasedComparator();
+		comparator = Enrollment.getPriorityBasedComparator();
 		Assert.assertNotNull(comparator);
 	}
 
 	@Test
 	public void sortEmptyList() {
-		List<Participation> list = Collections.emptyList(); 
+		List<Enrollment> list = Collections.emptyList(); 
 		Collections.sort(list, comparator);
 	}
 
 	@Test
 	public void sortAscSortedValues() {
-		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID", "eventId", "comment", null, 0, null, null),
-				new Participation("userID", "eventId", "comment", null, 1, null, null)
+		List<Enrollment> list = Arrays.asList(new Enrollment[] {
+				new Enrollment("userID", "eventId", "comment", null, 0, null, null),
+				new Enrollment("userID", "eventId", "comment", null, 1, null, null)
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() > list.get(1).getPriority());
@@ -46,9 +46,9 @@ public final class ParticipationComparatorTest {
 
 	@Test
 	public void sortDescSortedValues() {
-		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID", "eventId", "comment", null, 1, null, null),
-				new Participation("userID", "eventId", "comment", null, 0, null, null)
+		List<Enrollment> list = Arrays.asList(new Enrollment[] {
+				new Enrollment("userID", "eventId", "comment", null, 1, null, null),
+				new Enrollment("userID", "eventId", "comment", null, 0, null, null)
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() > list.get(1).getPriority());
@@ -56,9 +56,9 @@ public final class ParticipationComparatorTest {
 
 	@Test
 	public void sortSamePriorityValues() {
-		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID", "eventId", "comment", null, 0, null, new Date(0)),
-				new Participation("userID", "eventId", "comment", null, 0, null, new Date(1))
+		List<Enrollment> list = Arrays.asList(new Enrollment[] {
+				new Enrollment("userID", "eventId", "comment", null, 0, null, new Date(0)),
+				new Enrollment("userID", "eventId", "comment", null, 0, null, new Date(1))
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() == list.get(1).getPriority());
@@ -67,9 +67,9 @@ public final class ParticipationComparatorTest {
 
 	@Test
 	public void sortSamePriorityAndDateValues() {
-		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID2", "eventId", "comment", null, 0, null, new Date(0)),
-				new Participation("userID1", "eventId", "comment", null, 0, null, new Date(0))
+		List<Enrollment> list = Arrays.asList(new Enrollment[] {
+				new Enrollment("userID2", "eventId", "comment", null, 0, null, new Date(0)),
+				new Enrollment("userID1", "eventId", "comment", null, 0, null, new Date(0))
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() == list.get(1).getPriority());
@@ -79,9 +79,9 @@ public final class ParticipationComparatorTest {
 
 	@Test
 	public void sortAllSameValues() {
-		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation("userID", "eventId", "comment", null, 0, null, new Date(0)),
-				new Participation("userID", "eventId", "comment", null, 0, null, new Date(0))
+		List<Enrollment> list = Arrays.asList(new Enrollment[] {
+				new Enrollment("userID", "eventId", "comment", null, 0, null, new Date(0)),
+				new Enrollment("userID", "eventId", "comment", null, 0, null, new Date(0))
 		});
 		Collections.sort(list, comparator);
 		Assert.assertTrue(list.get(0).getPriority() == list.get(1).getPriority());
@@ -91,7 +91,7 @@ public final class ParticipationComparatorTest {
 
 	@Test
 	public void sortNullValues() {
-		List<Participation> list = Arrays.asList(new Participation[] {
+		List<Enrollment> list = Arrays.asList(new Enrollment[] {
 				null, 
 				null
 		});
@@ -102,8 +102,8 @@ public final class ParticipationComparatorTest {
 
 	@Test
 	public void sortParicipationAndNull() {
-		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation(null, null, "comment", null, 0, null, null),
+		List<Enrollment> list = Arrays.asList(new Enrollment[] {
+				new Enrollment(null, null, "comment", null, 0, null, null),
 				null
 		});
 		Collections.sort(list, comparator);
@@ -114,9 +114,9 @@ public final class ParticipationComparatorTest {
 	// throwing NullPointerException is needed? really?
 	@Test(expected = NullPointerException.class)
 	public void sortNullId() {
-		List<Participation> list = Arrays.asList(new Participation[] {
-				new Participation(null, null, "comment", ParticipationStatus.CANCELLED, 0, LastParticipationStatus.CHANGED, null),
-				new Participation(null, null, "comment", ParticipationStatus.CANCELLED, 0, LastParticipationStatus.CHANGED, null)
+		List<Enrollment> list = Arrays.asList(new Enrollment[] {
+				new Enrollment(null, null, "comment", ParticipationStatus.CANCELLED, 0, LastParticipationStatus.CHANGED, null),
+				new Enrollment(null, null, "comment", ParticipationStatus.CANCELLED, 0, LastParticipationStatus.CHANGED, null)
 		});
 		Collections.sort(list, comparator);
 	}

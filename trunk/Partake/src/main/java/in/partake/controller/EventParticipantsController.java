@@ -7,11 +7,11 @@ import java.io.OutputStreamWriter;
 import java.util.List;
 
 import in.partake.model.EventEx;
-import in.partake.model.ParticipationEx;
+import in.partake.model.EnrollmentEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dto.Participation;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
@@ -58,7 +58,7 @@ public class EventParticipantsController extends PartakeActionSupport {
                 throw new PartakeResultException(PROHIBITED);
             }
             
-            List<ParticipationEx> participations = EventService.get().getParticipationEx(eventId);
+            List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(eventId);
             ParticipationList list = event.calculateParticipationList(participations);
             
             attributes.put(Constants.ATTR_EVENT, event);
@@ -88,7 +88,7 @@ public class EventParticipantsController extends PartakeActionSupport {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos));
             
-            for (Participation participation : list.getEnrolledParticipations()) {
+            for (Enrollment participation : list.getEnrolledParticipations()) {
                 UserEx user = UserService.get().getUserExById(participation.getUserId());
                 
                 String[] lst = new String[4];
@@ -107,7 +107,7 @@ public class EventParticipantsController extends PartakeActionSupport {
                 writer.writeNext(lst);
             }
             
-            for (Participation participation : list.getSpareParticipations()) {
+            for (Enrollment participation : list.getSpareParticipations()) {
                 UserEx user = UserService.get().getUserExById(participation.getUserId());
                 
                 String[] lst = new String[4];
@@ -163,7 +163,7 @@ public class EventParticipantsController extends PartakeActionSupport {
                 throw new PartakeResultException(PROHIBITED);
             }
             
-            List<ParticipationEx> participations = EventService.get().getParticipationEx(eventId);
+            List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(eventId);
             return event.calculateParticipationList(participations);
         } catch (DAOException e) {
             logger.error(I18n.t(I18n.DATABASE_ERROR));

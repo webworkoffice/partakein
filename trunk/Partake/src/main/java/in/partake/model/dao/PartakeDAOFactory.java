@@ -9,7 +9,7 @@ public abstract class PartakeDAOFactory {
     private final ICalendarLinkageAccess calendarLinkageAccess;    
     private final IBinaryAccess binaryAccess;
     private final ICommentAccess commentAccess;
-    private final IDirectMessageAccess directMessageAccess;
+    private final IMessageAccess directMessageAccess;
     private final IEnrollmentAccess enrollmentAccess;
     private final IEventAccess eventAccess;
     private final IEventRelationAccess eventRelationAccess;
@@ -72,7 +72,7 @@ public abstract class PartakeDAOFactory {
         return commentAccess;
     }
 
-    public final IDirectMessageAccess getDirectMessageAccess() {
+    public final IMessageAccess getDirectMessageAccess() {
         return directMessageAccess;
     }
     
@@ -119,7 +119,7 @@ public abstract class PartakeDAOFactory {
     protected abstract ICalendarLinkageAccess createCalendarLinkageAccess();
     protected abstract  IBinaryAccess createBinaryAccess();
     protected abstract ICommentAccess createCommentAccess();
-    protected abstract IDirectMessageAccess createDirectMessageAccess();
+    protected abstract IMessageAccess createDirectMessageAccess();
     protected abstract IEnrollmentAccess createEnrollmentAccess();
     protected abstract IEventAccess createEventAccess();
     protected abstract IEventRelationAccess createEventRelationAccess();

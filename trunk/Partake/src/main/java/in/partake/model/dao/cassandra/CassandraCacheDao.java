@@ -19,7 +19,6 @@ import org.apache.cassandra.thrift.SliceRange;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.ICacheAccess;
-import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.CacheData;
 import in.partake.util.Util;
@@ -69,12 +68,7 @@ public class CassandraCacheDao extends CassandraDao implements ICacheAccess {
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            truncateImpl(ccon);
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+        removeAllData((CassandraConnection) con);
     }
     
     // ----------------------------------------------------------------------
@@ -129,13 +123,5 @@ public class CassandraCacheDao extends CassandraDao implements ICacheAccess {
         }
         
         return data.freeze();
-    }
-    
-    private void truncateImpl(CassandraConnection con) throws Exception {
-        KeyIterator it = new CassandraKeyIterator(con, CACHE_KEYSPACE, CACHE_PREFIX, CACHE_COLUMNFAMILY, CACHE_CL_R);
-        while (it.hasNext()) {
-            String id = it.next();
-            removeCacheImpl(con.getClient(), id, con.getAcquiredTime()); 
-        }
     }
 }

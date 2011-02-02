@@ -11,13 +11,13 @@ import javax.persistence.Id;
 import org.apache.commons.lang.ObjectUtils;
 
 /**
- * DirectMessage を、「他に人に送る」ことを表現するクラス。
+ * Message を、「他に人に送る」ことを表現するクラス。
  * 
  * @author shinyak
  *
  */
-@Entity(name = "DirectMessageEnvelopes")
-public class DirectMessageEnvelope extends PartakeModel<DirectMessageEnvelope> {
+@Entity(name = "Envelopes")
+public class Envelope extends PartakeModel<Envelope> {
     @Id
     private String envelopeId;
     @Column
@@ -37,11 +37,11 @@ public class DirectMessageEnvelope extends PartakeModel<DirectMessageEnvelope> {
     @Column
     private DirectMessagePostingType postingType;
         
-    public DirectMessageEnvelope() {
+    public Envelope() {
         // do nothing
     }
     
-    public DirectMessageEnvelope(String id, String senderId, String receiverId, String messageId, Date deadline, int numTried, Date lastTriedAt, Date tryAfter, DirectMessagePostingType postingType) {
+    public Envelope(String id, String senderId, String receiverId, String messageId, Date deadline, int numTried, Date lastTriedAt, Date tryAfter, DirectMessagePostingType postingType) {
         this.envelopeId = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
@@ -53,7 +53,7 @@ public class DirectMessageEnvelope extends PartakeModel<DirectMessageEnvelope> {
         this.postingType = postingType;
     }
     
-    public DirectMessageEnvelope(DirectMessageEnvelope envelope) {
+    public Envelope(Envelope envelope) {
         this.envelopeId = envelope.envelopeId;
         this.senderId = envelope.senderId;
         this.receiverId = envelope.receiverId;
@@ -75,10 +75,10 @@ public class DirectMessageEnvelope extends PartakeModel<DirectMessageEnvelope> {
     
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof DirectMessageEnvelope)) { return false; }
+        if (!(obj instanceof Envelope)) { return false; }
         
-        DirectMessageEnvelope lhs = this;
-        DirectMessageEnvelope rhs = (DirectMessageEnvelope) obj;
+        Envelope lhs = this;
+        Envelope rhs = (Envelope) obj;
         
         if (!ObjectUtils.equals(lhs.envelopeId,  rhs.envelopeId))  { return false; }
         if (!ObjectUtils.equals(lhs.senderId,    rhs.senderId))    { return false; }

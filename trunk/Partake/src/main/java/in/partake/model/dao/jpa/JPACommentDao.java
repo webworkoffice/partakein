@@ -24,7 +24,7 @@ class JPACommentDao extends JPADao implements ICommentAccess {
         if (embryo.getId() == null) { throw new IllegalStateException(); }
 
         EntityManager em = getEntityManager(con);        
-        em.persist(embryo);
+        em.persist(new Comment(embryo));
     }
 
     @Override
@@ -51,7 +51,7 @@ class JPACommentDao extends JPADao implements ICommentAccess {
         @SuppressWarnings("unchecked")
         List<Comment> list = q.getResultList();
         
-        return new JPAPartakeModelDataIterator<Comment>(em, list);
+        return new JPAPartakeModelDataIterator<Comment>(em, list, false);
     }
 
     @Override

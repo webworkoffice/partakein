@@ -81,10 +81,10 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     }
     
     @Override
-    public void updateLastLogin(PartakeConnection con, User user, Date now) throws DAOException {
+    public void updateLastLogin(PartakeConnection con, String userId, Date now) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            updateUserField(ccon.getClient(), user.getId(), "lastLoginAt", Util.getTimeString(now.getTime()), ccon.getAcquiredTime());
+            updateUserField(ccon.getClient(), userId, "lastLoginAt", Util.getTimeString(now.getTime()), ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }

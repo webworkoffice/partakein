@@ -21,7 +21,6 @@ import org.apache.cassandra.thrift.Cassandra.Client;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.ICommentAccess;
-import in.partake.model.dao.KeyIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Comment;
 import in.partake.util.Util;
@@ -95,12 +94,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            truncateImpl(ccon);
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+        removeAllData((CassandraConnection) con);
     }
     
     // ----------------------------------------------------------------------
@@ -175,12 +169,12 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
         return comment.freeze();
     }
     
-    private CassandraDataIterator<Comment> getCommentsByEventImpl(CassandraConnection connection, String eventId) throws Exception {
+    private CassandraColumnDataIterator<Comment> getCommentsByEventImpl(CassandraConnection connection, String eventId) throws Exception {
         String key = COMMENTS_EVENT_PREFIX + eventId;
         
         ColumnIterator iterator = new ColumnIterator(connection, factory, COMMENTS_KEYSPACE, key, COMMENTS_EVENT_COLUMNFAMILY, false, COMMENTS_EVENT_CL_R, COMMENTS_EVENT_CL_W); 
         
-        return new CassandraDataIterator<Comment>(iterator, new ColumnOrSuperColumnMapper<Comment>(connection, factory) {
+        return new CassandraColumnDataIterator<Comment>(iterator, new ColumnOrSuperColumnMapper<Comment>(connection, factory) {
             @Override
             public Comment map(ColumnOrSuperColumn cosc) throws DAOException {
                 Column column = cosc.column;
@@ -193,13 +187,5 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
                 throw new UnsupportedOperationException();
             }           
         });
-    }
-    
-    private void truncateImpl(CassandraConnection con) throws Exception {
-        KeyIterator it = new CassandraKeyIterator(con, COMMENTS_KEYSPACE, COMMENTS_PREFIX, COMMENTS_COLUMNFAMILY, COMMENTS_CL_R);
-        while (it.hasNext()) {
-            String id = it.next();
-            removeComment(con.getClient(),id, con.getAcquiredTime());
-        }
     }
 }

@@ -119,7 +119,7 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
 
     
     @Test
-    public void testToAddRemvoeAddGet() throws Exception {
+    public void testToAddRemoveAddGet() throws Exception {
         PartakeConnection con = getPool().getConnection();
         
         try {
@@ -135,6 +135,45 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 dao.removeShortenedURL(con, original);
+                con.commit();
+            }
+            
+            {
+                con.beginTransaction();
+                dao.addShortenedURL(con, original, "bitly", shortened);
+                con.commit();
+            }
+            
+            {
+                con.beginTransaction();
+                String target = dao.getShortenedURL(con, original);
+                con.commit();
+                
+                Assert.assertNotNull(target);
+                Assert.assertEquals(shortened, target);
+            }
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    @Test
+    public void testToAddRemoveAddGet2() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            String original  = "http://www.example.com/" + System.currentTimeMillis();
+            String shortened = "http://bit.ly/example/" + System.currentTimeMillis();
+
+            {
+                con.beginTransaction();
+                dao.addShortenedURL(con, original, "bitly", shortened);
+                con.commit();
+            }
+            
+            {
+                con.beginTransaction();
+                dao.removeShortenedURL(con, original, "bitly");
                 con.commit();
             }
             

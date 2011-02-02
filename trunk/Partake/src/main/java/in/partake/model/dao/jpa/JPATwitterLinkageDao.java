@@ -11,15 +11,17 @@ import in.partake.model.dto.TwitterLinkage;
 class JPATwitterLinkageDao extends JPADao implements ITwitterLinkageAccess {
 
     @Override
-    public int addTwitterLinkage(PartakeConnection con, TwitterLinkage embryo) throws DAOException {
-        // TODO Auto-generated method stub
-        return 0;
+    public void addTwitterLinkage(PartakeConnection con, TwitterLinkage embryo) throws DAOException {        
+        EntityManager em = getEntityManager(con);
+        em.persist(new TwitterLinkage(embryo));
     }
 
     @Override
     public TwitterLinkage getTwitterLinkageById(PartakeConnection con, int twitterId) throws DAOException {
-        // TODO Auto-generated method stub
-        return null;
+        EntityManager em = getEntityManager(con);
+        TwitterLinkage linkage = em.find(TwitterLinkage.class, twitterId);
+        if (linkage == null) { return null; }
+        return linkage.freeze();
     }
 
     @Override

@@ -20,7 +20,7 @@ public class JPABinaryDao extends JPADao implements IBinaryAccess {
     public void addBinary(PartakeConnection con, BinaryData data) throws DAOException {
         if (data.getId() == null) { throw new DAOException("id should be specified."); }
         EntityManager em = getEntityManager(con);
-        em.persist(data);
+        em.persist(new BinaryData(data));
     }
 
     @Override

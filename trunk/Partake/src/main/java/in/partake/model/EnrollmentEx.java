@@ -3,19 +3,19 @@ package in.partake.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.partake.model.dto.Participation;
+import in.partake.model.dto.Enrollment;
 
 /**
- * participation with related data.
+ * enrollment with related data.
  * @author shinyak
  *
  */
-public class ParticipationEx extends Participation {
+public class EnrollmentEx extends Enrollment {
     private UserEx user;
     private List<String> relatedEventIds;
     
-    public ParticipationEx(Participation p, UserEx user) {
-        super(p);
+    public EnrollmentEx(Enrollment enrollment, UserEx user) {
+        super(enrollment);
         this.user = user;
         this.relatedEventIds = new ArrayList<String>();
     }

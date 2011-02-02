@@ -36,6 +36,16 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         this.profileImageURL = profileImageURL;
         this.userId = userId;
     }
+    
+    public TwitterLinkage(TwitterLinkage linkage) {
+        this.twitterId = linkage.twitterId;
+        this.screenName = linkage.screenName;
+        this.name = linkage.name;
+        this.accessToken = linkage.accessToken;
+        this.accessTokenSecret = linkage.accessTokenSecret;
+        this.profileImageURL = linkage.profileImageURL;
+        this.userId = linkage.userId;
+    }
 
     @Override
     public Object getPrimaryKey() {

@@ -1,7 +1,6 @@
 package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.KeyIterator;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,7 +18,7 @@ import org.apache.cassandra.thrift.SliceRange;
  * @author shinyak
  *
  */
-class CassandraKeyIterator extends KeyIterator {
+class CassandraKeyIterator {
     private String keyspace;
     private ColumnParent columnParent;
     private ConsistencyLevel readConsistencyLevel;

@@ -20,7 +20,7 @@ class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
         if (embryo.getId() == null) { throw new DAOException("id should not be null."); }
         
         EntityManager em = getEntityManager(con);
-        em.persist(embryo);
+        em.persist(new CalendarLinkage(embryo));
     }
 
     @Override

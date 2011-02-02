@@ -23,15 +23,14 @@
     <class>in.partake.model.dto.CacheData</class>
     <class>in.partake.model.dto.CalendarLinkage</class>
     <class>in.partake.model.dto.Comment</class>
-    <class>in.partake.model.dto.DirectMessage</class>
-    <class>in.partake.model.dto.DirectMessageEnvelope</class>
     <class>in.partake.model.dto.Enrollment</class>
+    <class>in.partake.model.dto.Envelope</class>
     <class>in.partake.model.dto.Event</class>
     <class>in.partake.model.dto.EventRelation</class>
     <class>in.partake.model.dto.EventReminderStatus</class>
     <class>in.partake.model.dto.FeedLinkage</class>
+    <class>in.partake.model.dto.Message</class>
     <class>in.partake.model.dto.OpenIDLinkage</class>
-    <class>in.partake.model.dto.Participation</class>
     <class>in.partake.model.dto.ShortenedURLData</class>
     <class>in.partake.model.dto.TwitterLinkage</class>
     <class>in.partake.model.dto.User</class>

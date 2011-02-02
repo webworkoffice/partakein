@@ -42,6 +42,7 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
             
             Assert.assertNotNull(target);
             Assert.assertTrue(target.isFrozen());
+            Assert.assertFalse(original.isFrozen());
             Assert.assertEquals(original, target);
             Assert.assertNotSame(original, target);
             
@@ -66,12 +67,10 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.commit();
             }
             
-            
             Date after = new Date(now.getTime() + 1000);
             {
                 con.beginTransaction();
-                User user = dao.getUser(con, userId);
-                dao.updateLastLogin(con, user, after);
+                dao.updateLastLogin(con, userId, after);
                 con.commit();
             }
             

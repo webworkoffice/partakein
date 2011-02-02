@@ -13,7 +13,7 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
     }
     
     @Test
-    public void testToAddAndGet() throws DAOException {
+    public void testToAddGet() throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         
@@ -35,8 +35,14 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
                 Assert.assertTrue(target.isFrozen());
             }
 
-            Assert.assertEquals(original, target);            
             con.commit();
+
+            Assert.assertNotNull(target);
+            Assert.assertTrue(target.isFrozen());
+            Assert.assertFalse(original.isFrozen());
+            Assert.assertEquals(original, target);
+            Assert.assertNotSame(original, target);
+
         } finally {
             con.invalidate();
         }

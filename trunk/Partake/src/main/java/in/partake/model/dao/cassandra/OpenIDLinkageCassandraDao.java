@@ -171,11 +171,11 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
         return null;
     }
     
-    private CassandraDataIterator<String> getOpenIDIdentitiesImpl(CassandraConnection con, String userId) throws Exception {
+    private CassandraColumnDataIterator<String> getOpenIDIdentitiesImpl(CassandraConnection con, String userId) throws Exception {
         String key = USERS_OPENID_PREFIX + userId;
         
         ColumnIterator iterator = new ColumnIterator(con, factory, USERS_OPENID_KEYSPACE, key, USERS_OPENID_COLUMNFAMILY, false, USERS_OPENID_CL_R, USERS_OPENID_CL_W);
-        return new CassandraDataIterator<String>(iterator, new ColumnOrSuperColumnMapper<String>(con, factory) {
+        return new CassandraColumnDataIterator<String>(iterator, new ColumnOrSuperColumnMapper<String>(con, factory) {
             @Override
             public String map(ColumnOrSuperColumn cosc) throws DAOException {
                 Column column = cosc.getColumn();
