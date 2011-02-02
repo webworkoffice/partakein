@@ -38,7 +38,7 @@ class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
     @Override
     public CalendarLinkage getCalendarLinkageByUserId(PartakeConnection con, String userId) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT cl FROM CalendarLinkage WHERE userId = :userId");
+        Query q = em.createQuery("SELECT cl FROM CalendarLinkages WHERE userId = :userId");
         return (CalendarLinkage) q.getSingleResult();
     }
 
