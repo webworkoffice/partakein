@@ -113,7 +113,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
             if ("userId".equals(name)) {
                 calendarLinkage.setUserId(value);
             }
-        }            
+        }
 
         return calendarLinkage.freeze();
     }

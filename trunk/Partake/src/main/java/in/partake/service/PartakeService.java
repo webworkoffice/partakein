@@ -20,6 +20,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeConnectionPool;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
@@ -80,10 +81,22 @@ public abstract class PartakeService {
     }
     
     // TODO: これがここにいるのはなんかおかしいような気がする。階層化が足りないのではないか。
-    
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
         User user = getFactory().getUserAccess().getUser(con, userId);
         if (user == null) { return null; }
+        
+        // TODO: そのうち、user.getCalendarId() を廃止する予定。
+        // とりあえずそれまでは user に書いてある calendarId より、こちらに書いてある calendarId を優先しておく。
+        {
+            CalendarLinkage linkage = factory.getCalendarAccess().getCalendarLinkageByUserId(con, userId);
+            if (linkage != null) {
+                User newUser = new User(user);
+                newUser.setCalendarId(linkage.getId());
+                newUser.freeze();
+                user = newUser;
+            }
+        }
+        
         TwitterLinkage linkage = getFactory().getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
         return new UserEx(user, linkage); 
     }
