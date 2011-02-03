@@ -496,8 +496,9 @@ public final class EventService extends PartakeService {
 		PartakeConnection con = getPool().getConnection();
 		try {
             con.beginTransaction();
-			List<EventRelation> relations = getEventRelations(factory, con, eventId);
+            List<EventRelation> relations = factory.getEventRelationAccess().getEventRelations(con, eventId);
 			con.commit();
+			
 			return relations;
 		} finally {
 			con.invalidate();
@@ -525,12 +526,7 @@ public final class EventService extends PartakeService {
         }
 	}
 	
-	public List<EventRelation> getEventRelations(PartakeDAOFactory factory, PartakeConnection con, String eventId) throws DAOException {
-        con.beginTransaction();
-		List<EventRelation> relations = factory.getEventRelationAccess().getEventRelations(con, eventId);
-		con.commit();
-		return relations;
-	}
+
 
     // ----------------------------------------------------------------------
     // participations
@@ -541,7 +537,7 @@ public final class EventService extends PartakeService {
         try {
             con.beginTransaction();
             List<Enrollment> enrollments = factory.getEnrollmentAccess().getEnrollmentsByEventId(con, eventId);
-            con.beginTransaction();
+            con.commit();
             return enrollments;
         } finally {
             con.invalidate();
