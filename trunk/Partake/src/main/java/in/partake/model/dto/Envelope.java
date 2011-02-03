@@ -48,12 +48,12 @@ public class Envelope extends PartakeModel<Envelope> {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.messageId = messageId;
-        this.deadline = (Date) deadline.clone();
+        this.deadline = deadline != null ? (Date) deadline.clone() : null;
         this.numTried = numTried;
-        this.lastTriedAt = (Date) lastTriedAt.clone();
-        this.tryAfter = (Date) tryAfter.clone();
+        this.lastTriedAt = lastTriedAt != null ? (Date) lastTriedAt.clone() : null;
+        this.tryAfter = tryAfter != null ? (Date) tryAfter.clone() : null;
         this.postingType = postingType;
-        this.createdAt = (Date) createdAt.clone();
+        this.createdAt = createdAt != null ? (Date) createdAt.clone() : null;
     }
     
     public Envelope(Envelope envelope) {
