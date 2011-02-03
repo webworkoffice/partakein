@@ -44,6 +44,11 @@ public class UserPreference extends PartakeModel<UserPreference> {
         return userId;
     }
     
+    @Override
+    public UserPreference copy() {
+        return new UserPreference(this);
+    }
+    
     // ---------------------------------------------------------------
     // equals method
     

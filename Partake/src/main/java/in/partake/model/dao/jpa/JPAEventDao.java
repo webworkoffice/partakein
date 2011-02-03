@@ -11,7 +11,7 @@ import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
 
-class JPAEventDao extends JPADao implements IEventAccess {
+class JPAEventDao extends JPADao<Event> implements IEventAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
@@ -54,7 +54,7 @@ class JPAEventDao extends JPADao implements IEventAccess {
         @SuppressWarnings("unchecked")
         List<Event> events = q.getResultList();
         
-        return new JPAPartakeModelDataIterator<Event>(em, events, false);
+        return new JPAPartakeModelDataIterator<Event>(em, events, Event.class, false);
     }
 
     @Override

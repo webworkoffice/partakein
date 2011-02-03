@@ -32,6 +32,11 @@ public class FeedLinkage extends PartakeModel<FeedLinkage> {
     public Object getPrimaryKey() {
         return id;
     }
+    
+    @Override
+    public FeedLinkage copy() {
+        return new FeedLinkage(this);
+    }
 
     // ----------------------------------------------------------------------
     // equal methods

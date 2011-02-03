@@ -4,7 +4,7 @@
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.model.EventEx"%>
-<%@page import="in.partake.model.dto.EventReminderStatus"%>
+<%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@page import="in.partake.model.dto.Message"%>
 <%@page import="static in.partake.util.Util.h"%>

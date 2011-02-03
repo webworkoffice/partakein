@@ -37,6 +37,11 @@ public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
         return id;
     }
     
+    @Override
+    public CalendarLinkage copy() {
+        return new CalendarLinkage(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals methods
 

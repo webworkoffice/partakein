@@ -1,5 +1,7 @@
 package in.partake.model.dao.jpa;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -8,7 +10,7 @@ import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.FeedLinkage;
 
-class JPAFeedLinkageDao extends JPADao implements IFeedAccess {
+class JPAFeedLinkageDao extends JPADao<FeedLinkage> implements IFeedAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
@@ -18,7 +20,13 @@ class JPAFeedLinkageDao extends JPADao implements IFeedAccess {
     @Override
     public void addFeedId(PartakeConnection con, String feedId, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
-        em.persist(new FeedLinkage(feedId, eventId));
+        FeedLinkage persisted = em.find(FeedLinkage.class, feedId);
+        if (persisted == null) {
+            em.persist(new FeedLinkage(feedId, eventId));
+        } else {
+            em.detach(persisted);
+            em.merge(new FeedLinkage(feedId, eventId));
+        }
     }
 
     
@@ -27,10 +35,11 @@ class JPAFeedLinkageDao extends JPADao implements IFeedAccess {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT feed FROM FeedLinkages AS feed WHERE feed.eventId = :eventId");
         q.setParameter("eventId", eventId);
-        
-        FeedLinkage feed = (FeedLinkage) q.getSingleResult();
-        if (feed == null) { return null; }
-        return feed.getId();
+
+        @SuppressWarnings("unchecked")
+        List<FeedLinkage> feeds = q.getResultList();
+        if (feeds.isEmpty()) { return null; }
+        return feeds.get(0).getId();
     }
 
     @Override

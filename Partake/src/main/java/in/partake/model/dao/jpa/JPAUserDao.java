@@ -10,7 +10,7 @@ import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.User;
 
-class JPAUserDao extends JPADao implements IUserAccess {
+class JPAUserDao extends JPADao<User> implements IUserAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
@@ -19,36 +19,39 @@ class JPAUserDao extends JPADao implements IUserAccess {
 
     @Override
     public void createUser(PartakeConnection con, User user) throws DAOException {
-        if (user == null) { throw new NullPointerException(); }
-        if (user.getId() == null) { throw new NullPointerException(); }
-        
-        EntityManager em = getEntityManager(con);
-        em.persist(new User(user)); 
+        createOrUpdate(con, user, User.class);
     }
     
     @Override
     public void updateUser(PartakeConnection con, User user) throws DAOException {
-        if (user == null) { throw new NullPointerException(); }
-        if (user.getId() == null) { throw new NullPointerException(); }
-        
-        EntityManager em = getEntityManager(con);
-        em.merge(user);
+        createOrUpdate(con, user, User.class);
+//        if (user == null) { throw new NullPointerException(); }
+//        if (user.getId() == null) { throw new NullPointerException(); }
+//        
+//        EntityManager em = getEntityManager(con);
+//        User persisted = em.find(User.class, user.getId());
+//        if (persisted == null) {
+//            em.persist(new User(user));
+//        } else {
+//            em.detach(persisted);
+//            em.merge(new User(user));
+//        }
     }
 
     @Override
     public User getUser(PartakeConnection con, String id) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        return freeze(em.find(User.class, id));
+        return find(con, id, User.class);
+//        EntityManager em = getEntityManager(con);
+//        return freeze(em.find(User.class, id));
     }
 
     @Override
-    public void updateLastLogin(PartakeConnection con, String userId, Date now) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        User user = em.find(User.class, userId);
-        if (user == null) { throw new DAOException("No such element"); }
+    public void updateLastLogin(PartakeConnection con, String userId, Date now) throws DAOException {        
+        User user = getUser(con, userId);
+        if (user == null) { return; }        
         User newUser = new User(user);
         newUser.setLastLoginAt(now);
-        em.merge(newUser);
+        updateUser(con, newUser);
     }
 
     @Override

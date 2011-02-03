@@ -8,6 +8,7 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
     }
     
     public abstract Object getPrimaryKey();
+    public abstract T copy();
     
     protected void checkFrozen() {
         if (frozen) { throw new UnsupportedOperationException(); }

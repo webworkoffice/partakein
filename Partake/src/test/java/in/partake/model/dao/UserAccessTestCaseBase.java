@@ -52,6 +52,40 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
     }
     
     @Test
+    public void testToAddUpdateGet() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        try {
+            User original = new User(null, 1, new Date(), "calendarId"); // TODO: calendarId はそのうちなくなる
+            String userId;
+            
+            {
+                con.beginTransaction();
+                userId = dao.getFreshId(con);
+                original.setId(userId);
+                dao.createUser(con, original);
+                con.commit();
+            }
+            
+            {
+                con.beginTransaction();
+                User user = new User(dao.getUser(con, userId));
+                user.setCalendarId("newCalendarId");
+                dao.updateUser(con, user);
+                con.commit();
+            }
+            
+            {
+                con.beginTransaction();
+                dao.getUser(con, userId);
+                con.commit();
+            }
+            
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    @Test
     public void testToAddUpdate() throws Exception {
         PartakeConnection con = getPool().getConnection();
         try {
@@ -76,6 +110,68 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
             con.invalidate();
         }        
     }
+    
+    @Test
+    public void testToAddUpdateInOneTransaction1() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        try {
+            String userId;
+            {
+                con.beginTransaction();
+                userId = dao.getFreshId(con);
+                User user1 = new User(userId, 1, new Date(), "calendarId");
+                dao.createUser(con, user1);
+
+                user1.setTwitterId(2);
+                dao.updateUser(con, user1);
+                con.commit();
+            }
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
+    @Test
+    public void testToAddUpdateInOneTransaction2() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        try {
+            String userId;
+            {
+                con.beginTransaction();
+                userId = dao.getFreshId(con);
+                User user1 = new User(userId, 1, new Date(), "calendarId");
+                dao.createUser(con, user1);
+
+                User user2 = new User(userId, 2, new Date(), "calendarId");
+                dao.updateUser(con, user2);
+                con.commit();
+            }
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
+    @Test
+    public void testToUpdateUpdateInOneTransaction1() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        try {
+            String userId;
+            {
+                con.beginTransaction();
+                userId = dao.getFreshId(con);
+                User user1 = new User(userId, 1, new Date(), "calendarId");
+                dao.updateUser(con, user1);
+
+                User user2 = new User(userId, 2, new Date(), "calendarId");
+                dao.updateUser(con, user2);
+                con.commit();
+            }
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
+
     
     @Test
     public void testToUpdateLastLogin() throws Exception {

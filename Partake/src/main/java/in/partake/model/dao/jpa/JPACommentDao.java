@@ -11,7 +11,7 @@ import in.partake.model.dao.ICommentAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Comment;
 
-class JPACommentDao extends JPADao implements ICommentAccess {
+class JPACommentDao extends JPADao<Comment> implements ICommentAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
@@ -51,7 +51,7 @@ class JPACommentDao extends JPADao implements ICommentAccess {
         @SuppressWarnings("unchecked")
         List<Comment> list = q.getResultList();
         
-        return new JPAPartakeModelDataIterator<Comment>(em, list, false);
+        return new JPAPartakeModelDataIterator<Comment>(em, list, Comment.class, false);
     }
 
     @Override

@@ -9,12 +9,11 @@ import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.OpenIDLinkage;
 
-class JPAOpenIDLinkageDao extends JPADao implements IOpenIDLinkageAccess {
+class JPAOpenIDLinkageDao extends JPADao<OpenIDLinkage> implements IOpenIDLinkageAccess {
 
     @Override
     public void addOpenID(PartakeConnection con, String identifier, String userId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        em.persist(new OpenIDLinkage(identifier, userId));
+        createOrUpdate(con, new OpenIDLinkage(identifier, userId), OpenIDLinkage.class);
     }
 
     @Override

@@ -35,12 +35,27 @@ public class BinaryData extends PartakeModel<BinaryData> {
     public BinaryData(BinaryData src) {
         this.id = src.id;
         this.type = src.type;
-        this.data = src.data != null ? Arrays.copyOf(src.data, src.data.length) : null;
+        this.data = src.data;
+    }
+    
+    public BinaryData(BinaryData src, boolean deepCopy) {
+        this.id = src.id;
+        this.type = src.type;
+        if (deepCopy) {
+            this.data = src.data != null ? Arrays.copyOf(src.data, src.data.length) : null;
+        } else {
+            this.data = src.data;
+        }
     }
     
     @Override
     public Object getPrimaryKey() {
         return id;
+    }
+    
+    @Override
+    public BinaryData copy() {
+        return new BinaryData(this);
     }
     
     // ----------------------------------------------------------------------

@@ -42,6 +42,11 @@ public class User extends PartakeModel<User> {
         return id;
     }
     
+    @Override
+    public User copy() {
+        return new User(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equal methods
     

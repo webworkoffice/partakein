@@ -12,12 +12,14 @@ import in.partake.model.dto.PartakeModel;
 
 public class JPAPartakeModelDataIterator<T extends PartakeModel<T>> extends DataIterator<T> {
     private EntityManager em;
+    private Class<T> clazz;
     private T current;
     private Iterator<T> it;
     private boolean allowsUpdate;
 
-    public JPAPartakeModelDataIterator(EntityManager em, List<T> list, boolean allowsUpdate) {
+    public JPAPartakeModelDataIterator(EntityManager em, List<T> list, Class<T> clazz, boolean allowsUpdate) {
         this.em = em;
+        this.clazz = clazz;
         this.current = null;
         this.it = list.iterator();
         this.allowsUpdate = allowsUpdate;
@@ -43,7 +45,8 @@ public class JPAPartakeModelDataIterator<T extends PartakeModel<T>> extends Data
         if (!allowsUpdate) { throw new UnsupportedOperationException(); }
 
         if (current == null) {
-            em.remove(current.getPrimaryKey());
+            T t = em.find(clazz, current.getPrimaryKey());
+            if (t != null) { em.remove(t); }
         } else {
             throw new IllegalStateException();
         }
@@ -58,7 +61,14 @@ public class JPAPartakeModelDataIterator<T extends PartakeModel<T>> extends Data
         } else if (!current.getPrimaryKey().equals(t.getPrimaryKey())) {
             throw new IllegalStateException();
         } else {
-            em.merge(t);
+            T persisted = em.find(clazz, current.getPrimaryKey());
+            if (persisted != null) {
+                em.detach(persisted);
+                em.merge(t);                
+            } else {
+                em.merge(t);
+            }
+            
         }
     }
 

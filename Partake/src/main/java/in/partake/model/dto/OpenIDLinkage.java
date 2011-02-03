@@ -22,9 +22,19 @@ public class OpenIDLinkage extends PartakeModel<OpenIDLinkage> {
         this.userId = userId;
     }
     
+    public OpenIDLinkage(OpenIDLinkage linkage) {
+        this.id = linkage.id;
+        this.userId = linkage.userId;
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return id;
+    }
+    
+    @Override
+    public OpenIDLinkage copy() {
+        return new OpenIDLinkage(this);
     }
     
     // -----------------------------------------------------------------------------

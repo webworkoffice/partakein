@@ -83,6 +83,11 @@ public class Enrollment extends PartakeModel<Enrollment> {
         return new EnrollmentPK(userId, eventId);
     }
     
+    @Override
+    public Enrollment copy() {
+        return new Enrollment(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals method     
     
