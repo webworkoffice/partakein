@@ -8,25 +8,16 @@ import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.UserPreference;
 
-class JPAUserPreferenceDao extends JPADao implements IUserPreferenceAccess {
+class JPAUserPreferenceDao extends JPADao<UserPreference> implements IUserPreferenceAccess {
 
     @Override
     public UserPreference getPreference(PartakeConnection con, String userId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        return freeze(em.find(UserPreference.class, userId)); 
+        return find(con, userId, UserPreference.class);
     }
 
     @Override
     public void setPreference(PartakeConnection con, UserPreference embryo) throws DAOException {
-        if (embryo == null) { throw new NullPointerException(); }
-        if (embryo.getUserId() == null) { throw new NullPointerException(); }
-        
-        EntityManager em = getEntityManager(con);
-        if (em.find(UserPreference.class, embryo.getUserId()) != null) {
-            em.merge(embryo);
-        } else { 
-            em.persist(new UserPreference(embryo));
-        }
+        createOrUpdate(con, embryo, UserPreference.class);
     }
 
     @Override

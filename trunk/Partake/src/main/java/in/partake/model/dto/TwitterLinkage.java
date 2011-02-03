@@ -52,6 +52,11 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         return twitterId;
     }
     
+    @Override
+    public TwitterLinkage copy() {
+        return new TwitterLinkage(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals method
     

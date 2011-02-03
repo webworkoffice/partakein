@@ -74,6 +74,11 @@ public class Envelope extends PartakeModel<Envelope> {
         return envelopeId;
     }
     
+    @Override
+    public Envelope copy() {
+        return new Envelope(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals method
     

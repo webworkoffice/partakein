@@ -42,6 +42,11 @@ public class EventReminder extends PartakeModel<EventReminder> {
         return eventId;
     }
     
+    @Override
+    public EventReminder copy() {
+        return new EventReminder(this);
+    }
+    
     // ----------------------------------------------------------------------
     // 
 

@@ -193,6 +193,11 @@ public class Event extends PartakeModel<Event> {
         return id;
     }
 
+    @Override
+    public Event copy() {
+        return new Event(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals method 
     

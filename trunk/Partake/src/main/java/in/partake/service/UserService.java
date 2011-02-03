@@ -86,7 +86,7 @@ public final class UserService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            con.beginTransaction(); 
+            con.beginTransaction();
             
             // 1. まず TwitterLinkage を作成 / アップデート
             TwitterLinkage twitterLinkage = updateTwitterLinkage(con, factory, twitterLinkageEmbryo, twitter); 

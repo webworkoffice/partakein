@@ -1,5 +1,6 @@
 package in.partake.model.dao.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,7 +12,7 @@ import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Message;
 
-public class JPAMessageDao extends JPADao implements IMessageAccess {
+public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
@@ -19,17 +20,16 @@ public class JPAMessageDao extends JPADao implements IMessageAccess {
     }
 
     @Override
-    public Message getMessage(PartakeConnection con, String messageId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        return freeze(em.find(Message.class, messageId));
+    public void addMessage(PartakeConnection con, Message embryo) throws DAOException {
+        createOrUpdate(con, embryo, Message.class);
     }
 
     @Override
-    public void addMessage(PartakeConnection con, Message embryo) throws DAOException {
+    public Message getMessage(PartakeConnection con, String messageId) throws DAOException {
         EntityManager em = getEntityManager(con);
-        em.persist(new Message(embryo));
-    }
-
+        return freeze(em.find(Message.class, messageId));
+    }    
+    
     @Override
     public DataIterator<Message> getMessagesByEventId(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
@@ -38,7 +38,12 @@ public class JPAMessageDao extends JPADao implements IMessageAccess {
         
         @SuppressWarnings("unchecked")
         List<Message> messages = q.getResultList();
-        return new JPAPartakeModelDataIterator<Message>(em, messages, false);
+        List<Message> result = new ArrayList<Message>();
+        for (Message m : messages) {
+            result.add(new Message(m));
+        }
+        
+        return new JPAPartakeModelDataIterator<Message>(em, result, Message.class, false);
     }
 
     @Override

@@ -12,7 +12,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.pk.EnrollmentPK;
 
-class JPAEnrollmentDao extends JPADao implements IEnrollmentAccess {
+class JPAEnrollmentDao extends JPADao<Enrollment> implements IEnrollmentAccess {
 
     @Override
     public void addEnrollment(PartakeConnection con, Enrollment enrollment) throws DAOException {

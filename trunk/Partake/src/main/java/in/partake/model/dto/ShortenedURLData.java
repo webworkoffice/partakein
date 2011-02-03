@@ -46,6 +46,11 @@ public class ShortenedURLData extends PartakeModel<ShortenedURLData> {
         return new ShortenedURLDataPK(originalURL, serviceType);
     }
     
+    @Override
+    public ShortenedURLData copy() {
+        return new ShortenedURLData(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals method
     

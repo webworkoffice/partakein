@@ -11,30 +11,36 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.pk.ShortenedURLDataPK;
 
-class JPAURLShortenerDao extends JPADao implements IURLShortenerAccess {
+class JPAURLShortenerDao extends JPADao<ShortenedURLData> implements IURLShortenerAccess {
 
     @Override
     public void addShortenedURL(PartakeConnection con, String originalURL, String serviceType, String shortenedURL) throws DAOException {
         ShortenedURLData data = new ShortenedURLData(originalURL, serviceType, shortenedURL);
         
-        EntityManager em = getEntityManager(con);
-        if (em.contains(data)) {
-            em.merge(data);
-        } else { 
-            em.persist(data);
-        }
+        createOrUpdate(con, data, ShortenedURLData.class);
+//        
+//        EntityManager em = getEntityManager(con);
+//        if (em.contains(data)) {
+//            em.merge(data);
+//        } else { 
+//            em.persist(data);
+//        }
     }
 
     @Override
     public String getShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        ShortenedURLData data = em.find(ShortenedURLData.class, new ShortenedURLDataPK(originalURL, serviceType));
+        ShortenedURLData data = find(con, new ShortenedURLDataPK(originalURL, serviceType), ShortenedURLData.class);
+        if (data != null) { return data.getShortenedURL(); }
+        return null;
         
-        if (data != null) {
-            return data.getShortenedURL();
-        } else {
-            return null;
-        }
+//        EntityManager em = getEntityManager(con);
+//        ShortenedURLData data = em.find(ShortenedURLData.class, new ShortenedURLDataPK(originalURL, serviceType));
+//        
+//        if (data != null) {
+//            return data.getShortenedURL();
+//        } else {
+//            return null;
+//        }
     }
 
     @Override

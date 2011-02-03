@@ -33,6 +33,11 @@ public class EventRelation extends PartakeModel<EventRelation> {
     public Object getPrimaryKey() {
         return eventId;
     }
+    
+    @Override
+    public EventRelation copy() {
+        return new EventRelation(this);
+    }
 
     // ----------------------------------------------------------------------
     // equals methods

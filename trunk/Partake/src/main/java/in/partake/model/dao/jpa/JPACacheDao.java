@@ -8,7 +8,7 @@ import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.CacheData;
 
-class JPACacheDao extends JPADao implements ICacheAccess {
+class JPACacheDao extends JPADao<CacheData> implements ICacheAccess {
 
     @Override
     public void addCache(PartakeConnection con, CacheData cacheData) throws DAOException {

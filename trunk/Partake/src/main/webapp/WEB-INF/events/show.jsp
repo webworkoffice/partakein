@@ -1,4 +1,4 @@
-<%@page import="in.partake.model.dto.EventReminderStatus"%>
+<%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
@@ -36,7 +36,7 @@
 	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
 	ParticipationStatus status = (ParticipationStatus)request.getAttribute(Constants.ATTR_PARTICIPATION_STATUS);
 	Boolean deadlineOver = (Boolean)request.getAttribute(Constants.ATTR_DEADLINE_OVER);
-	EventReminderStatus reminderStatus = (EventReminderStatus) request.getAttribute(Constants.ATTR_REMINDER_STATUS);
+	EventReminder reminderStatus = (EventReminder) request.getAttribute(Constants.ATTR_REMINDER_STATUS);
 	List<EventRelationEx> eventRelations = (List<EventRelationEx>) request.getAttribute(Constants.ATTR_EVENT_RELATIONS);
 %>
 

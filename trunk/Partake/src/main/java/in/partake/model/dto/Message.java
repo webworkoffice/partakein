@@ -46,6 +46,11 @@ public class Message extends PartakeModel<Message> {
         return id;
     }
     
+    @Override
+    public Message copy() {
+        return new Message(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals method
     

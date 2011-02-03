@@ -11,7 +11,7 @@ import in.partake.model.dao.IEnvelopeAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Envelope;
 
-public class JPAEnvelopeDao extends JPADao implements IEnvelopeAccess {
+public class JPAEnvelopeDao extends JPADao<Envelope> implements IEnvelopeAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
@@ -31,7 +31,7 @@ public class JPAEnvelopeDao extends JPADao implements IEnvelopeAccess {
         @SuppressWarnings("unchecked")
         List<Envelope> envelopes = q.getResultList();
         
-        return new JPAPartakeModelDataIterator<Envelope>(em, envelopes, true);
+        return new JPAPartakeModelDataIterator<Envelope>(em, envelopes, Envelope.class, true);
     }
 
     @Override

@@ -8,7 +8,7 @@ import in.partake.model.dao.IEventReminderAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.EventReminder;
 
-public class JPAEventReminderDao extends JPADao implements IEventReminderAccess {
+public class JPAEventReminderDao extends JPADao<EventReminder> implements IEventReminderAccess {
 
     @Override
     public void updateEventReminderStatus(PartakeConnection con, EventReminder reminderStatus) throws DAOException {

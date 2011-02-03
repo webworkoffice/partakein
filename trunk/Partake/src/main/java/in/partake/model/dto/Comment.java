@@ -51,6 +51,11 @@ public class Comment extends PartakeModel<Comment> {
         return id;
     }
     
+    @Override
+    public Comment copy() {
+        return new Comment(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals method
 

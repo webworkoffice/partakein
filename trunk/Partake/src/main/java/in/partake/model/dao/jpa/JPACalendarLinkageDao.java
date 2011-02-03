@@ -10,7 +10,7 @@ import in.partake.model.dao.ICalendarLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.CalendarLinkage;
 
-class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
+class JPACalendarLinkageDao extends JPADao<CalendarLinkage> implements ICalendarLinkageAccess {
 
     @Override
     public String getFreshCalendarId(PartakeConnection con) throws DAOException {

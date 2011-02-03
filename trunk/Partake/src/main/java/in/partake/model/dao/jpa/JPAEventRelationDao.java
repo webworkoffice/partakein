@@ -11,7 +11,7 @@ import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.EventRelation;
 
-class JPAEventRelationDao extends JPADao implements IEventRelationAccess {
+class JPAEventRelationDao extends JPADao<EventRelation> implements IEventRelationAccess {
 
     @Override
     public void setEventRelations(PartakeConnection con, String eventId, List<EventRelation> relations) throws DAOException {

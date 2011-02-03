@@ -510,7 +510,7 @@ public final class EventService extends PartakeService {
         try {
             con.beginTransaction();
             List<EventRelationEx> relations = new ArrayList<EventRelationEx>();
-            for (EventRelation relation : getEventRelations(factory, con, eventId)) {
+            for (EventRelation relation : factory.getEventRelationAccess().getEventRelations(con, eventId)) {
                 if (relation == null) { continue; }
                 EventEx event = getEventEx(con, relation.getEventId());
                 if (event == null) { continue; }

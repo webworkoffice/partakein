@@ -48,6 +48,11 @@ public class CacheData extends PartakeModel<CacheData> {
         return id;
     }
     
+    @Override
+    public CacheData copy() {
+        return new CacheData(this);
+    }
+    
     // ----------------------------------------------------------------------
     // equals
     

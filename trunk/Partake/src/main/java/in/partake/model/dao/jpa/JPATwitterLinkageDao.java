@@ -8,20 +8,16 @@ import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.TwitterLinkage;
 
-class JPATwitterLinkageDao extends JPADao implements ITwitterLinkageAccess {
+class JPATwitterLinkageDao extends JPADao<TwitterLinkage> implements ITwitterLinkageAccess {
 
     @Override
-    public void addTwitterLinkage(PartakeConnection con, TwitterLinkage embryo) throws DAOException {        
-        EntityManager em = getEntityManager(con);
-        em.persist(new TwitterLinkage(embryo));
+    public void addTwitterLinkage(PartakeConnection con, TwitterLinkage embryo) throws DAOException {
+        createOrUpdate(con, embryo, TwitterLinkage.class);
     }
 
     @Override
     public TwitterLinkage getTwitterLinkageById(PartakeConnection con, int twitterId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        TwitterLinkage linkage = em.find(TwitterLinkage.class, twitterId);
-        if (linkage == null) { return null; }
-        return linkage.freeze();
+        return find(con, twitterId, TwitterLinkage.class);
     }
 
     @Override
