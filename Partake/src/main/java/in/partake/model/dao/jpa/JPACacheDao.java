@@ -12,27 +12,17 @@ class JPACacheDao extends JPADao<CacheData> implements ICacheAccess {
 
     @Override
     public void addCache(PartakeConnection con, CacheData cacheData) throws DAOException {
-        if (cacheData.getId() == null) { throw new DAOException("id should be specified."); }
-        EntityManager em = getEntityManager(con);
-        em.persist(cacheData);
+        createOrUpdate(con, cacheData, CacheData.class);
     }
 
     @Override
     public void removeCache(PartakeConnection con, String cacheId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        CacheData data = em.find(CacheData.class, cacheId);
-        if (data != null) { em.remove(data); }
+        remove(con, cacheId, CacheData.class);
     }
 
     @Override
     public CacheData getCache(PartakeConnection con, String cacheId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        CacheData data = em.find(CacheData.class, cacheId);
-        if (data != null) {
-            return data.freeze();
-        } else {
-            return null;
-        }
+        return find(con, cacheId, CacheData.class);
     }
 
     @Override

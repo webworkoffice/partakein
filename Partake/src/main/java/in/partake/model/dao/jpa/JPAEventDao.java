@@ -20,30 +20,22 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 
     @Override
     public Event getEvent(PartakeConnection con, String id) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        Event event = em.find(Event.class, id);
-        return freeze(event);
+        return find(con, id, Event.class);
     }
 
     @Override
     public void addEvent(PartakeConnection con, Event embryo) throws DAOException {
-        if (embryo.getId() == null) { throw new NullPointerException(); }
-        
-        EntityManager em = getEntityManager(con);
-        em.persist(new Event(embryo));        
+        createOrUpdate(con, embryo, Event.class);
     }
 
     @Override
     public void updateEvent(PartakeConnection con, Event embryo) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        em.merge(embryo);
+        update(con, embryo, Event.class);
     }
 
     @Override
     public void removeEvent(PartakeConnection con, String eventId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        Event event = em.find(Event.class, eventId);
-        if (event != null) { em.remove(event); }
+        remove(con, eventId, Event.class);
     }
 
     @Override
@@ -53,6 +45,8 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
         
         @SuppressWarnings("unchecked")
         List<Event> events = q.getResultList();
+        
+        // TOOD: need copy? or freeze?
         
         return new JPAPartakeModelDataIterator<Event>(em, events, Event.class, false);
     }
