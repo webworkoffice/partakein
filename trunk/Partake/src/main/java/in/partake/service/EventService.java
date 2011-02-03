@@ -14,6 +14,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
+import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
@@ -894,7 +895,10 @@ public final class EventService extends PartakeService {
             String messageId = factory.getDirectMessageAccess().getFreshId(con);
             Message embryo = new Message(messageId, userId, message, null, new Date());
             factory.getDirectMessageAccess().addMessage(con, embryo);
-            factory.getDirectMessageAccess().sendEnvelope(con, messageId, userId, null, null, DirectMessagePostingType.POSTING_TWITTER);
+            String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
+            Envelope envelope = new Envelope(envelopeId, userId, null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
+            factory.getEnvelopeAccess().enqueueEnvelope(con, envelope);
+            
             logger.info("bot will tweet: " + message);
     	} catch (Exception e) {
     	    logger.error("Something happened.", e);

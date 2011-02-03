@@ -14,7 +14,7 @@
     <class>in.partake.model.dto.Envelope</class>
     <class>in.partake.model.dto.Event</class>
     <class>in.partake.model.dto.EventRelation</class>
-    <class>in.partake.model.dto.EventReminderStatus</class>
+    <class>in.partake.model.dto.EventReminder</class>
     <class>in.partake.model.dto.FeedLinkage</class>
     <class>in.partake.model.dto.Message</class>
     <class>in.partake.model.dto.OpenIDLinkage</class>
@@ -30,7 +30,7 @@
 
       <property name="openjpa.jdbc.DBDictionary" value="postgres" />
 
-      <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add')"/> 
+      <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='drop,add')"/> 
       <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
       
       <property name="openjpa.DataCache" value="true"/>
@@ -50,7 +50,7 @@
     <class>in.partake.model.dto.Envelope</class>
     <class>in.partake.model.dto.Event</class>
     <class>in.partake.model.dto.EventRelation</class>
-    <class>in.partake.model.dto.EventReminderStatus</class>
+    <class>in.partake.model.dto.EventReminder</class>
     <class>in.partake.model.dto.FeedLinkage</class>
     <class>in.partake.model.dto.Message</class>
     <class>in.partake.model.dto.OpenIDLinkage</class>
@@ -72,7 +72,7 @@
       <property name="openjpa.DataCache" value="true"/>
       <property name="openjpa.QueryCache" value="true"/>
       <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
-      
+
     </properties>
   </persistence-unit>
 

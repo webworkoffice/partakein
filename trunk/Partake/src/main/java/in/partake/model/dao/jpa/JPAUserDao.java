@@ -18,12 +18,21 @@ class JPAUserDao extends JPADao implements IUserAccess {
     }
 
     @Override
-    public void addUser(PartakeConnection con, User user) throws DAOException {
+    public void createUser(PartakeConnection con, User user) throws DAOException {
         if (user == null) { throw new NullPointerException(); }
         if (user.getId() == null) { throw new NullPointerException(); }
         
         EntityManager em = getEntityManager(con);
-        em.persist(new User(user)); // use copy constructor to prevent using the same object in the cache.
+        em.persist(new User(user)); 
+    }
+    
+    @Override
+    public void updateUser(PartakeConnection con, User user) throws DAOException {
+        if (user == null) { throw new NullPointerException(); }
+        if (user.getId() == null) { throw new NullPointerException(); }
+        
+        EntityManager em = getEntityManager(con);
+        em.merge(user);
     }
 
     @Override
@@ -37,9 +46,9 @@ class JPAUserDao extends JPADao implements IUserAccess {
         EntityManager em = getEntityManager(con);
         User user = em.find(User.class, userId);
         if (user == null) { throw new DAOException("No such element"); }
-        
-        user.setLastLoginAt(now);
-        em.merge(user);
+        User newUser = new User(user);
+        newUser.setLastLoginAt(now);
+        em.merge(newUser);
     }
 
     @Override

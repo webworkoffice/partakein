@@ -4,6 +4,8 @@ import in.partake.model.dao.IBinaryAccess;
 import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.ICalendarLinkageAccess;
 import in.partake.model.dao.ICommentAccess;
+import in.partake.model.dao.IEnvelopeAccess;
+import in.partake.model.dao.IEventReminderAccess;
 import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IEventAccess;
@@ -47,6 +49,11 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     protected IEnrollmentAccess createEnrollmentAccess() {
         return new EnrollmentCassandraDao(this);
     }
+    
+    @Override
+    protected IEnvelopeAccess createEnvelopeAccess() {
+        return new CassandraEnvelopeDao(this);
+    }
 
     @Override
     protected IEventAccess createEventAccess() {
@@ -56,6 +63,11 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     @Override
     protected IEventRelationAccess createEventRelationAccess() {
         return new EventRelationCassandraDao(this);
+    }
+
+    @Override
+    protected IEventReminderAccess createEventReminderAccess() {
+        return new CassandraEventReminderDao(this);
     }
 
     @Override
@@ -88,6 +100,7 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     protected IURLShortenerAccess createUrlShortenerAccess() {
         return new URLShortenerCassandraDao(this);
     }
+
 
 
 }

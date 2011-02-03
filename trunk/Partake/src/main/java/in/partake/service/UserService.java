@@ -114,7 +114,7 @@ public final class UserService extends PartakeService {
         }
         
         if (user == null && createsIfAbsent) {
-            factory.getUserAccess().addUser(con, new User(userId, twitter.getId(), new Date(), null));
+            factory.getUserAccess().createUser(con, new User(userId, twitter.getId(), new Date(), null));
             user = getUserEx(con, userId);
         }
         

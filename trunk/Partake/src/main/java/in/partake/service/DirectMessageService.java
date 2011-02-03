@@ -152,7 +152,11 @@ public class DirectMessageService extends PartakeService {
             Message embryo = new Message(messageId, user.getId(), messageStr, null, new Date());
             
             factory.getDirectMessageAccess().addMessage(con, embryo);
-            factory.getDirectMessageAccess().sendEnvelope(con, messageId, user.getId(), null, null, DirectMessagePostingType.POSTING_TWITTER);
+            
+            String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
+            Envelope envelope = new Envelope(envelopeId, user.getId(), null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
+            factory.getEnvelopeAccess().enqueueEnvelope(con, envelope);
+            
             con.commit();
         } finally {
             con.invalidate();
@@ -175,7 +179,9 @@ public class DirectMessageService extends PartakeService {
 
         try {
             con.beginTransaction();
-            factory.getDirectMessageAccess().sendEnvelope(con, messageId, senderId, receiverId, deadline, postingType);
+            String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
+            Envelope envelope = new Envelope(envelopeId, senderId, receiverId, messageId, deadline, 0, null, null, postingType, new Date());
+            factory.getEnvelopeAccess().enqueueEnvelope(con, envelope);
             con.commit();
         } finally {
             con.invalidate();
@@ -191,7 +197,7 @@ public class DirectMessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            DataIterator<Envelope> it = factory.getDirectMessageAccess().getEnvelopeIterator(con);             
+            DataIterator<Envelope> it = factory.getEnvelopeAccess().getEnvelopeIterator(con);             
             while (it.hasNext()) {
                 Envelope envelope = it.next();
                 if (envelope == null) { it.remove(); continue; }

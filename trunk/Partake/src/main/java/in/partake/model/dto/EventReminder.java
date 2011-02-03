@@ -6,8 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity(name = "EventReminderStatuses")
-public class EventReminderStatus extends PartakeModel<EventReminderStatus> {
+@Entity(name = "EventReminders")
+public class EventReminder extends PartakeModel<EventReminder> {
     @Id
     private String eventId;
     @Column
@@ -17,15 +17,15 @@ public class EventReminderStatus extends PartakeModel<EventReminderStatus> {
     @Column
     private Date sentDateOfBeforeTheDay;
     
-    public EventReminderStatus() {
+    public EventReminder() {
         this(null, null, null, null);
     }
     
-    public EventReminderStatus(String eventId) {
+    public EventReminder(String eventId) {
         this(eventId, null, null, null);
     }
     
-    public EventReminderStatus(String eventId, 
+    public EventReminder(String eventId, 
                     Date sentDateOfBeforeDeadlineOneday, Date sentDateOfBeforeDeadlineHalfday, Date sentDateOfBeforeTheDay) {
         this.eventId = eventId;
         this.sentDateOfBeforeDeadlineOneday = sentDateOfBeforeDeadlineOneday;
@@ -33,7 +33,7 @@ public class EventReminderStatus extends PartakeModel<EventReminderStatus> {
         this.sentDateOfBeforeTheDay = sentDateOfBeforeTheDay;
     }
     
-    public EventReminderStatus(EventReminderStatus status) {
+    public EventReminder(EventReminder status) {
         this(status.eventId, status.sentDateOfBeforeDeadlineOneday, status.sentDateOfBeforeDeadlineHalfday, status.sentDateOfBeforeTheDay);
     }
 
@@ -46,6 +46,8 @@ public class EventReminderStatus extends PartakeModel<EventReminderStatus> {
     // 
 
     // TODO: equals should be implemented.
+    
+    
     
     // ----------------------------------------------------------------------
     // 
