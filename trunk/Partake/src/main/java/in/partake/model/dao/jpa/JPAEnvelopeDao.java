@@ -20,8 +20,7 @@ public class JPAEnvelopeDao extends JPADao<Envelope> implements IEnvelopeAccess 
     
     @Override
     public void enqueueEnvelope(PartakeConnection con, Envelope envelope) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        em.persist(envelope);
+        createOrUpdate(con, envelope, Envelope.class);
     }
 
     @Override
@@ -30,6 +29,8 @@ public class JPAEnvelopeDao extends JPADao<Envelope> implements IEnvelopeAccess 
         Query q = em.createQuery("SELECT envelope FROM Envelopes envelope"); 
         @SuppressWarnings("unchecked")
         List<Envelope> envelopes = q.getResultList();
+        
+        // TODO: copy しないとだめかな？
         
         return new JPAPartakeModelDataIterator<Envelope>(em, envelopes, Envelope.class, true);
     }

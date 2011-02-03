@@ -19,22 +19,17 @@ class JPACalendarLinkageDao extends JPADao<CalendarLinkage> implements ICalendar
 
     @Override
     public void addCalendarLinkage(PartakeConnection con, CalendarLinkage embryo) throws DAOException {
-        if (embryo.getId() == null) { throw new DAOException("id should not be null."); }
-        
-        EntityManager em = getEntityManager(con);
-        em.persist(new CalendarLinkage(embryo));
+        createOrUpdate(con, embryo, CalendarLinkage.class);
     }
 
     @Override
     public CalendarLinkage getCalendarLinkage(PartakeConnection con, String id) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        CalendarLinkage linkage = em.find(CalendarLinkage.class, id);
-        
-        if (linkage != null) {
-            return linkage.freeze();
-        } else {
-            return null;
-        }
+        return find(con, id, CalendarLinkage.class);
+    }
+    
+    @Override
+    public void removeCalendarLinkage(PartakeConnection con, String id) throws DAOException {
+        remove(con, id, CalendarLinkage.class);
     }
     
     @Override
@@ -48,12 +43,6 @@ class JPACalendarLinkageDao extends JPADao<CalendarLinkage> implements ICalendar
         else { return freeze(results.get(0)); }
     }
 
-    @Override
-    public void removeCalendarLinkage(PartakeConnection con, String id) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        CalendarLinkage linkage = em.find(CalendarLinkage.class, id);
-        if (linkage != null) { em.remove(linkage); }
-    }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {

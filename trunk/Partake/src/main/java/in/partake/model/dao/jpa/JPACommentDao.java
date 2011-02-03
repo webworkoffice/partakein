@@ -20,25 +20,17 @@ class JPACommentDao extends JPADao<Comment> implements ICommentAccess {
 
     @Override
     public void addComment(PartakeConnection con, Comment embryo) throws DAOException {
-        if (embryo == null) { throw new IllegalStateException(); }
-        if (embryo.getId() == null) { throw new IllegalStateException(); }
-
-        EntityManager em = getEntityManager(con);        
-        em.persist(new Comment(embryo));
+        createOrUpdate(con, embryo, Comment.class);
     }
 
     @Override
     public Comment getComment(PartakeConnection con, String commentId) throws DAOException {
-        EntityManager em = getEntityManager(con);        
-        return freeze(em.find(Comment.class, commentId));
+        return find(con, commentId, Comment.class);
     }
 
     @Override
     public void removeComment(PartakeConnection con, String commentId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        Comment comment = em.find(Comment.class, commentId);
-        if (comment == null) { return; }
-        em.remove(comment);
+        remove(con, commentId, Comment.class);
     }
 
     @Override

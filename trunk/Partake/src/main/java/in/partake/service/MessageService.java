@@ -36,16 +36,25 @@ public final class MessageService extends PartakeService {
         return instance;
     }
     
-    public EventReminder gerReminderStatus(String eventId) throws DAOException {
+    public EventReminder getReminderStatus(String eventId) throws DAOException {
         PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
         try {
-            con.beginTransaction(); 
-            EventReminder status = factory.getEventReminderAccess().getEventReminderStatus(con, eventId);
+            con.beginTransaction();
+            EventReminder status = getEventReminderImpl(con, eventId);
             con.commit();
             return status;
         } finally {
             con.invalidate();
+        }
+    }
+    
+    private EventReminder getEventReminderImpl(PartakeConnection con, String eventId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        EventReminder reminder = factory.getEventReminderAccess().getEventReminderStatus(con, eventId);
+        if (reminder == null) {
+            return new EventReminder(eventId); 
+        } else {
+            return reminder;
         }
     }
     
@@ -74,9 +83,8 @@ public final class MessageService extends PartakeService {
                 if (event.getBeginDate().before(now)) { continue; }
                 
                 // NOTE: Since the reminderStatus gotten from getEventReminderStatus is frozen,
-                //       the object should be copied to use. 
-                EventReminder reminderStatus = 
-                    new EventReminder(factory.getEventReminderAccess().getEventReminderStatus(con, eventId));
+                //       the object should be copied to use.
+                EventReminder reminderStatus = new EventReminder(getEventReminderImpl(con, eventId));
                 
                 boolean changed = sendEventNotification(con, event, reminderStatus, topPath, now);
                 if (changed) {

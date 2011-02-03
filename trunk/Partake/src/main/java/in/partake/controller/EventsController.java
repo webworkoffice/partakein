@@ -110,7 +110,7 @@ public class EventsController extends PartakeActionSupport {
 	        attributes.put(Constants.ATTR_DEADLINE_OVER, Boolean.valueOf(deadlineOver));
 	        attributes.put(Constants.ATTR_COMMENTSET, comments);
 	        attributes.put(Constants.ATTR_MESSAGESET, messages);
-	        attributes.put(Constants.ATTR_REMINDER_STATUS, MessageService.get().gerReminderStatus(eventId));
+	        attributes.put(Constants.ATTR_REMINDER_STATUS, MessageService.get().getReminderStatus(eventId));
 	        
 	        this.eventId = eventId;
 	        this.event = event;

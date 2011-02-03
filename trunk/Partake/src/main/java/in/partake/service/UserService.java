@@ -6,7 +6,6 @@ import java.util.List;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.CalendarLinkage;
@@ -171,13 +170,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
-            List<String> result = new ArrayList<String>();
-            DataIterator<String> it = factory.getOpenIDLinkageAccess().getOpenIDIdentifiers(con, userId);
-            while (it.hasNext()) {
-                String s = it.next();
-                if (s == null) { continue; }
-                result.add(s);
-            }
+            List<String> result = factory.getOpenIDLinkageAccess().getOpenIDIdentifiers(con, userId); 
             con.commit();
             
             return result;
