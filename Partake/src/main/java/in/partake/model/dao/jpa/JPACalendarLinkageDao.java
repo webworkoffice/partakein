@@ -1,5 +1,7 @@
 package in.partake.model.dao.jpa;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -38,8 +40,12 @@ class JPACalendarLinkageDao extends JPADao implements ICalendarLinkageAccess {
     @Override
     public CalendarLinkage getCalendarLinkageByUserId(PartakeConnection con, String userId) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT cl FROM CalendarLinkages WHERE userId = :userId");
-        return (CalendarLinkage) q.getSingleResult();
+        Query q = em.createQuery("SELECT cl FROM CalendarLinkages cl WHERE cl.userId = :userId");
+        q.setParameter("userId", userId);
+        @SuppressWarnings("unchecked")
+        List<CalendarLinkage> results = q.getResultList();
+        if (results.isEmpty()) { return null; }
+        else { return freeze(results.get(0)); }
     }
 
     @Override

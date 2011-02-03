@@ -17,7 +17,9 @@ class JPAEnrollmentDao extends JPADao implements IEnrollmentAccess {
     @Override
     public void addEnrollment(PartakeConnection con, Enrollment enrollment) throws DAOException {
         EntityManager em = getEntityManager(con);
-        if (em.contains(enrollment)) {
+        
+        Enrollment en = em.find(Enrollment.class, new EnrollmentPK(enrollment.getUserId(), enrollment.getEventId()));
+        if (en != null) {
             em.merge(enrollment);
         } else {
             em.persist(new Enrollment(enrollment));

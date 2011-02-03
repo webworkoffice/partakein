@@ -56,7 +56,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 		    con.beginTransaction();
 		    event.setId(eventId);
 			getFactory().getEventAccess().addEvent(con, event);
-			getFactory().getUserAccess().addUser(con, new User(userId, 0, new Date(), null)); 
+			getFactory().getUserAccess().createUser(con, new User(userId, 0, new Date(), null)); 
 
 			dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, 0, LastParticipationStatus.CHANGED, new Date()));
 			
@@ -83,17 +83,20 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 
         PartakeConnection con = getPool().getConnection();
         try {
-            con.beginTransaction();
+            
             // create
             {
+                con.beginTransaction();
                 event.setId(eventId);
                 getFactory().getEventAccess().addEvent(con, event);
-                getFactory().getUserAccess().addUser(con, new User(userId, 0, new Date(), null));     
+                getFactory().getUserAccess().createUser(con, new User(userId, 0, new Date(), null));     
                 dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, 0, LastParticipationStatus.CHANGED, new Date()));
+                con.commit();
             }
             
             // update
             {
+                con.beginTransaction();
                 List<Enrollment> storedList = dao.getEnrollmentsByEventId(con, eventId);
                 Enrollment storedParticipation = storedList.get(0);
                 Assert.assertNotNull(storedParticipation);
@@ -102,19 +105,22 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
                 Enrollment newStoredParticipation = new Enrollment(storedParticipation);
                 newStoredParticipation.setLastStatus(LastParticipationStatus.CHANGED);
                 dao.addEnrollment(con, newStoredParticipation);
+                con.commit();
             }
             
             // get
             {
+                con.beginTransaction();
                 List<Enrollment> updatedList = dao.getEnrollmentsByEventId(con, eventId);
                 Assert.assertEquals(1, updatedList.size());
                 Enrollment updatedParticipation = updatedList.get(0);
                 Assert.assertEquals(userId, updatedParticipation.getUserId());
                 Assert.assertEquals(LastParticipationStatus.CHANGED, updatedParticipation.getLastStatus());
-                Assert.assertEquals(ParticipationStatus.NOT_ENROLLED, updatedParticipation.getStatus());
+                Assert.assertEquals(ParticipationStatus.ENROLLED, updatedParticipation.getStatus());
+                con.commit();
             }
             
-            con.commit();
+            
         } finally {
             con.invalidate();
         }

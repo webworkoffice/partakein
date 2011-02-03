@@ -1,6 +1,5 @@
 package in.partake.model.dao.jpa;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,9 +10,6 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Message;
-import in.partake.model.dto.Envelope;
-import in.partake.model.dto.EventReminderStatus;
-import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
 public class JPAMessageDao extends JPADao implements IMessageAccess {
 
@@ -43,31 +39,6 @@ public class JPAMessageDao extends JPADao implements IMessageAccess {
         @SuppressWarnings("unchecked")
         List<Message> messages = q.getResultList();
         return new JPAPartakeModelDataIterator<Message>(em, messages, false);
-    }
-
-    @Override
-    public void sendEnvelope(PartakeConnection con, String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType)
-                    throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
-    }
-
-    @Override
-    public DataIterator<Envelope> getEnvelopeIterator(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
-    }
-
-    @Override
-    public void updateEventReminderStatus(PartakeConnection con, String eventId, EventReminderStatus reminderStatus) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
-    }
-
-    @Override
-    public EventReminderStatus getEventReminderStatus(PartakeConnection con, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet.");
     }
 
     @Override

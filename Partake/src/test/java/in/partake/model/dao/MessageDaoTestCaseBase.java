@@ -1,8 +1,6 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.Message;
-import in.partake.model.dto.Envelope;
-import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
 import java.util.Date;
 
@@ -53,47 +51,47 @@ public abstract class MessageDaoTestCaseBase extends AbstractDaoTestCaseBase {
 	    }
 	}
 
-	@Test
-	public void testToAddIter() throws DAOException, InterruptedException {
-		PartakeConnection con = getPool().getConnection();
-		
-		Date deadline = new Date();
-
-		Message original;
-        {
-            con.beginTransaction();
-            String userId  = "uesrId-" + System.currentTimeMillis();
-            String eventId = "eventId-" + System.currentTimeMillis();
-            
-            original = new Message(dao.getFreshId(con), userId, "some message", eventId, new Date());
-            
-            dao.addMessage(con, original);
-            dao.sendEnvelope(con, original.getId(), userId, userId, deadline, DirectMessagePostingType.POSTING_TWITTER);
-            
-            con.commit();
-        }
-        
-
-		{
-			boolean found = false;
-			
-		    con.beginTransaction();
-			DataIterator<Envelope> iter = dao.getEnvelopeIterator(con);
-
-			while (iter.hasNext()) {
-				Envelope envelope = iter.next();
-				Assert.assertNotNull(envelope);
-				Assert.assertNotNull(envelope.getEnvelopeId());
-				Assert.assertNotNull(envelope.getDeadline());
-				if (envelope.getMessageId().equals(original.getId())) {
-					Assert.assertEquals(deadline, envelope.getDeadline());
-					found = true;
-				}
-			}
-
-			Assert.assertTrue(found);
-			
-			con.commit();
-		}
-	}
+//	@Test
+//	public void testToAddIter() throws DAOException, InterruptedException {
+//		PartakeConnection con = getPool().getConnection();
+//		
+//		Date deadline = new Date();
+//
+//		Message original;
+//        {
+//            con.beginTransaction();
+//            String userId  = "uesrId-" + System.currentTimeMillis();
+//            String eventId = "eventId-" + System.currentTimeMillis();
+//            
+//            original = new Message(dao.getFreshId(con), userId, "some message", eventId, new Date());
+//            
+//            dao.addMessage(con, original);
+//            dao.sendEnvelope(con, original.getId(), userId, userId, deadline, DirectMessagePostingType.POSTING_TWITTER);
+//            
+//            con.commit();
+//        }
+//        
+//
+//		{
+//			boolean found = false;
+//			
+//		    con.beginTransaction();
+//			DataIterator<Envelope> iter = dao.getEnvelopeIterator(con);
+//
+//			while (iter.hasNext()) {
+//				Envelope envelope = iter.next();
+//				Assert.assertNotNull(envelope);
+//				Assert.assertNotNull(envelope.getEnvelopeId());
+//				Assert.assertNotNull(envelope.getDeadline());
+//				if (envelope.getMessageId().equals(original.getId())) {
+//					Assert.assertEquals(deadline, envelope.getDeadline());
+//					found = true;
+//				}
+//			}
+//
+//			Assert.assertTrue(found);
+//			
+//			con.commit();
+//		}
+//	}
 }

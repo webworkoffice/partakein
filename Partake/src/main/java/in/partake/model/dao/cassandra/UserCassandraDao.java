@@ -58,7 +58,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     }
     
     @Override
-    public void addUser(PartakeConnection con, User user) throws DAOException {
+    public void createUser(PartakeConnection con, User user) throws DAOException {
         if (user == null) { throw new NullPointerException(); }
         if (user.getId() == null) { throw new NullPointerException(); }
         
@@ -68,6 +68,11 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
         } catch (Exception e) {
             throw new DAOException(e);
         }
+    }
+
+    @Override
+    public void updateUser(PartakeConnection con, User user) throws DAOException {
+        createUser(con, user);
     }
     
     @Override

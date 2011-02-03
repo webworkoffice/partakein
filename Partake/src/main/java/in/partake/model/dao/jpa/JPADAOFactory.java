@@ -4,6 +4,8 @@ import in.partake.model.dao.IBinaryAccess;
 import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.ICalendarLinkageAccess;
 import in.partake.model.dao.ICommentAccess;
+import in.partake.model.dao.IEnvelopeAccess;
+import in.partake.model.dao.IEventReminderAccess;
 import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IEventAccess;
@@ -47,6 +49,11 @@ public class JPADAOFactory extends PartakeDAOFactory {
     protected IEnrollmentAccess createEnrollmentAccess() {
         return new JPAEnrollmentDao();
     }
+    
+    @Override
+    protected IEnvelopeAccess createEnvelopeAccess() {
+        return new JPAEnvelopeDao();
+    }
 
     @Override
     protected IEventAccess createEventAccess() {
@@ -58,6 +65,11 @@ public class JPADAOFactory extends PartakeDAOFactory {
         return new JPAEventRelationDao();
     }
 
+    @Override
+    protected IEventReminderAccess createEventReminderAccess() {
+        return new JPAEventReminderDao();
+    }
+    
     @Override
     protected IFeedAccess createFeedAccess() {
         return new JPAFeedLinkageDao();

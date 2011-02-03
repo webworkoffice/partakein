@@ -11,8 +11,10 @@ public abstract class PartakeDAOFactory {
     private final ICommentAccess commentAccess;
     private final IMessageAccess directMessageAccess;
     private final IEnrollmentAccess enrollmentAccess;
+    private final IEnvelopeAccess envelopeAccess;
     private final IEventAccess eventAccess;
     private final IEventRelationAccess eventRelationAccess;
+    private final IEventReminderAccess eventReminderAccess;
     private final IFeedAccess feedAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
@@ -30,9 +32,11 @@ public abstract class PartakeDAOFactory {
         addTruncatable(binaryAccess          = createBinaryAccess());
         addTruncatable(commentAccess         = createCommentAccess());
         addTruncatable(directMessageAccess   = createDirectMessageAccess());
+        addTruncatable(envelopeAccess        = createEnvelopeAccess());
         addTruncatable(enrollmentAccess      = createEnrollmentAccess());
         addTruncatable(eventAccess           = createEventAccess());
         addTruncatable(eventRelationAccess   = createEventRelationAccess());
+        addTruncatable(eventReminderAccess   = createEventReminderAccess());
         addTruncatable(feedAccess            = createFeedAccess());
         addTruncatable(openIDLinkageAccess   = createOpenIDLinkageAccess());
         addTruncatable(twitterLinkageAccess  = createTwitterLinkageAccess());
@@ -74,6 +78,14 @@ public abstract class PartakeDAOFactory {
 
     public final IMessageAccess getDirectMessageAccess() {
         return directMessageAccess;
+    }
+    
+    public final IEventReminderAccess getEventReminderAccess() {
+        return eventReminderAccess;
+    }
+    
+    public final IEnvelopeAccess getEnvelopeAccess() {
+        return envelopeAccess;
     }
     
     public final IEnrollmentAccess getEnrollmentAccess() {
@@ -121,8 +133,10 @@ public abstract class PartakeDAOFactory {
     protected abstract ICommentAccess createCommentAccess();
     protected abstract IMessageAccess createDirectMessageAccess();
     protected abstract IEnrollmentAccess createEnrollmentAccess();
+    protected abstract IEnvelopeAccess createEnvelopeAccess();
     protected abstract IEventAccess createEventAccess();
     protected abstract IEventRelationAccess createEventRelationAccess();
+    protected abstract IEventReminderAccess createEventReminderAccess();
     protected abstract IFeedAccess createFeedAccess();
     protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
     protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();

@@ -29,7 +29,7 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 original.setId(userId);
-                dao.addUser(con, original);
+                dao.createUser(con, original);
                 con.commit();
             }
             
@@ -52,6 +52,32 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
     }
     
     @Test
+    public void testToAddUpdate() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        try {
+            String userId;
+            {
+                con.beginTransaction();
+                userId = dao.getFreshId(con);
+                User user1 = new User(userId, 1, new Date(), "calendarId");
+                dao.createUser(con, user1);
+                con.commit();
+            }
+            
+            {
+                con.beginTransaction();
+                User user2 = new User(userId, 2, new Date(), "calendarId");
+                dao.updateUser(con, user2);
+                con.commit();
+            }
+            
+            
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
+    @Test
     public void testToUpdateLastLogin() throws Exception {
         PartakeConnection con = getPool().getConnection();
         try {
@@ -63,7 +89,7 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 original.setId(userId);
-                dao.addUser(con, original);
+                dao.createUser(con, original);
                 con.commit();
             }
             

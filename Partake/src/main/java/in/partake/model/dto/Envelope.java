@@ -36,12 +36,14 @@ public class Envelope extends PartakeModel<Envelope> {
     private Date tryAfter;
     @Column
     private DirectMessagePostingType postingType;
-        
+    @Column
+    private Date createdAt;
+    
     public Envelope() {
         // do nothing
     }
     
-    public Envelope(String id, String senderId, String receiverId, String messageId, Date deadline, int numTried, Date lastTriedAt, Date tryAfter, DirectMessagePostingType postingType) {
+    public Envelope(String id, String senderId, String receiverId, String messageId, Date deadline, int numTried, Date lastTriedAt, Date tryAfter, DirectMessagePostingType postingType, Date createdAt) {
         this.envelopeId = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
@@ -51,6 +53,7 @@ public class Envelope extends PartakeModel<Envelope> {
         this.lastTriedAt = (Date) lastTriedAt.clone();
         this.tryAfter = (Date) tryAfter.clone();
         this.postingType = postingType;
+        this.createdAt = (Date) createdAt.clone();
     }
     
     public Envelope(Envelope envelope) {
@@ -63,6 +66,7 @@ public class Envelope extends PartakeModel<Envelope> {
         this.lastTriedAt = envelope.lastTriedAt != null ? (Date) envelope.lastTriedAt.clone() : null;
         this.tryAfter = envelope.tryAfter != null ? (Date) envelope.tryAfter.clone() : null;
         this.postingType = envelope.postingType;
+        this.createdAt = envelope.createdAt != null ? (Date) envelope.createdAt.clone() : null;
     }
     
     @Override
@@ -89,6 +93,7 @@ public class Envelope extends PartakeModel<Envelope> {
         if (!ObjectUtils.equals(lhs.lastTriedAt, rhs.lastTriedAt)) { return false; }
         if (!ObjectUtils.equals(lhs.tryAfter,    rhs.tryAfter))    { return false; }
         if (!ObjectUtils.equals(lhs.postingType, rhs.postingType)) { return false; }
+        if (!ObjectUtils.equals(lhs.createdAt,   rhs.createdAt))   { return false; }
         return true;
     }
     
@@ -105,6 +110,7 @@ public class Envelope extends PartakeModel<Envelope> {
         code = code * 37 + ObjectUtils.hashCode(lastTriedAt);
         code = code * 37 + ObjectUtils.hashCode(tryAfter);
         code = code * 37 + ObjectUtils.hashCode(postingType);
+        code = code * 37 + ObjectUtils.hashCode(createdAt);
         
         return code;
     }
@@ -122,6 +128,7 @@ public class Envelope extends PartakeModel<Envelope> {
     public Date getLastTriedAt() { return lastTriedAt; }
     public Date getTryAfter() { return tryAfter; }
     public DirectMessagePostingType getPostingType() { return postingType; }
+    public Date getCreatedAt() { return createdAt; }
     
     public void setEnvelopeId(String envelopeId) {
         this.envelopeId = envelopeId;
@@ -142,13 +149,16 @@ public class Envelope extends PartakeModel<Envelope> {
         this.numTried = numTried;
     }
     public void setLastTriedAt(Date lastTriedAt) {
-        this.lastTriedAt = lastTriedAt;
+        this.lastTriedAt = lastTriedAt != null ? (Date) lastTriedAt.clone() : null;
     }
     public void setTryAfter(Date tryAfter) {
-        this.tryAfter = tryAfter;
+        this.tryAfter = tryAfter != null ? (Date) tryAfter.clone() : null;
     }
     public void setPostingType(DirectMessagePostingType postingType) {
         this.postingType = postingType;
+    }
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt != null ? (Date) createdAt.clone() : null;
     }
     
     public void updateForSendingFailure() {

@@ -16,8 +16,8 @@ public class DirectMessageEnvelopeTest {
         Date now = new Date(); 
         samples = new Envelope[] {
                 new Envelope(),
-                new Envelope("id1", "senderId1", "receiverId1", "messageId1", now, 0, now, now, DirectMessagePostingType.POSTING_TWITTER_DIRECT),
-                new Envelope("id2", "senderId2", "receiverId2", "messageId2", now, 0, now, now, DirectMessagePostingType.POSTING_TWITTER_DIRECT),
+                new Envelope("id1", "senderId1", "receiverId1", "messageId1", now, 0, now, now, DirectMessagePostingType.POSTING_TWITTER_DIRECT, now),
+                new Envelope("id2", "senderId2", "receiverId2", "messageId2", now, 0, now, now, DirectMessagePostingType.POSTING_TWITTER_DIRECT, now),
         };
     }
     
