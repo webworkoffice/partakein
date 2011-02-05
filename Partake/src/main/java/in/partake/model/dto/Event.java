@@ -278,10 +278,12 @@ public class Event extends PartakeModel<Event> {
     }
     
     public void setForeImageId(String foreImageId) {
+        checkFrozen();
         this.foreImageId = foreImageId;
     }
     
     public void setBackImageId(String backImageId) {
+        checkFrozen();
         this.backImageId = backImageId;
     }
     
