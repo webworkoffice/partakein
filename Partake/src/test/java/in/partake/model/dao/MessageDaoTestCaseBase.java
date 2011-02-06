@@ -3,6 +3,7 @@ package in.partake.model.dao;
 import in.partake.model.dto.Message;
 
 import java.util.Date;
+import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +23,8 @@ public abstract class MessageDaoTestCaseBase extends AbstractDaoTestCaseBase {
 	@Test
 	public void testToAddGet() throws Exception {
 	    PartakeConnection con = getPool().getConnection();
+	    Date date = new Date();
+	    date.setTime(new Random().nextLong());
 	    try {
     	    Message original;
     	    {
@@ -29,7 +32,7 @@ public abstract class MessageDaoTestCaseBase extends AbstractDaoTestCaseBase {
     	        String userId  = "uesrId-" + System.currentTimeMillis();
     	        String eventId = "eventId-" + System.currentTimeMillis();
     	        
-    	        original = new Message(dao.getFreshId(con), userId, "some message", eventId, new Date());
+    	        original = new Message(dao.getFreshId(con), userId, "some message", eventId, date);
     	        dao.addMessage(con, original);
     	        con.commit();
     	    }
@@ -45,6 +48,7 @@ public abstract class MessageDaoTestCaseBase extends AbstractDaoTestCaseBase {
     	    Assert.assertTrue(target.isFrozen());
     	    Assert.assertFalse(original.isFrozen());
     	    Assert.assertEquals(original, target);
+    	    Assert.assertEquals(date, target.getCreatedAt());
     	    Assert.assertNotSame(original, target);
 	    } finally {
 	        con.invalidate();
