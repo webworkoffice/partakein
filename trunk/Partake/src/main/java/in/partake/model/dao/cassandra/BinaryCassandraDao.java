@@ -42,8 +42,9 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     @Override
     public void addBinary(PartakeConnection con, BinaryData embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
+        if (embryo.getId() == null) { throw new NullPointerException("id should not be null."); }
+
         try {
-            if (embryo.getId() == null) { throw new DAOException("id should not be null."); }
             addBinaryImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
