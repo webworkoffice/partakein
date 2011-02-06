@@ -178,7 +178,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
         mutations.add(createMutation("userId", embryo.getUserId(), time));
         mutations.add(createMutation("message", embryo.getMessage(), time));
         mutations.add(createMutation("eventId", embryo.getEventId(), time));
-        mutations.add(createMutation("createdAt", Util.getTimeString(time), time));
+        mutations.add(createMutation("createdAt", Util.getTimeString(embryo.getCreatedAt()), time));
         
         
         client.batch_mutate(DIRECTMESSAGE_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGE_COLUMNFAMILY, mutations)), DIRECTMESSAGE_CL_W);
