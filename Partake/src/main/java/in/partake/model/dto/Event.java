@@ -278,12 +278,12 @@ public class Event extends PartakeModel<Event> {
     }
     
     public void setForeImageId(String foreImageId) {
-        checkFrozen();
+        checkToUpdateStatus();
         this.foreImageId = foreImageId;
     }
     
     public void setBackImageId(String backImageId) {
-        checkFrozen();
+        checkToUpdateStatus();
         this.backImageId = backImageId;
     }
     
@@ -382,112 +382,112 @@ public class Event extends PartakeModel<Event> {
     // ----------------------------------------------------------------------
     
     public void setId(String id) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.id = id;
     }
 
     public void setShortId(String shortId) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.shortId = shortId;
     }
 
     public void setTitle(String title) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.title = title;
     }
 
     public void setSummary(String summary) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.summary = summary;
     }
 
     public void setCategory(String category) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.category = category;
     }
 
     public void setDeadline(Date deadline) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.deadline = deadline;
     }
 
     public void setBeginDate(Date beginDate) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.beginDate = beginDate;
     }
 
     public void setEndDate(Date endDate) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.endDate = endDate;
     }
 
     public void setCapacity(int capacity) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.capacity = capacity;
     }
 
     public void setUrl(String url) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.url = url;
     }
 
     public void setPlace(String place) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.place = place;
     }
 
     public void setAddress(String address) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.address = address;
     }
 
     public void setDescription(String description) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.description = description;
     }
 
     public void setHashTag(String hashTag) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.hashTag = hashTag;
     }
 
     public void setOwnerId(String ownerId) {
-        checkFrozen();
+        checkToUpdateStatus();
         this.ownerId = ownerId;
     }
 
     public void setManagerScreenNames(String managerScreenNames) {
-        checkFrozen();
+        checkToUpdateStatus();
         this.managerScreenNames = managerScreenNames;
     }
     
     public void setPrivate(boolean isPrivate) {
-        checkFrozen();
+    	checkToUpdateStatus();
         this.isPrivate = isPrivate;
     }
 
     public void setPasscode(String passcode) {
-        checkFrozen();
+        checkToUpdateStatus();
         this.passcode = passcode;
     }
 
     public void setPreview(boolean isPreview) {
-        checkFrozen();
+        checkToUpdateStatus();
         this.isPreview = isPreview;
     }
 
     public void setCreatedAt(Date createdAt) {
-        checkFrozen();
+        checkToUpdateStatus();
         this.createdAt = createdAt;
     }
     
     public void setModifiedAt(Date modifiedAt) {
-    	checkFrozen();
+    	checkToUpdateStatus();
     	this.modifiedAt = modifiedAt;
     }
     
     public void setRevision(int revision) {
-        checkFrozen();
+        checkToUpdateStatus();
         this.revision = revision;
     }
     
@@ -535,6 +535,11 @@ public class Event extends PartakeModel<Event> {
         Date deadline = getCalculatedReservationDeadline();
         
         return deadline.before(now);
+    }
+    
+    private void checkToUpdateStatus() {
+    	checkFrozen();
+    	++revision;
     }
     
     // XXX: this methods will access database.

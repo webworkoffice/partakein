@@ -138,7 +138,6 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             addEventImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
-            updateEventRevision(ccon.getClient(), embryo.getId(), con.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -188,30 +187,8 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         mutations.add(createMutation("createdAt", embryo.getCreatedAt(), time));
         mutations.add(createMutation("modifiedAt", embryo.getModifiedAt(), time));
         mutations.add(createMutation("deleted", "false", time));
+        mutations.add(createMutation("revision", String.valueOf(embryo.getRevision()), time));
         
-        client.batch_mutate(EVENTS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENTS_COLUMNFAMILY, mutations)), EVENTS_CL_W);
-    }
-    
-    private void updateEventRevision(Client client, String eventId, long time) throws Exception {
-        String key = EVENTS_PREFIX + eventId;
-        
-        // This should be performed in the transaction, however, Cassandra does not have the transaction function, 
-        // So we calculate the revison here. This will not ensure the value is correct. 
-        
-        int revision = 0;
-        ColumnOrSuperColumn cosc = get(client, EVENTS_KEYSPACE, EVENTS_COLUMNFAMILY, "revision", key, EVENTS_CL_R);
-        if (cosc != null && cosc.getColumn() != null) {
-            try {
-                revision = Integer.parseInt(string(cosc.getColumn().getValue()));
-            } catch (NumberFormatException e) {
-                logger.warn("Integer.parseInt failed.", e);
-            }
-        }
-        
-        revision += 1;
-        
-        List<Mutation> mutations = new ArrayList<Mutation>();
-        mutations.add(createMutation("revision", String.valueOf(revision), time));
         client.batch_mutate(EVENTS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENTS_COLUMNFAMILY, mutations)), EVENTS_CL_W);
     }
 
@@ -296,6 +273,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         Event event = new Event();
         event.setId(id);
         
+        int revision = 0;
         for (ColumnOrSuperColumn result : results) {
             Column column = result.column;
             String name = string(column.getName());
@@ -344,12 +322,13 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
             } else if ("modifiedAt".equals(name)) {
             	event.setModifiedAt(Util.dateFromTimeString(value));
             } else if ("revision".equals(name)) {
-                event.setRevision(Integer.parseInt(value));
+            	revision  = Integer.parseInt(value);
             } else if ("deleted".equals(name)) {
                 if ("true".equals(value)) { return null; }
                 // otherwise, ignore it.
             }
         }
+        event.setRevision(revision);
         
         return event.freeze();
     }
