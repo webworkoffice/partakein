@@ -52,7 +52,7 @@
 	<a href="<%= request.getContextPath() %>/events/new"><img src="<%= request.getContextPath() %>/images/top-form.png" alt="イベントを作成する" id="top-form-button" /></a>
 </div>
 <div class="sample">
-	<a href="<%= request.getContextPath() %>/events/demo"><img src="<%= request.getContextPath() %>/images/sample1.png" alt="サンプルを見る" id=""></a>
+	<a href="<%= request.getContextPath() %>/events/demo"><img src="<%= request.getContextPath() %>/images/sample1.gif" alt="サンプルを見る" id=""></a>
 </div>
 </div>
 
@@ -62,16 +62,16 @@
 		<img src="<%= request.getContextPath() %>/images/feature-01.png" alt="" />
 		<h3>1. イベントの告知ページを作りましょう</h3>
 		<ul class="top-feature">
-			<li>イベントの告知ページを簡単につくれます。</li>
-			<li>twitter での宣伝も簡単です。</li>
+			<li>イベントの告知ページを簡単につくれます。<a href="<%= request.getContextPath() %>/events/demo">[サンプル]</a></li>
+			<li>Twitterでの宣伝も簡単です。</li>
 		</ul>
 	</div>
 	
 	<div class="top-explanation">
 		<img src="<%= request.getContextPath() %>/images/feature-02.png" alt="" />
-		<h3>2. 参加者の管理も簡単です</h3>
+		<h3>2. 参加者の管理が簡単です</h3>
 		<ul class="top-feature">
-			<li>参加状況の把握も簡単です。</li>
+			<li>参加状況の把握、参加者リストの印刷などができます。</li>
 			<li>参加者にメッセージを送信できます。</li>
 		</ul>
 	</div>
@@ -81,8 +81,9 @@
 		<h3>3. イベントを検索して自分も参加しましょう</h3>
 		<ul class="top-feature">
 			<li>楽しそうなイベントを検索して参加しましょう。</li>
-			<li><a href="<%= request.getContextPath() %>/feedlist">新着イベントの RSS / iCal も配信しています。</a></li>
-			<li><a href="http://twitter.com/partake_bot">イベントの登録をつぶやく公式ボットもいます。</a></li>
+			<li><a href="<%= request.getContextPath() %>/feedlist">新着イベントの RSS / iCal を配信中。</a></li>
+			<li><a href="http://twitter.com/partake_bot">新着イベントをつぶやく公式ボット</a>もいます。
+			</li>
 		</ul>
 	</div>
 	
@@ -91,7 +92,7 @@
 	   <h3>ご要望をお聞きしています</h3>
 	   <ul class="top-feature">
 	       <li>ご要望・バグ報告は <a href="http://code.google.com/p/partakein/issues/list">Issue Tracker</a> まで。あるいは、<br><a href="http://twitter.com/partakein">@partakein</a> まで tweet をお願いします。</li>
-	       <li>開発者を募集中。PARTAKE のソースは <a href="http://code.google.com/p/partakein/">Google Code</a> <br>で(極一部の画像を除き)公開中です。</li>
+	       <li>開発者を募集中。PARTAKE のソースは <a href="http://code.google.com/p/partakein/">Google Code</a> <br>で(一部の画像を除き)公開中です。</li>
 	   </ul>
 	</div>
 </div>
