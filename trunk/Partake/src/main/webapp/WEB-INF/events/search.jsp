@@ -51,10 +51,10 @@
 				<div class="event-searched-image">
 				    <% if (event.getForeImageId() != null) { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-				        <img class="rad" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
+				        <img class="rad sdw" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
 				    <% } else { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-				        <img class="rad" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
+				        <img class="rad sdw" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
 				    <% } %>
 				</div>
 				<div class="event-searched-content">
@@ -81,10 +81,10 @@
 			<div class="event-searched-image">
                 <% if (event.getForeImageId() != null) { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-                    <img class="rad" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
+                    <img class="rad sdw" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
                 <% } else { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-                    <img class="rad" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
+                    <img class="rad sdw" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
                 <% } %>
             </div>
             <div class="event-searched-content">
