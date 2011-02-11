@@ -19,6 +19,7 @@ import in.partake.resource.I18n;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -38,6 +39,10 @@ public class EventParticipantsController extends PartakeActionSupport {
     
     public ByteArrayInputStream getInputStream() {
         return this.inputStream;
+    }
+    
+    public String getEventId() {
+        return eventId;
     }
     
     // ----------------------------------------------------------------------
@@ -70,11 +75,70 @@ public class EventParticipantsController extends PartakeActionSupport {
             throw new PartakeResultException(ERROR);
         }
     }
+
+    public String makeAttendantVIP() throws PartakeResultException {
+        UserEx user = ensureLogin();
+        
+        eventId = getParameter("eventId");
+        if (StringUtils.isEmpty(eventId)) { throw new PartakeResultException(ERROR); }
+        
+        String userId = getParameter("userId");
+        if (StringUtils.isEmpty(userId)) { throw new PartakeResultException(ERROR); }
+        
+        boolean vip = "true".equals(getParameter("vip"));
+        
+        try {
+            EventEx event = EventService.get().getEventExById(eventId); 
+            if (event == null) { throw new PartakeResultException(ERROR); }
     
-    public String editParticipants() throws PartakeResultException {
-        return NONE;
+            // Only owner can retrieve the participants list.
+            if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
+                addErrorMessage("イベント参加者の編集権限がありません。");
+                throw new PartakeResultException(PROHIBITED);
+            }
+            
+            if (EventService.get().makeAttendantVIP(eventId, userId, vip)) {
+                return SUCCESS;
+            } else {
+                return ERROR;
+            }
+            
+        } catch (DAOException e) {
+            logger.error(I18n.t(I18n.DATABASE_ERROR));
+            throw new PartakeResultException(ERROR);            
+        }
     }
     
+    public String removeAttendant() throws PartakeResultException {
+        UserEx user = ensureLogin();
+        
+        eventId = getParameter("eventId");
+        if (StringUtils.isEmpty(eventId)) { throw new PartakeResultException(ERROR); }
+        
+        String userId = getParameter("userId");
+        if (StringUtils.isEmpty(userId)) { throw new PartakeResultException(ERROR); }
+        
+        try {
+            EventEx event = EventService.get().getEventExById(eventId); 
+            if (event == null) { throw new PartakeResultException(ERROR); }
+    
+            // Only owner can retrieve the participants list.
+            if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
+                addErrorMessage("イベント参加者の編集権限がありません。");
+                throw new PartakeResultException(PROHIBITED);
+            }
+            
+            if (EventService.get().removeEnrollment(eventId, userId)) {
+                return SUCCESS;
+            } else {
+                return ERROR;
+            }
+            
+        } catch (DAOException e) {
+            logger.error(I18n.t(I18n.DATABASE_ERROR));
+            throw new PartakeResultException(ERROR);            
+        }        
+    }
     
     /**
      * 

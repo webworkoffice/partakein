@@ -19,20 +19,20 @@ class JPAEventRelationDao extends JPADao<EventRelation> implements IEventRelatio
         
         // remove event relations first.
         {
-            Query q = em.createQuery("DELETE FROM EventRelations er WHERE er.eventId = :eventId");
+            Query q = em.createQuery("DELETE FROM EventRelations er WHERE er.srcEventId = :eventId");
             q.setParameter("eventId", eventId);
             q.executeUpdate();
         }
         
         for (EventRelation er : relations) {
-            em.persist(er);
+            createWithoutPrimaryKey(con, er, EventRelation.class);
         }
     }
 
     @Override
     public List<EventRelation> getEventRelations(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT er FROM EventRelations er WHERE er.eventId = :eventId");
+        Query q = em.createQuery("SELECT er FROM EventRelations er WHERE er.srcEventId = :eventId");
         q.setParameter("eventId", eventId);
         
         @SuppressWarnings("unchecked")

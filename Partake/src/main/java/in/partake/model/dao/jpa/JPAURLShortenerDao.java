@@ -18,13 +18,6 @@ class JPAURLShortenerDao extends JPADao<ShortenedURLData> implements IURLShorten
         ShortenedURLData data = new ShortenedURLData(originalURL, serviceType, shortenedURL);
         
         createOrUpdate(con, data, ShortenedURLData.class);
-//        
-//        EntityManager em = getEntityManager(con);
-//        if (em.contains(data)) {
-//            em.merge(data);
-//        } else { 
-//            em.persist(data);
-//        }
     }
 
     @Override
@@ -32,15 +25,6 @@ class JPAURLShortenerDao extends JPADao<ShortenedURLData> implements IURLShorten
         ShortenedURLData data = find(con, new ShortenedURLDataPK(originalURL, serviceType), ShortenedURLData.class);
         if (data != null) { return data.getShortenedURL(); }
         return null;
-        
-//        EntityManager em = getEntityManager(con);
-//        ShortenedURLData data = em.find(ShortenedURLData.class, new ShortenedURLDataPK(originalURL, serviceType));
-//        
-//        if (data != null) {
-//            return data.getShortenedURL();
-//        } else {
-//            return null;
-//        }
     }
 
     @Override

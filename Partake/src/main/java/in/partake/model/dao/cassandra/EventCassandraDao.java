@@ -24,7 +24,6 @@ import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.TimedOutException;
 import org.apache.cassandra.thrift.UnavailableException;
 import org.apache.cassandra.thrift.Cassandra.Client;
-import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
@@ -45,7 +44,7 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 //
 
 class EventCassandraDao extends CassandraDao implements IEventAccess {
-    private static final Logger logger = Logger.getLogger(EventCassandraDao.class);
+    // private static final Logger logger = Logger.getLogger(EventCassandraDao.class);
 
     
     // EVENT MASTER TABLE

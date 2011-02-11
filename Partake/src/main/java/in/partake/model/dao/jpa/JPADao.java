@@ -52,6 +52,13 @@ abstract class JPADao<T extends PartakeModel<T>> {
         em.persist(t.copy());
     }
     
+    protected void createWithoutPrimaryKey(PartakeConnection con, T t, Class<T> clazz) {
+        if (t == null) { throw new NullPointerException(); }
+        
+        EntityManager em = getEntityManager(con);
+        em.persist(t.copy());        
+    }
+    
     protected void update(PartakeConnection con, T t, Class<T> clazz) {
         if (t == null) { throw new NullPointerException(); }
         if (t.getPrimaryKey() == null) { throw new NullPointerException(); }

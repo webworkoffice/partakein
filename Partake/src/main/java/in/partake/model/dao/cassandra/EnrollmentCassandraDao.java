@@ -135,7 +135,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         columns.add(createColumn("status", enrollment.getStatus().toString(), time));
         columns.add(createColumn("lastStutus", enrollment.getLastStatus().toString(), time));
         columns.add(createColumn("comment", enrollment.getComment(), time));
-        columns.add(createColumn("priority", String.valueOf(enrollment.getPriority()), time));
+        columns.add(createColumn("vip", String.valueOf(enrollment.isVIP()), time));
         columns.add(createColumn("modifiedAt", enrollment.getModifiedAt(), time));
 
         SuperColumn superColumn = new SuperColumn(bytes(enrollment.getUserId()), columns);
@@ -163,6 +163,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     	client.insert(EVENTS_ENROLLMENT_KEYSPACE, key, columnPath, bytes(status.toString()), time, EVENTS_ENROLLMENT_CL_W);
 	}
 
+	// 順序通りにならんでないことに注意。
     private List<Enrollment> getParticipation(CassandraConnection con, String eventId) throws Exception {
         Client client = con.getClient();
         String key = USERS_ENROLLMENT_PREFIX + eventId;
@@ -187,8 +188,6 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             }
         }
 
-        Collections.sort(participations, Enrollment.getPriorityBasedComparator());
-        
         return participations;
     }    
     
@@ -222,7 +221,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         LastParticipationStatus lastStatus = LastParticipationStatus.CHANGED;
         Date modifiedAt = null;
         Date modifiedAt2 = null;
-        int priority = 0;
+        boolean vip = false;
         
         // TODO: 歴史的負の遺産が多すぎるのであとで直す。
         IUserAccess userDao = factory.getUserAccess(); 
@@ -236,17 +235,19 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
                 lastStatus = LastParticipationStatus.safeValueOf(string(column.getValue()));
             } else if ("comment".equals(name)) {
                 comment = string(column.getValue());
-            } else if ("priority".equals(name)) {
-                priority = Integer.parseInt(string(column.getValue()));
+            } else if ("vip".equals(name)) { 
+                if ("true".equals(string(column.getValue()))) {
+                    vip = true;
+                }
             } else if ("modifiedAt".equals(string(column.getName()))) {
                 modifiedAt = Util.dateFromTimeString(string(column.getValue()));
             }
         }
                     
         if (user != null && modifiedAt != null) {
-            return new Enrollment(user.getId(), eventId, comment, status, priority, lastStatus, modifiedAt);
+            return new Enrollment(user.getId(), eventId, comment, status, vip, lastStatus, modifiedAt);
         } else {
-            return new Enrollment(user.getId(), eventId, comment, status, priority, lastStatus, modifiedAt2);
+            return new Enrollment(user.getId(), eventId, comment, status, vip, lastStatus, modifiedAt2);
         }
     }
 }

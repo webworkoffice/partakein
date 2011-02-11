@@ -9,7 +9,9 @@ import org.apache.openjpa.persistence.jdbc.Index;
 @Entity(name = "EventRelations")
 public class EventRelation extends PartakeModel<EventRelation> {
     @Column @Index
-	private String eventId;
+    private String srcEventId;
+    @Column @Index
+	private String dstEventId;
     @Column
 	private boolean required; // true if the original event requires this event.
     @Column
@@ -20,18 +22,21 @@ public class EventRelation extends PartakeModel<EventRelation> {
 	}
 	
 	public EventRelation(EventRelation relation) {
-	    this(relation.eventId, relation.required, relation.priority);
+	    this(relation.srcEventId, relation.dstEventId, relation.required, relation.priority);
 	}
 
-    public EventRelation(String eventId, boolean required, boolean priority) {
-        this.eventId = eventId;
+    public EventRelation(String srcEventId, String dstEventId, boolean required, boolean priority) {
+        this.srcEventId = srcEventId;
+        this.dstEventId = dstEventId;
         this.required = required;
         this.priority = priority;
     }
     
     @Override
     public Object getPrimaryKey() {
-        return eventId;
+        // TODO: There is no primary key for event relation now.
+        // TODO: Should we add some sequence key?
+        return null;
     }
     
     @Override
@@ -49,7 +54,8 @@ public class EventRelation extends PartakeModel<EventRelation> {
         EventRelation lhs = this;
         EventRelation rhs = (EventRelation) obj;
         
-        if (!(ObjectUtils.equals(lhs.eventId, rhs.eventId)))   { return false; }
+        if (!(ObjectUtils.equals(lhs.srcEventId, rhs.srcEventId)))   { return false; }
+        if (!(ObjectUtils.equals(lhs.dstEventId, rhs.dstEventId)))   { return false; }
         if (!(ObjectUtils.equals(lhs.required, rhs.required))) { return false; }
         if (!(ObjectUtils.equals(lhs.priority, rhs.priority))) { return false; }
         
@@ -60,7 +66,8 @@ public class EventRelation extends PartakeModel<EventRelation> {
     public int hashCode() {
         int code = 0;
         
-        code = code * 37 + ObjectUtils.hashCode(eventId);
+        code = code * 37 + ObjectUtils.hashCode(srcEventId);
+        code = code * 37 + ObjectUtils.hashCode(dstEventId);
         code = code * 37 + ObjectUtils.hashCode(required);
         code = code * 37 + ObjectUtils.hashCode(priority);
         
@@ -71,8 +78,12 @@ public class EventRelation extends PartakeModel<EventRelation> {
     // ----------------------------------------------------------------------
     // accessors
 	
-	public String getEventId() {
-		return eventId;
+	public String getSrcEventId() {
+		return srcEventId;
+	}
+	
+	public String getDstEventId() {
+	    return dstEventId;
 	}
 	
 	public boolean isRequired() {
@@ -83,9 +94,14 @@ public class EventRelation extends PartakeModel<EventRelation> {
 		return priority;
 	}
 	
-	public void setEventId(String eventId) {
+	public void setSrcEventId(String srcEventId) {
 		checkFrozen();
-		this.eventId = eventId;
+		this.srcEventId = srcEventId;
+	}
+	
+	public void setDstEventId(String dstEventId) {
+	    checkFrozen();
+	    this.dstEventId = dstEventId;
 	}
 	
 	public void setRequired(boolean required) {

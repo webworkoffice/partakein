@@ -98,7 +98,7 @@ class EventRelationMapper {
     
 	public Mutation map(EventRelation relation, long time) {
 		SuperColumn superColumn = new SuperColumn();
-		superColumn.setName(bytes(relation.getEventId()));
+		superColumn.setName(bytes(relation.getDstEventId()));
 		superColumn.addToColumns(new Column(bytes("required"), relation.isRequired() ? CassandraDao.TRUE : CassandraDao.FALSE, time));
 		superColumn.addToColumns(new Column(bytes("priority"), relation.hasPriority() ? CassandraDao.TRUE : CassandraDao.FALSE, time));
 
@@ -111,7 +111,7 @@ class EventRelationMapper {
 		String eventId = string(superColumn.getName());
 		
 		EventRelation relation = new EventRelation();
-		relation.setEventId(eventId);
+		relation.setDstEventId(eventId);
 		for (Column column : superColumn.getColumns()) {
 			String name = string(column.getName());
 			if ("required".equals(name)) {

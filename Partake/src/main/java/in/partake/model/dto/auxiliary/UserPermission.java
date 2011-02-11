@@ -2,14 +2,11 @@ package in.partake.model.dto.auxiliary;
 
 public enum UserPermission {
     /** can edit the event */
-    EVENT_EDIT(),
+    EVENT_EDIT,
 
     /** can remove the event */
     EVENT_REMOVE,
 
-    /** can edit a sub event */
-    EVENT_EDIT_SUBEVENT,
-    
     /** can retrieve the participation list */
     EVENT_PARTICIPATION_LIST,
     

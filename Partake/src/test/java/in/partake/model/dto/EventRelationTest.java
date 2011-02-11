@@ -11,8 +11,8 @@ public class EventRelationTest {
     public void createSamples() {
         samples = new EventRelation[] {
             new EventRelation(),
-            new EventRelation("eventId1", true, false),
-            new EventRelation("eventId2", true, false),
+            new EventRelation("srcEventId", "eventId1", true, false),
+            new EventRelation("srcEventId", "eventId2", true, false),
         };
     }
     

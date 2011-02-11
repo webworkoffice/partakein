@@ -19,16 +19,15 @@ class JPAFeedLinkageDao extends JPADao<FeedLinkage> implements IFeedAccess {
 
     @Override
     public void addFeedId(PartakeConnection con, String feedId, String eventId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        FeedLinkage persisted = em.find(FeedLinkage.class, feedId);
-        if (persisted == null) {
-            em.persist(new FeedLinkage(feedId, eventId));
-        } else {
-            em.detach(persisted);
-            em.merge(new FeedLinkage(feedId, eventId));
-        }
+        createOrUpdate(con, new FeedLinkage(feedId, eventId), FeedLinkage.class);
     }
 
+    @Override
+    public String getEventIdByFeedId(PartakeConnection con, String feedId) throws DAOException {
+        FeedLinkage linkage = find(con, feedId, FeedLinkage.class);
+        if (linkage == null) { return null; }
+        return linkage.getEventId();
+    }
     
     @Override
     public String getFeedIdByEventId(PartakeConnection con, String eventId) throws DAOException {
@@ -42,14 +41,6 @@ class JPAFeedLinkageDao extends JPADao<FeedLinkage> implements IFeedAccess {
         return feeds.get(0).getId();
     }
 
-    @Override
-    public String getEventIdByFeedId(PartakeConnection con, String feedId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        FeedLinkage feed = em.find(FeedLinkage.class, feedId);
-
-        if (feed == null) { return null; }
-        return feed.getEventId();
-    }
 
 
     @Override
