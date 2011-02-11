@@ -26,8 +26,7 @@ public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
 
     @Override
     public Message getMessage(PartakeConnection con, String messageId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        return freeze(em.find(Message.class, messageId));
+        return find(con, messageId, Message.class);
     }    
     
     @Override

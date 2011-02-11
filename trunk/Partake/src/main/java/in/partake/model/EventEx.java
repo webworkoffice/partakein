@@ -5,6 +5,7 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.UserPermission;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,12 +19,14 @@ public class EventEx extends Event {
     private UserEx owner;
     private String feedId;
     private String cachedShortenedURL;
+    private List<EventRelationEx> eventRelations;
     
-    public EventEx(Event event, UserEx owner, String feedId, String cachedShortenedURL) {
+    public EventEx(Event event, UserEx owner, String feedId, String cachedShortenedURL, List<EventRelationEx> eventRelations) {
         super(event);
         this.owner = owner;
         this.feedId = feedId;
-        this.cachedShortenedURL = cachedShortenedURL; 
+        this.cachedShortenedURL = cachedShortenedURL;
+        this.eventRelations = eventRelations;
     }
     
     public UserEx getOwner() {
@@ -41,6 +44,10 @@ public class EventEx extends Event {
     public String getShortenedURL() {
         if (cachedShortenedURL != null) { return cachedShortenedURL; }
         return getEventURL();
+    }
+    
+    public List<EventRelationEx> getEventRelations() {
+        return Collections.unmodifiableList(eventRelations);
     }
     
     // ----------------------------------------------------------------------
@@ -122,8 +129,6 @@ public class EventEx extends Event {
         case EVENT_PRIVATE_EVENT:
             return isOwner(user) || isManager(user);
         case EVENT_SEND_MESSAGE:
-            return isOwner(user) || isManager(user);
-        case EVENT_EDIT_SUBEVENT:
             return isOwner(user) || isManager(user);
         case EVENT_REMOVE_COMMENT:
         	return isOwner(user) || isManager(user);

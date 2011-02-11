@@ -513,7 +513,7 @@ public final class EventService extends PartakeService {
             List<EventRelationEx> relations = new ArrayList<EventRelationEx>();
             for (EventRelation relation : factory.getEventRelationAccess().getEventRelations(con, eventId)) {
                 if (relation == null) { continue; }
-                EventEx event = getEventEx(con, relation.getEventId());
+                Event event = factory.getEventAccess().getEvent(con, relation.getDstEventId()); 
                 if (event == null) { continue; }
                 EventRelationEx relex = new EventRelationEx(relation, event);
                 relex.freeze();
@@ -559,8 +559,53 @@ public final class EventService extends PartakeService {
             return enrollments;
         } finally {
             con.invalidate();
-        }	    
+        }       
 	}
+		
+	/**
+	 * eventId に参加する userId を VIP 待遇にする。
+	 * @param eventId
+	 * @param userId
+	 * @return
+	 * @throws DAOException
+	 */
+    public boolean makeAttendantVIP(String eventId, String userId, boolean vip) throws DAOException {
+        PartakeConnection con = getPool().getConnection();
+        PartakeDAOFactory factory = getFactory();
+        try {
+            con.beginTransaction();
+            Enrollment enrollment = factory.getEnrollmentAccess().getEnrollment(con, userId, eventId);
+            if (enrollment == null) { return false; }
+            Enrollment newEnrollment = new Enrollment(enrollment);
+            newEnrollment.setVIP(vip);
+            factory.getEnrollmentAccess().addEnrollment(con, newEnrollment);
+            con.commit();
+            return true;
+        } finally {
+            con.invalidate();
+        }               
+    }
+	
+    /**
+     * eventId に参加する userId を参加していないことにする。
+     * @param eventId
+     * @param userId
+     * @return
+     * @throws DAOException
+     */
+    public boolean removeEnrollment(String eventId, String userId) throws DAOException {
+        PartakeConnection con = getPool().getConnection();
+        PartakeDAOFactory factory = getFactory();
+        try {
+            con.beginTransaction();
+            factory.getEnrollmentAccess().removeEnrollment(con, userId, eventId);
+            con.commit();
+            return true;
+        } finally {
+            con.invalidate();
+        }               
+    }
+	
 		
 	// ----------------------------------------------------------------------
 	// Comments
@@ -756,7 +801,7 @@ public final class EventService extends PartakeService {
         Enrollment oldEnrollment = factory.getEnrollmentAccess().getEnrollment(con, userId, eventId);
         Enrollment newEnrollment;
         if (oldEnrollment == null) {
-            newEnrollment = new Enrollment(userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, 0, LastParticipationStatus.NOT_ENROLLED, new Date());
+            newEnrollment = new Enrollment(userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, false, LastParticipationStatus.NOT_ENROLLED, new Date());
         } else {
             newEnrollment = new Enrollment(oldEnrollment);
         }
@@ -781,16 +826,6 @@ public final class EventService extends PartakeService {
         
         factory.getEnrollmentAccess().addEnrollment(con, newEnrollment);
     }
-    
-//    public void addEnrollment(Enrollment enrollment) throws DAOException {
-//        PartakeDAOFactory factory = getFactory();       
-//        PartakeConnection con = getPool().getConnection();
-//        try {
-//            factory.getEnrollmentAccess().addEnrollment(con, enrollment);
-//        } finally {
-//            con.invalidate();
-//        }                
-//    }
     
     // ----------------------------------------------------------------------
     // feed

@@ -25,24 +25,11 @@ class JPAUserDao extends JPADao<User> implements IUserAccess {
     @Override
     public void updateUser(PartakeConnection con, User user) throws DAOException {
         createOrUpdate(con, user, User.class);
-//        if (user == null) { throw new NullPointerException(); }
-//        if (user.getId() == null) { throw new NullPointerException(); }
-//        
-//        EntityManager em = getEntityManager(con);
-//        User persisted = em.find(User.class, user.getId());
-//        if (persisted == null) {
-//            em.persist(new User(user));
-//        } else {
-//            em.detach(persisted);
-//            em.merge(new User(user));
-//        }
     }
 
     @Override
     public User getUser(PartakeConnection con, String id) throws DAOException {
         return find(con, id, User.class);
-//        EntityManager em = getEntityManager(con);
-//        return freeze(em.find(User.class, id));
     }
 
     @Override

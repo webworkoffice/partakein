@@ -11,19 +11,13 @@ import in.partake.model.dto.EventReminder;
 public class JPAEventReminderDao extends JPADao<EventReminder> implements IEventReminderAccess {
 
     @Override
-    public void updateEventReminderStatus(PartakeConnection con, EventReminder reminderStatus) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        if (em.contains(reminderStatus)) {
-            em.merge(reminderStatus);
-        } else {
-            em.persist(new EventReminder(reminderStatus));
-        }
+    public void updateEventReminderStatus(PartakeConnection con, EventReminder eventReminder) throws DAOException {
+        createOrUpdate(con, eventReminder, EventReminder.class);
     }
 
     @Override
     public EventReminder getEventReminderStatus(PartakeConnection con, String eventId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        return freeze(em.find(EventReminder.class, eventId));
+        return find(con, eventId, EventReminder.class);
     }
 
     @Override

@@ -20,17 +20,75 @@ public abstract class EventRelationAccessTestCaseBase extends AbstractDaoTestCas
     }
     
     @Test
-    public void testToSetAndGet() throws DAOException {
+    public void testToAddGet() throws DAOException {
         PartakeConnection con = getPool().getConnection();
+        
+        String eventId = "eventId-erat-sas-" + System.currentTimeMillis();
+        String relatedEventId = "relatedEventId" + System.currentTimeMillis();
+        
         try {
             con.beginTransaction();
             
             List<EventRelation> original = new ArrayList<EventRelation>();
-            dao.setEventRelations(con, "eventId", original);
-            List<EventRelation> target = dao.getEventRelations(con, "invalidId");
+            original.add(new EventRelation(eventId, relatedEventId, true, true));
+            
+            dao.setEventRelations(con, eventId, original);
+            List<EventRelation> target = dao.getEventRelations(con, eventId);
             con.commit();
             
-            Assert.assertEquals(original, target);
+            // the order may differ, however the elements set should be equal.
+            Assert.assertEquals(original.size(), target.size());
+            for (EventRelation lhs : original) {
+                boolean found = false;
+                for (EventRelation rhs : target) {
+                    found |= lhs.equals(rhs);
+                }
+                
+                Assert.assertTrue(found);
+            }
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    @Test
+    public void testToAddAddGet() throws DAOException {
+        PartakeConnection con = getPool().getConnection();
+        
+        String eventId = "eventId-erat-sas-" + System.currentTimeMillis();
+        String relatedEventId = "relatedEventId" + System.currentTimeMillis();
+
+        List<EventRelation> original = new ArrayList<EventRelation>();
+        original.add(new EventRelation(eventId, relatedEventId, true, true));
+
+        try {
+            {
+                con.beginTransaction();
+                dao.setEventRelations(con, eventId, original);
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                dao.setEventRelations(con, eventId, original);
+                con.commit();
+            }
+            {
+                con.beginTransaction();
+                List<EventRelation> target = dao.getEventRelations(con, eventId);
+                con.commit();
+                
+                // the order may differ, however the elements set should be equal.
+                Assert.assertEquals(original.size(), target.size());
+                for (EventRelation lhs : original) {
+                    boolean found = false;
+                    for (EventRelation rhs : target) {
+                        found |= lhs.equals(rhs);
+                    }
+                    
+                    Assert.assertTrue(found);
+                }
+
+            }
         } finally {
             con.invalidate();
         }

@@ -9,6 +9,7 @@ import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Comment;
+import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
@@ -75,7 +76,7 @@ public class EventsController extends PartakeActionSupport {
 	        attributes.put(Constants.ATTR_EVENT_RELATIONS, relations);
 	        
 	        // ----- 登録している、していないの条件を満たしているかどうかのチェック
-	        List<EventEx> requiredEvents = getRequiredEventsNotEnrolled(user, relations);
+	        List<Event> requiredEvents = getRequiredEventsNotEnrolled(user, relations);
 	        attributes.put(Constants.ATTR_REQUIRED_EVENTS, requiredEvents);
 	        
 	        // ----- participants を反映
@@ -265,7 +266,7 @@ public class EventsController extends PartakeActionSupport {
 	        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
 	        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user.getId(), event.getId());	        
 	        if (!currentStatus.isEnrolled()) {
-	        	List<EventEx> requiredEvents = getRequiredEventsNotEnrolled(user, relations); 
+	        	List<Event> requiredEvents = getRequiredEventsNotEnrolled(user, relations); 
 	        	if (requiredEvents != null && !requiredEvents.isEmpty()) {
 	        		addActionError("登録必須のイベントがあるため参加登録が出来ません。");
 	        		return ERROR;
@@ -321,8 +322,8 @@ public class EventsController extends PartakeActionSupport {
      * @return
      * @throws DAOException
      */
-	private List<EventEx> getRequiredEventsNotEnrolled(UserEx user, List<EventRelationEx> relations) throws DAOException {
-		List<EventEx> requiredEvents = new ArrayList<EventEx>();
+	private List<Event> getRequiredEventsNotEnrolled(UserEx user, List<EventRelationEx> relations) throws DAOException {
+		List<Event> requiredEvents = new ArrayList<Event>();
 		for (EventRelationEx relation : relations) {
 			if (!relation.isRequired()) { continue; }
 			if (relation.getEvent() == null) { continue; }

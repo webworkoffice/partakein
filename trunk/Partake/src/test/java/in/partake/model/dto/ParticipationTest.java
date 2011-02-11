@@ -23,10 +23,10 @@ public final class ParticipationTest {
 	public void createSamples() {
 		samples = new Enrollment[]{
 				new Enrollment(),
-				new Enrollment("userId0", "eventId0", "comment-a", ParticipationStatus.NOT_ENROLLED, 0, LastParticipationStatus.NOT_ENROLLED, new Date()),
-				new Enrollment("userId1", "eventId1", "comment-b", ParticipationStatus.ENROLLED, 1, LastParticipationStatus.ENROLLED, new Date()),
-				new Enrollment("userId2", "eventId2", "comment-c", ParticipationStatus.RESERVED, 2, LastParticipationStatus.CHANGED, new Date()),
-				new Enrollment("userId3", "eventId3", "comment-d", ParticipationStatus.CANCELLED, -1, LastParticipationStatus.NOT_ENROLLED, new Date()),
+				new Enrollment("userId0", "eventId0", "comment-a", ParticipationStatus.NOT_ENROLLED, false, LastParticipationStatus.NOT_ENROLLED, new Date()),
+				new Enrollment("userId1", "eventId1", "comment-b", ParticipationStatus.ENROLLED, false, LastParticipationStatus.ENROLLED, new Date()),
+				new Enrollment("userId2", "eventId2", "comment-c", ParticipationStatus.RESERVED, true, LastParticipationStatus.CHANGED, new Date()),
+				new Enrollment("userId3", "eventId3", "comment-d", ParticipationStatus.CANCELLED, false, LastParticipationStatus.NOT_ENROLLED, new Date()),
 		};
 	}
 
@@ -39,7 +39,7 @@ public final class ParticipationTest {
 			Assert.assertEquals(source.getUserId(), new Enrollment(source).getUserId());
 			Assert.assertEquals(source.getComment(), new Enrollment(source).getComment());
 			Assert.assertEquals(source.getStatus(), new Enrollment(source).getStatus());
-			Assert.assertEquals(source.getPriority(), new Enrollment(source).getPriority());
+			Assert.assertEquals(source.isVIP(), new Enrollment(source).isVIP());
 			Assert.assertEquals(source.getLastStatus(), new Enrollment(source).getLastStatus());
 			Assert.assertEquals(source.getModifiedAt(), new Enrollment(source).getModifiedAt());
 			if (source.getModifiedAt() != null) {

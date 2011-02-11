@@ -4,7 +4,6 @@ import in.partake.model.dto.auxiliary.LastParticipationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 
-import java.util.Comparator;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -25,45 +24,27 @@ public class Enrollment extends PartakeModel<Enrollment> {
     @Column
     private String comment;
     @Column
-    private int priority;
+    private boolean vip;
     @Column
     private ParticipationStatus status;
     @Column
     private LastParticipationStatus lastStatus;
     @Column
     private Date modifiedAt;
-
-    // priority, modifiedAt 順に並べる comparator 
-    public static Comparator<Enrollment> getPriorityBasedComparator() {
-        return new Comparator<Enrollment>() {
-            @Override
-            public int compare(Enrollment lhs, Enrollment rhs) {
-            	if (lhs == rhs) { return 0; }
-                if (lhs == null) { return -1; }
-                if (rhs == null) { return 1; }
-
-                if (lhs.getPriority() > rhs.getPriority()) { return -1; }
-                if (lhs.getPriority() < rhs.getPriority()) { return 1; }
-                int x = lhs.getModifiedAt().compareTo(rhs.getModifiedAt());
-                if (x != 0) { return x; }
-                return lhs.getUserId().compareTo(rhs.getUserId());
-            }
-        };        
-    }
     
     // ----------------------------------------------------------------------
     // constructors
     
     public Enrollment() {
-        this.priority = 0;
+        this.vip = false;
     }
     
-    public Enrollment(String userId, String eventId, String comment, ParticipationStatus status, int priority, LastParticipationStatus lastStatus, Date modifiedAt) {
+    public Enrollment(String userId, String eventId, String comment, ParticipationStatus status, boolean vip, LastParticipationStatus lastStatus, Date modifiedAt) {
         this.userId = userId;
         this.eventId = eventId;
         this.comment = comment;
         this.status = status;
-        this.priority = priority;
+        this.vip = vip;
         this.lastStatus = lastStatus;
         this.modifiedAt = modifiedAt;
     }
@@ -73,7 +54,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.eventId = p.eventId;
         this.comment = p.comment;
         this.status = p.status;
-        this.priority = p.priority;
+        this.vip = p.vip;
         this.lastStatus = p.lastStatus;
         this.modifiedAt = p.modifiedAt == null ? null : (Date) p.modifiedAt.clone();
     }
@@ -100,7 +81,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         if (!ObjectUtils.equals(lhs.userId,     rhs.userId))     { return false; }
         if (!ObjectUtils.equals(lhs.eventId,    rhs.eventId))    { return false; }
         if (!ObjectUtils.equals(lhs.comment,    rhs.comment))    { return false; }
-        if (!ObjectUtils.equals(lhs.priority,   rhs.priority))   { return false; }
+        if (!ObjectUtils.equals(lhs.vip,        rhs.vip))   { return false; }
         if (!ObjectUtils.equals(lhs.status,     rhs.status))     { return false; }
         if (!ObjectUtils.equals(lhs.lastStatus, rhs.lastStatus)) { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
@@ -114,7 +95,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         hashCode = hashCode * 37 + ObjectUtils.hashCode(userId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(eventId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(comment);
-        hashCode = hashCode * 37 + ObjectUtils.hashCode(priority);
+        hashCode = hashCode * 37 + ObjectUtils.hashCode(vip);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(status);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(lastStatus);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(modifiedAt);
@@ -151,8 +132,8 @@ public class Enrollment extends PartakeModel<Enrollment> {
         return lastStatus;
     }
 
-    public int getPriority() {
-        return priority;
+    public boolean isVIP() {
+        return vip;
     }
     
     public Date getModifiedAt() {
@@ -169,9 +150,9 @@ public class Enrollment extends PartakeModel<Enrollment> {
 		this.comment = comment;
 	}
 
-	public void setPriority(int priority) {
+	public void setVIP(boolean vip) {
 		checkFrozen();
-		this.priority = priority;
+		this.vip = vip;
 	}
 
 	public void setStatus(ParticipationStatus status) {

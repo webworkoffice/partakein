@@ -70,7 +70,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
         }
     }
     
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = NullPointerException.class)
     public void testToAddWithoutId() throws Exception {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();

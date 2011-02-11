@@ -280,16 +280,17 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         		hashTag, owner.getId(), managers,
         		secret, passcode, false, createdAt, null
         );
-        
-        // TODO: これはひどい
-        // related event を登録        
-        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
-        if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
-        if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
-        if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }        
-        
+                
         try {
         	this.eventId = EventService.get().create(embryo, foreImageEmbryo, backImageEmbryo);
+        	
+            // TODO: これはひどい
+            // related event を登録        
+            List<EventRelation> eventRelations = new ArrayList<EventRelation>();
+            if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(eventId, relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
+            if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(eventId, relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
+            if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(eventId, relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }        
+        	
         	EventService.get().setEventRelations(eventId, eventRelations);
         	
         	addActionMessage("新しいイベントが作成されました。");
@@ -386,9 +387,9 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        // TODO: これはひどい
 	        // related event を登録        
 	        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
-	        if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(Util.removeHash(relatedEventID1), relatedEventRequired1, relatedEventPriority1)); }
-	        if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(Util.removeHash(relatedEventID2), relatedEventRequired2, relatedEventPriority2)); }
-	        if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(Util.removeHash(relatedEventID3), relatedEventRequired3, relatedEventPriority3)); }
+	        if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID1), relatedEventRequired1, relatedEventPriority1)); }
+	        if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID2), relatedEventRequired2, relatedEventPriority2)); }
+	        if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID3), relatedEventRequired3, relatedEventPriority3)); }
 
 	        EventService.get().update(event, eventEmbryo,
 	        		foreImageEmbryo != null || removingForeImage, foreImageEmbryo, 
@@ -523,19 +524,19 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	private void copyFromEventRelation(List<EventRelation> eventRelations) {
 		// TODO: これは本当にひどい。目が腐る。みちゃだめー！！！
 		if (eventRelations.size() >= 1) {
-			relatedEventID1       = eventRelations.get(0).getEventId();
+			relatedEventID1       = eventRelations.get(0).getDstEventId();
 			relatedEventRequired1 = eventRelations.get(0).isRequired();
 			relatedEventPriority1 = eventRelations.get(0).hasPriority();
 		}
 
 		if (eventRelations.size() >= 2) {
-			relatedEventID2       = eventRelations.get(1).getEventId();
+			relatedEventID2       = eventRelations.get(1).getDstEventId();
 			relatedEventRequired2 = eventRelations.get(1).isRequired();
 			relatedEventPriority2 = eventRelations.get(1).hasPriority();
 		}
 
 		if (eventRelations.size() >= 3) {
-			relatedEventID3       = eventRelations.get(2).getEventId();
+			relatedEventID3       = eventRelations.get(2).getDstEventId();
 			relatedEventRequired3 = eventRelations.get(2).isRequired();
 			relatedEventPriority3 = eventRelations.get(2).hasPriority();
 		}

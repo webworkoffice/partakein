@@ -84,7 +84,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
         }
     }
     
-    @Test(expected = DAOException.class)
+    @Test(expected = NullPointerException.class)
     public void testToFailCreatingBinaryDataWithoutId() throws Exception {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();

@@ -58,7 +58,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 			getFactory().getEventAccess().addEvent(con, event);
 			getFactory().getUserAccess().createUser(con, new User(userId, 0, new Date(), null)); 
 
-			dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, 0, LastParticipationStatus.CHANGED, new Date()));
+			dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date()));
 			
 			List<Enrollment> list = dao.getEnrollmentsByEventId(con, eventId);
 			con.commit();
@@ -90,7 +90,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
                 event.setId(eventId);
                 getFactory().getEventAccess().addEvent(con, event);
                 getFactory().getUserAccess().createUser(con, new User(userId, 0, new Date(), null));     
-                dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, 0, LastParticipationStatus.CHANGED, new Date()));
+                dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date()));
                 con.commit();
             }
             

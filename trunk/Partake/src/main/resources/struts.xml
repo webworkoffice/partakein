@@ -356,13 +356,20 @@
                      
             <result name="success">/WEB-INF/events/participants/print.jsp</result>
         </action>        
-        
-        <action name="editParticipants" method="editParticipants" class="in.partake.controller.EventParticipantsController"> 
+
+        <action name="makeAttendantVIP" method="makeAttendantVIP" class="in.partake.controller.EventParticipantsController">
+            <interceptor-ref name="checkTokenStack" />
             <result name="success" type="redirectAction">
-                <param name="actionName">showParticipants</param>
-                <param name="eventId">${eventId}</param>
+            	<param name="actionName">showParticipants/${eventId}</param>
             </result>
         </action>
+        <action name="removeAttendant" method="removeAttendant" class="in.partake.controller.EventParticipantsController">
+            <interceptor-ref name="checkTokenStack" />
+            <result name="success" type="redirectAction">
+            	<param name="actionName">showParticipants/${eventId}</param>
+            </result>
+        </action>
+        
 		
 		<!-- Event Show -->
 		<action name="*" method="show" class="in.partake.controller.EventsController">

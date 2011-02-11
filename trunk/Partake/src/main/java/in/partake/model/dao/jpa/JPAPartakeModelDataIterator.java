@@ -44,7 +44,7 @@ public class JPAPartakeModelDataIterator<T extends PartakeModel<T>> extends Data
     public void remove() throws DAOException, UnsupportedOperationException {
         if (!allowsUpdate) { throw new UnsupportedOperationException(); }
 
-        if (current == null) {
+        if (current != null) {
             T t = em.find(clazz, current.getPrimaryKey());
             if (t != null) { em.remove(t); }
         } else {
