@@ -1,5 +1,7 @@
 package in.partake.model.dao.cassandra;
 
+import static me.prettyprint.cassandra.utils.StringUtils.bytes;
+import static me.prettyprint.cassandra.utils.StringUtils.string;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEventAccess;
@@ -12,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;
@@ -23,11 +26,7 @@ import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.TimedOutException;
 import org.apache.cassandra.thrift.UnavailableException;
-import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.thrift.TException;
-
-import static me.prettyprint.cassandra.utils.StringUtils.bytes;
-import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 // * from id
 //      events:id:<event id>
@@ -331,6 +330,32 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         
         return event.freeze();
     }
+
+	@Override
+	public boolean isRemoved(PartakeConnection con, String id) throws DAOException {
+        final String key = EVENTS_PREFIX + id;
+        final List<ColumnOrSuperColumn> results;
+        try {
+            results = getSlice(((CassandraConnection)con).getClient(), EVENTS_KEYSPACE, EVENTS_COLUMNFAMILY, key, EVENTS_CL_R);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+
+        if (results == null || results.isEmpty()) {
+            throw new IllegalStateException();
+        }
+
+        for (ColumnOrSuperColumn result : results) {
+            Column column = result.column;
+            String name = string(column.getName());
+            String value = string(column.getValue());
+            if ("deleted".equals(name)) {
+                if ("true".equals(value)) { return true; }
+            }
+        }
+
+        return false;
+	}
 }
 
 

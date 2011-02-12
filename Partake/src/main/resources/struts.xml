@@ -377,6 +377,7 @@
 
 	        <param name="eventId">{1}</param>
             <result name="success">/WEB-INF/events/show.jsp</result>
+            <result name="removed">/WEB-INF/events/removed.jsp</result>
 			<result name="passcode" type="redirectAction">
 			    <param name="actionName">passcode</param>
 			    <param name="eventId">${eventId}</param>

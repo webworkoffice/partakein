@@ -70,4 +70,9 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
         Query q = em.createQuery("DELETE FROM Events");
         q.executeUpdate();
     }
+
+	@Override
+	public boolean isRemoved(PartakeConnection con, String eventId) throws DAOException {
+		throw new UnsupportedOperationException();
+	}
 }

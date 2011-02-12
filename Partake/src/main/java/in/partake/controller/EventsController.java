@@ -56,7 +56,14 @@ public class EventsController extends PartakeActionSupport {
         
 	    try {
 	        EventEx event = EventService.get().getEventExById(eventId);
-	        if (event == null) { return NOT_FOUND; }
+	        if (event == null) {
+	            try {
+	                if (EventService.get().isRemoved(eventId)) return "removed";
+	            } catch (DAOException ignore) {
+	                logger.warn("DAOException occured", ignore);
+	            }
+	            return NOT_FOUND;
+	        }
 
 	        if (event.isPrivate()) {
 	            // owner および manager は見ることが出来る。

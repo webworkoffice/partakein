@@ -476,6 +476,21 @@ public final class EventService extends PartakeService {
         }
 	}
 
+	public boolean isRemoved(String eventId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();       
+        PartakeConnection con = getPool().getConnection();
+        final boolean result;
+        try {
+            con.beginTransaction();
+            result = factory.getEventAccess().isRemoved(con, eventId);
+            con.commit();
+        } finally {
+            con.invalidate();
+        }
+
+        return result;
+	}
+
     // ----------------------------------------------------------------------
     // relations なのっ！
 	

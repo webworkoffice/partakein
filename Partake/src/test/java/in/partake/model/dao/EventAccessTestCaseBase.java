@@ -107,6 +107,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.commit();
             }
             
+            Assert.assertFalse(dao.isRemoved(con, eventId));
             {
                 con.beginTransaction();
                 dao.removeEvent(con, eventId);
@@ -121,6 +122,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
             }
 
             Assert.assertNull(target);
+            Assert.assertTrue(dao.isRemoved(con, eventId));
         } finally {
             con.invalidate();
         }        

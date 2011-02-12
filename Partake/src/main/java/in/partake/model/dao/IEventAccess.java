@@ -17,6 +17,9 @@ public interface IEventAccess extends ITruncatable {
     public abstract Event getEvent(PartakeConnection con, String id) throws DAOException;
     public abstract void updateEvent(PartakeConnection con, Event embryo) throws DAOException;
     public abstract void removeEvent(PartakeConnection con, String eventId) throws DAOException;    
+
+    // TODO getEventの結果がremovedフラグを持つ実装にすることも、考察の余地あり（既存コードへの変更が大きいためひとまず見送っている）
+    public abstract boolean isRemoved(PartakeConnection con, String eventId) throws DAOException;
     
     // ----------------------------------------------------------------------
     // event utilities
