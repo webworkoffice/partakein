@@ -149,7 +149,7 @@
 				<div class="<%= h(classPrefix) %>-content">
 				    <p><%= h(event.getSummary()) %></p>
 				    <dl>
-				        <dt>場所：</dt><dd><%= h(event.getPlace()) %></dd>
+				        <dt>会場：</dt><dd><%= h(event.getPlace()) %></dd>
 				        <dt>日時：</dt><dd><%= Helper.readableDate(event.getBeginDate()) %></dd>
 				    </dl>
 				</div>
