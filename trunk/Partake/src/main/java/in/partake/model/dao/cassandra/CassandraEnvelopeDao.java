@@ -15,6 +15,7 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.SuperColumn;
 import org.apache.cassandra.thrift.Cassandra.Client;
+import org.apache.log4j.Logger;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -25,7 +26,7 @@ import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.util.Util;
 
 class CassandraEnvelopeDao extends CassandraDao implements IEnvelopeAccess {
-
+    private static final Logger LOGGER = Logger.getLogger(CassandraEnvelopeDao.class);
     //
     private static final String DIRECTMESSAGE_ENVELOPE_PREFIX = "directmessage:envelope";
     private static final String DIRECTMESSAGE_ENVELOPE_KEYSPACE = "Keyspace1";
@@ -91,8 +92,17 @@ class CassandraEnvelopeDao extends CassandraDao implements IEnvelopeAccess {
                 superColumn.addToColumns(new Column(bytes("deadline"), bytes(Util.getTimeString(envelope.getDeadline())), time));
             }
             superColumn.addToColumns(new Column(bytes("numTried"), bytes(String.valueOf(envelope.getNumTried())), time));
-            superColumn.addToColumns(new Column(bytes("lastTriedAt"), bytes(Util.getTimeString(envelope.getLastTriedAt())), time));
+            if (envelope.getLastTriedAt() != null) {
+                superColumn.addToColumns(new Column(bytes("lastTriedAt"), bytes(Util.getTimeString(envelope.getLastTriedAt())), time));
+            }
             superColumn.addToColumns(new Column(bytes("postingType"), bytes(envelope.getPostingType().toString()), time));
+
+            if (envelope.getCreatedAt() != null) {
+                superColumn.addToColumns(new Column(bytes("createdAt"), bytes(Util.getTimeString(envelope.getCreatedAt())), time));
+            } else {
+                // FIXME 必須項目なのでここに来ることはないはず。本来は例外を投げるべきだが潜在的バグでサービス停止になる可能性を考慮、当面はログを出すだけにする
+                LOGGER.warn("createdAt(required) is not setted!", new IllegalStateException());
+            }
 
             columns.add(new ColumnOrSuperColumn().setSuper_column(superColumn));
         }
@@ -134,7 +144,11 @@ class CassandraEnvelopeDao extends CassandraDao implements IEnvelopeAccess {
                         envelope.setLastTriedAt(Util.dateFromTimeString(value));
                     } else if ("postingType".equals(key)) {
                         envelope.setPostingType(DirectMessagePostingType.valueOf(value));
-                    } 
+                    } else if ("createdAt".equals(key)) {
+                        envelope.setCreatedAt(Util.dateFromTimeString(value));
+                    } else {
+                        LOGGER.warn("unknown column name: " + key);
+                    }
                 }
 
                 return envelope;
