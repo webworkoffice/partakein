@@ -52,7 +52,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
     @Override
     public void addComment(PartakeConnection con, Comment embryo) throws DAOException {
         if (embryo == null) { throw new IllegalStateException(); }
-        if (embryo.getId() == null) { throw new IllegalStateException(); }
+        if (embryo.getId() == null) { throw new NullPointerException(); }
         
         try {
             CassandraConnection ccon = (CassandraConnection) con;

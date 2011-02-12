@@ -38,8 +38,8 @@ public class CassandraCacheDao extends CassandraDao implements ICacheAccess {
     @Override
     public void addCache(PartakeConnection con, CacheData cacheData) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
+        if (cacheData.getId() == null) { throw new NullPointerException("id should not be null."); }
         try {
-            if (cacheData.getId() == null) { throw new DAOException("id should not be null."); }
             addCacheImpl(ccon.getClient(), cacheData, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
