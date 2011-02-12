@@ -3,6 +3,8 @@ package in.partake.model.dao.cassandra;
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.IAccess;
 import in.partake.util.Util;
 
 import java.util.Date;
@@ -85,6 +87,30 @@ abstract class CassandraDao {
     
     // ----------------------------------------------------------------------
     //
+    
+    /**
+     * table description に基づいて、key で iterate を行う。
+     * Primary Key は String に限定。
+     * Primary Key が String でないものは、ColumnIterator によって iterate する必要がある。
+     */
+    protected <T> DataIterator<T> getIteratorImpl(CassandraConnection con, CassandraTableDescription desc, IAccess<T, String> access) throws DAOException { 
+        CassandraKeyIterator it = new CassandraKeyIterator(con, desc.keyspace, desc.prefix, desc.columnFamily, desc.readConsistency);
+        
+        class KeyMapperWithAccess<S> extends KeyMapper<S> {
+            private IAccess<S, String> access;
+            public KeyMapperWithAccess(CassandraConnection con, IAccess<S, String> access) {
+                super(con);
+                this.access = access;
+            }
+            
+            @Override
+            protected S map(String key) throws DAOException {
+                return access.find(getConnection(), key);
+            }
+        }
+        
+        return new CassandraKeyDataIterator<T>(it, new KeyMapperWithAccess<T>(con, access));
+    }
     
     protected void removeAllData(CassandraConnection con) throws DAOException {
         

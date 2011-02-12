@@ -21,7 +21,7 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
             con.beginTransaction();
             
             BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
-            factory.getBinaryAccess().addBinary(con, data);
+            factory.getBinaryAccess().put(con, data);
             con.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,8 +66,8 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
         try {
             con.beginTransaction();
 
-            factory.getBinaryAccess().addBinary(con, original);
-            BinaryData target = factory.getBinaryAccess().getBinary(con, "test");
+            factory.getBinaryAccess().put(con, original);
+            BinaryData target = factory.getBinaryAccess().find(con, "test");
             
             Assert.assertEquals(original, target);
             Assert.assertNotSame(original, target);
@@ -91,7 +91,7 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
         try {
             con.beginTransaction();
             BinaryData data = new BinaryData(null, "test-type", new byte[] {1, 2, 3});
-            factory.getBinaryAccess().addBinary(con, data);
+            factory.getBinaryAccess().put(con, data);
             con.commit();
         } finally {
             con.invalidate();
@@ -107,17 +107,17 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
-                factory.getBinaryAccess().addBinary(con, data);
+                factory.getBinaryAccess().put(con, data);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                factory.getBinaryAccess().removeBinary(con, "test");
+                factory.getBinaryAccess().remove(con, "test");
                 con.commit();
             }
             {
                 con.beginTransaction();
-                BinaryData data = factory.getBinaryAccess().getBinary(con, "test");
+                BinaryData data = factory.getBinaryAccess().find(con, "test");
                 Assert.assertNull(data);
                 con.commit();
             }
@@ -136,23 +136,23 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
-                factory.getBinaryAccess().addBinary(con, data);
+                factory.getBinaryAccess().put(con, data);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                factory.getBinaryAccess().removeBinary(con, "invalid-id");
+                factory.getBinaryAccess().remove(con, "invalid-id");
                 con.commit();
             }
             {
                 con.beginTransaction();
-                BinaryData data = factory.getBinaryAccess().getBinary(con, "test");
+                BinaryData data = factory.getBinaryAccess().find(con, "test");
                 Assert.assertNotNull(data);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                BinaryData data = factory.getBinaryAccess().getBinary(con, "invalid-id");
+                BinaryData data = factory.getBinaryAccess().find(con, "invalid-id");
                 Assert.assertNull(data);
                 con.commit();
             }
@@ -171,23 +171,23 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
-                factory.getBinaryAccess().addBinary(con, data);
+                factory.getBinaryAccess().put(con, data);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                factory.getBinaryAccess().removeBinary(con, "test");
+                factory.getBinaryAccess().remove(con, "test");
                 con.commit();
             }
             {
                 con.beginTransaction();
                 BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
-                factory.getBinaryAccess().addBinary(con, data);
+                factory.getBinaryAccess().put(con, data);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                BinaryData data = factory.getBinaryAccess().getBinary(con, "test");
+                BinaryData data = factory.getBinaryAccess().find(con, "test");
                 Assert.assertNotNull(data);
                 con.commit();
             }            
