@@ -3,6 +3,7 @@ package in.partake.model.dao.cassandra;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IBinaryAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.BinaryData;
@@ -40,7 +41,7 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     }
 
     @Override
-    public void addBinary(PartakeConnection con, BinaryData embryo) throws DAOException {
+    public void put(PartakeConnection con, BinaryData embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         if (embryo.getId() == null) { throw new NullPointerException("id should not be null."); }
 
@@ -64,7 +65,7 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     
     
     @Override
-    public BinaryData getBinary(PartakeConnection con, String id) throws DAOException {
+    public BinaryData find(PartakeConnection con, String id) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getBinaryById(ccon.getClient(), id);
@@ -103,7 +104,7 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     
 
     @Override
-    public void removeBinary(PartakeConnection con, String id) throws DAOException {
+    public void remove(PartakeConnection con, String id) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             removeBinary(ccon.getClient(), id, ccon.getAcquiredTime());
@@ -117,6 +118,11 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
         
         ColumnPath columnPath = new ColumnPath(BINARY_COLUMNFAMILY);
         client.remove(BINARY_KEYSPACE, key, columnPath, time, BINARY_CL_W);
+    }
+    
+    @Override
+    public DataIterator<BinaryData> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con, new CassandraTableDescription(BINARY_PREFIX, BINARY_KEYSPACE, BINARY_COLUMNFAMILY, BINARY_CL_R, BINARY_CL_W), this);
     }
     
     @Override

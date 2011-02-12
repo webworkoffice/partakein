@@ -32,7 +32,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
         try {
             con.beginTransaction();
             CacheData cacheData = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-            factory.getCacheAccess().addCache(con, cacheData);
+            factory.getCacheAccess().put(con, cacheData);
             con.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,8 +68,8 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
         try {
             con.beginTransaction();
 
-            factory.getCacheAccess().addCache(con, original);
-            CacheData target = factory.getCacheAccess().getCache(con, "test");
+            factory.getCacheAccess().put(con, original);
+            CacheData target = factory.getCacheAccess().find(con, "test");
             
             Assert.assertEquals(original.getId(), target.getId());
             Assert.assertArrayEquals(original.getData(), target.getData());
@@ -92,7 +92,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
         try {
             con.beginTransaction();
             CacheData data = new CacheData(null, new byte[] {1, 2, 3}, oneHourAfter());
-            factory.getCacheAccess().addCache(con, data);
+            factory.getCacheAccess().put(con, data);
             con.commit();
         } finally {
             con.invalidate();
@@ -108,13 +108,13 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 CacheData data = new CacheData("test", new byte[] {1, 2, 3}, oneHourBefore());
-                factory.getCacheAccess().addCache(con, data);
+                factory.getCacheAccess().put(con, data);
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().getCache(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, "test");
                 Assert.assertNull(data);
                 con.commit();
             }
@@ -134,7 +134,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 CacheData data = new CacheData("test", new byte[] {1, 2, 3}, new Date(now + 1));
-                factory.getCacheAccess().addCache(con, data);
+                factory.getCacheAccess().put(con, data);
                 con.commit();
             }
             
@@ -142,7 +142,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             PDate.setCurrentDate(new PDate(now - 1));
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().getCache(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, "test");
                 Assert.assertNotNull(data);
                 con.commit();
             }
@@ -151,7 +151,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             PDate.setCurrentDate(new PDate(now + 1));
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().getCache(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, "test");
                 Assert.assertNull(data);
                 con.commit();
             }
@@ -170,17 +170,17 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-                factory.getCacheAccess().addCache(con, data);
+                factory.getCacheAccess().put(con, data);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                factory.getCacheAccess().removeCache(con, "test");
+                factory.getCacheAccess().remove(con, "test");
                 con.commit();
             }
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().getCache(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, "test");
                 Assert.assertNull(data);
                 con.commit();
             }
@@ -199,23 +199,23 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-                factory.getCacheAccess().addCache(con, data);
+                factory.getCacheAccess().put(con, data);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                factory.getCacheAccess().removeCache(con, "invalid-id");
+                factory.getCacheAccess().remove(con, "invalid-id");
                 con.commit();
             }
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().getCache(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, "test");
                 Assert.assertNotNull(data);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().getCache(con, "invalid-id");
+                CacheData data = factory.getCacheAccess().find(con, "invalid-id");
                 Assert.assertNull(data);
                 con.commit();
             }
@@ -235,26 +235,26 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 con.beginTransaction();
                 CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-                factory.getCacheAccess().addCache(con, data);
+                factory.getCacheAccess().put(con, data);
                 con.commit();
             }
             PDate.setCurrentDate(new PDate(now + 10));
             {
                 con.beginTransaction();
-                factory.getCacheAccess().removeCache(con, "test");
+                factory.getCacheAccess().remove(con, "test");
                 con.commit();
             }
             PDate.setCurrentDate(new PDate(now + 20));
             {
                 con.beginTransaction();
                 CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-                factory.getCacheAccess().addCache(con, data);
+                factory.getCacheAccess().put(con, data);
                 con.commit();
             }
             PDate.setCurrentDate(new PDate(now + 30));
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().getCache(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, "test");
                 Assert.assertNotNull(data);
                 con.commit();
             }

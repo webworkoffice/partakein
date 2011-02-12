@@ -18,6 +18,7 @@ import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.CacheData;
@@ -36,7 +37,7 @@ public class CassandraCacheDao extends CassandraDao implements ICacheAccess {
     }
     
     @Override
-    public void addCache(PartakeConnection con, CacheData cacheData) throws DAOException {
+    public void put(PartakeConnection con, CacheData cacheData) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         if (cacheData.getId() == null) { throw new NullPointerException("id should not be null."); }
         try {
@@ -47,7 +48,7 @@ public class CassandraCacheDao extends CassandraDao implements ICacheAccess {
     }
     
     @Override
-    public CacheData getCache(PartakeConnection con, String cacheId) throws DAOException {
+    public CacheData find(PartakeConnection con, String cacheId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getCacheImpl(ccon.getClient(), cacheId, ccon.getAcquiredTime());
@@ -57,7 +58,7 @@ public class CassandraCacheDao extends CassandraDao implements ICacheAccess {
     }
     
     @Override
-    public void removeCache(PartakeConnection con, String cacheId) throws DAOException {
+    public void remove(PartakeConnection con, String cacheId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             removeCacheImpl(ccon.getClient(), cacheId, ccon.getAcquiredTime());
@@ -65,6 +66,12 @@ public class CassandraCacheDao extends CassandraDao implements ICacheAccess {
             throw new DAOException(e);
         }
     }
+    
+    @Override
+    public DataIterator<CacheData> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con, new CassandraTableDescription(CACHE_PREFIX, CACHE_KEYSPACE, CACHE_COLUMNFAMILY, CACHE_CL_R, CACHE_CL_W), this);
+    }
+
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {

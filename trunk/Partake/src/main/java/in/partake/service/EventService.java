@@ -362,11 +362,11 @@ public final class EventService extends PartakeService {
     		
     		if (foreImageEmbryo != null) {
     		    foreImageEmbryo.setId(foreImageId);
-    		    binaryAccess.addBinary(con, foreImageEmbryo);			
+    		    binaryAccess.put(con, foreImageEmbryo);			
     		}
     		if (backImageEmbryo != null) {
     		    backImageEmbryo.setId(backImageId);
-    		    binaryAccess.addBinary(con, backImageEmbryo);			
+    		    binaryAccess.put(con, backImageEmbryo);			
     		}
             
     		// factory.getMessageAccess().addNotification(con, eventId);
@@ -432,18 +432,18 @@ public final class EventService extends PartakeService {
     		if (updatesForeImage) {
     			if (foreImageEmbryo != null) {
     			    foreImageEmbryo.setId(eventEmbryo.getForeImageId());
-    				binaryAccess.addBinary(con, foreImageEmbryo);
+    				binaryAccess.put(con, foreImageEmbryo);
     			} else if (event.getForeImageId() != null) {    			    
-    				binaryAccess.removeBinary(con, event.getForeImageId());
+    				binaryAccess.remove(con, event.getForeImageId());
     			}
     		}
     		
     		if (updatesBackImage) {
     			if (backImageEmbryo != null) {
     			    backImageEmbryo.setId(eventEmbryo.getBackImageId());
-    				binaryAccess.addBinary(con, backImageEmbryo);
+    				binaryAccess.put(con, backImageEmbryo);
     			} else if (event.getBackImageId() != null) {
-    				binaryAccess.removeBinary(con, event.getBackImageId());
+    				binaryAccess.remove(con, event.getBackImageId());
     			}		
     		}
     		
@@ -729,7 +729,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            BinaryData data = binaryAccess.getBinary(con, imageId);
+            BinaryData data = binaryAccess.find(con, imageId);
             con.commit();
             return data;
         } finally {
