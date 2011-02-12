@@ -8,6 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -18,6 +20,7 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
 import in.partake.model.CommentEx;
+import in.partake.model.EventEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
@@ -26,6 +29,7 @@ import in.partake.service.EventService;
 import in.partake.util.Util;
 
 public class EventsFeedController extends PartakeActionSupport {
+	private static final Logger LOGGER = Logger.getLogger(EventsFeedController.class);
 	/** */
 	private static final long serialVersionUID = 1L;
 	// private static final Logger logger = Logger.getLogger(EventsFeedController.class);
@@ -151,6 +155,13 @@ public class EventsFeedController extends PartakeActionSupport {
 			entry.setTitle(event.getTitle());
 			entry.setLink(event.getEventURL());
 			entry.setPublishedDate(event.getCreatedAt());
+			try {
+				// TODO use cache or other ways for performance.
+				EventEx ex = EventService.get().getEventExById(event.getId());
+				entry.setAuthor(ex.getOwner().getScreenName());
+			} catch (DAOException e) {
+				LOGGER.warn("Fail to get Author name.", e);
+			}
 			
 			SyndContent content = new SyndContentImpl();
 			content.setType("text/html");
