@@ -32,13 +32,12 @@ class ColumnIterator {
 	boolean reverseOrder;
 	
 	private CassandraConnection connection;
-	private CassandraDAOFactory factory;
 	
 	private int pos;
 	private List<ColumnOrSuperColumn> cached;
 	private ColumnOrSuperColumn current;
 
-    public ColumnIterator(CassandraConnection connection, CassandraDAOFactory factory, String keyspace, String key, String columnFamily, boolean reverseOrder, 
+    public ColumnIterator(CassandraConnection connection, String keyspace, String key, String columnFamily, boolean reverseOrder, 
                     ConsistencyLevel readConsistencyLevel, ConsistencyLevel writeConsistencyLevel) {
         this.keyspace = keyspace;
         this.key = key;
@@ -51,17 +50,12 @@ class ColumnIterator {
         this.reverseOrder = reverseOrder;
         
         this.connection = connection;
-        this.factory = factory;
         
         this.pos = 0;
         this.cached = new ArrayList<ColumnOrSuperColumn>();
         this.current = null;
     }
 	
-    public CassandraDAOFactory getFactory() {
-        return this.factory;
-    }
-	   
 	public boolean hasNext() throws DAOException {
 	    if (pos < cached.size()) { return true; }
 		if (nextStartKey == null) { return false; }
