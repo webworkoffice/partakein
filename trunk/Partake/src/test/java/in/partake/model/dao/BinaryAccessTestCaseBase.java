@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.BinaryData;
+import in.partake.util.PDate;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -139,17 +140,20 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 factory.getBinaryAccess().put(con, data);
                 con.commit();
             }
+            PDate.waitForTick();
             {
                 con.beginTransaction();
                 factory.getBinaryAccess().remove(con, "invalid-id");
                 con.commit();
             }
+            PDate.waitForTick();
             {
                 con.beginTransaction();
                 BinaryData data = factory.getBinaryAccess().find(con, "test");
                 Assert.assertNotNull(data);
                 con.commit();
             }
+            PDate.waitForTick();
             {
                 con.beginTransaction();
                 BinaryData data = factory.getBinaryAccess().find(con, "invalid-id");

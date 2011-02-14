@@ -8,6 +8,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.dto.auxiliary.UserPermission;
+import in.partake.model.dto.pk.EventRelationPK;
 import in.partake.service.EventService;
 import in.partake.util.KeyValuePair;
 import in.partake.util.PDate;
@@ -19,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -283,14 +286,25 @@ public class EventsEditController extends PartakeActionSupport implements Valida
                 
         try {
         	this.eventId = EventService.get().create(embryo, foreImageEmbryo, backImageEmbryo);
+        	embryo.setId(this.eventId);
         	
             // TODO: これはひどい
             // related event を登録        
             List<EventRelation> eventRelations = new ArrayList<EventRelation>();
-            if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(eventId, relatedEventID1, relatedEventRequired1, relatedEventPriority1)); }
-            if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(eventId, relatedEventID2, relatedEventRequired2, relatedEventPriority2)); }
-            if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(eventId, relatedEventID3, relatedEventRequired3, relatedEventPriority3)); }        
-        	
+            Set<EventRelationPK> eventRelationPKs = new HashSet<EventRelationPK>();
+            if (!StringUtils.isEmpty(relatedEventID1) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeHash(relatedEventID1)))) {
+                eventRelations.add(new EventRelation(eventId, Util.removeHash(relatedEventID1), relatedEventRequired1, relatedEventPriority1));
+                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeHash(relatedEventID1)));
+            }
+            if (!StringUtils.isEmpty(relatedEventID2) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeHash(relatedEventID2)))) {
+                eventRelations.add(new EventRelation(eventId, Util.removeHash(relatedEventID2), relatedEventRequired2, relatedEventPriority2));
+                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeHash(relatedEventID1)));
+            }
+            if (!StringUtils.isEmpty(relatedEventID3) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeHash(relatedEventID3)))) {
+                eventRelations.add(new EventRelation(eventId, Util.removeHash(relatedEventID3), relatedEventRequired3, relatedEventPriority3));
+                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeHash(relatedEventID1)));
+            }
+            
         	EventService.get().setEventRelations(eventId, eventRelations);
         	
         	addActionMessage("新しいイベントが作成されました。");
@@ -387,9 +401,19 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        // TODO: これはひどい
 	        // related event を登録        
 	        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
-	        if (!StringUtils.isEmpty(relatedEventID1)) { eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID1), relatedEventRequired1, relatedEventPriority1)); }
-	        if (!StringUtils.isEmpty(relatedEventID2)) { eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID2), relatedEventRequired2, relatedEventPriority2)); }
-	        if (!StringUtils.isEmpty(relatedEventID3)) { eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID3), relatedEventRequired3, relatedEventPriority3)); }
+	        Set<EventRelationPK> eventRelationPKs = new HashSet<EventRelationPK>();
+	        if (!StringUtils.isEmpty(relatedEventID1) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID1)))) {
+	            eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID1), relatedEventRequired1, relatedEventPriority1));
+	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID1)));
+	        }
+	        if (!StringUtils.isEmpty(relatedEventID2) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID2)))) {
+	            eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID2), relatedEventRequired2, relatedEventPriority2));
+	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID1)));
+	        }
+	        if (!StringUtils.isEmpty(relatedEventID3) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID3)))) {
+	            eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID3), relatedEventRequired3, relatedEventPriority3));
+	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID1)));
+	        }
 
 	        EventService.get().update(event, eventEmbryo,
 	        		foreImageEmbryo != null || removingForeImage, foreImageEmbryo, 
