@@ -40,11 +40,11 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 class UserCassandraDao extends CassandraDao implements IUserAccess {
     
 	// USER MASTER TABLE
-    private static final String USERS_PREFIX = "users:id:";
-    private static final String USERS_KEYSPACE = "Keyspace1";
-    private static final String USERS_COLUMNFAMILY = "Standard2";
-    private static final ConsistencyLevel USERS_CL_R = ConsistencyLevel.ONE;
-    private static final ConsistencyLevel USERS_CL_W = ConsistencyLevel.ALL;
+    static final String USERS_PREFIX = "users:id:";
+    static final String USERS_KEYSPACE = "Keyspace1";
+    static final String USERS_COLUMNFAMILY = "Standard2";
+    static final ConsistencyLevel USERS_CL_R = ConsistencyLevel.ONE;
+    static final ConsistencyLevel USERS_CL_W = ConsistencyLevel.ALL;
     
     // ----------------------------------------------------------------------
     
