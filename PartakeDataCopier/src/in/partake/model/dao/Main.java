@@ -8,10 +8,10 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         casFactory = (PartakeDAOFactory) Class.forName("in.partake.model.dao.cassandra.CassandraDAOFactory").newInstance(); 
-        casPool    = (PartakeConnectionPool) Class.forName("in.partake.model.dao.cassandra.ConnectionPool").newInstance();
-        jpaFactory = (PartakeDAOFactory) Class.forName("in.partake.model.dao.cassandra.JPADAOFactory").newInstance(); 
-        jpaPool    = (PartakeConnectionPool) Class.forName("in.partake.model.dao.cassandra.JPAPool").newInstance();
-     
+        casPool    = (PartakeConnectionPool) Class.forName("in.partake.model.dao.cassandra.CassandraConnectionPool").newInstance();
+        jpaFactory = (PartakeDAOFactory) Class.forName("in.partake.model.dao.jpa.JPADAOFactory").newInstance(); 
+        jpaPool    = (PartakeConnectionPool) Class.forName("in.partake.model.dao.jpa.JPAConnectionPool").newInstance();
+        
         copy(casFactory.getBinaryAccess(),          jpaFactory.getBinaryAccess());
         copy(casFactory.getCacheAccess(),           jpaFactory.getCacheAccess());
         copy(casFactory.getCalendarAccess(),        jpaFactory.getCalendarAccess());
@@ -37,6 +37,7 @@ public class Main {
         DataIterator<T> it = cas.getIterator(cascon);
         while (it.hasNext()) {
             T t = it.next();
+            System.out.println(t);
             jpacon.beginTransaction();
             jpa.put(jpacon, t);
             jpacon.commit();
@@ -44,5 +45,7 @@ public class Main {
         
         cascon.invalidate();
         jpacon.invalidate();
+        
+        System.out.println("Seems OK");
     }    
 }
