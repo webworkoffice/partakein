@@ -54,13 +54,14 @@ public abstract class EnvelopeDaoTestCaseBase extends AbstractDaoTestCaseBase {
     public void enqueueWithLastTriedAt() throws DAOException {
         PartakeConnection con = getPool().getConnection();
         try {
+            con.beginTransaction();
+            
             String dummyEnvelopeId = dao.getFreshId(con);
             Envelope envelope = createEnvelopeByDefaultParams(dummyEnvelopeId);
     
             // optional property
             Date lastTriedAt = new Date(2L);	// remove randomness from test code
             envelope.setLastTriedAt(lastTriedAt);
-    
             dao.put(con, envelope);
     
             boolean found = false;
@@ -73,6 +74,8 @@ public abstract class EnvelopeDaoTestCaseBase extends AbstractDaoTestCaseBase {
                 }
             }
             Assert.assertTrue(found);
+            
+            con.commit();
         } finally {
             con.invalidate();
         }

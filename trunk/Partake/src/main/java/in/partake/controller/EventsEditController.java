@@ -278,7 +278,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         Event embryo = new Event(
         		shortId, title, summary, category, deadline, beginDate, endDate, capacity, url, place, address, description,
         		hashTag, owner.getId(), managers,
-        		secret, passcode, false, createdAt, null
+        		secret, passcode, false, false, createdAt, null
         );
                 
         try {
@@ -381,7 +381,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        Event eventEmbryo = new Event(
 	        		shortId, title, summary, category, deadline, beginDate, endDate, capacity, url, place, address, description,
 	        		hashTag, event.getOwnerId(), managers,
-	        		secret, passcode, false, event.getCreatedAt(), now
+	        		secret, passcode, false, false, event.getCreatedAt(), now
 	        );
 
 	        // TODO: これはひどい

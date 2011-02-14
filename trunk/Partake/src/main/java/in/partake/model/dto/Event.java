@@ -62,7 +62,9 @@ public class Event extends PartakeModel<Event> {
     
     @Column
     private boolean isPreview;    // true if the event is preview.
-   
+    @Column
+    private boolean isRemoved;
+    
     @Column
     private Date createdAt;     //
     @Column
@@ -116,6 +118,7 @@ public class Event extends PartakeModel<Event> {
     	this.isPrivate = event.isPrivate;
     	this.passcode = event.passcode;
     	this.isPreview = event.isPreview;
+    	this.isRemoved = event.isRemoved;
     	this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
     	this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
     	this.revision = event.revision;
@@ -124,7 +127,7 @@ public class Event extends PartakeModel<Event> {
     
     public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
-            boolean isPrivate, String passcode, boolean isPreview, Date createdAt, Date modifiedAt) {
+            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, Date createdAt, Date modifiedAt) {
         this.id = null;
         this.shortId = shortId;
         this.title = title;
@@ -149,6 +152,7 @@ public class Event extends PartakeModel<Event> {
         this.passcode = passcode;
         
         this.isPreview = isPreview;
+        this.isRemoved = isRemoved;
         
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -158,7 +162,7 @@ public class Event extends PartakeModel<Event> {
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames, 
             String foreImageId, String backImageId,
-            boolean isPrivate, String passcode, boolean isPreview, Date createdAt, Date modifiedAt, int revision) {
+            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, Date createdAt, Date modifiedAt, int revision) {
         this.id = id;
         this.shortId = shortId;
         this.title = title;
@@ -182,6 +186,7 @@ public class Event extends PartakeModel<Event> {
         this.isPrivate = isPrivate;
         this.passcode = passcode;
         this.isPreview = isPreview;
+        this.isRemoved = isRemoved;
         
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -231,6 +236,7 @@ public class Event extends PartakeModel<Event> {
         if (!ObjectUtils.equals(lhs.isPrivate, rhs.isPrivate)) { return false; }
         if (!ObjectUtils.equals(lhs.passcode, rhs.passcode)) { return false; }
         if (!ObjectUtils.equals(lhs.isPreview, rhs.isPreview)) { return false; }
+        if (!ObjectUtils.equals(lhs.isRemoved, rhs.isRemoved)) { return false; }
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
         if (!ObjectUtils.equals(lhs.revision, rhs.revision)) { return false; }
@@ -263,6 +269,7 @@ public class Event extends PartakeModel<Event> {
         code = code * 37 + ObjectUtils.hashCode(isPrivate);
         code = code * 37 + ObjectUtils.hashCode(passcode);
         code = code * 37 + ObjectUtils.hashCode(isPreview);
+        code = code * 37 + ObjectUtils.hashCode(isRemoved);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
         code = code * 37 + ObjectUtils.hashCode(revision);
@@ -365,6 +372,10 @@ public class Event extends PartakeModel<Event> {
     
     public boolean isPreview() {
         return isPreview;
+    }
+    
+    public boolean isRemoved() {
+        return isRemoved;
     }
 
     public Date getCreatedAt() {
@@ -474,6 +485,11 @@ public class Event extends PartakeModel<Event> {
     public void setPreview(boolean isPreview) {
         checkToUpdateStatus();
         this.isPreview = isPreview;
+    }
+    
+    public void setRemoved(boolean isRemoved) {
+        checkToUpdateStatus();
+        this.isRemoved = isRemoved;        
     }
 
     public void setCreatedAt(Date createdAt) {

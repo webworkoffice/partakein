@@ -11,7 +11,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 @Entity(name = "EventRelations")
-@IdClass(EventRelation.class)
+@IdClass(EventRelationPK.class)
 public class EventRelation extends PartakeModel<EventRelation> {
     @Id @Index
     private String srcEventId;

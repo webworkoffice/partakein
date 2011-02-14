@@ -2,6 +2,7 @@ package in.partake.model.dao;
 
 import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.pk.ShortenedURLDataPK;
+import in.partake.util.PDate;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -135,17 +136,23 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
                 con.commit();
             }
             
+            PDate.waitForTick();
+            
             {
                 con.beginTransaction();
                 dao.removeByURL(con, original);
                 con.commit();
             }
             
+            PDate.waitForTick();
+            
             {
                 con.beginTransaction();
                 dao.put(con, new ShortenedURLData(original, "bitly", shortened));
                 con.commit();
             }
+            
+            PDate.waitForTick();
             
             {
                 con.beginTransaction();
@@ -174,17 +181,23 @@ public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
                 con.commit();
             }
             
+            PDate.waitForTick();
+            
             {
                 con.beginTransaction();
                 dao.remove(con, new ShortenedURLDataPK(original, "bitly"));
                 con.commit();
             }
             
+            PDate.waitForTick();
+            
             {
                 con.beginTransaction();
                 dao.put(con, new ShortenedURLData(original, "bitly", shortened));
                 con.commit();
             }
+            
+            PDate.waitForTick();
             
             {
                 con.beginTransaction();

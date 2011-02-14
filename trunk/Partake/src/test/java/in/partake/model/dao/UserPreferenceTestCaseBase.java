@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.UserPreference;
+import in.partake.util.PDate;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,6 +48,8 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
                 con.commit();
             }
             
+            PDate.waitForTick();
+            
             {
                 con.beginTransaction();
                 UserPreference target = dao.find(con, "userId");
@@ -54,6 +57,8 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
                 Assert.assertEquals(original1, target);
                 con.commit();
             }
+            
+            PDate.waitForTick();
 
             UserPreference original2 = new UserPreference("userId", true, true, false);
             {
@@ -61,6 +66,8 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
                 dao.put(con, original2);
                 con.commit();
             }
+            
+            PDate.waitForTick();
 
             {
                 con.beginTransaction();
