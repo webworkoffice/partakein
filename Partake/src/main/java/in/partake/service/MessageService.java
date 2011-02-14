@@ -50,7 +50,7 @@ public final class MessageService extends PartakeService {
     
     private EventReminder getEventReminderImpl(PartakeConnection con, String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
-        EventReminder reminder = factory.getEventReminderAccess().getEventReminderStatus(con, eventId);
+        EventReminder reminder = factory.getEventReminderAccess().find(con, eventId);
         if (reminder == null) {
             return new EventReminder(eventId); 
         } else {
@@ -72,7 +72,7 @@ public final class MessageService extends PartakeService {
             con.beginTransaction(); 
             
             // TODO: 開始時刻が現在時刻より後の event のみを取り出したい
-            DataIterator<Event> it = factory.getEventAccess().getAllEventIterators(con);
+            DataIterator<Event> it = factory.getEventAccess().getIterator(con);
             while (it.hasNext()) {
                 Event e = it.next();
                 if (e == null) { continue; }
@@ -89,7 +89,7 @@ public final class MessageService extends PartakeService {
                 boolean changed = sendEventNotification(con, event, reminderStatus, topPath, now);
                 if (changed) {
                     reminderStatus.setEventId(eventId);
-                    factory.getEventReminderAccess().updateEventReminderStatus(con, reminderStatus);
+                    factory.getEventReminderAccess().put(con, reminderStatus);
                 }
             }
             
@@ -165,16 +165,16 @@ public final class MessageService extends PartakeService {
     private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, Event event, String message) throws DAOException {
         String messageId = getFactory().getDirectMessageAccess().getFreshId(con);
         Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
-        getFactory().getDirectMessageAccess().addMessage(con, embryo); 
+        getFactory().getDirectMessageAccess().put(con, embryo); 
         
-        List<Enrollment> participations = getFactory().getEnrollmentAccess().getEnrollmentsByEventId(con, event.getId());
+        List<Enrollment> participations = getFactory().getEnrollmentAccess().findByEventId(con, event.getId());
         Date deadline = event.getCalculatedDeadline();
         for (Enrollment participation : participations) {
             if (!ParticipationStatus.RESERVED.equals(participation.getStatus())) { continue; }
             String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
             Envelope envelope = new Envelope(envelopeId, participation.getUserId(), participation.getUserId(),
                     messageId, deadline, 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-            getFactory().getEnvelopeAccess().enqueueEnvelope(con, envelope);
+            getFactory().getEnvelopeAccess().put(con, envelope);
             logger.info("sendEnvelope : " + participation.getUserId() + " : " + embryo.getMessage());
         }
     }
@@ -188,7 +188,7 @@ public final class MessageService extends PartakeService {
     private void sendNotificationOnlyForParticipants(PartakeConnection con, EventEx event, String message) throws DAOException {
         String messageId = getFactory().getDirectMessageAccess().getFreshId(con);
         Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
-        getFactory().getDirectMessageAccess().addMessage(con, embryo); 
+        getFactory().getDirectMessageAccess().put(con, embryo); 
         
         Date deadline = event.getCalculatedDeadline();
         
@@ -200,7 +200,7 @@ public final class MessageService extends PartakeService {
             String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
             Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
                     messageId, deadline, 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-            getFactory().getEnvelopeAccess().enqueueEnvelope(con, envelope);
+            getFactory().getEnvelopeAccess().put(con, envelope);
             logger.info("sendEnvelope : " + p.getUser().getScreenName() + " : " + embryo.getMessage());
         }
     }
@@ -213,7 +213,7 @@ public final class MessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
-            DataIterator<Event> it = factory.getEventAccess().getAllEventIterators(con); 
+            DataIterator<Event> it = factory.getEventAccess().getIterator(con); 
             while (it.hasNext()) {
                 Event e = it.next();
                 if (e == null) { continue; }                
@@ -251,14 +251,14 @@ public final class MessageService extends PartakeService {
                         if (okMessageId == null) {
                             okMessageId = factory.getDirectMessageAccess().getFreshId(con);
                             Message okEmbryo = new Message(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date()); 
-                            factory.getDirectMessageAccess().addMessage(con, okEmbryo);
+                            factory.getDirectMessageAccess().put(con, okEmbryo);
                         }
 
                         updateLastStatus(con, eventId, p, LastParticipationStatus.ENROLLED);
                         String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
                         Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
                                 okMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                        getFactory().getEnvelopeAccess().enqueueEnvelope(con, envelope);
+                        getFactory().getEnvelopeAccess().put(con, envelope);
                         
                         break;
                     }
@@ -281,7 +281,7 @@ public final class MessageService extends PartakeService {
                         if (ngMessageId == null) {
                             ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
                             Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
-                            factory.getDirectMessageAccess().addMessage(con, ngEmbryo); 
+                            factory.getDirectMessageAccess().put(con, ngEmbryo); 
                         }
 
                         updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
@@ -289,7 +289,7 @@ public final class MessageService extends PartakeService {
                         String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
                         Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
                                 ngMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                        getFactory().getEnvelopeAccess().enqueueEnvelope(con, envelope);
+                        getFactory().getEnvelopeAccess().put(con, envelope);
                         
 
                         break;
@@ -310,7 +310,7 @@ public final class MessageService extends PartakeService {
                         if (ngMessageId == null) {
                             ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
                             Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
-                            factory.getDirectMessageAccess().addMessage(con, ngEmbryo); 
+                            factory.getDirectMessageAccess().put(con, ngEmbryo); 
                         }
 
                         updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
@@ -318,7 +318,7 @@ public final class MessageService extends PartakeService {
                         String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
                         Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
                                 ngMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                        getFactory().getEnvelopeAccess().enqueueEnvelope(con, envelope);
+                        getFactory().getEnvelopeAccess().put(con, envelope);
                         break;
                     }                   
                 }
@@ -333,6 +333,6 @@ public final class MessageService extends PartakeService {
     private void updateLastStatus(PartakeConnection con, String eventId, Enrollment enrollment, LastParticipationStatus status) throws DAOException {
         Enrollment newEnrollment = new Enrollment(enrollment);
         newEnrollment.setLastStatus(status);
-        getFactory().getEnrollmentAccess().addEnrollment(con, newEnrollment);
+        getFactory().getEnrollmentAccess().put(con, newEnrollment);
     }
 }

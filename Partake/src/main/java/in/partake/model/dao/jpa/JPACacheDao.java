@@ -15,17 +15,17 @@ class JPACacheDao extends JPADao<CacheData> implements ICacheAccess {
 
     @Override
     public void put(PartakeConnection con, CacheData cacheData) throws DAOException {
-        createOrUpdate(con, cacheData, CacheData.class);
-    }
-
-    @Override
-    public void remove(PartakeConnection con, String cacheId) throws DAOException {
-        remove(con, cacheId, CacheData.class);
+        putImpl(con, cacheData, CacheData.class);
     }
 
     @Override
     public CacheData find(PartakeConnection con, String cacheId) throws DAOException {
-        return find(con, cacheId, CacheData.class);
+        return findImpl(con, cacheId, CacheData.class);
+    }
+
+    @Override
+    public void remove(PartakeConnection con, String cacheId) throws DAOException {
+        removeImpl(con, cacheId, CacheData.class);
     }
     
     @Override

@@ -1,5 +1,8 @@
 package in.partake.model.dao;
 
+import in.partake.model.dto.ShortenedURLData;
+import in.partake.model.dto.pk.ShortenedURLDataPK;
+
 /**
  * cache the shortened URL.
  * when using several shortening service, we can cache all the shortened URL.
@@ -7,27 +10,8 @@ package in.partake.model.dao;
  * @author shinyak
  *
  */
-public interface IURLShortenerAccess extends ITruncatable {
-    /**
-     * originalURL をサービス serviceType で shorten した結果 shortenedURL を保持。
-     * @param con
-     * @param originalURL
-     * @param serviceType
-     * @param shortenedURL
-     * @throws DAOException
-     */
-    public abstract void addShortenedURL(PartakeConnection con, String originalURL, String serviceType, String shortenedURL) throws DAOException;
-    
-    /**
-     * 
-     * @param con
-     * @param originalURL
-     * @param serviceType
-     * @return
-     * @throws DAOException
-     */
-    public abstract String getShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException;
-    
+public interface IURLShortenerAccess extends IAccess<ShortenedURLData, ShortenedURLDataPK> {    
+
     /**
      * 特にどのサービスを利用しているのかを問わずに shortened URL を返す。
      * @param con
@@ -35,8 +19,6 @@ public interface IURLShortenerAccess extends ITruncatable {
      * @return
      * @throws DAOException
      */
-    public abstract String getShortenedURL(PartakeConnection con, String originalURL) throws DAOException;
-    
-    public abstract void removeShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException;
-    public abstract void removeShortenedURL(PartakeConnection con, String originalURL) throws DAOException;
+    public abstract ShortenedURLData findByURL(PartakeConnection con, String originalURL) throws DAOException;
+    public abstract void removeByURL(PartakeConnection con, String originalURL) throws DAOException;
 }

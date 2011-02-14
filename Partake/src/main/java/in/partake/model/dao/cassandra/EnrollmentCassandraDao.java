@@ -4,13 +4,16 @@ import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.LastParticipationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
@@ -60,7 +63,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     }
     
     @Override
-    public void addEnrollment(PartakeConnection con, Enrollment enrollment) throws DAOException {
+    public void put(PartakeConnection con, Enrollment enrollment) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             addEventEnrollment(ccon.getClient(), enrollment.getUserId(), enrollment.getEventId(), enrollment.getStatus(), ccon.getAcquiredTime());
@@ -72,10 +75,10 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     }
     
     @Override
-    public Enrollment getEnrollment(PartakeConnection con, String userId, String eventId) throws DAOException {
+    public Enrollment find(PartakeConnection con, EnrollmentPK pk) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getEnrollmentImpl(ccon, userId, eventId);
+            return getEnrollmentImpl(ccon, pk.getUserId(), pk.getEventId());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -97,13 +100,13 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     }
     
     @Override
-    public void removeEnrollment(PartakeConnection con, String userId, String eventId) throws DAOException {
+    public void remove(PartakeConnection con, EnrollmentPK pk) throws DAOException {
         // TODO Auto-generated method stub
         throw new RuntimeException("Not implemented yet");
     }
     
     @Override
-    public List<Enrollment> getEnrollmentsByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public List<Enrollment> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getParticipation(ccon, eventId);
@@ -113,12 +116,20 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     }
     
     @Override
-    public List<Enrollment> getEnrollmentsByUserId(PartakeConnection con, String userId) throws DAOException {
+    public List<Enrollment> findByUserId(PartakeConnection con, String userId) throws DAOException {
         try {
             return getEnrollmentsByUserIdImpl((CassandraConnection) con, userId);
         } catch (Exception e) {
             throw new DAOException(e);
         }
+    }
+    
+    @Override
+    public DataIterator<Enrollment> getIterator(PartakeConnection con) throws DAOException {
+        return new CassandraKeyColumnDataIterator<Enrollment>((CassandraConnection) con, 
+                new CassandraTableDescription(USERS_ENROLLMENT_PREFIX, USERS_ENROLLMENT_KEYSPACE, USERS_ENROLLMENT_COLUMNFAMILY, USERS_ENROLLMENT_CL_R, USERS_ENROLLMENT_CL_W),
+                new EnrollmentMapper((CassandraConnection) con, factory));
+                
     }
     
     @Override
@@ -194,7 +205,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     private List<Enrollment> getEnrollmentsByUserIdImpl(CassandraConnection con, String userId) throws Exception {
         String key = EVENTS_ENROLLMENT_PREFIX + userId;
 
-        ColumnIterator it = new ColumnIterator(con, factory, 
+        ColumnIterator it = new ColumnIterator(con, 
                 EVENTS_ENROLLMENT_KEYSPACE, key, EVENTS_ENROLLMENT_COLUMNFAMILY, false, EVENTS_ENROLLMENT_CL_R, EVENTS_ENROLLMENT_CL_W);
         
         List<Enrollment> enrollments = new ArrayList<Enrollment>();
@@ -204,7 +215,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             if (column == null) { continue; }
             String eventId = string(column.getName());
             
-            Enrollment enrollment = getEnrollment(con, userId, eventId);
+            Enrollment enrollment = find(con, new EnrollmentPK(userId, eventId)); 
             enrollments.add(enrollment);
         }
         
@@ -212,6 +223,19 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     }
     
     private Enrollment convertToEnrollment(CassandraConnection con, String eventId, ColumnOrSuperColumn cosc) throws DAOException {
+        return new EnrollmentMapper(con, factory).map(cosc, eventId);
+    }
+}
+
+class EnrollmentMapper extends ColumnOrSuperColumnKeyMapper<Enrollment> {
+
+    public EnrollmentMapper(CassandraConnection connection, PartakeDAOFactory factory) {
+        super(connection, factory);
+    }
+
+    @Override
+    public Enrollment map(ColumnOrSuperColumn cosc, String key) throws DAOException {
+        String eventId = key;
         SuperColumn superColumn = cosc.getSuper_column();
         if (superColumn == null) { return null; }
         
@@ -228,7 +252,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         for (Column column : superColumn.getColumns()) {
             String name = string(column.getName());
             if ("status".equals(name)) {
-                user = userDao.getUser(con, string(superColumn.getName()));
+                user = userDao.find(connection, string(superColumn.getName()));
                 status = ParticipationStatus.safeValueOf(string(column.getValue()));
                 modifiedAt2 = new Date(column.timestamp);
             } else if ("lastStatus".equals(name)) {
@@ -248,6 +272,12 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
             return new Enrollment(user.getId(), eventId, comment, status, vip, lastStatus, modifiedAt);
         } else {
             return new Enrollment(user.getId(), eventId, comment, status, vip, lastStatus, modifiedAt2);
-        }
+        }        
     }
+
+    @Override
+    public ColumnOrSuperColumn unmap(Enrollment t, long time) throws DAOException {
+        throw new UnsupportedOperationException();
+    }
+    
 }

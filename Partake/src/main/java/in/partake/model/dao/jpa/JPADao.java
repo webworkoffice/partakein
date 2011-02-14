@@ -1,12 +1,15 @@
 package in.partake.model.dao.jpa;
 
+import java.util.List;
 import java.util.UUID;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.PartakeModel;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
 
@@ -44,6 +47,7 @@ abstract class JPADao<T extends PartakeModel<T>> {
         return t.freeze();
     }
     
+    @Deprecated
     protected void create(PartakeConnection con, T t, Class<T> clazz) {
         if (t == null) { throw new NullPointerException(); }
         if (t.getPrimaryKey() == null) { throw new NullPointerException(); }
@@ -51,15 +55,21 @@ abstract class JPADao<T extends PartakeModel<T>> {
         EntityManager em = getEntityManager(con);
         em.persist(t.copy());
     }
-    
+
+    @Deprecated
     protected void createWithoutPrimaryKey(PartakeConnection con, T t, Class<T> clazz) {
         if (t == null) { throw new NullPointerException(); }
         
         EntityManager em = getEntityManager(con);
         em.persist(t.copy());        
     }
-    
-    protected void update(PartakeConnection con, T t, Class<T> clazz) {
+
+    @Deprecated
+    protected void createOrUpdate(PartakeConnection con, T t, Class<T> clazz) {
+        putImpl(con, t, clazz);
+    }
+
+    protected void putImpl(PartakeConnection con, T t, Class<T> clazz) {
         if (t == null) { throw new NullPointerException(); }
         if (t.getPrimaryKey() == null) { throw new NullPointerException(); }
         
@@ -73,11 +83,8 @@ abstract class JPADao<T extends PartakeModel<T>> {
         }
     }
     
-    protected void createOrUpdate(PartakeConnection con, T t, Class<T> clazz) {
-        update(con, t, clazz);
-    }
     
-    protected void remove(PartakeConnection con, Object primaryKey, Class<T> clazz) {
+    protected void removeImpl(PartakeConnection con, Object primaryKey, Class<T> clazz) {
         if (primaryKey == null) { throw new NullPointerException(); }
         
         EntityManager em = getEntityManager(con);
@@ -85,13 +92,21 @@ abstract class JPADao<T extends PartakeModel<T>> {
         em.remove(persisted);
     }
     
-    protected T find(PartakeConnection con, Object primaryKey, Class<T> clazz) {
+    protected T findImpl(PartakeConnection con, Object primaryKey, Class<T> clazz) {
         if (primaryKey == null) { throw new NullPointerException(); }
         
         EntityManager em = getEntityManager(con);
         T persisted = em.find(clazz, primaryKey);
         return freeze(persisted);
     }
-    
-    
+
+    protected DataIterator<T> getIteratorImpl(PartakeConnection con, String tableName, Class<T> clazz) {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT t FROM " + tableName + " t"); // TODO: tableName は tainted じゃないものを。
+        
+        @SuppressWarnings("unchecked")
+        List<T> list = q.getResultList();
+        
+        return new JPAPartakeModelDataIterator<T>(em, list, clazz, false);        
+    }
 }

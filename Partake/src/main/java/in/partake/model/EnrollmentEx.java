@@ -25,8 +25,8 @@ public class EnrollmentEx extends Enrollment {
                 if (lhs == null) { return -1; }
                 if (rhs == null) { return 1; }
 
-                if ( lhs.isVIP() && !rhs.isVIP()) { return  1; } 
-                if (!lhs.isVIP() &&  rhs.isVIP()) { return -1; } 
+                if ( lhs.isVIP() && !rhs.isVIP()) { return -1; } 
+                if (!lhs.isVIP() &&  rhs.isVIP()) { return  1; } 
                 
                 if (lhs.getPriority() > rhs.getPriority()) { return -1; }
                 if (lhs.getPriority() < rhs.getPriority()) { return 1; }

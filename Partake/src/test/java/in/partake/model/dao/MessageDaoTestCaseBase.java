@@ -33,14 +33,14 @@ public abstract class MessageDaoTestCaseBase extends AbstractDaoTestCaseBase {
     	        String eventId = "eventId-" + System.currentTimeMillis();
     	        
     	        original = new Message(dao.getFreshId(con), userId, "some message", eventId, date);
-    	        dao.addMessage(con, original);
+    	        dao.put(con, original);
     	        con.commit();
     	    }
     
     	    Message target;
     	    {
     	        con.beginTransaction();
-    	        target = dao.getMessage(con, original.getId());
+    	        target = dao.find(con, original.getId());
     	        con.commit();
     	    }
     	    

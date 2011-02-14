@@ -12,16 +12,19 @@ import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SuperColumn;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.EventRelation;
+import in.partake.model.dto.pk.EventRelationPK;
 
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 // * from id
 //    eventrelation:id:<source event id>
-//        eventId / {
+//        <dst eventId> / {
 //            required/<true or false>
 //            priority/<true or false>
 //        }
@@ -41,86 +44,130 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
     }
     
 	@Override
-	public List<EventRelation> getEventRelations(PartakeConnection con, String eventId) throws DAOException {		
+	public void put(PartakeConnection con, EventRelation relation) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-        	return getEventRelations(ccon.getClient(), eventId);
+        	putImpl(ccon, relation, con.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
 	}
 	
 	@Override
-	public void setEventRelations(PartakeConnection con, String eventId, List<EventRelation> relations) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-        	setEventRelations(ccon.getClient(), eventId, relations, con.getAcquiredTime());
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+	public EventRelation find(PartakeConnection con, EventRelationPK key) throws DAOException {
+	    // TODO Auto-generated method stub
+	    throw new RuntimeException("Not implemented yet");
+	}
+		
+	@Override
+	public void remove(PartakeConnection con, EventRelationPK key) throws DAOException {
+	    // TODO Auto-generated method stub
+	    throw new RuntimeException("Not implemented yet");
 	}
 	
+	@Override
+    public DataIterator<EventRelation> getIterator(PartakeConnection con) throws DAOException {
+        return new CassandraKeyColumnDataIterator<EventRelation>((CassandraConnection) con,
+                new CassandraTableDescription(EVENT_RELATION_PREFIX, EVENT_RELATION_KEYSPACE, EVENT_RELATION_COLUMNFAMILY, EVENT_RELATION_CL_R, EVENT_RELATION_CL_W),        
+                new EventRelationMapper((CassandraConnection) con, factory));
+    }
+
 	@Override
 	public void truncate(PartakeConnection con) throws DAOException {
 	    removeAllData((CassandraConnection) con);
 	}
 	
+    @Override
+    public List<EventRelation> findByEventId(PartakeConnection con, String eventId) throws DAOException {       
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            return getEventRelations(ccon, eventId);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public void removeByEventId(PartakeConnection con, String eventId) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            removeByEventIdImpl(ccon.getClient(), eventId, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
 	// ----------------------------------------------------------------------
 	
-	private List<EventRelation> getEventRelations(Client client, String eventId) throws Exception {
+	private List<EventRelation> getEventRelations(CassandraConnection con, String eventId) throws Exception {
 		String key = EVENT_RELATION_PREFIX + eventId;
-		List<ColumnOrSuperColumn> coscs = getSlice(client, EVENT_RELATION_KEYSPACE, EVENT_RELATION_COLUMNFAMILY, key, EVENT_RELATION_CL_R);
 		
-		List<EventRelation> result = new ArrayList<EventRelation>();
+		ArrayList<EventRelation> relations = new ArrayList<EventRelation>();
 		
-		EventRelationMapper mapper = new EventRelationMapper();
-		for (ColumnOrSuperColumn cosc : coscs) {
-			result.add(mapper.unmap(cosc));
+		ColumnIterator it = new ColumnIterator(con, EVENT_RELATION_KEYSPACE, key, EVENT_RELATION_COLUMNFAMILY, false, EVENT_RELATION_CL_R, EVENT_RELATION_CL_W);
+		EventRelationMapper mapper = new EventRelationMapper(con, factory);
+		while (it.hasNext()) {
+		    ColumnOrSuperColumn cosc = it.next();
+		    EventRelation rel = mapper.map(cosc, eventId);
+		    relations.add(rel);
 		}
-		
-		return result;
+
+		return relations;		
 	}
 	
-	public void setEventRelations(Client client, String eventId, List<EventRelation> relations, long time) throws Exception {
-		String key = EVENT_RELATION_PREFIX + eventId;
+	private void putImpl(CassandraConnection con, EventRelation relation, long time) throws Exception {
+		String key = EVENT_RELATION_PREFIX + relation.getSrcEventId();
+		
+		EventRelationMapper mapper = new EventRelationMapper(con, factory);
+		ColumnOrSuperColumn cosc = mapper.unmap(relation, time);
+		
 		List<Mutation> mutations = new ArrayList<Mutation>();
-
-		EventRelationMapper mapper = new EventRelationMapper();
-		for (EventRelation relation : relations) {
-			mutations.add(mapper.map(relation, time));
-		}
+		mutations.add(new Mutation().setColumn_or_supercolumn(cosc));
 	    
-	    client.batch_mutate(EVENT_RELATION_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENT_RELATION_COLUMNFAMILY, mutations)), EVENT_RELATION_CL_W);
+	    con.getClient().batch_mutate(EVENT_RELATION_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENT_RELATION_COLUMNFAMILY, mutations)), EVENT_RELATION_CL_W);
 	}	
+	
+	private void removeByEventIdImpl(Client client, String eventId, long time) throws Exception {
+	    // TODO: 
+	    throw new RuntimeException("Not implemented yet");
+	}
 }
 
-class EventRelationMapper {
+class EventRelationMapper extends ColumnOrSuperColumnKeyMapper<EventRelation> {
+ 
+    public EventRelationMapper(CassandraConnection connection, PartakeDAOFactory factory) {
+        super(connection, factory);
+    }
     
-	public Mutation map(EventRelation relation, long time) {
-		SuperColumn superColumn = new SuperColumn();
-		superColumn.setName(bytes(relation.getDstEventId()));
-		superColumn.addToColumns(new Column(bytes("required"), relation.isRequired() ? CassandraDao.TRUE : CassandraDao.FALSE, time));
-		superColumn.addToColumns(new Column(bytes("priority"), relation.hasPriority() ? CassandraDao.TRUE : CassandraDao.FALSE, time));
+    @Override
+    public EventRelation map(ColumnOrSuperColumn cosc, String srcEventId) throws DAOException {
+        SuperColumn superColumn = cosc.getSuper_column();
+        String dstEventId = string(superColumn.getName());
+        
+        EventRelation relation = new EventRelation();
+        relation.setSrcEventId(srcEventId);
+        relation.setDstEventId(dstEventId);
+        
+        for (Column column : superColumn.getColumns()) {
+            String name = string(column.getName());
+            if ("required".equals(name)) {
+                relation.setRequired("true".equals(string(column.getValue())));
+            } else if ("priority".equals(name)) {
+                relation.setPriority("true".equals(string(column.getValue())));
+            }
+        }
 
-		ColumnOrSuperColumn cosc = new ColumnOrSuperColumn().setSuper_column(superColumn);
-		return new Mutation().setColumn_or_supercolumn(cosc);
-	}
-	
-	public EventRelation unmap(ColumnOrSuperColumn cosc) {
-		SuperColumn superColumn = cosc.getSuper_column();
-		String eventId = string(superColumn.getName());
-		
-		EventRelation relation = new EventRelation();
-		relation.setDstEventId(eventId);
-		for (Column column : superColumn.getColumns()) {
-			String name = string(column.getName());
-			if ("required".equals(name)) {
-				relation.setRequired("true".equals(string(column.getValue())));
-			} else if ("priority".equals(name)) {
-				relation.setPriority("true".equals(string(column.getValue())));
-			}
-		}
+        return relation.freeze();
+    }
+    
+    @Override
+    public ColumnOrSuperColumn unmap(EventRelation relation, long time) throws DAOException {
+        SuperColumn superColumn = new SuperColumn();
+        superColumn.setName(bytes(relation.getDstEventId()));
+        superColumn.addToColumns(new Column(bytes("required"), relation.isRequired() ? CassandraDao.TRUE : CassandraDao.FALSE, time));
+        superColumn.addToColumns(new Column(bytes("priority"), relation.hasPriority() ? CassandraDao.TRUE : CassandraDao.FALSE, time));
 
-		return relation.freeze();
-	}
+        ColumnOrSuperColumn cosc = new ColumnOrSuperColumn().setSuper_column(superColumn);
+        return cosc;
+    }
 }

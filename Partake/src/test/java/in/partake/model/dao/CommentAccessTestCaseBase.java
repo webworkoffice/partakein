@@ -28,9 +28,9 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
             String commentId = factory.getCommentAccess().getFreshId(con);
             
             Comment original = new Comment(commentId, "eventId", "userId", "comment content", new Date());
-            factory.getCommentAccess().addComment(con, original);
+            factory.getCommentAccess().put(con, original);
             
-            Comment target = factory.getCommentAccess().getComment(con, commentId);
+            Comment target = factory.getCommentAccess().find(con, commentId);
             con.commit();
             
             Assert.assertNotNull(target);
@@ -58,9 +58,9 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
             con.beginTransaction();
             String commentId = factory.getCommentAccess().getFreshId(con);
             Comment original = new Comment(commentId, "eventId", "userId", builder.toString(), new Date());
-            factory.getCommentAccess().addComment(con, original);
+            factory.getCommentAccess().put(con, original);
             
-            Comment target = factory.getCommentAccess().getComment(con, commentId);
+            Comment target = factory.getCommentAccess().find(con, commentId);
             con.commit();
             
             Assert.assertTrue(target.isFrozen());
@@ -78,7 +78,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
         try {
             con.beginTransaction();
             Comment original = new Comment(null, "eventId", "userId", "comment content", new Date());
-            factory.getCommentAccess().addComment(con, original);
+            factory.getCommentAccess().put(con, original);
             con.commit();
             
             Assert.fail();
@@ -101,20 +101,20 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
                 commentId = factory.getCommentAccess().getFreshId(con);
                 original.setId(commentId);
                 
-                factory.getCommentAccess().addComment(con, original);
+                factory.getCommentAccess().put(con, original);
                 con.commit();
             }
 
             {
                 con.beginTransaction();
-                factory.getCommentAccess().removeComment(con, commentId);
+                factory.getCommentAccess().remove(con, commentId);
                 con.commit();
             }
 
             Comment target;
             {
                 con.beginTransaction();
-                target = factory.getCommentAccess().getComment(con, commentId);
+                target = factory.getCommentAccess().find(con, commentId);
                 con.commit();
             }
 
@@ -137,27 +137,27 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
                 commentId = factory.getCommentAccess().getFreshId(con);
                 original.setId(commentId);
                 
-                factory.getCommentAccess().addComment(con, original);
+                factory.getCommentAccess().put(con, original);
                 
                 con.commit();
             }
 
             {
                 con.beginTransaction();
-                factory.getCommentAccess().removeComment(con, commentId);
+                factory.getCommentAccess().remove(con, commentId);
                 con.commit();
             }
 
             {
                 con.beginTransaction();
-                factory.getCommentAccess().addComment(con, original);
+                factory.getCommentAccess().put(con, original);
                 con.commit();
             }
 
             Comment target;
             {
                 con.beginTransaction();
-                target = factory.getCommentAccess().getComment(con, commentId);
+                target = factory.getCommentAccess().find(con, commentId);
                 con.commit();
             }
 
@@ -181,7 +181,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
             for (int i = 0; i < 10; ++i) {
                 for (int j = 0; j < 10; ++j) {
                     Comment original = new Comment(prefix + "commentId-" + i + "-" + j, prefix + "eventId" + i, "userId", "comment content", PDate.getCurrentDate().getDate());
-                    factory.getCommentAccess().addComment(con, original);
+                    factory.getCommentAccess().put(con, original);
                 }
             }
 
@@ -222,7 +222,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
             // create 
             for (int i = 0; i < 10; ++i) {
                 Comment original = new Comment(prefix + "commentId-" + i, prefix + "eventId", "userId", "comment content", PDate.getCurrentDate().getDate());
-                factory.getCommentAccess().addComment(con, original);
+                factory.getCommentAccess().put(con, original);
             }
             
             // update

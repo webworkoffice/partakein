@@ -13,6 +13,7 @@ import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.Cassandra.Client;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEventReminderAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.EventReminder;
@@ -36,7 +37,7 @@ class CassandraEventReminderDao extends CassandraDao implements IEventReminderAc
     }
     
     @Override
-    public EventReminder getEventReminderStatus(PartakeConnection con, String eventId) throws DAOException {
+    public EventReminder find(PartakeConnection con, String eventId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getEventReminderStatusImpl(ccon.getClient(), eventId);
@@ -73,7 +74,7 @@ class CassandraEventReminderDao extends CassandraDao implements IEventReminderAc
     }
     
     @Override
-    public void updateEventReminderStatus(PartakeConnection con, EventReminder embryo) throws DAOException {
+    public void put(PartakeConnection con, EventReminder embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             updateEventReminderStatusImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
@@ -92,6 +93,19 @@ class CassandraEventReminderDao extends CassandraDao implements IEventReminderAc
         mutations.add(createMutation(DIRECTMESSAGES_REMINDER_KEY_BEFORE_THEDAY,           embryo.getSentDateOfBeforeTheDay(),          time));
         
         client.batch_mutate(DIRECTMESSAGES_REMINDER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGES_REMINDER_COLUMNFAMILY, mutations)), DIRECTMESSAGES_REMINDER_CL_W);        
+    }
+    
+    @Override
+    public void remove(PartakeConnection con, String key) throws DAOException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public DataIterator<EventReminder> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con, 
+                new CassandraTableDescription(DIRECTMESSAGES_REMINDER_PREFIX, DIRECTMESSAGES_REMINDER_KEYSPACE, DIRECTMESSAGES_REMINDER_COLUMNFAMILY, DIRECTMESSAGES_REMINDER_CL_R, DIRECTMESSAGES_REMINDER_CL_W),
+                this);
     }
     
     @Override

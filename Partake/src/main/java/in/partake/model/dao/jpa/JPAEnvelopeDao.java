@@ -1,7 +1,5 @@
 package in.partake.model.dao.jpa;
 
-import java.util.List;
-
 import javax.persistence.Query;
 import javax.persistence.EntityManager;
 
@@ -19,20 +17,23 @@ public class JPAEnvelopeDao extends JPADao<Envelope> implements IEnvelopeAccess 
     }
     
     @Override
-    public void enqueueEnvelope(PartakeConnection con, Envelope envelope) throws DAOException {
-        createOrUpdate(con, envelope, Envelope.class);
+    public void put(PartakeConnection con, Envelope envelope) throws DAOException {
+        putImpl(con, envelope, Envelope.class);
+    }
+    
+    @Override
+    public Envelope find(PartakeConnection con, String key) throws DAOException {
+        return findImpl(con, key, Envelope.class);
+    }
+    
+    @Override
+    public void remove(PartakeConnection con, String key) throws DAOException {
+        removeImpl(con, key, Envelope.class);
     }
 
     @Override
-    public DataIterator<Envelope> getEnvelopeIterator(PartakeConnection con) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT envelope FROM Envelopes envelope"); 
-        @SuppressWarnings("unchecked")
-        List<Envelope> envelopes = q.getResultList();
-        
-        // TODO: copy しないとだめかな？
-        
-        return new JPAPartakeModelDataIterator<Envelope>(em, envelopes, Envelope.class, true);
+    public DataIterator<Envelope> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl(con, "Envelopes", Envelope.class);
     }
 
     @Override

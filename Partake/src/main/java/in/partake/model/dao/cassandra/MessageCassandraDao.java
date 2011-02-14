@@ -74,10 +74,6 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     private static final ConsistencyLevel DIRECTMESSAGE_EVENT_CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel DIRECTMESSAGE_EVENT_CL_W = ConsistencyLevel.ALL;
 
-
-    
-
-    
     public MessageCassandraDao(CassandraDAOFactory factory) {
         super(factory);
     }
@@ -88,7 +84,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     }
     
     @Override
-    public Message getMessage(PartakeConnection con, String messageId) throws DAOException {
+    public Message find(PartakeConnection con, String messageId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getMessageById(ccon.getClient(), messageId, ccon.getAcquiredTime());
@@ -104,7 +100,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
      * @throws DAOException
      */
     @Override
-    public void addMessage(PartakeConnection con, Message embryo) throws DAOException {
+    public void put(PartakeConnection con, Message embryo) throws DAOException {
         if (embryo.getId() == null) { throw new NullPointerException(); }
         
         CassandraConnection ccon = (CassandraConnection) con;
@@ -119,7 +115,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     }
     
     @Override
-    public DataIterator<Message> getMessagesByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public DataIterator<Message> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         try {
             return getUserMessageIteratorImpl((CassandraConnection) con, eventId);
         } catch (Exception e) {
@@ -127,6 +123,17 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
         }
     }
 
+    @Override
+    public void remove(PartakeConnection con, String key) throws DAOException {
+        // TODO Auto-generated method stub        
+        throw new RuntimeException("Not implemented yet.");
+    }
+    
+    @Override
+    public DataIterator<Message> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con, new CassandraTableDescription(DIRECTMESSAGE_PREFIX, DIRECTMESSAGE_KEYSPACE, DIRECTMESSAGE_COLUMNFAMILY, DIRECTMESSAGE_CL_R, DIRECTMESSAGE_CL_W), this);
+    }
+    
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         this.removeAllData((CassandraConnection) con);
@@ -197,7 +204,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
         String key = DIRECTMESSAGE_EVENT_PREFIX + eventId;
 
         ColumnIterator iterator = 
-            new ColumnIterator(con, factory, DIRECTMESSAGE_EVENT_KEYSPACE, key, DIRECTMESSAGE_EVENT_COLUMNFAMILY,
+            new ColumnIterator(con, DIRECTMESSAGE_EVENT_KEYSPACE, key, DIRECTMESSAGE_EVENT_COLUMNFAMILY,
                             true, DIRECTMESSAGE_EVENT_CL_R, DIRECTMESSAGE_EVENT_CL_W);
 
         return new CassandraColumnDataIterator<Message>(iterator, new ColumnOrSuperColumnMapper<Message>(con, factory) {
@@ -206,7 +213,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
                 Column column = cosc.getColumn();
                 String messageId = string(column.getValue());
                 
-                return factory.getDirectMessageAccess().getMessage(connection, messageId);               
+                return factory.getDirectMessageAccess().find(connection, messageId);               
             }
             
             public ColumnOrSuperColumn unmap(Message t) throws DAOException {

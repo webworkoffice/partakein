@@ -4,6 +4,7 @@ import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.TwitterLinkage;
@@ -38,7 +39,7 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
     }
 
 	@Override
-	public void addTwitterLinkage(PartakeConnection con, TwitterLinkage embryo) throws DAOException {
+	public void put(PartakeConnection con, TwitterLinkage embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             addTwitterLinkage(ccon.getClient(), embryo, ccon.getAcquiredTime());
@@ -48,7 +49,7 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
 	}
 
     @Override
-    public TwitterLinkage getTwitterLinkageById(PartakeConnection con, int twitterId) throws DAOException {
+    public TwitterLinkage find(PartakeConnection con, String twitterId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getTwitterLinkageById(ccon.getClient(), twitterId);
@@ -58,14 +59,26 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
     }
     
     @Override
+    public void remove(PartakeConnection con, String twitterId) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public DataIterator<TwitterLinkage> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con,
+                new CassandraTableDescription(TWITTER_PREFIX, TWITTER_KEYSPACE, TWITTER_COLUMNFAMILY, TWITTER_CL_R, TWITTER_CL_W),
+                this);
+    }
+    
+    @Override
     public void truncate(PartakeConnection con) throws DAOException {
         removeAllData((CassandraConnection) con);
     }
 	
 	// ----------------------------------------------------------------------
 	
-	private int addTwitterLinkage(Client client, TwitterLinkage embryo, long time) throws Exception {
-		int id = embryo.getTwitterId();
+	private String addTwitterLinkage(Client client, TwitterLinkage embryo, long time) throws Exception {
+		String id = embryo.getTwitterId();
     	String key = TWITTER_PREFIX + id;
 
         Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
@@ -86,7 +99,8 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
 	}
 
 	
-	private TwitterLinkage getTwitterLinkageById(Client client, int twitterId) throws Exception {
+	private TwitterLinkage getTwitterLinkageById(Client client, String twitterIdStr) throws Exception {
+	    int twitterId = Integer.parseInt(twitterIdStr); // may throw NumberFormatException
 		String key = TWITTER_PREFIX + twitterId;
     	
         SlicePredicate predicate = new SlicePredicate();

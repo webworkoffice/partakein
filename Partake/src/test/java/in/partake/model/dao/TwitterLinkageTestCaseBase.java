@@ -24,14 +24,14 @@ public abstract class TwitterLinkageTestCaseBase extends AbstractDaoTestCaseBase
             TwitterLinkage original = new TwitterLinkage(1, "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId");
             {
                 con.beginTransaction();
-                dao.addTwitterLinkage(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
             TwitterLinkage target;
             {
                 con.beginTransaction();
-                target = dao.getTwitterLinkageById(con, 1);
+                target = dao.find(con, "1");
                 con.commit();
             }
             

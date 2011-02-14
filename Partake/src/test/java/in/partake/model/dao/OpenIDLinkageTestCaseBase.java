@@ -1,5 +1,7 @@
 package in.partake.model.dao;
 
+import in.partake.model.dto.OpenIDLinkage;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,14 +22,14 @@ public abstract class OpenIDLinkageTestCaseBase extends AbstractDaoTestCaseBase 
         try {
             {
                 con.beginTransaction();
-                dao.addOpenID(con, "identifier", "userId");
+                dao.put(con, new OpenIDLinkage("identifier", "userId"));
                 con.commit();
             }
             
             String userId;
             {
                 con.beginTransaction();
-                userId = dao.getUserId(con, "identifier");
+                userId = dao.find(con, "identifier").getUserId();
                 con.commit();
             }
             
@@ -43,24 +45,24 @@ public abstract class OpenIDLinkageTestCaseBase extends AbstractDaoTestCaseBase 
         try {
             {
                 con.beginTransaction();
-                dao.addOpenID(con, "identifier", "userId");
+                dao.put(con, new OpenIDLinkage("identifier", "userId"));
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                dao.removeOpenID(con, "identifier");
+                dao.remove(con, "identifier");
                 con.commit();
             }
             
-            String userId;
+            OpenIDLinkage linkage;
             {
                 con.beginTransaction();
-                userId = dao.getUserId(con, "identifier");
+                linkage = dao.find(con, "identifier");
                 con.commit();
             }
             
-            Assert.assertNull(userId);
+            Assert.assertNull(linkage);
         } finally {
             con.invalidate();
         }
@@ -72,26 +74,26 @@ public abstract class OpenIDLinkageTestCaseBase extends AbstractDaoTestCaseBase 
         try {
             {
                 con.beginTransaction();
-                dao.addOpenID(con, "identifier", "userId");
+                dao.put(con, new OpenIDLinkage("identifier", "userId"));
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                dao.removeOpenID(con, "identifier");
+                dao.remove(con, "identifier");
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                dao.addOpenID(con, "identifier", "userId");
+                dao.put(con, new OpenIDLinkage("identifier", "userId"));
                 con.commit();
             }
             
             String userId;
             {
                 con.beginTransaction();
-                userId = dao.getUserId(con, "identifier");
+                userId = dao.find(con, "identifier").getUserId();
                 con.commit();
             }
             

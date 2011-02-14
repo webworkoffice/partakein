@@ -23,8 +23,8 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
         try {
             con.beginTransaction();
             UserPreference original = new UserPreference("userId", true, true, true);
-            dao.setPreference(con, original);
-            UserPreference target = dao.getPreference(con, "userId");
+            dao.put(con, original);
+            UserPreference target = dao.find(con, "userId");
             
             con.commit();
             
@@ -43,13 +43,13 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
             UserPreference original1 = new UserPreference("userId", true, true, true);
             {
                 con.beginTransaction();
-                dao.setPreference(con, original1);
+                dao.put(con, original1);
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                UserPreference target = dao.getPreference(con, "userId");
+                UserPreference target = dao.find(con, "userId");
                 Assert.assertTrue(target.isFrozen());
                 Assert.assertEquals(original1, target);
                 con.commit();
@@ -58,13 +58,13 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
             UserPreference original2 = new UserPreference("userId", true, true, false);
             {
                 con.beginTransaction();
-                dao.setPreference(con, original2);
+                dao.put(con, original2);
                 con.commit();
             }
 
             {
                 con.beginTransaction();
-                UserPreference target = dao.getPreference(con, "userId");
+                UserPreference target = dao.find(con, "userId");
                 Assert.assertTrue(target.isFrozen());
                 Assert.assertEquals(original2, target);
                 con.commit();
@@ -84,7 +84,7 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
             UserPreference original = new UserPreference(null, true, true, true);
             
             // should throw IllegalArgumentException
-            dao.setPreference(con, original);
+            dao.put(con, original);
             
             con.commit();
         } finally {            
@@ -100,7 +100,7 @@ public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase
             con.beginTransaction();
             String unusedUserId = "userId" + System.currentTimeMillis();
             
-            UserPreference target = dao.getPreference(con, unusedUserId);
+            UserPreference target = dao.find(con, unusedUserId);
             con.commit();
 
             Assert.assertNull(target);

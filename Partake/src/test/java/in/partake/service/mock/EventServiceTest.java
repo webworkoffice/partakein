@@ -27,9 +27,9 @@ public class EventServiceTest extends MockServiceTestBase {
         IUserAccess userAccess = getFactory().getUserAccess();
         ITwitterLinkageAccess twitterAccess = getFactory().getTwitterLinkageAccess();
         
-        when(eventAccess.getEvent(any(MockConnection.class), eq("event1"))).thenReturn(createEvent("event1"));
-        when(userAccess.getUser(any(MockConnection.class), eq("ownerId"))).thenReturn(createUser("ownerId"));
-        when(twitterAccess.getTwitterLinkageById(any(MockConnection.class), eq(-1))).thenReturn(createTwitterLinkage(-1, "ownerId"));
+        when(eventAccess.find(any(MockConnection.class), eq("event1"))).thenReturn(createEvent("event1"));
+        when(userAccess.find(any(MockConnection.class), eq("ownerId"))).thenReturn(createUser("ownerId"));
+        when(twitterAccess.find(any(MockConnection.class), eq("-1"))).thenReturn(createTwitterLinkage(-1, "ownerId"));
     }
     
     @Test

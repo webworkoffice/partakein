@@ -1,16 +1,21 @@
 package in.partake.model.dto;
 
+import in.partake.model.dto.pk.EventRelationPK;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 @Entity(name = "EventRelations")
+@IdClass(EventRelation.class)
 public class EventRelation extends PartakeModel<EventRelation> {
-    @Column @Index
+    @Id @Index
     private String srcEventId;
-    @Column @Index
+    @Id @Index
 	private String dstEventId;
     @Column
 	private boolean required; // true if the original event requires this event.
@@ -34,9 +39,7 @@ public class EventRelation extends PartakeModel<EventRelation> {
     
     @Override
     public Object getPrimaryKey() {
-        // TODO: There is no primary key for event relation now.
-        // TODO: Should we add some sequence key?
-        return null;
+        return new EventRelationPK(srcEventId, dstEventId);
     }
     
     @Override

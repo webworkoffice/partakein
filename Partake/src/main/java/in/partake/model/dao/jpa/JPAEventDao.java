@@ -19,27 +19,22 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
     }
 
     @Override
-    public Event getEvent(PartakeConnection con, String id) throws DAOException {
-        return find(con, id, Event.class);
+    public Event find(PartakeConnection con, String id) throws DAOException {
+        return findImpl(con, id, Event.class);
     }
 
     @Override
-    public void addEvent(PartakeConnection con, Event embryo) throws DAOException {
-        createOrUpdate(con, embryo, Event.class);
+    public void put(PartakeConnection con, Event embryo) throws DAOException {
+        putImpl(con, embryo, Event.class);
     }
 
     @Override
-    public void updateEvent(PartakeConnection con, Event embryo) throws DAOException {
-        update(con, embryo, Event.class);
+    public void remove(PartakeConnection con, String eventId) throws DAOException {
+        removeImpl(con, eventId, Event.class);
     }
 
     @Override
-    public void removeEvent(PartakeConnection con, String eventId) throws DAOException {
-        remove(con, eventId, Event.class);
-    }
-
-    @Override
-    public DataIterator<Event> getAllEventIterators(PartakeConnection con) throws DAOException {
+    public DataIterator<Event> getIterator(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT event FROM Events event");
         
@@ -52,7 +47,7 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
     }
 
     @Override
-    public List<Event> getEventsByOwner(PartakeConnection con, String userId) throws DAOException {
+    public List<Event> findByOwnerId(PartakeConnection con, String userId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT event FROM Events event WHERE event.ownerId = :userId");
         q.setParameter("userId", userId);
@@ -73,6 +68,7 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 
 	@Override
 	public boolean isRemoved(PartakeConnection con, String eventId) throws DAOException {
-		throw new UnsupportedOperationException();
+	    // TODO:
+	    throw new RuntimeException("Not implemented yet");
 	}
 }

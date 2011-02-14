@@ -29,14 +29,14 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 original.setId(userId);
-                dao.createUser(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
             User target;
             {
                 con.beginTransaction();
-                target = dao.getUser(con, userId);
+                target = dao.find(con, userId);
                 con.commit();
             }
             
@@ -62,21 +62,21 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 original.setId(userId);
-                dao.createUser(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                User user = new User(dao.getUser(con, userId));
+                User user = new User(dao.find(con, userId));
                 user.setCalendarId("newCalendarId");
-                dao.updateUser(con, user);
+                dao.put(con, user);
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                dao.getUser(con, userId);
+                dao.find(con, userId);
                 con.commit();
             }
             
@@ -94,14 +94,14 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 User user1 = new User(userId, 1, new Date(), "calendarId");
-                dao.createUser(con, user1);
+                dao.put(con, user1);
                 con.commit();
             }
             
             {
                 con.beginTransaction();
                 User user2 = new User(userId, 2, new Date(), "calendarId");
-                dao.updateUser(con, user2);
+                dao.put(con, user2);
                 con.commit();
             }
             
@@ -120,10 +120,10 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 User user1 = new User(userId, 1, new Date(), "calendarId");
-                dao.createUser(con, user1);
+                dao.put(con, user1);
 
                 user1.setTwitterId(2);
-                dao.updateUser(con, user1);
+                dao.put(con, user1);
                 con.commit();
             }
         } finally {
@@ -140,10 +140,10 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 User user1 = new User(userId, 1, new Date(), "calendarId");
-                dao.createUser(con, user1);
+                dao.put(con, user1);
 
                 User user2 = new User(userId, 2, new Date(), "calendarId");
-                dao.updateUser(con, user2);
+                dao.put(con, user2);
                 con.commit();
             }
         } finally {
@@ -160,10 +160,10 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 User user1 = new User(userId, 1, new Date(), "calendarId");
-                dao.updateUser(con, user1);
+                dao.put(con, user1);
 
                 User user2 = new User(userId, 2, new Date(), "calendarId");
-                dao.updateUser(con, user2);
+                dao.put(con, user2);
                 con.commit();
             }
         } finally {
@@ -185,7 +185,7 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 userId = dao.getFreshId(con);
                 original.setId(userId);
-                dao.createUser(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
@@ -199,7 +199,7 @@ public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
             User target;
             {
                 con.beginTransaction();
-                target = dao.getUser(con, userId);
+                target = dao.find(con, userId);
                 con.commit();
             }
             

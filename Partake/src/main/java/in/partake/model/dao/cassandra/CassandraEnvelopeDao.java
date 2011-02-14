@@ -43,10 +43,8 @@ class CassandraEnvelopeDao extends CassandraDao implements IEnvelopeAccess {
         return Util.getTimeString(new Date()) + UUID.randomUUID().toString();
     }
 
-
-
     @Override
-    public void enqueueEnvelope(PartakeConnection con, Envelope envelope) throws DAOException {
+    public void put(PartakeConnection con, Envelope envelope) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             addEnvelope(ccon.getClient(), envelope, ccon.getAcquiredTime());
@@ -54,9 +52,21 @@ class CassandraEnvelopeDao extends CassandraDao implements IEnvelopeAccess {
             throw new DAOException(e);
         }                    
     }
+    
+    @Override
+    public Envelope find(PartakeConnection con, String key) throws DAOException {
+        // TODO Auto-generated method stub        
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public void remove(PartakeConnection con, String key) throws DAOException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("Not implemented yet");
+    }
 
     @Override
-    public DataIterator<Envelope> getEnvelopeIterator(PartakeConnection con) throws DAOException {
+    public DataIterator<Envelope> getIterator(PartakeConnection con) throws DAOException {
         try {
             return getEnvelopeIteratorImpl((CassandraConnection) con);
         } catch (Exception e) {
@@ -69,7 +79,7 @@ class CassandraEnvelopeDao extends CassandraDao implements IEnvelopeAccess {
         this.removeAllData((CassandraConnection) con);
     }
 
-    //
+    // ----------------------------------------------------------------------
 
     private void addEnvelope(Client client, Envelope envelope, long time) throws Exception {  
         String key = DIRECTMESSAGE_ENVELOPE_PREFIX;
@@ -116,7 +126,7 @@ class CassandraEnvelopeDao extends CassandraDao implements IEnvelopeAccess {
         String key = DIRECTMESSAGE_ENVELOPE_PREFIX;
 
         ColumnIterator iterator = 
-            new ColumnIterator(con, factory, DIRECTMESSAGE_ENVELOPE_KEYSPACE, key, DIRECTMESSAGE_ENVELOPE_COLUMNFAMILY, 
+            new ColumnIterator(con, DIRECTMESSAGE_ENVELOPE_KEYSPACE, key, DIRECTMESSAGE_ENVELOPE_COLUMNFAMILY, 
                     false, DIRECTMESSAGE_ENVELOPE_CL_R, DIRECTMESSAGE_ENVELOPE_CL_W);
 
         return new CassandraColumnDataIterator<Envelope>(iterator, new ColumnOrSuperColumnMapper<Envelope>(con, factory) {

@@ -1,8 +1,8 @@
 package in.partake.model.dao;
 
-public interface IFeedAccess extends ITruncatable {
+import in.partake.model.dto.FeedLinkage;
+
+public interface IFeedAccess extends IAccess<FeedLinkage, String> {
     public String getFreshId(PartakeConnection con) throws DAOException;
-	public String getFeedIdByEventId(PartakeConnection con, String eventId) throws DAOException;
-	public String getEventIdByFeedId(PartakeConnection con, String feedId) throws DAOException;
-	public void addFeedId(PartakeConnection con, String feedId, String eventId) throws DAOException;
+	public String findByEventId(PartakeConnection con, String eventId) throws DAOException;
 }

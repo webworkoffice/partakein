@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.ICalendarLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.CalendarLinkage;
@@ -13,27 +14,27 @@ import in.partake.model.dto.CalendarLinkage;
 class JPACalendarLinkageDao extends JPADao<CalendarLinkage> implements ICalendarLinkageAccess {
 
     @Override
-    public String getFreshCalendarId(PartakeConnection con) throws DAOException {
+    public String getFreshId(PartakeConnection con) throws DAOException {
         return getFreshIdImpl(con, CalendarLinkage.class);
     }
 
     @Override
-    public void addCalendarLinkage(PartakeConnection con, CalendarLinkage embryo) throws DAOException {
-        createOrUpdate(con, embryo, CalendarLinkage.class);
+    public void put(PartakeConnection con, CalendarLinkage embryo) throws DAOException {
+        putImpl(con, embryo, CalendarLinkage.class);
     }
 
     @Override
-    public CalendarLinkage getCalendarLinkage(PartakeConnection con, String id) throws DAOException {
-        return find(con, id, CalendarLinkage.class);
+    public CalendarLinkage find(PartakeConnection con, String id) throws DAOException {
+        return findImpl(con, id, CalendarLinkage.class);
     }
     
     @Override
-    public void removeCalendarLinkage(PartakeConnection con, String id) throws DAOException {
-        remove(con, id, CalendarLinkage.class);
+    public void remove(PartakeConnection con, String id) throws DAOException {
+        removeImpl(con, id, CalendarLinkage.class);
     }
     
     @Override
-    public CalendarLinkage getCalendarLinkageByUserId(PartakeConnection con, String userId) throws DAOException {
+    public CalendarLinkage findByUserId(PartakeConnection con, String userId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT cl FROM CalendarLinkages cl WHERE cl.userId = :userId");
         q.setParameter("userId", userId);
@@ -43,6 +44,16 @@ class JPACalendarLinkageDao extends JPADao<CalendarLinkage> implements ICalendar
         else { return freeze(results.get(0)); }
     }
 
+    @Override
+    public DataIterator<CalendarLinkage> getIterator(PartakeConnection con) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT t FROM CalendarLinkages t");
+        
+        @SuppressWarnings("unchecked")
+        List<CalendarLinkage> list = q.getResultList();
+        
+        return new JPAPartakeModelDataIterator<CalendarLinkage>(em, list, CalendarLinkage.class, false);
+    }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
