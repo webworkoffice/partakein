@@ -33,8 +33,8 @@ public class CassandraKeyColumnDataIterator<T> extends DataIterator<T> {
     public boolean hasNext() throws DAOException {
         while (true) {
             if (inner == null) {
-                if (outer.hasNext()) { return false; }
-                currentKey = outer.next();
+                if (!outer.hasNext()) { return false; }
+                currentKey = outer.nextWithPrefix();
                 inner = new ColumnIterator(con, desc.keyspace, currentKey, desc.columnFamily, false, desc.readConsistency, desc.writeConsistency);
             }
 
