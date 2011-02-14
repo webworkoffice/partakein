@@ -51,19 +51,18 @@ class JPAEventRelationDao extends JPADao<EventRelation> implements IEventRelatio
 
     
     @Override
-    public void removeByEventId(PartakeConnection con, String eventId) throws DAOException {
-        // TODO Auto-generated method stub
+    public void removeByEventId(PartakeConnection con, String srcEventId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("DELETE FROM EventRelations er WHERE er.srcEventId = :eventId");
-        q.setParameter("eventId", eventId);
+        q.setParameter("eventId", srcEventId);
         q.executeUpdate();
     }
 
     @Override
-    public List<EventRelation> findByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public List<EventRelation> findByEventId(PartakeConnection con, String srcEventId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT er FROM EventRelations er WHERE er.srcEventId = :eventId");
-        q.setParameter("eventId", eventId);
+        q.setParameter("eventId", srcEventId);
         
         @SuppressWarnings("unchecked")
         List<EventRelation> relations = q.getResultList();

@@ -133,7 +133,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 		String place = "";
 		String address = "";
 		String description = "";
-		Event event = new Event(eventId, "DUMMY EVENT", "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", userId, null, true, "passcode", false, now, now);
+		Event event = new Event(eventId, "DUMMY EVENT", "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", userId, null, true, "passcode", false, false, now, now);
 		event.setId(eventId);
 		return event;
 	}

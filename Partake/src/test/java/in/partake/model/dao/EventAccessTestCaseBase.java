@@ -107,12 +107,16 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.commit();
             }
             
+            PDate.waitForTick();
+            
             Assert.assertFalse(dao.isRemoved(con, eventId));
             {
                 con.beginTransaction();
                 dao.remove(con, eventId);
                 con.commit();
             }
+            
+            PDate.waitForTick();
             
             Event target;
             {
@@ -331,7 +335,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
         String place = "";
         String address = "";
         String description = "";
-        Event event = new Event(eventId, "DUMMY EVENT", "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", userId, null, true, "passcode", false, now, now);
+        Event event = new Event(eventId, "DUMMY EVENT", "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", userId, null, true, "passcode", false, false, now, now);
         event.setId(eventId);
         return event;
     }

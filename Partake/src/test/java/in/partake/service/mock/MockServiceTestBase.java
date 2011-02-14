@@ -52,7 +52,7 @@ public class MockServiceTestBase extends PartakeService {
         Date createdAt = now;
         Date beginDate = now;
         
-        Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", false, createdAt, null);
+        Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", false, false, createdAt, null);
         event.setId(id);
         return event;
     }
@@ -79,7 +79,7 @@ public class MockServiceTestBase extends PartakeService {
         calendar.set(Calendar.MINUTE, beginMin);
         Date beginDate = calendar.getTime();
 
-        Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", false, createdAt, null);
+        Event event = new Event("shortId", "title", "summary", "category", null, beginDate, null, 0, "url", "place", "address", "description", "hashTag", "ownerId", null, true, "passcode", false, false, createdAt, null);
         event.setId(id);
         return event;
     }

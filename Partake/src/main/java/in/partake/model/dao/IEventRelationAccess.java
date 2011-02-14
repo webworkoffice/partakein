@@ -10,17 +10,17 @@ public interface IEventRelationAccess extends IAccess<EventRelation, EventRelati
     /**
      * remove all event relations whose srcEventId is <code>eventId</code>.
      * @param con
-     * @param eventId
+     * @param srcEventId
      * @throws DAOException
      */
-    public abstract void removeByEventId(PartakeConnection con, String eventId) throws DAOException;
+    public abstract void removeByEventId(PartakeConnection con, String srcEventId) throws DAOException;
 
     /**
      * get all event relations whose srcEventId is <code>eventId</code>
      * @param con
-     * @param eventId
+     * @param srcEventId
      * @return
      * @throws DAOException
      */
-    public abstract List<EventRelation> findByEventId(PartakeConnection con, String eventId) throws DAOException;
+    public abstract List<EventRelation> findByEventId(PartakeConnection con, String srcEventId) throws DAOException;
 }

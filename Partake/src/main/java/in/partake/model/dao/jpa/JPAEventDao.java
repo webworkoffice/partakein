@@ -19,8 +19,8 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
     }
 
     @Override
-    public Event find(PartakeConnection con, String id) throws DAOException {
-        return findImpl(con, id, Event.class);
+    public Event find(PartakeConnection con, String eventId) throws DAOException {
+        return findImpl(con, eventId, Event.class);
     }
 
     @Override

@@ -141,18 +141,24 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase 
                 
                 con.commit();
             }
+            
+            PDate.waitForTick();
 
             {
                 con.beginTransaction();
                 factory.getCommentAccess().remove(con, commentId);
                 con.commit();
             }
+            
+            PDate.waitForTick();
 
             {
                 con.beginTransaction();
                 factory.getCommentAccess().put(con, original);
                 con.commit();
             }
+            
+            PDate.waitForTick();
 
             Comment target;
             {

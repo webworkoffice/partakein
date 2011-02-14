@@ -63,6 +63,21 @@ public class PDate {
         PDate.currentDate = new PDate(time);
     }
     
+    public static void waitForTick() {
+        if (PDate.currentDate == null) {
+            long now = new Date().getTime();
+            do {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    // ignore.
+                }
+            } while (now == new Date().getTime());
+        } else {
+            PDate.setCurrentDate(new PDate(currentDate.getDate().getTime() + 20));
+        }
+    }
+    
     public static void resetCurrentDate() {
         PDate.currentDate = null;
     }

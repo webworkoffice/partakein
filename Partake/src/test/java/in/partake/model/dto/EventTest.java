@@ -24,12 +24,12 @@ public final class EventTest {
 				new Event("id", "shortId", "title", "summary", "category",
 						new Date(), new Date(), new Date(), 0, "url", "place",
 						"address", "description", "#hashTag", "ownerId", null,
-						"foreImageId", "backImageId", true, "passcode", false, 
+						"foreImageId", "backImageId", true, "passcode", false, false,
 						new Date(), new Date(), -1),
 				new Event("id2", "shortId2", "title2", "summary2", "category2",
 						new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
 						"address2", "description2", "#hashTag2", "ownerId2", "hoge,fuga",
-						"foreImageId2", "backImageId2", false, "passcode2", false, 
+						"foreImageId2", "backImageId2", false, "passcode2", false, false,
 						new Date(4), new Date(5), 1)
 		};
 	}
