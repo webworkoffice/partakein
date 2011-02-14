@@ -2,6 +2,7 @@ package in.partake.model.dao.cassandra;
 
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.ICalendarLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.CalendarLinkage;
@@ -40,7 +41,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     }
     
     @Override
-    public String getFreshCalendarId(PartakeConnection con) throws DAOException {
+    public String getFreshId(PartakeConnection con) throws DAOException {
         return UUID.randomUUID().toString();
     }
     
@@ -48,7 +49,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     // add
     
     @Override
-    public void addCalendarLinkage(PartakeConnection con, CalendarLinkage embryo) throws DAOException {
+    public void put(PartakeConnection con, CalendarLinkage embryo) throws DAOException {
         try {
             if (embryo.getId() == null) { throw new DAOException("id should be specified."); }
             CassandraConnection ccon = (CassandraConnection) con;
@@ -81,7 +82,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     // get
 
     @Override
-    public CalendarLinkage getCalendarLinkage(PartakeConnection con, String calendarId) throws DAOException {
+    public CalendarLinkage find(PartakeConnection con, String calendarId) throws DAOException {
         try {
             CassandraConnection ccon = (CassandraConnection) con;
             return getCalendarLinkageById(ccon.getClient(), calendarId, ccon.getAcquiredTime());
@@ -119,7 +120,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     }
     
     @Override
-    public CalendarLinkage getCalendarLinkageByUserId(PartakeConnection con, String userId) throws DAOException {
+    public CalendarLinkage findByUserId(PartakeConnection con, String userId) throws DAOException {
         try {
             CassandraConnection ccon = (CassandraConnection) con;
             return getCalendarLinkageByUserId(ccon.getClient(), userId, ccon.getAcquiredTime());
@@ -161,7 +162,7 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
     // remove
     
     @Override
-    public void removeCalendarLinkage(PartakeConnection con, String calendarId) throws DAOException {
+    public void remove(PartakeConnection con, String calendarId) throws DAOException {
         try {
             CassandraConnection ccon = (CassandraConnection) con;
             removeCalendarLinkageById(ccon.getClient(), calendarId, ccon.getAcquiredTime());
@@ -176,6 +177,11 @@ class CalendarLinkageCassandraDao extends CassandraDao implements ICalendarLinka
         client.remove(CALENDAR_KEYSPACE, key, columnPath, time, CALENDAR_CL_W);
     }
     
+    
+    @Override
+    public DataIterator<CalendarLinkage> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con, new CassandraTableDescription(CALENDAR_PREFIX, CALENDAR_KEYSPACE, CALENDAR_COLUMNFAMILY, CALENDAR_CL_R, CALENDAR_CL_W), this);
+    }
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {

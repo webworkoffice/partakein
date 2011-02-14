@@ -2,8 +2,11 @@ package in.partake.model.dao.cassandra;
 
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IURLShortenerAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dto.ShortenedURLData;
+import in.partake.model.dto.pk.ShortenedURLDataPK;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,55 +31,62 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
     }
     
     @Override
-    public void addShortenedURL(PartakeConnection con, String originalURL, String type, String shortenedURL) throws DAOException {
+    public void put(PartakeConnection con, ShortenedURLData data) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addShortenedURLImpl(ccon.getClient(), originalURL, type, shortenedURL, ccon.getAcquiredTime());
+            addShortenedURLImpl(ccon.getClient(), data.getOriginalURL(), data.getServiceType(), data.getShortenedURL(), ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
     @Override
-    public String getShortenedURL(PartakeConnection con, String originalURL, String type) throws DAOException {
+    public ShortenedURLData find(PartakeConnection con, ShortenedURLDataPK pk) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getShortenedURL(ccon.getClient(), originalURL, type, ccon.getAcquiredTime());
+            return findImpl(ccon.getClient(), pk.getOriginalURL(), pk.getServiceType(), ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
     @Override
-    public String getShortenedURL(PartakeConnection con, String originalURL) throws DAOException {        
-        return getShortenedURL(con, originalURL, null);
-    }
-    
-    @Override
-    public void removeShortenedURL(PartakeConnection con, String originalURL) throws DAOException {
+    public void remove(PartakeConnection con, ShortenedURLDataPK pk) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            removeShortenedURLAllImpl(ccon, originalURL, ccon.getAcquiredTime());
+            addShortenedURLImpl(ccon.getClient(), pk.getOriginalURL(), pk.getServiceType(), null, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
     @Override
-    public void removeShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            addShortenedURLImpl(ccon.getClient(), originalURL, serviceType, null, ccon.getAcquiredTime());
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+    public DataIterator<ShortenedURLData> getIterator(PartakeConnection con) throws DAOException {
+        return new CassandraKeyColumnDataIterator<ShortenedURLData>((CassandraConnection) con,
+                new CassandraTableDescription(URLSHORTENER_PREFIX, URLSHORTENER_KEYSPACE, URLSHORTENER_COLUMNFAMILY, URLSHORTENER_CL_R, URLSHORTENER_CL_W),
+                new URLShortenerMapper((CassandraConnection) con, factory));
     }
     
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         removeAllData((CassandraConnection) con);
     }
+
+    @Override
+    public ShortenedURLData findByURL(PartakeConnection con, String originalURL) throws DAOException {        
+        return find(con, new ShortenedURLDataPK(originalURL, null));
+    }
     
+    @Override
+    public void removeByURL(PartakeConnection con, String originalURL) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            removeShortenedURLAllImpl(ccon, originalURL, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }    
+
     // ----------------------------------------------------------------------
     
     private void addShortenedURLImpl(Client client, String originalURL, String type, String shortenedURL, long time) throws Exception {
@@ -88,7 +98,7 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
         client.batch_mutate(URLSHORTENER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(URLSHORTENER_COLUMNFAMILY, mutations)), URLSHORTENER_CL_W);
     }
     
-    private String getShortenedURL(Client client, String originalURL, String type, long time) throws Exception {
+    private ShortenedURLData findImpl(Client client, String originalURL, String type, long time) throws Exception {
         String key = URLSHORTENER_PREFIX + originalURL;
 
         List<ColumnOrSuperColumn> results = getSlice(client, URLSHORTENER_KEYSPACE, URLSHORTENER_COLUMNFAMILY, key, URLSHORTENER_CL_R);
@@ -100,8 +110,8 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
             String name = string(column.getName());
             String value = string(column.getValue());
             
-            if (type == null) { return value; }
-            if (type.equals(name)) { return value; }
+            if (type == null) { return new ShortenedURLData(originalURL, name, value); }
+            if (type.equals(name)) { return new ShortenedURLData(originalURL, name, value); }
         }
         
         return null;
@@ -109,10 +119,31 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
     
     private void removeShortenedURLAllImpl(CassandraConnection con, String originalURL, long time) throws DAOException {
         String key = URLSHORTENER_PREFIX + originalURL;
-        ColumnIterator it = new ColumnIterator(con, factory, URLSHORTENER_KEYSPACE, key, URLSHORTENER_COLUMNFAMILY, false, URLSHORTENER_CL_R, URLSHORTENER_CL_W);
+        ColumnIterator it = new ColumnIterator(con, URLSHORTENER_KEYSPACE, key, URLSHORTENER_COLUMNFAMILY, false, URLSHORTENER_CL_R, URLSHORTENER_CL_W);
         while (it.hasNext()) { 
             it.next();
             it.remove();
         }
+    }
+}
+
+
+class URLShortenerMapper extends ColumnOrSuperColumnKeyMapper<ShortenedURLData> {
+    
+    public URLShortenerMapper(CassandraConnection con, CassandraDAOFactory factory) {
+        // TODO Auto-generated constructor stub
+        super(con, factory);
+    }
+    
+    @Override
+    public ShortenedURLData map(ColumnOrSuperColumn cosc, String key) throws DAOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    @Override
+    public ColumnOrSuperColumn unmap(ShortenedURLData t, long time) throws DAOException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

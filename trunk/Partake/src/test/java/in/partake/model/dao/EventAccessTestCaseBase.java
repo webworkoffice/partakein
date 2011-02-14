@@ -31,7 +31,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
 		PartakeConnection con = getPool().getConnection();
 
 		try {
-		    for (DataIterator<Event> it = dao.getAllEventIterators(con); it.hasNext(); ) {
+		    for (DataIterator<Event> it = dao.getIterator(con); it.hasNext(); ) {
 		        it.next();
 		    }
 		} finally {
@@ -70,14 +70,14 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 eventId = dao.getFreshId(con);
                 original.setId(eventId);
-                dao.addEvent(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEvent(con, eventId);
+                target = dao.find(con, eventId);
                 con.commit();
             }
 
@@ -103,21 +103,21 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 eventId = dao.getFreshId(con);
                 original.setId(eventId);
-                dao.addEvent(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
             Assert.assertFalse(dao.isRemoved(con, eventId));
             {
                 con.beginTransaction();
-                dao.removeEvent(con, eventId);
+                dao.remove(con, eventId);
                 con.commit();
             }
             
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEvent(con, eventId);
+                target = dao.find(con, eventId);
                 con.commit();
             }
 
@@ -141,26 +141,26 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 eventId = dao.getFreshId(con);
                 original.setId(eventId);
-                dao.addEvent(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                dao.removeEvent(con, eventId);
+                dao.remove(con, eventId);
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                dao.addEvent(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEvent(con, eventId);
+                target = dao.find(con, eventId);
                 con.commit();
             }
 
@@ -183,7 +183,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
             Event original = createEvent(null, userId);
             {
                 con.beginTransaction();
-                dao.addEvent(con, original);
+                dao.put(con, original);
                 con.commit();
             }
         } finally {
@@ -204,7 +204,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
                 con.beginTransaction();
                 eventId = dao.getFreshId(con);
                 original.setId(eventId);
-                dao.addEvent(con, original);
+                dao.put(con, original);
                 con.commit();
             }
             
@@ -212,14 +212,14 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
             {
                 updated.setTitle("updated title");
                 con.beginTransaction();
-                dao.updateEvent(con, updated);
+                dao.put(con, updated);
                 con.commit();
             }
             
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEvent(con, eventId);
+                target = dao.find(con, eventId);
                 con.commit();
             }
 
@@ -242,7 +242,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
             Event target;
             {
                 con.beginTransaction();
-                target = dao.getEvent(con, eventId);
+                target = dao.find(con, eventId);
                 con.commit();
             }
 
@@ -269,14 +269,14 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
                     eventId = dao.getFreshId(con);
                     original.setId(eventId);
                     
-                    dao.addEvent(con, original);
+                    dao.put(con, original);
                     con.commit();
                     
                     eventIds.add(eventId);
                 }
             }
             
-            List<Event> targetEvents = dao.getEventsByOwner(con, userId);
+            List<Event> targetEvents = dao.findByOwnerId(con, userId);
             Set<String> targetEventIds = new HashSet<String>();
             for (Event e : targetEvents) {
                 targetEventIds.add(e.getId());
@@ -307,14 +307,14 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
                     eventId = dao.getFreshId(con);
                     original.setId(eventId);
                     
-                    dao.addEvent(con, original);
+                    dao.put(con, original);
                     con.commit();
                     
                     eventIds.add(eventId);
                 }
             }
             
-            List<Event> targetEvents = dao.getEventsByOwner(con, invalidUserId);
+            List<Event> targetEvents = dao.findByOwnerId(con, invalidUserId);
             
             Assert.assertNotNull(targetEvents);
             Assert.assertTrue(targetEvents.isEmpty());

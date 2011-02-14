@@ -9,6 +9,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dto.OpenIDLinkage;
 
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.Column;
@@ -53,10 +54,10 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
      * @see in.partake.dao.cassandra.IOpenIDLinkageAccess#getUserId(java.lang.String)
      */
     @Override
-    public String getUserId(PartakeConnection con, String identifier) throws DAOException {
+    public OpenIDLinkage find(PartakeConnection con, String identifier) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getUserId(ccon.getClient(), identifier);
+            return findImpl(ccon.getClient(), identifier);
         } catch (Exception e) {
             throw new DAOException(e);
         }  
@@ -66,9 +67,12 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
      * @see in.partake.dao.cassandra.IOpenIDLinkageAccess#addOpenID(java.lang.String, java.lang.String)
      */
     @Override
-    public void addOpenID(PartakeConnection con, String identifier, String userId) throws DAOException {
+    public void put(PartakeConnection con, OpenIDLinkage linkage) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
+            String identifier = linkage.getId();
+            String userId = linkage.getUserId();
+            
             addOpenIDToUserTable(ccon.getClient(), userId, identifier, ccon.getAcquiredTime());
             addOpenIDToMasterTable(ccon.getClient(), identifier, userId, ccon.getAcquiredTime());
             
@@ -78,22 +82,35 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
     }
     
     @Override
-    public void removeOpenID(PartakeConnection con, String identifier) throws DAOException {
+    public void remove(PartakeConnection con, String identifier) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            String userId = getUserId(con, identifier);
+            OpenIDLinkage linkage = find(con, identifier);
+            if (linkage == null) { return; }
             removeOpenIdFromMasterTable(ccon.getClient(), identifier, con.getAcquiredTime());
-            removeOpenIDFromUserTable(ccon.getClient(), userId, identifier, ccon.getAcquiredTime());
+            removeOpenIDFromUserTable(ccon.getClient(), linkage.getUserId(), identifier, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }  
     }
+
+    @Override
+    public DataIterator<OpenIDLinkage> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con, 
+                new CassandraTableDescription(OPENID_LINKAGE_PREFIX, OPENID_LINKAGE_KEYSPACE, OPENID_LINKAGE_COLUMNFAMILY, OPENID_LINKAGE_CL_R, OPENID_LINKAGE_CL_W),
+                this);
+    }
     
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        removeAllData((CassandraConnection) con);        
+    }
+
     /* (non-Javadoc)
      * @see in.partake.dao.cassandra.IUserAccess#getOpenIDIdentifiers(java.lang.String)
      */
     @Override
-    public List<String> getOpenIDIdentifiers(PartakeConnection connection, String userId) throws DAOException {
+    public List<String> findByUserId(PartakeConnection connection, String userId) throws DAOException {
         try { 
             return getOpenIDIdentitiesImpl((CassandraConnection) connection, userId);
         } catch (Exception e) {
@@ -101,10 +118,6 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
         }
     }
     
-    @Override
-    public void truncate(PartakeConnection con) throws DAOException {
-        removeAllData((CassandraConnection) con);        
-    }
     
     // ----------------------------------------------------------------------
     
@@ -150,8 +163,8 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
         client.batch_mutate(USERS_OPENID_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_OPENID_COLUMNFAMILY, mutations)), USERS_OPENID_CL_W);
     }
     
-    private String getUserId(Client client, String identity) throws Exception {
-        String key = OPENID_LINKAGE_PREFIX + identity;
+    private OpenIDLinkage findImpl(Client client, String identifier) throws Exception {
+        String key = OPENID_LINKAGE_PREFIX + identifier;
         
         SlicePredicate predicate = new SlicePredicate();
         SliceRange sliceRange = new SliceRange(new byte[0], new byte[0], false, 100);
@@ -165,7 +178,7 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
         for (ColumnOrSuperColumn cosc : results) {
             if (cosc == null) { continue; }
             String name = string(cosc.column.name);
-            if ("userId".equals(name)) { return string(cosc.column.value); }
+            if ("userId".equals(name)) { return new OpenIDLinkage(identifier, string(cosc.column.value)); }
         }
         
         return null;
@@ -176,7 +189,7 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
         
         // TODO: 無駄なことをしている
         
-        ColumnIterator iterator = new ColumnIterator(con, factory, USERS_OPENID_KEYSPACE, key, USERS_OPENID_COLUMNFAMILY, false, USERS_OPENID_CL_R, USERS_OPENID_CL_W);
+        ColumnIterator iterator = new ColumnIterator(con, USERS_OPENID_KEYSPACE, key, USERS_OPENID_COLUMNFAMILY, false, USERS_OPENID_CL_R, USERS_OPENID_CL_W);
         DataIterator<String> dit = new CassandraColumnDataIterator<String>(iterator, new ColumnOrSuperColumnMapper<String>(con, factory) {
             @Override
             public String map(ColumnOrSuperColumn cosc) throws DAOException {

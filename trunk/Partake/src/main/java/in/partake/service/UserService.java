@@ -11,10 +11,12 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.OpenIDLinkage;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.util.PDate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -60,7 +62,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
-            TwitterLinkage linkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
+            TwitterLinkage linkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(user.getTwitterId()));
             con.commit();
             
             return new UserEx(user, linkage);
@@ -113,7 +115,7 @@ public final class UserService extends PartakeService {
         }
         
         if (user == null && createsIfAbsent) {
-            factory.getUserAccess().createUser(con, new User(userId, twitter.getId(), new Date(), null));
+            factory.getUserAccess().put(con, new User(userId, twitter.getId(), new Date(), null));
             user = getUserEx(con, userId);
         }
         
@@ -121,7 +123,7 @@ public final class UserService extends PartakeService {
     }
     
     private TwitterLinkage updateTwitterLinkage(PartakeConnection con, PartakeDAOFactory factory, TwitterLinkage twitterLinkageEmbryo, Twitter twitter) throws DAOException, TwitterException {
-        TwitterLinkage twitterLinkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitter.getId()); 
+        TwitterLinkage twitterLinkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(twitter.getId())); 
         
         if (twitterLinkage == null || twitterLinkage.getUserId() == null) {
             String userId = factory.getUserAccess().getFreshId(con); 
@@ -130,8 +132,8 @@ public final class UserService extends PartakeService {
             twitterLinkageEmbryo.setUserId(twitterLinkage.getUserId());
         }
         
-        factory.getTwitterLinkageAccess().addTwitterLinkage(con, twitterLinkageEmbryo);
-        return factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitter.getId());
+        factory.getTwitterLinkageAccess().put(con, twitterLinkageEmbryo);
+        return factory.getTwitterLinkageAccess().find(con, String.valueOf(twitter.getId()));
     }
     
     // ----------------------------------------------------------------------
@@ -142,10 +144,10 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
-            String userId = factory.getOpenIDLinkageAccess().getUserId(con, identifier); 
-            if (userId == null) { return null; }
+            OpenIDLinkage linkage = factory.getOpenIDLinkageAccess().find(con, identifier); 
+            if (linkage == null) { return null; }
             
-            UserEx user = getUserEx(con, userId);
+            UserEx user = getUserEx(con, linkage.getUserId());
             con.commit();
             return user;
         } finally {
@@ -158,7 +160,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
-            factory.getOpenIDLinkageAccess().addOpenID(con, identifier, userId);
+            factory.getOpenIDLinkageAccess().put(con, new OpenIDLinkage(identifier, userId));
             con.commit();
         } finally {
             con.invalidate();
@@ -170,7 +172,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
-            List<String> result = factory.getOpenIDLinkageAccess().getOpenIDIdentifiers(con, userId); 
+            List<String> result = factory.getOpenIDLinkageAccess().findByUserId(con, userId); 
             con.commit();
             
             return result;
@@ -184,7 +186,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
-            factory.getOpenIDLinkageAccess().removeOpenID(con, identifier);
+            factory.getOpenIDLinkageAccess().remove(con, identifier);
             con.commit();
         } finally {            
             con.invalidate();
@@ -200,11 +202,11 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
-            List<Enrollment> enrollments = factory.getEnrollmentAccess().getEnrollmentsByUserId(con, userId);
+            List<Enrollment> enrollments = factory.getEnrollmentAccess().findByUserId(con, userId);
             List<Event> events = new ArrayList<Event>();
             for (Enrollment e : enrollments) {
                 if (e.getStatus().isEnrolled()) {
-                    Event event = factory.getEventAccess().getEvent(con, e.getEventId());
+                    Event event = factory.getEventAccess().find(con, e.getEventId());
                     if (event == null) { continue; }
                     events.add(event);
                 }
@@ -224,7 +226,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            Enrollment enrollment = factory.getEnrollmentAccess().getEnrollment(con, userId, eventId);
+            Enrollment enrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
             con.commit();
             
             if (enrollment == null) { return ParticipationStatus.NOT_ENROLLED; }
@@ -243,7 +245,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            CalendarLinkage calendarLinkage = factory.getCalendarAccess().getCalendarLinkage(con, calendarId);
+            CalendarLinkage calendarLinkage = factory.getCalendarAccess().find(con, calendarId);
             con.commit();
             
             if (calendarLinkage == null) { return null; }
@@ -265,7 +267,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            UserPreference pref = factory.getUserPreferenceAccess().getPreference(con, userId);
+            UserPreference pref = factory.getUserPreferenceAccess().find(con, userId);
             con.commit();
             
             if (pref == null) {
@@ -282,7 +284,7 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            factory.getUserPreferenceAccess().setPreference(con,  embryo);
+            factory.getUserPreferenceAccess().put(con,  embryo);
             con.commit();
         } finally {
             con.invalidate();

@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Enrollment;
@@ -15,22 +16,22 @@ import in.partake.model.dto.pk.EnrollmentPK;
 class JPAEnrollmentDao extends JPADao<Enrollment> implements IEnrollmentAccess {
 
     @Override
-    public void addEnrollment(PartakeConnection con, Enrollment enrollment) throws DAOException {
-        createOrUpdate(con, enrollment, Enrollment.class);
+    public void put(PartakeConnection con, Enrollment enrollment) throws DAOException {
+        putImpl(con, enrollment, Enrollment.class);
     }
 
     @Override
-    public void removeEnrollment(PartakeConnection con, String userId, String eventId) throws DAOException {
-        remove(con, new EnrollmentPK(userId, eventId), Enrollment.class);
+    public void remove(PartakeConnection con, EnrollmentPK pk) throws DAOException {
+        removeImpl(con, pk, Enrollment.class);
     }
 
     @Override
-    public Enrollment getEnrollment(PartakeConnection con, String userId, String eventId) throws DAOException {
-        return find(con, new EnrollmentPK(userId, eventId), Enrollment.class);
+    public Enrollment find(PartakeConnection con, EnrollmentPK pk) throws DAOException {
+        return findImpl(con, pk, Enrollment.class);
     }
 
     @Override
-    public List<Enrollment> getEnrollmentsByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public List<Enrollment> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT en FROM Enrollments en WHERE en.eventId = :eventId");
         q.setParameter("eventId", eventId);
@@ -47,7 +48,7 @@ class JPAEnrollmentDao extends JPADao<Enrollment> implements IEnrollmentAccess {
     }
 
     @Override
-    public List<Enrollment> getEnrollmentsByUserId(PartakeConnection con, String userId) throws DAOException {
+    public List<Enrollment> findByUserId(PartakeConnection con, String userId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT en FROM Enrollments en WHERE en.userId = :userId");
         q.setParameter("userId", userId);
@@ -61,6 +62,17 @@ class JPAEnrollmentDao extends JPADao<Enrollment> implements IEnrollmentAccess {
         }
 
         return result;
+    }
+    
+    @Override
+    public DataIterator<Enrollment> getIterator(PartakeConnection con) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT t FROM Enrollments t");
+        
+        @SuppressWarnings("unchecked")
+        List<Enrollment> list = q.getResultList();
+        
+        return new JPAPartakeModelDataIterator<Enrollment>(em, list, Enrollment.class, false);
     }
     
     @Override

@@ -37,4 +37,12 @@ public class EnrollmentPK {
         
         return code;
     }
+    
+    public String getUserId() {
+        return userId;
+    }
+    
+    public String getEventId() {
+        return eventId;
+    }
 }

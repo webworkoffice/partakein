@@ -72,7 +72,7 @@ public class ColumnIteratorTestForSuperColumn extends AbstractDaoTestCaseBase {
             
             // get
             {
-                ColumnIterator it = new ColumnIterator(con, null, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+                ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
                 int i = 0;
                 while (it.hasNext()) {
                     String s = String.format("%08d", i++);
@@ -108,7 +108,7 @@ public class ColumnIteratorTestForSuperColumn extends AbstractDaoTestCaseBase {
             createColumns(con, id, n);
 
             {
-                ColumnIterator it = new ColumnIterator(con, null, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+                ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
                 int i = 0;
                 while (it.hasNext()) {
                     String s = String.format("%08d", i++);
@@ -132,7 +132,7 @@ public class ColumnIteratorTestForSuperColumn extends AbstractDaoTestCaseBase {
             }
                
             {
-                ColumnIterator it = new ColumnIterator(con, null, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+                ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
                 int i = 0;
                 while (it.hasNext()) {
                     String s = String.format("%08d", i++);
@@ -169,7 +169,7 @@ public class ColumnIteratorTestForSuperColumn extends AbstractDaoTestCaseBase {
            createColumns(con, id, n);
 
            {
-               ColumnIterator it = new ColumnIterator(con, null, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+               ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
                int i = 0;
                while (it.hasNext()) {
                    it.next();
@@ -180,7 +180,7 @@ public class ColumnIteratorTestForSuperColumn extends AbstractDaoTestCaseBase {
            }
               
            {
-               ColumnIterator it = new ColumnIterator(con, null, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+               ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
                int i = 0;
                while (it.hasNext()) {
                    it.next();

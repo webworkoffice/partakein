@@ -24,14 +24,14 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
             CalendarLinkage original;
             {
                 original = new CalendarLinkage("id", "userId");
-                factory.getCalendarAccess().addCalendarLinkage(con, original);
+                factory.getCalendarAccess().put(con, original);
                 Assert.assertFalse(original.isFrozen());
             }
             
             // --- get
             CalendarLinkage target;
             {
-                target = factory.getCalendarAccess().getCalendarLinkage(con, "id");
+                target = factory.getCalendarAccess().find(con, "id");
                 Assert.assertTrue(target.isFrozen());
             }
 
@@ -57,20 +57,20 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
             {
                 con.beginTransaction();
                 CalendarLinkage original = new CalendarLinkage("id", "userId");
-                factory.getCalendarAccess().addCalendarLinkage(con, original);
+                factory.getCalendarAccess().put(con, original);
                 Assert.assertFalse(original.isFrozen());
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                factory.getCalendarAccess().removeCalendarLinkage(con, "id");
+                factory.getCalendarAccess().remove(con, "id");
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                CalendarLinkage target = factory.getCalendarAccess().getCalendarLinkage(con, "id");
+                CalendarLinkage target = factory.getCalendarAccess().find(con, "id");
                 Assert.assertNull(target);
                 con.commit();
             }
@@ -89,27 +89,27 @@ public abstract class CalendarLinkageAccessTestCaseBase extends AbstractDaoTestC
             
             {
                 con.beginTransaction();
-                factory.getCalendarAccess().addCalendarLinkage(con, original);
+                factory.getCalendarAccess().put(con, original);
                 Assert.assertFalse(original.isFrozen());
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                factory.getCalendarAccess().removeCalendarLinkage(con, "id");
+                factory.getCalendarAccess().remove(con, "id");
                 con.commit();
             }
 
             {
                 con.beginTransaction();
-                factory.getCalendarAccess().addCalendarLinkage(con, original);
+                factory.getCalendarAccess().put(con, original);
                 Assert.assertFalse(original.isFrozen());
                 con.commit();
             }
 
             {
                 con.beginTransaction();
-                CalendarLinkage target = factory.getCalendarAccess().getCalendarLinkage(con, "id");
+                CalendarLinkage target = factory.getCalendarAccess().find(con, "id");
                 Assert.assertNotNull(target);
                 Assert.assertEquals(original, target);
                 con.commit();

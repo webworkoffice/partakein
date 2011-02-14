@@ -26,6 +26,7 @@ import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
@@ -83,13 +84,13 @@ public abstract class PartakeService {
     
     // TODO: これがここにいるのはなんかおかしいような気がする。階層化が足りないのではないか。
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
-        User user = getFactory().getUserAccess().getUser(con, userId);
+        User user = getFactory().getUserAccess().find(con, userId);
         if (user == null) { return null; }
         
         // TODO: そのうち、user.getCalendarId() を廃止する予定。
         // とりあえずそれまでは user に書いてある calendarId より、こちらに書いてある calendarId を優先しておく。
         {
-            CalendarLinkage linkage = factory.getCalendarAccess().getCalendarLinkageByUserId(con, userId);
+            CalendarLinkage linkage = factory.getCalendarAccess().findByUserId(con, userId);
             if (linkage != null) {
                 User newUser = new User(user);
                 newUser.setCalendarId(linkage.getId());
@@ -98,19 +99,19 @@ public abstract class PartakeService {
             }
         }
         
-        TwitterLinkage linkage = getFactory().getTwitterLinkageAccess().getTwitterLinkageById(con, user.getTwitterId());
+        TwitterLinkage linkage = getFactory().getTwitterLinkageAccess().find(con, String.valueOf(user.getTwitterId()));
         return new UserEx(user, linkage); 
     }
     
     protected EventEx getEventEx(PartakeConnection con, String eventId) throws DAOException {
-        Event event = getFactory().getEventAccess().getEvent(con, eventId);
+        Event event = getFactory().getEventAccess().find(con, eventId);
         if (event == null) { return null; }
         UserEx user = getUserEx(con, event.getOwnerId());
         if (user == null) { return null; }
         
-        String feedId = getFactory().getFeedAccess().getFeedIdByEventId(con, eventId);
+        String feedId = getFactory().getFeedAccess().findByEventId(con, eventId);
         String shortenedURL = getShortenedURL(con, event);
-        List<EventRelation> relations = getFactory().getEventRelationAccess().getEventRelations(con, eventId);
+        List<EventRelation> relations = getFactory().getEventRelationAccess().findByEventId(con, eventId);
         List<EventRelationEx> relationExs = new ArrayList<EventRelationEx>();
         for (EventRelation relation : relations) {
             EventRelationEx relationEx = getEventRelationEx(con, relation);
@@ -121,14 +122,15 @@ public abstract class PartakeService {
     }
 
     protected String getShortenedURL(PartakeConnection con, Event event) throws DAOException {
-        String shortenedURL = getFactory().getURLShortenerAccess().getShortenedURL(con, event.getEventURL());
-        if (shortenedURL == null) {
+        ShortenedURLData shortenedURLData = getFactory().getURLShortenerAccess().findByURL(con, event.getEventURL());
+        if (shortenedURLData == null) {
             Date now = new Date();
             try {
                 if (bitlyRateLimitExceededTime == null || now.before(new Date(bitlyRateLimitExceededTime.getTime() + 1000 * 1800))) { // rate limit が出ていたら 30 分待つ。
                     String bitlyShortenedURL = Util.callBitlyShortenURL(event.getEventURL());
-                    getFactory().getURLShortenerAccess().addShortenedURL(con, event.getEventURL(), "bitly", bitlyShortenedURL);
-                    shortenedURL = bitlyShortenedURL;
+                    shortenedURLData = new ShortenedURLData(event.getEventURL(), "bitly", bitlyShortenedURL); 
+                    getFactory().getURLShortenerAccess().put(con, shortenedURLData);
+                    
                 }
             } catch (BitlyException e) {
                 // TODO: debugging...
@@ -141,13 +143,17 @@ public abstract class PartakeService {
                     bitlyRateLimitExceededTime = now;
                 //}
             }
-            
         }
-        return shortenedURL;
+        
+        if (shortenedURLData != null) {
+            return shortenedURLData.getShortenedURL();
+        } else {
+            return null;
+        }
     }
     
     protected CommentEx getCommentEx(PartakeConnection con, String commentId) throws DAOException {
-    	Comment comment = getFactory().getCommentAccess().getComment(con, commentId);
+    	Comment comment = getFactory().getCommentAccess().find(con, commentId);
     	if (comment == null) { return null; }
     	UserEx user = getUserEx(con, comment.getUserId());
     	if (user == null) { return null; }
@@ -157,7 +163,7 @@ public abstract class PartakeService {
     }
     
     protected EventRelationEx getEventRelationEx(PartakeConnection con, EventRelation relation) throws DAOException {
-        Event event = getFactory().getEventAccess().getEvent(con, relation.getDstEventId());
+        Event event = getFactory().getEventAccess().find(con, relation.getDstEventId());
         return new EventRelationEx(relation, event);
     }
     
@@ -166,7 +172,7 @@ public abstract class PartakeService {
         
         // --- まず、EnrollmentEx を作成
         List<EnrollmentEx> ps = new ArrayList<EnrollmentEx>();
-        for (Enrollment p : factory.getEnrollmentAccess().getEnrollmentsByEventId(con, eventId)) {
+        for (Enrollment p : factory.getEnrollmentAccess().findByEventId(con, eventId)) {
             if (p == null) { continue; }
             UserEx user = getUserEx(con, p.getUserId());
             if (user == null) { continue; }
@@ -175,7 +181,7 @@ public abstract class PartakeService {
         }
         
         // --- 各 related event に対して、参加しているかどうかを調査。
-        List<EventRelation> eventRelations = factory.getEventRelationAccess().getEventRelations(con, eventId); 
+        List<EventRelation> eventRelations = factory.getEventRelationAccess().findByEventId(con, eventId); 
         for (EventRelation relation : eventRelations) {
             EventEx ev = getEventEx(con, relation.getDstEventId());
             if (ev == null) { continue; }
@@ -183,7 +189,7 @@ public abstract class PartakeService {
             // related event の参加者を Set で取得
             Set<String> relatedEventParticipantsIds = new HashSet<String>();
             {
-                List<Enrollment> relatedEventParticipations = factory.getEnrollmentAccess().getEnrollmentsByEventId(con, relation.getDstEventId());
+                List<Enrollment> relatedEventParticipations = factory.getEnrollmentAccess().findByEventId(con, relation.getDstEventId());
                 for (Enrollment p : relatedEventParticipations) {
                     if (p.getStatus().isEnrolled()) {
                         relatedEventParticipantsIds.add(p.getUserId());

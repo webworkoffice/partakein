@@ -35,7 +35,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 
 		try {
 		    String eventId = "eventId" + System.currentTimeMillis();
-		    List<Enrollment> list = dao.getEnrollmentsByEventId(con, eventId);
+		    List<Enrollment> list = dao.findByEventId(con, eventId);
 			Assert.assertTrue(list.isEmpty());
 		} finally {
 			con.invalidate();
@@ -55,12 +55,12 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 		try {
 		    con.beginTransaction();
 		    event.setId(eventId);
-			getFactory().getEventAccess().addEvent(con, event);
-			getFactory().getUserAccess().createUser(con, new User(userId, 0, new Date(), null)); 
+			getFactory().getEventAccess().put(con, event);
+			getFactory().getUserAccess().put(con, new User(userId, 0, new Date(), null)); 
 
-			dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date()));
+			dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date()));
 			
-			List<Enrollment> list = dao.getEnrollmentsByEventId(con, eventId);
+			List<Enrollment> list = dao.findByEventId(con, eventId);
 			con.commit();
 			
 			Assert.assertEquals(1, list.size());
@@ -88,30 +88,30 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
             {
                 con.beginTransaction();
                 event.setId(eventId);
-                getFactory().getEventAccess().addEvent(con, event);
-                getFactory().getUserAccess().createUser(con, new User(userId, 0, new Date(), null));     
-                dao.addEnrollment(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date()));
+                getFactory().getEventAccess().put(con, event);
+                getFactory().getUserAccess().put(con, new User(userId, 0, new Date(), null));     
+                dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date()));
                 con.commit();
             }
             
             // update
             {
                 con.beginTransaction();
-                List<Enrollment> storedList = dao.getEnrollmentsByEventId(con, eventId);
+                List<Enrollment> storedList = dao.findByEventId(con, eventId);
                 Enrollment storedParticipation = storedList.get(0);
                 Assert.assertNotNull(storedParticipation);
                 LastParticipationStatus newStatus = LastParticipationStatus.NOT_ENROLLED;
                 Assert.assertFalse(newStatus.equals(storedParticipation.getLastStatus()));
                 Enrollment newStoredParticipation = new Enrollment(storedParticipation);
                 newStoredParticipation.setLastStatus(LastParticipationStatus.CHANGED);
-                dao.addEnrollment(con, newStoredParticipation);
+                dao.put(con, newStoredParticipation);
                 con.commit();
             }
             
             // get
             {
                 con.beginTransaction();
-                List<Enrollment> updatedList = dao.getEnrollmentsByEventId(con, eventId);
+                List<Enrollment> updatedList = dao.findByEventId(con, eventId);
                 Assert.assertEquals(1, updatedList.size());
                 Enrollment updatedParticipation = updatedList.get(0);
                 Assert.assertEquals(userId, updatedParticipation.getUserId());

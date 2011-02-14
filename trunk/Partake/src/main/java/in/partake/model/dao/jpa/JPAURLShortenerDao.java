@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IURLShortenerAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.ShortenedURLData;
@@ -14,55 +15,29 @@ import in.partake.model.dto.pk.ShortenedURLDataPK;
 class JPAURLShortenerDao extends JPADao<ShortenedURLData> implements IURLShortenerAccess {
 
     @Override
-    public void addShortenedURL(PartakeConnection con, String originalURL, String serviceType, String shortenedURL) throws DAOException {
-        ShortenedURLData data = new ShortenedURLData(originalURL, serviceType, shortenedURL);
-        
-        createOrUpdate(con, data, ShortenedURLData.class);
+    public void put(PartakeConnection con, ShortenedURLData data) throws DAOException {
+        putImpl(con, new ShortenedURLData(data), ShortenedURLData.class);
     }
 
     @Override
-    public String getShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException {
-        ShortenedURLData data = find(con, new ShortenedURLDataPK(originalURL, serviceType), ShortenedURLData.class);
-        if (data != null) { return data.getShortenedURL(); }
-        return null;
+    public ShortenedURLData find(PartakeConnection con, ShortenedURLDataPK pk) throws DAOException {
+        return findImpl(con, pk, ShortenedURLData.class);
     }
-
+        
     @Override
-    public String getShortenedURL(PartakeConnection con, String originalURL) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT data FROM ShortenedURLData data WHERE data.originalURL = :ourl");
-        q.setParameter("ourl", originalURL);
-
-        List<?> objs = q.getResultList();
-        if (objs.isEmpty()) { return null; }
-        
-        Object obj = objs.get(0);
-        if (obj == null) { return null; }
-        
-        ShortenedURLData data = (ShortenedURLData) obj;
-        return data.getShortenedURL();
-    }
-
-    @Override
-    public void removeShortenedURL(PartakeConnection con, String originalURL) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT data FROM ShortenedURLData as data WHERE data.originalURL = :ourl");
-        q.setParameter("ourl", originalURL);
-        @SuppressWarnings("unchecked")
-        List<ShortenedURLData> list = (List<ShortenedURLData>) q.getResultList();
-        
-        // delete で消すと cache から消えないんだよなあ...
-        
-        for (ShortenedURLData data : list) {
-            em.remove(data);
-        }
+    public void remove(PartakeConnection con, ShortenedURLDataPK pk) throws DAOException {
+        removeImpl(con, pk, ShortenedURLData.class);
     }
     
     @Override
-    public void removeShortenedURL(PartakeConnection con, String originalURL, String serviceType) throws DAOException {
+    public DataIterator<ShortenedURLData> getIterator(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        ShortenedURLData data = em.find(ShortenedURLData.class, new ShortenedURLDataPK(originalURL, serviceType));
-        if (data != null) { em.remove(data); }
+        Query q = em.createQuery("SELECT t FROM ShortenedURLData t");
+        
+        @SuppressWarnings("unchecked")
+        List<ShortenedURLData> list = q.getResultList();
+        
+        return new JPAPartakeModelDataIterator<ShortenedURLData>(em, list, ShortenedURLData.class, false);        
     }
     
     @Override
@@ -70,5 +45,34 @@ class JPAURLShortenerDao extends JPADao<ShortenedURLData> implements IURLShorten
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("DELETE FROM ShortenedURLData");
         q.executeUpdate();
+    }
+    
+
+    @Override
+    public ShortenedURLData findByURL(PartakeConnection con, String originalURL) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT data FROM ShortenedURLData data WHERE data.originalURL = :ourl");
+        q.setParameter("ourl", originalURL);
+        
+        @SuppressWarnings("unchecked")
+        List<ShortenedURLData> objs = q.getResultList();
+        if (objs.isEmpty()) { return null; }
+        
+        return objs.get(0);
+    }
+
+    @Override
+    public void removeByURL(PartakeConnection con, String originalURL) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT data FROM ShortenedURLData as data WHERE data.originalURL = :ourl");
+        q.setParameter("ourl", originalURL);
+        @SuppressWarnings("unchecked")
+        List<ShortenedURLData> list = (List<ShortenedURLData>) q.getResultList();
+        
+        // TODO: delete で消すと cache から消えないんだよなあ...
+        
+        for (ShortenedURLData data : list) {
+            em.remove(data);
+        }
     }
 }

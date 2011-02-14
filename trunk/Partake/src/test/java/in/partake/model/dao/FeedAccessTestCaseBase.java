@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dto.FeedLinkage;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -21,21 +22,21 @@ public abstract class FeedAccessTestCaseBase extends AbstractDaoTestCaseBase {
             con.beginTransaction();
             String feedId = dao.getFreshId(con);
             String eventId = "eventId-feedaccess-" + System.currentTimeMillis();
-            dao.addFeedId(con, feedId, eventId);
+            dao.put(con, new FeedLinkage(feedId, eventId));
             con.commit();
             
             {
                 con.beginTransaction();
-                String taken = dao.getFeedIdByEventId(con, eventId);
+                String taken = dao.findByEventId(con, eventId);
                 con.commit();
                 Assert.assertEquals(feedId, taken);
             }
             
             {
                 con.beginTransaction();
-                String taken = dao.getEventIdByFeedId(con, feedId);
+                FeedLinkage taken =  dao.find(con, feedId); 
                 con.commit();
-                Assert.assertEquals(eventId, taken);
+                Assert.assertEquals(eventId, taken.getEventId());
             }
             
         } finally {

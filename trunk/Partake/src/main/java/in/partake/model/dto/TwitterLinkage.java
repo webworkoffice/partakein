@@ -9,7 +9,7 @@ import org.apache.commons.lang.ObjectUtils;
 @Entity(name = "TwitterLinkages")
 public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     @Id
-    private int twitterId;
+    private String twitterId;
     @Column
     private String screenName;
     @Column
@@ -27,7 +27,7 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         
     }
     
-    public TwitterLinkage(int twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
+    public TwitterLinkage(String twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
         this.twitterId = twitterId;
         this.screenName = screenName;
         this.name = name;
@@ -36,7 +36,11 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         this.profileImageURL = profileImageURL;
         this.userId = userId;
     }
-    
+
+    public TwitterLinkage(int twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
+        this(String.valueOf(twitterId), screenName, name, accessToken, accessTokenSecret, profileImageURL, userId);
+    }
+
     public TwitterLinkage(TwitterLinkage linkage) {
         this.twitterId = linkage.twitterId;
         this.screenName = linkage.screenName;
@@ -93,12 +97,10 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         return code;
     }
     
-
-    
     // ----------------------------------------------------------------------
     // 
 
-    public int getTwitterId() {
+    public String getTwitterId() {
         return twitterId;
     }
 
@@ -126,9 +128,14 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         return userId;
     }
 
-    public void setTwitterId(int twitterId) {
+    public void setTwitterId(String twitterId) {
         checkFrozen();
         this.twitterId = twitterId;
+    }
+
+    public void setTwitterId(int twitterId) {
+        checkFrozen();
+        this.twitterId = String.valueOf(twitterId);
     }
 
     public void setScreenName(String screenName) {

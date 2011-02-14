@@ -68,13 +68,13 @@ class BinaryCassandraDao extends CassandraDao implements IBinaryAccess {
     public BinaryData find(PartakeConnection con, String id) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getBinaryById(ccon.getClient(), id);
+            return findImpl(ccon.getClient(), id);
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
-    private BinaryData getBinaryById(Client client, String id) throws Exception {
+    private BinaryData findImpl(Client client, String id) throws Exception {
         String key = BINARY_PREFIX + id;
 
         SlicePredicate predicate = new SlicePredicate();

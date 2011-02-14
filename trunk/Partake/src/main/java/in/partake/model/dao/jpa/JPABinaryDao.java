@@ -21,17 +21,17 @@ public class JPABinaryDao extends JPADao<BinaryData> implements IBinaryAccess {
 
     @Override
     public void put(PartakeConnection con, BinaryData data) throws DAOException {
-        createOrUpdate(con, data, BinaryData.class);
+        putImpl(con, data, BinaryData.class);
     }
 
     @Override
     public BinaryData find(PartakeConnection con, String id) throws DAOException {
-        return find(con, id, BinaryData.class);
+        return findImpl(con, id, BinaryData.class);
     }
 
     @Override
     public void remove(PartakeConnection con, String id) throws DAOException {
-        remove(con, id, BinaryData.class);
+        removeImpl(con, id, BinaryData.class);
     }
     
     @Override

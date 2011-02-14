@@ -1,6 +1,7 @@
 package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.User;
@@ -58,7 +59,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     }
     
     @Override
-    public void createUser(PartakeConnection con, User user) throws DAOException {
+    public void put(PartakeConnection con, User user) throws DAOException {
         if (user == null) { throw new NullPointerException(); }
         if (user.getId() == null) { throw new NullPointerException(); }
         
@@ -69,14 +70,9 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
             throw new DAOException(e);
         }
     }
-
-    @Override
-    public void updateUser(PartakeConnection con, User user) throws DAOException {
-        createUser(con, user);
-    }
     
     @Override
-    public User getUser(PartakeConnection con, String id) throws DAOException {
+    public User find(PartakeConnection con, String id) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getUserById(ccon.getClient(), id);
@@ -84,7 +80,25 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
             throw new DAOException(e);
         }
     }
+
+    @Override
+    public void remove(PartakeConnection con, String key) throws DAOException {
+        // TODO Auto-generated method stub
+        throw new RuntimeException("Not implemented yet");
+    }
     
+    @Override
+    public DataIterator<User> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con,
+                new CassandraTableDescription(USERS_PREFIX, USERS_KEYSPACE, USERS_COLUMNFAMILY, USERS_CL_R, USERS_CL_W),
+                this);
+    }
+    
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        removeAllData((CassandraConnection) con);
+    }
+
     @Override
     public void updateLastLogin(PartakeConnection con, String userId, Date now) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
@@ -95,10 +109,6 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
         }
     }
     
-    @Override
-    public void truncate(PartakeConnection con) throws DAOException {
-        removeAllData((CassandraConnection) con);
-    }
     
     // ----------------------------------------------------------------------
     // insertion

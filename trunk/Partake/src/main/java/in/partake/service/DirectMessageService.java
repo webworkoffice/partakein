@@ -44,7 +44,7 @@ public class DirectMessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            Message message = factory.getDirectMessageAccess().getMessage(con, messageId);
+            Message message = factory.getDirectMessageAccess().find(con, messageId);
             con.commit();
             
             return message;
@@ -69,7 +69,7 @@ public class DirectMessageService extends PartakeService {
             con.beginTransaction();
             String id = factory.getDirectMessageAccess().getFreshId(con);
             Message embryo = new Message(id, userId, message, isUserMessage ? eventId : null, new Date()); 
-            factory.getDirectMessageAccess().addMessage(con, embryo);
+            factory.getDirectMessageAccess().put(con, embryo);
             con.commit();
             
             return id;
@@ -92,7 +92,7 @@ public class DirectMessageService extends PartakeService {
     	    con.beginTransaction();
     	    
 	        List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
-	        DataIterator<Message> it = factory.getDirectMessageAccess().getMessagesByEventId(con, eventId);
+	        DataIterator<Message> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
 
 	        while (it.hasNext()) {
 	        	Message message = it.next();
@@ -121,7 +121,7 @@ public class DirectMessageService extends PartakeService {
         try {
             con.beginTransaction();
             List<Message> messages = new ArrayList<Message>();
-            DataIterator<Message> it = factory.getDirectMessageAccess().getMessagesByEventId(con, eventId);
+            DataIterator<Message> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
             
             for (int i = 0; i < maxMessage; ++i) {
                 if (!it.hasNext()) { break; }
@@ -151,11 +151,11 @@ public class DirectMessageService extends PartakeService {
             String messageId = factory.getDirectMessageAccess().getFreshId(con);
             Message embryo = new Message(messageId, user.getId(), messageStr, null, new Date());
             
-            factory.getDirectMessageAccess().addMessage(con, embryo);
+            factory.getDirectMessageAccess().put(con, embryo);
             
             String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
             Envelope envelope = new Envelope(envelopeId, user.getId(), null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
-            factory.getEnvelopeAccess().enqueueEnvelope(con, envelope);
+            factory.getEnvelopeAccess().put(con, envelope);
             
             con.commit();
         } finally {
@@ -181,7 +181,7 @@ public class DirectMessageService extends PartakeService {
             con.beginTransaction();
             String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
             Envelope envelope = new Envelope(envelopeId, senderId, receiverId, messageId, deadline, 0, null, null, postingType, new Date());
-            factory.getEnvelopeAccess().enqueueEnvelope(con, envelope);
+            factory.getEnvelopeAccess().put(con, envelope);
             con.commit();
         } finally {
             con.invalidate();
@@ -197,7 +197,7 @@ public class DirectMessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            DataIterator<Envelope> it = factory.getEnvelopeAccess().getEnvelopeIterator(con);             
+            DataIterator<Envelope> it = factory.getEnvelopeAccess().getIterator(con);             
             while (it.hasNext()) {
                 Envelope envelope = it.next();
                 if (envelope == null) { it.remove(); continue; }
@@ -255,7 +255,7 @@ public class DirectMessageService extends PartakeService {
         Twitter twitter = new TwitterFactory().getInstance(accessToken);
         
         try {
-            Message message = getFactory().getDirectMessageAccess().getMessage(con, envelope.getMessageId());             
+            Message message = getFactory().getDirectMessageAccess().find(con, envelope.getMessageId());             
             twitter.updateStatus(message.getMessage());
             return true;
         } catch (TwitterException e) {
@@ -286,7 +286,7 @@ public class DirectMessageService extends PartakeService {
         String receiverId = envelope.getReceiverId();
 
         // twitter message を受け取らない設定になっていれば送らない。
-        UserPreference pref = getFactory().getUserPreferenceAccess().getPreference(con, receiverId);
+        UserPreference pref = getFactory().getUserPreferenceAccess().find(con, receiverId);
         if (pref == null) {
             pref = UserPreference.getDefaultPreference(receiverId);
         }
@@ -306,7 +306,7 @@ public class DirectMessageService extends PartakeService {
         if (twitter == null) { return true; }
 
         try {
-            Message message = getFactory().getDirectMessageAccess().getMessage(con, envelope.getMessageId()); 
+            Message message = getFactory().getDirectMessageAccess().find(con, envelope.getMessageId()); 
                         
             twitter.sendDirectMessage(user.getTwitterId(), message.getMessage());
             logger.info("sendDirectMessage : direct message has been sent to " + twitterLinkage.getScreenName());

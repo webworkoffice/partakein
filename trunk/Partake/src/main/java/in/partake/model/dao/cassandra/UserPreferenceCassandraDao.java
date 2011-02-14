@@ -4,6 +4,7 @@ import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.UserPreference;
@@ -37,7 +38,7 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
     }
     
 	@Override
-	public UserPreference getPreference(PartakeConnection con, String userId) throws DAOException {
+	public UserPreference find(PartakeConnection con, String userId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getPreference(ccon.getClient(), userId);            
@@ -47,7 +48,7 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
 	}
 	
 	@Override
-	public void setPreference(PartakeConnection con, UserPreference embryo) throws DAOException {
+	public void put(PartakeConnection con, UserPreference embryo) throws DAOException {
 	    if (embryo == null) { throw new NullPointerException("embryo should not be null"); }
 	    if (embryo.getUserId() == null) { throw new NullPointerException("userId should not be null."); }
 	    
@@ -57,6 +58,17 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
         } catch (Exception e) {
             throw new DAOException(e);
         }
+	}
+	
+	@Override
+	public void remove(PartakeConnection con, String key) throws DAOException {
+	    // TODO Auto-generated method stub
+	    throw new RuntimeException("Not implemented yet");
+	}
+	
+	@Override
+	public DataIterator<UserPreference> getIterator(PartakeConnection con) throws DAOException {
+	    return getIteratorImpl((CassandraConnection) con, new CassandraTableDescription(PREFERENCES_PREFIX, PREFERENCES_KEYSPACE, PREFERENCES_COLUMNFAMILY, PREFERENCES_CL_R, PREFERENCES_CL_W), this);
 	}
 	
 	@Override

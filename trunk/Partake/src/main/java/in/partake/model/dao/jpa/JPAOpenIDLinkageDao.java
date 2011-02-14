@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.OpenIDLinkage;
@@ -14,24 +15,33 @@ import in.partake.model.dto.OpenIDLinkage;
 class JPAOpenIDLinkageDao extends JPADao<OpenIDLinkage> implements IOpenIDLinkageAccess {
 
     @Override
-    public void addOpenID(PartakeConnection con, String identifier, String userId) throws DAOException {
-        createOrUpdate(con, new OpenIDLinkage(identifier, userId), OpenIDLinkage.class);
+    public void put(PartakeConnection con, OpenIDLinkage linkage) throws DAOException {
+        putImpl(con, linkage, OpenIDLinkage.class);
     }
 
     @Override
-    public String getUserId(PartakeConnection con, String identifier) throws DAOException {
-        OpenIDLinkage linkage = find(con, identifier, OpenIDLinkage.class);
-        if (linkage == null) { return null; }
-        return linkage.getUserId();
+    public OpenIDLinkage find(PartakeConnection con, String identifier) throws DAOException {
+        return findImpl(con, identifier, OpenIDLinkage.class);
     }
 
     @Override
-    public void removeOpenID(PartakeConnection con, String identifier) throws DAOException {
-        remove(con, identifier, OpenIDLinkage.class);
+    public void remove(PartakeConnection con, String identifier) throws DAOException {
+        removeImpl(con, identifier, OpenIDLinkage.class);
     }
     
     @Override
-    public List<String> getOpenIDIdentifiers(PartakeConnection con, String userId) throws DAOException {
+    public DataIterator<OpenIDLinkage> getIterator(PartakeConnection con) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT t FROM OpenIDLinkages t");
+        
+        @SuppressWarnings("unchecked")
+        List<OpenIDLinkage> list = q.getResultList();
+        
+        return new JPAPartakeModelDataIterator<OpenIDLinkage>(em, list, OpenIDLinkage.class, false);
+    }
+    
+    @Override
+    public List<String> findByUserId(PartakeConnection con, String userId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT oil FROM OpenIDLinkages oil WHERE oil.userId = :userId");
         q.setParameter("userId", userId);

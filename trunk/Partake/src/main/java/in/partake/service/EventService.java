@@ -15,6 +15,7 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Envelope;
+import in.partake.model.dto.FeedLinkage;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
@@ -24,6 +25,7 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.LastParticipationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.PartakeProperties;
 import in.partake.util.Util;
 
@@ -76,7 +78,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            Event event = factory.getEventAccess().getEvent(con, eventId);
+            Event event = factory.getEventAccess().find(con, eventId);
             con.commit();
             
             return event;
@@ -115,9 +117,9 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-        	String eventId = factory.getFeedAccess().getEventIdByFeedId(con, feedId);
-            if (eventId == null) { return null; }
-            EventEx event = getEventEx(con, eventId);
+        	FeedLinkage linkage = factory.getFeedAccess().find(con, feedId);
+            if (linkage == null) { return null; }
+            EventEx event = getEventEx(con, linkage.getEventId());
             con.commit();
             return event;
         } finally {
@@ -135,7 +137,7 @@ public final class EventService extends PartakeService {
 	    PartakeConnection con = getPool().getConnection();
 	    try {
 	        con.beginTransaction();
-	        DataIterator<Event> it = factory.getEventAccess().getAllEventIterators(con);
+	        DataIterator<Event> it = factory.getEventAccess().getIterator(con);
     	    while (it.hasNext()) {
     	        Event event = it.next();
     	        if (event == null) { continue; }
@@ -156,7 +158,7 @@ public final class EventService extends PartakeService {
 	    PartakeConnection con = getPool().getConnection();
 	    try {
 	        con.beginTransaction();
-	        DataIterator<Event> it = factory.getEventAccess().getAllEventIterators(con); 
+	        DataIterator<Event> it = factory.getEventAccess().getIterator(con); 
             while (it.hasNext()) {
                 Event event = it.next();
                 appendFeedIfAbsent(factory, con, event.getId());
@@ -194,7 +196,7 @@ public final class EventService extends PartakeService {
                 	continue;
                 }
                 
-                events.add(factory.getEventAccess().getEvent(con, id));
+                events.add(factory.getEventAccess().find(con, id));
             }
             con.commit();
             
@@ -232,7 +234,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            List<Event> events = factory.getEventAccess().getEventsByOwner(con, owner.getId());
+            List<Event> events = factory.getEventAccess().findByOwnerId(con, owner.getId());
             con.commit();
             return events;
         } finally {
@@ -252,7 +254,7 @@ public final class EventService extends PartakeService {
         try {
             con.beginTransaction();
             Date now = new Date();
-            List<Event> events = factory.getEventAccess().getEventsByOwner(con, userId);
+            List<Event> events = factory.getEventAccess().findByOwnerId(con, userId);
             List<Event> result = new ArrayList<Event>();
             for (Event event : events) {
                 if (!event.getBeginDate().before(now)) {
@@ -274,10 +276,10 @@ public final class EventService extends PartakeService {
             List<Event> result = new ArrayList<Event>();
             Date now = new Date();
             
-            List<Enrollment> enrollments = factory.getEnrollmentAccess().getEnrollmentsByUserId(con, userId); 
+            List<Enrollment> enrollments = factory.getEnrollmentAccess().findByUserId(con, userId); 
             for (Enrollment enrollment : enrollments) {
                 if (enrollment == null) { continue; }
-                Event e = factory.getEventAccess().getEvent(con, enrollment.getEventId());
+                Event e = factory.getEventAccess().find(con, enrollment.getEventId());
                 if (e == null) { continue; }
                 if (!e.getBeginDate().before(now)) {
                     result.add(e);
@@ -357,7 +359,7 @@ public final class EventService extends PartakeService {
     		    String eventId = factory.getEventAccess().getFreshId(con);
     		    eventEmbryo.setId(eventId);
     		}
-    		factory.getEventAccess().addEvent(con, eventEmbryo);
+    		factory.getEventAccess().put(con, eventEmbryo);
     		
     		
     		if (foreImageEmbryo != null) {
@@ -426,7 +428,7 @@ public final class EventService extends PartakeService {
     
     		// master を update
     		eventEmbryo.setId(event.getId());
-    		factory.getEventAccess().updateEvent(con, eventEmbryo);
+    		factory.getEventAccess().put(con, eventEmbryo);
     		
     		// その後に image たちを update
     		if (updatesForeImage) {
@@ -465,7 +467,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            factory.getEventAccess().removeEvent(con, eventId);
+            factory.getEventAccess().remove(con, eventId);
             
             // Lucandra のデータを抜く
             LuceneDao.get().removeDocument(eventId);
@@ -499,7 +501,11 @@ public final class EventService extends PartakeService {
 		PartakeConnection con = getPool().getConnection();
 		try {
             con.beginTransaction();
-			factory.getEventRelationAccess().setEventRelations(con, eventId, relations);
+            factory.getEventRelationAccess().removeByEventId(con, eventId);
+            for (EventRelation er : relations) {
+                assert (eventId.equals(er.getSrcEventId()));
+                factory.getEventRelationAccess().put(con, er);
+            }
 			con.commit();
 		} finally {
 			con.invalidate();
@@ -511,7 +517,7 @@ public final class EventService extends PartakeService {
 		PartakeConnection con = getPool().getConnection();
 		try {
             con.beginTransaction();
-            List<EventRelation> relations = factory.getEventRelationAccess().getEventRelations(con, eventId);
+            List<EventRelation> relations = factory.getEventRelationAccess().findByEventId(con, eventId);
 			con.commit();
 			
 			return relations;
@@ -526,9 +532,9 @@ public final class EventService extends PartakeService {
         try {
             con.beginTransaction();
             List<EventRelationEx> relations = new ArrayList<EventRelationEx>();
-            for (EventRelation relation : factory.getEventRelationAccess().getEventRelations(con, eventId)) {
+            for (EventRelation relation : factory.getEventRelationAccess().findByEventId(con, eventId)) {
                 if (relation == null) { continue; }
-                Event event = factory.getEventAccess().getEvent(con, relation.getDstEventId()); 
+                Event event = factory.getEventAccess().find(con, relation.getDstEventId()); 
                 if (event == null) { continue; }
                 EventRelationEx relex = new EventRelationEx(relation, event);
                 relex.freeze();
@@ -551,7 +557,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            List<Enrollment> enrollments = factory.getEnrollmentAccess().getEnrollmentsByEventId(con, eventId);
+            List<Enrollment> enrollments = factory.getEnrollmentAccess().findByEventId(con, eventId);
             con.commit();
             return enrollments;
         } finally {
@@ -589,11 +595,11 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         try {
             con.beginTransaction();
-            Enrollment enrollment = factory.getEnrollmentAccess().getEnrollment(con, userId, eventId);
+            Enrollment enrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId)); 
             if (enrollment == null) { return false; }
             Enrollment newEnrollment = new Enrollment(enrollment);
             newEnrollment.setVIP(vip);
-            factory.getEnrollmentAccess().addEnrollment(con, newEnrollment);
+            factory.getEnrollmentAccess().put(con, newEnrollment);
             con.commit();
             return true;
         } finally {
@@ -613,7 +619,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         try {
             con.beginTransaction();
-            factory.getEnrollmentAccess().removeEnrollment(con, userId, eventId);
+            factory.getEnrollmentAccess().remove(con, new EnrollmentPK(userId, eventId));
             con.commit();
             return true;
         } finally {
@@ -630,7 +636,7 @@ public final class EventService extends PartakeService {
 	    PartakeConnection con = getPool().getConnection();
 	    try {
             con.beginTransaction();
-	    	Comment comment = factory.getCommentAccess().getComment(con, commentId);
+	    	Comment comment = factory.getCommentAccess().find(con, commentId);
             con.commit();
             return comment;
 	    } finally {
@@ -656,7 +662,7 @@ public final class EventService extends PartakeService {
 	    try {
 	        con.beginTransaction();
     	    embryo.setId(factory.getCommentAccess().getFreshId(con));
-    	    factory.getCommentAccess().addComment(con, embryo);
+    	    factory.getCommentAccess().put(con, embryo);
     	    con.commit();
 	    } finally {
 	        con.invalidate();
@@ -669,7 +675,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
 	    try {
 	        con.beginTransaction();
-	    	factory.getCommentAccess().removeComment(con, commentId);
+	    	factory.getCommentAccess().remove(con, commentId);
 	    	con.commit();
 	    } finally {
 	        con.invalidate();
@@ -749,7 +755,7 @@ public final class EventService extends PartakeService {
         try {
             con.beginTransaction();
             Event event = getEventById(eventId);
-            List<Enrollment> enrollments = factory.getEnrollmentAccess().getEnrollmentsByEventId(con, eventId);
+            List<Enrollment> enrollments = factory.getEnrollmentAccess().findByEventId(con, eventId);
             boolean isOver = event.isReservationTimeOver();
             
             int result = 0;
@@ -813,7 +819,7 @@ public final class EventService extends PartakeService {
     
     private void enrollImpl(PartakeConnection con, String userId, String eventId, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
         PartakeDAOFactory factory = getFactory();
-        Enrollment oldEnrollment = factory.getEnrollmentAccess().getEnrollment(con, userId, eventId);
+        Enrollment oldEnrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
         Enrollment newEnrollment;
         if (oldEnrollment == null) {
             newEnrollment = new Enrollment(userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, false, LastParticipationStatus.NOT_ENROLLED, new Date());
@@ -839,7 +845,7 @@ public final class EventService extends PartakeService {
             newEnrollment.setModifiedAt(new Date());
         }
         
-        factory.getEnrollmentAccess().addEnrollment(con, newEnrollment);
+        factory.getEnrollmentAccess().put(con, newEnrollment);
     }
     
     // ----------------------------------------------------------------------
@@ -861,11 +867,11 @@ public final class EventService extends PartakeService {
     }
     
     private void appendFeedIfAbsent(PartakeDAOFactory factory, PartakeConnection con, String eventId) throws DAOException {
-        String feedId = factory.getFeedAccess().getFeedIdByEventId(con, eventId);
+        String feedId = factory.getFeedAccess().findByEventId(con, eventId);
         if (feedId != null) { return; }
         
         feedId = factory.getFeedAccess().getFreshId(con);
-        factory.getFeedAccess().addFeedId(con, feedId, eventId);
+        factory.getFeedAccess().put(con, new FeedLinkage(feedId, eventId));
     }
     
     // ----------------------------------------------------------------------
@@ -905,7 +911,7 @@ public final class EventService extends PartakeService {
                 String id = document.get("ID");
                 if (id == null) { continue; }
 
-                events.add(factory.getEventAccess().getEvent(con, id));
+                events.add(factory.getEventAccess().find(con, id));
             }
             return events;
         } finally {
@@ -927,7 +933,7 @@ public final class EventService extends PartakeService {
                 logger.info("No bot id.");
                 return;
             }
-            TwitterLinkage linkage = factory.getTwitterLinkageAccess().getTwitterLinkageById(con, twitterId);
+            TwitterLinkage linkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(twitterId));
             if (linkage == null) {
                 logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
                 return;
@@ -940,10 +946,10 @@ public final class EventService extends PartakeService {
             
             String messageId = factory.getDirectMessageAccess().getFreshId(con);
             Message embryo = new Message(messageId, userId, message, null, new Date());
-            factory.getDirectMessageAccess().addMessage(con, embryo);
+            factory.getDirectMessageAccess().put(con, embryo);
             String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
             Envelope envelope = new Envelope(envelopeId, userId, null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
-            factory.getEnvelopeAccess().enqueueEnvelope(con, envelope);
+            factory.getEnvelopeAccess().put(con, envelope);
             
             logger.info("bot will tweet: " + message);
     	} catch (Exception e) {

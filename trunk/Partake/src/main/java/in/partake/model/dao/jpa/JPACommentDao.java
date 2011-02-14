@@ -19,18 +19,18 @@ class JPACommentDao extends JPADao<Comment> implements ICommentAccess {
     }
 
     @Override
-    public void addComment(PartakeConnection con, Comment embryo) throws DAOException {
-        createOrUpdate(con, embryo, Comment.class);
+    public void put(PartakeConnection con, Comment embryo) throws DAOException {
+        putImpl(con, embryo, Comment.class);
     }
 
     @Override
-    public Comment getComment(PartakeConnection con, String commentId) throws DAOException {
-        return find(con, commentId, Comment.class);
+    public Comment find(PartakeConnection con, String commentId) throws DAOException {
+        return findImpl(con, commentId, Comment.class);
     }
 
     @Override
-    public void removeComment(PartakeConnection con, String commentId) throws DAOException {
-        remove(con, commentId, Comment.class);
+    public void remove(PartakeConnection con, String commentId) throws DAOException {
+        removeImpl(con, commentId, Comment.class);
     }
 
     @Override
@@ -46,6 +46,17 @@ class JPACommentDao extends JPADao<Comment> implements ICommentAccess {
         return new JPAPartakeModelDataIterator<Comment>(em, list, Comment.class, false);
     }
 
+    @Override
+    public DataIterator<Comment> getIterator(PartakeConnection con) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT t FROM Comments t");
+        
+        @SuppressWarnings("unchecked")
+        List<Comment> list = q.getResultList();
+        
+        return new JPAPartakeModelDataIterator<Comment>(em, list, Comment.class, false);        
+    }
+    
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);

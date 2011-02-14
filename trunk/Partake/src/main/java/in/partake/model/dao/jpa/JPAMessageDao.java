@@ -20,17 +20,41 @@ public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
     }
 
     @Override
-    public void addMessage(PartakeConnection con, Message embryo) throws DAOException {
-        createOrUpdate(con, embryo, Message.class);
+    public void put(PartakeConnection con, Message embryo) throws DAOException {
+        putImpl(con, embryo, Message.class);
     }
 
     @Override
-    public Message getMessage(PartakeConnection con, String messageId) throws DAOException {
-        return find(con, messageId, Message.class);
+    public Message find(PartakeConnection con, String messageId) throws DAOException {
+        return findImpl(con, messageId, Message.class);
     }    
     
     @Override
-    public DataIterator<Message> getMessagesByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public void remove(PartakeConnection con, String key) throws DAOException {
+        removeImpl(con, key, Message.class);
+    }
+
+    @Override
+    public DataIterator<Message> getIterator(PartakeConnection con) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT t FROM Messages t");
+        
+        @SuppressWarnings("unchecked")
+        List<Message> list = q.getResultList();
+        
+        return new JPAPartakeModelDataIterator<Message>(em, list, Message.class, false);
+    }
+    
+    @Override
+    public void truncate(PartakeConnection con) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM Messages");
+        q.executeUpdate();
+    }
+
+    
+    @Override
+    public DataIterator<Message> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT m FROM Messages m WHERE m.eventId = :eventId");
         q.setParameter("eventId", eventId);
@@ -45,10 +69,4 @@ public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
         return new JPAPartakeModelDataIterator<Message>(em, result, Message.class, false);
     }
 
-    @Override
-    public void truncate(PartakeConnection con) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("DELETE FROM Messages");
-        q.executeUpdate();
-    }
 }

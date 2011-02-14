@@ -11,8 +11,10 @@ import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IFeedAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dto.FeedLinkage;
 
 // import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
@@ -55,9 +57,11 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
     }
     
     @Override
-    public void addFeedId(PartakeConnection con, String feedId, String eventId) throws DAOException {
+    public void put(PartakeConnection con, FeedLinkage feedLinkage) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
+            String feedId = feedLinkage.getId();
+            String eventId = feedLinkage.getEventId();
             addToEvent(ccon.getClient(), eventId, feedId, ccon.getAcquiredTime());
             addToFeed(ccon.getClient(), feedId, eventId, ccon.getAcquiredTime());
         } catch (Exception e) {
@@ -66,17 +70,27 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
     }
     
     @Override
-    public String getEventIdByFeedId(PartakeConnection con, String feedId) throws DAOException {
+    public FeedLinkage find(PartakeConnection con, String feedId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getEventIdByFeedId(ccon.getClient(), feedId);
+            return findImpl(ccon.getClient(), feedId);
         } catch (Exception e) {
             throw new DAOException(e);
         }        
     }
     
     @Override
-    public String getFeedIdByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public void remove(PartakeConnection con, String key) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public DataIterator<FeedLinkage> getIterator(PartakeConnection con) throws DAOException {
+        return getIteratorImpl((CassandraConnection) con, new CassandraTableDescription(FEED_EVENT_PREFIX, FEED_EVENT_KEYSPACE, FEED_EVENT_COLUMNFAMILY, FEED_EVENT_CL_R, FEED_EVENT_CL_W), this);
+    }
+    
+    @Override
+    public String findByEventId(PartakeConnection con, String eventId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getFeedIdByEventId(ccon.getClient(), eventId);
@@ -117,14 +131,15 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
                         Collections.singletonMap(key, Collections.singletonMap(FEED_RELATION_COLUMNFAMILY, mutations)), FEED_RELATION_CL_W);
     }
     
-    private String getEventIdByFeedId(Client client, String eventId) throws Exception {
-        String key = FEED_RELATION_PREFIX + eventId;
+    private FeedLinkage findImpl(Client client, String feedId) throws Exception {
+        String key = FEED_RELATION_PREFIX + feedId;
 
         ColumnOrSuperColumn cosc = get(client, FEED_RELATION_KEYSPACE, FEED_RELATION_COLUMNFAMILY, "eventId", key, FEED_RELATION_CL_R);
         if (cosc == null) {
             return null;
         } else {
-            return string(cosc.getColumn().getValue());
+            String eventId = string(cosc.getColumn().getValue()); 
+            return new FeedLinkage(feedId, eventId);
         }
     }
     

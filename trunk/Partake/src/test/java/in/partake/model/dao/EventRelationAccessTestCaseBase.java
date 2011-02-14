@@ -2,7 +2,6 @@ package in.partake.model.dao;
 
 import in.partake.model.dto.EventRelation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -27,25 +26,20 @@ public abstract class EventRelationAccessTestCaseBase extends AbstractDaoTestCas
         String relatedEventId = "relatedEventId" + System.currentTimeMillis();
         
         try {
+            con.beginTransaction();            
+            dao.put(con, new EventRelation(eventId, relatedEventId, true, true));
+            con.commit();
+            
             con.beginTransaction();
-            
-            List<EventRelation> original = new ArrayList<EventRelation>();
-            original.add(new EventRelation(eventId, relatedEventId, true, true));
-            
-            dao.setEventRelations(con, eventId, original);
-            List<EventRelation> target = dao.getEventRelations(con, eventId);
+            List<EventRelation> target = dao.findByEventId(con, eventId);
             con.commit();
             
             // the order may differ, however the elements set should be equal.
-            Assert.assertEquals(original.size(), target.size());
-            for (EventRelation lhs : original) {
-                boolean found = false;
-                for (EventRelation rhs : target) {
-                    found |= lhs.equals(rhs);
-                }
-                
-                Assert.assertTrue(found);
-            }
+            Assert.assertEquals(1, target.size());
+            Assert.assertEquals(eventId, target.get(0).getSrcEventId());
+            Assert.assertEquals(relatedEventId, target.get(0).getDstEventId());
+            Assert.assertEquals(true, target.get(0).isRequired());
+            Assert.assertEquals(true, target.get(0).hasPriority());            
         } finally {
             con.invalidate();
         }
@@ -58,36 +52,27 @@ public abstract class EventRelationAccessTestCaseBase extends AbstractDaoTestCas
         String eventId = "eventId-erat-sas-" + System.currentTimeMillis();
         String relatedEventId = "relatedEventId" + System.currentTimeMillis();
 
-        List<EventRelation> original = new ArrayList<EventRelation>();
-        original.add(new EventRelation(eventId, relatedEventId, true, true));
+        EventRelation original = new EventRelation(eventId, relatedEventId, true, true);
 
         try {
             {
                 con.beginTransaction();
-                dao.setEventRelations(con, eventId, original);
+                dao.put(con, original);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                dao.setEventRelations(con, eventId, original);
+                dao.put(con, original);
                 con.commit();
             }
             {
                 con.beginTransaction();
-                List<EventRelation> target = dao.getEventRelations(con, eventId);
+                List<EventRelation> target = dao.findByEventId(con, eventId);
                 con.commit();
                 
                 // the order may differ, however the elements set should be equal.
-                Assert.assertEquals(original.size(), target.size());
-                for (EventRelation lhs : original) {
-                    boolean found = false;
-                    for (EventRelation rhs : target) {
-                        found |= lhs.equals(rhs);
-                    }
-                    
-                    Assert.assertTrue(found);
-                }
-
+                Assert.assertEquals(1, target.size());
+                Assert.assertEquals(original, target.get(0));
             }
         } finally {
             con.invalidate();
@@ -99,7 +84,7 @@ public abstract class EventRelationAccessTestCaseBase extends AbstractDaoTestCas
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            List<EventRelation> relations = dao.getEventRelations(con, "invalidId");
+            List<EventRelation> relations = dao.findByEventId(con, "invalidId");
             con.commit();
             
             Assert.assertNotNull(relations);

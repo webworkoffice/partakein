@@ -71,7 +71,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     };
     
     @Override
-    public Event getEvent(PartakeConnection con, String id) throws DAOException {
+    public Event find(PartakeConnection con, String id) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getEventImpl(ccon, id);
@@ -81,18 +81,18 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     }
     
     @Override
-    public DataIterator<Event> getAllEventIterators(PartakeConnection connection) throws DAOException {
+    public DataIterator<Event> getIterator(PartakeConnection connection) throws DAOException {
         CassandraKeyIterator it = new CassandraKeyIterator((CassandraConnection) connection, EVENTS_KEYSPACE, EVENTS_PREFIX, EVENTS_COLUMNFAMILY, EVENTS_CL_R); 
         return new CassandraKeyDataIterator<Event>(it, new KeyMapper<Event>((CassandraConnection) connection) {
             @Override
             public Event map(String key) throws DAOException {
-                return factory.getEventAccess().getEvent(getConnection(), key);
+                return factory.getEventAccess().find(getConnection(), key);
             }
         });
     }
     
     @Override
-    public List<Event> getEventsByOwner(PartakeConnection con, String userId) throws DAOException {
+    public List<Event> findByOwnerId(PartakeConnection con, String userId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getEventsByOwnerImpl(ccon, userId);
@@ -101,16 +101,15 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         }
     }
     
-    // id が返却される。
     @Override
-    public void addEvent(PartakeConnection con, Event embryo) throws DAOException {
+    public void put(PartakeConnection con, Event embryo) throws DAOException {
         if (embryo == null) { throw new NullPointerException(); }
         if (embryo.getId() == null) { throw new NullPointerException(); }
         
-        addEventImpl(con, embryo);
+        putImpl(con, embryo);
     }    
     
-    private void addEventImpl(PartakeConnection con, Event embryo) throws DAOException {
+    private void putImpl(PartakeConnection con, Event embryo) throws DAOException {
         if (embryo == null) { throw new NullPointerException(); }
         if (embryo.getId() == null) { throw new NullPointerException(); }
         
@@ -127,25 +126,12 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
             throw new DAOException(e);
         }
     }
-    
+   
     @Override
-    public void updateEvent(PartakeConnection con, Event embryo) throws DAOException {
-        if (embryo == null) { throw new NullPointerException(); }
-        if (embryo.getId() == null) { throw new NullPointerException(); }
-        
+    public void remove(PartakeConnection con, String eventId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addEventImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-    }
-    
-    @Override
-    public void removeEvent(PartakeConnection con, String eventId) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            removeEvent(ccon.getClient(), eventId, ccon.getAcquiredTime());
+            removeImpl(ccon.getClient(), eventId, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -251,7 +237,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
     }
     
     // 削除フラグをたてるのみで、実際には消さないようにする。(このほうが Cassandra が死んでて null だったのか消えたのかの区別が楽)
-    private void removeEvent(Client client, String eventId, long time) throws InvalidRequestException, UnavailableException, TimedOutException, TException {
+    private void removeImpl(Client client, String eventId, long time) throws InvalidRequestException, UnavailableException, TimedOutException, TException {
         String key = EVENTS_PREFIX + eventId;
         
         ColumnPath columnPath = new ColumnPath(EVENTS_COLUMNFAMILY);
