@@ -129,4 +129,14 @@ public class Helper {
 	    if (date == null) { return "未送付"; }
 	    return String.format("送付済 (%s)", readableDate(date));
 	}
+
+	// cache css version to invalidate user cache
+	// see http://code.google.com/p/partakein/issues/detail?id=45
+	private static String cachedCssVersion;
+	public static String getCssVersion() {
+		return cachedCssVersion == null ? "unknown" : cachedCssVersion;
+	}
+	public static void setCssVersion(String version) {
+		cachedCssVersion = version;
+	}
 }
