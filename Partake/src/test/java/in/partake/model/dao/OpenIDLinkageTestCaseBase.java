@@ -6,14 +6,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class OpenIDLinkageTestCaseBase extends AbstractDaoTestCaseBase {
-    private IOpenIDLinkageAccess dao;
-    
+public abstract class OpenIDLinkageTestCaseBase extends AbstractDaoTestCaseBase<IOpenIDLinkageAccess, OpenIDLinkage, String> {
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getOpenIDLinkageAccess());
-        
-        dao = getFactory().getOpenIDLinkageAccess();
+    }
+    
+    @Override
+    protected OpenIDLinkage create(long pkNumber, String pkSalt, int objNumber) {
+        return new OpenIDLinkage("id" + pkSalt + pkNumber, "userId" + objNumber);
     }
     
     @Test

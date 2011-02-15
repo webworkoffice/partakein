@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 
-import in.partake.model.dao.AbstractDaoTestCaseBase;
+import in.partake.model.dao.AbstractConnectionTestCaseBase;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.PartakeProperties;
 
@@ -17,14 +17,13 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
-public class ColumnIteratorTestForColumn extends AbstractDaoTestCaseBase {
+public class ColumnIteratorTestForColumn extends AbstractConnectionTestCaseBase {
     private final String PREFIX = "columniteratortest:id:";
     private static final String KEYSPACE = "Keyspace1";
     private static final String COLUMNFAMILY = "Standard2";
@@ -41,11 +40,6 @@ public class ColumnIteratorTestForColumn extends AbstractDaoTestCaseBase {
     public static void tearDownOnce() {
         PartakeProperties.get().reset();
         reset();
-    }
-    
-    @Before
-    public void setup() throws DAOException {
-        super.setup(null);
     }
     
     @Test

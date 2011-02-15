@@ -1,5 +1,7 @@
 package in.partake.model.dao;
 
+import in.partake.model.dto.PartakeModel;
+
 public class Main {
     private static PartakeDAOFactory casFactory;
     private static PartakeConnectionPool casPool;
@@ -30,17 +32,26 @@ public class Main {
         copy(casFactory.getUserPreferenceAccess(),  jpaFactory.getUserPreferenceAccess());
     }
     
-    private static <T, PK> void copy(IAccess<T, PK> cas, IAccess<T, PK> jpa) throws Exception {
+    private static <T extends PartakeModel<T>, PK> void copy(IAccess<T, PK> cas, IAccess<T, PK> jpa) throws Exception {
         PartakeConnection cascon = casPool.getConnection();
         PartakeConnection jpacon = jpaPool.getConnection();
 
-        DataIterator<T> it = cas.getIterator(cascon);
+        int cnt = 0;
+        DataIterator<T> it = cas.getIterator(cascon);        
         while (it.hasNext()) {
             T t = it.next();
             System.out.println(t);
+            if (t == null) { continue; }
+            
             jpacon.beginTransaction();
             jpa.put(jpacon, t);
             jpacon.commit();
+            
+            if (++cnt % 100 == 0) {
+                jpacon.invalidate();
+                jpacon = jpaPool.getConnection();
+            }
+            
         }
         
         cascon.invalidate();

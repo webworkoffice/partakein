@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import in.partake.model.dto.EventRelation;
+import in.partake.model.dto.pk.EventRelationPK;
 
 import java.util.List;
 
@@ -8,14 +9,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class EventRelationAccessTestCaseBase extends AbstractDaoTestCaseBase {
-    private IEventRelationAccess dao;
-    
+public abstract class EventRelationAccessTestCaseBase extends AbstractDaoTestCaseBase<IEventRelationAccess, EventRelation, EventRelationPK> {
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getEventRelationAccess());
-        
-        dao = getFactory().getEventRelationAccess();
+    }
+    
+    @Override
+    protected EventRelation create(long pkNumber, String pkSalt, int objNumber) {
+        return new EventRelation(pkSalt + pkNumber, pkSalt + pkNumber, (objNumber & 2) == 1, (objNumber & 1) == 1);
     }
     
     @Test

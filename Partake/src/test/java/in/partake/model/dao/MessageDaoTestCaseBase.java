@@ -10,14 +10,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-public abstract class MessageDaoTestCaseBase extends AbstractDaoTestCaseBase {
+public abstract class MessageDaoTestCaseBase extends AbstractDaoTestCaseBase<IMessageAccess, Message, String> {
 	public TestName name = new TestName();
-	private IMessageAccess dao;
 
 	@Before
-	public void setup() throws Exception {
+	public void setup() throws DAOException {
 	    super.setup(getFactory().getDirectMessageAccess());
-		dao = getFactory().getDirectMessageAccess();
+	}
+	
+	@Override
+	protected Message create(long pkNumber, String pkSalt, int objNumber) {
+	    return new Message(pkSalt + pkNumber, "userId" + objNumber, "some message", "eventId" + objNumber, new Date(1L));
 	}
 	
 	@Test

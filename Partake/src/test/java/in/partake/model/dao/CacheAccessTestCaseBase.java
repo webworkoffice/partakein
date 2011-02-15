@@ -9,8 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
-    
+public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase<ICacheAccess, CacheData, String> {
     private Date oneHourAfter() {
         return new Date(new Date().getTime() + 3600 * 1000);
     }
@@ -19,9 +18,14 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase {
         return new Date(new Date().getTime() - 3600 * 1000);
     }
     
+    @Override
+    protected CacheData create(long pkNumber, String pkSalt, int objNumber) {
+        return new CacheData(pkSalt + pkNumber, new byte[] { 1, 2, (byte)objNumber }, new Date());
+    }
+        
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getCacheAccess()); 
+        super.setup(getFactory().getCacheAccess());
     }
 
     @Test

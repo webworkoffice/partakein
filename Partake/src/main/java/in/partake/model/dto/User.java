@@ -13,7 +13,7 @@ public class User extends PartakeModel<User> {
     @Id
     private String  id;
     @Column
-    private int     twitterId;
+    private String  twitterId;
     @Column
     private Date    lastLoginAt; //
     @Column
@@ -23,13 +23,17 @@ public class User extends PartakeModel<User> {
         // do nothing
     }
     
-    public User(String id, int twitterId, Date lastLoginAt, String calendarId) {
+    public User(String id, String twitterId, Date lastLoginAt, String calendarId) {
         this.id = id;
         this.lastLoginAt = lastLoginAt;
-        this.twitterId = twitterId;
+        this.twitterId = String.valueOf(twitterId);
         this.calendarId = calendarId;
     }
-    
+
+    public User(String id, int twitterId, Date lastLoginAt, String calendarId) {
+        this(id, String.valueOf(twitterId), lastLoginAt, calendarId);
+    }
+
     public User(User user) {
         this.id = user.id;
         this.lastLoginAt = user.lastLoginAt;
@@ -89,7 +93,7 @@ public class User extends PartakeModel<User> {
         return lastLoginAt;
     }
 
-    public int getTwitterId() {
+    public String getTwitterId() {
         return twitterId;
     }
 
@@ -107,9 +111,13 @@ public class User extends PartakeModel<User> {
         this.lastLoginAt = lastLoginAt;
     }
 
-    public void setTwitterId(int twitterId) {
+    public void setTwitterId(String twitterId) {
         checkFrozen();
         this.twitterId = twitterId;
+    }
+
+    public void setTwitterId(int twitterId) {
+        setTwitterId(String.valueOf(twitterId));
     }
 
     public void setCalendarId(String calendarId) {

@@ -6,15 +6,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class TwitterLinkageTestCaseBase extends AbstractDaoTestCaseBase {
-    
-    private ITwitterLinkageAccess dao;
+public abstract class TwitterLinkageTestCaseBase extends AbstractDaoTestCaseBase<ITwitterLinkageAccess, TwitterLinkage, String> {
     
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getTwitterLinkageAccess());
-        
-        dao = getFactory().getTwitterLinkageAccess();
+    }
+    
+    @Override
+    protected TwitterLinkage create(long pkNumber, String pkSalt, int objNumber) {
+        return new TwitterLinkage(pkSalt + pkNumber, "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId" + objNumber);
     }
     
     @Test

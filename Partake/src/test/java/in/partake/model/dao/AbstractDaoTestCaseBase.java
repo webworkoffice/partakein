@@ -1,8 +1,14 @@
 package in.partake.model.dao;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Test;
 
+import in.partake.model.dto.PartakeModel;
 import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;
 
@@ -13,9 +19,9 @@ import in.partake.util.PDate;
  * @author shinyak
  *
  */
-public abstract class AbstractDaoTestCaseBase {
+public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T extends PartakeModel<T>, PK> extends AbstractConnectionTestCaseBase {
     private static PartakeDAOFactory factory;
-    private static PartakeConnectionPool pool;
+    protected DAO dao;
     
     static {
         reset();
@@ -25,21 +31,15 @@ public abstract class AbstractDaoTestCaseBase {
         return factory;
     }
     
-    protected static PartakeConnectionPool getPool() {
-        return pool;
-    }
-    
     /**
      * PartakeService に必要なデータを読み直す。最初の初期化とユニットテスト用途のみを想定。
      */
     protected static void reset() {
         try {
+            AbstractConnectionTestCaseBase.reset();
+            
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();
-            
-            Class<?> poolClass = Class.forName(PartakeProperties.get().getConnectionPoolClassName());
-            pool = (PartakeConnectionPool) poolClass.newInstance();
-            
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
@@ -49,31 +49,239 @@ public abstract class AbstractDaoTestCaseBase {
         }        
     }
     
-    @Test
-    public final void shouldAlwaysSucceed() {
-        // do nothing
-        // NOTE: this method ensures the setup method is called when no other test methods are defined. 
-    }
+    // ------------------------------------------------------------
     
     @After
     public void tearDown() throws DAOException {
         
     }
     
-    protected void setup(ITruncatable t) throws DAOException {
+    protected void setup(DAO dao) throws DAOException {
         // remove the current data
         PDate.resetCurrentDate();
+        this.dao = dao;
         
-        if (t != null) {
+        if (dao != null) {
             // truncate all data.
             PartakeConnection con = pool.getConnection();
             try {
                 con.beginTransaction();
-                t.truncate(con);
+                dao.truncate(con);
                 con.commit();
             } finally {
                 con.invalidate();
             }
         }
     }
+    
+    // 同じ (pkNumber, pkSalt) なら同じ結果を返すようにする。
+    protected abstract T create(long pkNumber, String pkSalt, int objNumber);
+    
+    // ------------------------------------------------------------
+    
+    @Test
+    public final void testToCreate() {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                T t1 = create(0, "create", 0);
+                T t2 = create(i, "create", j);
+                
+                if (i == 0 && j == 0) {
+                    Assert.assertEquals(t1, t2);
+                } else {
+                    Assert.assertFalse(t1.equals(t2));
+                }
+                
+                if (i == 0) {
+                    Assert.assertEquals(t1.getPrimaryKey(), t2.getPrimaryKey());
+                } else {
+                    Assert.assertFalse(t1.getPrimaryKey().equals(t2.getPrimaryKey()));
+                }
+            }
+        }
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public final void testToPutFind() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            con.beginTransaction();
+            T t1 = create(System.currentTimeMillis(), "putfind", 0);
+            dao.put(con, t1);
+            con.commit();
+            
+            con.beginTransaction();
+            T t2 = dao.find(con, (PK) t1.getPrimaryKey());
+            con.commit();
+            
+            Assert.assertEquals(t1, t2);            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public final void testToPutPutFind() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            long time = System.currentTimeMillis();
+            
+            con.beginTransaction();
+            T t1 = create(time, "putputfind", 0); 
+            dao.put(con, t1);
+            con.commit();
+
+            PDate.waitForTick();
+            
+            con.beginTransaction();
+            T t2 = create(time, "putputfind", 1); 
+            dao.put(con, t2);
+            con.commit();
+
+            con.beginTransaction();
+            T t3 = dao.find(con, (PK) t1.getPrimaryKey());
+            con.commit();
+            
+            Assert.assertFalse(t1.equals(t3));
+            Assert.assertEquals(t2, t3);            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            con.invalidate();
+        }
+
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public final void testToPutRemoveFind() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            con.beginTransaction();
+            T t1 = create(System.currentTimeMillis(), "putremovefind", 0); 
+            dao.put(con, t1);
+            con.commit();
+            
+            PDate.waitForTick();
+            
+            con.beginTransaction();
+            dao.remove(con, (PK) t1.getPrimaryKey());
+            con.commit();
+            
+            T t2 = dao.find(con, (PK) t1.getPrimaryKey());
+            Assert.assertNull(t2);            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public final void testToPutRemovePutFind() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            con.beginTransaction();
+            T t1 = create(System.currentTimeMillis(), "putremovefind", 0); 
+            dao.put(con, t1);
+            con.commit();
+            
+            PDate.waitForTick();
+            
+            con.beginTransaction();
+            dao.remove(con, (PK) t1.getPrimaryKey());
+            con.commit();
+            
+            PDate.waitForTick();
+
+            con.beginTransaction();
+            dao.put(con, t1);
+            con.commit();
+
+            T t2 = dao.find(con, (PK) t1.getPrimaryKey());
+            
+            Assert.assertEquals(t1, t2);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            con.invalidate();
+        }
+    }
+
+    
+    @Test
+    @SuppressWarnings("unchecked")        
+    public final void testToRemoveInvalidObject() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            T t1 = create(System.currentTimeMillis(), "removeinvalid", 0);
+            
+            con.beginTransaction();
+            dao.remove(con, (PK) t1.getPrimaryKey());
+            con.commit();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            con.invalidate();
+        }        
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")    
+    public final void testToFindWithInvalidId() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            T t1 = create(System.currentTimeMillis(), "findInvalid", 0);
+            
+            con.beginTransaction();
+            T t = dao.find(con, (PK) t1.getPrimaryKey());
+            con.commit();
+            
+            Assert.assertNull(t);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            con.invalidate();
+        }                
+    }
+
+    @Test
+    public final void testToIterate() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        Set<T> created = new HashSet<T>();
+        for (int i = 0; i < 3; ++i) {
+            T t = create(System.currentTimeMillis(), String.valueOf(i), i);
+            created.add(t);
+            
+            con.beginTransaction();
+            dao.put(con, t);
+            con.commit();
+        }
+        
+        DataIterator<T> it = dao.getIterator(con);
+        while (it.hasNext()) {
+            T t = it.next();
+            Assert.assertTrue(created.contains(t));
+        }
+    }
+    
+
 }

@@ -8,14 +8,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase {
-    
-    private IUserAccess dao;
+public abstract class UserAccessTestCaseBase extends AbstractDaoTestCaseBase<IUserAccess, User, String> {
     
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getUserAccess());
-        dao = getFactory().getUserAccess();
+    }
+    
+    @Override
+    protected User create(long pkNumber, String pkSalt, int objNumber) {
+        return new User("userId" + pkSalt + pkNumber, 1, new Date(0), "calendarId" + objNumber);
     }
     
     @Test

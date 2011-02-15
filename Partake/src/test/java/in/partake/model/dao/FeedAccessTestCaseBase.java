@@ -6,13 +6,15 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class FeedAccessTestCaseBase extends AbstractDaoTestCaseBase {
-    private IFeedAccess dao;
-    
+public abstract class FeedAccessTestCaseBase extends AbstractDaoTestCaseBase<IFeedAccess, FeedLinkage, String> {    
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getFeedAccess());
-        this.dao = getFactory().getFeedAccess(); 
+    }
+    
+    @Override
+    protected FeedLinkage create(long pkNumber, String pkSalt, int objNumber) {
+        return new FeedLinkage(pkSalt + pkNumber, "evetnId" + objNumber);
     }
     
     @Test

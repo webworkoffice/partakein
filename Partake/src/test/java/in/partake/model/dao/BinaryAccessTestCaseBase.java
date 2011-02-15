@@ -7,29 +7,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase {
+public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase<IBinaryAccess, BinaryData, String> {
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getBinaryAccess()); 
+        super.setup(getFactory().getBinaryAccess());
     }
 
-    @Test
-    public void testToCreate() throws Exception {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        
-        try {
-            con.beginTransaction();
-            
-            BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
-            factory.getBinaryAccess().put(con, data);
-            con.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            con.invalidate();
-        }
+    @Override
+    protected BinaryData create(long pkNumber, String pkSalt, int objNumber) {
+        return new BinaryData(pkSalt + "-" + pkNumber, "test-type", new byte[] {1, 2, (byte) objNumber});
     }
     
     @Test
