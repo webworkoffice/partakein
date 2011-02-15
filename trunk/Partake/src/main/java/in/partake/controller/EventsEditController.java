@@ -217,6 +217,22 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		addFieldError("hashtag", "ハッシュタグは # から始まる英数字のみが指定できます。");
     	}
     	
+    	// EventRelation は、同じ eventId が複数でてはならない
+    	{
+    	    Set<String> set = new HashSet<String>();
+    	    String[] relatedEventIDs = new String[] { relatedEventID1, relatedEventID2, relatedEventID3 };
+    	    for (int i = 0; i < relatedEventIDs.length; ++i){
+	            if (!StringUtils.isEmpty(relatedEventIDs[i])) {
+	                if (set.contains(relatedEventIDs[i])) {
+	                    addFieldError("relatedEventID" + (i + 1), "ID が重複しています。");
+	                } else {
+	                    set.add(relatedEventIDs[i]);
+	                }
+	            }
+    	    }
+    	}
+    	
+    	
     	// TODO: 画像のチェック？
     	
     	super.validate();

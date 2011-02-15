@@ -28,7 +28,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 	
 	@Override
 	protected Enrollment create(long pkNumber, String pkSalt, int objNumber) {
-	    return new Enrollment("userId" + pkSalt + pkNumber, "eventId" + pkSalt + pkNumber, "comment", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date(1L));
+	    return new Enrollment("userId" + pkSalt + pkNumber, "eventId" + pkSalt + pkNumber, "comment" + objNumber, ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date(1L));
 	}
 
 	@Test

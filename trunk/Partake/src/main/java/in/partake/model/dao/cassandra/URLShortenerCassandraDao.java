@@ -110,8 +110,8 @@ public class URLShortenerCassandraDao extends CassandraDao implements IURLShorte
             String name = string(column.getName());
             String value = string(column.getValue());
             
-            if (type == null) { return new ShortenedURLData(originalURL, name, value); }
-            if (type.equals(name)) { return new ShortenedURLData(originalURL, name, value); }
+            if (type == null) { return new ShortenedURLData(originalURL, name, value).freeze(); }
+            if (type.equals(name)) { return new ShortenedURLData(originalURL, name, value).freeze(); }
         }
         
         return null;
