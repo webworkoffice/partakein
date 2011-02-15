@@ -9,6 +9,7 @@ import in.partake.model.ParticipationList;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IBinaryAccess;
+import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.LuceneDao;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
@@ -500,13 +501,43 @@ public final class EventService extends PartakeService {
 		PartakeDAOFactory factory = getFactory();
 		PartakeConnection con = getPool().getConnection();
 		try {
-            con.beginTransaction();
-            factory.getEventRelationAccess().removeByEventId(con, eventId);
-            for (EventRelation er : relations) {
-                assert (eventId.equals(er.getSrcEventId()));
-                factory.getEventRelationAccess().put(con, er);
-            }
-			con.commit();
+		    IEventRelationAccess dao = factory.getEventRelationAccess();
+		    
+		    // こういうふうにやると、Cassandra の場合 remove が優先されてしまう。
+//            con.beginTransaction();
+//            factory.getEventRelationAccess().removeByEventId(con, eventId);
+//            for (EventRelation er : relations) {
+//                assert (eventId.equals(er.getSrcEventId()));
+//                factory.getEventRelationAccess().put(con, er);
+//            }
+//			con.commit();
+		    
+		    con.beginTransaction();
+		    // 古いものを update/remove
+		    List<EventRelation> oldRelations = dao.findByEventId(con, eventId);
+		    for (EventRelation er : oldRelations) {
+		        boolean found = false;
+		        for (int i = 0; i < relations.size(); ++i) {
+		            if (relations.get(i) == null) { continue; }
+		            if (relations.get(i).getPrimaryKey().equals(er.getPrimaryKey())) {
+		                found = true;
+		                dao.put(con, relations.get(i));
+		                relations.set(i, null);
+		                break;
+		            }
+		        }
+		        
+		        if (!found) {
+		            dao.remove(con, er.getPrimaryKey());
+		        }
+		    }
+		    // 新しいものを insert
+		    for (int i = 0; i < relations.size(); ++i) {
+		        EventRelation er = relations.get(i);
+		        if (er == null) { continue; }
+		        dao.put(con, er);
+		    }
+		    con.commit();
 		} finally {
 			con.invalidate();
 		}

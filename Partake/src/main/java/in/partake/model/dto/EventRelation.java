@@ -38,7 +38,7 @@ public class EventRelation extends PartakeModel<EventRelation> {
     }
     
     @Override
-    public Object getPrimaryKey() {
+    public EventRelationPK getPrimaryKey() {
         return new EventRelationPK(srcEventId, dstEventId);
     }
     

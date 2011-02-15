@@ -139,7 +139,7 @@ class FeedCassandraDao extends CassandraDao implements IFeedAccess {
             return null;
         } else {
             String eventId = string(cosc.getColumn().getValue()); 
-            return new FeedLinkage(feedId, eventId);
+            return new FeedLinkage(feedId, eventId).freeze();
         }
     }
     

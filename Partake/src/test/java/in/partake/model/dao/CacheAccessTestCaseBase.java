@@ -7,7 +7,6 @@ import in.partake.util.PDate;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase<ICacheAccess, CacheData, String> {
     private Date oneHourAfter() {
@@ -20,7 +19,17 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase<IC
     
     @Override
     protected CacheData create(long pkNumber, String pkSalt, int objNumber) {
-        return new CacheData(pkSalt + pkNumber, new byte[] { 1, 2, (byte)objNumber }, new Date());
+        if (objNumber == 0) {
+            int N = 1024 * 1024;
+            byte[] data = new byte[N];
+            for (int i = 0; i < N; ++i) {
+                data[i] = (byte)(i % N);
+            }
+            return new CacheData(pkSalt + pkNumber, data, new Date(Long.MAX_VALUE));
+
+        } else {
+            return new CacheData(pkSalt + pkNumber, new byte[] { 1, 2, (byte)objNumber }, new Date(Long.MAX_VALUE));
+        }
     }
         
     @Before
@@ -28,83 +37,8 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase<IC
         super.setup(getFactory().getCacheAccess());
     }
 
-    @Test
-    public void testToAdd() throws Exception {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        
-        try {
-            con.beginTransaction();
-            CacheData cacheData = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-            factory.getCacheAccess().put(con, cacheData);
-            con.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            con.invalidate();
-        }
-    }
-    
-    @Test
-    public void testToCreateAndGetInTransactionShort() throws Exception {
-        CacheData original = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-        createAndGetInTransactionImpl(original);
-    }
-
-    @Test
-    public void testToCreateAndGetInTransactionLong() throws Exception {
-        // should accept at least 10 MiB
-        int N = 1024 * 1024 * 10;
-        byte[] longArray = new byte[N];
-        for (int i = 0; i < N; ++i) { 
-            longArray[i] = (byte)(i % 100);
-        }
-        
-        CacheData original = new CacheData("test", longArray, oneHourAfter());        
-        createAndGetInTransactionImpl(original);
-    }
-
-    private void createAndGetInTransactionImpl(CacheData original) throws Exception {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        
-        try {
-            con.beginTransaction();
-
-            factory.getCacheAccess().put(con, original);
-            CacheData target = factory.getCacheAccess().find(con, "test");
-            
-            Assert.assertEquals(original.getId(), target.getId());
-            Assert.assertArrayEquals(original.getData(), target.getData());
-            Assert.assertTrue(target.isFrozen());
-            
-            con.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            con.invalidate();
-        }
-    }
-    
-    @Test(expected = NullPointerException.class)
-    public void testToFailCreatingBinaryDataWithoutId() throws Exception {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        
-        try {
-            con.beginTransaction();
-            CacheData data = new CacheData(null, new byte[] {1, 2, 3}, oneHourAfter());
-            factory.getCacheAccess().put(con, data);
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-    }
-    
     /** null should be returned if the expired data is retrieved. */
-    public void testToCreateAndGetExpiredData() throws Exception {
+    public void testToPutFindExpiredData() throws Exception {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         
@@ -128,7 +62,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase<IC
     }
     
     /** null should be returned if the expired data is retrieved. */
-    public void testToCreateAndGetExpiredDataUsingPDate() throws Exception {
+    public void testToPutFindExpiredDataUsingPDate() throws Exception {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         
@@ -163,108 +97,5 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase<IC
         } finally {
             con.invalidate();
         }
-    }
-    
-    @Test
-    public void testToRemoveCacheData() throws Exception {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        
-        try {
-            {
-                con.beginTransaction();
-                CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-                factory.getCacheAccess().put(con, data);
-                con.commit();
-            }
-            {
-                con.beginTransaction();
-                factory.getCacheAccess().remove(con, "test");
-                con.commit();
-            }
-            {
-                con.beginTransaction();
-                CacheData data = factory.getCacheAccess().find(con, "test");
-                Assert.assertNull(data);
-                con.commit();
-            }
-            
-        } finally {
-            con.invalidate();
-        }        
-    }
-    
-    @Test
-    public void testToIgnoreInvalIdWhenRemovingData() throws Exception {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        
-        try {
-            {
-                con.beginTransaction();
-                CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-                factory.getCacheAccess().put(con, data);
-                con.commit();
-            }
-            {
-                con.beginTransaction();
-                factory.getCacheAccess().remove(con, "invalid-id");
-                con.commit();
-            }
-            {
-                con.beginTransaction();
-                CacheData data = factory.getCacheAccess().find(con, "test");
-                Assert.assertNotNull(data);
-                con.commit();
-            }
-            {
-                con.beginTransaction();
-                CacheData data = factory.getCacheAccess().find(con, "invalid-id");
-                Assert.assertNull(data);
-                con.commit();
-            }
-        } finally {
-            con.invalidate();
-        }    
-    }
-    
-    @Test
-    public void testToCreateDeleteCreateGet() throws Exception {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        
-        long now = new Date().getTime();
-        try {
-            PDate.setCurrentDate(new PDate(now));
-            {
-                con.beginTransaction();
-                CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-                factory.getCacheAccess().put(con, data);
-                con.commit();
-            }
-            PDate.setCurrentDate(new PDate(now + 10));
-            {
-                con.beginTransaction();
-                factory.getCacheAccess().remove(con, "test");
-                con.commit();
-            }
-            PDate.setCurrentDate(new PDate(now + 20));
-            {
-                con.beginTransaction();
-                CacheData data = new CacheData("test", new byte[] { 1, 2, 3 }, oneHourAfter());
-                factory.getCacheAccess().put(con, data);
-                con.commit();
-            }
-            PDate.setCurrentDate(new PDate(now + 30));
-            {
-                con.beginTransaction();
-                CacheData data = factory.getCacheAccess().find(con, "test");
-                Assert.assertNotNull(data);
-                con.commit();
-            }
-        } finally {
-            con.invalidate();
-        }
-        PDate.resetCurrentDate();
-    }
+    }    
 }

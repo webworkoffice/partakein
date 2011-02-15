@@ -1,11 +1,7 @@
 package in.partake.model.dao;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import junit.framework.Assert;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 import in.partake.model.dto.PartakeModel;
@@ -101,6 +97,8 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         }
     }
     
+    
+    
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutFind() throws Exception {
@@ -116,7 +114,9 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             T t2 = dao.find(con, (PK) t1.getPrimaryKey());
             con.commit();
             
-            Assert.assertEquals(t1, t2);            
+            Assert.assertEquals(t1, t2);     
+            Assert.assertFalse(t1.isFrozen());
+            Assert.assertTrue(t2.isFrozen());
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -263,25 +263,31 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         }                
     }
 
-    @Test
-    public final void testToIterate() throws Exception {
-        PartakeConnection con = getPool().getConnection();
-        Set<T> created = new HashSet<T>();
-        for (int i = 0; i < 3; ++i) {
-            T t = create(System.currentTimeMillis(), String.valueOf(i), i);
-            created.add(t);
-            
-            con.beginTransaction();
-            dao.put(con, t);
-            con.commit();
-        }
-        
-        DataIterator<T> it = dao.getIterator(con);
-        while (it.hasNext()) {
-            T t = it.next();
-            Assert.assertTrue(created.contains(t));
-        }
-    }
+    // ちょっとデータが残ったままテストするのは無理がある。
+//    @Test
+//    public final void testToIterate() throws Exception {
+//        PartakeConnection con = getPool().getConnection();
+//        Set<T> created = new HashSet<T>();
+//        for (int i = 0; i < 3; ++i) {
+//            T t = create(System.currentTimeMillis(), String.valueOf(i), i);
+//            created.add(t);
+//            
+//            con.beginTransaction();
+//            dao.put(con, t);
+//            con.commit();
+//        }
+//        
+//        int count = 0;
+//        DataIterator<T> it = dao.getIterator(con);
+//        while (it.hasNext()) {
+//            T t = it.next();
+//            if (t == null) { continue; }
+//            ++count;
+//            Assert.assertTrue(created.contains(t));
+//        }
+//        
+//        Assert.assertEquals(3, count);
+//    }
     
 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
+import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SuperColumn;
@@ -116,7 +117,7 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	}
 	
 	private void putImpl(CassandraConnection con, EventRelation relation, long time) throws Exception {
-		String key = EVENT_RELATION_PREFIX + relation.getSrcEventId();
+        String key = EVENT_RELATION_PREFIX + relation.getSrcEventId();
 		
 		EventRelationMapper mapper = new EventRelationMapper(con, factory);
 		ColumnOrSuperColumn cosc = mapper.unmap(relation, time);
@@ -128,8 +129,9 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	}	
 	
 	private void removeByEventIdImpl(Client client, String eventId, long time) throws Exception {
-	    // TODO: 
-	    throw new RuntimeException("Not implemented yet");
+	    String key = EVENT_RELATION_PREFIX + eventId;
+	    ColumnPath columnPath = new ColumnPath(EVENT_RELATION_COLUMNFAMILY);
+	    client.remove(EVENT_RELATION_KEYSPACE, key, columnPath, time, EVENT_RELATION_CL_W);
 	}
 }
 

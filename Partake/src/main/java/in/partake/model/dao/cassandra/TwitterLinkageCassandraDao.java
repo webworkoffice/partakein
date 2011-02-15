@@ -99,8 +99,7 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
 	}
 
 	
-	private TwitterLinkage getTwitterLinkageById(Client client, String twitterIdStr) throws Exception {
-	    int twitterId = Integer.parseInt(twitterIdStr); // may throw NumberFormatException
+	private TwitterLinkage getTwitterLinkageById(Client client, String twitterId) throws Exception {
 		String key = TWITTER_PREFIX + twitterId;
     	
         SlicePredicate predicate = new SlicePredicate();

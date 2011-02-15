@@ -24,28 +24,15 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase<IE
 
 	@Override
 	protected Event create(long pkNumber, String pkSalt, int objNumber) {
-        Date beginDate = PDate.getCurrentDate().getDate();
-        Date now = PDate.getCurrentDate().getDate();
+        Date now = new Date(1L);
+        Date beginDate = now;
         String url = "http://localhost:8080/";
         String place = "";
         String address = "";
         String description = "";
-        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT", "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, now, now);
+        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT" + objNumber, "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, now, now);
         event.setId("eventId" + pkSalt + pkNumber);
         return event;	    
-	}
-	
-	@Test
-	public void loadAllEvents() throws DAOException {
-		PartakeConnection con = getPool().getConnection();
-
-		try {
-		    for (DataIterator<Event> it = dao.getIterator(con); it.hasNext(); ) {
-		        it.next();
-		    }
-		} finally {
-			con.invalidate();
-		}
 	}
 	
 	@Test
@@ -66,207 +53,11 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase<IE
         }
 	}
 	
-	@Test
-	public void testToAddGet() throws DAOException {
-	    PartakeConnection con = getPool().getConnection();
 
-        try {
-            String userId = "userId" + System.currentTimeMillis();
-            String eventId;
-            
-            Event original = createEvent(null, userId);
-            {
-                con.beginTransaction();
-                eventId = dao.getFreshId(con);
-                original.setId(eventId);
-                dao.put(con, original);
-                con.commit();
-            }
-            
-            Event target;
-            {
-                con.beginTransaction();
-                target = dao.find(con, eventId);
-                con.commit();
-            }
-
-            Assert.assertNotNull(target);
-            Assert.assertTrue(target.isFrozen());
-            Assert.assertFalse(original.isFrozen());
-            Assert.assertEquals(original, target);
-        } finally {
-            con.invalidate();
-        }
-	}
-	
-    @Test
-    public void testToAddRemoveGet() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-
-        try {
-            String userId = "userId" + System.currentTimeMillis();
-            String eventId;
-            
-            Event original = createEvent(null, userId);
-            {
-                con.beginTransaction();
-                eventId = dao.getFreshId(con);
-                original.setId(eventId);
-                dao.put(con, original);
-                con.commit();
-            }
-            
-            PDate.waitForTick();
-            
-            Assert.assertFalse(dao.isRemoved(con, eventId));
-            {
-                con.beginTransaction();
-                dao.remove(con, eventId);
-                con.commit();
-            }
-            
-            PDate.waitForTick();
-            
-            Event target;
-            {
-                con.beginTransaction();
-                target = dao.find(con, eventId);
-                con.commit();
-            }
-
-            Assert.assertNull(target);
-            Assert.assertTrue(dao.isRemoved(con, eventId));
-        } finally {
-            con.invalidate();
-        }        
-    }
-
-    @Test
-    public void testToAddRemoveAddGet() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-
-        try {
-            String userId = "userId" + System.currentTimeMillis();
-            String eventId;
-            
-            Event original = createEvent(null, userId);
-            {
-                con.beginTransaction();
-                eventId = dao.getFreshId(con);
-                original.setId(eventId);
-                dao.put(con, original);
-                con.commit();
-            }
-            
-            {
-                con.beginTransaction();
-                dao.remove(con, eventId);
-                con.commit();
-            }
-            
-            {
-                con.beginTransaction();
-                dao.put(con, original);
-                con.commit();
-            }
-            
-            Event target;
-            {
-                con.beginTransaction();
-                target = dao.find(con, eventId);
-                con.commit();
-            }
-
-            Assert.assertNotNull(target);
-            Assert.assertTrue(target.isFrozen());
-            Assert.assertFalse(original.isFrozen());
-            Assert.assertEquals(original, target);            
-        } finally {
-            con.invalidate();
-        }
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testToAddEventWithoutId() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-        
-        try {
-            String userId = "userId" + System.currentTimeMillis();
-            
-            Event original = createEvent(null, userId);
-            {
-                con.beginTransaction();
-                dao.put(con, original);
-                con.commit();
-            }
-        } finally {
-            con.invalidate();
-        }
-    }
-    
-    @Test
-    public void testToAddUpdateGet() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-
-        try {
-            String userId = "userId" + System.currentTimeMillis();
-            String eventId;
-            
-            Event original = createEvent(null, userId);
-            {
-                con.beginTransaction();
-                eventId = dao.getFreshId(con);
-                original.setId(eventId);
-                dao.put(con, original);
-                con.commit();
-            }
-            
-            Event updated = new Event(original);
-            {
-                updated.setTitle("updated title");
-                con.beginTransaction();
-                dao.put(con, updated);
-                con.commit();
-            }
-            
-            Event target;
-            {
-                con.beginTransaction();
-                target = dao.find(con, eventId);
-                con.commit();
-            }
-
-            Assert.assertNotNull(target);
-            Assert.assertEquals(updated, target);
-            Assert.assertFalse(original.equals(target));
-        } finally {
-            con.invalidate();
-        }
-    }
 
     
     @Test
-    public void testToGetByInvalidId() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-
-        try {
-            String eventId = "eventId-invalid-" + System.currentTimeMillis();
-            
-            Event target;
-            {
-                con.beginTransaction();
-                target = dao.find(con, eventId);
-                con.commit();
-            }
-
-            Assert.assertNull(target);
-        } finally {
-            con.invalidate();
-        }   
-    }
-
-    @Test
-    public void testToGetByOwner() throws DAOException {
+    public void testToFindByOwnerId() throws DAOException {
         PartakeConnection con = getPool().getConnection();
 
         try {
@@ -302,7 +93,7 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase<IE
     }
 
     @Test
-    public void testToGetByInvalidOwner() throws DAOException {
+    public void testToFindByInvalidOwner() throws DAOException {
         PartakeConnection con = getPool().getConnection();
 
         try {

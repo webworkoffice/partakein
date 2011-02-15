@@ -178,7 +178,7 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
         for (ColumnOrSuperColumn cosc : results) {
             if (cosc == null) { continue; }
             String name = string(cosc.column.name);
-            if ("userId".equals(name)) { return new OpenIDLinkage(identifier, string(cosc.column.value)); }
+            if ("userId".equals(name)) { return new OpenIDLinkage(identifier, string(cosc.column.value)).freeze(); }
         }
         
         return null;
