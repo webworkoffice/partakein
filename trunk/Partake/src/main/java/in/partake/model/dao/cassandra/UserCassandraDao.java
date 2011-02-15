@@ -36,15 +36,14 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 //      users:openid:<user id>
 //          <open id identifier>/null
 
-// TODO: temporarily public. should be removed later.
 class UserCassandraDao extends CassandraDao implements IUserAccess {
     
 	// USER MASTER TABLE
-    static final String USERS_PREFIX = "users:id:";
-    static final String USERS_KEYSPACE = "Keyspace1";
-    static final String USERS_COLUMNFAMILY = "Standard2";
-    static final ConsistencyLevel USERS_CL_R = ConsistencyLevel.ONE;
-    static final ConsistencyLevel USERS_CL_W = ConsistencyLevel.ALL;
+    private static final String USERS_PREFIX = "users:id:";
+    private static final String USERS_KEYSPACE = "Keyspace1";
+    private static final String USERS_COLUMNFAMILY = "Standard2";
+    private static final ConsistencyLevel USERS_CL_R = ConsistencyLevel.ONE;
+    private static final ConsistencyLevel USERS_CL_W = ConsistencyLevel.ALL;
     
     // ----------------------------------------------------------------------
     
@@ -117,7 +116,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
         String key = USERS_PREFIX + user.getId();
 
         List<Mutation> mutations = new ArrayList<Mutation>();
-        mutations.add(createMutation("twitterId", String.valueOf(user.getTwitterId()), time));
+        mutations.add(createMutation("twitterId", user.getTwitterId(), time));
         mutations.add(createMutation("calendarId", user.getCalendarId(), time));
         mutations.add(createMutation("lastLoginAt", user.getLastLoginAt(), time));
         
@@ -158,7 +157,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
             String value = string(column.getValue());
             
             if ("twitterId".equals(name)) {
-                user.setTwitterId(Integer.parseInt(value));
+                user.setTwitterId(value);
             } else if ("lastLoginAt".equals(name)) {
             	user.setLastLoginAt(Util.dateFromTimeString(string(column.getValue())));
             } else if ("calendarId".equals(name)) {

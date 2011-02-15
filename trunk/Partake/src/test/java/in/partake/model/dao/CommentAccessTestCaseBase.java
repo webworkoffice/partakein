@@ -12,10 +12,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase {
+public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase<ICommentAccess, Comment, String> {
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getCommentAccess());
+    }
+    
+    @Override
+    protected Comment create(long pkNumber, String pkSalt, int objNumber) {
+        return new Comment(pkSalt + pkNumber, "eventId", "userId", "comment content", new Date(objNumber));
     }
     
     @Test

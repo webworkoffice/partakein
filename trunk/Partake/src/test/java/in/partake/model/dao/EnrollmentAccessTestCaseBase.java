@@ -5,6 +5,7 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.LastParticipationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.util.PDate;
 
 import java.util.Date;
@@ -16,17 +17,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBase {
+public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBase<IEnrollmentAccess, Enrollment, EnrollmentPK> {
 	@Rule
 	public TestName name = new TestName();
-
-	private IEnrollmentAccess dao;
 
 	@Before
 	public void setup() throws DAOException {
 	    super.setup(getFactory().getEnrollmentAccess());
-	    
-		dao = getFactory().getEnrollmentAccess();
+	}
+	
+	@Override
+	protected Enrollment create(long pkNumber, String pkSalt, int objNumber) {
+	    return new Enrollment("userId" + pkSalt + pkNumber, "eventId" + pkSalt + pkNumber, "comment", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date(1L));
 	}
 
 	@Test

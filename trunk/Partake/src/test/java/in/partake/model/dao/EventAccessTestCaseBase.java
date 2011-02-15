@@ -16,16 +16,25 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase {
-	private IEventAccess dao;
-
+public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase<IEventAccess, Event, String> {
 	@Before
 	public void setup() throws DAOException {
 	    super.setup(getFactory().getEventAccess());
-	    
-		dao = getFactory().getEventAccess();
 	}
 
+	@Override
+	protected Event create(long pkNumber, String pkSalt, int objNumber) {
+        Date beginDate = PDate.getCurrentDate().getDate();
+        Date now = PDate.getCurrentDate().getDate();
+        String url = "http://localhost:8080/";
+        String place = "";
+        String address = "";
+        String description = "";
+        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT", "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, now, now);
+        event.setId("eventId" + pkSalt + pkNumber);
+        return event;	    
+	}
+	
 	@Test
 	public void loadAllEvents() throws DAOException {
 		PartakeConnection con = getPool().getConnection();

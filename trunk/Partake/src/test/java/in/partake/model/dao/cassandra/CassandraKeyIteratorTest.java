@@ -1,6 +1,6 @@
 package in.partake.model.dao.cassandra;
 
-import in.partake.model.dao.AbstractDaoTestCaseBase;
+import in.partake.model.dao.AbstractConnectionTestCaseBase;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.PartakeProperties;
 
@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class CassandraKeyIteratorTest extends AbstractDaoTestCaseBase {
+public class CassandraKeyIteratorTest extends AbstractConnectionTestCaseBase {
     private final String PREFIX = "keyiteratortest:id:";
     private static final String KEYSPACE = "Keyspace1";
     private static final String COLUMNFAMILY = "Standard2";
@@ -39,7 +39,7 @@ public class CassandraKeyIteratorTest extends AbstractDaoTestCaseBase {
     
     @Before
     public void setup() throws DAOException {
-        super.setup(null);
+        super.setup();
     }
     
     @Test

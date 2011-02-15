@@ -8,13 +8,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase {
-    private IURLShortenerAccess dao;
-    
+public abstract class URLShortenerTestCaseBase extends AbstractDaoTestCaseBase<IURLShortenerAccess, ShortenedURLData, ShortenedURLDataPK> {
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getURLShortenerAccess());
-        dao = getFactory().getURLShortenerAccess();
+    }
+    
+    @Override
+    protected ShortenedURLData create(long pkNumber, String pkSalt, int objNumber) {
+        return new ShortenedURLData("http://www.example.com/" + pkSalt + pkNumber, "bitly", "http://examp.le/" + objNumber);
     }
     
     @Test

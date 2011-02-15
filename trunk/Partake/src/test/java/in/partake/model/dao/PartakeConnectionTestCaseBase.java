@@ -1,20 +1,13 @@
 package in.partake.model.dao;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Connection 関連のテストケースベース。
  * extends して、BeforeClass, AfterClass で Connection などを設定のこと。
  */
-public abstract class PartakeConnectionTestCaseBase extends AbstractDaoTestCaseBase {
-
-    @Before
-    public void setup() throws DAOException {
-        super.setup(null);
-    }
-    
+public abstract class PartakeConnectionTestCaseBase extends AbstractConnectionTestCaseBase {
     @Test
     public void testToConnectAndRelease() throws DAOException {
         PartakeConnection con = getPool().getConnection();

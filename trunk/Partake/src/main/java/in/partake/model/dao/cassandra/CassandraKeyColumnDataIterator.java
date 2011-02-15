@@ -5,7 +5,6 @@ import java.util.NoSuchElementException;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 
-// TODO: 未テスト
 /**
  * 全ての key を iterate し、さらに column を iterate する。 
  */
@@ -34,8 +33,8 @@ public class CassandraKeyColumnDataIterator<T> extends DataIterator<T> {
         while (true) {
             if (inner == null) {
                 if (!outer.hasNext()) { return false; }
-                currentKey = outer.nextWithPrefix();
-                inner = new ColumnIterator(con, desc.keyspace, currentKey, desc.columnFamily, false, desc.readConsistency, desc.writeConsistency);
+                currentKey = outer.next();
+                inner = new ColumnIterator(con, desc.keyspace, desc.prefix + currentKey, desc.columnFamily, false, desc.readConsistency, desc.writeConsistency);
             }
 
             if (inner.hasNext()) {

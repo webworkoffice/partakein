@@ -31,7 +31,7 @@ class JPATwitterLinkageDao extends JPADao<TwitterLinkage> implements ITwitterLin
     @Override
     public DataIterator<TwitterLinkage> getIterator(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT t FROM TwitterLinkage t");
+        Query q = em.createQuery("SELECT t FROM TwitterLinkages t");
         
         @SuppressWarnings("unchecked")
         List<TwitterLinkage> list = q.getResultList();

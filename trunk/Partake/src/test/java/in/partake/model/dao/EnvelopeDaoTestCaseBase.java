@@ -5,21 +5,29 @@ import java.util.Date;
 import in.partake.model.dto.Envelope;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class EnvelopeDaoTestCaseBase extends AbstractDaoTestCaseBase {
+public abstract class EnvelopeDaoTestCaseBase extends AbstractDaoTestCaseBase<IEnvelopeAccess, Envelope, String> {
     private static final Date DEFAULT_CREATED_AT = new Date(1L);	// remove randomness from test code
     private static final String DEFAULT_MESSAGE_ID = "dummyMessageId";
     private static final DirectMessagePostingType DEFAULT_POSTING_TYPE = DirectMessagePostingType.POSTING_TWITTER_DIRECT;
-    private IEnvelopeAccess dao;
 
     @Before
-    public void setup() throws Exception {
+    public void setup() throws DAOException {
         super.setup(getFactory().getEnvelopeAccess());
-        dao = getFactory().getEnvelopeAccess();
+    }
+    
+    @Override
+    protected Envelope create(long pkNumber, String pkSalt, int objNumber) {
+        final Envelope envelope = new Envelope();
+
+        envelope.setEnvelopeId(pkSalt + pkNumber);
+        envelope.setMessageId(DEFAULT_MESSAGE_ID);
+        envelope.setCreatedAt(new Date(objNumber));
+        envelope.setPostingType(DEFAULT_POSTING_TYPE);
+        return envelope;
     }
 
     @Test

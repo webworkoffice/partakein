@@ -7,14 +7,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase {
-    
-    private IUserPreferenceAccess dao;
+public abstract class UserPreferenceTestCaseBase extends AbstractDaoTestCaseBase<IUserPreferenceAccess, UserPreference, String> {
     
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getUserPreferenceAccess());
-        this.dao = getFactory().getUserPreferenceAccess();
+    }
+    
+    @Override
+    protected UserPreference create(long pkNumber, String pkSalt, int objNumber) {
+        return new UserPreference("userId" + pkSalt + pkNumber, (objNumber & 4) > 0, (objNumber & 2) > 0, (objNumber & 1) > 0);
     }
     
     @Test
