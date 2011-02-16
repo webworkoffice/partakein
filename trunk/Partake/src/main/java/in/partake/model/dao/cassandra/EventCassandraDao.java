@@ -151,6 +151,7 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
         List<Mutation> mutations = new ArrayList<Mutation>(); 
 
         mutations.add(createMutation("title", embryo.getTitle(), time));
+        mutations.add(createMutation("shortId", embryo.getShortId(), time));
         mutations.add(createMutation("summary", embryo.getSummary(), time));
         mutations.add(createMutation("category", embryo.getCategory(), time));
         mutations.add(createMutation("beginDate", Util.getTimeString(embryo.getBeginDate()), time));
