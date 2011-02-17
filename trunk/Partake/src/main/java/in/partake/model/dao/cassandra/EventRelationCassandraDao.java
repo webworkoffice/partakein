@@ -10,6 +10,7 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
+import org.apache.cassandra.thrift.NotFoundException;
 import org.apache.cassandra.thrift.SuperColumn;
 
 import in.partake.model.dao.DAOException;
@@ -55,15 +56,23 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	}
 	
 	@Override
-	public EventRelation find(PartakeConnection con, EventRelationPK key) throws DAOException {
-	    // TODO Auto-generated method stub
-	    throw new RuntimeException("Not implemented yet");
+	public EventRelation find(PartakeConnection con, EventRelationPK pk) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            return findImpl(ccon, pk);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
 	}
 		
 	@Override
-	public void remove(PartakeConnection con, EventRelationPK key) throws DAOException {
-	    // TODO Auto-generated method stub
-	    throw new RuntimeException("Not implemented yet");
+	public void remove(PartakeConnection con, EventRelationPK pk) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            removeImpl(ccon, pk, con.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
 	}
 	
 	@Override
@@ -100,24 +109,8 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 
 	// ----------------------------------------------------------------------
 	
-	private List<EventRelation> getEventRelations(CassandraConnection con, String eventId) throws Exception {
-		String key = EVENT_RELATION_PREFIX + eventId;
-		
-		ArrayList<EventRelation> relations = new ArrayList<EventRelation>();
-		
-		ColumnIterator it = new ColumnIterator(con, EVENT_RELATION_KEYSPACE, key, EVENT_RELATION_COLUMNFAMILY, false, EVENT_RELATION_CL_R, EVENT_RELATION_CL_W);
-		EventRelationMapper mapper = new EventRelationMapper(con, factory);
-		while (it.hasNext()) {
-		    ColumnOrSuperColumn cosc = it.next();
-		    EventRelation rel = mapper.map(cosc, eventId);
-		    relations.add(rel);
-		}
-
-		return relations;		
-	}
-	
 	private void putImpl(CassandraConnection con, EventRelation relation, long time) throws Exception {
-        String key = EVENT_RELATION_PREFIX + relation.getSrcEventId();
+	    String key = EVENT_RELATION_PREFIX + relation.getSrcEventId();
 		
 		EventRelationMapper mapper = new EventRelationMapper(con, factory);
 		ColumnOrSuperColumn cosc = mapper.unmap(relation, time);
@@ -128,6 +121,43 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	    con.getClient().batch_mutate(EVENT_RELATION_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(EVENT_RELATION_COLUMNFAMILY, mutations)), EVENT_RELATION_CL_W);
 	}	
 	
+	private EventRelation findImpl(CassandraConnection con, EventRelationPK pk) throws Exception {
+	    String key = EVENT_RELATION_PREFIX + pk.getSrcEventId();
+        ColumnPath columnPath = new ColumnPath(EVENT_RELATION_COLUMNFAMILY);
+        columnPath.setColumn(bytes(pk.getDstEventId()));
+
+        try {
+            ColumnOrSuperColumn cosc = con.getClient().get(EVENT_RELATION_KEYSPACE, key, columnPath, EVENT_RELATION_CL_R);
+            return new EventRelationMapper(con, factory).map(cosc, pk.getSrcEventId());
+        } catch (NotFoundException e) {
+            return null;
+        }
+	}
+	
+	private void removeImpl(CassandraConnection con, EventRelationPK relation, long time) throws Exception {
+	    String key = EVENT_RELATION_PREFIX + relation.getSrcEventId();
+        ColumnPath columnPath = new ColumnPath(EVENT_RELATION_COLUMNFAMILY);
+        columnPath.setColumn(bytes(relation.getDstEventId()));
+        
+        con.getClient().remove(EVENT_RELATION_KEYSPACE, key, columnPath, time, EVENT_RELATION_CL_W);
+	}
+	
+	private List<EventRelation> getEventRelations(CassandraConnection con, String eventId) throws Exception {
+        String key = EVENT_RELATION_PREFIX + eventId;
+        
+        ArrayList<EventRelation> relations = new ArrayList<EventRelation>();
+        
+        ColumnIterator it = new ColumnIterator(con, EVENT_RELATION_KEYSPACE, key, EVENT_RELATION_COLUMNFAMILY, false, EVENT_RELATION_CL_R, EVENT_RELATION_CL_W);
+        EventRelationMapper mapper = new EventRelationMapper(con, factory);
+        while (it.hasNext()) {
+            ColumnOrSuperColumn cosc = it.next();
+            EventRelation rel = mapper.map(cosc, eventId);
+            relations.add(rel);
+        }
+
+        return relations;       
+    }
+	   
 	private void removeByEventIdImpl(Client client, String eventId, long time) throws Exception {
 	    String key = EVENT_RELATION_PREFIX + eventId;
 	    ColumnPath columnPath = new ColumnPath(EVENT_RELATION_COLUMNFAMILY);
