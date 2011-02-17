@@ -454,8 +454,20 @@ color:#666;
 	height: 21px;
 }
 
-/* event-owner
+/* event-enrollment
 ---------------------------*/
+
+.guest {
+	color:#D827BF;
+	padding:12px 0 12px 0;
+   	background-repeat:no-repeat;
+}
+
+.guest img {
+    margin-top:-2px;
+    opacity:0.24;
+    filter: alpha(opacity=24);
+}
 
 .event-enrollment {
     margin: 1px 0 0 0px;
@@ -474,8 +486,8 @@ color:#666;
 .event-enrollment img {
     vertical-align:middle;
     margin-left:2px;
+    height:43px;
 }
-
 
 /* event-participants
 ---------------------------*/

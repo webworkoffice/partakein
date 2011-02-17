@@ -202,7 +202,9 @@ body {
 	<% } else { %>
 		<% if (user == null) {%>
 			<%-- login してない場合はなにもできない --%>
-			<p>参加を申し込むためには<br>ログインしてください。
+			<p class="guest">参加を申込むためにはログインしてください&nbsp;&nbsp;<br />
+			<img src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
+		    <img src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
 			</p>						
 		<% } else if (ParticipationStatus.ENROLLED.equals(status)) { %>
 			<%-- なんか stamp みたいな感じで「参加登録済み」とかいうアイコンを出せないモノだろうか。 --%>
