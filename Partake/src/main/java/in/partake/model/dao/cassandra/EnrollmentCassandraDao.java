@@ -9,7 +9,8 @@ import in.partake.model.dao.IEnrollmentAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.Enrollment;
-import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.AttendanceStatus;
+import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.util.Util;
@@ -132,7 +133,8 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(createColumn("status", enrollment.getStatus().toString(), time));
-        columns.add(createColumn("lastStutus", enrollment.getLastStatus().toString(), time));
+        columns.add(createColumn("lastStatus", enrollment.getModificationStatus().toString(), time));
+        columns.add(createColumn("attendance", enrollment.getAttendanceStatus().toString(), time));
         columns.add(createColumn("comment", enrollment.getComment(), time));
         columns.add(createColumn("vip", String.valueOf(enrollment.isVIP()), time));
         columns.add(createColumn("modifiedAt", enrollment.getModifiedAt(), time));
@@ -263,7 +265,8 @@ class EnrollmentMapper extends ColumnOrSuperColumnKeyMapper<Enrollment> {
         String userId = string(cosc.getSuper_column().getName());
         String comment = null;
         ParticipationStatus status = null;
-        LastParticipationStatus lastStatus = LastParticipationStatus.CHANGED;
+        ModificationStatus lastStatus = ModificationStatus.CHANGED;
+        AttendanceStatus attendanceStatus = AttendanceStatus.UNKNOWN;
         Date modifiedAt = null;
         Date modifiedAt2 = null;
         boolean vip = false;
@@ -276,7 +279,7 @@ class EnrollmentMapper extends ColumnOrSuperColumnKeyMapper<Enrollment> {
                 status = ParticipationStatus.safeValueOf(string(column.getValue()));
                 modifiedAt2 = new Date(column.timestamp);
             } else if ("lastStatus".equals(name)) {
-                lastStatus = LastParticipationStatus.safeValueOf(string(column.getValue()));
+                lastStatus = ModificationStatus.safeValueOf(string(column.getValue()));
             } else if ("comment".equals(name)) {
                 comment = string(column.getValue());
             } else if ("vip".equals(name)) { 
@@ -285,6 +288,8 @@ class EnrollmentMapper extends ColumnOrSuperColumnKeyMapper<Enrollment> {
                 }
             } else if ("modifiedAt".equals(string(column.getName()))) {
                 modifiedAt = Util.dateFromTimeString(string(column.getValue()));
+            } else if ("attendance".equals(string(column.getName()))) {
+                attendanceStatus = AttendanceStatus.safeValueOf(string(column.getValue()));
             } else if ("deleted".equals(name)) {
                 if ("true".equals(string(column.getValue()))) {
                     return null;
@@ -293,9 +298,9 @@ class EnrollmentMapper extends ColumnOrSuperColumnKeyMapper<Enrollment> {
         }
                     
         if (modifiedAt != null) {
-            return new Enrollment(userId, eventId, comment, status, vip, lastStatus, modifiedAt);
+            return new Enrollment(userId, eventId, comment, status, vip, lastStatus, attendanceStatus, modifiedAt);
         } else {
-            return new Enrollment(userId, eventId, comment, status, vip, lastStatus, modifiedAt2);
+            return new Enrollment(userId, eventId, comment, status, vip, lastStatus, attendanceStatus, modifiedAt2);
         }        
     }
 

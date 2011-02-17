@@ -1,6 +1,7 @@
 package in.partake.model.dto;
 
-import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.AttendanceStatus;
+import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 
@@ -28,7 +29,9 @@ public class Enrollment extends PartakeModel<Enrollment> {
     @Column
     private ParticipationStatus status;
     @Column
-    private LastParticipationStatus lastStatus;
+    private ModificationStatus modificationStatus;
+    @Column
+    private AttendanceStatus attendanceStatus;
     @Column
     private Date modifiedAt;
     
@@ -39,13 +42,16 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.vip = false;
     }
     
-    public Enrollment(String userId, String eventId, String comment, ParticipationStatus status, boolean vip, LastParticipationStatus lastStatus, Date modifiedAt) {
+    public Enrollment(String userId, String eventId, String comment,
+                    ParticipationStatus status, boolean vip, ModificationStatus modificationStatus,
+                    AttendanceStatus attendanceStatus, Date modifiedAt) {
         this.userId = userId;
         this.eventId = eventId;
         this.comment = comment;
         this.status = status;
         this.vip = vip;
-        this.lastStatus = lastStatus;
+        this.modificationStatus = modificationStatus;
+        this.attendanceStatus = attendanceStatus;
         this.modifiedAt = modifiedAt;
     }
     
@@ -55,7 +61,8 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.comment = p.comment;
         this.status = p.status;
         this.vip = p.vip;
-        this.lastStatus = p.lastStatus;
+        this.modificationStatus = p.modificationStatus;
+        this.attendanceStatus = p.attendanceStatus;
         this.modifiedAt = p.modifiedAt == null ? null : (Date) p.modifiedAt.clone();
     }
 
@@ -78,13 +85,14 @@ public class Enrollment extends PartakeModel<Enrollment> {
         Enrollment lhs = this;
         Enrollment rhs = (Enrollment) obj;
         
-        if (!ObjectUtils.equals(lhs.userId,     rhs.userId))     { return false; }
-        if (!ObjectUtils.equals(lhs.eventId,    rhs.eventId))    { return false; }
-        if (!ObjectUtils.equals(lhs.comment,    rhs.comment))    { return false; }
-        if (!ObjectUtils.equals(lhs.vip,        rhs.vip))   { return false; }
-        if (!ObjectUtils.equals(lhs.status,     rhs.status))     { return false; }
-        if (!ObjectUtils.equals(lhs.lastStatus, rhs.lastStatus)) { return false; }
-        if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
+        if (!ObjectUtils.equals(lhs.userId,             rhs.userId))             { return false; }
+        if (!ObjectUtils.equals(lhs.eventId,            rhs.eventId))            { return false; }
+        if (!ObjectUtils.equals(lhs.comment,            rhs.comment))            { return false; }
+        if (!ObjectUtils.equals(lhs.vip,                rhs.vip))                { return false; }
+        if (!ObjectUtils.equals(lhs.status,             rhs.status))             { return false; }
+        if (!ObjectUtils.equals(lhs.modificationStatus, rhs.modificationStatus)) { return false; }
+        if (!ObjectUtils.equals(lhs.attendanceStatus,   rhs.attendanceStatus))   { return false; }
+        if (!ObjectUtils.equals(lhs.modifiedAt,         rhs.modifiedAt))         { return false; }
         
         return true;
     }
@@ -97,7 +105,8 @@ public class Enrollment extends PartakeModel<Enrollment> {
         hashCode = hashCode * 37 + ObjectUtils.hashCode(comment);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(vip);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(status);
-        hashCode = hashCode * 37 + ObjectUtils.hashCode(lastStatus);
+        hashCode = hashCode * 37 + ObjectUtils.hashCode(modificationStatus);
+        hashCode = hashCode * 37 + ObjectUtils.hashCode(attendanceStatus);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(modifiedAt);
         
         return hashCode;
@@ -128,10 +137,14 @@ public class Enrollment extends PartakeModel<Enrollment> {
      * DM によって通知を出す。
      * @return
      */
-    public LastParticipationStatus getLastStatus() {
-        return lastStatus;
+    public ModificationStatus getModificationStatus() {
+        return modificationStatus;
     }
 
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
+    }
+    
     public boolean isVIP() {
         return vip;
     }
@@ -160,9 +173,14 @@ public class Enrollment extends PartakeModel<Enrollment> {
 		this.status = status;
 	}
 
-	public void setLastStatus(LastParticipationStatus lastStatus) {
+	public void setModificationStatus(ModificationStatus lastStatus) {
 		checkFrozen();
-		this.lastStatus = lastStatus;
+		this.modificationStatus = lastStatus;
+	}
+	
+	public void setAttendanceStatus(AttendanceStatus attendanceStatus) {
+	    checkFrozen();
+	    this.attendanceStatus = attendanceStatus;
 	}
 
 	public void setModifiedAt(Date modifiedAt) {

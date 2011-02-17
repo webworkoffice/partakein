@@ -23,8 +23,9 @@ import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
+import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
-import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.PartakeProperties;
@@ -581,7 +582,7 @@ public final class EventService extends PartakeService {
 
 
     // ----------------------------------------------------------------------
-    // participations
+    // enrollments
 	
 	public List<Enrollment> getParticipation(String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
@@ -638,6 +639,16 @@ public final class EventService extends PartakeService {
         }               
     }
 	
+    public Enrollment findEnrollment(String eventId, String userId) throws DAOException {
+        PartakeConnection con = getPool().getConnection();
+        PartakeDAOFactory factory = getFactory();
+        try {
+            return factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
+        } finally {
+            con.invalidate();
+        }  
+    }
+    
     /**
      * eventId に参加する userId を参加していないことにする。
      * @param eventId
@@ -657,7 +668,39 @@ public final class EventService extends PartakeService {
             con.invalidate();
         }               
     }
+    
+    public void udpateEnrollment(Enrollment enrollment) throws DAOException {
+        PartakeConnection con = getPool().getConnection();
+        PartakeDAOFactory factory = getFactory();
+        try {
+            con.beginTransaction();
+            factory.getEnrollmentAccess().put(con, enrollment);
+            con.commit();
+        } finally {
+            con.invalidate();
+        }          
+    }
 	
+    public boolean updateAttendanceStatus(String userId, String eventId, AttendanceStatus status) throws DAOException {
+        PartakeConnection con = getPool().getConnection();
+        PartakeDAOFactory factory = getFactory();
+        try {
+            con.beginTransaction();
+            Enrollment enrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
+            if (enrollment == null) {
+                con.rollback();
+                return false;
+            }
+            Enrollment newEnrollment = new Enrollment(enrollment);
+            newEnrollment.setAttendanceStatus(status);
+            factory.getEnrollmentAccess().put(con, newEnrollment);
+            con.commit();
+            return true;
+        } finally {
+            con.invalidate();
+        }  
+    }
+    
 		
 	// ----------------------------------------------------------------------
 	// Comments
@@ -853,7 +896,7 @@ public final class EventService extends PartakeService {
         Enrollment oldEnrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
         Enrollment newEnrollment;
         if (oldEnrollment == null) {
-            newEnrollment = new Enrollment(userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, false, LastParticipationStatus.NOT_ENROLLED, new Date());
+            newEnrollment = new Enrollment(userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, new Date());
         } else {
             newEnrollment = new Enrollment(oldEnrollment);
         }
@@ -862,17 +905,17 @@ public final class EventService extends PartakeService {
         newEnrollment.setComment(comment);
         if (oldEnrollment == null) {
             newEnrollment.setStatus(status);
-            newEnrollment.setLastStatus(LastParticipationStatus.CHANGED);
+            newEnrollment.setModificationStatus(ModificationStatus.CHANGED);
             newEnrollment.setModifiedAt(new Date());
         } else if (changesOnlyComment || status.equals(oldEnrollment.getStatus())) {        
             // 特に変更しない 
         } else if (status.isEnrolled() == oldEnrollment.getStatus().isEnrolled()) {
             // 参加する / しないの状況が変更されない場合は、status のみが更新される。
             newEnrollment.setStatus(status);
-            newEnrollment.setLastStatus(LastParticipationStatus.CHANGED);
+            newEnrollment.setModificationStatus(ModificationStatus.CHANGED);
         } else {
             newEnrollment.setStatus(status);
-            newEnrollment.setLastStatus(LastParticipationStatus.CHANGED);
+            newEnrollment.setModificationStatus(ModificationStatus.CHANGED);
             newEnrollment.setModifiedAt(new Date());
         }
         

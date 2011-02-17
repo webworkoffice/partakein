@@ -151,6 +151,31 @@
 		</action>
 	</package>
 	
+	<!-- API. The default will be returned stream. -->
+	<package name="api" namespace="/api" extends="partake-default">
+       <global-results>
+            <result name="success" type="stream">
+                <param name="contentType">text/json; charset=utf-8</param>
+                <param name="bufferSize">20K</param>
+                <param name="allowCaching">false</param>
+            </result>            
+            <result name="error" type="stream">
+                <param name="contentType">text/json; charset=utf-8</param>
+                <param name="bufferSize">20K</param>
+                <param name="allowCaching">false</param>
+            </result> 
+            <result name="prohibited" type="stream">
+                <param name="contentType">text/json; charset=utf-8</param>
+                <param name="bufferSize">20K</param>
+                <param name="allowCaching">false</param>
+            </result>                 
+        </global-results>
+        
+        <action name="changeAttendance" method="changeAttendance" class="in.partake.controller.APIController">
+            <interceptor-ref name="authenticateStack" />
+        </action>
+	</package>
+	
 	<package name="admin" namespace="/admin" extends="partake-default">
         <action name="" method="index" class="in.partake.controller.AdministratorController">
             <interceptor-ref name="adminStack" />
