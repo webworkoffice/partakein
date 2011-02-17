@@ -114,7 +114,8 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             T t2 = dao.find(con, (PK) t1.getPrimaryKey());
             con.commit();
             
-            Assert.assertEquals(t1, t2);     
+            Assert.assertEquals(t1, t2);
+            Assert.assertNotSame(t1, t2);
             Assert.assertFalse(t1.isFrozen());
             Assert.assertTrue(t2.isFrozen());
         } catch (Exception e) {
