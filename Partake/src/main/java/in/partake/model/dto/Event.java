@@ -206,8 +206,6 @@ public class Event extends PartakeModel<Event> {
     // ----------------------------------------------------------------------
     // equals method 
     
-    // TODO: should be implemented.
-    
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Event)) { return false; }
