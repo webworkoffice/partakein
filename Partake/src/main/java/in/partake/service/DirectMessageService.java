@@ -294,6 +294,7 @@ public class DirectMessageService extends PartakeService {
         if (!pref.isReceivingTwitterMessage()) { return true; }
 
         UserEx user = getUserEx(con, receiverId);
+        if (user == null) { return true; }
         TwitterLinkage twitterLinkage = user.getTwitterLinkage();
         
         if (twitterLinkage.getAccessToken() == null || twitterLinkage.getAccessTokenSecret() == null) {
@@ -306,10 +307,14 @@ public class DirectMessageService extends PartakeService {
         if (twitter == null) { return true; }
 
         try {
-            Message message = getFactory().getDirectMessageAccess().find(con, envelope.getMessageId()); 
-                        
-            twitter.sendDirectMessage(user.getTwitterId(), message.getMessage());
+            Message message = getFactory().getDirectMessageAccess().find(con, envelope.getMessageId());
+            int twitterId = Integer.parseInt(user.getTwitterId());
+            twitter.sendDirectMessage(twitterId, message.getMessage());
+                            
             logger.info("sendDirectMessage : direct message has been sent to " + twitterLinkage.getScreenName());
+            return true;
+        } catch (NumberFormatException e) {
+            logger.error("twitterId has not a number.", e);
             return true;
         } catch (TwitterException e) {
             if (e.isCausedByNetworkIssue()) {

@@ -60,7 +60,7 @@
     	<%  {
 	    		int cnt = 0;
 	    		for (EventRelationEx eventRelation : event.getEventRelations()) { %>
-	    			<th><a href="<%= h(eventRelation.getEvent().getEventURL()) %>">関連イベント <%= ++cnt %></a></th>
+	    			<th>関連イベント <%= ++cnt %> <a href="<%= h(eventRelation.getEvent().getEventURL()) %>">*</a></th>
 	    		<% }
     	} %>
     </tr>
