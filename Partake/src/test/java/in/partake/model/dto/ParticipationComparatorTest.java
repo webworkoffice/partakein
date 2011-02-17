@@ -2,7 +2,7 @@ package in.partake.model.dto;
 
 import in.partake.model.EnrollmentEx;
 import in.partake.model.UserEx;
-import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
 import java.util.Arrays;
@@ -42,8 +42,8 @@ public final class ParticipationComparatorTest {
     @Test
     public void sortAscSortedValues() {
         List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null), user, 0),
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null), user, 1)
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, null), user, 0),
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, null), user, 1)
         });
         Collections.sort(list, comparator);
         Assert.assertTrue(list.get(0).getPriority() > list.get(1).getPriority());
@@ -52,8 +52,8 @@ public final class ParticipationComparatorTest {
     @Test
     public void sortDescSortedValues() {
         List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null), user, 1),
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null), user, 0),                
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, null), user, 1),
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, null), user, 0),                
         });
 
         Collections.sort(list, comparator);
@@ -63,8 +63,8 @@ public final class ParticipationComparatorTest {
     @Test
     public void sortSamePriorityValues() {
         List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, new Date(0)), user, 0),
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, new Date(1)), user, 0),                
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, new Date(0)), user, 0),
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, new Date(1)), user, 0),                
         });
 
         Collections.sort(list, comparator);
@@ -75,8 +75,8 @@ public final class ParticipationComparatorTest {
     @Test
     public void sortSamePriorityAndDateValues() {
         List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("userID1", "eventId", "comment", null, false, null, new Date(0)), user, 0),
-                new EnrollmentEx(new Enrollment("userID2", "eventId", "comment", null, false, null, new Date(0)), user, 0),                
+                new EnrollmentEx(new Enrollment("userID1", "eventId", "comment", null, false, null, null, new Date(0)), user, 0),
+                new EnrollmentEx(new Enrollment("userID2", "eventId", "comment", null, false, null, null, new Date(0)), user, 0),                
         });
 
         Collections.sort(list, comparator);
@@ -88,8 +88,8 @@ public final class ParticipationComparatorTest {
     @Test
     public void sortAllSameValues() {
         List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, new Date(0)), user, 0),
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, new Date(0)), user, 0),                
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, new Date(0)), user, 0),
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, new Date(0)), user, 0),                
         });
 
         Collections.sort(list, comparator);
@@ -101,24 +101,24 @@ public final class ParticipationComparatorTest {
     @Test
     public void sortVariousValues() {
         List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("userId00", "eventId", "comment", null, false, null, new Date(0)), user, 0),
-                new EnrollmentEx(new Enrollment("userId01", "eventId", "comment", null, false, null, new Date(0)), user, 1),
-                new EnrollmentEx(new Enrollment("userId02", "eventId", "comment", null, false, null, new Date(0)), user, 2),
-                new EnrollmentEx(new Enrollment("userId03", "eventId", "comment", null, false, null, new Date(1)), user, 0),                
-                new EnrollmentEx(new Enrollment("userId04", "eventId", "comment", null, false, null, new Date(1)), user, 1),
-                new EnrollmentEx(new Enrollment("userId05", "eventId", "comment", null, false, null, new Date(1)), user, 2),
-                new EnrollmentEx(new Enrollment("userId06", "eventId", "comment", null, false, null, new Date(2)), user, 0),
-                new EnrollmentEx(new Enrollment("userId07", "eventId", "comment", null, false, null, new Date(2)), user, 1),                
-                new EnrollmentEx(new Enrollment("userId08", "eventId", "comment", null, false, null, new Date(2)), user, 2),                
-                new EnrollmentEx(new Enrollment("userId10", "eventId", "comment", null, true, null, new Date(0)), user, 0),
-                new EnrollmentEx(new Enrollment("userId11", "eventId", "comment", null, true, null, new Date(0)), user, 1),
-                new EnrollmentEx(new Enrollment("userId12", "eventId", "comment", null, true, null, new Date(0)), user, 2),
-                new EnrollmentEx(new Enrollment("userId13", "eventId", "comment", null, true, null, new Date(1)), user, 0),                
-                new EnrollmentEx(new Enrollment("userId14", "eventId", "comment", null, true, null, new Date(1)), user, 1),
-                new EnrollmentEx(new Enrollment("userId15", "eventId", "comment", null, true, null, new Date(1)), user, 2),
-                new EnrollmentEx(new Enrollment("userId16", "eventId", "comment", null, true, null, new Date(2)), user, 0),
-                new EnrollmentEx(new Enrollment("userId17", "eventId", "comment", null, true, null, new Date(2)), user, 1),                
-                new EnrollmentEx(new Enrollment("userId18", "eventId", "comment", null, true, null, new Date(2)), user, 2),                
+                new EnrollmentEx(new Enrollment("userId00", "eventId", "comment", null, false, null, null, new Date(0)), user, 0),
+                new EnrollmentEx(new Enrollment("userId01", "eventId", "comment", null, false, null, null, new Date(0)), user, 1),
+                new EnrollmentEx(new Enrollment("userId02", "eventId", "comment", null, false, null, null, new Date(0)), user, 2),
+                new EnrollmentEx(new Enrollment("userId03", "eventId", "comment", null, false, null, null, new Date(1)), user, 0),                
+                new EnrollmentEx(new Enrollment("userId04", "eventId", "comment", null, false, null, null, new Date(1)), user, 1),
+                new EnrollmentEx(new Enrollment("userId05", "eventId", "comment", null, false, null, null, new Date(1)), user, 2),
+                new EnrollmentEx(new Enrollment("userId06", "eventId", "comment", null, false, null, null, new Date(2)), user, 0),
+                new EnrollmentEx(new Enrollment("userId07", "eventId", "comment", null, false, null, null, new Date(2)), user, 1),                
+                new EnrollmentEx(new Enrollment("userId08", "eventId", "comment", null, false, null, null, new Date(2)), user, 2),                
+                new EnrollmentEx(new Enrollment("userId10", "eventId", "comment", null, true,  null, null, new Date(0)), user, 0),
+                new EnrollmentEx(new Enrollment("userId11", "eventId", "comment", null, true,  null, null, new Date(0)), user, 1),
+                new EnrollmentEx(new Enrollment("userId12", "eventId", "comment", null, true,  null, null, new Date(0)), user, 2),
+                new EnrollmentEx(new Enrollment("userId13", "eventId", "comment", null, true,  null, null, new Date(1)), user, 0),                
+                new EnrollmentEx(new Enrollment("userId14", "eventId", "comment", null, true,  null, null, new Date(1)), user, 1),
+                new EnrollmentEx(new Enrollment("userId15", "eventId", "comment", null, true,  null, null, new Date(1)), user, 2),
+                new EnrollmentEx(new Enrollment("userId16", "eventId", "comment", null, true,  null, null, new Date(2)), user, 0),
+                new EnrollmentEx(new Enrollment("userId17", "eventId", "comment", null, true,  null, null, new Date(2)), user, 1),                
+                new EnrollmentEx(new Enrollment("userId18", "eventId", "comment", null, true,  null, null, new Date(2)), user, 2),                
         });
 
         Collections.sort(list, comparator);
@@ -158,7 +158,7 @@ public final class ParticipationComparatorTest {
     @Test
     public void sortParicipationAndNull() {
         List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, new Date(0)), user, 0),
+                new EnrollmentEx(new Enrollment("userID", "eventId", "comment", null, false, null, null, new Date(0)), user, 0),
                 null
         });
 
@@ -171,8 +171,8 @@ public final class ParticipationComparatorTest {
     @Test(expected = NullPointerException.class)
     public void sortNullId() {
         List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment(null, null, "comment", ParticipationStatus.CANCELLED, false, LastParticipationStatus.CHANGED, null), user, 0),
-                new EnrollmentEx(new Enrollment(null, null, "comment", ParticipationStatus.CANCELLED, false, LastParticipationStatus.CHANGED, null), user, 0),
+                new EnrollmentEx(new Enrollment(null, null, "comment", ParticipationStatus.CANCELLED, false, ModificationStatus.CHANGED, null, null), user, 0),
+                new EnrollmentEx(new Enrollment(null, null, "comment", ParticipationStatus.CANCELLED, false, ModificationStatus.CHANGED, null, null), user, 0),
         });
         Collections.sort(list, comparator);
     }

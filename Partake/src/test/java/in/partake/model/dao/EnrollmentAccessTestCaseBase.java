@@ -3,7 +3,8 @@ package in.partake.model.dao;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.User;
-import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.AttendanceStatus;
+import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.util.PDate;
@@ -28,7 +29,14 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 	
 	@Override
 	protected Enrollment create(long pkNumber, String pkSalt, int objNumber) {
-	    return new Enrollment("userId" + pkSalt + pkNumber, "eventId" + pkSalt + pkNumber, "comment" + objNumber, ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date(1L));
+	    return new Enrollment("userId" + pkSalt + pkNumber,
+	                    "eventId" + pkSalt + pkNumber,
+	                    "comment" + objNumber,
+	                    ParticipationStatus.ENROLLED,
+	                    false,
+	                    ModificationStatus.CHANGED,
+	                    AttendanceStatus.UNKNOWN,
+	                    new Date(1L));
 	}
 
 	@Test
@@ -60,7 +68,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 			getFactory().getEventAccess().put(con, event);
 			getFactory().getUserAccess().put(con, new User(userId, 0, new Date(), null)); 
 
-			dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date()));
+			dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
 			
 			List<Enrollment> list = dao.findByEventId(con, eventId);
 			con.commit();
@@ -69,7 +77,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
 			Enrollment storedParticipation = list.get(0);
 			Assert.assertNotNull(storedParticipation);
 			Assert.assertEquals(userId, storedParticipation.getUserId());
-			Assert.assertEquals(LastParticipationStatus.CHANGED, storedParticipation.getLastStatus());
+			Assert.assertEquals(ModificationStatus.CHANGED, storedParticipation.getModificationStatus());
 			Assert.assertEquals(status, storedParticipation.getStatus());
 		} finally {
 			con.invalidate();
@@ -92,7 +100,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
                 event.setId(eventId);
                 getFactory().getEventAccess().put(con, event);
                 getFactory().getUserAccess().put(con, new User(userId, 0, new Date(), null));     
-                dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, LastParticipationStatus.CHANGED, new Date()));
+                dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
                 con.commit();
             }
             
@@ -102,10 +110,10 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
                 List<Enrollment> storedList = dao.findByEventId(con, eventId);
                 Enrollment storedParticipation = storedList.get(0);
                 Assert.assertNotNull(storedParticipation);
-                LastParticipationStatus newStatus = LastParticipationStatus.NOT_ENROLLED;
-                Assert.assertFalse(newStatus.equals(storedParticipation.getLastStatus()));
+                ModificationStatus newStatus = ModificationStatus.NOT_ENROLLED;
+                Assert.assertFalse(newStatus.equals(storedParticipation.getModificationStatus()));
                 Enrollment newStoredParticipation = new Enrollment(storedParticipation);
-                newStoredParticipation.setLastStatus(LastParticipationStatus.CHANGED);
+                newStoredParticipation.setModificationStatus(ModificationStatus.CHANGED);
                 dao.put(con, newStoredParticipation);
                 con.commit();
             }
@@ -117,7 +125,7 @@ public abstract class EnrollmentAccessTestCaseBase extends AbstractDaoTestCaseBa
                 Assert.assertEquals(1, updatedList.size());
                 Enrollment updatedParticipation = updatedList.get(0);
                 Assert.assertEquals(userId, updatedParticipation.getUserId());
-                Assert.assertEquals(LastParticipationStatus.CHANGED, updatedParticipation.getLastStatus());
+                Assert.assertEquals(ModificationStatus.CHANGED, updatedParticipation.getModificationStatus());
                 Assert.assertEquals(ParticipationStatus.ENROLLED, updatedParticipation.getStatus());
                 con.commit();
             }
