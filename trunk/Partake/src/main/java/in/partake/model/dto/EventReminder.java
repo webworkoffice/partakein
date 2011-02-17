@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.apache.commons.lang.ObjectUtils;
+
 @Entity(name = "EventReminders")
 public class EventReminder extends PartakeModel<EventReminder> {
     @Id
@@ -52,6 +54,33 @@ public class EventReminder extends PartakeModel<EventReminder> {
 
     // TODO: equals should be implemented.
     
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof EventReminder)) { return false; }
+        
+        EventReminder lhs = this;
+        EventReminder rhs = (EventReminder) obj;
+        
+        if (!ObjectUtils.equals(lhs.eventId, rhs.eventId)) { return false; }
+        if (!ObjectUtils.equals(lhs.sentDateOfBeforeDeadlineOneday, rhs.sentDateOfBeforeDeadlineOneday)) { return false; }
+        if (!ObjectUtils.equals(lhs.sentDateOfBeforeDeadlineHalfday, rhs.sentDateOfBeforeDeadlineHalfday)) { return false; }
+        if (!ObjectUtils.equals(lhs.sentDateOfBeforeTheDay, rhs.sentDateOfBeforeTheDay)) { return false; }
+        
+        return true;
+    }
+    
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code += code * 37 + ObjectUtils.hashCode(this.eventId);
+        code += code * 37 + ObjectUtils.hashCode(this.sentDateOfBeforeDeadlineOneday);
+        code += code * 37 + ObjectUtils.hashCode(this.sentDateOfBeforeDeadlineHalfday);
+        code += code * 37 + ObjectUtils.hashCode(this.sentDateOfBeforeTheDay);
+        
+        return code;
+    }
     
     
     // ----------------------------------------------------------------------
