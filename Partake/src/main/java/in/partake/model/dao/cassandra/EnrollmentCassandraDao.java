@@ -6,11 +6,9 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEnrollmentAccess;
-import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.Enrollment;
-import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.LastParticipationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
@@ -66,9 +64,8 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     public void put(PartakeConnection con, Enrollment enrollment) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addEventEnrollment(ccon.getClient(), enrollment.getUserId(), enrollment.getEventId(), enrollment.getStatus(), ccon.getAcquiredTime());
-            addUserEnrollment(ccon.getClient(), enrollment, ccon.getAcquiredTime());
-            // addUserEnrollment(ccon.getClient(), user, event, status, oldStatus, comment, changesOnlyComment, forceChangeModifiedAt, time);
+            putImplForEvent(ccon.getClient(), enrollment.getUserId(), enrollment.getEventId(), enrollment.getStatus(), ccon.getAcquiredTime());
+            putImpl(ccon.getClient(), enrollment, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -78,52 +75,23 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     public Enrollment find(PartakeConnection con, EnrollmentPK pk) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getEnrollmentImpl(ccon, pk.getUserId(), pk.getEventId());
+            return findImpl(ccon, pk.getUserId(), pk.getEventId());
         } catch (Exception e) {
             throw new DAOException(e);
         }
         
-    }
-    
-    private Enrollment getEnrollmentImpl(CassandraConnection con, String userId, String eventId) throws Exception {
-        Client client = con.getClient();
-        String key = USERS_ENROLLMENT_PREFIX + eventId;
-        ColumnPath cp = new ColumnPath(USERS_ENROLLMENT_COLUMNFAMILY);
-        cp.setSuper_column(bytes(userId));
-        
-        try {
-            ColumnOrSuperColumn cosc = client.get(USERS_ENROLLMENT_KEYSPACE, key, cp, USERS_ENROLLMENT_CL_R);
-            return convertToEnrollment(con, eventId, cosc);
-        } catch (NotFoundException e) {
-            return null;
-        }
     }
     
     @Override
     public void remove(PartakeConnection con, EnrollmentPK pk) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet");
-    }
-    
-    @Override
-    public List<Enrollment> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getParticipation(ccon, eventId);
+            removeImpl(ccon.getClient(), pk.getUserId(), pk.getEventId(), ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
-        }
+        }        
     }
-    
-    @Override
-    public List<Enrollment> findByUserId(PartakeConnection con, String userId) throws DAOException {
-        try {
-            return getEnrollmentsByUserIdImpl((CassandraConnection) con, userId);
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-    }
-    
+
     @Override
     public DataIterator<Enrollment> getIterator(PartakeConnection con) throws DAOException {
         return new CassandraKeyColumnDataIterator<Enrollment>((CassandraConnection) con, 
@@ -136,10 +104,30 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
     public void truncate(PartakeConnection con) throws DAOException {
         removeAllData((CassandraConnection) con);
     }
+
+    @Override
+    public List<Enrollment> findByEventId(PartakeConnection con, String eventId) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            return findByEventIdImpl(ccon, eventId);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+    
+    @Override
+    public List<Enrollment> findByUserId(PartakeConnection con, String userId) throws DAOException {
+        try {
+            return findByUserIdImpl((CassandraConnection) con, userId);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+    
     
     // ----------------------------------------------------------------------
 
-    private void addUserEnrollment(Client client, Enrollment enrollment, long time) throws Exception {
+    private void putImpl(Client client, Enrollment enrollment, long time) throws Exception {
         String key = USERS_ENROLLMENT_PREFIX + enrollment.getEventId();
 
         List<Column> columns = new ArrayList<Column>();
@@ -148,7 +136,8 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         columns.add(createColumn("comment", enrollment.getComment(), time));
         columns.add(createColumn("vip", String.valueOf(enrollment.isVIP()), time));
         columns.add(createColumn("modifiedAt", enrollment.getModifiedAt(), time));
-
+        columns.add(createColumn("deleted", "false", time));
+        
         SuperColumn superColumn = new SuperColumn(bytes(enrollment.getUserId()), columns);
         
         List<Mutation> mutations = new ArrayList<Mutation>();
@@ -166,16 +155,48 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
      * @param time
      * @throws Exception
      */
-	private void addEventEnrollment(Client client, String userId, String eventId, ParticipationStatus status, long time) throws Exception {
+	private void putImplForEvent(Client client, String userId, String eventId, ParticipationStatus status, long time) throws Exception {
 		String key = EVENTS_ENROLLMENT_PREFIX + userId;
 		
     	ColumnPath columnPath = new ColumnPath(EVENTS_ENROLLMENT_COLUMNFAMILY);
     	columnPath.setColumn(bytes(eventId));
     	client.insert(EVENTS_ENROLLMENT_KEYSPACE, key, columnPath, bytes(status.toString()), time, EVENTS_ENROLLMENT_CL_W);
 	}
+	
+    private Enrollment findImpl(CassandraConnection con, String userId, String eventId) throws Exception {
+        Client client = con.getClient();
+        String key = USERS_ENROLLMENT_PREFIX + eventId;
+        ColumnPath cp = new ColumnPath(USERS_ENROLLMENT_COLUMNFAMILY);
+        cp.setSuper_column(bytes(userId));
+        
+        try {
+            ColumnOrSuperColumn cosc = client.get(USERS_ENROLLMENT_KEYSPACE, key, cp, USERS_ENROLLMENT_CL_R);
+            Enrollment enrollment = convertToEnrollment(con, eventId, cosc);
+            if (enrollment != null) { return enrollment.freeze(); }
+            else { return null; }
+        } catch (NotFoundException e) {
+            return null;
+        }
+    }
+    
+    private void removeImpl(Client client, String userId, String eventId, long time) throws Exception {
+        String key = USERS_ENROLLMENT_PREFIX + eventId;
+
+        List<Column> columns = new ArrayList<Column>();
+        columns.add(createColumn("deleted", "true", time));
+        
+        SuperColumn superColumn = new SuperColumn(bytes(userId), columns);
+        
+        List<Mutation> mutations = new ArrayList<Mutation>();
+        mutations.add(createSuperColumnMutation(superColumn));
+        
+        client.batch_mutate(USERS_ENROLLMENT_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_ENROLLMENT_COLUMNFAMILY, mutations)), USERS_ENROLLMENT_CL_W);
+ 
+    }
+    
 
 	// 順序通りにならんでないことに注意。
-    private List<Enrollment> getParticipation(CassandraConnection con, String eventId) throws Exception {
+    private List<Enrollment> findByEventIdImpl(CassandraConnection con, String eventId) throws Exception {
         Client client = con.getClient();
         String key = USERS_ENROLLMENT_PREFIX + eventId;
 
@@ -202,7 +223,7 @@ class EnrollmentCassandraDao extends CassandraDao implements IEnrollmentAccess {
         return participations;
     }    
     
-    private List<Enrollment> getEnrollmentsByUserIdImpl(CassandraConnection con, String userId) throws Exception {
+    private List<Enrollment> findByUserIdImpl(CassandraConnection con, String userId) throws Exception {
         String key = EVENTS_ENROLLMENT_PREFIX + userId;
 
         ColumnIterator it = new ColumnIterator(con, 
@@ -239,7 +260,7 @@ class EnrollmentMapper extends ColumnOrSuperColumnKeyMapper<Enrollment> {
         SuperColumn superColumn = cosc.getSuper_column();
         if (superColumn == null) { return null; }
         
-        User user = null;
+        String userId = string(cosc.getSuper_column().getName());
         String comment = null;
         ParticipationStatus status = null;
         LastParticipationStatus lastStatus = LastParticipationStatus.CHANGED;
@@ -248,11 +269,10 @@ class EnrollmentMapper extends ColumnOrSuperColumnKeyMapper<Enrollment> {
         boolean vip = false;
         
         // TODO: 歴史的負の遺産が多すぎるのであとで直す。
-        IUserAccess userDao = factory.getUserAccess(); 
         for (Column column : superColumn.getColumns()) {
             String name = string(column.getName());
             if ("status".equals(name)) {
-                user = userDao.find(connection, string(superColumn.getName()));
+                // user = userDao.find(connection, string(superColumn.getName()));
                 status = ParticipationStatus.safeValueOf(string(column.getValue()));
                 modifiedAt2 = new Date(column.timestamp);
             } else if ("lastStatus".equals(name)) {
@@ -265,13 +285,17 @@ class EnrollmentMapper extends ColumnOrSuperColumnKeyMapper<Enrollment> {
                 }
             } else if ("modifiedAt".equals(string(column.getName()))) {
                 modifiedAt = Util.dateFromTimeString(string(column.getValue()));
+            } else if ("deleted".equals(name)) {
+                if ("true".equals(string(column.getValue()))) {
+                    return null;
+                }
             }
         }
                     
-        if (user != null && modifiedAt != null) {
-            return new Enrollment(user.getId(), eventId, comment, status, vip, lastStatus, modifiedAt);
+        if (modifiedAt != null) {
+            return new Enrollment(userId, eventId, comment, status, vip, lastStatus, modifiedAt);
         } else {
-            return new Enrollment(user.getId(), eventId, comment, status, vip, lastStatus, modifiedAt2);
+            return new Enrollment(userId, eventId, comment, status, vip, lastStatus, modifiedAt2);
         }        
     }
 
