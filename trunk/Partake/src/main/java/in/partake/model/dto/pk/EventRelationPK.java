@@ -37,4 +37,12 @@ public class EventRelationPK {
         
         return code;
     }
+    
+    public String getSrcEventId() {
+        return this.srcEventId;
+    }
+    
+    public String getDstEventId() {
+        return this.dstEventId;
+    }
 }
