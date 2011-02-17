@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.dto.auxiliary.AttendanceStatus"%>
 <%@page import="in.partake.model.dto.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
@@ -47,6 +48,22 @@
     	
     	document.makeAttendantVIPForm.submit();	
     }    
+    
+    function changeAttendance(eventId, userId, status) {
+    	var map = {
+    		"eventId": eventId,
+    		"userId": userId,
+    		"status": status
+    	};
+    	$.post("<%= request.getContextPath() %>/api/changeAttendance", map)
+    	    .error(function(data) {
+                $("#attendance-status-" + userId).html("保存時にエラーが発生しました");    	    	
+            })
+            .success(function(data) {
+                $("#attendance-status-" + userId).html("保存しました");
+    		});
+    }
+    
     </script>
     <title>参加者のステータスを編集</title>
 </head>
@@ -71,16 +88,15 @@
     <colgroup><col width="100px" /></colgroup>
     <colgroup><col width="50px" /></colgroup> 
     <colgroup><col width="120px" /></colgroup>
-    <%-- 
-    <colgroup><col width="120px" /></colgroup>
-     --%>
+    <colgroup><col width="120px" /></colgroup>    
 <thead>
     <tr>
     	<th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th class="print-del">登録日時</th><th>優先度</th><th class="print-del">操作</th>
-    	<%-- <th>実際の出欠状況</th> --%>
+    	<th>実際の出欠状況</th>
     </tr>
 </thead>
 <tbody>
+    
     <% 
     int order = 0;    
     for (EnrollmentEx p : ps) {
@@ -112,17 +128,17 @@
 		        <% } %>
 	        </ul>
         </td>
-        <%-- ちょっと ajax 使ってみる予定。 
         <td class="print-del">
-	        <input type="radio" name="present-<%= h(p.getUserId()) %>" value="unknown"　checked="checked" /> 未選択<br />
-	        <input type="radio" name="present-<%= h(p.getUserId()) %>" value="present" /> 出席
-	        <input type="radio" name="present-<%= h(p.getUserId()) %>" value="absent" /> 欠席
-        </td>
-        --%>
+	        <input type="radio" onchange="changeAttendance('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>', 'unknown')" name="present-<%= h(p.getUserId()) %>" value="unknown" <%= AttendanceStatus.UNKNOWN.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 未選択<br />
+	        <input type="radio" onchange="changeAttendance('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>', 'present')" name="present-<%= h(p.getUserId()) %>" value="present" <%= AttendanceStatus.PRESENT.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 出席
+	        <input type="radio" onchange="changeAttendance('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>', 'absent')" name="present-<%= h(p.getUserId()) %>" value="absent"   <%= AttendanceStatus.ABSENT.equals(p.getAttendanceStatus())  ? "checked" : "" %> /> 欠席<br />
+            <span id="attendance-status-<%= h(p.getUserId()) %>"></span>	        	        
+        </td>        
     </tr>
     <% } %>
 </tbody>
 </table>
+
 </div>
 
 <s:form method="post" id="removeAttendantForm" name="removeAttendantForm" action="removeAttendant" style="display: none;">
@@ -138,6 +154,14 @@
 	<s:hidden name="userId"  id="userIdForMakeAttendantVIPForm" value="" />		
 	<s:hidden name="vip"     id="vipForMakeAttendantVIPForm" value="" />			
 	<s:submit value="VIP にする" />
+</s:form>
+
+<s:form method="post" id="changeAttendanceForm" name="changeAttendanceForm" action="changeAttendance" style="display: none;">
+    <s:token />
+    <s:hidden name="eventId" id="eventIdForChangeAttendanceForm" value="" />
+    <s:hidden name="userId"  id="userIdForChangeAttendanceForm" value="" />     
+    <s:hidden name="status"  id="statusForChangeAttendanceForm" value="" />            
+    <s:submit value="出席を変更" />
 </s:form>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />

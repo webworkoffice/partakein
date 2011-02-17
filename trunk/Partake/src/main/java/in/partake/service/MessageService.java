@@ -18,7 +18,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.EventReminder;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
-import in.partake.model.dto.auxiliary.LastParticipationStatus;
+import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;
@@ -239,12 +239,12 @@ public final class MessageService extends PartakeService {
                 for (Enrollment p : list.getEnrolledParticipations()) {
                     // -- 参加者向
                     
-                    LastParticipationStatus status = p.getLastStatus();
+                    ModificationStatus status = p.getModificationStatus();
                     if (status == null) { continue; }
 
                     switch (status) {
                     case CHANGED: { // 自分自身の力で変化させていた場合は status を enrolled にのみ変更して対応
-                        updateLastStatus(con, eventId, p, LastParticipationStatus.ENROLLED);
+                        updateLastStatus(con, eventId, p, ModificationStatus.ENROLLED);
                         break;
                     }
                     case NOT_ENROLLED: {
@@ -254,7 +254,7 @@ public final class MessageService extends PartakeService {
                             factory.getDirectMessageAccess().put(con, okEmbryo);
                         }
 
-                        updateLastStatus(con, eventId, p, LastParticipationStatus.ENROLLED);
+                        updateLastStatus(con, eventId, p, ModificationStatus.ENROLLED);
                         String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
                         Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
                                 okMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
@@ -268,12 +268,12 @@ public final class MessageService extends PartakeService {
                 }
 
                 for (Enrollment p : list.getSpareParticipations()) {
-                    LastParticipationStatus status = p.getLastStatus();
+                    ModificationStatus status = p.getModificationStatus();
                     if (status == null) { continue; }
 
                     switch (status) {
                     case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
-                        updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
+                        updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
                         break;
                     case NOT_ENROLLED:
                         break;
@@ -284,7 +284,7 @@ public final class MessageService extends PartakeService {
                             factory.getDirectMessageAccess().put(con, ngEmbryo); 
                         }
 
-                        updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
+                        updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
                         
                         String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
                         Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
@@ -297,12 +297,12 @@ public final class MessageService extends PartakeService {
                 }
 
                 for (Enrollment p : list.getCancelledParticipations()) {
-                    LastParticipationStatus status = p.getLastStatus();
+                    ModificationStatus status = p.getModificationStatus();
                     if (status == null) { continue; }
 
                     switch (status) {
                     case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
-                        updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
+                        updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
                         break;
                     case NOT_ENROLLED:
                         break;
@@ -313,7 +313,7 @@ public final class MessageService extends PartakeService {
                             factory.getDirectMessageAccess().put(con, ngEmbryo); 
                         }
 
-                        updateLastStatus(con, eventId, p, LastParticipationStatus.NOT_ENROLLED);
+                        updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
                         
                         String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
                         Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
@@ -330,9 +330,9 @@ public final class MessageService extends PartakeService {
         }
     }
     
-    private void updateLastStatus(PartakeConnection con, String eventId, Enrollment enrollment, LastParticipationStatus status) throws DAOException {
+    private void updateLastStatus(PartakeConnection con, String eventId, Enrollment enrollment, ModificationStatus status) throws DAOException {
         Enrollment newEnrollment = new Enrollment(enrollment);
-        newEnrollment.setLastStatus(status);
+        newEnrollment.setModificationStatus(status);
         getFactory().getEnrollmentAccess().put(con, newEnrollment);
     }
 }

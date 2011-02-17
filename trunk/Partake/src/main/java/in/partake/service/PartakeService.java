@@ -111,13 +111,17 @@ public abstract class PartakeService {
         
         String feedId = getFactory().getFeedAccess().findByEventId(con, eventId);
         String shortenedURL = getShortenedURL(con, event);
+        
         List<EventRelation> relations = getFactory().getEventRelationAccess().findByEventId(con, eventId);
         List<EventRelationEx> relationExs = new ArrayList<EventRelationEx>();
-        for (EventRelation relation : relations) {
-            EventRelationEx relationEx = getEventRelationEx(con, relation);
-            relationExs.add(relationEx);
+        if (relations != null) {
+            for (EventRelation relation : relations) {
+                EventRelationEx relationEx = getEventRelationEx(con, relation);
+                if (relationEx == null) { continue; }
+                relationExs.add(relationEx);
+            }
         }
-            
+        
         return new EventEx(event, user, feedId, shortenedURL, relationExs);
     }
 
@@ -164,6 +168,7 @@ public abstract class PartakeService {
     
     protected EventRelationEx getEventRelationEx(PartakeConnection con, EventRelation relation) throws DAOException {
         Event event = getFactory().getEventAccess().find(con, relation.getDstEventId());
+        if (event == null) { return null; }
         return new EventRelationEx(relation, event);
     }
     

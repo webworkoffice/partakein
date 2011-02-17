@@ -51,6 +51,7 @@
     <colgroup><col width="150px" /></colgroup>
     <colgroup><col width="30px" /></colgroup>
     <% for (EventRelationEx eventRelation : event.getEventRelations()) { %>
+        <% if (eventRelation == null) { continue; } %>
 		<colgroup><col width="60px" /></colgroup>
 	<% } %>
     <colgroup><col width="60px" /></colgroup>
@@ -60,6 +61,7 @@
     	<%  {
 	    		int cnt = 0;
 	    		for (EventRelationEx eventRelation : event.getEventRelations()) { %>
+	    		    <% if (eventRelation == null) { continue; } %>
 	    			<th>関連イベント <%= ++cnt %> <a href="<%= h(eventRelation.getEvent().getEventURL()) %>">*</a></th>
 	    		<% }
     	} %>
@@ -77,6 +79,7 @@
         <td><%= p.getPriority() > 0 ? String.format(" 優先 %d", p.getPriority()) : "-" %></td>
        	<% 
        		for (EventRelation eventRelation : event.getEventRelations()) { %>
+       		<% if (eventRelation == null) { continue; } %>
        		<% if (p.getRelatedEventIds().contains(eventRelation.getDstEventId())) { %>
        			<td>出席</td>
        		<% } else { %>
