@@ -82,14 +82,14 @@
 		<ul class="top-feature">
 			<li>楽しそうなイベントを検索して参加しましょう。</li>
 			<li><a href="<%= request.getContextPath() %>/feedlist">新着イベントの RSS / iCal を配信中。</a></li>
-			<li><a href="http://twitter.com/partake_bot">新着イベントをつぶやく公式ボット</a>もいます。
+			<li><a href="http://twitter.com/partake_bot">新着イベントをつぶやく公式ボット</a>もいます。<br>
 			</li>
 		</ul>
 	</div>
 	
 	<div class="top-explanation">
 	   <img src="<%= request.getContextPath() %>/images/feature-04.png" alt="" />
-	   <h3>ご要望をお聞きしていますよ☆</h3>
+	   <h3>ご要望をお聞きしています</h3>
 	   <ul class="top-feature">
 	       <li>ご要望・バグ報告は <a href="http://code.google.com/p/partakein/issues/list">Issue Tracker</a> まで。あるいは、<br><a href="http://twitter.com/partakein">@partakein</a> まで tweet をお願いします。</li>
 	       <li>開発者を募集中。PARTAKE のソースは <a href="http://code.google.com/p/partakein/">Google Code</a> <br>で(一部の画像を除き)公開中です。</li>

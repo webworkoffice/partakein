@@ -12,7 +12,7 @@
 <dt><label for="description">説明</label>:</dt>
 	<dd><s:textarea id="description" name="description" cssClass="text-input" /><br />
 	<span class="accent">＞</span> イベントの説明を記述します。(HTML などを含めて50000文字まで)</dd>
-<dt>開始日時<span class="required">(必須)</span>:</dt>
+<dt>開催日時<span class="required">(必須)</span>:</dt>
 	<dd><s:select id="syear" name="syear" list="{'2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'}"></s:select><label for="syear">年</label>
 		<s:select id="smonth" name="smonth" list="{'1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'}"/><label for="smonth">月</label>
 		<s:select id="sday" name="sday" list="{'1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'}"/><label for="sday">日</label>
@@ -74,14 +74,14 @@
 <dt><label for="secret">非公開設定</label>:</dt>
 	<dd><s:checkbox id="secret" name="secret"/>非公開にする<br />
 		<span class="accent">＞</span> 非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</dd>
-<dt><label for="passcode">パスコード</label>:</dt>
+<dt>パスコード</label>:</dt>
 	<dd><s:textfield id="passcode" name="passcode" cssClass="text-input" /></dd>
 </dl>
 
 
 
 
-<a title="関連イベント　,　複数の管理者"><span class="switchHat">▼ 詳細な設定</span></a>
+<span class="switchHat"><a title="関連イベント　,　複数の管理者">▼ 詳細な設定&nbsp;&nbsp;（関連イベント/自分以外の管理者）</a></span>
 
 <div class="switchDetail rad">
 <dl class="event-form">

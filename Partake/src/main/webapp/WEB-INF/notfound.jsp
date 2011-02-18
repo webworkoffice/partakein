@@ -18,7 +18,7 @@
 
 <p>お探しのリソースが見つかりませんでした。URL を確認してください。</p>
 <p><a href="<%= request.getContextPath() %>/"><strong>トップに戻る</strong></a></p>
-<img class="musangas" src="<%= request.getContextPath() %>/images/musangas.png" alt="" />
+<img class="musangas" src="<%= request.getContextPath() %>/images/sorry.png" alt="" />
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>

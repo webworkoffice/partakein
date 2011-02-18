@@ -506,6 +506,7 @@ color:#666;
 
 .event-participants img {
     padding: 0;
+    margin-bottom:0;
     vertical-align:middle;
 }
 
@@ -527,31 +528,32 @@ color:#666;
     display: block;
     list-style: none;
     margin: 2px 0 0 0;
-    padding: 5px 1px 8px 9px;
+    padding: 5px 1px 8px 7px;
 }
 
 .event-participants li {
     display: block;
-    margin: 0;
+    margin-bottom: 2px;
     padding: 0;
-    vertical-align: middle;
+    vertical-align: bottom;
+    line-height:16px;
 }
 
 .event-participants ul li img {
     margin: 0;
     padding: 0;
-    vertical-align: middle;
+    vertical-align: bottom;
     padding:0 0 2px 0;
 }
 .event-participants ul li img.userphoto {
-	/*min-height: 24px;
-    line-height: 24px;*/
     width: 24px;
     height: 24px;
     border-radius: 2px; /* CSS3 */
     -webkit-border-radius: 2px; /* Safari,Chrome */
     -moz-border-radius: 2px; /* FireFox */
     behavior:url(border-radius.htc); /* forIE */
+    padding:0 0 0px 0;
+    margin:0;
 }
 .event-dashed {
     border-bottom: 1px dashed #adb7d1;
@@ -659,6 +661,11 @@ table.associated-event input[type='text'] {
 	margin-left:10px;
 	font-weight:bold;
     color:#DB4984;
+}
+
+.switchHat a:hover {
+	font-weight:bold;
+    color:#DD6C9F;
 }
 
 .switchDetail {
@@ -1194,6 +1201,11 @@ h1 a, h2 a, h3 a, h4 a {
 h1 {
     margin: 0;
     position: relative;
+}
+
+h1 img {
+    vertical-align:middle;
+    margin-right:5px;
 }
 
 h2 img {

@@ -25,6 +25,7 @@
 	<h1><%= h(user.getScreenName()) %> さんのマイページ</h1>
 	<p><%= h(user.getScreenName()) %> さんが管理している / 登録しているイベントを確認できます。</p>
 </div>
+				 
 <div class="mypage-mine">
 <h2><img src="<%= request.getContextPath() %>/images/drop-yellow.png" alt=""/>管理しているイベント</h2>
 <% 
