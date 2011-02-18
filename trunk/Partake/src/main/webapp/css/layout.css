@@ -1175,7 +1175,7 @@ ul.actionMessage, ul.errorMessage, ul.warningMessage {
 }
 
 #openid-dialog fieldset {
-	font-weight:normal; 
+	font-weight:normal; http://localhost:8080/events/08434810-f2fe-45a7-8950-556374f6c806#
     font-size:0.80em;
 }
 
@@ -1185,6 +1185,30 @@ ul.actionMessage, ul.errorMessage, ul.warningMessage {
 	border-bottom:1px dotted #dddddd;
 }
 
+.dialog-ui {
+	font-size:0.92em;
+	}
+	
+.dialog-ui img {
+	vertical-align:middle;
+	padding:0 0 2px 0;
+	}
+.dialog-ui ul {
+	margin:0;
+	margin-left:12px;
+	padding:8px;
+	}	
+.dotted-box	{
+	border:2px dotted #cd487d;
+	padding:3px 3px 3px 0px;
+	margin:7px;
+	color:#696969;
+	list-style: none;
+	list-style-image: url(../images/mark.png);	
+}
+
+	
+	
 /* ==================================================================
  * headings
  * ==================================================================
