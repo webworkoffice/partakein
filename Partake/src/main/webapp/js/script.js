@@ -14,7 +14,10 @@ function onReady() {
     };
     
     var dialogOptions = {
-    		"signin-dialog": { width: 500, resizable: false }
+    		"signin-dialog": { width: 500, resizable: false },
+    		"enroll-form": { width: 350, resizable: false },
+    		"reserve-form": { width: 500, resizable: false },
+    		"cancel-form": { width: 350, resizable: false }
     };
     
     function merge(option, mergingOption) {

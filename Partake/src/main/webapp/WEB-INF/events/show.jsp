@@ -248,39 +248,45 @@ body {
 		<% } %>
 		
 		<%-- 参加登録フォーム --%>
-		<div id="enroll-form" title="参加登録フォーム" style="display: none">
+		<div id="enroll-form" class="dialog-ui" title="参加登録フォーム" style="display: none">
 			<s:form method="post" action="enroll">
 				<s:token />
 				<s:hidden name="eventId" value="%{eventId}" />
-				<p>イベントに<strong>参加</strong>しようとしています。</p>
+				<p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントに<strong>参加</strong>しようとしています。</p>
 				<s:label for="comment" value="COMMENT" />:<s:textfield name="comment" id="comment" value="よろしくお願いします。"/><br />
 				<s:submit value="参加登録" />
 			</s:form>
 		</div>
 		<%-- 仮参加フォーム --%>
-		<div id="reserve-form" title="仮参加登録フォーム" style="display: none">
+		<div id="reserve-form" class="dialog-ui" title="仮参加登録フォーム" style="display: none">
 			<s:form method="post" action="reserve">
 				<s:token />
 				<s:hidden name="eventId" value="%{eventId}" />
-				<p>イベントに<strong>仮参加</strong>しようとしています。</p>
-				<p>仮参加の場合一時的に順番のみが確保されます。参加を確定させるためには、締め切り(設定されていない場合は開始３時間前)までに再び参加申し込みしてください。放置した場合、キャンセル扱いとなります。</p>
+				<p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントに<strong>仮参加</strong>しようとしています。</p>
+				<div class="dotted-box">
+				<ul>
+				<li><strong>放置した場合、キャンセル</strong>になってしまいます。</li>
+				<li>参加を確定させるためには、締切り(設定されていない場合は開始３時間前)までに<strong>改めて参加の申込み</strong>をしてください。</li>
+				<li>締切りの24,12時間前になると<strong>リマインダー</strong>がダイレクトメールで届きます。<br>(「設定」ページで受信拒否が設定できます)</li>
+				</ul>
+				</div>
 				<s:label for="comment" value="COMMENT" />:<s:textfield name="comment" id="comment" value="よろしくお願いします。"/><br />
 				<s:submit value="仮参加登録" />
 			</s:form>
 		</div>
 		<%-- キャンセルフォーム --%>
-		<div id="cancel-form" title="参加キャンセルフォーム" style="display: none">
+		<div id="cancel-form" class="dialog-ui" title="参加キャンセルフォーム" style="display: none">
             <s:form method="post" action="cancel">
                 <s:token />
                 <s:hidden name="eventId" value="%{eventId}" />
-                <p>イベントへの参加を<strong>キャンセル</strong>しようとしています。</p>
+                <p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントへの参加を<strong>キャンセル</strong>しようとしています。</p>
                 <p>参加をいったんキャンセルすると確保していた順番は取り消されます。</p>
                 <s:label for="comment" value="COMMENT" />:<s:textfield name="comment" id="comment" value="参加できなくなりました。"/><br />
                 <s:submit value="参加キャンセル"  />
             </s:form>
 		</div>
 		<%-- コメント変更フォーム --%>
-		<div id="change-comment-form" title="コメント変更フォーム" style="display: none">
+		<div id="change-comment-form" class="dialog-ui" title="コメント変更フォーム" style="display: none">
             <s:form method="post" action="changeComment">
                 <s:token />
                 <s:hidden name="eventId" value="%{eventId}" />
@@ -338,7 +344,7 @@ body {
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					    <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIP" alt="VIP 参加者" />
+					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
 					<% } else if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
@@ -349,7 +355,7 @@ body {
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
 					<img src="<%= request.getContextPath() %>/images/reserved1.png"　title="仮参加" alt="仮参加者" />
-					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIP" alt="VIP 参加者" />
+					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
 					<% } else if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
@@ -371,7 +377,7 @@ body {
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIP" alt="VIP 参加者" />
+					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
 					<% } else if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
 					: <%= h(participation.getComment()) %>
 				</li>
@@ -381,7 +387,7 @@ body {
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIP" alt="VIP 参加者" />
+					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
 					<% } else if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
 					<img src="<%= request.getContextPath() %>/images/reserved1.png" title="仮参加" alt="仮参加者" />
 					: <%= h(participation.getComment()) %>
