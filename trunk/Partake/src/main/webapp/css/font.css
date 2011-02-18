@@ -21,6 +21,7 @@ body {
 }
 
 .top-recent-events h3 a:hover {
+	  color:#616161;
       border-bottom:2px dotted #ffbf0D;
 }
 

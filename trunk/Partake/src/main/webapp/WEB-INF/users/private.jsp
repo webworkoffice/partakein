@@ -14,9 +14,10 @@
 
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1>このユーザーはプライベートモードに設定されています</h1>
+<h1><img src="<%= request.getContextPath() %>/images/private.png" alt="" />このユーザーはプライベートモードに設定されています</h1>
 
-<p>このユーザーはプライベートモードに設定されているため、プロフィールを表示することが出来ません。</p>
+<p>このユーザーのマイページは「非公開」に設定されているため、表示することが出来ません。</p>
+<img class="musangas" src="<%= request.getContextPath() %>/images/sorry.png" alt="" />
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

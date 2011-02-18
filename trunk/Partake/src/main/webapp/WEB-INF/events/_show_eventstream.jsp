@@ -60,13 +60,13 @@ var tab = {
 
 <div id="tab-wrapper">
 <ul id="tab">
-	<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1">Comments</a></li>
-	<li><a href="#news2" _fcksavedurl="#news2">Messages</a></li>
-	<li><a href="#news3" _fcksavedurl="#news3">Twitter Feed</a></li>
+	<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1"　title="コメントボード">Comments</a></li>
+	<li><a href="#news2" _fcksavedurl="#news2"　title="管理者からのメッセージ">Messages</a></li>
+	<li><a href="#news3" _fcksavedurl="#news3" title="このイベントのハッシュタグがついたTweet">Twitter Feed</a></li>
 </ul>
-<div id="news1" class="curv">
+<div id="news1" class="rad">
 	<h2>Comments</h2>
-	<div class="event-comments curv">
+	<div class="event-comments rad">
 		<s:form action="removeComment" id="removeCommentForm" name="removeCommentForm">
 			<s:token />
 			<s:hidden id="removeCommentId" name="commentId" value="" />
@@ -105,7 +105,7 @@ var tab = {
 		</div>
 	
 </div>
-<div id="news2" class="curv">
+<div id="news2" class="rad">
 	<h2>管理者からのメッセージ</h2>
 	<div class="event-comments">
 	<% for (DirectMessageEx message : messages) { %>
@@ -117,7 +117,7 @@ var tab = {
 	<% } %>
 	</div>
 </div>
-<div id="news3" class="curv">
+<div id="news3" class="rad">
 	<% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	<div class="event-twitter-hashtag-stream">	
 	<script>

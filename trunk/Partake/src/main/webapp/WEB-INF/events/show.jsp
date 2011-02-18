@@ -117,7 +117,7 @@ body {
 	                   <img src="<%= request.getContextPath() %>/images/mark.png" class=""　alt="" />
 	                   <a href="<%= h(eventRelation.getEvent().getEventURL()) %>"><%= h(eventRelation.getEvent().getTitle()) %></a>
 	                   <p><% if (eventRelation.isRequired()) { %><img src="<%= request.getContextPath() %>/images/attention.png" alt="" /> この関連イベントへの参加が必須です<% } %>
-                       <% if (eventRelation.hasPriority()) { %><br><img src="<%= request.getContextPath() %>/images/star.png" alt="" /> 参加すると本イベントへ優先的に参加可<% } %>
+                       <% if (eventRelation.hasPriority()) { %><img src="<%= request.getContextPath() %>/images/star.png" alt="" /> 参加すると本イベントへ優先的に参加可<% } %>
 	               </p>
 	               </dd>
 	           <% } %>
