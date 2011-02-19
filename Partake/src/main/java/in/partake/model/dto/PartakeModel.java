@@ -1,7 +1,7 @@
 package in.partake.model.dto;
 
 public abstract class PartakeModel<T extends PartakeModel<?>> {
-    protected volatile boolean frozen;
+    private volatile boolean frozen;
     
     protected PartakeModel() {
         this.frozen = false;

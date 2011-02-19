@@ -1,12 +1,12 @@
 package in.partake.model.dao.jpa;
 
-import in.partake.model.dao.FeedAccessTestCaseBase;
+import in.partake.model.dao.EventFeedAccessTestCaseBase;
 import in.partake.resource.PartakeProperties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public class JPAFeedLinkageDaoTest extends FeedAccessTestCaseBase {
+public class JPAFeedLinkageDaoTest extends EventFeedAccessTestCaseBase {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("jpa");

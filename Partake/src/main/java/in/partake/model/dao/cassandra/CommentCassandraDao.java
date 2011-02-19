@@ -188,7 +188,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
             }
 
             @Override
-            public ColumnOrSuperColumn unmap(Comment t) throws DAOException {
+            public ColumnOrSuperColumn unmap(Comment t, long time) throws DAOException {
                 throw new UnsupportedOperationException();
             }           
         });

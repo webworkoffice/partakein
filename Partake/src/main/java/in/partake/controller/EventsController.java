@@ -154,7 +154,6 @@ public class EventsController extends PartakeActionSupport {
 	   		
 	   		String comment = getParameter("comment");
 	   		if (StringUtils.isEmpty(comment)) {
-	   		    // addFieldError("comment", "コメントを入力してください。");
 	   		    addWarningMessage("コメントを入力してください。");
 	   		    return INPUT;
 	   		}

@@ -2,9 +2,7 @@ package in.partake.model.dao;
 
 import in.partake.model.dto.BinaryData;
 
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase<IBinaryAccess, BinaryData, String> {
     @Before
@@ -24,34 +22,5 @@ public abstract class BinaryAccessTestCaseBase extends AbstractDaoTestCaseBase<I
         } else {
             return new BinaryData(pkSalt + "-" + pkNumber, "test-type", new byte[] {1, 2, (byte) objNumber});
         }            
-    }
-    
-    @Test
-    public void testToRemoveBinaryData() throws Exception {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        
-        try {
-            {
-                con.beginTransaction();
-                BinaryData data = new BinaryData("test", "test-type", new byte[] {1, 2, 3});
-                factory.getBinaryAccess().put(con, data);
-                con.commit();
-            }
-            {
-                con.beginTransaction();
-                factory.getBinaryAccess().remove(con, "test");
-                con.commit();
-            }
-            {
-                con.beginTransaction();
-                BinaryData data = factory.getBinaryAccess().find(con, "test");
-                Assert.assertNull(data);
-                con.commit();
-            }
-            
-        } finally {
-            con.invalidate();
-        }        
     }    
 }

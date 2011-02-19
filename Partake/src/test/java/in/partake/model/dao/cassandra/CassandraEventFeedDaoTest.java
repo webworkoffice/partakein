@@ -1,12 +1,12 @@
 package in.partake.model.dao.cassandra;
 
-import in.partake.model.dao.FeedAccessTestCaseBase;
+import in.partake.model.dao.EventFeedAccessTestCaseBase;
 import in.partake.resource.PartakeProperties;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public class CassandraFeedDaoTest extends FeedAccessTestCaseBase {
+public class CassandraEventFeedDaoTest extends EventFeedAccessTestCaseBase {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("cassandra");

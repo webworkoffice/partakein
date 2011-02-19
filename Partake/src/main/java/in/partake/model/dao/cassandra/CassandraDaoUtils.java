@@ -22,10 +22,9 @@ import org.apache.cassandra.thrift.Cassandra.Client;
 
 class CassandraDaoUtils {
     
-    public static ColumnOrSuperColumn get(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
+    public static ColumnOrSuperColumn getColumn(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
         try {
-            ColumnPath columnPath = new ColumnPath();
-            columnPath.setColumn_family(columnFamily);
+            ColumnPath columnPath = new ColumnPath(columnFamily);
             columnPath.setColumn(bytes(columnName));
             return client.get(keySpace, key, columnPath, readConsistency);        
         } catch (NotFoundException e) {
@@ -34,12 +33,11 @@ class CassandraDaoUtils {
         }
     }
     
-    public static SuperColumn getSuperColumn(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
+    public static ColumnOrSuperColumn getSuperColumn(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
         try {
-            ColumnPath columnPath = new ColumnPath();
-            columnPath.setColumn_family(columnFamily);
+            ColumnPath columnPath = new ColumnPath(columnFamily);
             columnPath.setSuper_column(bytes(columnName));
-            return client.get(keySpace, key, columnPath, readConsistency).getSuper_column();        
+            return client.get(keySpace, key, columnPath, readConsistency);
         } catch (NotFoundException e) {
             // e is intentionally ignored.
             return null;
@@ -75,6 +73,12 @@ class CassandraDaoUtils {
             return createDeleteMutation(key, time);
         }
     }
+
+    public static Mutation createMutation(ColumnOrSuperColumn cosc) {
+        Mutation mutation = new Mutation();
+        mutation.setColumn_or_supercolumn(cosc);
+        return mutation;
+    }    
     
     @Deprecated
     public static Mutation createColumnMutation(String key, String value, long time) {

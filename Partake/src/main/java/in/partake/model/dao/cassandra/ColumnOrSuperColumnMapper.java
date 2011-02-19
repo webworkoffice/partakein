@@ -30,5 +30,5 @@ abstract class ColumnOrSuperColumnMapper<T> {
 	 * @param t
 	 * @return
 	 */
-	public abstract ColumnOrSuperColumn unmap(T t) throws DAOException;
+	public abstract ColumnOrSuperColumn unmap(T t, long time) throws DAOException;
 }
