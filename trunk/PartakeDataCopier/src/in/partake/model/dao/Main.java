@@ -40,8 +40,8 @@ public class Main {
         DataIterator<T> it = cas.getIterator(cascon);        
         while (it.hasNext()) {
             T t = it.next();
-            System.out.println(t);
             if (t == null) { continue; }
+            System.out.println(t);
             
             jpacon.beginTransaction();
             jpa.put(jpacon, t);

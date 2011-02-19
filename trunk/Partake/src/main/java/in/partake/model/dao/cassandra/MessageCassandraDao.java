@@ -93,12 +93,6 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
         }
     }
 
-    /**
-     * add a message.
-     * @param embryo
-     * @return message id
-     * @throws DAOException
-     */
     @Override
     public void put(PartakeConnection con, Message embryo) throws DAOException {
         if (embryo.getId() == null) { throw new NullPointerException(); }
@@ -115,18 +109,13 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     }
     
     @Override
-    public DataIterator<Message> findByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public void remove(PartakeConnection con, String key) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getUserMessageIteratorImpl((CassandraConnection) con, eventId);
+            removeImpl(ccon.getClient(), key, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
-    }
-
-    @Override
-    public void remove(PartakeConnection con, String key) throws DAOException {
-        // TODO Auto-generated method stub        
-        throw new RuntimeException("Not implemented yet.");
     }
     
     @Override
@@ -138,7 +127,17 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     public void truncate(PartakeConnection con) throws DAOException {
         this.removeAllData((CassandraConnection) con);
     }
-    
+
+    @Override
+    public DataIterator<Message> findByEventId(PartakeConnection con, String eventId) throws DAOException {
+        try {
+            return getUserMessageIteratorImpl((CassandraConnection) con, eventId);
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+    }
+
+
     // ----------------------------------------------------------------------
     
     private Message getMessageById(Client client, String messageId, long time) throws Exception {
@@ -171,6 +170,8 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
                 eventId = value;
             } else if ("createdAt".equals(name)) {
                 createdAt = Util.dateFromTimeString(value);
+            } else if ("deleted".equals(name)) {
+                if ("true".equals(value)) { return null; }
             }
         }
         
@@ -186,7 +187,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
         mutations.add(createMutation("message", embryo.getMessage(), time));
         mutations.add(createMutation("eventId", embryo.getEventId(), time));
         mutations.add(createMutation("createdAt", Util.getTimeString(embryo.getCreatedAt()), time));
-        
+        mutations.add(createMutation("deleted", "false", time));
         
         client.batch_mutate(DIRECTMESSAGE_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGE_COLUMNFAMILY, mutations)), DIRECTMESSAGE_CL_W);
     }
@@ -199,6 +200,14 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
 
         client.batch_mutate(DIRECTMESSAGE_EVENT_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGE_EVENT_COLUMNFAMILY, mutations)), DIRECTMESSAGE_EVENT_CL_W);
     }
+    
+    private void removeImpl(Client client, String id, long time) throws Exception {
+        String key = DIRECTMESSAGE_PREFIX + id;
+
+        List<Mutation> mutations = new ArrayList<Mutation>(); 
+        mutations.add(createMutation("deleted", "true", time));        
+        client.batch_mutate(DIRECTMESSAGE_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGE_COLUMNFAMILY, mutations)), DIRECTMESSAGE_CL_W);
+    }    
     
     private CassandraColumnDataIterator<Message> getUserMessageIteratorImpl(CassandraConnection con, String eventId) throws Exception {
         String key = DIRECTMESSAGE_EVENT_PREFIX + eventId;
@@ -216,7 +225,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
                 return factory.getDirectMessageAccess().find(connection, messageId);               
             }
             
-            public ColumnOrSuperColumn unmap(Message t) throws DAOException {
+            public ColumnOrSuperColumn unmap(Message t, long time) throws DAOException {
                 throw new UnsupportedOperationException();
             };
         });

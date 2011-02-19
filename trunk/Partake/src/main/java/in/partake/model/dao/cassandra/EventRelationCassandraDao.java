@@ -124,7 +124,7 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
 	private EventRelation findImpl(CassandraConnection con, EventRelationPK pk) throws Exception {
 	    String key = EVENT_RELATION_PREFIX + pk.getSrcEventId();
         ColumnPath columnPath = new ColumnPath(EVENT_RELATION_COLUMNFAMILY);
-        columnPath.setColumn(bytes(pk.getDstEventId()));
+        columnPath.setSuper_column(bytes(pk.getDstEventId()));
 
         try {
             ColumnOrSuperColumn cosc = con.getClient().get(EVENT_RELATION_KEYSPACE, key, columnPath, EVENT_RELATION_CL_R);
@@ -134,10 +134,10 @@ public class EventRelationCassandraDao extends CassandraDao implements IEventRel
         }
 	}
 	
-	private void removeImpl(CassandraConnection con, EventRelationPK relation, long time) throws Exception {
-	    String key = EVENT_RELATION_PREFIX + relation.getSrcEventId();
+	private void removeImpl(CassandraConnection con, EventRelationPK pk, long time) throws Exception {
+	    String key = EVENT_RELATION_PREFIX + pk.getSrcEventId();
         ColumnPath columnPath = new ColumnPath(EVENT_RELATION_COLUMNFAMILY);
-        columnPath.setColumn(bytes(relation.getDstEventId()));
+        columnPath.setSuper_column(bytes(pk.getDstEventId()));
         
         con.getClient().remove(EVENT_RELATION_KEYSPACE, key, columnPath, time, EVENT_RELATION_CL_W);
 	}

@@ -147,7 +147,11 @@ class ColumnIterator {
 			throw new DAOException(e);
 		}
 	}
-		
+	
+	public CassandraConnection getConnetion() {
+	    return connection;
+	}
+	
 	// ----------------------------------------------------------------------
 	
 	private byte[] getName(ColumnOrSuperColumn cosc) {

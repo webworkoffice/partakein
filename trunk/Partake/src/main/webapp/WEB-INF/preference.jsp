@@ -73,19 +73,21 @@
 </div>
 
 <div class="setting-subtitle"> 
-<h2><img src="<%= request.getContextPath() %>/images/calendar.png" alt="">外部のカレンダーと連携</h2></div>
+<h2><img src="<%= request.getContextPath() %>/images/calendar.png" alt="">カレンダーと RSS</h2></div>
 
 <div class="setting-set">
-<h3><span class="accent">＞ </span><span class="bold">自分の参加・管理イベントを、Googleなどのカレンダーに自動で登録させます</span></h3>
-<p>以下が、あなたのカレンダーID（URL）です。<br />
-これを、普段使っているカレンダーにインポートすればOK!</p>
+<h3><span class="accent">＞ </span><span class="bold">自分の参加・管理イベントを ics ファイル (カレンダー) で受信、あるいは自分に関連するイベントに関するデータを RSS で取得することが出来ます。</span></h3>
+<p>以下が、あなたのカレンダーID（URL）です。<br />これを、普段使っているカレンダーにインポートすればOK!</p>
 
+<%-- NOTE: RSS の ID はカレンダー ID と共通です。 --%>
 <% if (user.getCalendarId() != null && !"".equals(user.getCalendarId())) { %>
     <input type="text" value="http://partake.in<%= request.getContextPath() %>/calendars/<%= h(user.getCalendarId()) %>.ics" style="width: 80%;"/>
+<%--
+    <input type="text" value="http://partake.in<%= request.getContextPath() %>/feed/user/<%= h(user.getCalendarId()) %>" style="width: 80%;"/>
+ --%>        
 <% } %>
 
 <p>IDは友人と共有することも可能です。</p>
-<br>
 
 <h3><span class="accent">＞ </span><span class="bold">カレンダーIDを再生成する</span></h3>
 <p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。<br />

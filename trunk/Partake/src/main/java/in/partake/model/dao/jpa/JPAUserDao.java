@@ -1,7 +1,5 @@
 package in.partake.model.dao.jpa;
 
-import java.util.Date;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -44,14 +42,4 @@ class JPAUserDao extends JPADao<User> implements IUserAccess {
         Query q = em.createQuery("DELETE FROM Users");
         q.executeUpdate();
     }
-
-    @Override
-    public void updateLastLogin(PartakeConnection con, String userId, Date now) throws DAOException {        
-        User user = find(con, userId);
-        if (user == null) { return; }        
-        User newUser = new User(user);
-        newUser.setLastLoginAt(now);
-        put(con, newUser);
-    }
-
 }

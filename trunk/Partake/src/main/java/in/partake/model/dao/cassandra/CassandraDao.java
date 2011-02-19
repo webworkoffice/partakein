@@ -39,10 +39,10 @@ abstract class CassandraDao {
     // Utility methods
     
     protected ColumnOrSuperColumn get(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
-        return CassandraDaoUtils.get(client, keySpace, columnFamily, columnName, key, readConsistency);
+        return CassandraDaoUtils.getColumn(client, keySpace, columnFamily, columnName, key, readConsistency);
     }
     
-    protected SuperColumn getSuperColumn(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
+    protected ColumnOrSuperColumn getSuperColumn(Client client, String keySpace, String columnFamily, String columnName, String key, ConsistencyLevel readConsistency) throws Exception {
         return CassandraDaoUtils.getSuperColumn(client, keySpace, columnFamily, columnName, key, readConsistency);
     }
     

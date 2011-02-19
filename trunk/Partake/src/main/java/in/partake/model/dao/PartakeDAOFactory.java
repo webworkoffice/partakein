@@ -15,7 +15,7 @@ public abstract class PartakeDAOFactory {
     private final IEventAccess eventAccess;
     private final IEventRelationAccess eventRelationAccess;
     private final IEventReminderAccess eventReminderAccess;
-    private final IFeedAccess feedAccess;
+    private final IEventFeedAccess feedAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
@@ -100,7 +100,7 @@ public abstract class PartakeDAOFactory {
         return eventRelationAccess;
     }
 
-    public final IFeedAccess getFeedAccess() {
+    public final IEventFeedAccess getFeedAccess() {
         return feedAccess;
     }
 
@@ -137,7 +137,7 @@ public abstract class PartakeDAOFactory {
     protected abstract IEventAccess createEventAccess();
     protected abstract IEventRelationAccess createEventRelationAccess();
     protected abstract IEventReminderAccess createEventReminderAccess();
-    protected abstract IFeedAccess createFeedAccess();
+    protected abstract IEventFeedAccess createFeedAccess();
     protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
     protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();
     protected abstract IUserAccess creataeUserAccess();

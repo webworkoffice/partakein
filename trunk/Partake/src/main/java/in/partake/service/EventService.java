@@ -16,7 +16,7 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Envelope;
-import in.partake.model.dto.FeedLinkage;
+import in.partake.model.dto.EventFeedLinkage;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
@@ -119,7 +119,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-        	FeedLinkage linkage = factory.getFeedAccess().find(con, feedId);
+        	EventFeedLinkage linkage = factory.getFeedAccess().find(con, feedId);
             if (linkage == null) { return null; }
             EventEx event = getEventEx(con, linkage.getEventId());
             con.commit();
@@ -945,7 +945,7 @@ public final class EventService extends PartakeService {
         if (feedId != null) { return; }
         
         feedId = factory.getFeedAccess().getFreshId(con);
-        factory.getFeedAccess().put(con, new FeedLinkage(feedId, eventId));
+        factory.getFeedAccess().put(con, new EventFeedLinkage(feedId, eventId));
     }
     
     // ----------------------------------------------------------------------

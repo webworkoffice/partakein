@@ -41,7 +41,7 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
 	public UserPreference find(PartakeConnection con, String userId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getPreference(ccon.getClient(), userId);            
+            return findImpl(ccon.getClient(), userId);            
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -54,16 +54,20 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
 	    
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            setPreferenceImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
+            putImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
 	}
 	
 	@Override
-	public void remove(PartakeConnection con, String key) throws DAOException {
-	    // TODO Auto-generated method stub
-	    throw new RuntimeException("Not implemented yet");
+	public void remove(PartakeConnection con, String userId) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            removeImpl(ccon.getClient(), userId, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
 	}
 	
 	@Override
@@ -78,7 +82,7 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
 	
 	// ----------------------------------------------------------------------
 	
-	private UserPreference getPreference(Client client, String userId) throws Exception {
+	private UserPreference findImpl(Client client, String userId) throws Exception {
 		String key = PREFERENCES_PREFIX + userId;
     	
         SlicePredicate predicate = new SlicePredicate();
@@ -106,6 +110,8 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
             	receivingTwitterMessage = "true".equals(value);
             } else if ("tweetingAttendanceAutomatically".equals(name)) {
             	tweetingAttendanceAutomatically = "true".equals(value);
+            } else if ("deleted".equals(name)) {
+                if ("true".equals(value)) { return null; }                
             }
         }
         
@@ -113,7 +119,7 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
         return impl.freeze();
 	}
 	
-	private void setPreferenceImpl(Client client, UserPreference embryo, long time) throws Exception {
+	private void putImpl(Client client, UserPreference embryo, long time) throws Exception {
 		String key = PREFERENCES_PREFIX + embryo.getUserId();
 		
         Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
@@ -121,10 +127,24 @@ class UserPreferenceCassandraDao extends CassandraDao implements IUserPreference
 
         columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("profilePublic"), embryo.isProfilePublic() ? TRUE : FALSE, time)));
         columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("receivingTwitterMessage"), embryo.isReceivingTwitterMessage() ? TRUE : FALSE, time)));
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("tweetingAttendanceAutomatically"), embryo.tweetsAttendanceAutomatically() ? TRUE : FALSE, time)));        
+        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("tweetingAttendanceAutomatically"), embryo.tweetsAttendanceAutomatically() ? TRUE : FALSE, time)));
+        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("deleted"), FALSE, time)));
         
         cfmap.put(PREFERENCES_COLUMNFAMILY, columns);
         
         client.batch_insert(PREFERENCES_KEYSPACE, key, cfmap, PREFERENCES_CL_W);
 	}
+
+    private void removeImpl(Client client, String userId, long time) throws Exception {
+        String key = PREFERENCES_PREFIX + userId;
+        
+        Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
+        List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();
+
+        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("deleted"), TRUE, time)));
+        
+        cfmap.put(PREFERENCES_COLUMNFAMILY, columns);
+        
+        client.batch_insert(PREFERENCES_KEYSPACE, key, cfmap, PREFERENCES_CL_W);
+    }
 }

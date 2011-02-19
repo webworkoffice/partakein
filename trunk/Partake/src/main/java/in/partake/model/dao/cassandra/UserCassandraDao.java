@@ -9,21 +9,18 @@ import in.partake.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;
-import org.apache.cassandra.thrift.ColumnPath;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.cassandra.thrift.Cassandra.Client;
 
-import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 // * USER MASTER TABLE
@@ -64,7 +61,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
         
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addUserImpl(ccon.getClient(), user, ccon.getAcquiredTime());
+            putImpl(ccon.getClient(), user, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -74,16 +71,20 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     public User find(PartakeConnection con, String id) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getUserById(ccon.getClient(), id);
+            return findImpl(ccon.getClient(), id);
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
 
     @Override
-    public void remove(PartakeConnection con, String key) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet");
+    public void remove(PartakeConnection con, String userId) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {            
+            removeImpl(ccon.getClient(), userId, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
     }
     
     @Override
@@ -97,46 +98,33 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
     public void truncate(PartakeConnection con) throws DAOException {
         removeAllData((CassandraConnection) con);
     }
-
-    @Override
-    public void updateLastLogin(PartakeConnection con, String userId, Date now) throws DAOException {
-        CassandraConnection ccon = (CassandraConnection) con;
-        try {
-            updateUserField(ccon.getClient(), userId, "lastLoginAt", Util.getTimeString(now.getTime()), ccon.getAcquiredTime());
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-    }
-    
     
     // ----------------------------------------------------------------------
     // insertion
     
-    private void addUserImpl(Client client, User user, long time) throws Exception {
+    private void putImpl(Client client, User user, long time) throws Exception {
         String key = USERS_PREFIX + user.getId();
 
         List<Mutation> mutations = new ArrayList<Mutation>();
         mutations.add(createMutation("twitterId", user.getTwitterId(), time));
         mutations.add(createMutation("calendarId", user.getCalendarId(), time));
         mutations.add(createMutation("lastLoginAt", user.getLastLoginAt(), time));
+        mutations.add(createMutation("deleted", "false", time));
         
         client.batch_mutate(USERS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_COLUMNFAMILY, mutations)), USERS_CL_W);
     }
-    
-    private void updateUserField(Client client, String userId, String name, String value, long time) throws Exception {
-    	String key = USERS_PREFIX + userId;
-    	
-    	ColumnPath columnPath = new ColumnPath(USERS_COLUMNFAMILY);
-    	columnPath.setColumn(bytes(name));
-    	
-    	client.insert(USERS_KEYSPACE, key, columnPath, bytes(value), time, USERS_CL_W);    	
+
+    private void removeImpl(Client client, String userId, long time) throws Exception {
+        String key = USERS_PREFIX + userId;
+
+        List<Mutation> mutations = new ArrayList<Mutation>();
+        mutations.add(createMutation("deleted", "true", time));
+        
+        client.batch_mutate(USERS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(USERS_COLUMNFAMILY, mutations)), USERS_CL_W);
     }
 
-    // ----------------------------------------------------------------------
-    // retrieval
-
-    private User getUserById(Client client, String id) throws Exception {
-    	String key = USERS_PREFIX + id;
+    private User findImpl(Client client, String userId) throws Exception {
+    	String key = USERS_PREFIX + userId;
     	
         SlicePredicate predicate = new SlicePredicate();
         SliceRange sliceRange = new SliceRange(new byte[0], new byte[0], false, 100);
@@ -149,7 +137,7 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
         if (results.isEmpty()) { return null; }
         
         User user = new User();
-        user.setId(id);
+        user.setId(userId);
         
         for (ColumnOrSuperColumn result : results) {
             Column column = result.column;
@@ -162,6 +150,8 @@ class UserCassandraDao extends CassandraDao implements IUserAccess {
             	user.setLastLoginAt(Util.dateFromTimeString(string(column.getValue())));
             } else if ("calendarId".equals(name)) {
                 user.setCalendarId(value);
+            } else if ("deleted".equals(name)) {
+                if ("true".equals(value)) { return null; }
             }
         }
         

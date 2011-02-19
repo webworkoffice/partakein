@@ -27,7 +27,7 @@ class CassandraColumnDataIterator<T> extends DataIterator<T> {
 		iterator.remove();
 	}
 	
-	public void update(T t) throws DAOException {
-		iterator.update(mapper.unmap(t));
+	public void update(T t) throws DAOException {	    
+		iterator.update(mapper.unmap(t, iterator.getConnetion().getAcquiredTime()));
 	}
 }

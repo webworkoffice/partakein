@@ -128,6 +128,31 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     
     @Test
     @SuppressWarnings("unchecked")
+    public final void testToPutFindInTransaction() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            con.beginTransaction();
+            T t1 = create(System.currentTimeMillis(), "putfindintran", 0);
+            dao.put(con, t1);
+
+            T t2 = dao.find(con, (PK) t1.getPrimaryKey());
+            con.commit();
+            
+            Assert.assertEquals(t1, t2);     
+            Assert.assertFalse(t1.isFrozen());
+            Assert.assertTrue(t2.isFrozen());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            con.invalidate();
+        }
+    }
+
+    
+    @Test
+    @SuppressWarnings("unchecked")
     public final void testToPutPutFind() throws Exception {
         PartakeConnection con = getPool().getConnection();
 
@@ -145,6 +170,8 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             T t2 = create(time, "putputfind", 1); 
             dao.put(con, t2);
             con.commit();
+            
+            Assert.assertEquals(t1.getPrimaryKey(), t2.getPrimaryKey());
 
             con.beginTransaction();
             T t3 = dao.find(con, (PK) t1.getPrimaryKey());
@@ -167,6 +194,8 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         PartakeConnection con = getPool().getConnection();
 
         try {
+            PDate.waitForTick();
+            
             con.beginTransaction();
             T t1 = create(System.currentTimeMillis(), "putremovefind", 0); 
             dao.put(con, t1);

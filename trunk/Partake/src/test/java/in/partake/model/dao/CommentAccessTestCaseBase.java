@@ -24,7 +24,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase<
     }
     
     @Test
-    public void testToFindtByEventId() throws Exception {
+    public void testToFindByEventId() throws Exception {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
         

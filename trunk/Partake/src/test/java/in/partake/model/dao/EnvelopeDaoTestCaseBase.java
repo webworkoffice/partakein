@@ -38,10 +38,12 @@ public abstract class EnvelopeDaoTestCaseBase extends AbstractDaoTestCaseBase<IE
             String dummyEnvelopeId = dao.getFreshId(con);
             Envelope envelope = createEnvelopeByDefaultParams(dummyEnvelopeId);
             dao.put(con, envelope);
-    
+            con.commit();
+                        
             boolean found = false;
             for (DataIterator<Envelope> iter = dao.getIterator(con); iter.hasNext(); ) {
                 Envelope dequeued = iter.next();
+                if (dequeued == null) { continue; }
                 if (dequeued.getEnvelopeId().equals(dummyEnvelopeId)) {
                     Assert.assertFalse(found);
                     Assert.assertEquals(DEFAULT_MESSAGE_ID, dequeued.getMessageId());
@@ -51,8 +53,6 @@ public abstract class EnvelopeDaoTestCaseBase extends AbstractDaoTestCaseBase<IE
                 }
             }            
             Assert.assertTrue(found);
-            
-            con.commit();
         } finally {
             con.invalidate();
         }
@@ -66,15 +66,17 @@ public abstract class EnvelopeDaoTestCaseBase extends AbstractDaoTestCaseBase<IE
             
             String dummyEnvelopeId = dao.getFreshId(con);
             Envelope envelope = createEnvelopeByDefaultParams(dummyEnvelopeId);
-    
             // optional property
             Date lastTriedAt = new Date(2L);	// remove randomness from test code
             envelope.setLastTriedAt(lastTriedAt);
             dao.put(con, envelope);
-    
+            con.commit();
+            
             boolean found = false;
             for (DataIterator<Envelope> iter = dao.getIterator(con); iter.hasNext(); ) {
                 Envelope dequeued = iter.next();
+                if (dequeued == null) { continue; }
+                
                 if (dequeued.getEnvelopeId().equals(dummyEnvelopeId)) {
                     Assert.assertFalse(found);
                     Assert.assertEquals(lastTriedAt, dequeued.getLastTriedAt());
@@ -83,7 +85,7 @@ public abstract class EnvelopeDaoTestCaseBase extends AbstractDaoTestCaseBase<IE
             }
             Assert.assertTrue(found);
             
-            con.commit();
+
         } finally {
             con.invalidate();
         }

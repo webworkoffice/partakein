@@ -7,23 +7,23 @@ import javax.persistence.Id;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-@Entity(name = "FeedLinkages")
-public class FeedLinkage extends PartakeModel<FeedLinkage> {
+@Entity(name = "EventFeedLinkages")
+public class EventFeedLinkage extends PartakeModel<EventFeedLinkage> {
     @Id
     private String id;
     @Column @Index(unique = true)
     private String eventId; 
     
-    public FeedLinkage() {
+    public EventFeedLinkage() {
         // default constructor.
     }
     
-    public FeedLinkage(String id, String eventId) {
+    public EventFeedLinkage(String id, String eventId) {
         this.id = id;
         this.eventId = eventId;
     }
     
-    public FeedLinkage(FeedLinkage linkage) {
+    public EventFeedLinkage(EventFeedLinkage linkage) {
         this.id = linkage.id;
         this.eventId = linkage.eventId;
     }
@@ -34,8 +34,8 @@ public class FeedLinkage extends PartakeModel<FeedLinkage> {
     }
     
     @Override
-    public FeedLinkage copy() {
-        return new FeedLinkage(this);
+    public EventFeedLinkage copy() {
+        return new EventFeedLinkage(this);
     }
 
     // ----------------------------------------------------------------------
@@ -43,10 +43,10 @@ public class FeedLinkage extends PartakeModel<FeedLinkage> {
     
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof FeedLinkage)) { return false; }
+        if (!(obj instanceof EventFeedLinkage)) { return false; }
         
-        FeedLinkage lhs = this;
-        FeedLinkage rhs = (FeedLinkage) obj;
+        EventFeedLinkage lhs = this;
+        EventFeedLinkage rhs = (EventFeedLinkage) obj;
         
         if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
         if (!ObjectUtils.equals(lhs.eventId, rhs.eventId)) { return false; }

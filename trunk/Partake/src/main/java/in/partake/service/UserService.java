@@ -17,7 +17,6 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
-import in.partake.util.PDate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.http.AccessToken;
@@ -95,9 +94,6 @@ public final class UserService extends PartakeService {
             // 2. 対応するユーザーを生成
             UserEx user = getUserFromTwitterLinkage(con, factory, twitterLinkage, twitter, true);
             
-            // 3. lastlogin の update
-            factory.getUserAccess().updateLastLogin(con, user.getId(), PDate.getCurrentDate().getDate());
-            
             con.commit();
             return user;
         } finally {
@@ -116,10 +112,13 @@ public final class UserService extends PartakeService {
         
         if (user == null && createsIfAbsent) {
             factory.getUserAccess().put(con, new User(userId, twitter.getId(), new Date(), null));
-            user = getUserEx(con, userId);
+        } else {
+            User newUser = new User(user);
+            newUser.setLastLoginAt(new Date());
+            factory.getUserAccess().put(con, newUser);
         }
         
-        return user;
+        return getUserEx(con, userId);
     }
     
     private TwitterLinkage updateTwitterLinkage(PartakeConnection con, PartakeDAOFactory factory, TwitterLinkage twitterLinkageEmbryo, Twitter twitter) throws DAOException, TwitterException {

@@ -31,6 +31,7 @@ class CassandraEventReminderDao extends CassandraDao implements IEventReminderAc
     private static final String DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_ONEDAY  = "beforeDeadline";
     private static final String DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_HALFDAY = "beforeDeadlineHalfday";
     private static final String DIRECTMESSAGES_REMINDER_KEY_BEFORE_THEDAY           = "beforeTheDay";
+    private static final String DELETED = "deleted";
     
     public CassandraEventReminderDao(CassandraDAOFactory factory) {
         super(factory);
@@ -40,65 +41,30 @@ class CassandraEventReminderDao extends CassandraDao implements IEventReminderAc
     public EventReminder find(PartakeConnection con, String eventId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            return getEventReminderStatusImpl(ccon.getClient(), eventId);
+            return findImpl(ccon.getClient(), eventId);
         } catch (Exception e) {
             throw new DAOException(e);
         }
-    }
-    
-    private EventReminder getEventReminderStatusImpl(Client client, String eventId) throws Exception {
-        String key = DIRECTMESSAGES_REMINDER_PREFIX + eventId;
-        List<ColumnOrSuperColumn> results = getSlice(client, DIRECTMESSAGES_REMINDER_KEYSPACE, DIRECTMESSAGES_REMINDER_COLUMNFAMILY, key, DIRECTMESSAGES_REMINDER_CL_R);
-        
-        EventReminder reminderStatus = new EventReminder(eventId);
-
-        // if nodata is stored, we return the default value.
-        if (results == null || results.isEmpty()) { return new EventReminder(eventId); }
-
-        for (ColumnOrSuperColumn cosc : results) {
-            Column column = cosc.getColumn();
-            if (column == null) { continue; }
-            
-            String name  = string(column.getName());
-            String value = string(column.getValue());
-            if (DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_ONEDAY.equals(name)) {
-                reminderStatus.setSentDateOfBeforeDeadlineOneday(Util.dateFromTimeString(value));
-            } else if (DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_HALFDAY.equals(name)) {
-                reminderStatus.setSentDateOfBeforeDeadlineHalfday(Util.dateFromTimeString(value));
-            } else if (DIRECTMESSAGES_REMINDER_KEY_BEFORE_THEDAY.equals(name)) {
-                reminderStatus.setSentDateOfBeforeTheDay(Util.dateFromTimeString(value));
-            }
-        }
-        
-        return reminderStatus.freeze();
     }
     
     @Override
     public void put(PartakeConnection con, EventReminder embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            updateEventReminderStatusImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
+            putImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
     }
     
-    private void updateEventReminderStatusImpl(Client client, EventReminder embryo, long time) throws Exception {
-        String key = DIRECTMESSAGES_REMINDER_PREFIX + embryo.getEventId();
-
-        List<Mutation> mutations = new ArrayList<Mutation>(); 
-        
-        mutations.add(createMutation(DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_ONEDAY,  embryo.getSentDateOfBeforeDeadlineOneday(),  time)); 
-        mutations.add(createMutation(DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_HALFDAY, embryo.getSentDateOfBeforeDeadlineHalfday(), time));
-        mutations.add(createMutation(DIRECTMESSAGES_REMINDER_KEY_BEFORE_THEDAY,           embryo.getSentDateOfBeforeTheDay(),          time));
-        
-        client.batch_mutate(DIRECTMESSAGES_REMINDER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGES_REMINDER_COLUMNFAMILY, mutations)), DIRECTMESSAGES_REMINDER_CL_W);        
-    }
-    
     @Override
-    public void remove(PartakeConnection con, String key) throws DAOException {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Not implemented yet");
+    public void remove(PartakeConnection con, String eventId) throws DAOException {
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            removeImpl(ccon.getClient(), eventId, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
     }
     
     @Override
@@ -113,4 +79,56 @@ class CassandraEventReminderDao extends CassandraDao implements IEventReminderAc
         this.removeAllData((CassandraConnection) con);
     }
 
+    
+    private EventReminder findImpl(Client client, String eventId) throws Exception {
+        String key = DIRECTMESSAGES_REMINDER_PREFIX + eventId;
+        List<ColumnOrSuperColumn> results = getSlice(client, DIRECTMESSAGES_REMINDER_KEYSPACE, DIRECTMESSAGES_REMINDER_COLUMNFAMILY, key, DIRECTMESSAGES_REMINDER_CL_R);
+        
+        EventReminder reminderStatus = new EventReminder(eventId);
+
+        // if nodata is stored, we return the default value.
+        if (results == null || results.isEmpty()) { return null; }
+
+        for (ColumnOrSuperColumn cosc : results) {
+            Column column = cosc.getColumn();
+            if (column == null) { continue; }
+            
+            String name  = string(column.getName());
+            String value = string(column.getValue());
+            
+            if (DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_ONEDAY.equals(name)) {
+                reminderStatus.setSentDateOfBeforeDeadlineOneday(Util.dateFromTimeString(value));
+            } else if (DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_HALFDAY.equals(name)) {
+                reminderStatus.setSentDateOfBeforeDeadlineHalfday(Util.dateFromTimeString(value));
+            } else if (DIRECTMESSAGES_REMINDER_KEY_BEFORE_THEDAY.equals(name)) {
+                reminderStatus.setSentDateOfBeforeTheDay(Util.dateFromTimeString(value));
+            } else if (DELETED.equals(name)) {
+                if ("true".equals(value)) { return null; }
+            }
+        }
+        
+        return reminderStatus.freeze();
+    }
+    
+    private void putImpl(Client client, EventReminder embryo, long time) throws Exception {
+        String key = DIRECTMESSAGES_REMINDER_PREFIX + embryo.getEventId();
+
+        List<Mutation> mutations = new ArrayList<Mutation>(); 
+        
+        mutations.add(createMutation(DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_ONEDAY,  embryo.getSentDateOfBeforeDeadlineOneday(),  time)); 
+        mutations.add(createMutation(DIRECTMESSAGES_REMINDER_KEY_BEFORE_DEADLINE_HALFDAY, embryo.getSentDateOfBeforeDeadlineHalfday(), time));
+        mutations.add(createMutation(DIRECTMESSAGES_REMINDER_KEY_BEFORE_THEDAY,           embryo.getSentDateOfBeforeTheDay(),          time));
+        mutations.add(createMutation(DELETED,                                             "false",                                     time));
+        
+        client.batch_mutate(DIRECTMESSAGES_REMINDER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGES_REMINDER_COLUMNFAMILY, mutations)), DIRECTMESSAGES_REMINDER_CL_W);        
+    }
+
+    private void removeImpl(Client client, String eventId, long time) throws Exception {
+        String key = DIRECTMESSAGES_REMINDER_PREFIX + eventId;
+
+        List<Mutation> mutations = new ArrayList<Mutation>(); 
+        mutations.add(createMutation(DELETED, "true", time)); 
+        
+        client.batch_mutate(DIRECTMESSAGES_REMINDER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGES_REMINDER_COLUMNFAMILY, mutations)), DIRECTMESSAGES_REMINDER_CL_W);        
+    }
 }

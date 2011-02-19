@@ -2,7 +2,6 @@ package in.partake.model.dao.cassandra;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import in.partake.model.dao.DAOException;
@@ -198,8 +197,7 @@ class OpenIDLinkageCassandraDao extends CassandraDao implements IOpenIDLinkageAc
             }
             
             @Override
-            public ColumnOrSuperColumn unmap(String t) throws DAOException {
-                long time = new Date().getTime();
+            public ColumnOrSuperColumn unmap(String t, long time) throws DAOException {
                 ColumnOrSuperColumn cosc = new ColumnOrSuperColumn();
                 cosc.setColumn(new Column(bytes(t), EMPTY, time));
                 

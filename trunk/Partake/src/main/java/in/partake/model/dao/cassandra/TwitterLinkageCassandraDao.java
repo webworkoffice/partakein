@@ -1,6 +1,6 @@
 package in.partake.model.dao.cassandra;
 
-import static me.prettyprint.cassandra.utils.StringUtils.bytes;
+
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
@@ -10,15 +10,15 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.TwitterLinkage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.cassandra.thrift.Cassandra.Client;
 import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;
 import org.apache.cassandra.thrift.ConsistencyLevel;
+import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,7 +42,7 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
 	public void put(PartakeConnection con, TwitterLinkage embryo) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
-            addTwitterLinkage(ccon.getClient(), embryo, ccon.getAcquiredTime());
+            putImpl(ccon.getClient(), embryo, ccon.getAcquiredTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }
@@ -60,7 +60,12 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
     
     @Override
     public void remove(PartakeConnection con, String twitterId) throws DAOException {
-        throw new RuntimeException("Not implemented yet");
+        CassandraConnection ccon = (CassandraConnection) con;
+        try {
+            removeImpl(ccon.getClient(), twitterId, ccon.getAcquiredTime());
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }        
     }
     
     @Override
@@ -77,26 +82,31 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
 	
 	// ----------------------------------------------------------------------
 	
-	private String addTwitterLinkage(Client client, TwitterLinkage embryo, long time) throws Exception {
-		String id = embryo.getTwitterId();
-    	String key = TWITTER_PREFIX + id;
+	private void putImpl(Client client, TwitterLinkage embryo, long time) throws Exception {
+    	String key = TWITTER_PREFIX + embryo.getTwitterId();
 
-        Map<String, List<ColumnOrSuperColumn>> cfmap = new HashMap<String, List<ColumnOrSuperColumn>>();
-        List<ColumnOrSuperColumn> columns = new ArrayList<ColumnOrSuperColumn>();
-
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("screenName"), bytes(embryo.getScreenName()), time)));
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("name"), bytes(embryo.getName()), time)));        
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("accessToken"), bytes(embryo.getAccessToken()), time)));
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("accessTokenSecret"), bytes(embryo.getAccessTokenSecret()), time)));
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("profileImageURL"), bytes(embryo.getProfileImageURL()), time)));
-        columns.add(new ColumnOrSuperColumn().setColumn(new Column(bytes("userId"), bytes(embryo.getUserId()), time)));
+        List<Mutation> mutations = new ArrayList<Mutation>(); 
+    	
+        mutations.add(createMutation("screenName", embryo.getScreenName(), time));
+        mutations.add(createMutation("name", embryo.getName(), time));        
+        mutations.add(createMutation("accessToken", embryo.getAccessToken(), time));
+        mutations.add(createMutation("accessTokenSecret", embryo.getAccessTokenSecret(), time));
+        mutations.add(createMutation("profileImageURL", embryo.getProfileImageURL(), time));
+        mutations.add(createMutation("userId", embryo.getUserId(), time));
+        mutations.add(createMutation("deleted", "false", time));
         
-        cfmap.put(TWITTER_COLUMNFAMILY, columns);
-
-        client.batch_insert(TWITTER_KEYSPACE, key, cfmap, TWITTER_CL_W);
-        
-        return id;
+        client.batch_mutate(TWITTER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(TWITTER_COLUMNFAMILY, mutations)), TWITTER_CL_W);
 	}
+
+    private void removeImpl(Client client, String twitterId, long time) throws Exception {
+        String key = TWITTER_PREFIX + twitterId;
+
+        List<Mutation> mutations = new ArrayList<Mutation>(); 
+        
+        mutations.add(createMutation("deleted", "true", time));
+        
+        client.batch_mutate(TWITTER_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(TWITTER_COLUMNFAMILY, mutations)), TWITTER_CL_W);
+    }
 
 	
 	private TwitterLinkage getTwitterLinkageById(Client client, String twitterId) throws Exception {
@@ -132,6 +142,8 @@ class TwitterLinkageCassandraDao extends CassandraDao implements ITwitterLinkage
                 linkage.setProfileImageURL(value);
             } else if ("userId".equals(name)) {
                 linkage.setUserId(value);
+            } else if ("deleted".equals(name)) {
+                if ("true".equals(value)) { return null; } 
             }
         }
         
