@@ -13,7 +13,7 @@ import org.apache.openjpa.persistence.jdbc.Index;
 @IdClass(ShortenedURLDataPK.class)
 @Entity(name = "ShortenedURLData")
 public class ShortenedURLData extends PartakeModel<ShortenedURLData> {
-    @Id @Index
+    @Id @Index @Column(length = 65536)
     private String originalURL;
 
     @Id 
