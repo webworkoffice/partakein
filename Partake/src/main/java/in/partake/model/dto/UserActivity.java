@@ -17,8 +17,6 @@ public class UserActivity extends PartakeModel<UserActivity> {
     @Column
     private Date createdAt;
     
-    
-    
     @Override
     public UserActivity copy() {
         // TODO Auto-generated method stub
