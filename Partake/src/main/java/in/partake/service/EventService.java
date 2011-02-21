@@ -768,6 +768,7 @@ public final class EventService extends PartakeService {
             
             while (it.hasNext()) {
                 Comment comment = it.next();
+                if (comment == null) { continue; }
                 result.add(comment);
             }
             con.commit();
@@ -781,12 +782,15 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory(); 
         PartakeConnection con = getPool().getConnection();
         try {
+            List<CommentEx> result = new ArrayList<CommentEx>();
+            
             con.beginTransaction();
             DataIterator<Comment> iterator = factory.getCommentAccess().getCommentsByEvent(con, eventId);
+            if (iterator == null) { return result; }
             
-            List<CommentEx> result = new ArrayList<CommentEx>();
             while (iterator.hasNext()) {
                 Comment comment = iterator.next();
+                if (comment == null) { continue; }
                 String commentId = comment.getId();
                 if (commentId == null) { continue; }
                 CommentEx commentEx = getCommentEx(con, commentId);
