@@ -25,8 +25,6 @@ public class APIController extends PartakeActionSupport {
     
     // ----------------------------------------------------------------------
     
-    // TODO: error のときに 400 bad request とか返したいねんけど...
-    // struts だとこれ難しいかも。うーむ。struts 捨てたい。
     public String changeAttendance() throws PartakeResultException {
         UserEx user = ensureLogin();
         
@@ -35,21 +33,21 @@ public class APIController extends PartakeActionSupport {
         String status = getParameter("status");
         
         if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(eventId) || StringUtils.isEmpty(status)) {
-            return ERROR;
+            return INVALID;
         }
         
         try {
             EventEx event = EventService.get().getEventExById(eventId);
-            if (event == null) { return ERROR; }
+            if (event == null) { return INVALID; }
             if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
-                return ERROR;
+                return PROHIBITED;
             }
             
             if (EventService.get().updateAttendanceStatus(userId, eventId, AttendanceStatus.safeValueOf(status))) {
-                inputStream = new ByteArrayInputStream("{\"status\": \"OK\"}".getBytes()); // TODO: とりあえず OK でお茶をにごすけど 200 なら OK を返したいのよ。
+                inputStream = new ByteArrayInputStream("{\"status\": \"OK\"}".getBytes());
                 return SUCCESS;
             } else {
-                return ERROR;
+                return INVALID;
             }
         } catch (DAOException e) {
             logger.error(I18n.t(I18n.DATABASE_ERROR), e);

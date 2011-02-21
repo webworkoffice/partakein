@@ -337,18 +337,23 @@ text-indent:-9999px;
     background-color: #ffffff;
     border: 1px solid #e5e5e5;
 }
+
+#event-comments-comment {
+    height: 325px;
+}
+
 .comment {
     border-bottom: 1px dotted #cccccc;
     margin: 0 5px 0px 8px;
 }
-.event-comments textarea#comment {
+.event-comments textarea#commentForm-commentEdit {
     margin: 5px 0 0 0px;
-    height: 70px;
+    height: 120px;
 }
 .comment-form textarea {
 	margin-left:8px;
 	height: 40px;
-	width:510px;
+	width: 510px;
 }
 /* Tab- LiveFeed,CommentBoard
 ----------------------------------------------------*/

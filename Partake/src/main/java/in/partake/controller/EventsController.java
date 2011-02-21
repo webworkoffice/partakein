@@ -158,7 +158,7 @@ public class EventsController extends PartakeActionSupport {
 	   		    return INPUT;
 	   		}
 	   		
-	   		Comment embryo = new Comment(eventId, user.getId(), comment, new Date());
+	   		Comment embryo = new Comment(eventId, user.getId(), comment, true, new Date());
 	   		EventService.get().addComment(embryo);
 	   		
 	   		return SUCCESS;

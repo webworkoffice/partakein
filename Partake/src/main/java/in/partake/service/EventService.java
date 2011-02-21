@@ -787,7 +787,7 @@ public final class EventService extends PartakeService {
             List<CommentEx> result = new ArrayList<CommentEx>();
             while (iterator.hasNext()) {
                 Comment comment = iterator.next();
-                String commentId = comment.getComment();
+                String commentId = comment.getId();
                 if (commentId == null) { continue; }
                 CommentEx commentEx = getCommentEx(con, commentId);
                 if (commentEx == null) { continue; }

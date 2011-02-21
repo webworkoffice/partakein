@@ -20,7 +20,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase<
     
     @Override
     protected Comment create(long pkNumber, String pkSalt, int objNumber) {
-        return new Comment(pkSalt + pkNumber, "eventId", "userId", "comment content", new Date(objNumber));
+        return new Comment(pkSalt + pkNumber, "eventId", "userId", "comment content", false, new Date(objNumber));
     }
     
     @Test
@@ -34,7 +34,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase<
             
             for (int i = 0; i < 10; ++i) {
                 for (int j = 0; j < 10; ++j) {
-                    Comment original = new Comment(prefix + "commentId-" + i + "-" + j, prefix + "eventId" + i, "userId", "comment content", PDate.getCurrentDate().getDate());
+                    Comment original = new Comment(prefix + "commentId-" + i + "-" + j, prefix + "eventId" + i, "userId", "comment content", false, PDate.getCurrentDate().getDate());
                     factory.getCommentAccess().put(con, original);
                 }
             }
@@ -75,7 +75,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase<
             
             // create 
             for (int i = 0; i < 10; ++i) {
-                Comment original = new Comment(prefix + "commentId-" + i, prefix + "eventId", "userId", "comment content", PDate.getCurrentDate().getDate());
+                Comment original = new Comment(prefix + "commentId-" + i, prefix + "eventId", "userId", "comment content", false, PDate.getCurrentDate().getDate());
                 factory.getCommentAccess().put(con, original);
             }
             

@@ -20,8 +20,8 @@ public final class CommentTest {
 	public void createSamples() {
 		samples = new Comment[] {
 			new Comment(),
-			new Comment("id1", "eventId1", "userId1", "comment1", new Date()),
-			new Comment("id2", "eventId2", "userId2", "comment2", new Date(1)),
+			new Comment("id1", "eventId1", "userId1", "comment1", false, new Date()),
+			new Comment("id2", "eventId2", "userId2", "comment2", true, new Date(1)),
 		};
 	}
 
