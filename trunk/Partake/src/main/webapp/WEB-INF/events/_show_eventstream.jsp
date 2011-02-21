@@ -1,3 +1,4 @@
+<%@page import="in.partake.util.Util"%>
 <%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
 <%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="java.util.List"%>
@@ -66,7 +67,7 @@ var tab = {
 </ul>
 <div id="news1" class="rad">
 	<h2>Comments</h2>
-	<div class="event-comments rad">
+	<div id="event-comments-comment" class="event-comments rad">
 		<s:form action="removeComment" id="removeCommentForm" name="removeCommentForm">
 			<s:token />
 			<s:hidden id="removeCommentId" name="commentId" value="" />
@@ -86,7 +87,11 @@ var tab = {
 				<% if (user != null && (event.hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT) || user.getId().equals(comment.getUserId()))) { %>
 					<a href="#" title="コメントを削除" onclick="removeComment('<%= h(comment.getId()) %>')">[x]</a>
 				<% } %></p>
-				<p><%= h(comment.getComment()) %></p>
+				<% if (comment.isHTML()) { %>
+				    <%= Util.cleanupHTML(comment.getComment()) %>
+				<% } else { %>
+				    <p><%= h(comment.getComment()) %></p>
+				<% } %>
 			</div>
 		<% } %>		
 	</div>
@@ -95,7 +100,7 @@ var tab = {
 		        <s:form action="comment">
 			        <s:token />
 			        <s:hidden name="eventId" value="%{eventId}" />Your comment:<br />
-			        <textarea id="comment" name="comment"></textarea><br />
+			        <textarea id="commentForm-commentEdit" name="comment"></textarea><br />
 			        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>
 			        <s:submit type="image" src="%{#request.contextPath}/images/postcomment.png" value="コメントを投稿"  />
 			    </s:form>           	
@@ -170,4 +175,26 @@ var tab = {
 tab.init();
 </script>
 </div>
+
+<script type="text/javascript" src="<%= request.getContextPath() %>/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript">
+tinyMCE.init({
+    theme: "advanced",
+    mode: "exact",
+    elements: "commentForm-commentEdit",
+    language: "ja",
+    width: "550",
+    
+    plugins: "safari,searchreplace,spellchecker,style,table,xhtmlxtras",
+    
+    theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect",
+    theme_advanced_buttons2: "cut,copy,paste,|,bullist,numlist,|,outdent,indent,blockquote,|,link,unlink,anchor,image,cleanup,help,code,|,forecolor,backcolor",
+    theme_advanced_buttons3: "tablecontrols,|,hr,|,sub,sup,|,styleprops,spellchecker",
+
+    theme_advanced_toolbar_location: "top",
+    theme_advanced_toolbar_align: "left",
+    theme_advanced_statusbar_location: "bottom",
+    theme_advanced_resizing: true
+});
+</script>
 

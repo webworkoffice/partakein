@@ -113,6 +113,7 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
         mutations.add(createMutation("eventId", embryo.getEventId(), time));
         mutations.add(createMutation("comment", embryo.getComment(), time));
         mutations.add(createMutation("createdAt", Util.getTimeString(embryo.getCreatedAt()), time));
+        mutations.add(createMutation("html", embryo.isHTML() ? "true" : "false", time));
         mutations.add(createMutation("deleted", "false", time));
         
         client.batch_mutate(COMMENTS_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(COMMENTS_COLUMNFAMILY, mutations)), COMMENTS_CL_W);
@@ -153,16 +154,20 @@ class CommentCassandraDao extends CassandraDao implements ICommentAccess {
         comment.setId(id);
         for (ColumnOrSuperColumn result : results) {
             Column column = result.column;
-            String name = string(column.getName()), value = string(column.getValue());
+            String name = string(column.getName());
+            String value = string(column.getValue());
+            
             if ("eventId".equals(name)) {
                 comment.setEventId(value);
             } else if ("userId".equals(name)) {
                 comment.setUserId(value);
-            } else if ("comment".equals(string(column.getName()))) {
+            } else if ("comment".equals(name)) {
                 comment.setComment(value);
-            } else if ("createdAt".equals(string(column.getName()))) {
+            } else if ("createdAt".equals(name)) {
                 comment.setCreatedAt(Util.dateFromTimeString(value));
-            } else if ("deleted".equals(string(column.getName()))) {
+            } else if ("html".equals(name)) {
+                comment.setHTML("true".equals(value));
+            } else if ("deleted".equals(name)) {
                 // deleted flag が立っている場合、null を返す。
                 if ("true".equals(string(column.getValue()))) { return null; }
             }

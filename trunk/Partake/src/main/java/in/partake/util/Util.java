@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.xwork.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.owasp.validator.html.AntiSamy;
@@ -78,9 +79,7 @@ public final class Util {
     // Use StringUtils.isEmpty() instead.
     @Deprecated
     public static boolean isEmpty(String str) {
-    	if (str == null) { return true; }
-    	if ("".equals(str)) { return true; }
-    	return false;
+        return StringUtils.isEmpty(str);
     }
     
     public static boolean isValidHashtag(String hashTag) {
@@ -184,6 +183,34 @@ public final class Util {
             		}
             	}
         	}
+        }
+        
+        return builder.toString();
+    }
+    
+    public static String cleanupText(String dirtyText) {
+        String s = dirtyText;
+        
+        if (s == null) { return ""; }
+        
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < s.length(); i += Character.charCount(s.codePointAt(i))) {
+            switch (s.codePointAt(i)) {
+            case '&': builder.append("&amp;"); break;
+            case '<': builder.append("&lt;"); break;
+            case '>': builder.append("&gt;"); break;
+            case '"': builder.append("&quot;"); break;
+            case '\'': builder.append("&apos;"); break;
+            case '\n': builder.append("<br />"); break;
+            default:                
+                if (Character.isIdentifierIgnorable(s.codePointAt(i))) {
+                    // ignore.
+                } else {
+                    for (int j = 0; j < Character.charCount(s.codePointAt(i)); ++j) {
+                        builder.append(s.charAt(i + j));
+                    }
+                }
+            }
         }
         
         return builder.toString();

@@ -66,6 +66,7 @@
 			</result>
 			<result name="redirect" type="redirect">${redirectURL}</result>
 			<result name="error" type="redirect">/error</result>
+			<result name="invalid" type="redirect">/error</result>
 			<result name="notfound" type="redirect">/notfound</result>
 			<result name="prohibited" type="redirect">/prohibited</result>
 			<result name="returntop" type="redirect">/</result>
@@ -158,17 +159,16 @@
                 <param name="contentType">text/json; charset=utf-8</param>
                 <param name="bufferSize">20K</param>
                 <param name="allowCaching">false</param>
-            </result>            
-            <result name="error" type="stream">
-                <param name="contentType">text/json; charset=utf-8</param>
-                <param name="bufferSize">20K</param>
-                <param name="allowCaching">false</param>
-            </result> 
-            <result name="prohibited" type="stream">
-                <param name="contentType">text/json; charset=utf-8</param>
-                <param name="bufferSize">20K</param>
-                <param name="allowCaching">false</param>
+            </result>
+            <result name="invalid" type="httpheader">
+                <param name="error">400</param>
+            </result>
+            <result name="prohibited" type="httpheader">
+                <param name="error">403</param>
             </result>                 
+            <result name="error" type="httpheader">
+                <param name="error">500</param>
+            </result>
         </global-results>
         
         <action name="changeAttendance" method="changeAttendance" class="in.partake.controller.APIController">
