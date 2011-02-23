@@ -67,7 +67,7 @@ public class UserServiceTest extends MockServiceTestBase {
     }
 
     @Test
-    public void testSetUserPreferenceWithException() {
+    public void testSetUserPreferenceWithException() throws DAOException {
     	IUserPreferenceAccess preferenceAccess = getFactory().getUserPreferenceAccess();
     	DAOException injectedException = new DAOException();
     	PartakeConnection con = mock(MockConnection.class);
@@ -79,14 +79,14 @@ public class UserServiceTest extends MockServiceTestBase {
     		Assert.fail();
     	} catch (DAOException thrownException) {
     		Assert.assertSame(injectedException, thrownException);
-    	} finally {
-    		if (con != null) try {
-    			verify(con, times(1)).rollback();
-    			verify(con, never()).commit();
-    			verify(con, times(1)).invalidate();
-    		} catch (DAOException e) {
-    			throw new AssertionError(e);
-    		}
+    	}
+
+    	try {
+    		verify(con, times(1)).rollback();
+    		verify(con, never()).commit();
+    		verify(con, times(1)).invalidate();
+    	} catch (DAOException e) {
+    		throw e;
     	}
     }
 
