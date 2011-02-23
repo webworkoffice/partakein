@@ -4,6 +4,7 @@ import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
+import in.partake.model.dto.UserPreference;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.PartakeService;
 
@@ -92,5 +93,11 @@ public class MockServiceTestBase extends PartakeService {
     protected TwitterLinkage createTwitterLinkage(int twitterId, String userId) {
         TwitterLinkage linkage = new TwitterLinkage(-1, "screenName", "name", "accessToken", "accessTokenSecret", "http://example.com/profile.image.jpg", userId);
         return linkage;
+    }
+
+    protected UserPreference createUserPreference(String userId) {
+        UserPreference preference = new UserPreference();
+        preference.setUserId(userId);
+        return preference;
     }
 }

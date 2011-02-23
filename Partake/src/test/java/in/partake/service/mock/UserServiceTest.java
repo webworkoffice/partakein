@@ -5,7 +5,9 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.doThrow;
 
 import java.util.Date;
 
@@ -13,8 +15,12 @@ import junit.framework.Assert;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IUserAccess;
+import in.partake.model.dao.IUserPreferenceAccess;
+import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.mock.MockConnection;
+import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.User;
+import in.partake.model.dto.UserPreference;
 import in.partake.service.UserService;
 import in.partake.service.UserService.UserCount;
 import in.partake.util.PDate;
@@ -56,6 +62,30 @@ public class UserServiceTest extends MockServiceTestBase {
     }
 
     @Test
+    public void testSetUserPreferenceWithException() {
+    	IUserPreferenceAccess preferenceAccess = getFactory().getUserPreferenceAccess();
+    	DAOException injectedException = new DAOException();
+    	PartakeConnection con = mock(MockConnection.class);
+    	((MockConnectionPool)getPool()).prepareConnection((MockConnection)con);
+
+    	try {
+    		doThrow(injectedException).when(preferenceAccess).put(any(MockConnection.class), any(UserPreference.class));
+    		UserService.get().setUserPreference(createUserPreference("userId"));	// Exception should be thrown
+    		Assert.fail();
+    	} catch (DAOException thrownException) {
+    		Assert.assertSame(injectedException, thrownException);
+    	} finally {
+    		if (con != null) try {
+    			verify(con, times(1)).rollback();
+    			verify(con, never()).commit();
+    			verify(con, times(1)).invalidate();
+    		} catch (DAOException e) {
+    			throw new AssertionError(e);
+    		}
+    	}
+    }
+
+	@Test
     public void countUserEmpty() throws DAOException {
         UserService service = UserService.get();
         UserCount count = service.countUsers();
