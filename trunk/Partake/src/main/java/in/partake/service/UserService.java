@@ -290,6 +290,13 @@ public final class UserService extends PartakeService {
             con.beginTransaction();
             factory.getUserPreferenceAccess().put(con,  embryo);
             con.commit();
+        } catch (DAOException e) {
+            try {
+            	con.rollback();
+            } catch (DAOException ignore) {
+            	logger.warn("PartakeConnection#rollback is thrown", ignore);
+            }
+            throw e;
         } finally {
             con.invalidate();
         }
