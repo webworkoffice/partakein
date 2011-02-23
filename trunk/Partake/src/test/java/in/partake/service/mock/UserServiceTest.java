@@ -1,6 +1,7 @@
 package in.partake.service.mock;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,6 +24,7 @@ import org.junit.Test;
 
 public class UserServiceTest extends MockServiceTestBase {
     private DataIterator<User> mockIter;
+	private IUserAccess userAccess;
 
 	@Before
     public void setup() throws Exception {
@@ -34,9 +36,23 @@ public class UserServiceTest extends MockServiceTestBase {
 
     @SuppressWarnings("unchecked")
 	private void createFixtures() throws Exception {
-        IUserAccess userAccess = getFactory().getUserAccess();
+        userAccess = getFactory().getUserAccess();
         mockIter = mock(DataIterator.class);
         when(userAccess.getIterator(any(MockConnection.class))).thenReturn(mockIter);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void getUserByNullExId() throws DAOException {
+        UserService.get().getUserExById(null);
+    }
+
+    @Test
+    public void getUserByExId() throws DAOException {
+    	final String userExId = "userExId";
+        when(userAccess.find(any(MockConnection.class), eq(userExId))).thenReturn(createUser(userExId));
+        User user = UserService.get().getUserExById(userExId);
+        verify(userAccess, times(1)).find(any(MockConnection.class), eq(userExId));
+        Assert.assertEquals(userExId, user.getId());
     }
 
     @Test
