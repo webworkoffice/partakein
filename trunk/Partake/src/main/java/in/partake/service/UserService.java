@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.CalendarLinkage;
@@ -17,6 +20,7 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
+import in.partake.util.PDate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.http.AccessToken;
@@ -31,7 +35,8 @@ import twitter4j.http.AccessToken;
  */
 public final class UserService extends PartakeService {
     private static UserService instance = new UserService();
-    
+    private static Logger logger = Logger.getLogger(UserService.class);
+
     public static UserService get() {
         return instance;
     }
@@ -290,4 +295,50 @@ public final class UserService extends PartakeService {
         }
     }
 
+    // ----------------------------------------------------------------------
+
+    /**
+     * 
+     * @author skypencil (@eller86)
+     * @return count of users
+     * @throws DAOException
+     */
+    public UserCount countUsers() throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        Date oneMonthAgo = new Date(PDate.getCurrentTime() - 30L * 24 * 60 * 60 * 1000);
+        UserCount count = new UserCount();
+
+        try {
+            con.beginTransaction();
+            // TODO use MapReduce for speed-up
+            for (DataIterator<User> iter = factory.getUserAccess().getIterator(con); iter.hasNext(); ) {
+                User user = iter.next();
+                if (user == null) continue;
+                count.user++;
+                if (user.getLastLoginAt().after(oneMonthAgo)) {
+                    count.activeUser++;
+                }
+            }
+            con.commit();
+        } catch (DAOException e) {
+            try {
+                con.rollback();
+            } catch (DAOException ignore) {
+                logger.warn("PartakeConnection#rollback throws exception", ignore);
+            }
+            throw e;
+        } finally {
+            con.invalidate();
+        }
+
+        return count;
+    }
+
+    public static final class UserCount {
+        /** count of all users. */
+        public int user;
+        /** count of users who sign in the last 30 days. */
+        public int activeUser;
+    }
 }
