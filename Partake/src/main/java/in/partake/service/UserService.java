@@ -49,6 +49,7 @@ public final class UserService extends PartakeService {
     // User
     
     public UserEx getUserExById(String userId) throws DAOException {
+        if (userId == null) throw new NullPointerException();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
