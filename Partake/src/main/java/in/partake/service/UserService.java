@@ -146,6 +146,7 @@ public final class UserService extends PartakeService {
     
     public UserEx loginByOpenID(String identifier) throws DAOException {
         PartakeDAOFactory factory = getFactory();
+        if (identifier == null) throw new NullPointerException();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction(); 
