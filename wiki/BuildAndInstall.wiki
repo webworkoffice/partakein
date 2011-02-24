@@ -42,6 +42,12 @@ Since you have not configure PARTAKE, you will see an error message.
 
 Then PARTAKE should run now. If you have any difficulties, please tell @partakein or @mayahjp.
 
+Do not forget to register your application to the twitter.
+    * http://twitter.com/apps/new
+    * Application Type should be "Browser"
+    * Callback URL is any valid URL. But do not use localhost.
+    * Default Access Type should be "Read & Write".
+    * Check "Yes, use Twitter for login"
 
 
 == NOTE ==
