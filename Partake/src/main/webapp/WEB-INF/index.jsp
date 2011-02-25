@@ -42,7 +42,7 @@
 <div class="top-introduction">
 
     <p class="top-introduce">
-	<span class="big">P</span>ARTAKE はイベントの告知ページを作成したり、<br />
+	<span class="big">P</span>ARTAKE (パーテイク) はイベントの告知ページを作成したり、<br />
 	イベントを検索して参加することができるシンプルなツールです。
 	</p>
 <div class="rollover1">	
