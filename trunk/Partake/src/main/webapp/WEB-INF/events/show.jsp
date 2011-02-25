@@ -66,6 +66,10 @@ body {
 <% } %>
 
 <div class="event-wrapper">
+<% if (event.getFeedId() != null) { %>
+    <p class="event-feed-rss"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-14x14.png" /></a></p>
+<% } %>
+
 <div class="event-content">
 
 <% if (event.getForeImageId() != null) { %>

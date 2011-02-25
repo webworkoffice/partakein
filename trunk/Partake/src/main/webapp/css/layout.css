@@ -275,15 +275,18 @@ text-indent:-9999px;
 #wrapper h1 {
 	word-break: break-all;
 	word-wrap:break-word;
-	}
+}
+
 .summary {
     padding: 0 0px 20px 15px;
-    margin-bottom:0;
+    margin-bottom:0;        
 }
+
 .event-wrapper {
     position: relative;
     width: 100%;    
-    border-top: 2px solid #444;	
+    border-top: 2px solid #444;
+    clear: both;	
 }
 /* これを指定すると子供が float でも背景を表示させることが出来るようになる */
 .event-wrapper:after {
@@ -291,6 +294,17 @@ text-indent:-9999px;
 	content: "";
 	clear: both;
 }
+
+.event-feed-rss {
+	margin: 0;
+	padding: 0;
+	text-align: right;
+    position: absolute;
+    top: -20px;
+    right: 0;
+}
+
+
 .event-content {
     float: left;
     width: 610px;
@@ -308,6 +322,7 @@ text-indent:-9999px;
     padding:0;
     vertical-align:middle;
 }
+
 .event-description {
     border-top: 2px solid #444;
     border-bottom: 2px double #444;
