@@ -257,7 +257,14 @@ body {
 				<s:token />
 				<s:hidden name="eventId" value="%{eventId}" />
 				<p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントに<strong>参加</strong>しようとしています。</p>
-				<s:label for="comment" value="COMMENT" />:<s:textfield name="comment" id="comment" value="よろしくお願いします。"/><br />
+				<div class="dotted-box">
+				    <ul>
+				        <li>開始時刻の２４時間前に<strong>リマインダー</strong>が<em>自分自身からの</em>ダイレクトメッセージで届きます。</li>
+				        <li>リマインダーは右上の「設定」リンクからたどれるページで受信拒否が設定できます。</li>
+				    </ul>
+				</div>
+				<s:label for="comment" value="COMMENT" />:<br />
+				<s:textarea name="comment" id="comment" value="よろしくお願いします。"/><br />
 				<s:submit value="参加登録" />
 			</s:form>
 		</div>
@@ -268,13 +275,15 @@ body {
 				<s:hidden name="eventId" value="%{eventId}" />
 				<p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントに<strong>仮参加</strong>しようとしています。</p>
 				<div class="dotted-box">
-				<ul>
-				<li><strong>放置した場合、キャンセル</strong>になってしまいます。</li>
-				<li>参加を確定させるためには、締切り(設定されていない場合は開始３時間前)までに<strong>改めて参加の申込み</strong>をしてください。</li>
-				<li>締切りの24,12時間前になると<strong>リマインダー</strong>がダイレクトメールで届きます。<br>(「設定」ページで受信拒否が設定できます)</li>
-				</ul>
+					<ul>
+						<li><strong>放置した場合、キャンセル</strong>になってしまいます。</li>
+						<li>参加を確定させるためには、締切り(設定されていない場合は開始３時間前)までに<strong>改めて参加の申込み</strong>をしてください。</li>
+						<li>締切りの24,12時間前になると<strong>リマインダー</strong>が<em>自分自身からの</em>ダイレクトメッセージで届きます。</li>
+						<li>リマインダーは右上の「設定」リンクからたどれるページで受信拒否が設定できます。</li>
+					</ul>
 				</div>
-				<s:label for="comment" value="COMMENT" />:<s:textfield name="comment" id="comment" value="よろしくお願いします。"/><br />
+				<s:label for="comment" value="COMMENT" />:<br />
+				<s:textarea name="comment" id="comment" value="よろしくお願いします。"/><br />
 				<s:submit value="仮参加登録" />
 			</s:form>
 		</div>
@@ -285,7 +294,8 @@ body {
                 <s:hidden name="eventId" value="%{eventId}" />
                 <p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントへの参加を<strong>キャンセル</strong>しようとしています。</p>
                 <p>参加をいったんキャンセルすると確保していた順番は取り消されます。</p>
-                <s:label for="comment" value="COMMENT" />:<s:textfield name="comment" id="comment" value="参加できなくなりました。"/><br />
+                <s:label for="comment" value="COMMENT" />:<br />
+                <s:textarea name="comment" id="comment" value="参加できなくなりました。"/><br />
                 <s:submit value="参加キャンセル"  />
             </s:form>
 		</div>
@@ -295,7 +305,8 @@ body {
                 <s:token />
                 <s:hidden name="eventId" value="%{eventId}" />
                 <p>コメントを変更します。</p>
-                <s:label for="comment" value="COMMENT" />:<s:textfield name="comment" id="comment" /><br />
+                <s:label for="comment" value="COMMENT" />:<br />
+                <s:textarea name="comment" id="comment" /><br />
                 <s:submit value="コメント変更"  />
             </s:form>		    
 		</div>

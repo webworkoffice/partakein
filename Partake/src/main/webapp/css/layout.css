@@ -1227,6 +1227,11 @@ ul.actionMessage, ul.errorMessage, ul.warningMessage {
 	list-style-image: url(../images/mark.png);	
 }
 
+.dialog-ui #comment {
+	mardin: 7px;
+	padding: 5px 5px 5px 2px;
+	width: 310px;
+}
 	
 	
 /* ==================================================================
