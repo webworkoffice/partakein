@@ -33,15 +33,16 @@
 	if (ownedEvents != null && !ownedEvents.isEmpty()) { %>
 		<table class="table0">
     <colgroup>
-      <col width="100px" /><col width="50px" /><col width="50px" />
+      <col width="30px" /><col width="100px" /><col width="50px" /><col width="50px" />
     </colgroup>
 			<thead>
-				<tr><th class="col1">イベントタイトル</th><th>開催日</th><th>参加予定人数/募集人数</th></tr>
+				<tr><th class="">　</th><th class="col1">イベントタイトル</th><th>開催日</th><th>参加予定人数/募集人数</th></tr>
 			</thead>
 			<tbody>
 			    <% for (Event event : ownedEvents) { %>
 			    <% if (event == null) { continue; /* TODO: should be logged. */} %>
 			    <tr>
+			        <td><% if (event.isPrivate()) { %><img src="<%= request.getContextPath()%>/images/private.png" /><% } %></td>
 			    	<td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
 			    	<td><%= Helper.readableDate(event.getBeginDate()) %></td>
 			    	<td><%= Helper.readableCapacity(event.fetchNumOfEnrolledUsers(), event.getCapacity()) %></td>
@@ -64,15 +65,16 @@
 	if (enrolledEvents != null && !enrolledEvents.isEmpty()) { %>
 		<table class="table0">
     <colgroup>
-      <col width="100px" /><col width="50px" /><col width="50px" />
+      <col width="30px" /><col width="100px" /><col width="50px" /><col width="50px" />
     </colgroup>
 			<thead>
-				<tr><th class="col1">イベントタイトル</th><th>開催日</th><th>ステータス</th></tr>
+				<tr><th></th><th class="col1">イベントタイトル</th><th>開催日</th><th>ステータス</th></tr>
 			</thead>
 			<tbody>
 			    <% for (Event event : enrolledEvents) { %>
 			    <% if (event == null) { continue; /* TODO: should be logged. */} %>
 			    <tr>
+			        <td><% if (event.isPrivate()) { %><img src="<%= request.getContextPath()%>/images/private.png" /><% } %></td>
 			    	<td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
 			    	<td><%= Helper.readableDate(event.getBeginDate()) %></td>
 			    	<td><%= Helper.enrollmentStatus(user, event) %></td>
@@ -93,15 +95,16 @@
     if (finishedEvents != null && !finishedEvents.isEmpty()) { %>
         <table class="table0">
     <colgroup>
-      <col width="100px" /><col width="50px" /><col width="50px" />
+      <col width="30px" /><col width="100px" /><col width="50px" /><col width="50px" />
     </colgroup>
             <thead>
-                <tr><th class="col1">イベントタイトル</th><th>開催日</th><th>ステータス</th></tr>
+                <tr><th></th><th class="col1">イベントタイトル</th><th>開催日</th><th>ステータス</th></tr>
             </thead>
             <tbody>
                 <% for (Event event : finishedEvents) { %>
                 <% if (event == null) { continue; /* TODO: should be logged. */} %>
                 <tr>
+                    <td><% if (event.isPrivate()) { %><img src="<%= request.getContextPath()%>/images/private.png" /><% } %></td>
                     <td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
                     <td><%= Helper.readableDate(event.getBeginDate()) %></td>
                     <td><%= Helper.enrollmentStatus(user, event) %></td>
