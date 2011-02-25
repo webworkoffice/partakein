@@ -6,12 +6,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.struts2.StrutsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.Action;
 
-public final class EventsEditControllerTest {
+public final class EventsEditControllerTest extends StrutsTestCase {
 
 	/**
 	 * {@link EventsEditController#editNew()}メソッドについて、以下のように

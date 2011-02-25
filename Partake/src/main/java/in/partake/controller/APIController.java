@@ -9,6 +9,7 @@ import in.partake.resource.I18n;
 import in.partake.service.EventService;
 
 import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -24,6 +25,50 @@ public class APIController extends PartakeActionSupport {
     }
     
     // ----------------------------------------------------------------------
+    // event retrieval
+    
+    public String getEvent() {
+        String eventId = getParameter("eventId");
+        if (StringUtils.isEmpty(eventId)) { return INVALID; }
+        
+        UserEx loginUser = getLoginUser();
+        
+        try {
+            EventEx event = EventService.get().getEventExById(eventId);
+            if (StringUtils.isEmpty(eventId)) { return NOT_FOUND; }
+            
+            if (event.isPrivate()) {
+                // TODO: EventsController とコードが同じなので共通化するべき　
+                
+                // owner および manager は見ることが出来る。
+                String passcode = (String)session.get("event:" + eventId);
+                if (loginUser != null && event.hasPermission(loginUser, UserPermission.EVENT_PRIVATE_EVENT)) {
+                    // OK. You have the right to show this event.
+                } else if (StringUtils.equals(event.getPasscode(), passcode)) {
+                    // OK. The same passcode. 
+                } else {
+                    // public でなければ、passcode を入れなければ見ることが出来ない
+                    return PROHIBITED;
+                }
+            }
+            
+            String json = event.toJSON();
+            inputStream = new ByteArrayInputStream(json.getBytes("utf-8"));
+            return SUCCESS;
+            
+        } catch (DAOException e) {
+            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
+            return ERROR;
+        } catch (UnsupportedEncodingException e) {
+            logger.error("UnsupportedEncodingException", e);
+            return ERROR;
+        }
+    }
+    
+    
+    
+    // ----------------------------------------------------------------------
+    // event
     
     public String changeAttendance() throws PartakeResultException {
         UserEx user = ensureLogin();

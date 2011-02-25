@@ -6,7 +6,13 @@ import in.partake.model.dto.auxiliary.UserPermission;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -48,6 +54,54 @@ public class EventEx extends Event {
     
     public List<EventRelationEx> getEventRelations() {
         return Collections.unmodifiableList(eventRelations);
+    }
+    
+    public String toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", getId());
+        obj.put("shortId", getShortId());
+        obj.put("title", getTitle());
+        obj.put("summary", getSummary());
+        obj.put("category", getCategory());
+        obj.put("deadline", getDeadline() != null ? getDeadline().getTime() : null);
+        obj.put("beginDate", getBeginDate() != null ? getBeginDate().getTime() : null);
+        obj.put("endDate", getEndDate() != null ? getEndDate().getTime() : null);
+        obj.put("capacity", getCapacity());
+        obj.put("url", getUrl());
+        obj.put("place", getPlace());
+        obj.put("address", getAddress());
+        obj.put("description", getAddress());
+        obj.put("hashTag", getAddress());
+        obj.put("managerScreenNames", getManagerScreenNames());
+        
+        // TODO: Hmm...
+        
+//        @Column
+//        private String ownerId;
+//
+//        @Column
+//        private String foreImageId;
+//        @Column
+//        private String backImageId;
+//
+//        @Column
+//        private boolean isPrivate;  // true if the event is private.
+//        @Column
+//        private String passcode;    // passcode to show (if not public)
+//        
+//        @Column
+//        private boolean isPreview;    // true if the event is preview.
+//        @Column
+//        private boolean isRemoved;
+//        
+//        @Column
+//        private Date createdAt;     //
+//        @Column
+//        private Date modifiedAt;    //
+//        @Column
+//        private int revision;       // used for RSS.
+        
+        return obj.toString();
     }
     
     // ----------------------------------------------------------------------
