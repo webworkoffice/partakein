@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -149,8 +150,12 @@
 				<div class="<%= h(classPrefix) %>-content">
 				    <p><%= h(event.getSummary()) %></p>
 				    <dl>
-				        <dt>会場：</dt><dd><%= h(event.getPlace()) %></dd>
-				        <dt>日時：</dt><dd><%= Helper.readableDate(event.getBeginDate()) %></dd>
+				        <% if (!StringUtils.isEmpty(event.getPlace())) { %>
+				            <dt>会場：</dt><dd><%= h(event.getPlace()) %></dd>
+				        <% } %>
+				        <% if (event.getBeginDate() != null) { %>
+				            <dt>日時：</dt><dd><%= Helper.readableDate(event.getBeginDate()) %></dd>
+				        <% } %>
 				    </dl>
 				</div>
             </div>
