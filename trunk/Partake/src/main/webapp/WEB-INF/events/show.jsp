@@ -60,7 +60,10 @@ body {
 <body class="event">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1><%= h(event.getTitle()) %></h1>
+<h1>
+    <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png" /><% } %>
+    <%= h(event.getTitle()) %>
+</h1>
 <% if (!StringUtils.isEmpty(event.getSummary())) { %>
 	<p class="summary"><%= h(event.getSummary()) %></p>
 <% } %>
