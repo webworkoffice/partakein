@@ -2,6 +2,7 @@ package in.partake.util;
 
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
+import in.partake.view.ViewHelper;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -216,22 +217,9 @@ public final class Util {
         return builder.toString();
     }
     
+    @Deprecated
     public static String cleanupHTML(String dirtyHTML) {
-    	try {
-    		String fileName = ServletActionContext.getServletContext().getRealPath(Constants.ANTISAMY_POLICY_FILE_RELATIVE_LOCATION);     			
-	    	Policy policy = Policy.getInstance(fileName);
-	
-	    	AntiSamy as = new AntiSamy();
-	    	CleanResults cr = as.scan(dirtyHTML, policy);
-	    	
-	    	return cr.getCleanHTML();
-    	} catch (PolicyException e) {
-    		e.printStackTrace();
-    		return "";
-    	} catch (ScanException e) {
-			e.printStackTrace();
-			return "";
-		}
+        return ViewHelper.cleanupHTML(dirtyHTML);
     }
     
     /**

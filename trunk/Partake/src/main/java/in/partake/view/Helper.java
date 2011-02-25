@@ -16,6 +16,7 @@ import java.util.GregorianCalendar;
  * @author shinyak
  *
  * NOTE: Helper の関数は h() しなくても動作することが求められる。
+ * TODO: this class will be moved to ViewHelper.
  */
 public class Helper {
 	private static final String[] DAYS = new String[] {

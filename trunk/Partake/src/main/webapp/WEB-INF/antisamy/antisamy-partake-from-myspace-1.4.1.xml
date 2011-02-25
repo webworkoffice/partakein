@@ -13,8 +13,8 @@ http://www.w3.org/TR/html401/struct/global.html
 	<directives>
 		<directive name="omitXmlDeclaration" value="true"/>
 		<directive name="omitDoctypeDeclaration" value="true"/>
-		<directive name="maxInputSize" value="15000"/>
-		<directive name="useXHTML" value="true"/>
+		<directive name="maxInputSize" value="100000"/>
+		<directive name="useXHTML" value="false"/>
 		<directive name="formatOutput" value="true"/>
 
 		<!--
@@ -23,7 +23,7 @@ http://www.w3.org/TR/html401/struct/global.html
 		-->
 		<directive name="embedStyleSheets" value="false"/>
 		<directive name="connectionTimeout" value="5000"/>
-		<directive name="maxStyleSheetImports" value="3"/>
+		<directive name="maxStyleSheetImports" value="0"/>
 
 	</directives>
 
