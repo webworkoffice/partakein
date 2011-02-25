@@ -166,6 +166,9 @@
             <result name="prohibited" type="httpheader">
                 <param name="error">403</param>
             </result>                 
+            <result name="notfound" type="httpheader">
+                <param name="error">404</param>
+            </result>
             <result name="error" type="httpheader">
                 <param name="error">500</param>
             </result>
