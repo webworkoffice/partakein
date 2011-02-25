@@ -9,8 +9,8 @@ public final class Constants {
     public static final String TWITTER_ACCESS_TOKEN_URL  = "http://twitter.com/oauth/access_token";
     public static final String TWITTER_AUTHORIZE_URL 	 = "http://twitter.com/oauth/authorize";
 
-    public static final String ANTISAMY_POLICY_FILE_RELATIVE_LOCATION = "/WEB-INF/antisamy/antisamy-myspace-1.4.1.xml"; 
-        
+    public static final String ANTISAMY_POLICY_FILE_RELATIVE_LOCATION = "/WEB-INF/antisamy/antisamy-partake-from-myspace-1.4.1.xml"; 
+
     // TODO: なんでこれ形式が統一されてないの？
     
     // Session attribute keys
