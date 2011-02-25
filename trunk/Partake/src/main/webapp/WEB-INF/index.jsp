@@ -156,6 +156,7 @@
             </div>
         <% } %>
     <% } %>
+    <p class="more"><a href="<%= request.getContextPath() %>/events/search">more...</a></p>
 </div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
