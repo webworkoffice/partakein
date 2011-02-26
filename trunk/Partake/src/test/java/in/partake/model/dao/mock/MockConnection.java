@@ -1,5 +1,6 @@
 package in.partake.model.dao.mock;
 
+import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.util.PDate;
 
@@ -9,15 +10,15 @@ public class MockConnection extends PartakeConnection {
     }
 
     @Override
-    public void beginTransaction() {
+    public void beginTransaction() throws DAOException {
     }
 
     @Override
-    public void commit() {
+    public void commit() throws DAOException {
     }
 
     @Override
-    public void rollback() {
+    public void rollback() throws DAOException {
     }
 
 }
