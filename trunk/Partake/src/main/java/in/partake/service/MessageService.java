@@ -94,6 +94,13 @@ public final class MessageService extends PartakeService {
             }
             
             con.commit();
+        } catch (DAOException e) {
+            try {
+                con.rollback();
+            } catch (DAOException ignore) {
+                logger.warn("DAOException is thrown at PartakeConnection#rollback", ignore);
+            }
+            throw e;
         } finally {
             con.invalidate();
         }

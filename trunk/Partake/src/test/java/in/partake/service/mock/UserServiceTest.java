@@ -71,6 +71,7 @@ public class UserServiceTest extends MockServiceTestBase {
     	IUserPreferenceAccess preferenceAccess = getFactory().getUserPreferenceAccess();
     	DAOException injectedException = new DAOException();
     	PartakeConnection con = mock(MockConnection.class);
+    	doThrow(new DAOException()).when(con).rollback();
     	((MockConnectionPool)getPool()).prepareConnection((MockConnection)con);
 
     	try {
@@ -82,6 +83,7 @@ public class UserServiceTest extends MockServiceTestBase {
     	}
 
     	try {
+    		verify(con, times(1)).beginTransaction();
     		verify(con, times(1)).rollback();
     		verify(con, never()).commit();
     		verify(con, times(1)).invalidate();

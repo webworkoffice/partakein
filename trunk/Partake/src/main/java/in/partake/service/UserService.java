@@ -296,7 +296,7 @@ public final class UserService extends PartakeService {
             try {
             	con.rollback();
             } catch (DAOException ignore) {
-            	logger.warn("PartakeConnection#rollback is thrown", ignore);
+            	logger.warn("DAOException is thrown at PartakeConnection#rollback", ignore);
             }
             throw e;
         } finally {
