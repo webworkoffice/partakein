@@ -1,13 +1,21 @@
 package in.partake.controller;
 
+import in.partake.model.UserEx;
+import in.partake.model.dao.DAOException;
+import in.partake.model.dto.User;
+import in.partake.resource.Constants;
 import in.partake.util.PDate;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.apache.struts2.StrutsTestCase;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.Action;
@@ -77,5 +85,46 @@ public final class EventsEditControllerTest extends StrutsTestCase {
 		Assert.assertEquals(oneDayAfterCalendar.get(Calendar.DAY_OF_MONTH), controller.getDday());
 		Assert.assertEquals(oneDayAfterCalendar.get(Calendar.HOUR_OF_DAY), controller.getDhour());
 		Assert.assertEquals(0, controller.getDmin());
+	}
+
+	/**
+	 * @see http://code.google.com/p/partakein/issues/detail?id=120
+	 */
+	@Test
+	@Ignore	// because this test case is not yet finished.
+	public void testIssue120() throws DAOException {
+		UserEx loginUser = createUserEx("issue120");
+		Map<String, Object> session = new HashMap<String, Object>();
+		session.put(Constants.ATTR_USER, loginUser);
+
+		EventsEditController controller = new EventsEditController();
+		controller.setSession(session);
+
+		Assert.assertEquals(Action.INPUT, controller.editNew());
+		controller.setTitle("TITLE");
+		controller.setSummary("SUMMARY");
+		controller.setDescription("DESCRIPTION");
+		controller.setCategory("CATEGORY");
+		Assert.assertEquals(Action.SUCCESS, controller.create());
+		int thisYear = Calendar.getInstance(Locale.JAPAN).get(Calendar.YEAR);
+		Assert.assertEquals(thisYear, controller.getSyear());
+		Assert.assertEquals(thisYear, controller.getEyear());
+		Assert.assertEquals(thisYear, controller.getDyear());
+		String eventId = controller.getEventId();
+
+		controller = new EventsEditController();
+		controller.setSession(session);
+		controller.setEventId(eventId);
+		Assert.assertEquals(Action.SUCCESS, controller.edit());	// TODO this assert fail. why?
+		Assert.assertEquals(thisYear, controller.getSyear());
+		Assert.assertEquals(thisYear, controller.getEyear());
+		Assert.assertEquals(thisYear, controller.getDyear());
+	}
+
+	private UserEx createUserEx(String userId) {
+		User user = new User();
+		user.setId(userId);
+		UserEx userEx = new UserEx(user, null);
+		return userEx;
 	}
 }

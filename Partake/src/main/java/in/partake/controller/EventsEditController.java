@@ -519,32 +519,36 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 			this.smin = date.get(Calendar.MINUTE);
 		}
 		
-		if (event.getEndDate() != null) {
-			this.usesEndDate = true;
+		Date oneDayAfter = new Date(PDate.getCurrentTime() + 1000 * 3600 * 24);
+		{
+			this.usesEndDate = event.getEndDate() != null;
 			Calendar date = new GregorianCalendar();
-			date.setTime(event.getEndDate());
-			
+			if (this.usesEndDate) {
+				date.setTime(event.getEndDate());
+			} else {
+				date.setTime(oneDayAfter);
+			}
 			this.eyear = date.get(Calendar.YEAR);
 			this.emonth = date.get(Calendar.MONTH) + 1;
 			this.eday = date.get(Calendar.DATE);
 			this.ehour = date.get(Calendar.HOUR_OF_DAY);
 			this.emin = date.get(Calendar.MINUTE);
-		} else {
-			this.usesEndDate = false;
 		}
 		
-		if (event.getDeadline() != null) {
-			this.usesDeadline = true; 
+		{
+			this.usesDeadline = (event.getDeadline() != null);
 			Calendar date = new GregorianCalendar();
-			date.setTime(event.getDeadline());
-			
+			if (this.usesDeadline) {
+				date.setTime(event.getDeadline());
+			} else {
+				date.setTime(oneDayAfter);
+			}
+
 			this.dyear = date.get(Calendar.YEAR);
 			this.dmonth = date.get(Calendar.MONTH) + 1;
 			this.dday = date.get(Calendar.DATE);
 			this.dhour = date.get(Calendar.HOUR_OF_DAY);
 			this.dmin = date.get(Calendar.MINUTE);
-		} else {
-			this.usesDeadline = false;
 		}
 
 		this.capacity = event.getCapacity();
