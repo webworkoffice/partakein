@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -14,7 +16,7 @@ public class UserActivity extends PartakeModel<UserActivity> {
     private String userId;
     @Column(length = 2000)
     private String content;
-    @Column
+    @Column @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
     
     @Override

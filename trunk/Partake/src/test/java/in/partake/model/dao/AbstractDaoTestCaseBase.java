@@ -2,6 +2,7 @@ package in.partake.model.dao;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import in.partake.model.dto.PartakeModel;
@@ -51,6 +52,11 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     public void tearDown() throws DAOException {
         
     }
+    
+    
+    // setup() should be implemented in each test case.
+    @Before
+    protected abstract void setup() throws DAOException;
     
     protected void setup(DAO dao) throws DAOException {
         // remove the current data

@@ -119,8 +119,14 @@ public class AuthenticationController extends PartakeActionSupport {
         if (StringUtils.isEmpty(redirectURL)) {
         	return SUCCESS;
         } else {
-        	setRedirectURL(redirectURL);
-        	return REDIRECT;        	
+            // If the redirect page is the error page, we do not want to show it. Showing the top page is better.
+            String errorPageURL = PartakeProperties.get().getTopPath() + "/error";
+            if (errorPageURL.equals(redirectURL)) {
+                return SUCCESS;
+            } else {
+            	setRedirectURL(redirectURL);
+            	return REDIRECT;
+            }
         }
     }
         

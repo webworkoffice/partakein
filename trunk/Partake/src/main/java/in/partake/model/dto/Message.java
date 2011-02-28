@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.ObjectUtils;
 
@@ -19,7 +21,7 @@ public class Message extends PartakeModel<Message> {
     private String message;
     @Column
     private String eventId;
-    @Column
+    @Column @Temporal(TemporalType.TIMESTAMP)
     private Date   createdAt;
     
     public Message() {

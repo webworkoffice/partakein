@@ -7,7 +7,7 @@ import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;
 
 /**
- * Dao のテストケースのベース。extends して、BeforeClass, AfterClass で
+ * テストケースのベース。extends して、BeforeClass, AfterClass で
  * 利用する Connection の種類を設定のこと。
  * 
  * @author shinyak

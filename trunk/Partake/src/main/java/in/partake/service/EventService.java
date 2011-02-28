@@ -6,9 +6,11 @@ import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.ParticipationList;
+import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IBinaryAccess;
+import in.partake.model.dao.IEventActivityAccess;
 import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.LuceneDao;
 import in.partake.model.dao.PartakeConnection;
@@ -16,6 +18,7 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Envelope;
+import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.Event;
@@ -50,8 +53,6 @@ import org.apache.lucene.search.TopDocs;
  * event にアクセスする
  * @author shinyak
  *
- * EventService 経由だと observer が使える。
- * 
  * thread-safe である。
  */
 public final class EventService extends PartakeService {
@@ -119,7 +120,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-        	EventFeedLinkage linkage = factory.getFeedAccess().find(con, feedId);
+        	EventFeedLinkage linkage = factory.getEventFeedAccess().find(con, feedId);
             if (linkage == null) { return null; }
             EventEx event = getEventEx(con, linkage.getEventId());
             con.commit();
@@ -384,6 +385,12 @@ public final class EventService extends PartakeService {
         	// Feed Dao にも挿入。
         	appendFeedIfAbsent(factory, con, eventEmbryo.getId());
         	
+        	// Event Activity にも挿入
+        	{
+        	    IEventActivityAccess eaa = factory.getEventActivityAccess();
+            	EventActivity activity = new EventActivity(eaa.getFreshId(con), eventEmbryo.getId(), "イベントが登録されました : " + eventEmbryo.getTitle(), eventEmbryo.getDescription(), eventEmbryo.getCreatedAt());
+            	eaa.put(con, activity);
+        	}        	
         	
         	// さらに、twitter bot がつぶやく (private の場合はつぶやかない)
         	if (!eventEmbryo.isPrivate()) {
@@ -450,6 +457,14 @@ public final class EventService extends PartakeService {
     				binaryAccess.remove(con, event.getBackImageId());
     			}		
     		}
+    		
+            // Event Activity にも挿入
+            {
+                IEventActivityAccess eaa = factory.getEventActivityAccess();
+                EventActivity activity = new EventActivity(eaa.getFreshId(con), eventEmbryo.getId(), "イベントが更新されました : " + eventEmbryo.getTitle(), eventEmbryo.getDescription(), eventEmbryo.getCreatedAt());
+                eaa.put(con, activity);
+            }           
+
     		
     		// private でなければ Lucene にデータ挿入
     		if (eventEmbryo.isPrivate()) {
@@ -735,8 +750,19 @@ public final class EventService extends PartakeService {
 	    PartakeConnection con = getPool().getConnection();
 	    try {
 	        con.beginTransaction();
-    	    embryo.setId(factory.getCommentAccess().getFreshId(con));
+    	    
+	        embryo.setId(factory.getCommentAccess().getFreshId(con));
     	    factory.getCommentAccess().put(con, embryo);
+    	
+    	    // TODO: コメント消したときにこれも消したいか？　まずいコメントが feed され続けるのは問題となりうるか？
+    	    {
+    	        IEventActivityAccess eaa = factory.getEventActivityAccess();
+    	        UserEx user = getUserEx(con, embryo.getUserId());
+    	        String title = user.getScreenName() + " さんがコメントを投稿しました";
+    	        String content = embryo.getComment();
+    	        eaa.put(con, new EventActivity(eaa.getFreshId(con), embryo.getEventId(), title, content, embryo.getCreatedAt()));
+    	    }
+    	    
     	    con.commit();
 	    } finally {
 	        con.invalidate();
@@ -744,6 +770,7 @@ public final class EventService extends PartakeService {
 	}
 	
 	// TODO: うーん、comment が消される前に event が消されて、その後 comment を消そうとしたら落ちるんじゃないの？
+	// 
 	public void removeComment(String commentId) throws DAOException {
         PartakeDAOFactory factory = getFactory(); 
         PartakeConnection con = getPool().getConnection();
@@ -923,6 +950,27 @@ public final class EventService extends PartakeService {
             newEnrollment.setModifiedAt(new Date());
         }
         
+        // 
+        {
+            IEventActivityAccess eaa = factory.getEventActivityAccess();
+            UserEx user = getUserEx(con, userId);
+            EventEx event = getEventEx(con, eventId);
+            if (user == null) {
+                return;
+                //throw new IllegalArgumentException(); Hmm...
+            }
+            String title;
+            switch (status) {
+            case ENROLLED:      title = user.getScreenName() + " さんが参加しました";        break;
+            case CANCELLED:     title = user.getScreenName() + " さんがを取りやめました";     break;
+            case RESERVED:      title = user.getScreenName() + " さんが仮参加しました";      break;
+            case NOT_ENROLLED:  title = user.getScreenName() + " さんはもう参加していません"; break;
+            default:            title = user.getScreenName() + " さんが不明なステータスになっています"; break; // TODO: :-P
+            }
+            String content = "詳細は " + event.getEventURL() + " をごらんください。";
+            eaa.put(con, new EventActivity(eaa.getFreshId(con), eventId, title, content, new Date()));
+        }
+        
         factory.getEnrollmentAccess().put(con, newEnrollment);
     }
     
@@ -945,11 +993,22 @@ public final class EventService extends PartakeService {
     }
     
     private void appendFeedIfAbsent(PartakeDAOFactory factory, PartakeConnection con, String eventId) throws DAOException {
-        String feedId = factory.getFeedAccess().findByEventId(con, eventId);
+        String feedId = factory.getEventFeedAccess().findByEventId(con, eventId);
         if (feedId != null) { return; }
         
-        feedId = factory.getFeedAccess().getFreshId(con);
-        factory.getFeedAccess().put(con, new EventFeedLinkage(feedId, eventId));
+        feedId = factory.getEventFeedAccess().getFreshId(con);
+        factory.getEventFeedAccess().put(con, new EventFeedLinkage(feedId, eventId));
+    }
+    
+    public List<EventActivity> getEventActivities(String eventId, int length) throws DAOException {
+        PartakeDAOFactory factory = getFactory();       
+        PartakeConnection con = getPool().getConnection();
+        try {
+            return factory.getEventActivityAccess().findByEventId(con, eventId, length);
+        } finally {
+            con.invalidate();
+        } 
+        
     }
     
     // ----------------------------------------------------------------------

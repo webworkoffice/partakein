@@ -41,8 +41,6 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
         @SuppressWarnings("unchecked")
         List<Event> events = q.getResultList();
         
-        // TOOD: need copy? or freeze?
-        
         return new JPAPartakeModelDataIterator<Event>(em, events, Event.class, false);
     }
 
@@ -68,7 +66,8 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 
 	@Override
 	public boolean isRemoved(PartakeConnection con, String eventId) throws DAOException {
+	    return false;
 	    // TODO:
-	    throw new RuntimeException("Not implemented yet");
+//	    throw new RuntimeException("Not implemented yet");
 	}
 }

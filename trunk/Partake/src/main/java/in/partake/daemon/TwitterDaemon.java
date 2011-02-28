@@ -3,7 +3,6 @@ package in.partake.daemon;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.I18n;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.DirectMessageService;
 import in.partake.service.MessageService;
 
 import java.util.Timer;
@@ -49,7 +48,7 @@ class TwitterDaemonTask extends TimerTask {
     private void runTwitterMessageSendingTask() {
         logger.info("DirectMessageSendingTask START");
         try {
-            DirectMessageService.get().sendEnvelopes();
+            MessageService.get().sendEnvelopes();
         } catch (DAOException e) {
             logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
         }        

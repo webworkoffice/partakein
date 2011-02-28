@@ -3,7 +3,7 @@ package in.partake.all;
 import org.junit.Test;
 
 public class EventGeneralTest {
-
+    
     @Test
     public void testToCreateAndGetAnEvent() throws Exception {
         // TODO not implemented yet.
