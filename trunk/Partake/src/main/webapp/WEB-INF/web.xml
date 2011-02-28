@@ -21,7 +21,8 @@
 	<listener>
     	<listener-class>in.partake.servlet.listener.InitializationListener</listener-class>
   	</listener>
-  	
+
+<!-- 
   	<error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/notfound.jsp</location>
@@ -31,7 +32,8 @@
         <exception-type>java.lang.Throwable</exception-type>  
         <location>/error</location>  
     </error-page> 
-  
+ -->  	
+ 
 	<!-- Welcome file lists -->
 	<welcome-file-list>
 	    <welcome-file>index.jsp</welcome-file>
