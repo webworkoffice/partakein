@@ -149,7 +149,11 @@ public class EventsFeedController extends PartakeActionSupport {
 		for (Event event : events) {
 		    if (event == null) { continue; }
 		    if (event.isPrivate()) { continue; }
-		    
+
+		    SyndContent content = new SyndContentImpl();
+            content.setType("text/html");
+            content.setValue(ViewHelper.cleanupHTML(event.getDescription()));
+	            
 			SyndEntry entry = new SyndEntryImpl();
 			entry.setTitle(event.getTitle());
 			entry.setLink(event.getEventURL());
@@ -160,11 +164,7 @@ public class EventsFeedController extends PartakeActionSupport {
 				entry.setAuthor(ex.getOwner().getScreenName());
 			} catch (DAOException e) {
 				LOGGER.warn("Fail to get Author name.", e);
-			}
-			
-			SyndContent content = new SyndContentImpl();
-			content.setType("text/html");
-			content.setValue(ViewHelper.cleanupHTML(event.getDescription()));
+			}			
 			entry.setDescription(content);
 			
 			entries.add(entry);
@@ -187,45 +187,20 @@ public class EventsFeedController extends PartakeActionSupport {
 	    if (activities != null) {
 	        for (EventActivity activity : activities) {
 	            SyndContent content = new SyndContentImpl();
-	            content.setType("text/plain");
-	            content.setValue(ViewHelper.h(activity.getContent()));
+	            content.setType("text/html");
+	            content.setValue(ViewHelper.cleanupHTML(activity.getContent()));
 	            
 	            SyndEntry entry = new SyndEntryImpl();
 	            entry.setTitle(ViewHelper.h(activity.getTitle()));
 	            entry.setDescription(content);
+	            
+	            entries.add(entry);
 	        }
 	    }
 	    
 	    feed.setEntries(entries);
 	    
         outputSyndFeed(feed);
-        
-//        // Participation は後で考える
-//        List<EnrollmentEx> enrollments = EventService.get().getEnrollmentEx(event.getId());
-//        for (EnrollmentEx e : enrollments) {
-//            SyndContent content = new SyndContentImpl();
-//            content.setType("text/plain");
-//            content.setValue(Util.h(e.getComment()));
-//            
-//            SyndEntry entry = new SyndEntryImpl();
-//            entry.setTitle(Util.h(e.getUser().getScreenName()));
-//            entry.setDescription(content);
-//        }
-//        
-//        List<CommentEx> comments = EventService.get().getCommentsExByEvent(event.getId());
-//        for (CommentEx comment : comments) {
-//            if (comment == null) { continue; }
-//            
-//            SyndContent content = new SyndContentImpl();
-//            content.setType("text/plain");
-//            content.setValue(Util.h(comment.getComment()));
-//
-//            SyndEntry entry = new SyndEntryImpl();
-//            entry.setTitle(comment.getUser().getScreenName());
-//            entry.setDescription(content);
-//            
-//            entries.add(entry);
-//        }
 	}
 
 

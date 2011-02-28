@@ -152,7 +152,10 @@ public final class Util {
     }
     
     public static InputStream createInputSteram(String resource) throws IOException {
-        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        InputStream stream = Util.class.getResourceAsStream(resource);
+        if (stream != null) { return stream; }
+        
+        stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         if (stream != null) { return stream; }
         
         try {
