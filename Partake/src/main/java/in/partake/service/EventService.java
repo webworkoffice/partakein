@@ -967,7 +967,7 @@ public final class EventService extends PartakeService {
             case NOT_ENROLLED:  title = user.getScreenName() + " さんはもう参加していません"; break;
             default:            title = user.getScreenName() + " さんが不明なステータスになっています"; break; // TODO: :-P
             }
-            String content = "詳細は " + event.getEventURL() + " をごらんください。";
+            String content = String.format("<p>詳細は <a href=\"%s\">%s</a> をごらんください。</p>", event.getEventURL(), event.getEventURL());
             eaa.put(con, new EventActivity(eaa.getFreshId(con), eventId, title, content, new Date()));
         }
         
