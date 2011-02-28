@@ -23,7 +23,8 @@ public class Main {
         copy(casFactory.getEventAccess(),           jpaFactory.getEventAccess());
         copy(casFactory.getEventRelationAccess(),   jpaFactory.getEventRelationAccess());
         copy(casFactory.getEventReminderAccess(),   jpaFactory.getEventReminderAccess());
-        copy(casFactory.getFeedAccess(),            jpaFactory.getFeedAccess());
+        copy(casFactory.getEventFeedAccess(),       jpaFactory.getEventFeedAccess());
+        copy(casFactory.getEventActivityAccess(),   jpaFactory.getEventActivityAccess());
         copy(casFactory.getDirectMessageAccess(),   jpaFactory.getDirectMessageAccess());
         copy(casFactory.getOpenIDLinkageAccess(),   jpaFactory.getOpenIDLinkageAccess());
         copy(casFactory.getURLShortenerAccess(),    jpaFactory.getURLShortenerAccess());

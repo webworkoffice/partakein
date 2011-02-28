@@ -15,7 +15,8 @@ public abstract class PartakeDAOFactory {
     private final IEventAccess eventAccess;
     private final IEventRelationAccess eventRelationAccess;
     private final IEventReminderAccess eventReminderAccess;
-    private final IEventFeedAccess feedAccess;
+    private final IEventFeedAccess eventFeedAccess;
+    private final IEventActivityAccess eventActivityAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
@@ -37,7 +38,8 @@ public abstract class PartakeDAOFactory {
         addTruncatable(eventAccess           = createEventAccess());
         addTruncatable(eventRelationAccess   = createEventRelationAccess());
         addTruncatable(eventReminderAccess   = createEventReminderAccess());
-        addTruncatable(feedAccess            = createFeedAccess());
+        addTruncatable(eventFeedAccess       = createEventFeedAccess());
+        addTruncatable(eventActivityAccess   = createEventActivityAccess());
         addTruncatable(openIDLinkageAccess   = createOpenIDLinkageAccess());
         addTruncatable(twitterLinkageAccess  = createTwitterLinkageAccess());
         addTruncatable(userAccess            = creataeUserAccess());
@@ -100,8 +102,12 @@ public abstract class PartakeDAOFactory {
         return eventRelationAccess;
     }
 
-    public final IEventFeedAccess getFeedAccess() {
-        return feedAccess;
+    public final IEventFeedAccess getEventFeedAccess() {
+        return eventFeedAccess;
+    }
+    
+    public final IEventActivityAccess getEventActivityAccess() {
+        return eventActivityAccess;
     }
 
     public final IOpenIDLinkageAccess getOpenIDLinkageAccess() {
@@ -129,7 +135,7 @@ public abstract class PartakeDAOFactory {
     
     protected abstract ICacheAccess createCacheAccess();
     protected abstract ICalendarLinkageAccess createCalendarLinkageAccess();
-    protected abstract  IBinaryAccess createBinaryAccess();
+    protected abstract IBinaryAccess createBinaryAccess();
     protected abstract ICommentAccess createCommentAccess();
     protected abstract IMessageAccess createDirectMessageAccess();
     protected abstract IEnrollmentAccess createEnrollmentAccess();
@@ -137,7 +143,8 @@ public abstract class PartakeDAOFactory {
     protected abstract IEventAccess createEventAccess();
     protected abstract IEventRelationAccess createEventRelationAccess();
     protected abstract IEventReminderAccess createEventReminderAccess();
-    protected abstract IEventFeedAccess createFeedAccess();
+    protected abstract IEventFeedAccess createEventFeedAccess();
+    protected abstract IEventActivityAccess createEventActivityAccess();
     protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
     protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();
     protected abstract IUserAccess creataeUserAccess();

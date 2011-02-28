@@ -6,8 +6,8 @@ import in.partake.model.dto.Message;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.UserPermission;
-import in.partake.service.DirectMessageService;
 import in.partake.service.EventService;
+import in.partake.service.MessageService;
 import in.partake.util.Util;
 
 import java.util.Date;
@@ -41,7 +41,7 @@ public class EventsMessageController extends PartakeActionSupport {
 			if (!event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE)) { return PROHIBITED; }
 			
 			// ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。
-			List<Message> messages = DirectMessageService.get().getRecentUserMessage(eventId, 5);
+			List<Message> messages = MessageService.get().getRecentUserMessage(eventId, 5);
 			Date currentTime = new Date(); 
 
 			if (messages.size() >= 3) {
@@ -75,7 +75,7 @@ public class EventsMessageController extends PartakeActionSupport {
 			String msg = left + Util.shorten(event.getTitle(), 140 - Util.codePointCount(left) - Util.codePointCount(right)) + right;
 			assert (Util.codePointCount(msg) <= 140);
 			
-			String messageId = DirectMessageService.get().addMessage(user.getId(), msg,event.getId(), true);
+			String messageId = MessageService.get().addMessage(user.getId(), msg,event.getId(), true);
 			
 			List<Enrollment> participations = EventService.get().getParticipation(event.getId());
 			for (Enrollment participation : participations) {
@@ -90,7 +90,7 @@ public class EventsMessageController extends PartakeActionSupport {
 			    }
 			    
 			    if (sendsMessage) {
-			        DirectMessageService.get().sendEnvelope(messageId, participation.getUserId(), participation.getUserId(), null, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
+			        MessageService.get().sendEnvelope(messageId, participation.getUserId(), participation.getUserId(), null, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
 			    }
 			}
 			

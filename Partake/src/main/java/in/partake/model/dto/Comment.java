@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.ObjectUtils;
 
@@ -21,7 +23,7 @@ public class Comment extends PartakeModel<Comment> {
     private String comment;     // content
     @Column
     private boolean isHTML;     // true if HTML.
-    @Column
+    @Column @Temporal(TemporalType.TIMESTAMP)
     private Date   createdAt;   // when
     
     public Comment() {

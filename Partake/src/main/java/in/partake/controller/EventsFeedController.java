@@ -19,14 +19,14 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
-import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
-import in.partake.util.Util;
+import in.partake.view.ViewHelper;
 
 public class EventsFeedController extends PartakeActionSupport {
 	private static final Logger LOGGER = Logger.getLogger(EventsFeedController.class);
@@ -100,7 +100,6 @@ public class EventsFeedController extends PartakeActionSupport {
 	}
 	
 	
-	// feed ごとの event に関してはどうしようか悩み中。
 	public String feedEvent() {
 		String feedId = getParameter("feedId");
 		if (feedId == null) { return NOT_FOUND; }
@@ -117,7 +116,7 @@ public class EventsFeedController extends PartakeActionSupport {
 			feed.setLink(event.getEventURL());
 			feed.setDescription(event.getSummary());
 			
-			createEventFeed(feed, event);
+			createEventFeed(feed, event.getId());
 			
 			return SUCCESS;
 		} catch (DAOException e) {
@@ -165,7 +164,7 @@ public class EventsFeedController extends PartakeActionSupport {
 			
 			SyndContent content = new SyndContentImpl();
 			content.setType("text/html");
-			content.setValue(Util.cleanupHTML(event.getDescription()));
+			content.setValue(ViewHelper.cleanupHTML(event.getDescription()));
 			entry.setDescription(content);
 			
 			entries.add(entry);
@@ -175,38 +174,58 @@ public class EventsFeedController extends PartakeActionSupport {
 		outputSyndFeed(feed);
 	}
 	
-	private void createEventFeed(SyndFeed feed, Event event) throws IOException, FeedException, DAOException {
+	private void createEventFeed(SyndFeed feed, String eventId) throws IOException, FeedException, DAOException {
 	    List<SyndEntry> entries = new ArrayList<SyndEntry>();
+
+	    // EventActivity を読んで、そのとおりに出力する。
+	    //     EventActivity には次のものが登録されているはず
+	    //     1. Event 更新記録
+	    //     2. コメント
+	    //     3. 参加変更
 	    
-	    // Participation は後で考える
-//	    List<Participation> participations = EventService.get().getParticipation(event.getId());
-//	    for (Participation p : participations) {
-//            SyndEntry entry = new SyndEntryImpl();
-//            SyndContent content = new SyndContentImpl();
-//            content.setType("text/plain");
-//            content.setValue(Util.h(p.getComment()));
-//            entry.setDescription(content);
-//            
-//            entries.add(new Pair<Long, SyndEntry>(p.getModifiedAt().getTime(), entry));
-//	    }
+	    List<EventActivity> activities = EventService.get().getEventActivities(eventId, 100);
+	    if (activities != null) {
+	        for (EventActivity activity : activities) {
+	            SyndContent content = new SyndContentImpl();
+	            content.setType("text/plain");
+	            content.setValue(ViewHelper.h(activity.getContent()));
+	            
+	            SyndEntry entry = new SyndEntryImpl();
+	            entry.setTitle(ViewHelper.h(activity.getTitle()));
+	            entry.setDescription(content);
+	        }
+	    }
 	    
-	    List<CommentEx> comments = EventService.get().getCommentsExByEvent(event.getId());
-	    for (CommentEx comment : comments) {
-	        if (comment == null) { continue; }
-	        
-            SyndEntry entry = new SyndEntryImpl();
-            entry.setTitle(comment.getUser().getScreenName());
-            
-            SyndContent content = new SyndContentImpl();
-            content.setType("text/plain");
-            content.setValue(Util.h(comment.getComment()));
-            entry.setDescription(content);
-            
-            entries.add(entry);
-	    }	    
 	    feed.setEntries(entries);
 	    
-        outputSyndFeed(feed);	    
+        outputSyndFeed(feed);
+        
+//        // Participation は後で考える
+//        List<EnrollmentEx> enrollments = EventService.get().getEnrollmentEx(event.getId());
+//        for (EnrollmentEx e : enrollments) {
+//            SyndContent content = new SyndContentImpl();
+//            content.setType("text/plain");
+//            content.setValue(Util.h(e.getComment()));
+//            
+//            SyndEntry entry = new SyndEntryImpl();
+//            entry.setTitle(Util.h(e.getUser().getScreenName()));
+//            entry.setDescription(content);
+//        }
+//        
+//        List<CommentEx> comments = EventService.get().getCommentsExByEvent(event.getId());
+//        for (CommentEx comment : comments) {
+//            if (comment == null) { continue; }
+//            
+//            SyndContent content = new SyndContentImpl();
+//            content.setType("text/plain");
+//            content.setValue(Util.h(comment.getComment()));
+//
+//            SyndEntry entry = new SyndEntryImpl();
+//            entry.setTitle(comment.getUser().getScreenName());
+//            entry.setDescription(content);
+//            
+//            entries.add(entry);
+//        }
 	}
 
 

@@ -15,7 +15,6 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
 import in.partake.resource.I18n;
-import in.partake.service.DirectMessageService;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
 import in.partake.service.UserService;
@@ -103,7 +102,7 @@ public class EventsController extends PartakeActionSupport {
 	        
 	        
 	        List<CommentEx> comments = EventService.get().getCommentsExByEvent(eventId);
-	        List<DirectMessageEx> messages = DirectMessageService.get().getUserMessagesByEventId(eventId);
+	        List<DirectMessageEx> messages = MessageService.get().getUserMessagesByEventId(eventId);
 	        
 	        
 	        
@@ -318,7 +317,7 @@ public class EventsController extends PartakeActionSupport {
         }
         
         String message = left + Util.shorten(event.getTitle(), 140 - Util.codePointCount(left) - Util.codePointCount(right)) + right;
-        DirectMessageService.get().tweetMessage(user, message);
+        MessageService.get().tweetMessage(user, message);
     }
     
     /**

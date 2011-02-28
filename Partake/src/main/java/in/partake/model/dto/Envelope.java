@@ -7,6 +7,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.ObjectUtils;
 
@@ -36,7 +38,7 @@ public class Envelope extends PartakeModel<Envelope> {
     private Date tryAfter;
     @Column
     private DirectMessagePostingType postingType;
-    @Column
+    @Column @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
     
     public Envelope() {

@@ -6,10 +6,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.Assert;
-
 
 public class UtilTest {
 
@@ -283,33 +281,6 @@ public class UtilTest {
 	// TODO Test for the summer time if support other timezone.
 
 
-	@Test
-	public void htmlEscapeTest() {
-		Assert.assertEquals("", Util.h(""));
-		Assert.assertEquals("", Util.h(null));
-
-		Assert.assertEquals(" ", Util.h(" "));
-		Assert.assertEquals("test", Util.h("test"));
-
-		Assert.assertEquals("&amp;", Util.h("&"));
-		Assert.assertEquals("&lt;", Util.h("<"));
-		Assert.assertEquals("&gt;", Util.h(">"));
-		Assert.assertEquals("&quot;", Util.h("\""));
-		Assert.assertEquals("&apos;", Util.h("\'"));
-
-		Assert.assertEquals("", Util.h(Character.toString('\0')));    	// NUL
-		Assert.assertEquals("", Util.h(Character.toString('\u202E')));	// RLO
-
-		Assert.assertEquals("\t", Util.h("\t"));
-		Assert.assertEquals("\r", Util.h("\r"));
-		Assert.assertEquals("\n", Util.h("\n"));
-		Assert.assertEquals("\r\n", Util.h("\r\n"));
-
-		Assert.assertEquals("&amp;&lt;tag&gt;", Util.h("&<tag>"));
-		Assert.assertEquals("漢字＆ひらがな", Util.h("漢字＆ひらがな"));
-		Assert.assertEquals("サロゲートペア→𠮟", Util.h("サロゲートペア→𠮟"));
-		Assert.assertEquals("double &quot;quoted&quot;", Util.h("double \"quoted\""));
-	}
 
 	@Test
 	public void testEncodeURIComponent() {

@@ -113,6 +113,10 @@ abstract class CassandraDao {
         return new CassandraKeyDataIterator<T>(it, new KeyMapperWithAccess<T>(con, access));
     }
     
+    protected void truncateImpl(CassandraConnection con) throws DAOException {
+        removeAllData(con);
+    }
+    
     protected void removeAllData(CassandraConnection con) throws DAOException {
         
         long now = new Date().getTime();

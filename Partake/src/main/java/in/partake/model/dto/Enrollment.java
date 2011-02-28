@@ -11,6 +11,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.ObjectUtils;
 
@@ -32,7 +34,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     private ModificationStatus modificationStatus;
     @Column
     private AttendanceStatus attendanceStatus;
-    @Column
+    @Column @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;
     
     // ----------------------------------------------------------------------

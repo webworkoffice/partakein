@@ -6,11 +6,7 @@ import in.partake.model.dto.auxiliary.UserPermission;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
 
 import net.sf.json.JSONObject;
 

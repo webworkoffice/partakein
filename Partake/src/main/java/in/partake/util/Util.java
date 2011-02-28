@@ -1,6 +1,5 @@
 package in.partake.util;
 
-import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.view.ViewHelper;
 
@@ -19,12 +18,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.xwork.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.struts2.ServletActionContext;
-import org.owasp.validator.html.AntiSamy;
-import org.owasp.validator.html.CleanResults;
-import org.owasp.validator.html.Policy;
-import org.owasp.validator.html.PolicyException;
-import org.owasp.validator.html.ScanException;
 
 import com.rosaloves.bitlyj.Bitly;
 import com.rosaloves.bitlyj.Bitly.Provider;
@@ -158,63 +151,31 @@ public final class Util {
     	}
     }
     
+    public static InputStream createInputSteram(String resource) throws IOException {
+        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+        if (stream != null) { return stream; }
+        
+        try {
+            return new FileInputStream(new File(resource));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
     
     // ----------------------------------------------------------------------
 	// HTML  
     
     // TODO: These functions are should be moved to Helper.
     // HTML escape
+    @Deprecated
     public static String h(String s) {
-        if (s == null) { return ""; }
-        
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < s.length(); i += Character.charCount(s.codePointAt(i))) {
-        	switch (s.codePointAt(i)) {
-            case '&': builder.append("&amp;"); break;
-            case '<': builder.append("&lt;"); break;
-            case '>': builder.append("&gt;"); break;
-            case '"': builder.append("&quot;"); break;
-            case '\'': builder.append("&apos;"); break;
-            	default:  
-            	if (Character.isIdentifierIgnorable(s.codePointAt(i))) {
-            		// ignore.
-            	} else {
-            		for (int j = 0; j < Character.charCount(s.codePointAt(i)); ++j) {
-            			builder.append(s.charAt(i + j));
-            		}
-            	}
-        	}
-        }
-        
-        return builder.toString();
+        return ViewHelper.escapeHTML(s);
     }
-    
+
+    @Deprecated
     public static String cleanupText(String dirtyText) {
-        String s = dirtyText;
-        
-        if (s == null) { return ""; }
-        
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < s.length(); i += Character.charCount(s.codePointAt(i))) {
-            switch (s.codePointAt(i)) {
-            case '&': builder.append("&amp;"); break;
-            case '<': builder.append("&lt;"); break;
-            case '>': builder.append("&gt;"); break;
-            case '"': builder.append("&quot;"); break;
-            case '\'': builder.append("&apos;"); break;
-            case '\n': builder.append("<br />"); break;
-            default:                
-                if (Character.isIdentifierIgnorable(s.codePointAt(i))) {
-                    // ignore.
-                } else {
-                    for (int j = 0; j < Character.charCount(s.codePointAt(i)); ++j) {
-                        builder.append(s.charAt(i + j));
-                    }
-                }
-            }
-        }
-        
-        return builder.toString();
+        return ViewHelper.cleanupText(dirtyText);
     }
     
     @Deprecated
@@ -225,10 +186,11 @@ public final class Util {
     /**
      * validなHTMLから、HTMLタグとコメントを取り除く。
      * 
-     * @param html 加工するHTML文字列（非null）
+     * @param html 加工するHTML文字列
      * @return HTMLタグとコメントを取り除いた文字列
      */
     public static String removeTags(String html) {
+        if (html == null) { return null; }
         return REMOVETAG_PATTERN.matcher(html).replaceAll("");
     }
     
