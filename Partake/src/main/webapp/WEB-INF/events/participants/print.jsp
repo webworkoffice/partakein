@@ -35,7 +35,7 @@
 </head>
 <body id="printout">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
-<h1 id="pastel-line11ji"><img src="<%= request.getContextPath() %>/images/line-green.png" alt="">参加者リスト</h1>  
+<h1 id="pastel-line5ji"><img src="<%= request.getContextPath() %>/images/line-green.png" alt="">参加者リスト</h1>  
 <div id="content-adjust">
 
 <p class="output">

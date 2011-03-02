@@ -346,7 +346,7 @@ text-indent:-9999px;
 ---------------------------*/
 .event-comments {
 	color:#282828;
-    height:525px;
+    height:478px;
     overflow:auto;
     margin-bottom:5px;
     background-color: #ffffff;
@@ -354,7 +354,9 @@ text-indent:-9999px;
 }
 
 #event-comments-comment {
-    height: 325px;
+	height:auto;
+    min-height:300px;
+    max-height: 570px;
 }
 
 .comment {
@@ -363,7 +365,7 @@ text-indent:-9999px;
 }
 .event-comments textarea#commentForm-commentEdit {
     margin: 5px 0 0 0px;
-    height: 120px;
+    height: 100px;
 }
 .comment-form textarea {
 	margin-left:8px;
@@ -376,8 +378,10 @@ text-indent:-9999px;
 border:0
 }
 #tab-wrapper {
-width:580px;
-height:755px;
+width:577px;
+height:auto;
+min-height:700px;
+max-height:1280px;
 margin: 0 auto;
 text-align: left;
 padding-top:15px;
@@ -420,8 +424,14 @@ overflow: auto;
 clear:both;
 border:1px solid #cccccc;
 padding:14px;
-height:675px;
 color:#666;
+height:570px;
+border:1px solid pink;
+}
+#news1 {
+color:#666;
+height:auto;
+max-height:980px;
 }
 /* event-owner
 ---------------------------*/
