@@ -134,7 +134,7 @@ var tab = {
 		  title: 'Twitter Hashtag Live Feed',
 		  subject: '<%= h(event.getHashTag()) %>',
 		  width: 'auto',
-		  height: 520,
+		  height: 460,
 		  theme: {
 		    shell: {
 		      background: 'none',
