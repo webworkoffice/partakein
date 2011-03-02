@@ -131,14 +131,14 @@ public final class UserService extends PartakeService {
         TwitterLinkage twitterLinkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(twitter.getId())); 
         
         if (twitterLinkage == null || twitterLinkage.getUserId() == null) {
-            String userId = factory.getUserAccess().getFreshId(con); 
+            String userId = factory.getUserAccess().getFreshId(con);	// XXX should factory.getTwitterLinkageAccess().getFreshId(con) be used?
             twitterLinkageEmbryo.setUserId(userId);
         } else {
             twitterLinkageEmbryo.setUserId(twitterLinkage.getUserId());
         }
         
         factory.getTwitterLinkageAccess().put(con, twitterLinkageEmbryo);
-        return factory.getTwitterLinkageAccess().find(con, String.valueOf(twitter.getId()));
+        return factory.getTwitterLinkageAccess().find(con, String.valueOf(twitter.getId()));	// TODO why don't use twitterLinkageEmbryo to return?
     }
     
     // ----------------------------------------------------------------------
