@@ -62,7 +62,7 @@ body {
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <h1>
-    <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png" /><% } %>
+    <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png"　title="非公開イベント" /><% } %>
     <%= h(event.getTitle()) %>
 </h1>
 <% if (!StringUtils.isEmpty(event.getSummary())) { %>
@@ -71,7 +71,7 @@ body {
 
 <div class="event-wrapper">
 <% if (event.getFeedId() != null) { %>
-    <p class="event-feed-rss"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-14x14.png" /></a></p>
+    <p class="event-feed-rss cler"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-15x15.png" /></a></p>
 <% } %>
 
 <div class="event-content">

@@ -40,8 +40,7 @@
 
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<div class="top-introduction">
-
+<div class="top-introduction">	
     <p class="top-introduce">
 	<span class="big">P</span>ARTAKE (パーテイク) はイベントの告知ページを作成したり、<br />
 	イベントを検索して参加することができるシンプルなツールです。
@@ -87,7 +86,6 @@
 			</li>
 		</ul>
 	</div>
-	
 	<div class="top-explanation">
 	   <img src="<%= request.getContextPath() %>/images/feature-04.png" alt="" />
 	   <h3>ご要望をお聞きしています</h3>
@@ -141,10 +139,10 @@
 				<div class="<%= h(classPrefix) %>-image">
 				    <% if (event.getForeImageId() != null) { %>
 				<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-				        <img class="rad sdw" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
+				        <img class="rad sdw cler" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
 				    <% } else { %>
 				<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-				        <img class="rad sdw" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
+				        <img class="rad sdw cler" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
 				    <% } %>
 				</div>
 				<div class="<%= h(classPrefix) %>-content">

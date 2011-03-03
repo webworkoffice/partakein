@@ -46,7 +46,7 @@
 			    <div id="signin-with-twitter-part">
 				    <form action="/auth/loginByTwitter">
 				        <input type="hidden" name="redirectURL" value="<%= h(redirectURL) %>" />
-				        <input type="image" src="<%= request.getContextPath() %>/images/signinwithtwitter.png" value="Sign in with Twitter" class="signinwithtwitter" />
+				        <input type="image" src="<%= request.getContextPath() %>/images/signinwithtwitter.png" value="Sign in with Twitter" class="signinwithtwitter cler" />
 				    </form>
 			    </div>
 			    <div id="signin-with-openid-part">
