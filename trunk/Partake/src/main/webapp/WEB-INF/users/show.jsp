@@ -37,10 +37,10 @@
 	if (ownedEvents != null && !ownedEvents.isEmpty()) { %>
 		<table class="table0">
     <colgroup>
-      <col width="100px" /><col width="50px" /><col width="50px" />
+      <col width="400px" /><col width="200px" /><col width="px" />
     </colgroup>
 			<thead>
-				<tr><th>イベントタイトル</th><th>開催日</th><th>参加予定人数/募集人数</th></tr>
+				<tr><th>イベントタイトル</th><th>開催日</th><th>参加予定人数/定員</th></tr>
 			</thead>
 			<tbody>
 			    <% for (Event event : ownedEvents) { %>
@@ -70,7 +70,7 @@
 	if (enrolledEvents != null && !enrolledEvents.isEmpty()) { %>
 		<table class="table0">
     <colgroup>
-      <col width="100px" /><col width="50px" /><col width="50px" />
+      <col width="400px" /><col width="200px" /><col width="px" />
     </colgroup>
 			<thead>
 				<tr><th>イベントタイトル</th><th>開催日</th><th>ステータス</th></tr>
@@ -101,7 +101,7 @@
     if (finishedEvents != null && !finishedEvents.isEmpty()) { %>
         <table class="table0">
     <colgroup>
-      <col width="100px" /><col width="50px" /><col width="50px" />
+      <col width="400px" /><col width="200px" /><col width="px" />
     </colgroup>
             <thead>
                 <tr><th>イベントタイトル</th><th>開催日</th><th>ステータス</th></tr>

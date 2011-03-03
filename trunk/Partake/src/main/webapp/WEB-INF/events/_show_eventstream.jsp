@@ -62,12 +62,12 @@ var tab = {
 
 <div id="tab-wrapper">
 <ul id="tab">
-	<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1"　title="コメントボード">Comments</a></li>
-	<li><a href="#news2" _fcksavedurl="#news2"　title="管理者からのメッセージ">Messages</a></li>
-	<li><a href="#news3" _fcksavedurl="#news3" title="このイベントのハッシュタグがついたTweet">Twitter Feed</a></li>
+	<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1"　title="コメントボード">掲示板</a></li>
+	<li><a href="#news2" _fcksavedurl="#news2"　title="管理者からのメッセージ">管理者から</a></li>
+	<li><a href="#news3" _fcksavedurl="#news3" title="このイベントのハッシュタグがついたTweet">みんなのTweet</a></li>
 </ul>
 <div id="news1" class="rad">
-	<h2>Comments</h2>
+	<h2></h2>
 	<div id="event-comments-comment" class="event-comments rad">
 		<s:form action="removeComment" id="removeCommentForm" name="removeCommentForm">
 			<%= Helper.token() %>
@@ -100,7 +100,7 @@ var tab = {
 	        <% if (user != null) { %>
 		        <s:form action="comment">
 					<%= Helper.token() %>
-			        <s:hidden name="eventId" value="%{eventId}" />Your comment:<br />
+			        <s:hidden name="eventId" value="%{eventId}" /><br /><strong>Your comment:</strong><br />
 			        <textarea id="commentForm-commentEdit" name="comment"></textarea><br />
 			        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>
 			        <s:submit type="image" src="%{#request.contextPath}/images/postcomment.png" value="コメントを投稿"  />
@@ -124,6 +124,7 @@ var tab = {
 	</div>
 </div>
 <div id="news3" class="rad">
+<h2>このイベントに関するTweet</h2>
 	<% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	<div class="event-twitter-hashtag-stream">	
 	<script>
@@ -135,7 +136,7 @@ var tab = {
 		  title: 'Twitter Hashtag Live Feed',
 		  subject: '<%= h(event.getHashTag()) %>',
 		  width: 'auto',
-		  height: 460,
+		  height: 450,
 		  theme: {
 		    shell: {
 		      background: 'none',
@@ -199,3 +200,8 @@ tinyMCE.init({
 });
 </script>
 
+☆
+<div class="comment">
+　<p><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>">
+　　　　　<%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>
+☆

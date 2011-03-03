@@ -18,6 +18,11 @@
     -webkit-box-shadow: 2px 2px 2px #bcbcbc;/* Safari,Chrome */
     box-shadow: 2px 2px 2px #bcbcbc; /* CSS3 */
 	}
+/* filter */
+.cler:hover {
+    opacity:0.86;
+    filter: alpha(opacity=86);	
+}	
 
 /* ==================================================================
  * color layout
