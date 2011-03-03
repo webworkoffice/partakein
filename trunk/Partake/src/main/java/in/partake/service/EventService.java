@@ -1,10 +1,9 @@
 package in.partake.service;
 
-import in.partake.functional.Function;
 import in.partake.model.CommentEx;
+import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
-import in.partake.model.EnrollmentEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -17,13 +16,14 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Envelope;
+import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
-import in.partake.model.dto.Message;
-import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.Message;
+import in.partake.model.dto.Questionnaire;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
@@ -33,6 +33,7 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.PartakeProperties;
 import in.partake.util.Util;
+import in.partake.util.functional.Function;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1094,4 +1095,51 @@ public final class EventService extends PartakeService {
     	    
     	}
 	}
+	
+	public List<Questionnaire> findQuestionnairesByEventId(String eventId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        try {            
+            return factory.getQuestionnaireAccess().findQuestionnairesByEventId(con, eventId);
+        } finally {
+            con.invalidate();
+        }
+	}
+	
+    public EventCount countEvents() throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        EventCount count = new EventCount();
+
+        try {
+            con.beginTransaction();
+            // TODO use MapReduce for speed-up
+            for (DataIterator<Event> iter = factory.getEventAccess().getIterator(con); iter.hasNext(); ) {
+                Event event = iter.next();
+                if (event == null) continue;
+                count.numEvent++;
+                if (event.isPrivate()) {
+                    count.numPrivateEvent++;
+                }
+            }
+            con.commit();
+        } catch (DAOException e) {
+            try {
+                con.rollback();
+            } catch (DAOException ignore) {
+                logger.warn("PartakeConnection#rollback throws exception", ignore);
+            }
+            throw e;
+        } finally {
+            con.invalidate();
+        }
+
+        return count;
+    }
+
+    public static final class EventCount {
+        public int numEvent;
+        public int numPrivateEvent;
+    }
+
 }

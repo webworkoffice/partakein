@@ -16,11 +16,13 @@
 
 	<package name="partake-default" extends="struts-default">
 		<interceptors>
-			<interceptor name="utf8encoding"     class="in.partake.interceptor.UTF8EncodingInterceptor" />
-	    	<interceptor name="authenticate"     class="in.partake.interceptor.LoginRequiredInterceptor" />
-	    	<interceptor name="adminAuth"        class="in.partake.interceptor.AdminRequiredInterceptor" />
-	    	<interceptor name="dynamicInfo"      class="in.partake.interceptor.DynamicInformationInterceptor" />
-	    	<interceptor name="exceptionHandler" class="in.partake.interceptor.PartakeExceptionInterceptor" />
+			<interceptor name="utf8encoding"     class="in.partake.controller.interceptor.UTF8EncodingInterceptor" />
+	    	<interceptor name="authenticate"     class="in.partake.controller.interceptor.LoginRequiredInterceptor" />
+	    	<interceptor name="adminAuth"        class="in.partake.controller.interceptor.AdminRequiredInterceptor" />
+	    	<interceptor name="dynamicInfo"      class="in.partake.controller.interceptor.DynamicInformationInterceptor" />
+	    	<interceptor name="exceptionHandler" class="in.partake.controller.interceptor.PartakeExceptionInterceptor" />
+	    	<interceptor name="csrfToken"        class="in.partake.controller.interceptor.CSRFTokenInterceptor" />
+	    	<interceptor name="csrfTokenCheck"   class="in.partake.controller.interceptor.CSRFTokenCheckInterceptor" />
 
 	    	<interceptor-stack name="partakeBaseStack">
 	    		<interceptor-ref name="utf8encoding" />
@@ -29,6 +31,7 @@
 	    		</interceptor-ref>
 	    		<interceptor-ref name="dynamicInfo" />
 	    		<interceptor-ref name="defaultStack" />
+	    		<interceptor-ref name="csrfToken" />
 	    	</interceptor-stack>
 
 	    	<interceptor-stack name="partakeStack">
@@ -51,8 +54,8 @@
 	    	<interceptor-stack name="checkTokenStack">
                 <interceptor-ref name="partakeBaseStack"/>
                 <interceptor-ref name="authenticate"/>
-	    		<interceptor-ref name="tokenSession" />
-	    		<interceptor-ref name="exceptionHandler"/>
+                <interceptor-ref name="exceptionHandler"/>
+	    		<interceptor-ref name="csrfTokenCheck" /><!-- This may throw PartakeResultException -->
 	    	</interceptor-stack>
  	    </interceptors>	
 
@@ -66,7 +69,8 @@
 			</result>
 			<result name="redirect" type="redirect">${redirectURL}</result>
 			<result name="error" type="redirect">/error</result>
-			<result name="invalid" type="redirect">/error</result>
+			<result name="invalid" type="redirect">/invalid</result>
+			<result name="duplicated" type="redirect">/invalid</result>
 			<result name="notfound" type="redirect">/notfound</result>
 			<result name="prohibited" type="redirect">/prohibited</result>
 			<result name="returntop" type="redirect">/</result>
@@ -80,6 +84,14 @@
         
         <action name="error" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/error.jsp</result>
+        </action>
+
+        <action name="invalid" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/invalid.jsp</result>
+        </action>
+
+        <action name="duplicated" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/duplicated.jsp</result>
         </action>
         
         <action name="contact" method="alwaysSuccess" class="in.partake.controller.ToppageController">
@@ -255,7 +267,7 @@
 			<result name="input">/WEB-INF/events/new.jsp</result>
 		</action>
  		<action name="edit" method="edit" class="in.partake.controller.EventsEditController">
-            <interceptor-ref name="checkTokenStack" />
+            <interceptor-ref name="authenticateStack" />
 			<result name="input">/WEB-INF/events/edit.jsp</result>
 		</action>
 		<action name="commit" method="commit" class="in.partake.controller.EventsEditController">
@@ -355,6 +367,19 @@
                 <param name="actionName">${eventId}</param>
             </result>
             <result name="input">/WEB-INF/events/passcode.jsp</result>
+		</action>
+		
+		<!-- Questionnaire -->
+		<action name="editQuestionnaire" method="edit" class="in.partake.controller.action.QuestionnaireController">
+			<interceptor-ref name="authenticateStack" />
+			<result name="success">/WEB-INF/events/questionnaire/edit.jsp</result>
+		</action>
+		<action name="makeQuestionnaire" method="commit" class="in.partake.controller.action.QuestionnaireController">
+			<interceptor-ref name="checkTokenStack" />
+			<result name="success" type="redirectAction">
+				<param name="actionName">${eventId}</param>
+			</result>
+			<result name="input">/WEB-INF/events/questionnaire/edit.jsp</result>
 		</action>
 		
 		<!-- Event Participants -->

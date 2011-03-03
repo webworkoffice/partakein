@@ -1,3 +1,4 @@
+<%@page import="in.partake.view.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 
@@ -5,7 +6,6 @@
 <html lang="ja">
 <head>
 	<jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
-	   
 	<title>新しいイベントを作成します</title>
 </head>
 <body>
@@ -14,7 +14,7 @@
 <h1 id="pastel-line13ji"><img src="<%= request.getContextPath() %>/images/line-yellow.png" alt="">新しいイベントを作成します</h1>
 
 <s:form method="post" action="create" enctype="multipart/form-data">
-	<s:token />
+	<%= Helper.token() %>
 	<%@ include file="/WEB-INF/events/inner-form.jsp" %>
 
 	<s:submit id="event-edit-submit" type="image" src="%{#request.contextPath}/images/button-eventform.png" label="イベントを作成する" />

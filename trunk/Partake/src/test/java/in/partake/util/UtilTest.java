@@ -87,16 +87,16 @@ public class UtilTest {
 	
 	@Test
 	public void testToRemoveHash() {
-	    Assert.assertEquals(null, Util.removeHash(null));
-	    Assert.assertEquals("", Util.removeHash(""));
-	    Assert.assertEquals("abc", Util.removeHash("abc"));
-	    Assert.assertEquals("日本語", Util.removeHash("日本語"));
-	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.removeHash("𠮟𠮟𠮟𠮟𠮟𠮟"));
-	    Assert.assertEquals("", Util.removeHash("#hoge"));
-	    Assert.assertEquals("", Util.removeHash("#日本語"));
-	    Assert.assertEquals("", Util.removeHash("#𠮟𠮟𠮟𠮟𠮟𠮟"));
-	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.removeHash("𠮟𠮟𠮟𠮟𠮟𠮟#𠮟𠮟𠮟𠮟𠮟𠮟"));
-	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.removeHash("𠮟𠮟𠮟𠮟𠮟𠮟#𠮟𠮟𠮟𠮟𠮟𠮟#𠮟𠮟𠮟𠮟𠮟𠮟"));
+	    Assert.assertEquals(null, Util.removeURLFragment(null));
+	    Assert.assertEquals("", Util.removeURLFragment(""));
+	    Assert.assertEquals("abc", Util.removeURLFragment("abc"));
+	    Assert.assertEquals("日本語", Util.removeURLFragment("日本語"));
+	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.removeURLFragment("𠮟𠮟𠮟𠮟𠮟𠮟"));
+	    Assert.assertEquals("", Util.removeURLFragment("#hoge"));
+	    Assert.assertEquals("", Util.removeURLFragment("#日本語"));
+	    Assert.assertEquals("", Util.removeURLFragment("#𠮟𠮟𠮟𠮟𠮟𠮟"));
+	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.removeURLFragment("𠮟𠮟𠮟𠮟𠮟𠮟#𠮟𠮟𠮟𠮟𠮟𠮟"));
+	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.removeURLFragment("𠮟𠮟𠮟𠮟𠮟𠮟#𠮟𠮟𠮟𠮟𠮟𠮟#𠮟𠮟𠮟𠮟𠮟𠮟"));
 	}
 
 	@Test

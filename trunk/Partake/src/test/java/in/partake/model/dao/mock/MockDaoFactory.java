@@ -15,6 +15,7 @@ import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.IEventFeedAccess;
 import in.partake.model.dao.IOpenIDLinkageAccess;
+import in.partake.model.dao.IQuestionnaireAccess;
 import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.IURLShortenerAccess;
 import in.partake.model.dao.IUserAccess;
@@ -79,6 +80,11 @@ public class MockDaoFactory extends PartakeDAOFactory {
     @Override
     protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
         return Mockito.mock(IOpenIDLinkageAccess.class);
+    }
+    
+    @Override
+    protected IQuestionnaireAccess createQuestionnaireAccess() {
+        return Mockito.mock(IQuestionnaireAccess.class);
     }
 
     @Override

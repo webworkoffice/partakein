@@ -8,7 +8,7 @@
 
 <%@page import="java.util.List"%>
 
-<%@page import="static in.partake.util.Util.h"%>
+<%@page import="static in.partake.view.Helper.h"%>
 
 <%
 	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);

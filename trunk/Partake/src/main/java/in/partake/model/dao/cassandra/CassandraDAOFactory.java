@@ -13,6 +13,7 @@ import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.IEventFeedAccess;
 import in.partake.model.dao.IOpenIDLinkageAccess;
+import in.partake.model.dao.IQuestionnaireAccess;
 import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.IURLShortenerAccess;
 import in.partake.model.dao.IUserAccess;
@@ -84,6 +85,11 @@ public class CassandraDAOFactory extends PartakeDAOFactory {
     @Override
     protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
         return new OpenIDLinkageCassandraDao(this);
+    }
+    
+    @Override
+    protected IQuestionnaireAccess createQuestionnaireAccess() {
+        return new CassandraQuestionnaireDao(this);
     }
 
     @Override

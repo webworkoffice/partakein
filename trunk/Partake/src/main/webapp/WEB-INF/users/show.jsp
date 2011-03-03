@@ -5,7 +5,7 @@
 <%@page import="in.partake.view.Helper"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="java.util.List"%>
-<%@page import="static in.partake.util.Util.h"%>
+<%@page import="static in.partake.view.Helper.h"%>
 
 
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>    

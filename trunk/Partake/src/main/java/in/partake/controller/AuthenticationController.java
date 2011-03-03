@@ -152,7 +152,7 @@ public class AuthenticationController extends PartakeActionSupport {
         } else if ("connect".equals(purpose)) {
             return verifyOpenIDForConnection();
         } else {
-            return ERROR;
+            return INVALID;
         }
     }
     

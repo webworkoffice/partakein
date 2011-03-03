@@ -109,4 +109,10 @@ abstract class JPADao<T extends PartakeModel<T>> {
         
         return new JPAPartakeModelDataIterator<T>(em, list, clazz, false);        
     }
+    
+    protected void truncateImpl(PartakeConnection con, String tableName) {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("DELETE FROM " + tableName);
+        q.executeUpdate();   
+    }
 }

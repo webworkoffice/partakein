@@ -9,7 +9,7 @@
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@page import="in.partake.model.dto.Message"%>
-<%@page import="static in.partake.util.Util.h"%>
+<%@page import="static in.partake.view.Helper.h"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 

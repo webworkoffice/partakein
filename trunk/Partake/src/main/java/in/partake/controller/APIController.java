@@ -27,6 +27,9 @@ public class APIController extends PartakeActionSupport {
     // ----------------------------------------------------------------------
     // event retrieval
     
+    /**
+     * <code>api/getEvent?passcode=PASSCODE</code>
+     */
     public String getEvent() {
         String eventId = getParameter("eventId");
         if (StringUtils.isEmpty(eventId)) { return INVALID; }
@@ -42,6 +45,8 @@ public class APIController extends PartakeActionSupport {
                 
                 // owner および manager は見ることが出来る。
                 String passcode = (String)session.get("event:" + eventId);
+                if (passcode == null) { passcode = getParameter("passcode"); }
+                
                 if (loginUser != null && event.hasPermission(loginUser, UserPermission.EVENT_PRIVATE_EVENT)) {
                     // OK. You have the right to show this event.
                 } else if (StringUtils.equals(event.getPasscode(), passcode)) {

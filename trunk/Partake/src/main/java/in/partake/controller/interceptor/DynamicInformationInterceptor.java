@@ -1,4 +1,4 @@
-package in.partake.interceptor;
+package in.partake.controller.interceptor;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -34,10 +34,7 @@ public class DynamicInformationInterceptor extends AbstractInterceptor {
 		long begin = System.currentTimeMillis();
 		try {
     		return invocation.invoke(); 
-    	} catch (Exception e) {
-		    logger.error(currentURL, e);
-		    throw e;
-		} finally {
+    	} finally {
             long end = System.currentTimeMillis();
             logger.info(currentURL + " took "+ (end - begin) + "[msec] to process.");		    
 		}

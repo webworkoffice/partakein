@@ -1,7 +1,7 @@
 package in.partake.util;
 
 import in.partake.resource.PartakeProperties;
-import in.partake.view.ViewHelper;
+import in.partake.view.Helper;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,9 +14,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Formatter;
+import java.util.Random;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.xwork.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.rosaloves.bitlyj.Bitly;
@@ -28,9 +29,11 @@ import com.twitter.Regex;
 
 public final class Util {
 	private static final Logger logger = Logger.getLogger(Util.class);
+	private static final Random random = new Random();
 	
 	private static final Pattern REMOVETAG_PATTERN = Pattern.compile("(<!--.+?-->)|(<.+?>)", Pattern.DOTALL | Pattern.MULTILINE);
-	
+	private static final String ALNUM = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 	// ----------------------------------------------------------------------
 	// Time 
 	
@@ -80,6 +83,14 @@ public final class Util {
         return Regex.AUTO_LINK_HASHTAGS.matcher(hashTag).matches();
     }
     
+    public static String randomString(int length) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length; ++i) {
+            builder.append(ALNUM.charAt(random.nextInt(ALNUM.length())));
+        }
+        return builder.toString();
+    }
+    
     public static int codePointCount(String s) {
     	return s.codePointCount(0, s.length());
     }
@@ -108,11 +119,15 @@ public final class Util {
      * @param str 改行を含まない加工対象文字列
      * @return '#'と後続の文字列を取り除いた文字列
      */
-    public static String removeHash(String str) {
+    public static String removeURLFragment(String str) {
         if (str == null) { return null; }
-        return str.replaceAll("#.*", "");
+        return str.replaceAll("#.*", "");        
     }
-    
+
+    @Deprecated
+    public static String removeHash(String str) {
+        return removeURLFragment(str);
+    }
     
     // ----------------------------------------------------------------------
 	// Image
@@ -173,17 +188,17 @@ public final class Util {
     // HTML escape
     @Deprecated
     public static String h(String s) {
-        return ViewHelper.escapeHTML(s);
+        return Helper.escapeHTML(s);
     }
 
     @Deprecated
     public static String cleanupText(String dirtyText) {
-        return ViewHelper.cleanupText(dirtyText);
+        return Helper.cleanupText(dirtyText);
     }
     
     @Deprecated
     public static String cleanupHTML(String dirtyHTML) {
-        return ViewHelper.cleanupHTML(dirtyHTML);
+        return Helper.cleanupHTML(dirtyHTML);
     }
     
     /**

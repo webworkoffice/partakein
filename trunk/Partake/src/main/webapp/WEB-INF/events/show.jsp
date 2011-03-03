@@ -1,3 +1,4 @@
+<%@page import="in.partake.view.Helper"%>
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -25,8 +26,8 @@
 <%@page import="java.util.List"%>
 <%@page import="in.partake.resource.Constants"%>
 
-<%@page import="static in.partake.util.Util.h"%>
-<%@page import="static in.partake.util.Util.cleanupHTML"%>
+<%@page import="static in.partake.view.Helper.h"%>
+<%@page import="static in.partake.view.Helper.cleanupHTML"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.EventRelationEx"%>
 
@@ -153,6 +154,7 @@ body {
 <div class="event-owner-information rad">
 	<h2><img src="<%= request.getContextPath() %>/images/gear.png"/>イベント管理</h2>
 	<ul>
+		<%-- <li><a href="#" onclick="document.questionnaireForm.submit();">アンケートを作成/編集</a></li> --%>
 		<li><a href="#" onclick="document.eventEditForm.submit();">イベントを編集</a></li>
 		<% if (event.hasPermission(user, UserPermission.EVENT_REMOVE)) { %>
 		    <li><a id="open-event-delete-form" href="#">イベントを削除</a></li>
@@ -175,9 +177,14 @@ body {
             <dd><%= Helper.readableReminder(reminderStatus.getSentDateOfBeforeTheDay()) %></dd>
     </dl>
 	
+	<div id="questionnaire-form" style="display: none">
+		<s:form method="post" name="questionnaireForm" action="makeQuestionnaire">
+			<s:hidden name="eventId" value="%{eventId}" />
+			<s:submit value="アンケートを作成する" />
+		</s:form>
+	</div>
 	<div id="event-edit-form" style="display: none">
         <s:form method="post" name="eventEditForm" action="edit">
-			<s:token />
             <s:hidden name="eventId" value="%{eventId}" />
             <s:submit value="イベントを編集する" />
         </s:form>
@@ -185,7 +192,7 @@ body {
     <div id="event-delete-form" title="イベントを削除しようとしています" style="display: none">
         <p>イベントを削除しようとしています。この操作は取り消せません。本当に削除しますか？</p>
         <s:form method="post" action="destroy">
-            <s:token />
+			<%= Helper.token() %>
             <s:hidden name="eventId" value="%{eventId}" />
             <s:submit value="イベントを削除する" />
         </s:form>
@@ -194,7 +201,7 @@ body {
     <div id="message-form" title="参加者にメッセージを送信します">
         <p>参加者に twitter 経由でメッセージを送ることが出来ます。メッセージは、１００文字以内で記述してください。最大で１時間３回１日５回まで送ることが出来ます。</p>
         <s:form method="post" action="send">
-            <s:token />
+            <%= Helper.token() %>
             <s:hidden name="eventId" value="%{eventId}" />
             <s:textarea name="message"></s:textarea>
             <s:submit value="メッセージ送信" />
@@ -257,7 +264,7 @@ body {
 		<%-- 参加登録フォーム --%>
 		<div id="enroll-form" class="dialog-ui" title="参加登録フォーム" style="display: none">
 			<s:form method="post" action="enroll">
-				<s:token />
+				<%= Helper.token() %>
 				<s:hidden name="eventId" value="%{eventId}" />
 				<p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントに<strong>参加</strong>しようとしています。</p>
 				<div class="dotted-box">
@@ -274,7 +281,7 @@ body {
 		<%-- 仮参加フォーム --%>
 		<div id="reserve-form" class="dialog-ui" title="仮参加登録フォーム" style="display: none">
 			<s:form method="post" action="reserve">
-				<s:token />
+				<%= Helper.token() %>
 				<s:hidden name="eventId" value="%{eventId}" />
 				<p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントに<strong>仮参加</strong>しようとしています。</p>
 				<div class="dotted-box">
@@ -293,7 +300,7 @@ body {
 		<%-- キャンセルフォーム --%>
 		<div id="cancel-form" class="dialog-ui" title="参加キャンセルフォーム" style="display: none">
             <s:form method="post" action="cancel">
-                <s:token />
+                <%= Helper.token() %>
                 <s:hidden name="eventId" value="%{eventId}" />
                 <p><img src="<%= request.getContextPath() %>/images/momonga-mini.png"/>&nbsp;イベントへの参加を<strong>キャンセル</strong>しようとしています。</p>
                 <p>参加をいったんキャンセルすると確保していた順番は取り消されます。</p>
@@ -305,7 +312,7 @@ body {
 		<%-- コメント変更フォーム --%>
 		<div id="change-comment-form" class="dialog-ui" title="コメント変更フォーム" style="display: none">
             <s:form method="post" action="changeComment">
-                <s:token />
+                <%= Helper.token() %>
                 <s:hidden name="eventId" value="%{eventId}" />
                 <p>コメントを変更します。</p>
                 <s:label for="comment" value="COMMENT" />:<br />

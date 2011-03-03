@@ -23,8 +23,10 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(PartakeActionSupport.class);
 	
-	/** return code in case parameter is invalid. */
-	public static final String INVALID = "invalid"; //$NON-NLS-1$
+	/** return code in case parameter is invalid. (ユーザーのリクエストがおかしい場合) */
+	public static final String INVALID = "invalid"; //$NON-NLS-1$ //
+	/** INVALID なもののうち、ユーザーのリクエストが重複した場合 (これいる？) */
+	public static final String DUPLICATED = "duplicated"; 
 	/** return code in case redirection */
 	public static final String REDIRECT = "redirect"; //$NON-NLS-1$
 	/** return code in case the required resource is not found.*/
@@ -33,6 +35,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 	public static final String PROHIBITED = "prohibited"; //$NON-NLS-1$
 	
 	public static final String RETURNTOP = "returntop";
+	
 	
 	// 様々なところで使うので、redirectURL を定義しておく。
 	// あんまりよろしくないが、loginRequired でこれを使って、かつ login が必要なところは色色あるのでベースとして定義する
@@ -163,7 +166,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         this.session.put(key, null);
         return Collections.unmodifiableCollection(warningMessage);
     }
-    
+
     // ----------------------------------------------------------------------
     // Utility function
     

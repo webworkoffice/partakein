@@ -1,4 +1,4 @@
-package in.partake.interceptor;
+package in.partake.controller.interceptor;
 
 import org.apache.struts2.ServletActionContext;
 

@@ -1,3 +1,4 @@
+<%@page import="in.partake.view.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 
@@ -13,7 +14,7 @@
 <h1 id="pastel-line10ji"><img src="<%= request.getContextPath() %>/images/line-orange.png" alt="">イベントを編集します</h1>
 
 <s:form method="post" action="commit" enctype="multipart/form-data"><%-- create じゃなくて commit なのに注意 --%>
-	<s:token />
+	<%= Helper.token() %>
 	<s:hidden id="eventId" name="eventId" value="%{eventId}"/><%-- new.jsp とここが違う。なんか共通化するとエラーがでる。なんで？ --%>
 	<%@ include file="/WEB-INF/events/inner-form.jsp" %>
 

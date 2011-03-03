@@ -6,22 +6,23 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
-@Entity
+@Entity(name = "Questionnaires")
 public class Questionnaire extends PartakeModel<Questionnaire> {
     @Id
     private String id;              
     @Column @Index
     private String eventId;         // イベント
-    @Column
+    @Column(length = 2048)
     private String question;        // 質問文
     @Column
-    private int questionNo;         // 問題番号 (questionNo でソートされる)
+    private int questionNo;         // 問題番号 (questionNo でソートされる) / 同じものが複数あれば未定義    
     @Column
     private QuestionnaireType type;
-    @Column(length = 2048)
-    private String answerTexts;     // 答えの列 TODO: どうやって保持しようかな / CSV 形式あたりで保持する？
+    @Column(length = 4096)
+    private String answerTexts;     // 答えの列。
     
     public Questionnaire() {        
     }
@@ -30,7 +31,7 @@ public class Questionnaire extends PartakeModel<Questionnaire> {
         this.id = id;
         this.eventId = eventId;
         this.question = question;
-        this.questionNo = questionNo;
+        this.questionNo = questionNo;        
         this.type = type;
         this.answerTexts = answerTexts;
     }
@@ -49,6 +50,40 @@ public class Questionnaire extends PartakeModel<Questionnaire> {
         return new Questionnaire(this);
     }
 
+    // ----------------------------------------------------------------------
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(id);
+        code = code * 37 + ObjectUtils.hashCode(eventId);
+        code = code * 37 + ObjectUtils.hashCode(question);
+        code = code * 37 + ObjectUtils.hashCode(questionNo);
+        code = code * 37 + ObjectUtils.hashCode(type);
+        code = code * 37 + ObjectUtils.hashCode(answerTexts);
+        
+        return code;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Questionnaire)) { return false; }
+        
+        Questionnaire lhs = this;
+        Questionnaire rhs = (Questionnaire) obj;
+        
+        if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
+        if (!ObjectUtils.equals(lhs.eventId, rhs.eventId)) { return false; }
+        if (!ObjectUtils.equals(lhs.question, rhs.question)) { return false; }
+        if (!ObjectUtils.equals(lhs.questionNo, rhs.questionNo)) { return false; }
+        if (!ObjectUtils.equals(lhs.type, rhs.type)) { return false; }
+        if (!ObjectUtils.equals(lhs.answerTexts, rhs.answerTexts)) { return false; }
+        
+        return true;
+    }
+    
+    
     // ----------------------------------------------------------------------
     
     public String getId() {
