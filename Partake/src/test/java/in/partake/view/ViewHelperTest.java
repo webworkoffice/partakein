@@ -4,7 +4,7 @@ import org.apache.struts2.StrutsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static in.partake.view.ViewHelper.h;
+import static in.partake.view.Helper.h;
 
 public class ViewHelperTest extends StrutsTestCase {
     
@@ -40,7 +40,7 @@ public class ViewHelperTest extends StrutsTestCase {
     @Test
     public void testToCleanupHTML() throws Exception {
         String dirty = "<script>alert('hoge')</script>";
-        String sanity = ViewHelper.cleanupHTML(dirty);
+        String sanity = Helper.cleanupHTML(dirty);
         
         System.out.println(sanity);
         Assert.assertTrue(!sanity.contains("script"));

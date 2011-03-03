@@ -1,3 +1,5 @@
+<%@page import="in.partake.service.EventService"%>
+<%@page import="in.partake.service.EventService.EventCount"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>
@@ -17,17 +19,34 @@
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <h1>Administrator Mode</h1>
+
 <%
-	UserService service = UserService.get();
-	UserCount count = service.countUsers();
+	UserCount userCount = UserService.get().countUsers();
+	EventCount eventCount = EventService.get().countEvents();
 	NumberFormat format = NumberFormat.getInstance();
 %>
 	<h2>Count of users</h2>
 	<dl>
-		<dt>User</dt><dd><%= format.format(count.user) %></dd>
-		<dt>Active User (who sign in the last 30 days)</dt><dd><%= format.format(count.activeUser) %></dd>
+		<dt>User</dt><dd><%= format.format(userCount.user) %></dd>
+		<dt>Active User (who sign in the last 30 days)</dt><dd><%= format.format(userCount.activeUser) %></dd>
 	</dl>
 
+	<h2>Count of events</h2>
+	<dl>
+		<dt>Event</dt><dd><%= format.format(eventCount.numEvent) %></dd>
+		<dt>private event</dt><dd><%= format.format(eventCount.numPrivateEvent) %></dd>
+	</dl>
+	
+<h2>アンケートフォーム作成テスト中</h2>
+
+<div id="questionnaire-form">
+	<ul id="question-pane">
+		<li id="hoge1">上へ 下へ 消す / 質問文１ (TEXT)</li>
+	</ul>
+	<div id="content-pane">
+	
+	</div>
+</div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

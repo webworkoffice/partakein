@@ -24,7 +24,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     @Id
     private String eventId;
     
-    @Column
+    @Column(length = 4096)
     private String comment;
     @Column
     private boolean vip;

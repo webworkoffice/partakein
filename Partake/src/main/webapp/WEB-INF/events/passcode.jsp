@@ -1,3 +1,4 @@
+<%@page import="in.partake.view.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
     
@@ -13,7 +14,7 @@
 <h1>イベントを表示するためにパスコードを入れてください。</h1>
 
 <s:form method="post" action="passcode" id="passcode-checking-form">
-	<s:token />
+	<%= Helper.token() %>
     <s:hidden id="eventId" name="eventId" value="%{eventId}" />
     <label for="passcode">パスコード:</label><s:textfield id="passcode-checking" name="passcode" label="Passcode"/><br />
     <s:submit />

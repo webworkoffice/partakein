@@ -1,4 +1,4 @@
-package in.partake.interceptor;
+package in.partake.controller.interceptor;
 
 import in.partake.controller.PartakeActionSupport;
 import in.partake.model.UserEx;

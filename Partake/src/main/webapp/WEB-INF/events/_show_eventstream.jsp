@@ -1,3 +1,4 @@
+<%@page import="in.partake.view.Helper"%>
 <%@page import="in.partake.util.Util"%>
 <%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
 <%@page import="in.partake.model.DirectMessageEx"%>
@@ -12,7 +13,7 @@
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.model.EventEx"%>
 
-<%@page import="static in.partake.util.Util.h"%>
+<%@page import="static in.partake.view.Helper.h"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 
 <%
@@ -69,7 +70,7 @@ var tab = {
 	<h2>Comments</h2>
 	<div id="event-comments-comment" class="event-comments rad">
 		<s:form action="removeComment" id="removeCommentForm" name="removeCommentForm">
-			<s:token />
+			<%= Helper.token() %>
 			<s:hidden id="removeCommentId" name="commentId" value="" />
 			<s:hidden name="eventId" value="%{eventId}" />
 		</s:form>
@@ -88,7 +89,7 @@ var tab = {
 					<a href="#" title="コメントを削除" onclick="removeComment('<%= h(comment.getId()) %>')">[x]</a>
 				<% } %></p>
 				<% if (comment.isHTML()) { %>
-				    <%= Util.cleanupHTML(comment.getComment()) %>
+				    <%= Helper.cleanupHTML(comment.getComment()) %>
 				<% } else { %>
 				    <p><%= h(comment.getComment()) %></p>
 				<% } %>
@@ -98,7 +99,7 @@ var tab = {
 		<div class="comment-form">
 	        <% if (user != null) { %>
 		        <s:form action="comment">
-			        <s:token />
+					<%= Helper.token() %>
 			        <s:hidden name="eventId" value="%{eventId}" />Your comment:<br />
 			        <textarea id="commentForm-commentEdit" name="comment"></textarea><br />
 			        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>

@@ -1,3 +1,4 @@
+<%@page import="in.partake.view.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 
@@ -7,7 +8,7 @@
 %>
 
 <form method="post" action="<%= callingURL %>" class="openid"><div>
-    <% if (usesToken) { %><s:token /> <% } %>
+    <% if (usesToken) { %><%= Helper.token() %> <% } %>
     <ul class="providers">
         <li class="direct" title="Yahoo"><img src="<%= request.getContextPath() %>/images/yahoo-openid.png" alt="icon" /><span>http://yahoo.co.jp</span></li>
         <li class="direct" title="Google"><img src="<%= request.getContextPath() %>/images/google-openid.png" alt="icon" /><span>https://www.google.com/accounts/o8/id</span></li> 

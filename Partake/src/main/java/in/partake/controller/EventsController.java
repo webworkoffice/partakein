@@ -141,14 +141,14 @@ public class EventsController extends PartakeActionSupport {
         this.eventId = getParameter("eventId");
    		if (eventId == null) {
    			logger.info("EVENT ID was not set correctly."); // TODO: あー国際化したい
-   			return ERROR;
+   			return INVALID;
    		}
    		
    		try {
             event = EventService.get().getEventExById(eventId);
             if (event == null) {
                 logger.warn("EVENT ID : "  + eventId + " was not found.");
-                return NOT_FOUND;
+                return INVALID;
             }
 	   		
 	   		String comment = getParameter("comment");
@@ -251,9 +251,15 @@ public class EventsController extends PartakeActionSupport {
 	    String eventId = getParameter("eventId");
 	    if (eventId == null) { return ERROR; }
 
+	    this.eventId = eventId;
+	    
 	    // If the comment does not exist, we use empty string instead.
 	    String comment = getParameter("comment");
 	    if (comment == null) { comment = ""; } 
+	    if (comment.length() > 1024) {
+	        addWarningMessage("コメントが長すぎます。");
+	        return INPUT;
+	    }
 	    
 	    try {
 	        EventEx event = EventService.get().getEventExById(eventId);
@@ -282,8 +288,7 @@ public class EventsController extends PartakeActionSupport {
 	        
 	        // Twitter で参加をつぶやく
 	        if (!changesOnlyComment) { tweetEnrollment(user, event, status); }
-	        
-	        this.eventId = eventId;
+
 	        return SUCCESS;
 	    } catch (DAOException e) {
 	        logger.error(I18n.t(I18n.DATABASE_ERROR), e);

@@ -2,7 +2,7 @@
 function onReady() {
     var dialogIDs = ["signin-dialog", "enroll-form", "reserve-form", "cancel-form",
 	                   "event-edit-form", "event-delete-form", 
-	                   "subevent-delete-form",
+	                   "questionnaire-form",
 	                   "message-form", "twitter-promotion-form",
 	                   "change-comment-form", "reminder-reset-form"];
 

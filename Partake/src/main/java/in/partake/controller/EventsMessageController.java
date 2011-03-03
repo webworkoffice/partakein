@@ -13,9 +13,9 @@ import in.partake.util.Util;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
-import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
-import com.opensymphony.xwork2.validator.annotations.StringLengthFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 
@@ -28,15 +28,27 @@ public class EventsMessageController extends PartakeActionSupport {
 	private String message;
 	
 	public String send() {
-		if (eventId == null) { return ERROR; }
-		if (message == null) { return ERROR; }
+		if (eventId == null) { return INVALID; }
+		if (message == null) { return INVALID; }
 
 		UserEx user = getLoginUser();
-		if (user == null) { return ERROR; }
+		if (user == null) { return LOGIN; }
 
+		if (StringUtils.isBlank(message)) {
+		    addWarningMessage("メッセージが必要です。");
+		    return INPUT;
+		}
+		if (message.length() > 100) {
+		    addWarningMessage("メッセージは長くとも 100 文字以下で記述してください。(様々な制限により 100 文字以下でなければならない場合があります。)");
+		    return INPUT;
+		}
+
+		
 		try {
 			EventEx event = EventService.get().getEventExById(eventId);
-			if (event == null) { return ERROR; }
+			if (event == null) {
+			    throw new PartakeInvalidResultException(String.format("Event Id (%s) からイベントを取得できませんでした。", eventId));
+			}
 
 			if (!event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE)) { return PROHIBITED; }
 			
@@ -124,9 +136,10 @@ public class EventsMessageController extends PartakeActionSupport {
 		this.eventId = eventId;
 	}
 	
-    @RequiredFieldValidator(type = ValidatorType.FIELD, message = "メッセージが必要です")
-    @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "100", message = "message は 100 文字以下で記述してください")
-    @RequiredStringValidator(type = ValidatorType.FIELD, message = "メッセージが必要です")
+	// なんかここでやると死ぬなあ
+    // @RequiredFieldValidator(type = ValidatorType.FIELD, message = "メッセージが必要です")
+    // @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "100", message = "message は 100 文字以下で記述してください")
+    // @RequiredStringValidator(type = ValidatorType.FIELD, message = "メッセージが必要です")
 	public void setMessage(String message) {
 		this.message = message;
 	}

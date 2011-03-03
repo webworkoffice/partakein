@@ -13,19 +13,5 @@
 	</ul>
 </div>
 
-<%-- if google analytics is installed, analytics code will be shown here. --%>
-<% if (PartakeProperties.get().getGoogleAnalyticsCode() != null) {%>
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', '<%= PartakeProperties.get().getGoogleAnalyticsCode() %>']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-<% } %>
 
 <%-- <div id="wrapper"> appear in header.jsp --%></div>

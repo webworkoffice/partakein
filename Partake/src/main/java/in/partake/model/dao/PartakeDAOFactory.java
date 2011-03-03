@@ -18,6 +18,7 @@ public abstract class PartakeDAOFactory {
     private final IEventFeedAccess eventFeedAccess;
     private final IEventActivityAccess eventActivityAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
+    private final IQuestionnaireAccess questionnaireAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
     private final IUserPreferenceAccess userPreferenceAccess;
@@ -41,6 +42,7 @@ public abstract class PartakeDAOFactory {
         addTruncatable(eventFeedAccess       = createEventFeedAccess());
         addTruncatable(eventActivityAccess   = createEventActivityAccess());
         addTruncatable(openIDLinkageAccess   = createOpenIDLinkageAccess());
+        addTruncatable(questionnaireAccess   = createQuestionnaireAccess());
         addTruncatable(twitterLinkageAccess  = createTwitterLinkageAccess());
         addTruncatable(userAccess            = creataeUserAccess());
         addTruncatable(userPreferenceAccess  = createUserPreferenceAccess());
@@ -113,6 +115,10 @@ public abstract class PartakeDAOFactory {
     public final IOpenIDLinkageAccess getOpenIDLinkageAccess() {
         return openIDLinkageAccess;
     }
+    
+    public final IQuestionnaireAccess getQuestionnaireAccess() {
+        return questionnaireAccess;
+    }
 
     public final ITwitterLinkageAccess getTwitterLinkageAccess() {
         return twitterLinkageAccess;
@@ -146,6 +152,7 @@ public abstract class PartakeDAOFactory {
     protected abstract IEventFeedAccess createEventFeedAccess();
     protected abstract IEventActivityAccess createEventActivityAccess();
     protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
+    protected abstract IQuestionnaireAccess createQuestionnaireAccess();
     protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();
     protected abstract IUserAccess creataeUserAccess();
     protected abstract IUserPreferenceAccess createUserPreferenceAccess();

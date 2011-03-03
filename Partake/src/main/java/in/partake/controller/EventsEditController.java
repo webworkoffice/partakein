@@ -308,17 +308,17 @@ public class EventsEditController extends PartakeActionSupport implements Valida
             // related event を登録        
             List<EventRelation> eventRelations = new ArrayList<EventRelation>();
             Set<EventRelationPK> eventRelationPKs = new HashSet<EventRelationPK>();
-            if (!StringUtils.isEmpty(relatedEventID1) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeHash(relatedEventID1)))) {
-                eventRelations.add(new EventRelation(eventId, Util.removeHash(relatedEventID1), relatedEventRequired1, relatedEventPriority1));
-                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeHash(relatedEventID1)));
+            if (!StringUtils.isEmpty(relatedEventID1) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeURLFragment(relatedEventID1)))) {
+                eventRelations.add(new EventRelation(eventId, Util.removeURLFragment(relatedEventID1), relatedEventRequired1, relatedEventPriority1));
+                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeURLFragment(relatedEventID1)));
             }
-            if (!StringUtils.isEmpty(relatedEventID2) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeHash(relatedEventID2)))) {
-                eventRelations.add(new EventRelation(eventId, Util.removeHash(relatedEventID2), relatedEventRequired2, relatedEventPriority2));
-                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeHash(relatedEventID1)));
+            if (!StringUtils.isEmpty(relatedEventID2) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeURLFragment(relatedEventID2)))) {
+                eventRelations.add(new EventRelation(eventId, Util.removeURLFragment(relatedEventID2), relatedEventRequired2, relatedEventPriority2));
+                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeURLFragment(relatedEventID1)));
             }
-            if (!StringUtils.isEmpty(relatedEventID3) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeHash(relatedEventID3)))) {
-                eventRelations.add(new EventRelation(eventId, Util.removeHash(relatedEventID3), relatedEventRequired3, relatedEventPriority3));
-                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeHash(relatedEventID1)));
+            if (!StringUtils.isEmpty(relatedEventID3) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeURLFragment(relatedEventID3)))) {
+                eventRelations.add(new EventRelation(eventId, Util.removeURLFragment(relatedEventID3), relatedEventRequired3, relatedEventPriority3));
+                eventRelationPKs.add(new EventRelationPK(eventId, Util.removeURLFragment(relatedEventID1)));
             }
             
         	EventService.get().setEventRelations(eventId, eventRelations);
@@ -418,17 +418,17 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        // related event を登録        
 	        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
 	        Set<EventRelationPK> eventRelationPKs = new HashSet<EventRelationPK>();
-	        if (!StringUtils.isEmpty(relatedEventID1) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID1)))) {
-	            eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID1), relatedEventRequired1, relatedEventPriority1));
-	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID1)));
+	        if (!StringUtils.isEmpty(relatedEventID1) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeURLFragment(relatedEventID1)))) {
+	            eventRelations.add(new EventRelation(event.getId(), Util.removeURLFragment(relatedEventID1), relatedEventRequired1, relatedEventPriority1));
+	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeURLFragment(relatedEventID1)));
 	        }
-	        if (!StringUtils.isEmpty(relatedEventID2) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID2)))) {
-	            eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID2), relatedEventRequired2, relatedEventPriority2));
-	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID1)));
+	        if (!StringUtils.isEmpty(relatedEventID2) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeURLFragment(relatedEventID2)))) {
+	            eventRelations.add(new EventRelation(event.getId(), Util.removeURLFragment(relatedEventID2), relatedEventRequired2, relatedEventPriority2));
+	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeURLFragment(relatedEventID1)));
 	        }
-	        if (!StringUtils.isEmpty(relatedEventID3) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID3)))) {
-	            eventRelations.add(new EventRelation(event.getId(), Util.removeHash(relatedEventID3), relatedEventRequired3, relatedEventPriority3));
-	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeHash(relatedEventID1)));
+	        if (!StringUtils.isEmpty(relatedEventID3) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeURLFragment(relatedEventID3)))) {
+	            eventRelations.add(new EventRelation(event.getId(), Util.removeURLFragment(relatedEventID3), relatedEventRequired3, relatedEventPriority3));
+	            eventRelationPKs.add(new EventRelationPK(event.getId(), Util.removeURLFragment(relatedEventID1)));
 	        }
 
 	        EventService.get().update(event, eventEmbryo,

@@ -26,7 +26,7 @@ import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
-import in.partake.view.ViewHelper;
+import in.partake.view.Helper;
 
 public class EventsFeedController extends PartakeActionSupport {
 	private static final Logger LOGGER = Logger.getLogger(EventsFeedController.class);
@@ -152,7 +152,7 @@ public class EventsFeedController extends PartakeActionSupport {
 
 		    SyndContent content = new SyndContentImpl();
             content.setType("text/html");
-            content.setValue(ViewHelper.cleanupHTML(event.getDescription()));
+            content.setValue(Helper.cleanupHTML(event.getDescription()));
 	            
 			SyndEntry entry = new SyndEntryImpl();
 			entry.setTitle(event.getTitle());
@@ -188,10 +188,10 @@ public class EventsFeedController extends PartakeActionSupport {
 	        for (EventActivity activity : activities) {
 	            SyndContent content = new SyndContentImpl();
 	            content.setType("text/html");
-	            content.setValue(ViewHelper.cleanupHTML(activity.getContent()));
+	            content.setValue(Helper.cleanupHTML(activity.getContent()));
 	            
 	            SyndEntry entry = new SyndEntryImpl();
-	            entry.setTitle(ViewHelper.h(activity.getTitle()));
+	            entry.setTitle(Helper.h(activity.getTitle()));
 	            entry.setDescription(content);
 	            
 	            entries.add(entry);

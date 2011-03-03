@@ -4,6 +4,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.resource.I18n;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
 
@@ -57,7 +58,7 @@ public class AdministratorController extends PartakeActionSupport {
             
             return SUCCESS;
         } catch (DAOException e) {
-            logger.warn("createDemoPage failed", e);
+            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
             return ERROR;
         }
     }
@@ -84,7 +85,7 @@ public class AdministratorController extends PartakeActionSupport {
     	    EventService.get().addFeedIdToAllEvents();
     		return SUCCESS;
     	} catch (DAOException e) {
-    		e.printStackTrace();
+    	    logger.error(I18n.t(I18n.DATABASE_ERROR), e);
     		return ERROR;
     	}
     }
@@ -100,22 +101,5 @@ public class AdministratorController extends PartakeActionSupport {
         if (!PartakeProperties.get().getTwitterAdminName().equals(user.getScreenName())) {
             throw new PartakeResultException(PROHIBITED);
         }     
-    }
-    
-//    private int getNumOfAllEvents() {
-//        try {
-//            int result = 0;            
-//            KeyIterator key = EventService.get().getAllEventKeysIterator();
-//            while (key.hasNext()) {
-//                Event event = EventService.get().getEventById(key.next());
-//                if (event == null) { continue; }
-//                ++result;
-//            }
-//            
-//            return result;
-//        } catch (DAOException e) {
-//            logger.warn("getNumOfAllEvents", e);
-//            return -1;
-//        }
-//    }
+    }    
 }

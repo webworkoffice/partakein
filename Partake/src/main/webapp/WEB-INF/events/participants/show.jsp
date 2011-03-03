@@ -1,3 +1,4 @@
+<%@page import="in.partake.view.Helper"%>
 <%@page import="in.partake.model.dto.auxiliary.AttendanceStatus"%>
 <%@page import="in.partake.model.dto.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
@@ -9,7 +10,7 @@
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@page import="in.partake.model.dto.Message"%>
-<%@page import="static in.partake.util.Util.h"%>
+<%@page import="static in.partake.view.Helper.h"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
@@ -142,14 +143,14 @@
 </div>
 
 <s:form method="post" id="removeAttendantForm" name="removeAttendantForm" action="removeAttendant" style="display: none;">
-	<s:token />
+	<%= Helper.token() %>
 	<s:hidden name="eventId" id="eventIdForRemoveAttendantForm" value="" />
 	<s:hidden name="userId"  id="userIdForRemoveAttendantForm" value="" />					
 	<s:submit value="削除する" />
 </s:form>
 
 <s:form method="post" id="makeAttendantVIPForm" name="makeAttendantVIPForm" action="makeAttendantVIP" style="display: none;">
-	<s:token />
+	<%= Helper.token() %>
 	<s:hidden name="eventId" id="eventIdForMakeAttendantVIPForm" value="" />
 	<s:hidden name="userId"  id="userIdForMakeAttendantVIPForm" value="" />		
 	<s:hidden name="vip"     id="vipForMakeAttendantVIPForm" value="" />			
@@ -157,7 +158,7 @@
 </s:form>
 
 <s:form method="post" id="changeAttendanceForm" name="changeAttendanceForm" action="changeAttendance" style="display: none;">
-    <s:token />
+	<%= Helper.token() %>
     <s:hidden name="eventId" id="eventIdForChangeAttendanceForm" value="" />
     <s:hidden name="userId"  id="userIdForChangeAttendanceForm" value="" />     
     <s:hidden name="status"  id="statusForChangeAttendanceForm" value="" />            

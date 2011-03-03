@@ -5,7 +5,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ page import="in.partake.resource.Constants"%>
 <%@ page import="in.partake.util.Util"%>
-<%@ page import="static in.partake.util.Util.h"%>
+<%@ page import="static in.partake.view.Helper.h"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 
 <%

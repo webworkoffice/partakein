@@ -1,3 +1,4 @@
+<%@page import="in.partake.view.Helper"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.controller.UsersPreferenceController"%>
 <%@page import="in.partake.model.UserEx"%>
@@ -64,7 +65,7 @@
 
 <div class="setting-set">
 <s:form method="post" action="setPreference">
-	<s:token />
+	<%= Helper.token() %>
 	<s:checkbox name="receivingTwitterMessage" />twitter 経由のリマインダーを受け取る (default:受け取る)<br />
 	<s:checkbox name="profilePublic" />マイページを他人にも公開する (default：公開)<br />
 	<s:checkbox name="tweetingAttendanceAutomatically" />イベントに参加するとき、自動的に参加をつぶやく (default：つぶやかない)<br />
@@ -93,7 +94,7 @@
 <p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。<br />
 ただし、これまでのカレンダー URL は無効になるので気をつけてください。
 <s:form method="post" action="revokeCalendar">
-	<s:token />
+	<%= Helper.token() %>
 	<s:submit value="カレンダー ID を再生成する" />
 </s:form>
 </p>

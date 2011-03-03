@@ -35,6 +35,11 @@ import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;
 import in.partake.util.Util;
 
+/**
+ * ユーザへのメッセージングサービスを提供する。
+ * 
+ * @author shinyak
+ */
 public final class MessageService extends PartakeService {
     private static final Logger logger = Logger.getLogger(MessageService.class);
     private static MessageService instance = new MessageService();

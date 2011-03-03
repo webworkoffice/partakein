@@ -37,6 +37,11 @@ public class Main {
         PartakeConnection cascon = casPool.getConnection();
         PartakeConnection jpacon = jpaPool.getConnection();
 
+        jpacon.beginTransaction();
+        jpa.truncate(jpacon);
+        jpacon.commit();
+      
+        
         int cnt = 0;
         DataIterator<T> it = cas.getIterator(cascon);        
         while (it.hasNext()) {
@@ -48,9 +53,11 @@ public class Main {
             jpa.put(jpacon, t);
             jpacon.commit();
             
-            if (++cnt % 100 == 0) {
+            if (++cnt % 50 == 0) {
                 jpacon.invalidate();
                 jpacon = jpaPool.getConnection();
+                cascon.invalidate();
+                cascon = casPool.getConnection();
             }
             
         }
