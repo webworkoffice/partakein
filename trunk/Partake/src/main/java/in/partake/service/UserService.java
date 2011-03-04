@@ -211,6 +211,7 @@ public final class UserService extends PartakeService {
             List<Enrollment> enrollments = factory.getEnrollmentAccess().findByUserId(con, userId);
             List<Event> events = new ArrayList<Event>();
             for (Enrollment e : enrollments) {
+                if (e == null) { continue; }
                 if (e.getStatus().isEnrolled()) {
                     Event event = factory.getEventAccess().find(con, e.getEventId());
                     if (event == null) { continue; }
