@@ -105,6 +105,16 @@ public class LuceneDao {
 		}
 	}
 	
+	public boolean hasDocument(String id) throws DAOException {
+	    try {
+	        Query query = new TermQuery(new Term("ID", id));
+	        TopDocs docs = indexSearcher.search(query, 1);
+	        return docs.totalHits > 0;
+	    } catch (IOException e) {
+	        throw new DAOException(e);
+	    }
+	}
+	
 	public Document getDocument(int doc) throws DAOException {
 		try {
 			return indexSearcher.doc(doc);

@@ -37,16 +37,10 @@
 		<dt>private event</dt><dd><%= format.format(eventCount.numPrivateEvent) %></dd>
 	</dl>
 	
-<h2>アンケートフォーム作成テスト中</h2>
-
-<div id="questionnaire-form">
-	<ul id="question-pane">
-		<li id="hoge1">上へ 下へ 消す / 質問文１ (TEXT)</li>
+	<h2>いろんなリンク</h2>
+	<ul>
+		<li><a href="<%= request.getContextPath() %>/admin/recreateEventIndex">Lucene の再生成</a></li>
 	</ul>
-	<div id="content-pane">
-	
-	</div>
-</div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
