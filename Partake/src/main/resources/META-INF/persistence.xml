@@ -36,7 +36,7 @@
 
       <!-- property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='drop,add')"/--> 
       <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add')" /> 
-      <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
+      <property name="openjpa.RuntimeUnenhancedClasses" value="unsupported"/>
       
       <property name="openjpa.DataCache" value="true"/>
       <property name="openjpa.QueryCache" value="false"/>
