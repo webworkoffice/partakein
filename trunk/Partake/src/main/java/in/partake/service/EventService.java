@@ -510,6 +510,29 @@ public final class EventService extends PartakeService {
 
         return result;
 	}
+	
+	public void recreateEventIndex() throws DAOException {
+	    PartakeDAOFactory factory = getFactory();
+	    PartakeConnection con = getPool().getConnection();
+	    try {
+	        DataIterator<Event> it = factory.getEventAccess().getIterator(con);
+	        while (it.hasNext()) {
+	            Event event = it.next();
+	            if (event == null) { continue; }
+	            if (event.isPrivate()) {
+	                LuceneDao.get().removeDocument(event.getId());
+	            } else if (LuceneDao.get().hasDocument(event.getId())) {
+                    Document doc = makeDocument(event.getId(), event);
+                    LuceneDao.get().updateDocument(doc);
+	            } else {
+                    Document doc = makeDocument(event.getId(), event);
+                    LuceneDao.get().addDocument(doc);
+	            }	            
+	        }
+	    } finally {
+	        con.invalidate();
+	    }
+	}
 
     // ----------------------------------------------------------------------
     // relations なのっ！

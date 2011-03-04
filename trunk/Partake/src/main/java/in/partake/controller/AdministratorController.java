@@ -90,6 +90,16 @@ public class AdministratorController extends PartakeActionSupport {
     	}
     }
     
+    public String recreateEventIndex() {
+        try {
+            EventService.get().recreateEventIndex();
+            return SUCCESS;
+        } catch (DAOException e) {
+            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
+            return ERROR;
+        }
+    }
+    
     // ----------------------------------------------------------------------
     
     private void ensureAdmin() throws PartakeResultException {
