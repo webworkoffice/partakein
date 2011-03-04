@@ -1,4 +1,4 @@
-# 日本語での PARTAKE に関する問答集
+#summary 日本語での PARTAKE に関する問答集
 
 = 全般 =
 
