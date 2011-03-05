@@ -31,12 +31,12 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
 
     @Test
     public void testToRemoveAndIterate() throws DAOException {
-        User owner = createUser(createRandomId());
+        final User owner = createUser(createRandomId());
         final int events = 5;
         final List<String> eventIds = new ArrayList<String>(events);
 
         for (int i = 0; i < events; ++i) {
-            Event eventEmbryo = createEvent("this id will be overwritten.");
+            final Event eventEmbryo = createEvent("this id will be overwritten.");
             eventEmbryo.setOwnerId(owner.getId());
             eventIds.add(service.create(eventEmbryo, null, null));
         }
@@ -45,8 +45,7 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
         Assert.assertEquals(events, services.size());
 
         while (!eventIds.isEmpty()) {
-            System.out.println(eventIds.size());
-            String removedId = eventIds.get(eventIds.size() / 2);
+            final String removedId = eventIds.get(eventIds.size() / 2);
             service.remove(removedId);
             eventIds.remove(removedId);
 
