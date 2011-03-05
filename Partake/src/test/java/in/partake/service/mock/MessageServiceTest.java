@@ -121,7 +121,6 @@ public class MessageServiceTest extends MockServiceTestBase {
         }
 
         verify(mockCon, times(1)).beginTransaction();
-        verify(mockCon, times(1)).rollback();
         verify(mockCon, times(1)).invalidate();
         verify(mockCon, never()).commit();
     }

@@ -1146,13 +1146,6 @@ public final class EventService extends PartakeService {
                 }
             }
             con.commit();
-        } catch (DAOException e) {
-            try {
-                con.rollback();
-            } catch (DAOException ignore) {
-                logger.warn("PartakeConnection#rollback throws exception", ignore);
-            }
-            throw e;
         } finally {
             con.invalidate();
         }
