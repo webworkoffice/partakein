@@ -1,12 +1,14 @@
 package in.partake.model.dao.jpa;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
 
 import in.partake.model.dao.PartakeConnection;
 
 public class JPAConnection extends PartakeConnection { 
     private EntityManager entityManager;
-    
+
     public JPAConnection(JPAConnectionPool pool, EntityManager entityManager, String name, long time) {
         super(name, pool, time);
         this.entityManager = entityManager;
@@ -18,25 +20,27 @@ public class JPAConnection extends PartakeConnection {
     }
 
     @Override
-    public void commit() {
+    public void commit() throws IllegalStateException, RollbackException {
         entityManager.getTransaction().commit();
     }
 
     @Override
-    public void rollback() {
-        entityManager.getTransaction().rollback();        
+    public void rollback() throws IllegalStateException, PersistenceException {
+        entityManager.getTransaction().rollback();
     }
-        
-    @Override
-    public synchronized void invalidate() {
-        // If the transaction is active, the transaction will be rolled back.
-        if (entityManager.getTransaction().isActive()) {
-            entityManager.getTransaction().rollback();
-        }
 
-        super.invalidate();
+    @Override
+    public synchronized void invalidate() throws PersistenceException {
+        try {
+            // If the transaction is active, the transaction will be rolled back.
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+        } finally {
+            super.invalidate();
+        }
     }
-    
+
     public EntityManager getEntityManager() {
         return entityManager;
     }
