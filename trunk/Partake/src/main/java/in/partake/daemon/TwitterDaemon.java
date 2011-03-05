@@ -17,9 +17,13 @@ class TwitterDaemonTask extends TimerTask {
     @Override
     public void run() {
         if (PartakeProperties.get().isEnabledTwitterDaemon()) {
+            logger.info("TWITTER DAEMON TASK START.");
             runTwitterReminderTask();
             runStatusChangeTask();
             runTwitterMessageSendingTask();
+            logger.info("TWITTER DAEMON TASK END.");
+        } else {
+            logger.debug("Twitter daemon task is disabled.");
         }
     }
     
@@ -72,13 +76,13 @@ public class TwitterDaemon {
     }
     
     public void schedule() {
-        logger.info("Twitter daemons are scheduled.");
+        logger.info("Twitter daemons are scheduling...");
         // initial wait is required because application initialization may not be finished.
         timer.schedule(new TwitterDaemonTask(), TIMER_INTERVAL_IN_MILLIS, TIMER_INTERVAL_IN_MILLIS); 
     }
     
     public void cancel() {
-        logger.info("Scheduled twitter daemons are cancelled.");
         timer.cancel();
+        logger.info("Scheduled twitter daemons have been cancelled.");
     }
 }
