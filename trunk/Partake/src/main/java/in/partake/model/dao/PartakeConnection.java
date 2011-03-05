@@ -27,6 +27,14 @@ public abstract class PartakeConnection {
         return acquiredTime;
     }
     
+    /**
+     * this method has 2 tasks to do:
+     * <ul>
+     * <li>Release connection.
+     * <li>Rollback the transaction on this connection
+     * if transaction is enable and still active.
+     * </ul>
+     */
     public synchronized void invalidate() {
         --refCount;
         

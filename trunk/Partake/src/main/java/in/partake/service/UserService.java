@@ -293,13 +293,6 @@ public final class UserService extends PartakeService {
             con.beginTransaction();
             factory.getUserPreferenceAccess().put(con,  embryo);
             con.commit();
-        } catch (DAOException e) {
-            try {
-            	con.rollback();
-            } catch (DAOException ignore) {
-            	logger.warn("DAOException is thrown at PartakeConnection#rollback", ignore);
-            }
-            throw e;
         } finally {
             con.invalidate();
         }
@@ -331,13 +324,6 @@ public final class UserService extends PartakeService {
                 }
             }
             con.commit();
-        } catch (DAOException e) {
-            try {
-                con.rollback();
-            } catch (DAOException ignore) {
-                logger.warn("PartakeConnection#rollback throws exception", ignore);
-            }
-            throw e;
         } finally {
             con.invalidate();
         }
