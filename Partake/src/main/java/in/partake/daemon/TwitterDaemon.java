@@ -73,7 +73,8 @@ public class TwitterDaemon {
     
     public void schedule() {
         logger.info("Twitter daemons are scheduled.");
-        timer.schedule(new TwitterDaemonTask(), 0, TIMER_INTERVAL_IN_MILLIS); 
+        // initial wait is required because application initialization may not be finished.
+        timer.schedule(new TwitterDaemonTask(), TIMER_INTERVAL_IN_MILLIS, TIMER_INTERVAL_IN_MILLIS); 
     }
     
     public void cancel() {
