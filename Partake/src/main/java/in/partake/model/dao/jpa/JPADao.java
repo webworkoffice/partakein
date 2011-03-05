@@ -107,7 +107,7 @@ abstract class JPADao<T extends PartakeModel<T>> {
         @SuppressWarnings("unchecked")
         List<T> list = q.getResultList();
         
-        return new JPAPartakeModelDataIterator<T>(em, list, clazz, false);        
+        return new JPAPartakeModelDataIterator<T>(em, list, clazz, true);        
     }
     
     protected void truncateImpl(PartakeConnection con, String tableName) {

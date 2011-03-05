@@ -85,7 +85,7 @@ public final class MessageService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
         try {
-            con.beginTransaction(); 
+            
             
             // TODO: 開始時刻が現在時刻より後の event のみを取り出したい
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
@@ -105,11 +105,13 @@ public final class MessageService extends PartakeService {
                 boolean changed = sendEventNotification(con, event, reminderStatus, topPath, now);
                 if (changed) {
                     reminderStatus.setEventId(eventId);
+                    con.beginTransaction(); 
                     factory.getEventReminderAccess().put(con, reminderStatus);
+                    con.commit();
                 }
             }
             
-            con.commit();
+            
         } finally {
             con.invalidate();
         }
