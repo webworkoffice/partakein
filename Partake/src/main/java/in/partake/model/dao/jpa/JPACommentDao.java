@@ -37,7 +37,7 @@ class JPACommentDao extends JPADao<Comment> implements ICommentAccess {
     public DataIterator<Comment> getCommentsByEvent(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
         
-        Query q = em.createQuery("SELECT c FROM Comments AS c WHERE c.eventId = :eventId");
+        Query q = em.createQuery("SELECT c FROM Comments AS c WHERE c.eventId = :eventId ORDER BY c.createdAt ASC");
         q.setParameter("eventId", eventId);
         
         @SuppressWarnings("unchecked")
