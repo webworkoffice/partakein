@@ -30,6 +30,44 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
     }
 
     @Test
+    public void testToCountEvents() throws DAOException {
+        int eventCountsAtFirst = service.countEvents().numEvent;
+        int eventsToAdd = 10;
+
+        for (int i = 1; i <= eventsToAdd; ++i) {
+            Event event = createEvent("this id will be overwritten.");
+            event.setPrivate(false);
+            service.create(event, null, null);
+            Assert.assertEquals(eventCountsAtFirst + i, service.countEvents().numEvent);
+        }
+        for (int i = 1; i <= eventsToAdd; ++i) {
+            Event event = createEvent("this id will be overwritten.");
+            event.setPrivate(true);
+            service.create(event, null, null);
+            Assert.assertEquals(eventCountsAtFirst + eventsToAdd + i, service.countEvents().numEvent);
+        }
+    }
+
+
+    @Test
+    public void testToCountPrivateEvents() throws DAOException {
+        int eventCountsAtFirst = service.countEvents().numPrivateEvent;
+        int eventsToAdd = 10;
+        for (int i = 1; i <= eventsToAdd; ++i) {
+            Event event = createEvent("this id will be overwritten.");
+            event.setPrivate(false);
+            service.create(event, null, null);
+            Assert.assertEquals(eventCountsAtFirst, service.countEvents().numPrivateEvent);
+        }
+        for (int i = 1; i <= eventsToAdd; ++i) {
+            Event event = createEvent("this id will be overwritten.");
+            event.setPrivate(true);
+            service.create(event, null, null);
+            Assert.assertEquals(eventCountsAtFirst + i, service.countEvents().numPrivateEvent);
+        }
+    }
+
+    @Test
     public void testToRemoveAndIterate() throws DAOException {
         final User owner = createUser(createRandomId());
         final int events = 5;
