@@ -167,6 +167,20 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         checkFrozen();
         this.userId = userId;
     }
-    
-    
+
+    /**
+     * mark this linkage as unauthorized one.
+     * @see http://dev.twitter.com/pages/auth
+     */
+    public void markAsUnauthorized() {
+        this.accessToken = null;
+        this.accessTokenSecret = null;
+    }
+
+    /**
+     * @return true if this is authorized user.
+     */
+    public boolean isAuthorized() {
+        return this.accessToken != null && this.accessTokenSecret != null;
+    }
 }
