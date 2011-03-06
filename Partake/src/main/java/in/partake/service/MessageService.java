@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 
 import twitter4j.Twitter;
@@ -18,6 +20,7 @@ import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.Envelope;
@@ -565,8 +568,12 @@ public final class MessageService extends PartakeService {
             logger.warn("sendTwitterMessage : sender is null.");
             return true;
         }
-        
-        AccessToken accessToken = new AccessToken(sender.getTwitterLinkage().getAccessToken(), sender.getTwitterLinkage().getAccessTokenSecret());
+        TwitterLinkage twitterLinkage = sender.getTwitterLinkage();
+        if (twitterLinkage == null || !twitterLinkage.isAuthorized()) {
+            logger.warn("sendDirectMessage : envelope id " + envelope.getEnvelopeId() + " could not be sent : No access token");
+            return true;
+        }
+        AccessToken accessToken = new AccessToken(twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret());
         Twitter twitter = new TwitterFactory().getInstance(accessToken);
         
         try {
@@ -612,7 +619,7 @@ public final class MessageService extends PartakeService {
         if (user == null) { return true; }
         TwitterLinkage twitterLinkage = user.getTwitterLinkage();
         
-        if (twitterLinkage.getAccessToken() == null || twitterLinkage.getAccessTokenSecret() == null) {
+        if (twitterLinkage == null || !twitterLinkage.isAuthorized()) {
             logger.warn("sendDirectMessage : envelope id " + envelope.getEnvelopeId() + " could not be sent : No access token");
             return true;
         }
@@ -644,10 +651,27 @@ public final class MessageService extends PartakeService {
                 it.update(envelope);
                 return false;
             } else {
-                envelope.updateForSendingFailure();
-                logger.warn("sendDirectMessage : Unknown Error : " + envelope.getEnvelopeId() + " was failed to deliver.", e);
+                if (e.getStatusCode() == HttpServletResponse.SC_UNAUTHORIZED) {
+                    markAsUnauthorizedUser(con, user);
+                    logger.info("sendDirectMessage : Unauthorized User : " + envelope.getEnvelopeId() + " was failed to deliver.", e);
+                } else {
+                    envelope.updateForSendingFailure();
+                    logger.warn("sendDirectMessage : Unknown Error : " + envelope.getEnvelopeId() + " was failed to deliver.", e);
+                }
                 return true;
             }
+        }
+    }
+
+    private void markAsUnauthorizedUser(PartakeConnection con, UserEx user) {
+        ITwitterLinkageAccess access = getFactory().getTwitterLinkageAccess();
+        TwitterLinkage linkage = user.getTwitterLinkage().copy();
+        linkage.markAsUnauthorized();
+
+        try {
+            access.put(con, linkage.freeze());
+        } catch (DAOException ignore) {
+            logger.warn("DAOException is thrown but it's ignored.", ignore);
         }
     }
 }
