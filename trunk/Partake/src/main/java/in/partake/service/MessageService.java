@@ -669,6 +669,7 @@ public final class MessageService extends PartakeService {
         linkage.markAsUnauthorized();
 
         try {
+            // TODO: put するときは freeze する必要はない。
             access.put(con, linkage.freeze());
         } catch (DAOException ignore) {
             logger.warn("DAOException is thrown but it's ignored.", ignore);
