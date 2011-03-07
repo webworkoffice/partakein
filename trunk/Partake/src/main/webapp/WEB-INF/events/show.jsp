@@ -354,7 +354,6 @@ body {
 	<ul>
 		<li>参加: <%= enrolledParticipations.size() %> 人 (仮 <%= participationList.getReservedEnrolled() %> 人)
 　／　補欠: <%= spareParticipations.size() %> 人 (仮 <%= participationList.getReservedSpare() %> 人)</li>
-        </li>
 	</ul>
 </div>
 
