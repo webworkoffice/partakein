@@ -52,7 +52,9 @@ Do not forget to register your application to the twitter.
 
 == NOTE ==
 
-When you failed eclipse operations, web.xml may be rewritten. In this case, please revert web.xml
+When you failed eclipse operations, web.xml may be rewritten. In this case, please revert web.xml.
+
+PARTAKE also run on RDB using OpenJPA. (Sorry, this document is not described yet.)
 
 == FOR RELEASE PACKAGING ==
 
