@@ -669,8 +669,8 @@ public final class MessageService extends PartakeService {
         linkage.markAsUnauthorized();
 
         try {
-            // TODO: put するときは freeze する必要はない。
-            access.put(con, linkage.freeze());
+            // TODO UserExが参照するTwitterLinkageが更新されたため、UserExのキャッシュを破棄あるいは更新する必要がある
+            access.put(con, linkage);
         } catch (DAOException ignore) {
             logger.warn("DAOException is thrown but it's ignored.", ignore);
         }

@@ -173,7 +173,7 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
      * @see http://dev.twitter.com/pages/auth
      */
     public void markAsUnauthorized() {
-        // TODO: should check frozen.
+        checkFrozen();
         this.accessToken = null;
         this.accessTokenSecret = null;
     }
