@@ -19,8 +19,8 @@
 
 <h2>このアプリケーションについて</h2>
 
-<p>RDB が向くはずの分野に NoSQL を使ったらどうなるか、そういう好奇心でこのアプリケーションは開発されています。</p>
-<p>PARTAKE は、バックエンドに Cassandra を採用しています。</p>
+<p>RDB が向くはずの分野に NoSQL を使ったらどうなるか、そういう好奇心でこのアプリケーションは開発されています。<a href="http://www.publickey1.jp/blog/10/nosqlrdbpartake.html">Publickeyさんの記事</a>に経験談などが紹介されていますのでご覧ください。</p>
+<p>PARTAKE は、バックエンドが Cassandra でも RDB でも動くように設計されています。</p>
 
 <div class="biglogo">
 <img src="<%= request.getContextPath() %>/images/works-biglogo.jpg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
