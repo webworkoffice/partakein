@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ShortenedURLTest {
+public class ShortenedURLTest extends AbstractPartakeModelTest<ShortenedURLData> {
     private ShortenedURLData[] samples;
     
     @Before
@@ -29,4 +29,9 @@ public class ShortenedURLTest {
             }
         }
     }
+
+	@Override
+	protected ShortenedURLData createModel() {
+		return new ShortenedURLData();
+	}
 }

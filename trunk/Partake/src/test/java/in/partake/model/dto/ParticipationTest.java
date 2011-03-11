@@ -17,7 +17,7 @@ import org.junit.Test;
  * 
  * @author skypencil (@eller86)
  */
-public final class ParticipationTest {
+public final class ParticipationTest extends AbstractPartakeModelTest<Enrollment> {
 	Enrollment[] samples;
 
 	@Before
@@ -77,5 +77,10 @@ public final class ParticipationTest {
 		Assert.assertTrue(source.isFrozen());
 
 		Assert.assertFalse(new Enrollment(source).isFrozen());
+	}
+
+	@Override
+	protected Enrollment createModel() {
+		return new Enrollment();
 	}
 }

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UserPreferenceTest {
+public class UserPreferenceTest extends AbstractPartakeModelTest<UserPreference> {
     private UserPreference[] samples;
 
     @Before
@@ -30,5 +30,10 @@ public class UserPreferenceTest {
             }
         }
     }
+
+	@Override
+	protected UserPreference createModel() {
+		return new UserPreference();
+	}
 
 }

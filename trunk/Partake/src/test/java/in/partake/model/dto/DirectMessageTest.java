@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DirectMessageTest {
+public class DirectMessageTest extends AbstractPartakeModelTest<Message> {
     private Message[] samples;
 
     @Before
@@ -32,4 +32,9 @@ public class DirectMessageTest {
             }
         }
     }
+
+	@Override
+	protected Message createModel() {
+		return new Message();
+	}
 }

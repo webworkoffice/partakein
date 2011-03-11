@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class EventFeedLinkageTest {
+public class EventFeedLinkageTest extends AbstractPartakeModelTest<EventFeedLinkage> {
     private EventFeedLinkage[] samples;
 
     @Before
@@ -29,5 +29,10 @@ public class EventFeedLinkageTest {
             }
         }
     }
+
+	@Override
+	protected EventFeedLinkage createModel() {
+		return new EventFeedLinkage();
+	}
 
 }

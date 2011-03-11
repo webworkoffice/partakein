@@ -14,7 +14,7 @@ import org.junit.Test;
  * 
  * @author skypencil (@eller86)
  */
-public final class EventTest {
+public final class EventTest extends AbstractPartakeModelTest<Event> {
 	Event[] samples;
 
 	@Before
@@ -161,5 +161,10 @@ public final class EventTest {
 		} else {
 			method.invoke(source, arg.cast(null));
 		}
+	}
+
+	@Override
+	protected Event createModel() {
+		return new Event();
 	}
 }

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CalendarLinkageTest {
+public class CalendarLinkageTest extends AbstractPartakeModelTest<CalendarLinkage> {
     private CalendarLinkage[] samples;
 
     @Before
@@ -29,4 +29,9 @@ public class CalendarLinkageTest {
             }
         }
     }
+
+	@Override
+	protected CalendarLinkage createModel() {
+		return new CalendarLinkage();
+	}
 }

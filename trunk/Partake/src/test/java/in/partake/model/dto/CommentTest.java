@@ -13,7 +13,7 @@ import org.junit.Test;
  * 
  * @author skypencil (@eller86)
  */
-public final class CommentTest {
+public final class CommentTest extends AbstractPartakeModelTest<Comment> {
 	private Comment[] samples;
 	
 	@Before
@@ -71,5 +71,10 @@ public final class CommentTest {
 		Assert.assertTrue(source.isFrozen());
 
 		Assert.assertFalse(new Comment(source).isFrozen());
+	}
+
+	@Override
+	protected Comment createModel() {
+		return new Comment();
 	}
 }

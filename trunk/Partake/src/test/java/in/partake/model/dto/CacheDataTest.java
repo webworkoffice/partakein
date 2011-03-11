@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CacheDataTest {
+public class CacheDataTest extends AbstractPartakeModelTest<CacheData> {
     private CacheData[] samples;
     
     @Before
@@ -77,4 +77,9 @@ public class CacheDataTest {
 
         Assert.assertFalse(new CacheData(source).isFrozen());
     }
+
+	@Override
+	protected CacheData createModel() {
+		return new CacheData();
+	}
 }
