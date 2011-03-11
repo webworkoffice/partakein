@@ -1,6 +1,9 @@
 package in.partake.service;
 
 import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
 import in.partake.model.EnrollmentEx;
@@ -18,6 +21,7 @@ import in.partake.resource.PartakeProperties;
 public abstract class PartakeService {
     private static PartakeDAOFactory factory;
     private static PartakeConnectionPool pool;
+    private static final Logger logger = Logger.getLogger(PartakeService.class);
     
     static {
         reset();
@@ -39,10 +43,13 @@ public abstract class PartakeService {
             Class<?> poolClass = Class.forName(PartakeProperties.get().getConnectionPoolClassName());
             pool = (PartakeConnectionPool) poolClass.newInstance();
         } catch (ClassNotFoundException e) {
+            logger.error("Specified factory or pool class doesn't exist.", e);
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
+            logger.error("Failed to create instance of specified factory or pool.", e);
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
+            logger.error("Illegal access.", e);
             throw new RuntimeException(e);
         }  
     }
