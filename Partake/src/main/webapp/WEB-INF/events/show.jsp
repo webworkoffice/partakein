@@ -28,6 +28,7 @@
 
 <%@page import="static in.partake.view.Helper.h"%>
 <%@page import="static in.partake.view.Helper.cleanupHTML"%>
+<%@page import="static in.partake.view.Helper.escapeTwitterResponse"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.EventRelationEx"%>
 
@@ -105,7 +106,7 @@ body {
 	        <dt>管理者：</dt>
 	            <dd><a href="<%= request.getContextPath() %>/users/<%= h(event.getOwnerId()) %>">
 	                <% if (event.getOwner().getTwitterLinkage().getName() != null) { %>
-	                    <%= h(event.getOwner().getTwitterLinkage().getName()) %>
+	                    <%= escapeTwitterResponse(event.getOwner().getTwitterLinkage().getName()) %>
 	                    (<%= h(event.getOwner().getTwitterLinkage().getScreenName()) %>)
 	                <% } else { %>
 	                    <%= h(event.getOwner().getTwitterLinkage().getScreenName()) %>

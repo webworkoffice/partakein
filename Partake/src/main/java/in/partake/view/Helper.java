@@ -112,6 +112,20 @@ public final class Helper {
     }
 
     /**
+     * HTMLエスケープを施すが、"&amp;gt;"と"&amp;lt;"はそのままにする。
+     * これはTwitterが'&gt;'と'&lt;'だけエスケープするという問題に対応するためのものである。
+     *
+     * @see http://code.google.com/p/twitter-api/issues/detail?id=845
+     * @see http://www.mail-archive.com/twitter-development-talk@googlegroups.com/msg09528.html
+     * @see http://code.google.com/p/partakein/issues/detail?id=148
+     * @param s エスケープする文字列
+     * @return エスケープされた文字列
+     */
+    public static String escapeTwitterResponse(String s) {
+        return escapeHTML(s).replaceAll("&amp;gt;", "&gt;").replaceAll("&amp;lt;", "&lt;");
+    }
+
+    /**
      * テキストを整形する。
      * @param dirtyText
      * @return
