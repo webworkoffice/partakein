@@ -96,7 +96,7 @@ public class MessageServiceTest extends MockServiceTestBase {
         }
 
         verify(eventAccess, times(1)).getIterator(mockCon);
-        verify(mockCon, times(1)).beginTransaction();
+        verify(mockCon, times(1)).beginTransaction();	// FIXME 変更がない場合は呼ばれない実装になっている、テストが正か変更が正か？
         verify(mockCon, never()).rollback();
         verify(mockCon, times(1)).invalidate();
         verify(mockCon, times(1)).commit();
