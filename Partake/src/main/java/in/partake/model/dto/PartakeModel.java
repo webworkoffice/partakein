@@ -31,14 +31,14 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
     /**
      * check the object is fronzen. If frozen, UnsupportedOperationException will be raised.
      */
-    protected void checkFrozen() {
+    protected final void checkFrozen() {
         if (frozen) { throw new UnsupportedOperationException(); }
     }
     
     /**
      * @return true if frozen
      */
-    public boolean isFrozen() {
+    public final boolean isFrozen() {
         return frozen;
     }
     
@@ -47,12 +47,8 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
      * @return itself.
      */
     @SuppressWarnings("unchecked")
-    public T freeze() {
+    public final T freeze() {
         this.frozen = true;
         return (T)this;
-    }
-    
-    public void assureFreeze() {
-        this.frozen = true;
     }
 }

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class EventRelationTest {
+public class EventRelationTest extends AbstractPartakeModelTest<EventRelation> {
     private EventRelation[] samples;
 
     @Before
@@ -29,4 +29,9 @@ public class EventRelationTest {
             }
         }
     }
+
+	@Override
+	protected EventRelation createModel() {
+		return new EventRelation();
+	}
 }

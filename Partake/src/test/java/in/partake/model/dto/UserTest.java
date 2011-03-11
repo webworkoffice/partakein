@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UserTest {
+public class UserTest extends AbstractPartakeModelTest<User> {
     private User[] samples;
 
     @Before
@@ -32,4 +32,9 @@ public class UserTest {
             }
         }
     }
+
+	@Override
+	protected User createModel() {
+		return new User();
+	}
 }

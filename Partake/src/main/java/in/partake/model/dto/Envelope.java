@@ -138,37 +138,48 @@ public class Envelope extends PartakeModel<Envelope> {
     public Date getCreatedAt() { return createdAt; }
     
     public void setEnvelopeId(String envelopeId) {
+        checkFrozen();
         this.envelopeId = envelopeId;
     }
     public void setSenderId(String senderId) {
+        checkFrozen();
         this.senderId = senderId;
     }
     public void setReceiverId(String receiverId) {
+        checkFrozen();
         this.receiverId = receiverId;
     }
     public void setMessageId(String messageId) {
+        checkFrozen();
         this.messageId = messageId;
     }
     public void setDeadline(Date deadline) {
+        checkFrozen();
         this.deadline = deadline;
     }
     public void setNumTried(int numTried) {
+        checkFrozen();
         this.numTried = numTried;
     }
     public void setLastTriedAt(Date lastTriedAt) {
+        checkFrozen();
         this.lastTriedAt = lastTriedAt != null ? (Date) lastTriedAt.clone() : null;
     }
     public void setTryAfter(Date tryAfter) {
+        checkFrozen();
         this.tryAfter = tryAfter != null ? (Date) tryAfter.clone() : null;
     }
     public void setPostingType(DirectMessagePostingType postingType) {
+        checkFrozen();
         this.postingType = postingType;
     }
     public void setCreatedAt(Date createdAt) {
+        checkFrozen();
         this.createdAt = createdAt != null ? (Date) createdAt.clone() : null;
     }
     
     public void updateForSendingFailure() {
+        checkFrozen();
         this.numTried += 1;
         this.lastTriedAt = new Date();
     }

@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DirectMessageEnvelopeTest {
+public class DirectMessageEnvelopeTest extends AbstractPartakeModelTest<Envelope> {
     private Envelope[] samples;
 
     @Before
@@ -34,4 +34,9 @@ public class DirectMessageEnvelopeTest {
             }
         }
     }
+
+	@Override
+	protected Envelope createModel() {
+		return new Envelope();
+	}
 }

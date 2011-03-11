@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BinaryDataTest {
+public class BinaryDataTest extends AbstractPartakeModelTest<BinaryData> {
     private BinaryData[] samples;
     
     @Before
@@ -29,5 +29,10 @@ public class BinaryDataTest {
             }
         }
     }
+
+	@Override
+	protected BinaryData createModel() {
+		return new BinaryData();
+	}
 
 }
