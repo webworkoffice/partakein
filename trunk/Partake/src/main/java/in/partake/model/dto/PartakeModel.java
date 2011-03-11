@@ -29,7 +29,7 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
     public abstract T copy();
     
     /**
-     * check the object is fronzen. If frozen, UnsupportedOperationExcetpion will be raised.
+     * check the object is fronzen. If frozen, UnsupportedOperationException will be raised.
      */
     protected void checkFrozen() {
         if (frozen) { throw new UnsupportedOperationException(); }
