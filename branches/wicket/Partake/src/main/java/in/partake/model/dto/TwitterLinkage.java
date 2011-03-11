@@ -1,0 +1,187 @@
+package in.partake.model.dto;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+import org.apache.commons.lang.ObjectUtils;
+
+@Entity(name = "TwitterLinkages")
+public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
+    @Id
+    private String twitterId;
+    @Column
+    private String screenName;
+    @Column
+    private String name;
+    @Column
+    private String accessToken;
+    @Column
+    private String accessTokenSecret;
+    @Column(length = 4096)
+    private String profileImageURL;
+    @Column
+    private String userId;
+    
+    public TwitterLinkage() {
+        
+    }
+    
+    public TwitterLinkage(String twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
+        this.twitterId = twitterId;
+        this.screenName = screenName;
+        this.name = name;
+        this.accessToken = accessToken;
+        this.accessTokenSecret = accessTokenSecret;
+        this.profileImageURL = profileImageURL;
+        this.userId = userId;
+    }
+
+    public TwitterLinkage(int twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
+        this(String.valueOf(twitterId), screenName, name, accessToken, accessTokenSecret, profileImageURL, userId);
+    }
+
+    public TwitterLinkage(TwitterLinkage linkage) {
+        this.twitterId = linkage.twitterId;
+        this.screenName = linkage.screenName;
+        this.name = linkage.name;
+        this.accessToken = linkage.accessToken;
+        this.accessTokenSecret = linkage.accessTokenSecret;
+        this.profileImageURL = linkage.profileImageURL;
+        this.userId = linkage.userId;
+    }
+
+    @Override
+    public Object getPrimaryKey() {
+        return twitterId;
+    }
+    
+    @Override
+    public TwitterLinkage copy() {
+        return new TwitterLinkage(this);
+    }
+    
+    // ----------------------------------------------------------------------
+    // equals method
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TwitterLinkage)) { return false; }
+        
+        TwitterLinkage lhs = this;
+        TwitterLinkage rhs = (TwitterLinkage) obj;
+        
+        if (!ObjectUtils.equals(lhs.twitterId,         rhs.twitterId)) { return false; }
+        if (!ObjectUtils.equals(lhs.screenName,        rhs.screenName)) { return false; }
+        if (!ObjectUtils.equals(lhs.name,              rhs.name)) { return false; }
+        if (!ObjectUtils.equals(lhs.accessToken,       rhs.accessToken)) { return false; }
+        if (!ObjectUtils.equals(lhs.accessTokenSecret, rhs.accessTokenSecret)) { return false; }
+        if (!ObjectUtils.equals(lhs.profileImageURL,   rhs.profileImageURL)) { return false; }
+        if (!ObjectUtils.equals(lhs.userId,            rhs.userId)) { return false; }
+        
+        return true;
+    }
+    
+    @Override
+    public int hashCode() {
+        int code = 0;
+        
+        code = code * 37 + ObjectUtils.hashCode(twitterId);
+        code = code * 37 + ObjectUtils.hashCode(screenName);
+        code = code * 37 + ObjectUtils.hashCode(name);
+        code = code * 37 + ObjectUtils.hashCode(accessToken);
+        code = code * 37 + ObjectUtils.hashCode(accessTokenSecret);
+        code = code * 37 + ObjectUtils.hashCode(profileImageURL);
+        code = code * 37 + ObjectUtils.hashCode(userId);
+        
+        return code;
+    }
+    
+    // ----------------------------------------------------------------------
+    // 
+
+    public String getTwitterId() {
+        return twitterId;
+    }
+
+    public String getScreenName() {
+        return screenName;
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public String getAccessTokenSecret() {
+        return accessTokenSecret;
+    }
+
+    public String getProfileImageURL() {
+        return profileImageURL;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setTwitterId(String twitterId) {
+        checkFrozen();
+        this.twitterId = twitterId;
+    }
+
+    public void setTwitterId(int twitterId) {
+        checkFrozen();
+        this.twitterId = String.valueOf(twitterId);
+    }
+
+    public void setScreenName(String screenName) {
+        checkFrozen();
+        this.screenName = screenName;
+    }
+
+    public void setName(String name) {
+        checkFrozen();
+        this.name = name;
+    }
+
+    public void setAccessToken(String accessToken) {
+        checkFrozen();
+        this.accessToken = accessToken;
+    }
+
+    public void setAccessTokenSecret(String accessTokenSecret) {
+        checkFrozen();
+        this.accessTokenSecret = accessTokenSecret;
+    }
+
+    public void setProfileImageURL(String profileImageURL) {
+        checkFrozen();
+        this.profileImageURL = profileImageURL;
+    }
+
+    public void setUserId(String userId) {
+        checkFrozen();
+        this.userId = userId;
+    }
+
+    /**
+     * mark this linkage as unauthorized one.
+     * @see http://dev.twitter.com/pages/auth
+     */
+    public void markAsUnauthorized() {
+        checkFrozen();
+        this.accessToken = null;
+        this.accessTokenSecret = null;
+    }
+
+    /**
+     * @return true if this is authorized user.
+     */
+    public boolean isAuthorized() {
+        return this.accessToken != null && this.accessTokenSecret != null;
+    }
+}
