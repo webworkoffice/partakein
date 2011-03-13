@@ -1,0 +1,60 @@
+<wicket:extend>
+
+<h1 wicket:id="event.title">イベントタイトル</h1> 
+<p wicket:id="event.summary" class="summary">サマリー</p> 
+
+<div class="event-wrapper"> 
+    <p class="event-feed-rss cler"><a wicket:id="event.feedlink" href="/feed/event/f1424268-eaf0-4324-b146-b2d53cc57756"><img src="/images/feed-icon-15x15.png" /></a></p> 
+	<div class="event-content"> 
+		<div class="event-information"> 
+			<dl id="main-event"> 
+				<wicket:enclosure><dt>日時：</dt><dd wicket:id="event.begindate">日時</dd></wicket:enclosure>  
+				<wicket:enclosure><dt>申込締切：</dt><dd wicket:id="event.deadline">締切り</dd></wicket:enclosure>  
+				<wicket:enclosure><dt>カテゴリ：</dt><dd wicket:id="event.category">カテゴリ</dd></wicket:enclosure>
+				<wicket:enclosure><dt>定員：</dt><dd wicket:id="event.capacity">定員</dd></wicket:enclosure>
+				<wicket:enclosure><dt>会場：</dt><dd wicket:id="event.place">会場</dd></wicket:enclosure>
+				<wicket:enclosure><dt>住所：</dt><dd wicket:id="event.address">住所</dd></wicket:enclosure>
+				<wicket:enclosure><dt>URL：</dt><dd wicket:id="event.url">URL</dd></wicket:enclosure>
+				<wicket:enclosure><dt>ハッシュタグ：</dt><dd wicket:id="event.hashtag"><a href="#">#hashTag</a></dd></wicket:enclosure>
+		        <wicket:enclosure><dt>管理者：</dt><dd><a wicket:id="event.manager" href="#">管理者名 (screenname)</a></dd></wicket:enclosure>   
+		        <wicket:enclosure><dt>このページへの<br />短縮 URL：</dt><dd><a wicket:id="event.shortenedurl" href="#">shortened url</a></dd></wicket:enclosure>
+		        <wicket:enclosure child="event.related"><dt>関連イベント：</dt>
+		        	<wicket:container wicket:id="event.related"><dd>
+		                <img src="/images/mark.png" class=""　alt="" />
+		                <a wicket:id="event.related.url" href="#">TITLE HERE</a>
+		                <wicket:container wicket:id="event.related.required"><img src="/images/attention.png" alt="" /> この関連イベントへの参加が必須です</wicket:container>
+		                <wicket:container wicket:id="event.related.premium"><img src="/images/star.png" alt="" /> 参加すると本イベントへ優先的に参加可</wicket:container>
+	            	</dd></wicket:container>
+	            </wicket:enclosure>	        
+			</dl> 
+		</div>
+ 
+		<div wicket:id="event.description" class="event-description">
+			<p>ここにイベントの説明が表示されます。</p>
+		</div>
+	
+		<wicket:container wicket:id="event.commentboard">
+			<p>ここにコメント、メッセージ、Twitter の panel を貼り付けます。</p>
+		</wicket:container>
+	</div>
+ 
+ 	<div class="event-participation">
+	 	<wicket:container wicket:id="event.management">
+	 		<p>ここに管理者向けのボードを貼り付けます。
+	 	</wicket:container>
+ 	
+	 	<wicket:container wicket:id="event.enrollment">
+	 		<p>ここに参加者のボードを貼り付けます。</p>
+	 	</wicket:container>
+	 	
+	 	<wicket:container wicket:id="event.promotion">
+	 		<p>ここに twitter や facebook へのリンクを貼り付けます。</p>
+	 	</wicket:container>
+	 	
+	 	<wicket:container wicket:id="event.participants">
+	 		<p>ここに参加者一覧を貼り付けます。</p>
+	 	</wicket:container>
+ 	</div>
+</div>
+
+</wicket:extend> 

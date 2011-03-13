@@ -10,6 +10,8 @@ import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "Users")
 public class User extends PartakeModel<User> {
+    private static final long serialVersionUID = 1L;
+    
     @Id
     private String  id;
     @Column

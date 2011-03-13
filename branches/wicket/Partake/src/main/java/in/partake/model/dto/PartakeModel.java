@@ -1,5 +1,7 @@
 package in.partake.model.dto;
 
+import java.io.Serializable;
+
 /**
  * PARTAKE で用いるモデルのベースクラス。
  * 
@@ -12,7 +14,9 @@ package in.partake.model.dto;
  *
  * @param <T>
  */
-public abstract class PartakeModel<T extends PartakeModel<?>> {
+public abstract class PartakeModel<T extends PartakeModel<?>> implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
     /** Model が freeze されていれば true */
     private volatile boolean frozen;
     

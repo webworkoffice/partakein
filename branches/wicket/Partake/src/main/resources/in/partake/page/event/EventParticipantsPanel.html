@@ -1,0 +1,56 @@
+<wicket:panel>
+
+	<div class="event-participants rad"> 
+		<div class="event-status"> 
+			<h2>参加者数</h2> 
+			<ul> 
+				<li>参加: <span wicket:id="enrolled.count">1</span> 人       (仮 <span wicket:id="reserved.count">0</span> 人)
+				  ／補欠: <span wicket:id="enrolled.spare.count">0</span> 人 (仮 <span wicket:id="reserved.spare.count">0</span> 人)</li> 
+			</ul> 
+		</div> 
+
+		<h2><img src="/images/circle.png" />参加者一覧 (<span wicket:id="list.enrolled.count">1</span> 人)</h2> 
+		<wicket:enclosure child="list.enrolled.user"><ul> 
+			<li wicket:id="list.enrolled.user">
+				<img wicket:id="list.enrolled.user.photo" class="userphoto" src="http://a0.twimg.com/profile_images/548076367/twicon_normal.JPG" alt="" />  
+				<a   wicket:id="list.enrolled.user.name" href="/users/20210f83-87a0-4328-98e9-3db667ee67ff">hepton_rk</a> :
+				<img wicket:id="list.enrolled.user.reserved" src="/images/reserved1.png"　title="仮参加" alt="仮参加者" />
+				<img wicket:id="list.enrolled.user.vip" src="/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
+				<img wicket:id="list.enrolled.user.priority" src="/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" />
+				<span wicket:id="list.enrolled.user.comment">一応登録</span>
+			</li> 
+		</ul></wicket:enclosure>
+		<p wicket:id="list.enrolled.nouser">現在参加者はいません</p>
+		
+		<wicket:enclosure child="list.spare.count">
+		<h2><img src="/images/triangle.png" />補欠者一覧 (<span wicket:id="list.spare.count">1</span> 人)</h2> 
+		<ul> 
+			<li wicket:id="list.spare.user">
+				<img wicket:id="list.spare.user.photo" class="userphoto" src="http://a0.twimg.com/profile_images/548076367/twicon_normal.JPG" alt="" />  
+				<a   wicket:id="list.spare.user.name" href="/users/20210f83-87a0-4328-98e9-3db667ee67ff">hepton_rk</a> :
+				<img wicket:id="list.spare.user.reserved" src="/images/reserved1.png"　title="仮参加" alt="仮参加者" />
+				<img wicket:id="list.spare.user.vip" src="/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
+				<img wicket:id="list.spare.user.priority" src="/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" />
+				<span wicket:id="list.spare.user.comment">一応登録</span>
+			</li> 
+		</ul>
+		</wicket:enclosure>
+				
+		<wicket:enclosure child="list.cancelled.count">
+		<h2><img src="/images/cross.png" />キャンセル者一覧 (<span wicket:id="list.cancelled.count">1</span> 人)</h2> 
+		<ul> 
+			<li wicket:id="list.cancelled.user">
+				<img wicket:id="list.cancelled.user.photo" class="userphoto" src="http://a0.twimg.com/profile_images/548076367/twicon_normal.JPG" alt="" />  
+				<a   wicket:id="list.cancelled.user.name" href="/users/20210f83-87a0-4328-98e9-3db667ee67ff">hepton_rk</a> :
+				<img wicket:id="list.cancelled.user.reserved" src="/images/reserved1.png"　title="仮参加" alt="仮参加者" />
+				<img wicket:id="list.cancelled.user.vip" src="/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
+				<img wicket:id="list.cancelled.user.priority" src="/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" />
+				<span wicket:id="list.cancelled.user.comment">一応登録</span>
+			</li> 
+		</ul>
+		</wicket:enclosure>
+	</div> 
+
+
+</wicket:panel> 
+ 
