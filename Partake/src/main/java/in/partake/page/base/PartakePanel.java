@@ -2,6 +2,7 @@ package in.partake.page.base;
 
 import in.partake.page.error.ErrorPage;
 import in.partake.page.error.InvalidPage;
+import in.partake.page.error.LoginRequiredPage;
 import in.partake.resource.I18n;
 
 import org.apache.wicket.RestartResponseException;
@@ -29,5 +30,9 @@ public class PartakePanel extends Panel {
     
     protected void renderDBError() {
         renderError(I18n.t(I18n.DATABASE_ERROR));
+    }
+    
+    protected void renderLoginRequired() {
+        throw new RestartResponseException(LoginRequiredPage.class);        
     }
 }

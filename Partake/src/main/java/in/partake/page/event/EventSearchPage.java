@@ -51,6 +51,7 @@ public class EventSearchPage extends PartakeBasePage {
     }
     
     public EventSearchPage() {
+        super("イベント検索 - [PARTAKE]");
         try {
             List<Event> events = EventService.get().getRecentEvents(5); // TODO: MAGIC NUMBER! 5
             
@@ -63,8 +64,11 @@ public class EventSearchPage extends PartakeBasePage {
     }
     
     public EventSearchPage(PageParameters params) {
+        super("イベント検索 - [PARTAKE]");
+        
         String searchTerm = params.get("searchTerm").toOptionalString();
         if (searchTerm == null) { searchTerm = ""; }
+        else { searchTerm = searchTerm.trim(); }
         
         KeyValuePair category = findKeyValuePair(params.get("category").toOptionalString(), CATEGORIES_FOR_SEARCH, CATEGORIES_FOR_SEARCH.get(0));
         KeyValuePair sortOrder = findKeyValuePair(params.get("sortOrder").toOptionalString(), SORTORDERS, SORTORDERS.get(0));        
@@ -73,7 +77,7 @@ public class EventSearchPage extends PartakeBasePage {
         boolean deadlineOnly = !"false".equals(deadline);
         
         try {
-            List<Event> events = EventService.get().search(searchTerm.trim(), category.getKey(), sortOrder.getKey(), deadlineOnly, 50);
+            List<Event> events = EventService.get().search(searchTerm, category.getKey(), sortOrder.getKey(), deadlineOnly, 50);
             
             createForm(searchTerm, category, sortOrder, deadlineOnly);
             renderSearchResult(events, "検索結果");
@@ -91,9 +95,9 @@ public class EventSearchPage extends PartakeBasePage {
         ChoiceRenderer<KeyValuePair> choiceRenderer = new ChoiceRenderer<KeyValuePair>("value", "key");
         
         final TextField<String> searchTermField = new TextField<String>("search.term", new Model<String>(searchTerm)); 
-        final DropDownChoice<KeyValuePair> searchCategoryChoice = new DropDownChoice<KeyValuePair>("search.category", new Model<KeyValuePair>(category), CATEGORIES_FOR_SEARCH, choiceRenderer);;
-        final DropDownChoice<KeyValuePair> searchOrderChoice = new DropDownChoice<KeyValuePair>("search.order", new Model<KeyValuePair>(sortOrder), SORTORDERS, choiceRenderer);;
-        final CheckBox searchDeadlineOnlyCheckBox = new CheckBox("search.beforeDeadlineOnly", new Model<Boolean>(deadlineOnly));;
+        final DropDownChoice<KeyValuePair> searchCategoryChoice = new DropDownChoice<KeyValuePair>("search.category", new Model<KeyValuePair>(category), CATEGORIES_FOR_SEARCH, choiceRenderer);
+        final DropDownChoice<KeyValuePair> searchOrderChoice = new DropDownChoice<KeyValuePair>("search.order", new Model<KeyValuePair>(sortOrder), SORTORDERS, choiceRenderer);
+        final CheckBox searchDeadlineOnlyCheckBox = new CheckBox("search.beforeDeadlineOnly", new Model<Boolean>(deadlineOnly));
         
         Form form = new Form("search") {
             @Override
@@ -134,7 +138,7 @@ public class EventSearchPage extends PartakeBasePage {
             form.add(searchOrderChoice);
             form.add(searchDeadlineOnlyCheckBox);
             
-            ImageButton submitButton = new ImageButton("search.submit", "/images/hoge");
+            ImageButton submitButton = new ImageButton("search.submit", "/images/dummy");
             submitButton.add(new SimpleAttributeModifier("src", "/images/btn-search.png"));
             form.add(submitButton);
         }

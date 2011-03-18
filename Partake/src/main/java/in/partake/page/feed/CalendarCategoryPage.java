@@ -18,12 +18,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-public class CalendarEventPage extends PartakeCalendarPage {
+public class CalendarCategoryPage extends PartakeCalendarPage {
     /** */
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(CalendarsController.class);
         
-    public CalendarEventPage(PageParameters params) {
+    public CalendarCategoryPage(PageParameters params) {
         String categoryName = params.get("category").toOptionalString();
         
         if (StringUtils.isBlank(categoryName) || !EventCategory.isValidCategoryName(categoryName)) {

@@ -151,19 +151,23 @@ public final class Util {
     	
     	InputStream is = new BufferedInputStream(new FileInputStream(file));
     	try {
-	    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    	final int SIZE = 1024 * 1024;
-	    	byte[] buf = new byte[SIZE];
-	    	
-	    	int len;
-	    	while ((len = is.read(buf)) > 0) {
-	    		baos.write(buf, 0, len);
-	    	}
-	    	
-	    	return baos.toByteArray();
+    	    return getContentOfStream(is);
     	} finally {
-    		is.close();
+    	    is.close();
     	}
+    }
+    
+    public static byte[] getContentOfStream(InputStream stream) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final int SIZE = 1024 * 1024;
+        byte[] buf = new byte[SIZE];
+        
+        int len;
+        while ((len = stream.read(buf)) > 0) {
+            baos.write(buf, 0, len);
+        }
+        
+        return baos.toByteArray();
     }
     
     public static InputStream createInputSteram(String resource) throws IOException {

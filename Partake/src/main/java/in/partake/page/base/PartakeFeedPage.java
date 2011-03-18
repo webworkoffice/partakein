@@ -55,10 +55,10 @@ public abstract class PartakeFeedPage extends PartakeBinaryPage {
         }
         
         feed.setEntries(entries);       
-        outputSyndFeed(feed);
+        renderSyndFeed(feed);
     }
 
-    protected void outputSyndFeed(SyndFeed feed) throws IOException, FeedException, UnsupportedEncodingException {
+    protected void renderSyndFeed(SyndFeed feed) throws IOException, FeedException, UnsupportedEncodingException {
         SyndFeedOutput output = new SyndFeedOutput();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         output.output(feed, new OutputStreamWriter(baos, "utf-8"));
