@@ -19,9 +19,10 @@ import in.partake.page.event.EventSearchPage;
 import in.partake.page.event.EventShowPage;
 import in.partake.page.event.ImageShowPage;
 import in.partake.page.feed.CalendarAllEventPage;
-import in.partake.page.feed.CalendarEventPage;
+import in.partake.page.feed.CalendarCategoryPage;
 import in.partake.page.feed.CalendarUserPage;
 import in.partake.page.feed.FeedAllEventPage;
+import in.partake.page.feed.FeedCategoryPage;
 import in.partake.page.feed.FeedEventPage;
 import in.partake.page.user.MyPage;
 import in.partake.page.user.PreferencePage;
@@ -77,11 +78,12 @@ public class PartakeApplication extends WebApplication {
         mountPage("/users/${id}", UserShowPage.class);
         
         // --- feed
+        mountPage("/feed/event/${id}", FeedEventPage.class);
         mountPage("/feed/all", FeedAllEventPage.class);
-        mountPage("/feed/category/${category}", FeedEventPage.class);
+        mountPage("/feed/category/${category}", FeedCategoryPage.class);
         mountPage("/calendars/${id}", CalendarUserPage.class);
         mountPage("/calendars/all", CalendarAllEventPage.class);
-        mountPage("/calendars/category/${category}", CalendarEventPage.class);
+        mountPage("/calendars/category/${category}", CalendarCategoryPage.class);
         
         // --- ERROR
         mountPage("/invalid", InvalidPage.class);

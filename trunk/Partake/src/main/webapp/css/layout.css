@@ -716,7 +716,7 @@ table.associated-event input[type='text'] {
   イベント編集画面
 ----------------------------------------------------*/
 
-#event-edit-submit {
+#event-edit-submit, .event-edit-submit {
     display: block;
     margin: 0 auto;
 }
