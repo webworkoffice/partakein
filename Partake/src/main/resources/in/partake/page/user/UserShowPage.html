@@ -1,0 +1,81 @@
+<wicket:extend>
+
+<div id="mypage-title">
+	<h1><span wicket:id="screenName.0">だれか</span> さんのページ
+		<a wicket:id="twitterLink" href="http://twitter.com/someone"><img src="/images/twitter_s.png" alt="Twitter" /></a></h1>
+	<p><span wicket:id="screenName.1">だれか</span> さんが管理している / 登録しているイベントを確認できます。</p>
+</div>
+
+<div class="mypage-mine">
+	<h2><img src="/images/drop-yellow.png" alt="" />管理しているイベント</h2>
+	
+	<wicket:enclosure child="managedEvents"> 
+		<table class="table0">
+		    <colgroup>
+		        <col width="400px" /><col width="200px" /><col width="px" />
+		    </colgroup>
+			<thead>
+				<tr><th class="col1">イベントタイトル</th><th>開催日</th><th>参加予定人数/定員</th></tr>
+			</thead>
+			<tbody>
+			    <tr wicket:id="managedEvents">
+			    	<td><a wicket:id="eventURL" href="/events/something">ここにタイトル</a></td>
+			    	<td wicket:id="beginDate">ここに開始日</td>
+			    	<td wicket:id="capacity">ここに Capacity</td>
+			    </tr>
+			</tbody>
+		</table>
+	</wicket:enclosure>
+
+	<p wicket:id="noManagedEvents">管理しているイベントはありません。</p>
+</div>
+
+<div class="mypage-mine">
+	<h2><img src="/images/drop-orange.png" alt="" />参加予定のイベント</h2>
+	
+	<wicket:enclosure child="enrolledEvents"> 
+		<table class="table0">
+		    <colgroup>
+		        <col width="400px" /><col width="200px" /><col width="px" />
+		    </colgroup>
+			<thead>
+				<tr><th>イベントタイトル</th><th>開催日</th><th>ステータス</th></tr>
+			</thead>
+			<tbody>
+			    <tr wicket:id="enrolledEvents">
+			    	<td><a wicket:id="eventURL" href="/events/something">ここにタイトル</a></td>
+			    	<td wicket:id="beginDate">ここに開始日</td>
+			    	<td wicket:id="status">ここに status</td>
+			    </tr>
+			</tbody>
+		</table>
+	</wicket:enclosure>
+
+	<p wicket:id="noEnrolledEvents">参加予定のイベントはありません。</p>
+</div>
+
+<div class="mypage-mine">
+	<h2><img src="/images/drop-green.png" alt="" />終了したイベント</h2>
+	
+	<wicket:enclosure child="finishedEvents"> 
+		<table class="table0">
+		    <colgroup>
+		        <col width="400px" /><col width="200px" /><col width="px" />
+		    </colgroup>
+			<thead>
+				<tr><th>イベントタイトル</th><th>開催日</th><th>ステータス</th></tr>
+			</thead>
+			<tbody>
+			    <tr wicket:id="finishedEvents">
+			    	<td><a wicket:id="eventURL" href="/events/something">ここにタイトル</a></td>
+			    	<td wicket:id="beginDate">ここに開始日</td>
+			    	<td wicket:id="status">ここに status</td>
+			    </tr>
+			</tbody>
+		</table>
+	</wicket:enclosure>
+
+	<p wicket:id="noFinishedEvents">終了したイベントはありません。</p>
+</div>
+
+</wicket:extend>
