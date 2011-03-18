@@ -1,7 +1,11 @@
 package in.partake.util;
 
-public class KeyValuePair {
-	public String key;
+import java.io.Serializable;
+
+public class KeyValuePair implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    public String key;
 	public String value;
 	public long timestamp;
 	

@@ -1,0 +1,92 @@
+<wicket:extend>
+
+
+<div class="top-introduction">	
+    <p class="top-introduce">
+		<span class="big">P</span>ARTAKE (パーテイク) はイベントの告知ページを作成したり、<br />イベントを検索して参加することができるシンプルなツールです。
+	</p>
+	<div class="rollover1">	
+		<a href="/events/search"><img src="/images/top-search.png" alt="イベントを検索する" id="top-search-button" /></a>
+	</div>
+	<div class="rollover2">
+		<a href="/events/new"><img src="/images/top-form.png" alt="イベントを作成する" id="top-form-button" /></a>
+	</div>
+	<div class="sample">
+		<a href="/events/demo"><img src="/images/sample1.gif" alt="サンプルを見る" id=""></a>
+	</div>
+</div>
+
+<div class="top-explanations">
+    <h2><img src="/images/line-orange.png" alt=""/>PARTAKE!</h2>
+	<div class="top-explanation">
+		<img src="/images/feature-01.png" alt="" />
+		<h3>1. イベントの告知ページを作りましょう</h3>
+		<ul class="top-feature">
+			<li>イベントの告知ページを簡単につくれます。<a href="/events/demo">[サンプル]</a></li>
+			<li>Twitterでの宣伝も簡単です。</li>
+		</ul>
+	</div>
+	
+	<div class="top-explanation">
+		<img src="/images/feature-02.png" alt="" />
+		<h3>2. 参加者の管理が簡単です</h3>
+		<ul class="top-feature">
+			<li>参加状況の把握、参加者リストの印刷などができます。</li>
+			<li>参加者にメッセージを送信できます。</li>
+		</ul>
+	</div>
+	
+	<div class="top-explanation">
+		<img src="/images/feature-03.png" alt="" />
+		<h3>3. イベントを検索して自分も参加しましょう</h3>
+		<ul class="top-feature">
+			<li>楽しそうなイベントを検索して参加しましょう。</li>
+			<li><a href="/feedlist">新着イベントの RSS / iCal を配信中。</a></li>
+			<li><a href="http://twitter.com/partake_bot">新着イベントをつぶやく公式ボット</a>もいます。<br>
+			</li>
+		</ul>
+	</div>
+	<div class="top-explanation">
+	   <img src="/images/feature-04.png" alt="" />
+	   <h3>ご要望をお聞きしています</h3>
+	   <ul class="top-feature">
+	       <li>ご要望・バグ報告は <a href="http://code.google.com/p/partakein/issues/list">Issue Tracker</a> まで。あるいは、<br><a href="http://twitter.com/partakein">@partakein</a> まで tweet をお願いします。</li>
+	       <li>開発者を募集中。PARTAKE のソースは <a href="http://code.google.com/p/partakein/">Google Code</a> <br>で(一部の画像を除き)公開中です。</li>
+	       <li><a href="http://code.google.com/p/partakein/wiki/FAQ">FAQ はこちら。</a></li>
+	   </ul>
+	</div>
+</div>
+
+<div wicket:id="myRecentEvent" class="top-user-events rad">
+	<h2>直近の登録イベント</h2>
+	<wicket:enclosure child="recentEnrolledEvent">
+		<ul>
+			<li wicket:id="recentEnrolledEvent">
+				<a wicket:id="recentEnrolledEvent.title" href="#">タイトル</a>
+			</li>
+		</ul>
+		<p class="more"><a href="/mypage">more...</a></p>
+	</wicket:enclosure>
+	<p wicket:id="noRecentEnrolledEvent">直近の登録しているイベントはありません。</p>
+	
+	<h2>直近の管理イベント</h2>
+	<wicket:enclosure child="recentManagingEvent">
+		<ul>
+			<li wicket:id="recentManagingEvent"><a wicket:id="recentManagingEvent.title" href="#">タイトル</a></li>
+		</ul>
+		<p class="more"><a href="/mypage">more...</a></p>
+	</wicket:enclosure>
+	<p wicket:id="noRecentManagingEvent">直近の管理しているイベントはありません。</p>
+</div>
+
+
+<div class="top-recent-events rad">
+    <img src="/images/recent-events.png" />
+	<div wicket:id="recentEvent" class="top-recent-event">
+		<p>ここに event が表示されます。</p>
+    </div>
+    <p class="more"><a href="/events/search">more...</a></p>
+</div>
+
+ 
+</wicket:extend>
