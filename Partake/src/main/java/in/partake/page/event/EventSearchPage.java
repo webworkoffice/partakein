@@ -51,7 +51,6 @@ public class EventSearchPage extends PartakeBasePage {
     }
     
     public EventSearchPage() {
-        super("イベント検索 - [PARTAKE]");
         try {
             List<Event> events = EventService.get().getRecentEvents(5); // TODO: MAGIC NUMBER! 5
             
@@ -64,8 +63,6 @@ public class EventSearchPage extends PartakeBasePage {
     }
     
     public EventSearchPage(PageParameters params) {
-        super("イベント検索 - [PARTAKE]");
-        
         String searchTerm = params.get("searchTerm").toOptionalString();
         if (searchTerm == null) { searchTerm = ""; }
         else { searchTerm = searchTerm.trim(); }
@@ -90,6 +87,10 @@ public class EventSearchPage extends PartakeBasePage {
         }
     }
     
+    @Override
+    protected String getTitle() {
+        return "イベント検索 - [PARTAKE]";
+    }
     
     private void createForm(String searchTerm, KeyValuePair category, KeyValuePair sortOrder, boolean deadlineOnly) throws DAOException {
         ChoiceRenderer<KeyValuePair> choiceRenderer = new ChoiceRenderer<KeyValuePair>("value", "key");
