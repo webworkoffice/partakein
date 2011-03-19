@@ -1,0 +1,133 @@
+<wicket:panel>
+
+<form wicket:id="eventform">
+
+<dl class="event-form">
+<dt><label for="title">タイトル<span class="required">(必須)</span></label>:</dt>
+	<dd><input wicket:id="title" type="text" id="title" name="title" class="text-input" /></dd>
+<dt><label for="summary">概要</label>:</dt>
+	<dd><input wicket:id="summary" type="text" id="summary" name="summary" class="text-input" /><br />
+	   <span class="accent">＞</span> 概要は 100 文字以内で記述してください。</dd>
+<dt><label for="category">カテゴリ</label>:</dt>
+	<dd><select wicket:id="category" id="category" name="category"></select></dd>
+<dt><label for="description">説明</label>:</dt>
+	<dd><textarea wicket:id="description" id="description" name="description" class="text-input" /><br />
+	<span class="accent">＞</span> イベントの説明を記述します。(HTML などを含めて50000文字まで)</dd>
+<dt>開催日時<span class="required">(必須)</span>:</dt>
+	<dd><select wicket:id="syear" id="syear" name="syear"  /><label for="syear">年</label>
+		<select wicket:id="smonth" id="smonth" name="smonth" /><label for="smonth">月</label>
+		<select wicket:id="sday" id="sday" name="sday" /><label for="sday">日</label>
+		<select wicket:id="shour" id="shour" name="shour" /><label for="shour">時</label>
+		<select wicket:id="smin" id="smin" name="smin" /><label for="smin">分</label></dd>
+<dt>終了日時:</dt>
+	<dd><input wicket:id="edate.use" type="checkbox" id="usesEndDate" name="usesEndDate" />終了日時を設定する<br />
+		<select wicket:id="eyear" id="eyear" name="eyear" /><label for="eyear">年</label>
+		<select wicket:id="emonth" id="emonth" name="emonth" /><label for="emonth">月</label>
+		<select wicket:id="eday" id="eday" name="eday" /><label for="eday">日</label>
+		<select wicket:id="ehour" id="ehour" name="ehour" /><label for="ehour">時</label>
+		<select wicket:id="emin" id="emin" name="emin" /><label for="emin">分</label><br />
+		<span class="accent">＞</span> イベントの終了時刻を設定できます。</dd>
+<dt>申込締切:</dt>
+	<dd><input wicket:id="ddate.use" type="checkbox" id="usesDeadline" name="usesDeadline" />締め切りを設定する<br />
+		<select wicket:id="dyear" id="dyear" name="dyear" /><label for="dyear">年</label>
+		<select wicket:id="dmonth" id="dmonth" name="dmonth" /><label for="dmonth">月</label>
+		<select wicket:id="dday" id="dday" name="dday" /><label for="dday">日</label>
+		<select wicket:id="dhour" id="dhour" name="dhour" /><label for="dhour">時</label>
+		<select wicket:id="dmin" "id="dmin" name="dmin" /><label for="dmin">分</label><br />
+		<span class="accent">＞</span> 締め切り以後は参加／不参加が変更できなくなります。設定しない場合、開始日時が締め切りとなります。</dd>
+<dt><label for="capacity">定員</label>:</dt>
+	<dd><input wicket:id="capacity" type="text" id="capacity" name="capacity" class="text-input" /><br />
+		<span class="accent">＞</span> 定員を超える参加表明者は補欠者として扱われます。0 をいれると定員なしの意味になります。</dd>
+<dt><label for="foreImage">掲載画像</label>:</dt>
+        <dd wicket:id="noforeimage">
+        	<!-- 画像が設定されていない場合 -->
+        	<input wicket:id="noforeimage.file" type="file" name="foreImage" id="foreImage" label="File" /><br />
+			<div class="pict-link">
+				<img src="/images/camera.png" alt="link"/>
+				<a href="http://www.ashinari.com/" target="_blank" title="[Link]無料の素材屋さん「足成」">フリー画像はこちら (別ウインドウ)</a>
+			</div>
+			<span class="accent">＞</span> 画像を設定できます。画像は上部に掲載されます。(png, gif, ipeg 画像のみが送信できます)
+		</dd>
+    	<dd wicket:id="foreimage">
+    		<!-- 画像が設定されている場合 -->
+    		<input type="checkbox" name="removingForeImage" id="removingForeImage" />画像を消去する<br />
+    		<input type="file" name="foreImage" id="foreImage" label="File"/><br />
+			<span class="accent">＞</span> 画像を再設定できます。画像は上部に掲載されます。(png, gif, ipeg 画像のみが送信できます)
+		</dd>
+
+<dt><label for="backImage">背景画像</label>:</dt>
+	<dd wicket:id="nobackimage">
+		<!-- 画像が設定されていない場合 -->
+		<input wicket:id="nobackimage.file" type="file" name="backImage" id="backImage" label="File"/><br />
+		<span class="accent">＞</span> 背景画像を設定できます。(png, gif, ipeg 画像のみが送信できます)
+	</dd>
+    <dd wicket:id="backimage">
+    	<!-- 画像が設定されている場合 -->
+    	<input type="checkbox" name="removingBackImage" id="removingBackImage" />背景画像を消去する<br />
+    	<input type="file" name="backImage" id="backImage" label="File"/><br />
+		<span class="accent">＞</span> 背景画像を再設定できます。(png, gif, ipeg 画像のみが送信できます)
+	</dd>	
+<dt><label for="place">会場</label>:</dt>
+	<dd><input wicket:id="place" type="text" id="place" name="place" class="text-input" /></dd>
+<dt><label for="address">住所</label>:</dt>
+	<dd><input wicket:id="address" type="text" id="address" name="address"  class="text-input"/><br />
+		<span class="accent">＞</span> 住所を正確に入力すると、google の地図を表示できます。</dd>
+<dt><label for="url">URL</label>:</dt>
+	<dd><input wicket:id="url" type="text" id="url" name="url" class="text-input" /></dd>
+<dt><label for="hashTag">ハッシュタグ</label></dt>
+	<dd><input wicket:id="hashtag" type="text" id="hashTag" name="hashTag" class="text-input" /><br />
+		<span class="accent">＞</span> twitter で用いる公式ハッシュタグを設定できます。# から始まる英数字、アンダースコアのみの文字列が使用できます。<br />100 文字まで設定できます。</dd>
+<dt><label for="secret">非公開設定</label>:</dt>
+	<dd><input wicket:id="secret" type="checkbox" id="secret" name="secret"/>非公開にする<br />
+		<span class="accent">＞</span> 非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</dd>
+<dt><label for="passcode">パスコード</label>:</dt>
+	<dd><input wicket:id="passcode" type="text" id="passcode" name="passcode" class="text-input" /></dd>
+</dl>
+
+<span class="switchHat"><a title="関連イベント　,　複数の管理者">▼ 詳細な設定&nbsp;&nbsp;（関連イベント/自分以外の管理者）</a></span>
+
+<div class="switchDetail rad">
+<dl class="event-form">
+<dt>関連イベント：</dt>
+	<dd>
+		<table class="associated-event">
+			<thead>
+				<tr><th>イベント ID</th><th>登録必須</th><th>優先参加</th></tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><input wicket:id="related.1.event.id"       type="text"     id="relatedEventID1"       name="relatedEventID1" class="text-input" /></td>
+					<td><input wicket:id="related.1.event.required" type="checkbox" id="relatedEventRequired1" name="relatedEventRequired1" /></td>
+					<td><input wicket:id="related.1.event.priority" type="checkbox" id="relatedEventPriority1" name="relatedEventPriority1" /></td>
+				</tr>
+				<tr>
+					<td><input wicket:id="related.2.event.id"       type="text"     id="relatedEventID2"       name="relatedEventID1" class="text-input" /></td>
+					<td><input wicket:id="related.2.event.required" type="checkbox" id="relatedEventRequired2" name="relatedEventRequired1" /></td>
+					<td><input wicket:id="related.2.event.priority" type="checkbox" id="relatedEventPriority2" name="relatedEventPriority1" /></td>
+				</tr>
+				<tr>
+					<td><input wicket:id="related.3.event.id"       type="text"     id="relatedEventID3"       name="relatedEventID1" class="text-input" /></td>
+					<td><input wicket:id="related.3.event.required" type="checkbox" id="relatedEventRequired3" name="relatedEventRequired1" /></td>
+					<td><input wicket:id="related.3.event.priority" type="checkbox" id="relatedEventPriority3" name="relatedEventPriority1" /></td>
+				</tr>
+			</tbody>
+		</table>
+	
+        <span class="accent">＞</span>関連イベントを設定できます。<br />
+        <span class="accent">＞</span>登録必須にチェックすると、そのイベントに登録されていなければこのイベントに登録することは出来ません。<br />
+        <span class="accent">＞</span>優先参加にチェックすると、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。<br />
+        <span class="accent">＞</span>イベント ID とは、 http://partake.in/events/{ID} の {ID} の部分の文字列です。
+        </dd>
+<dt><label for="managers">自分以外の管理者：</label></dt>
+    <dd><input wicket:id="managers" type="text" id="managers" name="managers" class="text-input" /><br />
+        <span class="accent">＞</span>自分以外にも管理者を指定できます。twitter のショートネームをコンマ区切りで列挙してください。この管理者はイベント削除以外のことを行うことが出来ます。<br />
+        <span class="accent">＞</span>例： user1, user2, user3</dd>
+</dl>
+</div>
+
+<input wicket:id="submit" id="event-edit-submit" class="event-edit-submit" type="image" label="イベントを作成する" />
+
+
+</form>
+
+</wicket:panel>

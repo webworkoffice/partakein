@@ -1,0 +1,109 @@
+<wicket:panel>
+
+
+<div class="event-enrollment rad">
+	<wicket:container wicket:id="enrollment.over">
+		<!-- 締切りを過ぎている場合 -->
+		<p>締め切りを過ぎているため<br />参加変更が行えません</p>
+	</wicket:container>
+	
+	<!-- ログインしてない場合 -->
+	<wicket:container wicket:id="enrollment.guest">
+		<p class="guest">参加を申込むためにはログインしてください&nbsp;&nbsp;<br /> 
+			<img src="/images/enroll.png" alt="参加登録" /> 
+			<img src="/images/reserve.png" alt="仮参加登録" /> 
+		</p>
+	</wicket:container>
+	
+	
+	<wicket:container wicket:id="enrollment.enrolled">
+		<!-- 参加登録済の場合 -->
+		<p>参加登録済みです。</p>
+	    <img id="open-reserve-form" src="/images/reserve.png" alt="仮参加登録" />
+	    <img id="open-cancel-form" src="/images/cancel.png" alt="参加キャンセル" />
+	    <p>締切間際には仮参加登録は行えません。</p>
+		<ul>
+		    <li><a id="open-change-comment-form" href="#" >参加コメントを編集する</a></li>
+		</ul>
+	</wicket:container>
+			
+	<wicket:container wicket:id="enrollment.reserved">
+		<!-- 仮参加登録済の場合 -->
+		<p>仮参加登録中です。</p>
+		<img id="open-enroll-form" src="/images/enroll.png" alt="参加登録" />
+		<img id="open-cancel-form" src="/images/cancel.png" alt="参加キャンセル" />
+		<ul>
+		    <li><a id="open-change-comment-form" href="#" >参加コメントを編集する</a></li>
+		</ul>
+	</wicket:container>
+
+	<wicket:container wicket:id="enrollment.notenrolled">
+		<!-- まだ参加してない場合 / キャンセルしている場合 -->
+		<wicket:enclosure>
+			<p>参加登録するためには、次のイベントに<br />登録していることが必要です。</p>
+			<ul>
+				<li wicket:id="enrollment.notenrolled.relatedevent"><a href="#eventurl">eventtitle</a></li>
+			</ul>
+		</wicket:enclosure>
+		<img id="open-enroll-form" src="/images/enroll.png" alt="参加登録" />
+	    <img id="open-reserve-form" src="images/reserve.png" alt="仮参加登録" />
+		<p>締切間際には仮参加登録は行えません。</p>
+	</wicket:container>
+
+	<div id="enroll-form" class="dialog-ui" title="参加登録フォーム" style="display: none"> 
+		<form id="enroll" name="enroll" action="/events/enroll" method="post"> 
+			<input type="hidden" name="eventId" value="462c9660-e55d-440c-9ccf-b24faec23863" id="enroll_eventId"/> 
+			<p><img src="/images/momonga-mini.png"/>&nbsp;イベントに<strong>参加</strong>しようとしています。</p> 
+			<div class="dotted-box"> 
+			    <ul> 
+			        <li>開始時刻の２４時間前に<strong>リマインダー</strong>が<em>自分自身からの</em>ダイレクトメッセージで届きます。</li> 
+			        <li>リマインダーは右上の「設定」リンクからたどれるページで受信拒否が設定できます。</li> 
+			    </ul> 
+			</div> 
+			<label id="enroll_" for="comment">COMMENT</label>:<br /> 
+			<textarea name="comment" cols="" rows="" id="comment">よろしくお願いします。</textarea><br /> 
+			<input type="submit" id="enroll_0" value="&#21442;&#21152;&#30331;&#37682;"/> 
+		</form> 
+	</div> 
+		
+	<div id="reserve-form" class="dialog-ui" title="仮参加登録フォーム" style="display: none"> 
+		<form id="reserve" name="reserve" action="/events/reserve" method="post"> 
+			<input type="hidden" name="eventId" value="462c9660-e55d-440c-9ccf-b24faec23863" id="reserve_eventId"/> 
+			<p><img src="/images/momonga-mini.png"/>&nbsp;イベントに<strong>仮参加</strong>しようとしています。</p> 
+			<div class="dotted-box"> 
+				<ul> 
+					<li><strong>放置した場合、キャンセル</strong>になってしまいます。</li> 
+					<li>参加を確定させるためには、締切り(設定されていない場合は開始３時間前)までに<strong>改めて参加の申込み</strong>をしてください。</li> 
+					<li>締切りの24,12時間前になると<strong>リマインダー</strong>が<em>自分自身からの</em>ダイレクトメッセージで届きます。</li> 
+					<li>リマインダーは右上の「設定」リンクからたどれるページで受信拒否が設定できます。</li> 
+				</ul> 
+			</div> 
+			<label id="reserve_" for="comment">COMMENT</label>:<br /> 
+			<textarea name="comment" cols="" rows="" id="comment">よろしくお願いします。</textarea><br /> 
+			<input type="submit" id="reserve_0" value="&#20206;&#21442;&#21152;&#30331;&#37682;"/> 
+		</form> 
+	</div> 
+		
+	<div id="cancel-form" class="dialog-ui" title="参加キャンセルフォーム" style="display: none"> 
+           <form id="cancel" name="cancel" action="/events/cancel" method="post"> 
+               <input type="hidden" name="eventId" value="462c9660-e55d-440c-9ccf-b24faec23863" id="cancel_eventId"/> 
+               <p><img src="/images/momonga-mini.png"/>&nbsp;イベントへの参加を<strong>キャンセル</strong>しようとしています。</p> 
+               <p>参加をいったんキャンセルすると確保していた順番は取り消されます。</p> 
+               <label id="cancel_" for="comment">COMMENT</label>:<br /> 
+               <textarea name="comment" cols="" rows="" id="comment">参加できなくなりました。</textarea><br /> 
+               <input type="submit" id="cancel_0" value="&#21442;&#21152;&#12461;&#12515;&#12531;&#12475;&#12523;"/> 
+           </form> 
+	</div> 
+		
+	<div id="change-comment-form" class="dialog-ui" title="コメント変更フォーム" style="display: none"> 
+	    <form id="changeComment" name="changeComment" action="/events/changeComment" method="post"> 
+	        <input type="hidden" name="eventId" value="462c9660-e55d-440c-9ccf-b24faec23863" id="changeComment_eventId"/> 
+	        <p>コメントを変更します。</p> 
+	        <label id="changeComment_" for="comment">COMMENT</label>:<br /> 
+	        <textarea name="comment" cols="" rows="" id="comment"></textarea><br /> 
+	        <input type="submit" id="changeComment_0" value="新しいコメント。"/> 
+	    </form> 
+	</div> 	
+</div> 
+
+</wicket:panel>
