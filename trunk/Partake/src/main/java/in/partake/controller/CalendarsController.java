@@ -92,7 +92,6 @@ public class CalendarsController extends PartakeActionSupport {
                 }
             }
             
-            // TODO: これおかしい。apply for all events なのか？
             EventService.get().applyForAllEvents(new F(categoryName, calendar));
             
             outputCalendar(calendar);

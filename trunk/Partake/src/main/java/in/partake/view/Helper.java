@@ -187,13 +187,13 @@ public final class Helper {
     };
 
     /** 参加ステータスを表示します */
-    public static String enrollmentStatus(String userId, Event event) {
+    public static String enrollmentStatus(User user, Event event) {
         try {
-            ParticipationStatus status = UserService.get().getParticipationStatus(userId, event.getId());
+            ParticipationStatus status = UserService.get().getParticipationStatus(user.getId(), event.getId());
 
             switch (status) {
             case ENROLLED: {
-                int order = EventService.get().getOrderOfEnrolledEvent(event.getId(), userId);
+                int order = EventService.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
                 if (order <= event.getCapacity() || event.getCapacity() == 0) {
                     return "参加";
                 } else {
@@ -201,7 +201,7 @@ public final class Helper {
                 }
             }
             case RESERVED: {
-                int order = EventService.get().getOrderOfEnrolledEvent(event.getId(), userId);
+                int order = EventService.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
                 if (order <= event.getCapacity() || event.getCapacity() == 0) {
                     return "仮参加";
                 } else {

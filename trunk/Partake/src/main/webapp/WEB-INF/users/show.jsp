@@ -25,10 +25,7 @@
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <div id="mypage-title">
-<h1>
-	<img src="<%= h(showingUser.getProfileImageURL()) %>" alt="" width="48" height="48" /><%= h(showingUser.getScreenName()) %> さんのページ
-	<a href="http://twitter.com/<%= h(showingUser.getScreenName()) %>"><img src="<%= request.getContextPath() %>/images/twitter_s.png" alt="Twitter" /></a>
-</h1>
+<h1><img src="<%= h(showingUser.getProfileImageURL()) %>" alt="" width="48" height="48" /><%= h(showingUser.getScreenName()) %> さんのページ <a href="http://twitter.com/<%= h(showingUser.getScreenName()) %>"><img src="<%= request.getContextPath() %>/images/twitter_s.png" alt="Twitter" /></a></h1>
 
 <p><%= h(showingUser.getScreenName()) %> さんが管理している / 登録しているイベントを確認できます。</p></div>
 

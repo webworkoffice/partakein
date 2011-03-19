@@ -77,8 +77,73 @@
 		</global-results>		
 	</package>
 
+	<package name="top" namespace="/" extends="partake-default">
+        <action name="" method="index" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/index.jsp</result>
+        </action>
+        
+        <action name="error" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/error.jsp</result>
+        </action>
+
+        <action name="invalid" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/invalid.jsp</result>
+        </action>
+
+        <action name="duplicated" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/duplicated.jsp</result>
+        </action>
+        
+        <action name="contact" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/contact.jsp</result>
+        </action>
+        
+        <action name="termofuse" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/termofuse.jsp</result>
+        </action>
+
+        <action name="feedlist" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/feedlist.jsp</result>
+        </action>
+        
+        <action name="notfound" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/notfound.jsp</result>
+        </action>
+
+        <action name="prohibited" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/prohibited</result>
+        </action>
+	
+		<action name="mypage" method="show" class="in.partake.controller.MypageController">
+			<interceptor-ref name="authenticateStack" />
+			<result name="success">/WEB-INF/mypage.jsp</result>
+		</action>
+		
+		<action name="preference" method="showPreference" class="in.partake.controller.UsersPreferenceController">
+			<interceptor-ref name="authenticateStack" />
+			<result name="success">/WEB-INF/preference.jsp</result>
+		</action>
+		
+		<action name="setPreference" method="setPreference" class="in.partake.controller.UsersPreferenceController">
+            <interceptor-ref name="checkTokenStack" />
+			<result name="input" type="redirect">/preference</result>
+			<result name="success" type="redirect">/preference</result>    
+		</action>
+
+		<action name="revokeCalendar" method="revokeCalendar" class="in.partake.controller.UsersController">
+            <interceptor-ref name="checkTokenStack" />
+			<result name="input">/WEB-INF/setting.jsp</result>
+			<result name="success" type="redirect">/preference</result>            
+		</action>
+	</package>
+	
 	<package name="auth" namespace="/auth" extends="partake-default">
- 
+        <action name="loginByTwitter" method="loginByTwitter" class="in.partake.controller.AuthenticationController">
+            <result name="success" type="redirect">${redirectURL}</result>
+        </action>
+        <action name="verifyForTwitter" method="verifyForTwitter" class="in.partake.controller.AuthenticationController">
+            <result name="success" type="redirect">/</result>
+        </action>
 
         <action name="loginByOpenID" method="loginByOpenID" class="in.partake.controller.AuthenticationController">
             <result name="success"  type="redirect">${redirectURL}</result>
@@ -91,6 +156,12 @@
             <result name="success" type="redirect">/</result>
         </action>
 
+		<action name="logout" method="logout" class="in.partake.controller.AuthenticationController">
+			<result name="success" type="redirect">/</result>
+		</action>
+		<action name="loginRequired" method="loginRequired" class="in.partake.controller.AuthenticationController">
+			<result name="success">/WEB-INF/auth/loginRequired.jsp</result>
+		</action>
 	</package>
 	
 	<!-- API. The default will be returned stream. -->
@@ -368,6 +439,23 @@
 	</package>
 		
 	<package name="feed" namespace="/feed" extends="partake-default">
+		<action name="all" method="feedRecentEvents" class="in.partake.controller.EventsFeedController">
+			<result name="success" type="stream">
+                <param name="contentType">${contentType}</param>
+                <param name="bufferSize">1M</param>
+                <param name="allowCaching">true</param>			
+			</result>
+		</action>
+
+		<action name="category/*" method="feedCategory" class="in.partake.controller.EventsFeedController">
+			<param name="category">{1}</param>
+			<result name="success" type="stream">
+                <param name="contentType">${contentType}</param>
+                <param name="bufferSize">1M</param>
+                <param name="allowCaching">true</param>			
+			</result>
+		</action>
+
 		<action name="event/*" method="feedEvent" class="in.partake.controller.EventsFeedController">
 			<param name="feedId">{1}</param>
 			<result name="success" type="stream">

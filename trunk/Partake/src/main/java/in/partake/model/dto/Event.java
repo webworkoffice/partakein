@@ -95,7 +95,7 @@ public class Event extends PartakeModel<Event> {
     // ----------------------------------------------------------------------
     // ctors
     
-    public Event() {
+    public Event() {        
     }
     
     public Event(Event event) {
