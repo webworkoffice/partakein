@@ -65,7 +65,7 @@ public class EventParticipantsPanel extends PartakePanel {
             }
 
             // キャンセル
-            if (spareParticipations.size() > 0) {
+            if (cancelledParticipations.size() > 0) {
                 add(new Label("list.cancelled.count", String.valueOf(cancelledParticipations.size())));
                 add(new ParticipationListView("list.cancelled.user", cancelledParticipations));                   
             } else {

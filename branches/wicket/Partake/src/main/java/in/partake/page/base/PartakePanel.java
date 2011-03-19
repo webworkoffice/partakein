@@ -5,6 +5,7 @@ import in.partake.page.error.InvalidPage;
 import in.partake.page.error.LoginRequiredPage;
 import in.partake.resource.I18n;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -34,5 +35,13 @@ public class PartakePanel extends Panel {
     
     protected void renderLoginRequired() {
         throw new RestartResponseException(LoginRequiredPage.class);        
+    }
+    
+    protected void renderPage(Class<? extends Page> pageClass) {
+        throw new RestartResponseException(pageClass);
+    }
+
+    protected void renderPage(Class<? extends Page> pageClass, PageParameters pageParameters) {
+        throw new RestartResponseException(pageClass, pageParameters);
     }
 }

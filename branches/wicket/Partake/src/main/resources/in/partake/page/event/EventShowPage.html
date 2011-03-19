@@ -1,4 +1,4 @@
-<wicket:extend>
+<wicket:extend xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.5-strict.dtd">
 
 <h1 wicket:id="event.title">イベントタイトル</h1> 
 <p wicket:id="event.summary" class="summary">サマリー</p> 
@@ -40,11 +40,11 @@
  
  	<div class="event-participation">
 	 	<wicket:container wicket:id="event.management">
-	 		<p>ここに管理者向けのボードを貼り付けます。
+	 		<p>EventManagementPanel.html will be inserted here.</p>
 	 	</wicket:container>
  	
 	 	<wicket:container wicket:id="event.enrollment">
-	 		<p>ここに参加者のボードを貼り付けます。</p>
+	 		<p>EventEnrollmentPanel.html will be inserted here.</p>
 	 	</wicket:container>
 	 	
 	 	<wicket:container wicket:id="event.promotion">
