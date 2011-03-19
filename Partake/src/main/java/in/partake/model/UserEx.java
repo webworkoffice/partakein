@@ -10,8 +10,6 @@ import in.partake.resource.PartakeProperties;
  *
  */
 public class UserEx extends User {
-    private static final long serialVersionUID = 1L;
-    
     private TwitterLinkage twitterLinkage;
     
     public UserEx(User user, TwitterLinkage twitterLinkage) {

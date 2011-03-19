@@ -8,8 +8,6 @@ import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "UserPreferences")
 public class UserPreference extends PartakeModel<UserPreference> {
-    private static final long serialVersionUID = 1L;
-    
     @Id
     private String  userId;
     @Column

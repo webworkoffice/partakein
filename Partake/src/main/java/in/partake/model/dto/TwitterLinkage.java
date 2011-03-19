@@ -8,8 +8,6 @@ import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "TwitterLinkages")
 public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
-    private static final long serialVersionUID = 1L;
-    
     @Id
     private String twitterId;
     @Column
