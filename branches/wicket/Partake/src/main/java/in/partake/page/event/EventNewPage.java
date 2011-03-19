@@ -6,7 +6,11 @@ public class EventNewPage extends PartakeBasePage {
     private static final long serialVersionUID = 1L;
     
     public EventNewPage() {
-        super("イベントを作成する - [PARTAKE]");
         add(new EventEditPanel("editpanel"));
+    }
+    
+    @Override
+    protected String getTitle() {
+        return "イベントを作成する - [PARTAKE]";
     }
 }

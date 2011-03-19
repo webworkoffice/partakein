@@ -8,16 +8,11 @@ public class PartakeBasePageWithoutMessage extends PartakePage {
     private static final long serialVersionUID = 1L;
 
     public PartakeBasePageWithoutMessage() {
-        this("[PARTAKE]");
-    }
-
-    
-    public PartakeBasePageWithoutMessage(String title) {
-        add(new Label("partake.title", title));
         header();
     }
-    
+
     private void header() {
+        add(new Label("partake.title", getTitle()));
         String url = ""; 
 
         PartakeSession session = PartakeSession.get();
@@ -26,5 +21,13 @@ public class PartakeBasePageWithoutMessage extends PartakePage {
         } else {
             add(new NotLoggedInHeaderPanel("header", url));
         }
+    }
+    
+    /**
+     * タイトルを設定する
+     * @return
+     */
+    protected String getTitle() {
+        return "[PARTAKE]";
     }
 }
