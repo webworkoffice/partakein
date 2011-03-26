@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PartakeHeartbeatServlet extends HttpServlet {
 	private static final long serialVersionUID = 3765387119544905943L;
-	private final Logger logger = Logger.getLogger(getClass().toString());
+	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {

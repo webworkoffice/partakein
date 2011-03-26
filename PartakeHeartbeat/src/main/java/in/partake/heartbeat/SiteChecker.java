@@ -4,8 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +18,7 @@ import java.util.logging.Logger;
  * @author skypencil(@eller86)
  */
 final class SiteChecker {
-	private final Logger logger = Logger.getLogger(getClass().toString());
+	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	boolean execute(Config config) throws IllegalArgumentException {
 		logger.log(Level.FINE, "start to check " + config.getUrl());
@@ -42,8 +40,6 @@ final class SiteChecker {
 			}
 			success = true;
 			logger.log(Level.FINE, "complete.");
-		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException(e);
 		} catch (IOException e) {
 			// TODO GAE側が頻繁にエラーを吐くなど、このケースにダウンと判断することが望ましくない場合は変更を検討する
 			logger.log(Level.INFO, "IOException occures.", e);
@@ -70,9 +66,8 @@ final class SiteChecker {
 	}
 
 	private HttpURLConnection createConnection(Config config)
-			throws MalformedURLException, IOException {
-		final URL url = new URL(config.getUrl());
-		final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			throws IOException {
+		final HttpURLConnection conn = (HttpURLConnection) config.getUrl().openConnection();
 		conn.setConnectTimeout(config.getTimeoutSec() * 1000);
 		conn.setReadTimeout(config.getTimeoutSec() * 1000);
 		conn.setDoOutput(false);
