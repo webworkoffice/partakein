@@ -13,7 +13,7 @@ import twitter4j.TwitterFactory;
  * @author skypencil(@eller86)
  */
 class ReportSender {
-	private final Logger logger = Logger.getLogger(getClass().toString());
+	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	void report(Config config) {
 		final Twitter twitter = new TwitterFactory().getInstance();
