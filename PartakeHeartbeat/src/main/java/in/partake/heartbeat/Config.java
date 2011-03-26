@@ -7,12 +7,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <p>ƒT[ƒrƒX‚Ìİ’è€–Ú‚ğ•Û‚·‚éƒNƒ‰ƒXBƒCƒ“ƒXƒ^ƒ“ƒX‚Ì¶¬‚É‚Í{@link Config.Builder}ƒNƒ‰ƒX‚ğ—˜—p‚·‚é‚±‚ÆB
- * Œ»“_‚Å‚ÍˆÈ‰º‚Ì€–Ú‚ğ•Û‚·‚éB</p>
+ * <p>ã‚µãƒ¼ãƒ“ã‚¹ã®è¨­å®šé …ç›®ã‚’ä¿æŒã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆã«ã¯{@link Config.Builder}ã‚¯ãƒ©ã‚¹ã‚’åˆ©ç”¨ã™ã‚‹ã“ã¨ã€‚
+ * ç¾æ™‚ç‚¹ã§ã¯ä»¥ä¸‹ã®é …ç›®ã‚’ä¿æŒã™ã‚‹ã€‚</p>
  * <ul>
- * <li>‰“š‚ğŠm”F‚·‚éURL</li>
- * <li>ŠÄ‹‘ÎÛƒTƒCƒg‚©‚ç‰“š‚ª‚È‚©‚Á‚½‚ÉDM‚ğ‘—‚é‘Šè‚Ìscreen name</li>
- * <li>‰“š‚È‚µ‚Æ”»’f‚·‚éŠî€iƒŒƒXƒ|ƒ“ƒX‚ğó‚¯æ‚é‚Ü‚Å‚Ì•b”j</li>
+ * <li>å¿œç­”ã‚’ç¢ºèªã™ã‚‹URL</li>
+ * <li>ç›£è¦–å¯¾è±¡ã‚µã‚¤ãƒˆã‹ã‚‰å¿œç­”ãŒãªã‹ã£ãŸæ™‚ã«DMã‚’é€ã‚‹ç›¸æ‰‹ã®screen name</li>
+ * <li>å¿œç­”ãªã—ã¨åˆ¤æ–­ã™ã‚‹åŸºæº–ï¼ˆãƒ¬ã‚¹ãƒãƒ³ã‚¹ã‚’å—ã‘å–ã‚‹ã¾ã§ã®ç§’æ•°ï¼‰</li>
  * </ul>
  * @author skypencil(@eller86)
  * @see Config.Builder
@@ -40,7 +40,7 @@ class Config {
 	}
 
 	/**
-	 * <p>ŠO•”ƒtƒ@ƒCƒ‹‚©‚çİ’è‚ğ“Ç‚İ‚ñ‚Å{@link Config}ƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬‚·‚éƒNƒ‰ƒXB</p>
+	 * <p>å¤–éƒ¨ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰è¨­å®šã‚’èª­ã¿è¾¼ã‚“ã§{@link Config}ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚</p>
 	 * @author skypencil(@eller86)
 	 * @see Config
 	 */
@@ -49,7 +49,7 @@ class Config {
 		private static final String KEY_OF_SCREEN_NAMES = "in.partake.heartbeat.screen_names";
 
 		Config build() throws MalformedURLException {
-			// appengine-web.xml‚É‹LÚ‚µ‚½ƒVƒXƒeƒ€ƒvƒƒpƒeƒB‚©‚çİ’è‚ğ“Ç‚İ‚Ş
+			// appengine-web.xmlã«è¨˜è¼‰ã—ãŸã‚·ã‚¹ãƒ†ãƒ ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã‹ã‚‰è¨­å®šã‚’èª­ã¿è¾¼ã‚€
 			final String url = System.getProperty(KEY_OF_URL);
 			final String screenNames = System.getProperty(KEY_OF_SCREEN_NAMES);
 

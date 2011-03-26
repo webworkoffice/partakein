@@ -1,7 +1,7 @@
 package in.partake.heartbeat;
 
 /**
- * <p>�Ď��ΏۃT�C�g�����҂ƈقȂ�X�e�[�^�X�R�[�h��Ԃ������Ƃ�\����O�B</p>
+ * <p>監視対象サイトが期待と異なるステータスコードを返したことを表す例外。</p>
  * @author skypencil(@eller86)
  */
 final class IllegalResponseException extends Exception {

@@ -8,8 +8,8 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 /**
- * <p>ŠÇ—Ò‚ÉŠÄ‹‘ÎÛƒTƒCƒg‚ªƒ_ƒEƒ“‚µ‚½‚±‚Æ‚ğ’Ê’m‚·‚éƒNƒ‰ƒXB
- * Œ»İ‚ÌÀ‘•‚Å‚ÍTwitter‚Ìƒ_ƒCƒŒƒNƒgƒƒbƒZ[ƒW‚ğ—˜—pB</p>
+ * <p>ç®¡ç†è€…ã«ç›£è¦–å¯¾è±¡ã‚µã‚¤ãƒˆãŒãƒ€ã‚¦ãƒ³ã—ãŸã“ã¨ã‚’é€šçŸ¥ã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
+ * ç¾åœ¨ã®å®Ÿè£…ã§ã¯Twitterã®ãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’åˆ©ç”¨ã€‚</p>
  * @author skypencil(@eller86)
  */
 class ReportSender {
@@ -17,12 +17,12 @@ class ReportSender {
 
 	void report(Config config) {
 		final Twitter twitter = new TwitterFactory().getInstance();
-		final String message = String.format("%s ƒgƒbƒvƒy[ƒW‚©‚ç %d•bˆÈ“à ‚ÉƒŒƒXƒ|ƒ“ƒX‚ª‚ ‚è‚Ü‚¹‚ñ‚Å‚µ‚½B", config.getUrl(), config.getTimeoutSec());
+		final String message = String.format("%s ãƒˆãƒƒãƒ—ãƒšãƒ¼ã‚¸ã‹ã‚‰ %dç§’ä»¥å†… ã«ãƒ¬ã‚¹ãƒãƒ³ã‚¹ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸã€‚", config.getUrl(), config.getTimeoutSec());
 		for (String screenName : config.getScreenNames()) {
 			try {
 				twitter.sendDirectMessage(screenName, message);
 			} catch (TwitterException ignore) {
-				logger.log(Level.INFO, "ŠÇ—Ò(" + screenName + ")‚ÉDM‘—M‚µ‚æ‚¤‚Æ‚µ‚Ä¸”s‚µ‚Ü‚µ‚½‚ª–³‹‚µ‚Ü‚·", ignore);
+				logger.log(Level.INFO, "ç®¡ç†è€…(" + screenName + ")ã«DMé€ä¿¡ã—ã‚ˆã†ã¨ã—ã¦å¤±æ•—ã—ã¾ã—ãŸãŒç„¡è¦–ã—ã¾ã™", ignore);
 			}
 		}
 	}
