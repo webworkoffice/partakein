@@ -8,12 +8,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * <p>�Ď��ΏۃT�C�g�̐������m�F����N���X�B
- * HTTP���N�G�X�g�𑗂�A�ȉ��̏ꍇ�ɃT�C�g���_�E�������Ɣ��f����B</p>
+ * <p>監視対象サイトの生死を確認するクラス。
+ * HTTPリクエストを送り、以下の場合にサイトがダウンしたと判断する。</p>
  * <ul>
- * <li>��莞�ԓ��Ƀ��X�|���X���A���Ă��Ȃ������ꍇ</li>
- * <li>200�ȊO�̃X�e�[�^�X�R�[�h���A���Ă����ꍇ</li>
- * <li>�T�[�o�Ƃ̐ڑ��ŃG���[�����������ꍇ�iHttpURLConnection�Ȃǂ�IOException�𓊂����ꍇ�j</li>
+ * <li>一定時間内にレスポンスが帰ってこなかった場合</li>
+ * <li>200以外のステータスコードが帰ってきた場合</li>
+ * <li>サーバとの接続でエラーが発生した場合（HttpURLConnectionなどがIOExceptionを投げた場合）</li>
  * </ul>
  * @author skypencil(@eller86)
  */
@@ -41,7 +41,7 @@ final class SiteChecker {
 			success = true;
 			logger.log(Level.FINE, "complete.");
 		} catch (IOException e) {
-			// TODO GAE�����p�ɂɃG���[��f���ȂǁA���̃P�[�X�Ƀ_�E���Ɣ��f���邱�Ƃ��]�܂����Ȃ��ꍇ�͕ύX����������
+			// TODO GAE側が頻繁にエラーを吐くなど、このケースにダウンと判断することが望ましくない場合は変更を検討する
 			logger.log(Level.INFO, "IOException occures.", e);
 		} catch (IllegalResponseException e) {
 			logger.log(Level.INFO, "SiteChecker receives the illegal response.", e);

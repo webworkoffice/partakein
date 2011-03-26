@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * <p>ƒT[ƒrƒX‚Ì’†S‚Æ‚È‚éƒNƒ‰ƒXB
- * •¡”‚ÌƒNƒ‰ƒX‚ğ‘g‚İ‡‚í‚¹AŠÄ‹‘ÎÛƒTƒCƒg‚ªƒ_ƒEƒ“‚µ‚½Û‚ÉƒŒƒ|[ƒg‚ğ‘—M‚·‚éB</p>
+ * <p>ã‚µãƒ¼ãƒ“ã‚¹ã®ä¸­å¿ƒã¨ãªã‚‹ã‚¯ãƒ©ã‚¹ã€‚
+ * è¤‡æ•°ã®ã‚¯ãƒ©ã‚¹ã‚’çµ„ã¿åˆã‚ã›ã€ç›£è¦–å¯¾è±¡ã‚µã‚¤ãƒˆãŒãƒ€ã‚¦ãƒ³ã—ãŸéš›ã«ãƒ¬ãƒãƒ¼ãƒˆã‚’é€ä¿¡ã™ã‚‹ã€‚</p>
  * @author skypencil(@eller86)
  */
 public class PartakeHeartbeatServlet extends HttpServlet {
@@ -28,7 +28,7 @@ public class PartakeHeartbeatServlet extends HttpServlet {
 			checkSiteState(config);
 			writer.println("success");
 		} catch (Throwable unexpected) {
-			// —\Šú‚µ‚Ä‚¢‚È‚¢—áŠO
+			// äºˆæœŸã—ã¦ã„ãªã„ä¾‹å¤–
 			logger.log(Level.SEVERE, "!! AN ERROR OCCURED !!", unexpected);
 			writer.println("failed");
 		}
@@ -40,7 +40,7 @@ public class PartakeHeartbeatServlet extends HttpServlet {
 		final boolean siteIsAlive = new SiteChecker().execute(config);
 
 		if (!siteIsAlive && siteWasAlive) {
-			// ŠÄ‹‘ÎÛƒTƒCƒg‚ªƒ_ƒEƒ“
+			// ç›£è¦–å¯¾è±¡ã‚µã‚¤ãƒˆãŒãƒ€ã‚¦ãƒ³
 			new ReportSender().report(config);
 		}
 		accessor.storeSiteState(siteIsAlive);

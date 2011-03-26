@@ -10,7 +10,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 
 /**
- * <p>ŠÄ‹‘ÎÛƒTƒCƒg‚Ìó‘Ô‚ğƒf[ƒ^ƒXƒgƒA‚Éo‚µ“ü‚ê‚·‚é‚½‚ß‚ÌƒNƒ‰ƒXB</p>
+ * <p>ç›£è¦–å¯¾è±¡ã‚µã‚¤ãƒˆã®çŠ¶æ…‹ã‚’ãƒ‡ãƒ¼ã‚¿ã‚¹ãƒˆã‚¢ã«å‡ºã—å…¥ã‚Œã™ã‚‹ãŸã‚ã®ã‚¯ãƒ©ã‚¹ã€‚</p>
  * @author skypencil(@eller86)
  */
 class SiteStateAccessor {
@@ -21,7 +21,7 @@ class SiteStateAccessor {
 	private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
 	/**
-	 * @return ‘O‰ñŠm”F‚É³í‚É“®ì‚µ‚Ä‚¢‚½‚È‚ç‚Îtrue
+	 * @return å‰å›ç¢ºèªæ™‚ã«æ­£å¸¸ã«å‹•ä½œã—ã¦ã„ãŸãªã‚‰ã°true
 	 */
 	boolean loadPreviousState() {
 		final Query query = new Query(KIND_NAME).addSort(PROPNAME_TIMESTAMP, SortDirection.DESCENDING);
@@ -32,7 +32,7 @@ class SiteStateAccessor {
 			final Entity lastState = results.next();
 			prop = (Boolean) lastState.getProperty(PROPNAME_IS_ALIVE);
 		} else {
-			// ‰‰ñŠm”F‚È‚Ì‚ÅA‘O‰ñ³í‚¾‚Á‚½‚à‚Ì‚Æ‰¼’è‚·‚é
+			// åˆå›ç¢ºèªãªã®ã§ã€å‰å›æ­£å¸¸ã ã£ãŸã‚‚ã®ã¨ä»®å®šã™ã‚‹
 			prop = Boolean.TRUE;
 		}
 
@@ -40,7 +40,7 @@ class SiteStateAccessor {
 	}
 
 	/**
-	 * @param siteIsAlive ŠÄ‹‘ÎÛƒTƒCƒg‚ª³í‚É“®ì‚µ‚Ä‚¢‚é‚È‚ç‚Îtrue
+	 * @param siteIsAlive ç›£è¦–å¯¾è±¡ã‚µã‚¤ãƒˆãŒæ­£å¸¸ã«å‹•ä½œã—ã¦ã„ã‚‹ãªã‚‰ã°true
 	 */
 	void storeSiteState(boolean siteIsAlive) {
 		final Entity state = new Entity(KIND_NAME);
