@@ -36,7 +36,7 @@ public class SiteStateAccessorTest {
 		SiteStateAccessor accessor = new SiteStateAccessor();
 		for (boolean b : new boolean[]{ true, false }) {
 			accessor.storeSiteState(b);
-			assertThat(accessor.loadPrevState(), is(b));
+			assertThat(accessor.loadPreviousState(), is(b));
 		}
 	}
 }

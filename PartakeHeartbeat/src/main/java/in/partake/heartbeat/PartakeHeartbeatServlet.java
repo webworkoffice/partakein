@@ -9,7 +9,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
+/**
+ * <p>サービスの中心となるクラス。
+ * 複数のクラスを組み合わせ、監視対象サイトがダウンした際にレポートを送信する。</p>
+ * @author skypencil(@eller86)
+ */
 public class PartakeHeartbeatServlet extends HttpServlet {
 	private static final long serialVersionUID = 3765387119544905943L;
 	private final Logger logger = Logger.getLogger(getClass().toString());
@@ -20,7 +24,7 @@ public class PartakeHeartbeatServlet extends HttpServlet {
 		resp.setContentType("text/plain");
 
 		try {
-			final Config config = Config.Builder.build();
+			final Config config = new Config.Builder().build();
 			checkSiteState(config);
 			writer.println("success");
 		} catch (Throwable unexpected) {
@@ -30,13 +34,13 @@ public class PartakeHeartbeatServlet extends HttpServlet {
 		}
 	}
 
-	private void checkSiteState(final Config config) {
+	private void checkSiteState(Config config) {
 		final SiteStateAccessor accessor = new SiteStateAccessor();
-		final boolean siteWasAlive = accessor.loadPrevState();
+		final boolean siteWasAlive = accessor.loadPreviousState();
 		final boolean siteIsAlive = new SiteChecker().execute(config);
 
 		if (!siteIsAlive && siteWasAlive) {
-			// ダウン
+			// 監視対象サイトがダウン
 			new ReportSender().report(config);
 		}
 		accessor.storeSiteState(siteIsAlive);

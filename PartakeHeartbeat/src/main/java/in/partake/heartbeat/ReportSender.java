@@ -7,6 +7,11 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
+/**
+ * <p>管理者に監視対象サイトがダウンしたことを通知するクラス。
+ * 現在の実装ではTwitterのダイレクトメッセージを利用。</p>
+ * @author skypencil(@eller86)
+ */
 class ReportSender {
 	private final Logger logger = Logger.getLogger(getClass().toString());
 
