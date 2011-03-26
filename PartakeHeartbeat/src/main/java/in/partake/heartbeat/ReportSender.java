@@ -1,0 +1,24 @@
+package in.partake.heartbeat;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+
+class ReportSender {
+	private final Logger logger = Logger.getLogger(getClass().toString());
+
+	void report(Config config) {
+		final Twitter twitter = new TwitterFactory().getInstance();
+		final String message = String.format("%s トップページから %d秒以内 にレスポンスがありませんでした。", config.getUrl(), config.getTimeoutSec());
+		for (String screenName : config.getScreenNames()) {
+			try {
+				twitter.sendDirectMessage(screenName, message);
+			} catch (TwitterException ignore) {
+				logger.log(Level.INFO, "管理者(" + screenName + ")にDM送信しようとして失敗しましたが無視します", ignore);
+			}
+		}
+	}
+}
