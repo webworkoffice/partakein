@@ -1,0 +1,22 @@
+#summary about the alive monitoring tool on the Google App Engine
+
+= Introduction =
+Partake uses an alive monitoring tool which is running on the Google App Engine.
+This page describes how to build this tool on eclipse.
+
+= Features =
+ * send a direct message to partake.in's administrators when partake.in doesn't response to the HTTP request.
+
+= How to build =
+ # install [http://code.google.com/intl/en/appengine/docs/java/tools/eclipse.html the Google Plugin for Eclipse] to your eclipse.
+ # create your [http://twitter4j.org/en/configuration.html twitter4j.properties].
+ # checkout the latest project.
+{{{
+$ svn checkout http://partakein.googlecode.com/svn/trunk/PartakeHeartbeat/ heartbeat-read-only
+}}}
+ # import this project to your workspace, and check settings of this project.
+  # use JDK1.6+ to compile.
+  # use [http://code.google.com/intl/en/appengine/downloads.html Google App Engine SDK] 1.4.2.
+  # use JUnit4 as the testing framework.
+ # put your twitter4j.properties to src/main/resources.
+ # now, your can run this project on Eclipse. see [http://code.google.com/intl/en/appengine/docs/java/tools/eclipse.html#Running_the_Project Google App Engine's help] for detail.
