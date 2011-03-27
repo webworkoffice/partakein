@@ -3,9 +3,10 @@
 	<application>partake-stat</application>
 	<version>20110326</version>
 
-	<!-- Configure java.util.logging -->
 	<system-properties>
+		<!-- Configure java.util.logging -->
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
+
 		<property name="in.partake.heartbeat.url" value="http://partake.in/"/>
 		<property name="in.partake.heartbeat.screen_names" value="mayahjp,eller86"/>
 	</system-properties>
