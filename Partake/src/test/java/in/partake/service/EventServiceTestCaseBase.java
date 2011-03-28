@@ -1,6 +1,7 @@
 package in.partake.service;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 
@@ -11,6 +12,8 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
+
+import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 
 public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBase {
     private final EventService service = EventService.get();
@@ -89,6 +92,34 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
 
             services = getAndFilterEventsOwnedBy(owner, eventIds);
             Assert.assertEquals(eventIds.size(), services.size());
+        }
+    }
+
+    @Test
+    public void testToStoreAndDeleteImages() throws DAOException {
+        final User owner = createUser(createRandomId());
+        final Event event = createEvent("this id will be overwritten.");
+        event.setOwnerId(owner.getId());
+        BinaryData foreImageEmbryo = new BinaryData("text", bytes("foreImage"));
+        BinaryData backImageEmbryo = new BinaryData("text", bytes("backImage"));
+        String eventId = service.create(event,foreImageEmbryo, backImageEmbryo);
+        {
+            Event storedEvent = service.getEventById(eventId);
+            Assert.assertEquals(storedEvent, event);
+            String foreImageId = storedEvent.getForeImageId();
+            Assert.assertNotNull(foreImageId);
+            Assert.assertEquals("foreImage", new String(service.getBinaryData(foreImageId).getData()));
+            String backImageId = storedEvent.getBackImageId();
+            Assert.assertNotNull(backImageId);
+            Assert.assertEquals("backImage", new String(service.getBinaryData(backImageId).getData()));
+        }
+
+        service.update(event, event, true, null, true, null);
+        {
+            Event storedEvent = service.getEventById(eventId);
+            Assert.assertEquals(storedEvent, event);
+            Assert.assertNull(storedEvent.getForeImageId());
+            Assert.assertNull(storedEvent.getBackImageId());
         }
     }
 
