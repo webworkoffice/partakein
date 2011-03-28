@@ -19,4 +19,4 @@ $ svn checkout http://partakein.googlecode.com/svn/trunk/PartakeHeartbeat/ heart
   # use [http://code.google.com/intl/en/appengine/downloads.html Google App Engine SDK] 1.4.2.
   # use JUnit4 as the testing framework.
  # put your twitter4j.properties to src/main/resources.
- # now, your can run this project on Eclipse. see [http://code.google.com/intl/en/appengine/docs/java/tools/eclipse.html#Running_the_Project Google App Engine's help] for detail.
+ # now, you can run this project on Eclipse. see [http://code.google.com/intl/en/appengine/docs/java/tools/eclipse.html#Running_the_Project Google App Engine's help] for detail.
