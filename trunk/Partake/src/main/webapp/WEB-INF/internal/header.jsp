@@ -45,7 +45,7 @@
 			<li><a href="<%= request.getContextPath() %>/events/search"><%= I18n.t("page.event.search") %></a></li>
 			<li id="sign-in-with-twitter-menu">
 				<div id="signin-with-twitter-part">
-					<form action="/auth/loginByTwitter">
+					<form action="<%= request.getContextPath() %>/auth/loginByTwitter">
 						<input type="hidden" name="redirectURL" value="<%= h(redirectURL) %>" />
 						<input type="image" src="<%= request.getContextPath() %>/images/signinwithtwitter.png" value="Sign in with Twitter" class="signinwithtwitter cler" />
 					</form>
