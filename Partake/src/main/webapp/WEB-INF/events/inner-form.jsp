@@ -78,9 +78,6 @@
 	<dd><s:textfield id="passcode" name="passcode" cssClass="text-input" /></dd>
 </dl>
 
-
-
-
 <span class="switchHat"><a title="関連イベント　,　複数の管理者">▼ 詳細な設定&nbsp;&nbsp;（関連イベント/自分以外の管理者）</a></span>
 
 <div class="switchDetail rad">

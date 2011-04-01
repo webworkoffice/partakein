@@ -6,7 +6,6 @@
 <!DOCTYPE html>
 
 <%@taglib prefix="s" uri="/struts-tags" %>
-
 <%@page import="in.partake.model.CommentEx"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="in.partake.model.EventEx"%>
@@ -32,7 +31,6 @@
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.EventRelationEx"%>
 
-
 <%
 	EventEx event = (EventEx) request.getAttribute(Constants.ATTR_EVENT);
 	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
@@ -40,7 +38,12 @@
 	Boolean deadlineOver = (Boolean)request.getAttribute(Constants.ATTR_DEADLINE_OVER);
 	EventReminder reminderStatus = (EventReminder) request.getAttribute(Constants.ATTR_REMINDER_STATUS);
 	List<EventRelationEx> eventRelations = (List<EventRelationEx>) request.getAttribute(Constants.ATTR_EVENT_RELATIONS);
+    String redirectURL = (String)request.getAttribute(Constants.ATTR_REDIRECTURL);
+    if (redirectURL == null) {
+        redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL); 
+    } 
 %>
+
 
 <html lang="ja">
 <head>
@@ -216,28 +219,31 @@ body {
 		<p>締め切りを過ぎているため<br>参加変更が行えません</p>
 	<% } else { %>
 		<% if (user == null) {%>
-			<%-- login してない場合はなにもできない --%>
-			<p class="guest">参加を申込むためにはログインしてください&nbsp;&nbsp;<br />
-			<img src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
-		    <img src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
-			</p>						
+			<%-- login してない場合はなにもできない  --%>
+				<p class="guest">
+					<form action="/auth/loginByTwitter">
+						<a href="/auth/loginByTwitter?redirectURL=<%= h(redirectURL) %>"><strong>Twitterでログイン</strong>して参加しよう！</a>
+					</form>
+					<img src="<%= request.getContextPath() %>/images/enroll.png" alt="" />
+					<img src="<%= request.getContextPath() %>/images/reserve.png" alt="" />
+				</p>		
 		<% } else if (ParticipationStatus.ENROLLED.equals(status)) { %>
 			<%-- なんか stamp みたいな感じで「参加登録済み」とかいうアイコンを出せないモノだろうか。 --%>
 			<p>参加登録済みです。</p>
 			<% if (event.canReserve()) { %>
-                <img id="open-reserve-form" src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
-                <img id="open-cancel-form" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
+                <img id="open-reserve-form" class="cler" src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
+                <img id="open-cancel-form" class="cler" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
             <% } else { %>
                 <img id="open-cancel-form" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
                 <p>締切間際には仮参加登録は行えません。</p>
             <% } %>
 			<ul>
-			    <li><a id="open-change-comment-form" href="#" >参加コメントを編集する</a></li>
+			    <li><a id="open-change-comment-form" class="cler" href="#" >参加コメントを編集する</a></li>
 			</ul>
 		<% } else if (ParticipationStatus.RESERVED.equals(status) && !event.isReservationTimeOver()) { %>
 			<p>仮参加登録中です。</p>
-			<img id="open-enroll-form" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
-			<img id="open-cancel-form" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
+			<img id="open-enroll-form" class="cler" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
+			<img id="open-cancel-form" class="cler" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
 			<ul>
 			    <li><a id="open-change-comment-form" href="#" >参加コメントを編集する</a></li>
 			</ul>
@@ -253,9 +259,9 @@ body {
 					<% } %>
 				</ul>
 			<% } else { %>
-				<img id="open-enroll-form" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
+				<img id="open-enroll-form" class="cler" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
 				<% if (event.canReserve()) { %>
-				    <img id="open-reserve-form" src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
+				    <img id="open-reserve-form" class="cler" src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
 				<% } else { %>
 				    <p>締切間際には仮参加登録は行えません。</p>
 				<% } %>

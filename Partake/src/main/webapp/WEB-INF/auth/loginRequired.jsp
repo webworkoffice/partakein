@@ -27,7 +27,7 @@
 <img id="" src="<%= request.getContextPath() %>/images/click.png" alt="">
 
 <% String url = (String)request.getAttribute(Constants.ATTR_REDIRECTURL); %>
-<p><a href="<%= request.getContextPath() %>/auth/loginByTwitter?redirectURL=<%= url != null ? h(url) : "" %>"><img src="../images/signinwithtwitter.png" alt="Sign in with twitter" /></a></p>
+<p><a href="<%= request.getContextPath() %>/auth/loginByTwitter?redirectURL=<%= url != null ? h(url) : "" %>"><img src="../images/signinwithtwitter.png" alt="Sign in with twitter"  class="cler" /></a></p>
 </div>
 
 <div class="setting-subtitle">
