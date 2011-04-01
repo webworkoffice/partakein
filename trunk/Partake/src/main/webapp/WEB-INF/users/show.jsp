@@ -44,8 +44,6 @@
 			</thead>
 			<tbody>
 			    <% for (Event event : ownedEvents) { %>
-			    <% if (event == null) { continue; /* TODO: should be logged. */} %>
-			    <% if (event.isPrivate()) { continue; } %>
 			    <tr>
 			    	<td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
 			    	<td><%= Helper.readableDate(event.getBeginDate()) %></td>
@@ -77,8 +75,6 @@
 			</thead>
 			<tbody>
 			    <% for (Event event : enrolledEvents) { %>
-			    <% if (event == null) { continue; /* TODO: should be logged. */} %>
-			    <% if (event.isPrivate()) { continue; } %>
 			    <tr>
 			    	<td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
 			    	<td><%= Helper.readableDate(event.getBeginDate()) %></td>
@@ -108,8 +104,6 @@
             </thead>
             <tbody>
                 <% for (Event event : finishedEvents) { %>
-                <% if (event == null) { continue; /* TODO: should be logged. */} %>
-                <% if (event.isPrivate()) { continue; } %>
                 <tr>
                     <td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
                     <td><%= Helper.readableDate(event.getBeginDate()) %></td>
