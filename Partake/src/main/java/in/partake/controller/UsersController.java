@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -29,6 +31,7 @@ public class UsersController extends PartakeActionSupport {
 	// ----------------------------------------------------------------------
     
     public String show() {
+    	// TODO MypageController#show() のコードをほぼ流用できる
     	try {
 	    	String userId = getParameter("userId");
 	    	if (StringUtils.isEmpty(userId)) { return ERROR; }
@@ -61,7 +64,12 @@ public class UsersController extends PartakeActionSupport {
 		            		enrolled.add(e);
 		            	}
 		            }
-		            
+		            // このページは他者に見せるものなので、見せていいものだけを返す
+		            IsPublicPredicate predicate = new IsPublicPredicate();
+		            CollectionUtils.filter(owned,predicate);
+		            CollectionUtils.filter(enrolled, predicate);
+		            CollectionUtils.filter(finished, predicate);
+
 		            Collections.sort(enrolled, Event.getComparatorBeginDateAsc());
 		            Collections.sort(finished, Event.getComparatorBeginDateAsc());
 		            
@@ -108,4 +116,12 @@ public class UsersController extends PartakeActionSupport {
     		return ERROR;
     	}
     }
+
+	private static class IsPublicPredicate implements Predicate {
+		@Override
+		public boolean evaluate(Object object) {
+			Event event = (Event) object;
+			return event != null &&! event.isPrivate();
+		}
+	}
 }
