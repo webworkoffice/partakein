@@ -7,7 +7,7 @@
 
 /* {
     border: 1px dotted green;
-} */  
+}*/ 
 
 #logo {
     margin-right:10px;
@@ -68,11 +68,8 @@ body {
 }
 /* top - button */
 
-#top-search-button {
-    width: 143px;
-    height: 33px;
-}
-.rollover1 {
+
+.top-search {
     position: absolute;
     top: 105px;
     left: 110px;
@@ -80,39 +77,13 @@ body {
     height:33px;
     background: transparent url(../images/top-search2.png) no-repeat left bottom;
     }
-.rollover1 a {
-display:block;
-width:143px;
-height:33px;
-font-size:1px;
-line-height:1px;
-outline:none;
-}
-.rollover1 a:hover {
-text-indent:-9999px;
-}
-#top-form-button {
-    width: 143px;
-    height: 33px;
-}
-.rollover2 {
+.top-form {
     position: absolute; 
     top: 105px;
     left: 270px;
     width:143px;
     height:33px;
     background: transparent url(../images/top-form2.png) no-repeat left bottom;}
-.rollover2 a {
-    display:block;
-    width:143px;
-    height:33px;
-    font-size:1px;
-    line-height:1px;
-    outline:none;
-}
-.rollover2 a:hover {
-    text-indent:-9999px;
-}
 .sample {
     position: absolute; 
     top: 40px;
@@ -205,12 +176,12 @@ text-indent:-9999px;
 }
 .top-recent-events, .top-user-events {
 	word-break: break-all;word-wrap:break-word;
-    background-color:#efefef;
+    background-color:#F7F7F7;
     padding:5px 18px 8px 18px;
     margin-top:20px;
     float: right;
     width: 405px;
-    border : 1px solid #dddddd;
+    border : 1px solid #EAEAEA;
     border-bottom : 1px solid #C0C0C0;  
     list-style: none;
     list-style-image: url(../images/mark.png);
@@ -249,29 +220,47 @@ text-indent:-9999px;
     float: left;
     margin-left: 0;
 }
+
+.top-recent-events h3 {
+    margin:8px 0px 4px 1px;
+    word-break: break-all;
+}
+
 /* 直近のマイイベント top-user-events
 ---------------------------*/
 
 .top-user-events {
-	background-color:#FFF8DC;
+	background-color:/*#FFF8DC;*/;
     background: transparent url(../images/texture.png);
+    font-size:90%;
 }
 .top-user-events ul {
 	margin-top:3px;
 	margin-bottom:0px;
 }
-
 .top-user-events p {
 	margin:2px;
 	padding:0 0 0 33px;
 }
 .top-user-events h2 {
 	font-size:10px;
-	margin:9px 0 0 3px;
+	margin:9px 0 5px 3px;
 }
 .more {
 	text-align: right;
 }
+.top-user-events a {
+    color:#494440;    
+    text-decoration:none;
+}
+.top-user-events a:visited {
+    color: #494440;
+    text-decoration:none;
+}
+.top-user-events a:hover,a:active {
+    color:#616161;;
+}
+
 /*----------------------------------------------------
   イベント画面
 ----------------------------------------------------*/
@@ -493,16 +482,11 @@ max-height:980px;
 /* event-enrollment
 ---------------------------*/
 
-.guest {
-	color:#D827BF;
-	padding:12px 0 12px 0;
-   	background-repeat:no-repeat;
-}
-
 .guest img {
     margin-top:-2px;
-    opacity:0.24;
-    filter: alpha(opacity=24);
+    opacity:0.28;
+    filter: alpha(opacity=28);
+    border:1px solid red;
 }
 
 .event-enrollment {
@@ -1307,6 +1291,7 @@ h3 a:link, h3 a:visited, h3 a:hover, h3 a:active {
     padding: 2px;    
     color: #F5F5F5;
     background-color: #494440;
+    background: transparent url(../images/head-bg.png) repeat;
     border-radius: 4px; /* CSS3 */
     -webkit-border-radius: 4px; /* Safari,Chrome */
     -moz-border-radius: 4px; /* FireFox */
@@ -1327,6 +1312,7 @@ h3 a:link, h3 a:visited, h3 a:hover, h3 a:active {
     border: 1px #c9c9c9;
     color: #F5F5F5;
     background-color: #494440;
+    background: transparent url(../images/head-bg.png) repeat;
     border-radius: 4px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;

@@ -97,6 +97,8 @@
 <%-- ログインしていれば、直近のイベントを表示する --%>
 <% if (user != null) { %>
 	<div class="top-user-events rad">
+		<h2>登録イベント</h2>
+		<% List<Event> enrolled = (List<Event>) request.getAttribute(Constants.ATTR_ENROLLED_EVENTSET); %>		
 		<h2><%= I18n.t("page.toppage.recent.entry") %></h2>
 		<% List<Event> enrolled = (List<Event>) request.getAttribute(Constants.ATTR_ENROLLED_EVENTSET); %>
 		<% if (enrolled != null && !enrolled.isEmpty()) { %>
@@ -105,11 +107,15 @@
 				<% Event event = enrolled.get(i); %>
 				<li><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></li>
 			<% } %>
+			</ul>            
+			<p class="more"><a href="<%= request.getContextPath() %>/mypage">&raquo;more...</a></p>
 			</ul>
 			<p class="more"><a href="<%= request.getContextPath() %>/mypage"><%= I18n.t("page.toppage.recent.more") %></a></p>
 		<% } else { %>
 			<p><%= I18n.t("page.toppage.recent.entry.empty") %></p>
 		<% } %>
+		<h2><%= I18n.t("page.toppage.recent.admin") %></h2>
+		<% List<Event> owned = (List<Event>) request.getAttribute(Constants.ATTR_OWNED_EVENTSET); %>		
 		<h2><%= I18n.t("page.toppage.recent.admin") %></h2>
 		<% List<Event> owned = (List<Event>) request.getAttribute(Constants.ATTR_OWNED_EVENTSET); %>
 		<% if (owned != null && !owned.isEmpty()) { %>
@@ -118,6 +124,8 @@
 				<% Event event = owned.get(i); %>
 				<li><a href="<%= h(event.getEventURL()) %>"><%= h(event.getTitle()) %></a></li>
 			<% } %>
+			</ul>            
+			<p class="more"><a href="<%= request.getContextPath() %>/mypage">&raquo;more...</a></p>
 			</ul>
 			<p class="more"><a href="<%= request.getContextPath() %>/mypage"><%= I18n.t("page.toppage.recent.more") %></a></p>
 		<% } else { %>
@@ -154,6 +162,7 @@
 						<% } %>
 					</dl>
 				</div>
+            </div>
 			</div>
 		<% } %>
 	<% } %>
