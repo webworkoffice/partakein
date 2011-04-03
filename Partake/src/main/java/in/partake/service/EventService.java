@@ -38,6 +38,7 @@ import in.partake.util.functional.Function;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -244,6 +245,42 @@ public final class EventService extends PartakeService {
         } finally {
             con.invalidate();
         }	    
+	}
+	
+	/**
+	 * 管理を移譲されているイベントを全て取得。ただし、自分が所持しているイベントは取得しない。
+	 * @param manager
+	 * @return
+	 * @throws DAOException
+	 */
+	public List<Event> getEventsManagedBy(UserEx manager) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            con.beginTransaction();
+            // 1. screenName 取得
+            String screenName = manager.getScreenName();
+            // 2. screenName が含まれるような Event を取得
+            List<Event> events = factory.getEventAccess().findByScreenName(con, screenName);
+            
+            // 3. この中に、自分が管理しているものがもしあれば取り除く。
+            for (Iterator<Event> it = events.iterator(); it.hasNext(); ) {
+                Event event = it.next();
+                if (event == null || event.getOwnerId() == null) {
+                    it.remove();
+                    continue;
+                }
+                if (event.getOwnerId().equals(manager.getId())) {
+                    it.remove();
+                    continue;
+                }
+            }
+            
+            con.commit();
+            return events;
+        } finally {
+            con.invalidate();
+        }
 	}
 	
 	/**

@@ -10,8 +10,6 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * event with related data.
  * @author shinyak
@@ -197,17 +195,7 @@ public class EventEx extends Event {
     }
     
     private boolean isManager(UserEx user) {
-        if (user == null || user.getId() == null) { return false; }
-        if (user.getTwitterLinkage().getScreenName() == null) { return false; }
-        if (getManagerScreenNames() == null) { return false; }
-        
-        String[] screenNames = getManagerScreenNames().split(",");
-        for (String screenName : screenNames) {
-            if (user.getTwitterLinkage().getScreenName().equals(StringUtils.trim(screenName))) {
-                return true;
-            }
-        }
-        
-        return false;
+        if (user == null || user.getTwitterLinkage() == null) { return false; }
+        return isManager(user.getTwitterLinkage().getScreenName());
     }
 }

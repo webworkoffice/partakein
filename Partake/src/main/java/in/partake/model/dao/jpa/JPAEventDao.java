@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 class JPAEventDao extends JPADao<Event> implements IEventAccess {
     // XXX OpenJPAがnullなフィールドをmergeしないので回避策としてヌルオブジェクトを入れている
@@ -78,6 +79,29 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 	    // TODO:
 //	    throw new RuntimeException("Not implemented yet");
 	}
+	
+	@Override
+    public List<Event> findByScreenName(PartakeConnection con, String screenName) throws DAOException {
+        // TOOD: screenName に % が入っていたら検索が重たくなるかもしれない。たいして影響でないと思うけど。
+        // TODO: でもちゃんと取り除いてあげる必要がある。
+	    
+        EntityManager em = getEntityManager(con);
+        TypedQuery<Event> q = em.createQuery("SELECT event FROM Events event WHERE event.managerScreenNames LIKE :queryName", Event.class);
+        q.setParameter("queryName", "%" + screenName + "%");
+        
+        // 自分が "A" なら "BAC" とかもひっかかってくるので、取り除く。
+        List<Event> events = q.getResultList();
+        List<Event> result = new ArrayList<Event>();
+        
+        for (Event event : events) {
+            if (event == null) { continue; }
+            if (event.isManager(screenName)) {
+                result.add(event.freeze());
+            }
+        }
+        
+        return result;
+    }
 
 	/***
      * ImageIdにnullが入っていた場合、それを空文字として永続化する。
@@ -141,5 +165,5 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 				UnsupportedOperationException {
 			inner.update(t);
 		}
-	}
+	}	
 }

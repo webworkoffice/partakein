@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 
 @Entity(name = "Events")
 public class Event extends PartakeModel<Event> {
@@ -557,6 +558,21 @@ public class Event extends PartakeModel<Event> {
     	checkFrozen();
     	++revision;
     }
+    
+    public boolean isManager(String userScreenName) {
+        if (userScreenName == null) { return false; }
+        if (getManagerScreenNames() == null) { return false; }
+        
+        String[] screenNames = getManagerScreenNames().split(",");
+        for (String screenName : screenNames) {
+            if (userScreenName.equals(StringUtils.trim(screenName))) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     
     // XXX: this methods will access database.
     // XXX: Hmm...

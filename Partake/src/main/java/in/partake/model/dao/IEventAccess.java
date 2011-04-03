@@ -15,4 +15,6 @@ public interface IEventAccess extends IAccess<Event, String> {
     // TODO getEventの結果がremovedフラグを持つ実装にすることも、考察の余地あり（既存コードへの変更が大きいためひとまず見送っている）
     public abstract boolean isRemoved(PartakeConnection con, String eventId) throws DAOException;
     public abstract List<Event> findByOwnerId(PartakeConnection con, String userId) throws DAOException;
+    
+    public abstract List<Event> findByScreenName(PartakeConnection con, String screenName) throws DAOException;
 }
