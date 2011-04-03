@@ -103,9 +103,9 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
         BinaryData foreImageEmbryo = new BinaryData("text", bytes("foreImage"));
         BinaryData backImageEmbryo = new BinaryData("text", bytes("backImage"));
         String eventId = service.create(event,foreImageEmbryo, backImageEmbryo);
+        event.freeze();
         {
             Event storedEvent = service.getEventById(eventId);
-            Assert.assertEquals(storedEvent, event);
             String foreImageId = storedEvent.getForeImageId();
             Assert.assertNotNull(foreImageId);
             Assert.assertEquals("foreImage", new String(service.getBinaryData(foreImageId).getData()));
@@ -114,12 +114,30 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
             Assert.assertEquals("backImage", new String(service.getBinaryData(backImageId).getData()));
         }
 
-        service.update(event, event, true, null, true, null);
+        service.update(event, event.copy(), true, null, true, null);
         {
             Event storedEvent = service.getEventById(eventId);
-            Assert.assertEquals(storedEvent, event);
             Assert.assertNull(storedEvent.getForeImageId());
             Assert.assertNull(storedEvent.getBackImageId());
+        }
+    }
+
+    @Test
+    public void testStoredEventEqualsSourceEvent() throws DAOException {
+        final User owner = createUser(createRandomId());
+        final Event source = createEvent("this id will be overwritten.");
+        source.setOwnerId(owner.getId());
+        {
+            String eventId = service.create(source, null, null);
+            Event storedEvent = service.getEventById(eventId);
+            Assert.assertEquals(source, storedEvent);
+        }
+        final BinaryData foreImageEmbryo = new BinaryData("text", bytes("foreImage"));
+        final BinaryData backImageEmbryo = new BinaryData("text", bytes("backImage"));
+        {
+            String eventId = service.create(source, foreImageEmbryo, backImageEmbryo);
+            Event storedEvent = service.getEventById(eventId);
+            Assert.assertEquals(source, storedEvent);
         }
     }
 
