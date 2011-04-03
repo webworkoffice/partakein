@@ -36,6 +36,14 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 	
 	public static final String RETURNTOP = "returntop";
 	
+	//
+	// TODO: 
+	//   INVALID とか見せないようにして、return renderInvalid(reason) を読んでもらうのはどうか。
+	//   ERROR とかも同様に。
+	//   renderJSON とか renderBinary とかも同様に出来る。
+	//   xml で指定するんだったら自分でこういうの作ったほうが良い。
+	//
+	
 	
 	// 様々なところで使うので、redirectURL を定義しておく。
 	// あんまりよろしくないが、loginRequired でこれを使って、かつ login が必要なところは色色あるのでベースとして定義する

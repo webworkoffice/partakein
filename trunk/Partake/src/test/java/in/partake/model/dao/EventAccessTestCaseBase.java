@@ -1,5 +1,8 @@
 package in.partake.model.dao;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -126,6 +129,70 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase<IE
             con.invalidate();
         }
     }
+    
+    
+    @Test
+    public void testToFindByScreenName() throws DAOException {
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            String userId = "userId-screenname-" + System.currentTimeMillis();
+            String screenNames[] = new String[]{
+                    null, // 0
+                    "",   // 1
+                    "A",  // 2
+                    "A,B,C", // 3 
+                    "  A  ", // 4 
+                    
+                    "  A  ,  B  ,  C  ", // 5
+                    "  AA, B A, A", // 6
+                    "   A,   B   A  , C   ", // 7
+                    " B, B, B", // 8
+                    " C " // 9
+            };
+            String[] originalEventIds = new String[10];
+            
+            // event 作成
+            for (int i = 0; i < 10; ++i) {                
+                Event original = createEvent(null, userId);
+                original.setManagerScreenNames(screenNames[i]);
+                {
+                    con.beginTransaction();
+                    String eventId = dao.getFreshId(con);
+                    originalEventIds[i] = eventId;
+                    
+                    original.setId(eventId);
+                    
+                    dao.put(con, original);
+                    con.commit();
+                }
+            }
+            
+            {
+                List<Event> targetEvents = dao.findByScreenName(con, "A");
+                List<String> actual = new ArrayList<String>();
+                for (Event event : targetEvents) {
+                    if (event == null) { continue; }
+                    actual.add(event.getId());
+                }
+                
+                List<String> expected = Arrays.asList(new String[] {
+                        originalEventIds[2], originalEventIds[3], originalEventIds[4], originalEventIds[5], originalEventIds[6], originalEventIds[7]
+                });
+
+                Collections.sort(actual);
+                Collections.sort(expected);
+                
+                Assert.assertEquals(expected, actual);
+                
+            }
+            
+            
+        } finally {
+            con.invalidate();
+        }
+    }
+
     
     
     private Event createEvent(String eventId, String userId) {
