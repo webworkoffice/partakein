@@ -17,7 +17,7 @@
 	<%= Helper.token() %>
 	<%@ include file="/WEB-INF/events/inner-form.jsp" %>
 
-	<s:submit id="event-edit-submit" type="image" src="<%= request.getContextPath() %>/images/button-eventform.png" label="イベントを作成する" />
+	<s:submit id="event-edit-submit" type="image" src="/images/button-eventform.png" label="イベントを作成する" />
 </s:form>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
