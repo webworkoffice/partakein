@@ -103,7 +103,7 @@ var tab = {
 			        <s:hidden name="eventId" value="%{eventId}" /><br /><strong>Your comment:</strong><br />
 			        <textarea id="commentForm-commentEdit" name="comment"></textarea><br />
 			        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>
-			        <s:submit type="image" src="<%= request.getContextPath() %>/images/postcomment.png" value="コメントを投稿"  />
+			        <s:submit type="image" src="/images/postcomment.png" value="コメントを投稿"  />
 			    </s:form>           	
 			<% } else { %>
 	            <p>コメントを投稿するにはログインしてください。</p>
