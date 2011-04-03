@@ -1,17 +1,20 @@
 package in.partake.model.dao.jpa;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 class JPAEventDao extends JPADao<Event> implements IEventAccess {
+    // XXX OpenJPAがnullなフィールドをmergeしないので回避策としてヌルオブジェクトを入れている
+    private static final String NULL_VALUE = String.format("_NULL(%s)_", JPAEventDao.class.getName());
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
@@ -20,12 +23,13 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 
     @Override
     public Event find(PartakeConnection con, String eventId) throws DAOException {
-        return findImpl(con, eventId, Event.class);
+    	Event event = decode(findImpl(con, eventId, Event.class));
+        return event == null ? null : event.freeze();
     }
 
     @Override
     public void put(PartakeConnection con, Event embryo) throws DAOException {
-        putImpl(con, embryo, Event.class);
+        putImpl(con, encode(embryo), Event.class);
     }
 
     @Override
@@ -41,7 +45,7 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
         @SuppressWarnings("unchecked")
         List<Event> events = q.getResultList();
         
-        return new JPAPartakeModelDataIterator<Event>(em, events, Event.class, false);
+        return new Issue153IteratorWrapper(new JPAPartakeModelDataIterator<Event>(em, events, Event.class, false));
     }
 
     @Override
@@ -50,10 +54,14 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
         Query q = em.createQuery("SELECT event FROM Events event WHERE event.ownerId = :userId");
         q.setParameter("userId", userId);
         
+        List<Event> events = new ArrayList<Event>();
         @SuppressWarnings("unchecked")
-        List<Event> events = (List<Event>) q.getResultList();
-        for (Event event : events) { event.freeze(); }
-        
+        List<Event> storedList = (List<Event>) q.getResultList();
+        for (Event source : storedList) {
+        	Event event = decode(source);
+        	events.add(event == null ? null : event.freeze());
+        }
+
         return events;
     }
 
@@ -69,5 +77,69 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 	    return false;
 	    // TODO:
 //	    throw new RuntimeException("Not implemented yet");
+	}
+
+	/***
+     * ImageIdにnullが入っていた場合、それを空文字として永続化する。
+     * @see http://code.google.com/p/partakein/issues/detail?id=153
+     */
+    private static Event encode(Event source) {
+    	if (source == null) { return null; }
+    	Event event = source.copy();
+    	if (event.getBackImageId() == null) {
+    		event.setBackImageId(NULL_VALUE);
+    	}
+    	if (event.getForeImageId() == null) {
+    		event.setForeImageId(NULL_VALUE);
+    	}
+    	return event;
+    }
+
+    /***
+     * ImageIdに空文字が入っていた場合、それをnullとして扱う。
+     * @see http://code.google.com/p/partakein/issues/detail?id=153
+     */
+    private static Event decode(Event persisted) {
+    	if (persisted == null) { return null; }
+    	Event event = persisted.copy();
+    	if (NULL_VALUE.equals(event.getForeImageId())) {
+    		event.setForeImageId(null);
+    	}
+    	if (NULL_VALUE.equals(event.getBackImageId())) {
+    		event.setBackImageId(null);
+    	}
+		return event;
+	}
+
+    /**
+     * @see http://code.google.com/p/partakein/issues/detail?id=153
+     */
+	private static class Issue153IteratorWrapper extends DataIterator<Event> {
+		private final DataIterator<Event> inner;
+
+		Issue153IteratorWrapper(DataIterator<Event> inner) {
+			this.inner = inner;
+		}
+
+		@Override
+		public boolean hasNext() throws DAOException {
+			return inner.hasNext();
+		}
+
+		@Override
+		public Event next() throws DAOException {
+			return JPAEventDao.decode(inner.next());
+		}
+
+		@Override
+		public void remove() throws DAOException, UnsupportedOperationException {
+			inner.remove();
+		}
+
+		@Override
+		public void update(Event t) throws DAOException,
+				UnsupportedOperationException {
+			inner.update(t);
+		}
 	}
 }
