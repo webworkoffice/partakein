@@ -30,9 +30,9 @@ public class EventReminder extends PartakeModel<EventReminder> {
     public EventReminder(String eventId, 
                     Date sentDateOfBeforeDeadlineOneday, Date sentDateOfBeforeDeadlineHalfday, Date sentDateOfBeforeTheDay) {
         this.eventId = eventId;
-        this.sentDateOfBeforeDeadlineOneday = sentDateOfBeforeDeadlineOneday;
-        this.sentDateOfBeforeDeadlineHalfday = sentDateOfBeforeDeadlineHalfday;
-        this.sentDateOfBeforeTheDay = sentDateOfBeforeTheDay;
+        this.sentDateOfBeforeDeadlineOneday = sentDateOfBeforeDeadlineOneday == null ? null : new Date(sentDateOfBeforeDeadlineOneday.getTime());
+        this.sentDateOfBeforeDeadlineHalfday = sentDateOfBeforeDeadlineHalfday == null ? null : new Date(sentDateOfBeforeDeadlineHalfday.getTime());
+        this.sentDateOfBeforeTheDay = sentDateOfBeforeTheDay == null ? null : new Date(sentDateOfBeforeTheDay.getTime());
     }
     
     public EventReminder(EventReminder status) {
@@ -91,15 +91,15 @@ public class EventReminder extends PartakeModel<EventReminder> {
     }
 
     public Date getSentDateOfBeforeDeadlineOneday() {
-        return sentDateOfBeforeDeadlineOneday;
+        return sentDateOfBeforeDeadlineOneday == null ? null : new Date(sentDateOfBeforeDeadlineOneday.getTime());
     }
 
     public Date getSentDateOfBeforeDeadlineHalfday() {
-        return sentDateOfBeforeDeadlineHalfday;
+        return sentDateOfBeforeDeadlineHalfday == null ? null : new Date(sentDateOfBeforeDeadlineHalfday.getTime());
     }
 
     public Date getSentDateOfBeforeTheDay() {
-        return sentDateOfBeforeTheDay;
+        return sentDateOfBeforeTheDay == null ? null : new Date(sentDateOfBeforeTheDay.getTime());
     }
 
     public void setEventId(String eventId) {
@@ -109,19 +109,16 @@ public class EventReminder extends PartakeModel<EventReminder> {
 
     public void setSentDateOfBeforeDeadlineOneday(Date sentDateOfBeforeDeadlineOneday) {
         checkFrozen();
-        this.sentDateOfBeforeDeadlineOneday = sentDateOfBeforeDeadlineOneday;
+        this.sentDateOfBeforeDeadlineOneday = sentDateOfBeforeDeadlineOneday == null ? null : new Date(sentDateOfBeforeDeadlineOneday.getTime());
     }
 
     public void setSentDateOfBeforeDeadlineHalfday(Date sentDateOfBeforeDeadlineHalfday) {
         checkFrozen();
-        this.sentDateOfBeforeDeadlineHalfday = sentDateOfBeforeDeadlineHalfday;
+        this.sentDateOfBeforeDeadlineHalfday = sentDateOfBeforeDeadlineHalfday == null ? null : new Date(sentDateOfBeforeDeadlineHalfday.getTime());
     }
 
     public void setSentDateOfBeforeTheDay(Date sentDateOfBeforeTheDay) {
         checkFrozen();
-        this.sentDateOfBeforeTheDay = sentDateOfBeforeTheDay;
+        this.sentDateOfBeforeTheDay = sentDateOfBeforeTheDay == null ? null : new Date(sentDateOfBeforeTheDay.getTime());
     }
-    
-    
-    
 }
