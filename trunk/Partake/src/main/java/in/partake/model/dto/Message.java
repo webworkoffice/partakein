@@ -23,7 +23,7 @@ public class Message extends PartakeModel<Message> {
     private String eventId;
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date   createdAt;
-    
+
     public Message() {
         // do nothing
     }
@@ -31,31 +31,31 @@ public class Message extends PartakeModel<Message> {
     public Message(Message message) {
     	this(message.id, message.userId, message.message, message.eventId, message.createdAt);
     }
-    
+
     /** eventId が null -> system からのメッセージ、null でない -> user からのメッセージ。
-     * これは直感的でないので後で直すこと。
+     * TODO これは直感的でないので後で直すこと。
      */
     public Message(String id, String userId, String message, String eventId, Date createdAt) {
         this.id = id;
         this.userId = userId;
         this.message = message;
         this.eventId = eventId;
-        this.createdAt = createdAt;
+        this.createdAt = createdAt == null ? null : new Date(createdAt.getTime());
     }
-    
+
     @Override
     public Object getPrimaryKey() {
         return id;
     }
-    
+
     @Override
     public Message copy() {
         return new Message(this);
     }
-    
+
     // ----------------------------------------------------------------------
     // equals method
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Message)) { return false; }
@@ -70,7 +70,7 @@ public class Message extends PartakeModel<Message> {
         if (!(ObjectUtils.equals(lhs.createdAt, rhs.createdAt))) { return false; }
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int code = 0;
@@ -83,7 +83,7 @@ public class Message extends PartakeModel<Message> {
         
         return code;
     }
-    
+
     // ----------------------------------------------------------------------
     // accessors
 
@@ -94,11 +94,11 @@ public class Message extends PartakeModel<Message> {
     public String getUserId() {
         return userId;
     }
-    
+
     public String getMessage() {
         return message;
     }
-    
+
     public void setId(String id) {
         checkFrozen();
         this.id = id;
@@ -109,9 +109,9 @@ public class Message extends PartakeModel<Message> {
     }
 
     public Date getCreatedAt() {
-        return createdAt;
+        return createdAt == null ? null : new Date(createdAt.getTime());
     }
-    
+
     public void setUserId(String userId) {
         checkFrozen();
         this.userId = userId;
@@ -127,14 +127,9 @@ public class Message extends PartakeModel<Message> {
         this.eventId = eventId;
     }
 
-
-
     public void setCreatedAt(Date createdAt) {
         checkFrozen();
-        this.createdAt = createdAt;
+        this.createdAt = createdAt == null ? null : new Date(createdAt.getTime());
     }
- 
-
-    
 }
 
