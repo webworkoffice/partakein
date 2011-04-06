@@ -185,6 +185,7 @@ public final class EventService extends PartakeService {
 	 * @throws DAOException
 	 * @throws ParseException
 	 */
+	// TODO category & sortOrder must be enum.
 	public List<Event> search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws DAOException, ParseException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();

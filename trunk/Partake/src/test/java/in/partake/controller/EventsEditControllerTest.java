@@ -15,8 +15,6 @@ import java.util.TimeZone;
 
 import org.apache.struts2.StrutsTestCase;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import com.opensymphony.xwork2.Action;
 
@@ -34,8 +32,7 @@ public final class EventsEditControllerTest extends StrutsTestCase {
 	 * @author skypencil (@eller86)
 	 * @throws InterruptedException 
 	 */
-	@Test
-	public void editNewTest() throws InterruptedException {		
+	public void testToEditNewTest() throws InterruptedException {		
 	    TimeZone timeZone = TimeZone.getDefault();
 	    
 	    // 現在時刻に依存するテストケースであるため、少なくとも分（minute）が異なる2点でテストする必要がある
@@ -88,8 +85,6 @@ public final class EventsEditControllerTest extends StrutsTestCase {
 	/**
 	 * @see http://code.google.com/p/partakein/issues/detail?id=120
 	 */
-	@Test
-	@Ignore	// because this test case is not yet finished.
 	public void testIssue120() throws DAOException {
 		UserEx loginUser = createUserEx("issue120");
 		Map<String, Object> session = new HashMap<String, Object>();
@@ -113,7 +108,7 @@ public final class EventsEditControllerTest extends StrutsTestCase {
 		controller = new EventsEditController();
 		controller.setSession(session);
 		controller.setEventId(eventId);
-		Assert.assertEquals(Action.SUCCESS, controller.edit());	// TODO this assert fail. why?
+		Assert.assertEquals(Action.SUCCESS, controller.edit());	// TODO this assert fail. why? -> because UserEx("Issue120") isn't stored.
 		Assert.assertEquals(thisYear, controller.getSyear());
 		Assert.assertEquals(thisYear, controller.getEyear());
 		Assert.assertEquals(thisYear, controller.getDyear());
