@@ -224,8 +224,8 @@ body {
 					<form action="/auth/loginByTwitter">
 						<a href="/auth/loginByTwitter?redirectURL=<%= h(redirectURL) %>"><strong>Twitterでログイン</strong>して参加しよう！</a>
 					</form>
-					<img src="<%= request.getContextPath() %>/images/enroll.png" alt="" />
-					<img src="<%= request.getContextPath() %>/images/reserve.png" alt="" />
+					<img src="<%= request.getContextPath() %>/images/enroll.png" alt="" class="cler28" />
+					<img src="<%= request.getContextPath() %>/images/reserve.png" alt="" class="cler28" />
 				</p>		
 		<% } else if (ParticipationStatus.ENROLLED.equals(status)) { %>
 			<%-- なんか stamp みたいな感じで「参加登録済み」とかいうアイコンを出せないモノだろうか。 --%>

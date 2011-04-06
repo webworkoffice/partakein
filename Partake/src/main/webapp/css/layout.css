@@ -481,14 +481,6 @@ max-height:980px;
 
 /* event-enrollment
 ---------------------------*/
-
-.guest img {
-    margin-top:-2px;
-    opacity:0.28;
-    filter: alpha(opacity=28);
-    border:1px solid red;
-}
-
 .event-enrollment {
     margin: 1px 0 0 0px;
     padding: 10px 2px ;

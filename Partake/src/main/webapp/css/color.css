@@ -20,8 +20,12 @@
 	}
 /* filter */
 .cler:hover {
-    opacity:0.88;
-    filter: alpha(opacity=88);	
+    opacity:0.83;
+    filter: alpha(opacity=83);	
+}
+.cler28 {
+    opacity:0.28;
+    filter: alpha(opacity=28);	
 }
 
 /* ==================================================================
@@ -94,11 +98,11 @@ a:hover,a:active  {
 }
 .guest a:hover {
 	color:yellow;
-		border:1px solid yellow;
+	border:1px solid yellow;
 }
 .guest a:visited {
 	color:green;
-			border:1px solid green;
+	border:1px solid green;
 }
 
 .event-owner-information {

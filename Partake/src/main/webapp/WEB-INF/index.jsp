@@ -43,10 +43,10 @@
 
 <div class="top-introduction">	
     <p class="top-introduce"><%=I18n.t("page.toppage.intro") %></p>
-<div class="rollover1">	
+<div class="top-search cler">	
 	<a href="<%= request.getContextPath() %>/events/search"><img src="<%= request.getContextPath() %>/images/top-search.png" alt="<%= I18n.t("page.toppage.button.search") %>" id="top-search-button" /></a>
 </div>
-<div class="rollover2">
+<div class="top-form cler">
 	<a href="<%= request.getContextPath() %>/events/new"><img src="<%= request.getContextPath() %>/images/top-form.png" alt="<%= I18n.t("page.toppage.button.create") %>" id="top-form-button" /></a>
 </div>
 <div class="sample">
