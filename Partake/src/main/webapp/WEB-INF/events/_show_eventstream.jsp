@@ -89,7 +89,7 @@ var tab = {
 					<a href="#" title="コメントを削除" onclick="removeComment('<%= h(comment.getId()) %>')">[x]</a>
 				<% } %></p>
 				<% if (comment.isHTML()) { %>
-				    <%= Helper.cleanupHTML(comment.getComment()) %>
+				    <p><%= Helper.cleanupHTML(comment.getComment()) %></p>
 				<% } else { %>
 				    <p><%= h(comment.getComment()) %></p>
 				<% } %>

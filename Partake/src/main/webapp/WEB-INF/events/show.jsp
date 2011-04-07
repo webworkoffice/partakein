@@ -137,8 +137,7 @@ body {
 		</dl>
 		
 	    <% if (!StringUtils.isEmpty(event.getAddress())) { %>
-	    <div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(Util.encodeURIComponent(event.getAddress())) %>">
-	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=200x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />      
+	    <div class=cicmap?size=200x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />      
 	    </a></div>
 	    <% } %>
 </div>
@@ -229,7 +228,7 @@ body {
 				</p>		
 		<% } else if (ParticipationStatus.ENROLLED.equals(status)) { %>
 			<%-- なんか stamp みたいな感じで「参加登録済み」とかいうアイコンを出せないモノだろうか。 --%>
-			<p>参加登録済みです。</p>
+			<p><strong>参加登録済みです。</strong></p>
 			<% if (event.canReserve()) { %>
                 <img id="open-reserve-form" class="cler" src="<%= request.getContextPath() %>/images/reserve.png" alt="仮参加登録" />
                 <img id="open-cancel-form" class="cler" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
@@ -241,7 +240,7 @@ body {
 			    <li><a id="open-change-comment-form" class="cler" href="#" >参加コメントを編集する</a></li>
 			</ul>
 		<% } else if (ParticipationStatus.RESERVED.equals(status) && !event.isReservationTimeOver()) { %>
-			<p>仮参加登録中です。</p>
+			<p><strong>仮参加登録中です。</strong></p>
 			<img id="open-enroll-form" class="cler" src="<%= request.getContextPath() %>/images/enroll.png" alt="参加登録" />
 			<img id="open-cancel-form" class="cler" src="<%= request.getContextPath() %>/images/cancel.png" alt="参加キャンセル" />
 			<ul>
