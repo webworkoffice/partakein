@@ -80,31 +80,20 @@ a:hover,a:active  {
 
 .event-promotion {
 	color: #555555;
-	background-color: #f5f5f5;
+	background-color: #F8F7F6;
 }
 
 .event-enrollment {
     color: #555555;
-    background-color: #e5e5e5;
+    background-color: #E9E9E9;
 }
 
-.event-enrollment a:visited {
+.event-enrollment a:link,.event-enrollment a:hover,.event-enrollment a:visited {
     color: #1D2088;
 }
-
-.guest a:link {
-	color:red;
-	border:1px solid red;
+.event-enrollment a:hover {
+    color: #4C4B4C;
 }
-.guest a:hover {
-	color:yellow;
-	border:1px solid yellow;
-}
-.guest a:visited {
-	color:green;
-	border:1px solid green;
-}
-
 .event-owner-information {
     color: #555555;
     background-color: #FAF9CE;
@@ -125,7 +114,7 @@ a:hover,a:active  {
 
 .event-participants {
     color: #555555;
-    background-color: #efefef;
+    background-color: #F8F7F6;
 }
 .actionMessage {
     color: f5f5f5;
@@ -158,7 +147,7 @@ a:hover,a:active  {
     color: #4a4a4a;
 }
 #event-edit-submit:hover {
-        opacity:0.86;
+    opacity:0.86;
     filter: alpha(opacity=86);
 }
 

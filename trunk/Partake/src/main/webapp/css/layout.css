@@ -357,7 +357,6 @@ body {
 }
 .comment p {
     margin-top:7px;
-    margin-top:7px;
 }
 .event-comments textarea#commentForm-commentEdit {
     margin: 5px 0 0 0px;
@@ -433,8 +432,8 @@ max-height:980px;
 .event-owner-information {
     margin: 2px 0 0px 0;
     padding: 11px 5px 5px 12px;
-    border-bottom : 1px solid #C0C0C0;
-    border-right : 1px solid #C0C0C0;
+    border-bottom : 1px solid #DDD9D7;
+    border-right : 1px solid #DDD9D7;
 }
 .event-owner-information h2, .event-status h2 {
     margin: 8px 0 4px 0.5em;
@@ -469,8 +468,8 @@ max-height:980px;
     margin: 1px 0 0 0px;
     padding: 7px 1px ;
     text-align: center;
-    border-bottom : 1px solid #C0C0C0;
-    border-right : 1px solid #C0C0C0;
+    border-bottom : 1px solid #DDD9D7;
+    border-right : 1px solid #DDD9D7;
 }
 .event-promotion iframe#facebook-like-button {
 	border: none;
@@ -485,8 +484,8 @@ max-height:980px;
     margin: 1px 0 0 0px;
     padding: 10px 2px ;
     text-align: center;
-    border-bottom : 1px solid #C0C0C0;
-    border-right : 1px solid #C0C0C0;
+    border-bottom : 1px solid #DDD9D7;
+    border-right : 1px solid #DDD9D7;
 }
 
 .event-enrollment ul li {
@@ -500,6 +499,10 @@ max-height:980px;
     margin-left:2px;
     height:43px;
 }
+.resize16 {
+	width:16px;
+	height:16px;
+	}
 
 /* event-participants
 ---------------------------*/
@@ -507,8 +510,8 @@ max-height:980px;
 .event-participants {
     margin: 1px 0 0 0;
     padding: 15px 0.4em 10px 0.4em;
-    border-bottom : 1px solid #C0C0C0;
-    border-right : 1px solid #C0C0C0;
+    border-bottom : 1px solid #DDD9D7;
+    border-right : 1px solid #DDD9D7;
 }
 
 .event-participants p {
