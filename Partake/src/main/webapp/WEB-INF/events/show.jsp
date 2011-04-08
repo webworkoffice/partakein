@@ -137,7 +137,8 @@ body {
 		</dl>
 		
 	    <% if (!StringUtils.isEmpty(event.getAddress())) { %>
-	    <div class=cicmap?size=200x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />      
+	    <div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(Util.encodeURIComponent(event.getAddress())) %>">
+	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=200x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />      
 	    </a></div>
 	    <% } %>
 </div>
