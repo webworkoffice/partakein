@@ -2,6 +2,7 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.resource.Constants;
+import in.partake.resource.I18n;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,8 +26,6 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 	
 	/** return code in case parameter is invalid. (ユーザーのリクエストがおかしい場合) */
 	public static final String INVALID = "invalid"; //$NON-NLS-1$ //
-	/** INVALID なもののうち、ユーザーのリクエストが重複した場合 (これいる？) */
-	public static final String DUPLICATED = "duplicated"; 
 	/** return code in case redirection */
 	public static final String REDIRECT = "redirect"; //$NON-NLS-1$
 	/** return code in case the required resource is not found.*/
@@ -35,6 +34,9 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 	public static final String PROHIBITED = "prohibited"; //$NON-NLS-1$
 	
 	public static final String RETURNTOP = "returntop";
+	
+//	private static final String SUCCESS = "INTENTIONALLY SEAL THE ActionSupport.SUCCESS";
+//	private static final String ERROR = "INTENTIONALLY SEAL THE ActionSupport.ERROR";
 	
 	//
 	// TODO: 
@@ -196,5 +198,61 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         UserEx user = getLoginUser();
         if (user == null) { throw new PartakeResultException(LOGIN); }
         return user;
+    }
+    
+    // ----------------------------------------------------------------------
+    // render functions
+    
+    /**
+     * invalid user request.
+     */
+    protected String renderInvalid(String reason) {
+        // TODO: reason should be added.
+        return INVALID;
+    }
+
+    /**
+     * occured an internal server error
+     * @return
+     */
+    protected String redirectError(String reason) {
+        // TODO: reason should be added.
+        return ERROR;
+    }
+    
+    /**
+     * a utility function to show database error.
+     * @return
+     */
+    protected String redirectDBError() {
+        return redirectError(I18n.t(I18n.DATABASE_ERROR));
+    }
+
+    /**
+     * show the 'not found' page.
+     * @return
+     */
+    protected String renderNotFound() {
+        return NOT_FOUND;
+    }
+
+    /**
+     * show the 'forbidden' page when a user did something prohibited.
+     * @return 
+     */
+    protected String renderForbidden() {
+        return PROHIBITED;
+    }
+    
+    /**
+     * redirect to the specified URL.
+     */
+    protected String renderRedirect(String url) {
+        this.redirectURL = url;
+        return REDIRECT;
+    }
+    
+    protected String renderLoginRequired() {
+        return LOGIN;
     }
 }
