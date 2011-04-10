@@ -559,20 +559,19 @@ public class Event extends PartakeModel<Event> {
     	++revision;
     }
     
-    public boolean isManager(String userScreenName) {
-        if (userScreenName == null) { return false; }
-        if (getManagerScreenNames() == null) { return false; }
+    public boolean isManager(String name) {
+        if (StringUtils.isBlank(name)) { return false; }
+        if (StringUtils.isBlank(getManagerScreenNames())) { return false; }
         
         String[] screenNames = getManagerScreenNames().split(",");
         for (String screenName : screenNames) {
-            if (userScreenName.equals(StringUtils.trim(screenName))) {
+            if (name.equals(StringUtils.trim(screenName))) {
                 return true;
             }
         }
         
         return false;
     }
-
     
     // XXX: this methods will access database.
     // XXX: Hmm...
