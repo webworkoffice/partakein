@@ -1,8 +1,5 @@
 package in.partake.model.dao;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -137,18 +134,20 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase<IE
 
         try {
             String userId = "userId-screenname-" + System.currentTimeMillis();
+            Set<String> expectedEventIds = new HashSet<String>();
+            
             String screenNames[] = new String[]{
-                    null, // 0
-                    "",   // 1
-                    "A",  // 2
-                    "A,B,C", // 3 
-                    "  A  ", // 4 
+                    null,
+                    "",
+                    "A",
+                    "A,B,C",
+                    "  A  ",
                     
-                    "  A  ,  B  ,  C  ", // 5
-                    "  AA, B A, A", // 6
-                    "   A,   B   A  , C   ", // 7
-                    " B, B, B", // 8
-                    " C " // 9
+                    "  A  ,  B  ,  C  ",
+                    "  AA, B A, A",
+                    "   A,   B   A  , C   ",
+                    " B, B, B",
+                    " C "
             };
             String[] originalEventIds = new String[10];
             
@@ -165,25 +164,21 @@ public abstract class EventAccessTestCaseBase extends AbstractDaoTestCaseBase<IE
                     
                     dao.put(con, original);
                     con.commit();
+                    
+                    if (original.isManager("A")) {
+                        expectedEventIds.add(eventId);
+                    }
                 }
             }
             
             {
                 List<Event> targetEvents = dao.findByScreenName(con, "A");
-                List<String> actual = new ArrayList<String>();
-                for (Event event : targetEvents) {
-                    if (event == null) { continue; }
-                    actual.add(event.getId());
+                Set<String> targetEventIds = new HashSet<String>();
+                for (Event e : targetEvents) {
+                    targetEventIds.add(e.getId());
                 }
                 
-                List<String> expected = Arrays.asList(new String[] {
-                        originalEventIds[2], originalEventIds[3], originalEventIds[4], originalEventIds[5], originalEventIds[6], originalEventIds[7]
-                });
-
-                Collections.sort(actual);
-                Collections.sort(expected);
-                
-                Assert.assertEquals(expected, actual);
+                Assert.assertEquals(expectedEventIds, targetEventIds);
                 
             }
             

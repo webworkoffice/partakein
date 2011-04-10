@@ -343,11 +343,11 @@ class EventCassandraDao extends CassandraDao implements IEventAccess {
 
         return false;
 	}
-	
-	@Override
-	public List<Event> findByScreenName(PartakeConnection con, String screenName) throws DAOException {
-	    throw new RuntimeException("Not implemented yet");
-	}
+
+    @Override
+    public List<Event> findByScreenName(PartakeConnection con, String screenName) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
 }
 
 

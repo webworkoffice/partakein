@@ -141,6 +141,26 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
 			}
 		}
 	}
+	
+	@Test
+	public void testIsManager() throws Exception {
+	    Event event = new Event();
+	    event.setManagerScreenNames("A, B, C, ABC   ,,,,,    D   ,E,F");
+	    
+	    Assert.assertTrue(event.isManager("A"));
+	    Assert.assertTrue(event.isManager("B"));
+	    Assert.assertTrue(event.isManager("C"));
+	    Assert.assertTrue(event.isManager("ABC"));
+	    Assert.assertTrue(event.isManager("D"));
+	    Assert.assertTrue(event.isManager("E"));
+	    Assert.assertTrue(event.isManager("F"));
+	    
+	    Assert.assertFalse(event.isManager(null));
+	    Assert.assertFalse(event.isManager(""));
+	    Assert.assertFalse(event.isManager("G"));
+	    Assert.assertFalse(event.isManager("a"));
+	    Assert.assertFalse(event.isManager("hoge"));
+	}
 
 	private void invokeMethod(Method method, Class<?> arg, Event source)
 			throws IllegalAccessException, InvocationTargetException {
