@@ -1,13 +1,6 @@
 package in.partake.controller.action;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
 import in.partake.controller.PartakeActionSupport;
-import in.partake.controller.PartakeInvalidResultException;
 import in.partake.controller.PartakeResultException;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
@@ -17,6 +10,12 @@ import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
 import in.partake.resource.I18n;
 import in.partake.service.EventService;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 public class QuestionnaireController extends PartakeActionSupport {
     private static final Logger logger = Logger.getLogger(QuestionnaireController.class);
@@ -33,12 +32,18 @@ public class QuestionnaireController extends PartakeActionSupport {
         UserEx user = ensureLogin();
         
         String eventId = getParameter("eventId");
-        if (StringUtils.isBlank(eventId)) { throw new PartakeInvalidResultException("eventId が空です。"); }
+        if (StringUtils.isBlank(eventId)) {
+            return renderInvalid("イベント ID が適切にしていされていません。");
+        }
         
         try {
             EventEx event = EventService.get().getEventExById(eventId);
-            if (event == null) { throw new PartakeInvalidResultException("無効な eventId が渡されました。"); }
-            if (!event.hasPermission(user, UserPermission.EVENT_EDIT_QUESTIONNAIRE)) { return PROHIBITED; }
+            if (event == null) {
+                return renderInvalid("イベント ID が適切に指定されていません。");
+            }
+            if (!event.hasPermission(user, UserPermission.EVENT_EDIT_QUESTIONNAIRE)) {
+                return renderForbidden();
+            }
 
             // 権限チェックは終了。
             
@@ -51,7 +56,7 @@ public class QuestionnaireController extends PartakeActionSupport {
             return SUCCESS;
         } catch (DAOException e) {
             logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            return ERROR;
+            return redirectDBError();
         }
     }
     

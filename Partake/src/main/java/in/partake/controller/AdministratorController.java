@@ -23,7 +23,6 @@ public class AdministratorController extends PartakeActionSupport {
 	
     public String index() throws PartakeResultException {
         ensureAdmin();
-        
 		return SUCCESS;
 	}
 	
@@ -59,7 +58,7 @@ public class AdministratorController extends PartakeActionSupport {
             return SUCCESS;
         } catch (DAOException e) {
             logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            return ERROR;
+            return redirectDBError();
         }
     }
 
