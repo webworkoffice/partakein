@@ -70,7 +70,6 @@
 			<result name="redirect" type="redirect">${redirectURL}</result>
 			<result name="error" type="redirect">/error</result>
 			<result name="invalid" type="redirect">/invalid</result>
-			<result name="duplicated" type="redirect">/invalid</result>
 			<result name="notfound" type="redirect">/notfound</result>
 			<result name="prohibited" type="redirect">/prohibited</result>
 			<result name="returntop" type="redirect">/</result>
@@ -90,10 +89,6 @@
             <result name="success">/WEB-INF/invalid.jsp</result>
         </action>
 
-        <action name="duplicated" method="alwaysSuccess" class="in.partake.controller.ToppageController">
-            <result name="success">/WEB-INF/duplicated.jsp</result>
-        </action>
-        
         <action name="contact" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/contact.jsp</result>
         </action>

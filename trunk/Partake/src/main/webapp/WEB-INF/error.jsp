@@ -22,6 +22,7 @@
 
 <p>操作をやり直してみてください。それでもエラーが発生する場合、 twitter にて <a href="http://twitter.com/partakein">@partakein</a> までお問い合わせください。
 <br />あるいは、<a href="http://code.google.com/p/partakein/issues/list">Issue Tracker</a> へ登録していただいてもかまいません。(日本語でも英語でもかまいません。)</p>
+
 <p><a href="<%= request.getContextPath() %>/">トップに戻る</a></p>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
