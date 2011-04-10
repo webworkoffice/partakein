@@ -4,6 +4,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.resource.Constants;
+import in.partake.resource.I18n;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
 
@@ -27,15 +28,17 @@ public class MypageController extends PartakeActionSupport implements SessionAwa
 
 	public String show() {
 		UserEx user = getLoginUser();
-		if (user == null) { return LOGIN; }
+		if (user == null) {
+		    return renderLoginRequired();
+		}
 
         try {
             List<Event> managing = new ArrayList<Event>();
             {
                 managing.addAll(EventService.get().getEventsOwnedBy(user));
                 managing.addAll(EventService.get().getEventsManagedBy(user));
-                
-                // TODO: これどうなるんだ？
+
+                // TODO: 自分自身が manager に含まれていたら２つでるんじゃない？
             }            
             
             List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user.getId());
@@ -60,8 +63,8 @@ public class MypageController extends PartakeActionSupport implements SessionAwa
 
             return SUCCESS;
         } catch (DAOException e) {
-        	e.printStackTrace();
-        	return ERROR;
+            logger.error(I18n.t(I18n.DATABASE_ERROR));
+            return redirectDBError();
         }
 	}
 }

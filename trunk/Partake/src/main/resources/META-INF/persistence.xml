@@ -47,6 +47,7 @@
 
   <persistence-unit name="partake-unittest">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    
     <class>in.partake.model.dto.BinaryData</class>
     <class>in.partake.model.dto.CacheData</class>
     <class>in.partake.model.dto.CalendarLinkage</class>
@@ -84,7 +85,6 @@
 
     </properties>
   </persistence-unit>
-
 </persistence>
 
 

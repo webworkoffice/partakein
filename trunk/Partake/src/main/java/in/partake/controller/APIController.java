@@ -63,10 +63,10 @@ public class APIController extends PartakeActionSupport {
             
         } catch (DAOException e) {
             logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            return ERROR;
+            return redirectDBError();
         } catch (UnsupportedEncodingException e) {
             logger.error("UnsupportedEncodingException", e);
-            return ERROR;
+            return redirectError("文字列のエンコード指定が誤っています。");
         }
     }
     
