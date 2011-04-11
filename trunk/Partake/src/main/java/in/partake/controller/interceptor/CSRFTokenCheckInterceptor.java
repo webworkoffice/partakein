@@ -31,7 +31,7 @@ public class CSRFTokenCheckInterceptor extends PartakeAbstractInterceptor {
             
             // onetime token はある場合のみ利用される。
             if (onetimeToken != null && prevention.isConsumed(onetimeToken)) {
-                return PartakeActionSupport.DUPLICATED;
+                return PartakeActionSupport.INVALID;
             }
         
             prevention.consumeToken(onetimeToken);
