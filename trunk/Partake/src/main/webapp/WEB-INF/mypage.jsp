@@ -74,7 +74,7 @@
 			    <% for (Event event : enrolledEvents) { %>
 			    <% if (event == null) { continue; /* TODO: should be logged. */} %>
 			    <tr>
-			        <td><% if (event.isPrivate()) { %><img src="<%= request.getContextPath()%>/images/private.png"　title="非公開イベント" /><% } %></td>
+			        <td><% if (event.isPrivate()) { %><img src="<%= request.getContextPath()%>/images/private.png" title="非公開イベント" /><% } %></td>
 			    	<td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
 			    	<td><%= Helper.readableDate(event.getBeginDate()) %></td>
 			    	<td><%= Helper.enrollmentStatus(user, event) %></td>
@@ -104,7 +104,7 @@
                 <% for (Event event : finishedEvents) { %>
                 <% if (event == null) { continue; /* TODO: should be logged. */} %>
                 <tr>
-                    <td><% if (event.isPrivate()) { %><img src="<%= request.getContextPath()%>/images/private.png"　title="非公開イベント" /><% } %></td>
+                    <td><% if (event.isPrivate()) { %><img src="<%= request.getContextPath()%>/images/private.png" title="非公開イベント" /><% } %></td>
                     <td><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></td>
                     <td><%= Helper.readableDate(event.getBeginDate()) %></td>
                     <td><%= Helper.enrollmentStatus(user, event) %></td>
