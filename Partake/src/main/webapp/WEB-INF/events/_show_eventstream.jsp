@@ -62,8 +62,8 @@ var tab = {
 
 <div id="tab-wrapper">
 <ul id="tab">
-	<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1"　title="コメントボード">掲示板</a></li>
-	<li><a href="#news2" _fcksavedurl="#news2"　title="管理者からのメッセージ">管理者から</a></li>
+	<li class="present" id="tab-a1"><a href="#news1" _fcksavedurl="#news1" title="コメントボード">掲示板</a></li>
+	<li><a href="#news2" _fcksavedurl="#news2" title="管理者からのメッセージ">管理者から</a></li>
 	<li><a href="#news3" _fcksavedurl="#news3" title="このイベントのハッシュタグがついたTweet">みんなのTweet</a></li>
 </ul>
 <div id="news1" class="rad">

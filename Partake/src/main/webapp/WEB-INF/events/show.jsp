@@ -66,7 +66,7 @@ body {
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <h1>
-    <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png"　title="非公開イベント" /><% } %>
+    <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png" title="非公開イベント" /><% } %>
     <%= h(event.getTitle()) %>
 </h1>
 <% if (!StringUtils.isEmpty(event.getSummary())) { %>
@@ -126,7 +126,7 @@ body {
 	        <dt>関連イベント：</dt>
 	           <% for (EventRelationEx eventRelation : eventRelations) { %>
 	               <dd>
-	                   <img src="<%= request.getContextPath() %>/images/mark.png" class=""　alt="" />
+	                   <img src="<%= request.getContextPath() %>/images/mark.png" class="" alt="" />
 	                   <a href="<%= h(eventRelation.getEvent().getEventURL()) %>"><%= h(eventRelation.getEvent().getTitle()) %></a>
 	                   <p><% if (eventRelation.isRequired()) { %><img src="<%= request.getContextPath() %>/images/attention.png" alt="" /> この関連イベントへの参加が必須です<% } %>
                        <% if (eventRelation.hasPriority()) { %><img src="<%= request.getContextPath() %>/images/star.png" alt="" /> 参加すると本イベントへ優先的に参加可<% } %>
@@ -385,7 +385,7 @@ body {
 					<a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>">
 					   <%= h(participation.getUser().getTwitterLinkage().getScreenName()) %>
 					</a>
-					<img src="<%= request.getContextPath() %>/images/reserved1.png"　title="仮参加" alt="仮参加者" />
+					<img src="<%= request.getContextPath() %>/images/reserved1.png" title="仮参加" alt="仮参加者" />
 					<% if (participation.isVIP()) { %><img src="<%= request.getContextPath() %>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
 					<% } else if (participation.getPriority() > 0) { %><img src="<%= request.getContextPath() %>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><% } %>
 					: <%= h(participation.getComment()) %>
