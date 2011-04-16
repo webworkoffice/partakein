@@ -23,7 +23,7 @@ We use eclipse 3.6 (Java EE platform) with [http://m2eclipse.sonatype.org/sites/
   # If you can't build your project. Check the build path again.
     * We recommend to use JDK1.6 for Partake.
     * set "Default output folder:" to "{PROJECT_NAME}/target/classes".
-    * src/main/java, src/main/resources, src/test/java, and src/test/resources should be included. http://partake-stat.appspot.com/wiki/buildpath.png
+    * src/main/java, src/main/resources, src/test/java, and src/test/resources should be included. http://partake-stat.appspot.com/wiki/buildPath.png
   # Then choose Run on Server. Since you have not configure PARTAKE, you will see an error message.
 
 == setup Cassandra ==
