@@ -5,40 +5,39 @@
 This page describes how to build PARTAKE on eclipse and run on Tomcat 6.
 
 = Details =
-
-We use eclipse 3.6 (Java EE platform) with [http://www.eclipse.org/m2e/ m2eclipse] plugin.
-
+== Checkout and build PARTAKE ==
+We use eclipse 3.6 (Java EE platform) with [http://m2eclipse.sonatype.org/sites/m2e m2eclipse] plugin.
   # checkout PARTAKE from http://code.google.com/p/partakein/source/checkout 
-  # On eclipse, select File -> New -> Dynamic Web Project. Set Project name as you like (we recommend to use "Partake"), and set Project location where you saved the file, and press Next >.
+    * "http://partakein.googlecode.com/svn/trunk/Partake" is project's root dir.
+  # On eclipse, select File -> New -> Dynamic Web Project. Set Project name as you like (we recommend to use "Partake"), and set Project location where you saved the file. Then press Next >.
     * set Target runtime to Apache Tomcat v6.0
     * set Dynamic web module version to 2.5
-  # Now we are on "build path" page, set the following configurations, and press Next >.
-    * set "Source folders on build path" as "src/main/java", "src/main/resources", "src/test/java", and "src/test/resources". 
-    * set "Default output folder:" to "target/classes". 
-    * NOTE: The following picture may contain src/main/resource and  src/test/resource, but *src/main/resources* and *src/test/resources* are correct.
-http://bts.partake.in/buildpath.png
-  # set Context root as "/", and set "Content directory" as "src/main/webapp", then press Finish. http://bts.partake.in/webmodule.png
+  # Now we are on "build path" page, set "Default output folder" as "target/classes". Then press Next >.http://partake-stat.appspot.com/wiki/outputDir.png
+  # set "Context root" as "/", set "Content directory" as "src/main/webapp", and uncheck "Generate web.xml deployment descriptor". Then press Finish. http://partake-stat.appspot.com/wiki/webmodule.png
   # If you are using Windows, do not forget to set project encoding to utf-8.
   # right click on Partake project, and choose Maven -> enable project management.
   # right click on Partake project, and choose Maven -> update project configuration. This may take a minute.
-  # The previous step may change your build path automatically. Check the build path again.
-    * src/main/java, src/main/resources, src/test/java, and src/test/resources should be included. NOTE: *src/main/resources* and *src/test/resources* are correct. http://bts.partake.in/buildpath2.png
-    * In "Order and Export" pane, Maven dependencies and Web App Libraries should be checked. http://bts.partake.in/orderandexport.png
   # *On Markers pane, you may see Classpath Dependency Validator Message.*
      * *In this case, right click it and select Quick fix, and press Finish. This will fix the problem.*
      * This is important. If you forget to do this, you will see ClassNotFoundException.
-  # Then choose Run on Server.
+  # If you can't build your project. Check the build path again.
+    * We recommend to use JDK1.6 for Partake.
+    * set "Default output folder:" to "{PROJECT_NAME}/target/classes".
+    * src/main/java, src/main/resources, src/test/java, and src/test/resources should be included. http://partake-stat.appspot.com/wiki/buildpath.png
+  # Then choose Run on Server. Since you have not configure PARTAKE, you will see an error message.
 
-Since you have not configure PARTAKE, you will see an error message.
-
+== setup Cassandra ==
   # Download Apache Cassandra (0.6.5) and run on localhost. Maybe you have to set up data and index directories.
     * Cassandra use 8080 for JMX by default. This conflicts with tomcat's default port. So the port described in cassandra's launching script (e.g. conf/cassandra.sh.in) should be changed. We recommend to use port 8081 or something like that for JMX.
     * configure conf/storage-conf.xml to use OrderPreservingPartitioner. Find the line containing {{{ <Partitioner>org.apache.cassandra.dht.RandomPartitioner</Partitioner> }}} and change it to {{{ <Partitioner>org.apache.cassandra.dht.OrderPreservingPartitioner</Partitioner> }}}.
+
+== edit properties file ==
   # fill src/main/resource/sample.partake.properties (especially bitly)
     * a partake.properties file has in.partake.mode property. The value of this property is called "mode".
     * partake will read {mode}.partake.properties.
   # rename src/main/resource/twitter4j.properties.sample as src/main/resource/twitter4j.properties.
     * set your project name consumer key and consumer secret given from twitter.
+
 
 Then PARTAKE should run now. If you have any difficulties, please tell @partakein or @mayahjp.
 
