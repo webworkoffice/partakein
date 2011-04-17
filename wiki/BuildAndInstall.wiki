@@ -26,10 +26,22 @@ We use eclipse 3.6 (Java EE platform) with [http://m2eclipse.sonatype.org/sites/
     * src/main/java, src/main/resources, src/test/java, and src/test/resources should be included. http://partake-stat.appspot.com/wiki/buildPath.png
   # Then choose Run on Server. Since you have not configure PARTAKE, you will see an error message.
 
-== setup Cassandra ==
+== setup Database ==
+
+  When running PARTAKE, you can choose either Cassandra 0.6 or RDB as database. You should do either of these.
+
+=== setup Cassandra ===
+
   # Download Apache Cassandra (0.6.5) and run on localhost. Maybe you have to set up data and index directories.
     * Cassandra use 8080 for JMX by default. This conflicts with tomcat's default port. So the port described in cassandra's launching script (e.g. conf/cassandra.sh.in) should be changed. We recommend to use port 8081 or something like that for JMX.
     * configure conf/storage-conf.xml to use OrderPreservingPartitioner. Find the line containing {{{ <Partitioner>org.apache.cassandra.dht.RandomPartitioner</Partitioner> }}} and change it to {{{ <Partitioner>org.apache.cassandra.dht.OrderPreservingPartitioner</Partitioner> }}}.
+
+=== setup RDB ===
+
+  Currently only PostgreSQL is tested, however PARTAKE should work with any other RDBs that is supported by OpenJPA (e.g. MySQL, DB2 and ORACLE).
+
+  # Install your preferred RDB.
+  # create a database having name 'partake'
 
 == edit properties file ==
   # fill src/main/resource/sample.partake.properties (especially bitly)
@@ -37,7 +49,22 @@ We use eclipse 3.6 (Java EE platform) with [http://m2eclipse.sonatype.org/sites/
     * partake will read {mode}.partake.properties.
   # rename src/main/resource/twitter4j.properties.sample as src/main/resource/twitter4j.properties.
     * set your project name consumer key and consumer secret given from twitter.
-
+  # set "in.partake.database.daofacotry" and "in.partake.database.pool" properly.
+    * If you have chosen to use Cassandra, set them like the following.
+{{{
+in.partake.database.daofactory=in.partake.model.dao.cassandra.CassandraDAOFactory
+in.partake.database.pool=in.partake.model.dao.cassandra.CassandraConnectionPool
+}}}
+    * If you have chosen to use RDB, set them like the following.
+{{{
+in.partake.database.daofactory=in.partake.model.dao.jpa.JPADAOFactory
+in.partake.database.pool=in.partake.model.dao.jpa.JPAConnectionPool
+}}}
+      * Also, you have to setup "persistence.xml" properly.
+      * Especially, set the driver name, username, and password in ConnectionProperties like the following.
+{{{
+<property name="openjpa.ConnectionProperties" value="DriverClassName=org.postgresql.Driver,Url=jdbc:postgresql:partake,Username=partake,Password=partake"/>
+}}}  
 
 Then PARTAKE should run now. If you have any difficulties, please tell @partakein or @mayahjp.
 
