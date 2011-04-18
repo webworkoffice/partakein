@@ -93,6 +93,9 @@ function onReady() {
     $("#usesDeadline").change(checkDeadline);
 }
 
+function codePointCount(str) {
+	return !str ? 0 : str.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '*').length;
+}
 
 jQuery(onReady);
 // $(document).ready(onReady);
