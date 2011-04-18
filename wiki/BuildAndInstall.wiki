@@ -43,7 +43,7 @@ We use eclipse 3.6 (Java EE platform) with [http://m2eclipse.sonatype.org/sites/
   # Install your preferred RDB.
   # create a database having name 'partake'
 
-== edit properties file ==
+== edit properties files ==
   # fill src/main/resource/sample.partake.properties (especially bitly)
     * a partake.properties file has in.partake.mode property. The value of this property is called "mode".
     * partake will read {mode}.partake.properties.
