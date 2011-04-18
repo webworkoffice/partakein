@@ -40,8 +40,8 @@
 	List<EventRelationEx> eventRelations = (List<EventRelationEx>) request.getAttribute(Constants.ATTR_EVENT_RELATIONS);
     String redirectURL = (String)request.getAttribute(Constants.ATTR_REDIRECTURL);
     if (redirectURL == null) {
-        redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL); 
-    } 
+        redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL);
+    }
 %>
 
 
@@ -60,7 +60,7 @@ body {
 	background-repeat: repeat;
 }
 </style>
-<% } %>	
+<% } %>
 </head>
 <body class="event">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
@@ -102,7 +102,7 @@ body {
 				<dd><%= h(StringUtils.isEmpty(event.getAddress()) ? "-" : event.getAddress()) %></dd>
 			<dt>URL：</dt>
 				<dd><% if (!StringUtils.isEmpty(event.getUrl())) { %>
-					<a href="<%= h(event.getUrl()) %>"><%= h(event.getUrl()) %></a>             
+					<a href="<%= h(event.getUrl()) %>"><%= h(event.getUrl()) %></a>
 				<% } else { %>
 				    -
 				<% } %></dd>
@@ -118,7 +118,7 @@ body {
 	        <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
 	        <dt>ハッシュタグ：</dt>
 	            <dd><a href="http://twitter.com/#search?q=<%= Util.encodeURIComponent(event.getHashTag()) %>"><%= h(event.getHashTag()) %></a></dd>
-	        <% } %>         
+	        <% } %>
 	        <dt>このページへの<br>短縮 URL：</dt>
 	           <% String shortenURL = event.getShortenedURL(); %>
 	           <dd><a href="<%= h(shortenURL) %>"><%= h(shortenURL) %></a></dd>
@@ -135,10 +135,10 @@ body {
 	           <% } %>
 	        <% }%>
 		</dl>
-		
+
 	    <% if (!StringUtils.isEmpty(event.getAddress())) { %>
 	    <div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(Util.encodeURIComponent(event.getAddress())) %>">
-	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=200x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />      
+	        <img src="http://maps.google.co.jp/maps/api/staticmap?size=200x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />
 	    </a></div>
 	    <% } %>
 </div>
@@ -180,7 +180,7 @@ body {
         <dt>イベント１日前</dt>
             <dd><%= Helper.readableReminder(reminderStatus.getSentDateOfBeforeTheDay()) %></dd>
     </dl>
-	
+
 	<div id="questionnaire-form" style="display: none">
 		<s:form method="post" name="questionnaireForm" action="makeQuestionnaire">
 			<s:hidden name="eventId" value="%{eventId}" />
@@ -226,7 +226,7 @@ body {
 					</form>
 					<img src="<%= request.getContextPath() %>/images/enroll.png" alt="" class="cler28" />
 					<img src="<%= request.getContextPath() %>/images/reserve.png" alt="" class="cler28" />
-				</p>		
+				</p>
 		<% } else if (ParticipationStatus.ENROLLED.equals(status)) { %>
 			<%-- なんか stamp みたいな感じで「参加登録済み」とかいうアイコンを出せないモノだろうか。 --%>
 			<p><strong>参加登録済みです。</strong></p>
@@ -267,7 +267,7 @@ body {
 				<% } %>
 			<% } %>
 		<% } %>
-		
+
 		<%-- 参加登録フォーム --%>
 		<div id="enroll-form" class="dialog-ui" title="参加登録フォーム" style="display: none">
 			<s:form method="post" action="enroll">
@@ -325,7 +325,7 @@ body {
                 <s:label for="comment" value="COMMENT" />:<br />
                 <s:textarea name="comment" id="comment" /><br />
                 <s:submit value="コメント変更"  />
-            </s:form>		    
+            </s:form>
 		</div>
 	<% } %>
 </div>
@@ -345,7 +345,7 @@ body {
 </div>
 
 
- 
+
 <%
 	ParticipationList participationList = (ParticipationList) request.getAttribute(Constants.ATTR_PARTICIPATIONLIST);
 	List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
@@ -396,7 +396,7 @@ body {
 	<% } else { %>
 		<p>現在参加者はいません。</p>
 	<% } %>
-	
+
 	<% if (spareParticipations != null && spareParticipations.size() > 0) { %>
 		<h2><img src="<%= request.getContextPath() %>/images/square.png" />補欠者一覧 (<%= spareParticipations.size() %> 人)</h2>
 		<ul>
@@ -428,7 +428,7 @@ body {
 		</ul>
 	<% } else { %>
 	<% } %>
-	
+
 	<% if (cancelledParticipations != null && cancelledParticipations.size() > 0) { %>
 		<h2><img src="<%= request.getContextPath() %>/images/cross.png" />キャンセル一覧 (<%= cancelledParticipations.size() %> 人)</h2>
 		<ul>
@@ -437,15 +437,15 @@ body {
                 <li>
                     <img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
                     <a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> (仮参加後の参加表明なし) : <%= h(participation.getComment()) %>
-                </li>           		    
+                </li>
 		    <% } else { %>
                 <li>
                     <img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
                     <a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> : <%= h(participation.getComment()) %>
-                </li>           
+                </li>
 		    <% } %>
 		<% 	} %>
-		</ul>	
+		</ul>
 	<% } %>
 </div>
 </div>
@@ -458,7 +458,7 @@ function handler(e){
 	var left = 100 - codePointCount(message.val());
 	$('span#message_length').text(left).css('color', left > 20 ? '#000' : '#f00').parent().find('input[type=submit]').attr('disabled', left < 0 ? 'disabled' : '');
 }
-message.keydown(handler).keyup(handler);
+message.keydown(handler).keyup(handler);<%-- keydownだけではctrl-BS時に表示があわなくなる、keyupだけではBS長押し時に表示があわなくなる --%>
 </script>
 </body>
 </html>
