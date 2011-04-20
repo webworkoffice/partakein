@@ -18,6 +18,7 @@
 
 <ul>
     <li><a href="<%= request.getContextPath() %>/feed/all">全て</a></li>
+    <li><a href="<%= request.getContextPath() %>/feed/upcoming">近日開催</a></li>
     <% for (KeyValuePair kv : EventCategory.CATEGORIES) { %>
     <li><a href="<%= request.getContextPath() %>/feed/category/<%= kv.getKey() %>"><%= kv.getValue() %></a></li>
     <% } %>

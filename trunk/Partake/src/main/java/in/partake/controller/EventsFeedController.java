@@ -65,7 +65,34 @@ public class EventsFeedController extends PartakeActionSupport {
 		}
 	}
 
-	
+	public String feedUpcomingEvents() {
+		// TODO: CACHE!
+
+		SyndFeed feed = new SyndFeedImpl();
+		feed.setFeedType("rss_2.0");
+		feed.setEncoding("utf-8");
+		
+		feed.setTitle("Upcoming 100 events - [PARTAKE]");
+		feed.setLink("http://partake.in/");
+		feed.setDescription("近日開催されるイベントを(最大100)フィードします。");
+		
+		try {
+			List<Event> events = EventService.get().getUpcomingEvents(100);
+			createFeed(feed, events);
+
+			return SUCCESS;
+		} catch (DAOException e) {
+			e.printStackTrace();
+			return ERROR;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ERROR;
+		} catch (FeedException e) {
+			e.printStackTrace();
+			return ERROR;
+		}
+	}
+
 	public String feedCategory() {
 	    // TODO: CACHE!
 	    

@@ -6,6 +6,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -138,6 +139,100 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
             String eventId = service.create(source, foreImageEmbryo, backImageEmbryo);
             Event storedEvent = service.getEventById(eventId);
             Assert.assertEquals(source, storedEvent);
+        }
+    }
+
+    @Test
+    public void testToGetRecentEvents() throws DAOException {
+        String eventTitle = Long.toString(System.currentTimeMillis());
+        long[] timestamps = new long[] {1000000L, 0L, 2000000L};
+        for (long timestamp : timestamps) {
+            Event event = createEvent("this id will be overwritten.");
+            event.setCreatedAt(new Date(timestamp));
+            event.setTitle(eventTitle);
+            event.setPrivate(false);
+            event.setDeadline(new Date(Long.MAX_VALUE));	// 締切りを過ぎたイベントは表示されないので大きく設定する
+            service.create(event, null, null);
+        }
+
+        List<Event> events = service.getRecentEvents(100);	// ゴミが多いとこれでも足りないかも
+        int count = 0;
+        Date date = null;
+        for (Event event : events) {
+            if (event == null || !eventTitle.equals(event.getTitle())) { continue; }
+            ++count;
+            if (date != null) {
+                Assert.assertTrue(event.getCreatedAt().before(date));
+            }
+            date = event.getCreatedAt();
+        }
+        Assert.assertEquals(timestamps.length, count);
+    }
+
+    @Test
+    public void testToGetUpcomingEvents() throws DAOException {
+        String eventTitle = Long.toString(System.currentTimeMillis());
+        long[] timestamps = new long[] {1000000L, 0L, 2000000L};
+        for (long timestamp : timestamps) {
+            Event event = createEvent("this id will be overwritten.");
+            event.setBeginDate(new Date(timestamp));
+            event.setTitle(eventTitle);
+            event.setPrivate(false);
+            event.setDeadline(new Date(Long.MAX_VALUE));	// 締切りを過ぎたイベントは表示されないので大きく設定する
+            service.create(event, null, null);
+        }
+
+        List<Event> events = service.getUpcomingEvents(100);	// ゴミが多いとこれでも足りないかも
+        int count = 0;
+        Date date = null;
+        for (Event event : events) {
+            if (event == null || !eventTitle.equals(event.getTitle())) { continue; }
+            ++count;
+            if (date != null) {
+                Assert.assertTrue(event.getBeginDate().after(date));
+            }
+            date = event.getBeginDate();
+        }
+        Assert.assertEquals(timestamps.length, count);
+    }
+
+    @Test
+    public void testThatFinishedEventsIsNotFoundByGetRecentEvents() throws DAOException {
+        String eventTitle = Long.toString(System.currentTimeMillis());
+        long[] timestamps = new long[] {1000000L, 0L, 2000000L};
+        for (long timestamp : timestamps) {
+            Event event = createEvent("this id will be overwritten.");
+            event.setBeginDate(new Date(timestamp));
+            event.setTitle(eventTitle);
+            event.setPrivate(false);
+            event.setDeadline(new Date(0L));	// 締切りを過ぎたイベントは表示されない、ということを確認するためにゼロを入れる
+            service.create(event, null, null);
+        }
+
+        List<Event> events = service.getRecentEvents(100);	// ゴミが多いとこれでも足りないかも
+        for (Event event : events) {
+            if (event == null || !eventTitle.equals(event.getTitle())) { continue; }
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testThatFinishedEventsIsNotFoundByGetUpcomingEvents() throws DAOException {
+        String eventTitle = Long.toString(System.currentTimeMillis());
+        long[] timestamps = new long[] {1000000L, 0L, 2000000L};
+        for (long timestamp : timestamps) {
+            Event event = createEvent("this id will be overwritten.");
+            event.setBeginDate(new Date(timestamp));
+            event.setTitle(eventTitle);
+            event.setPrivate(false);
+            event.setDeadline(new Date(0L));	// 締切りを過ぎたイベントは表示されない、ということを確認するためにゼロを入れる
+            service.create(event, null, null);
+        }
+
+        List<Event> events = service.getUpcomingEvents(100);	// ゴミが多いとこれでも足りないかも
+        for (Event event : events) {
+            if (event == null || !eventTitle.equals(event.getTitle())) { continue; }
+            Assert.fail();
         }
     }
 

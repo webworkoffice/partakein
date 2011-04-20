@@ -221,6 +221,18 @@ public final class EventService extends PartakeService {
         return convertToEventList(docs);
     }
 
+    /** 近日開催されるイベントを開催時刻が近い順に返す。締切りが過ぎたイベントは含まれない。 */
+    public List<Event> getUpcomingEvents(int num) throws DAOException {
+        if (num <= 0) { throw new IllegalArgumentException(); }
+
+        try {
+            return EventService.get().search("", "all", "beginDate", true, num);
+        } catch (ParseException e) {
+            // 実装ミス
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Event> getRecentCategoryEvents(String category, int maxDocument) throws DAOException {
         TopDocs docs = LuceneDao.get().getRecentCategoryDocuments(category, maxDocument);
         return convertToEventList(docs);
