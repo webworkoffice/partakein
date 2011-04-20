@@ -468,6 +468,14 @@
                 <param name="allowCaching">true</param>			
 			</result>
 		</action>
+
+		<action name="upcoming" method="feedUpcomingEvents" class="in.partake.controller.EventsFeedController">
+			<result name="success" type="stream">
+				<param name="contentType">${contentType}</param>
+				<param name="bufferSize">1M</param>
+				<param name="allowCaching">true</param>
+			</result>
+		</action>
 	</package>
 	
 </struts>
