@@ -56,7 +56,7 @@ public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
     @Override
     public DataIterator<Message> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT m FROM Messages m WHERE m.eventId = :eventId");
+        Query q = em.createQuery("SELECT m FROM Messages m WHERE m.eventId = :eventId ORDER BY m.createdAt desc");
         q.setParameter("eventId", eventId);
         
         @SuppressWarnings("unchecked")
