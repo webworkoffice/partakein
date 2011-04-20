@@ -192,6 +192,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
         client.batch_mutate(DIRECTMESSAGE_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGE_COLUMNFAMILY, mutations)), DIRECTMESSAGE_CL_W);
     }
     
+    // FIXME ひとつのeventIdにひとつのmessageしかひもづけられない（2個目以降のmessageが前回更新分に上書かれる）
     private void addUserMessage(Client client, String messageId, String eventId, long time) throws Exception {
         String key = DIRECTMESSAGE_EVENT_PREFIX + eventId;
         
