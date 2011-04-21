@@ -95,7 +95,7 @@ public final class EventService extends PartakeService {
     /**
      * get an event-ex from an event id.
      * @param eventId
-     * @return an extended event. null if it does not exist. 
+     * @return an extended event. null if it does not exist.
      * @throws DAOException
      */
     public EventEx getEventExById(String eventId) throws DAOException {
@@ -108,7 +108,7 @@ public final class EventService extends PartakeService {
             return event;
         } finally {
             con.invalidate();
-        }	    
+        }
     }
 
     /**
@@ -129,7 +129,7 @@ public final class EventService extends PartakeService {
             return event;
         } finally {
             con.invalidate();
-        }	    
+        }
     }
 
     /**
@@ -163,7 +163,7 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            DataIterator<Event> it = factory.getEventAccess().getIterator(con); 
+            DataIterator<Event> it = factory.getEventAccess().getIterator(con);
             while (it.hasNext()) {
                 Event event = it.next();
                 appendFeedIfAbsent(factory, con, event.getId());
@@ -173,7 +173,7 @@ public final class EventService extends PartakeService {
 	        con.invalidate();
 	    }
 	}
-	
+
     /**
      * search events.
      * @param term
@@ -222,11 +222,11 @@ public final class EventService extends PartakeService {
     }
 
     /** 近日開催されるイベントを開催時刻が近い順に返す。締切りが過ぎたイベントは含まれない。 */
-    public List<Event> getUpcomingEvents(int num) throws DAOException {
-        if (num <= 0) { throw new IllegalArgumentException(); }
+    public List<Event> getUpcomingEvents(int num, String category) throws DAOException {
+        if (num <= 0 || category == null) { throw new IllegalArgumentException(); }
 
         try {
-            return EventService.get().search("", "all", "beginDate", true, num);
+            return EventService.get().search("", category, "beginDate", true, num);
         } catch (ParseException e) {
             // 実装ミス
             throw new RuntimeException(e);
@@ -255,7 +255,7 @@ public final class EventService extends PartakeService {
             return events;
         } finally {
             con.invalidate();
-        }	    
+        }
     }
 
     public List<Event> getEventsManagedBy(UserEx manager) throws DAOException {
@@ -312,7 +312,7 @@ public final class EventService extends PartakeService {
             return result;
         } finally {
             con.invalidate();
-        }	    
+        }
     }
 
     public List<Event> getUnfinishedEnrolledEvents(String userId) throws DAOException {
@@ -323,21 +323,21 @@ public final class EventService extends PartakeService {
             List<Event> result = new ArrayList<Event>();
             Date now = new Date();
 
-            List<Enrollment> enrollments = factory.getEnrollmentAccess().findByUserId(con, userId); 
+            List<Enrollment> enrollments = factory.getEnrollmentAccess().findByUserId(con, userId);
             for (Enrollment enrollment : enrollments) {
                 if (enrollment == null) { continue; }
                 Event e = factory.getEventAccess().find(con, enrollment.getEventId());
                 if (e == null) { continue; }
                 if (!e.getBeginDate().before(now)) {
                     result.add(e);
-                }                
+                }
             }
 
             con.commit();
 
             Collections.sort(result, Event.getComparatorBeginDateAsc());
 
-            return result;            
+            return result;
         } finally {
             con.invalidate();
         }
@@ -352,7 +352,7 @@ public final class EventService extends PartakeService {
      * @throws DAOException
      */
     public String create(Event eventEmbryo,
-            BinaryData foreImageEmbryo, 
+            BinaryData foreImageEmbryo,
             BinaryData backImageEmbryo) throws DAOException {
         return create(eventEmbryo, foreImageEmbryo, backImageEmbryo, false);
     }
@@ -366,7 +366,7 @@ public final class EventService extends PartakeService {
      * @throws DAOException
      */
     public String createAsDemo(Event eventEmbryo,
-            BinaryData foreImageEmbryo, 
+            BinaryData foreImageEmbryo,
             BinaryData backImageEmbryo) throws DAOException {
         return create(eventEmbryo, foreImageEmbryo, backImageEmbryo, true);
     }
@@ -376,7 +376,7 @@ public final class EventService extends PartakeService {
      * @return event id
      */
     private String create(Event eventEmbryo,
-            BinaryData foreImageEmbryo, 
+            BinaryData foreImageEmbryo,
             BinaryData backImageEmbryo, boolean asDemo) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         IBinaryAccess binaryAccess = factory.getBinaryAccess();
@@ -411,11 +411,11 @@ public final class EventService extends PartakeService {
 
             if (foreImageEmbryo != null) {
                 foreImageEmbryo.setId(foreImageId);
-                binaryAccess.put(con, foreImageEmbryo);			
+                binaryAccess.put(con, foreImageEmbryo);
             }
             if (backImageEmbryo != null) {
                 backImageEmbryo.setId(backImageId);
-                binaryAccess.put(con, backImageEmbryo);			
+                binaryAccess.put(con, backImageEmbryo);
             }
 
             // factory.getMessageAccess().addNotification(con, eventId);
@@ -434,7 +434,7 @@ public final class EventService extends PartakeService {
                 IEventActivityAccess eaa = factory.getEventActivityAccess();
                 EventActivity activity = new EventActivity(eaa.getFreshId(con), eventEmbryo.getId(), "イベントが登録されました : " + eventEmbryo.getTitle(), eventEmbryo.getDescription(), eventEmbryo.getCreatedAt());
                 eaa.put(con, activity);
-            }        	
+            }
 
             // さらに、twitter bot がつぶやく (private の場合はつぶやかない)
             if (!eventEmbryo.isPrivate()) {
@@ -454,7 +454,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         IBinaryAccess binaryAccess = factory.getBinaryAccess();
         PartakeConnection con = getPool().getConnection();
-        try {            
+        try {
             con.beginTransaction();
             // まず id のみ更新
             if (updatesForeImage) {
@@ -474,7 +474,7 @@ public final class EventService extends PartakeService {
                     eventEmbryo.setBackImageId(backImageId);
                 } else if (event.getBackImageId() != null) {
                     eventEmbryo.setBackImageId(null);
-                }		
+                }
             } else {
                 eventEmbryo.setBackImageId(event.getBackImageId());
             }
@@ -488,7 +488,7 @@ public final class EventService extends PartakeService {
                 if (foreImageEmbryo != null) {
                     foreImageEmbryo.setId(eventEmbryo.getForeImageId());
                     binaryAccess.put(con, foreImageEmbryo);
-                } else if (event.getForeImageId() != null) {    			    
+                } else if (event.getForeImageId() != null) {
                     binaryAccess.remove(con, event.getForeImageId());
                 }
             }
@@ -499,7 +499,7 @@ public final class EventService extends PartakeService {
                     binaryAccess.put(con, backImageEmbryo);
                 } else if (event.getBackImageId() != null) {
                     binaryAccess.remove(con, event.getBackImageId());
-                }		
+                }
             }
 
             // Event Activity にも挿入
@@ -507,7 +507,7 @@ public final class EventService extends PartakeService {
                 IEventActivityAccess eaa = factory.getEventActivityAccess();
                 EventActivity activity = new EventActivity(eaa.getFreshId(con), eventEmbryo.getId(), "イベントが更新されました : " + eventEmbryo.getTitle(), eventEmbryo.getDescription(), eventEmbryo.getCreatedAt());
                 eaa.put(con, activity);
-            }           
+            }
 
 
             // private でなければ Lucene にデータ挿入
@@ -524,7 +524,7 @@ public final class EventService extends PartakeService {
     }
 
     public void remove(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();       
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
@@ -540,7 +540,7 @@ public final class EventService extends PartakeService {
     }
 
     public boolean isRemoved(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();       
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         final boolean result;
         try {
@@ -570,7 +570,7 @@ public final class EventService extends PartakeService {
                 } else {
                     Document doc = makeDocument(event.getId(), event);
                     LuceneDao.get().addDocument(doc);
-                }	            
+                }
             }
         } finally {
             con.invalidate();
@@ -637,7 +637,7 @@ public final class EventService extends PartakeService {
             return relations;
         } finally {
             con.invalidate();
-        }		
+        }
     }
 
     public List<EventRelationEx> getEventRelationsEx(String eventId) throws DAOException {
@@ -648,7 +648,7 @@ public final class EventService extends PartakeService {
             List<EventRelationEx> relations = new ArrayList<EventRelationEx>();
             for (EventRelation relation : factory.getEventRelationAccess().findByEventId(con, eventId)) {
                 if (relation == null) { continue; }
-                Event event = factory.getEventAccess().find(con, relation.getDstEventId()); 
+                Event event = factory.getEventAccess().find(con, relation.getDstEventId());
                 if (event == null) { continue; }
                 EventRelationEx relex = new EventRelationEx(relation, event);
                 relex.freeze();
@@ -694,7 +694,7 @@ public final class EventService extends PartakeService {
             return enrollments;
         } finally {
             con.invalidate();
-        }       
+        }
     }
 
     /**
@@ -709,7 +709,7 @@ public final class EventService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         try {
             con.beginTransaction();
-            Enrollment enrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId)); 
+            Enrollment enrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
             if (enrollment == null) { return false; }
             Enrollment newEnrollment = new Enrollment(enrollment);
             newEnrollment.setVIP(vip);
@@ -718,7 +718,7 @@ public final class EventService extends PartakeService {
             return true;
         } finally {
             con.invalidate();
-        }               
+        }
     }
 
     public Enrollment findEnrollment(String eventId, String userId) throws DAOException {
@@ -728,7 +728,7 @@ public final class EventService extends PartakeService {
             return factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
         } finally {
             con.invalidate();
-        }  
+        }
     }
 
     /**
@@ -748,7 +748,7 @@ public final class EventService extends PartakeService {
             return true;
         } finally {
             con.invalidate();
-        }               
+        }
     }
 
     public void udpateEnrollment(Enrollment enrollment) throws DAOException {
@@ -760,7 +760,7 @@ public final class EventService extends PartakeService {
             con.commit();
         } finally {
             con.invalidate();
-        }          
+        }
     }
 
     public boolean updateAttendanceStatus(String userId, String eventId, AttendanceStatus status) throws DAOException {
@@ -780,7 +780,7 @@ public final class EventService extends PartakeService {
             return true;
         } finally {
             con.invalidate();
-        }  
+        }
     }
 
 
@@ -788,7 +788,7 @@ public final class EventService extends PartakeService {
     // Comments
 
     public Comment getCommentById(String commentId) throws DAOException {
-        PartakeDAOFactory factory = getFactory(); 
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
@@ -809,11 +809,11 @@ public final class EventService extends PartakeService {
             return comment;
         } finally {
             con.invalidate();
-        }		
+        }
     }
 
     public void addComment(Comment embryo) throws DAOException {
-        PartakeDAOFactory factory = getFactory(); 
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
@@ -837,9 +837,9 @@ public final class EventService extends PartakeService {
     }
 
     // TODO: うーん、comment が消される前に event が消されて、その後 comment を消そうとしたら落ちるんじゃないの？
-    // 
+    //
     public void removeComment(String commentId) throws DAOException {
-        PartakeDAOFactory factory = getFactory(); 
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
@@ -851,7 +851,7 @@ public final class EventService extends PartakeService {
     }
 
     public List<Comment> getCommentsByEvent(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory(); 
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
@@ -873,7 +873,7 @@ public final class EventService extends PartakeService {
     }
 
     public List<CommentEx> getCommentsExByEvent(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory(); 
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             List<CommentEx> result = new ArrayList<CommentEx>();
@@ -913,7 +913,7 @@ public final class EventService extends PartakeService {
         } finally {
             con.invalidate();
         }
-    }	
+    }
 
     /**
      * event の参加予定人数を返します。
@@ -922,7 +922,7 @@ public final class EventService extends PartakeService {
      * @throws DAOException
      */
     public int getNumOfEnrolledUsers(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();       
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
@@ -936,7 +936,7 @@ public final class EventService extends PartakeService {
                 case ENROLLED:
                     ++result; break;
                 case RESERVED:
-                    if (!isOver) { ++result; } break; 
+                    if (!isOver) { ++result; } break;
                 default:
                 }
             }
@@ -945,7 +945,7 @@ public final class EventService extends PartakeService {
             return result;
         } finally {
             con.invalidate();
-        }           
+        }
     }
 
     /**
@@ -981,12 +981,12 @@ public final class EventService extends PartakeService {
     public void enroll(String userId, String eventId, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
         PartakeConnection con = getPool().getConnection();
         try {
-            con.beginTransaction(); 
+            con.beginTransaction();
             enrollImpl(con, userId, eventId, status, comment, changesOnlyComment, isReservationTimeOver);
             con.commit();
         } finally {
             con.invalidate();
-        }                
+        }
     }
 
     private void enrollImpl(PartakeConnection con, String userId, String eventId, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
@@ -1005,8 +1005,8 @@ public final class EventService extends PartakeService {
             newEnrollment.setStatus(status);
             newEnrollment.setModificationStatus(ModificationStatus.CHANGED);
             newEnrollment.setModifiedAt(new Date());
-        } else if (changesOnlyComment || status.equals(oldEnrollment.getStatus())) {        
-            // 特に変更しない 
+        } else if (changesOnlyComment || status.equals(oldEnrollment.getStatus())) {
+            // 特に変更しない
         } else if (status.isEnrolled() == oldEnrollment.getStatus().isEnrolled()) {
             // 参加する / しないの状況が変更されない場合は、status のみが更新される。
             newEnrollment.setStatus(status);
@@ -1017,7 +1017,7 @@ public final class EventService extends PartakeService {
             newEnrollment.setModifiedAt(new Date());
         }
 
-        // 
+        //
         {
             IEventActivityAccess eaa = factory.getEventActivityAccess();
             UserEx user = getUserEx(con, userId);
@@ -1045,18 +1045,18 @@ public final class EventService extends PartakeService {
     // feed
 
     /**
-     * add a feed id to the event if it does not have feed id. 
+     * add a feed id to the event if it does not have feed id.
      */
     public void appendFeedIfAbsent(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();       
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            con.beginTransaction(); 
+            con.beginTransaction();
             appendFeedIfAbsent(factory, con, eventId);
             con.commit();
         } finally {
             con.invalidate();
-        } 
+        }
     }
 
     private void appendFeedIfAbsent(PartakeDAOFactory factory, PartakeConnection con, String eventId) throws DAOException {
@@ -1068,13 +1068,13 @@ public final class EventService extends PartakeService {
     }
 
     public List<EventActivity> getEventActivities(String eventId, int length) throws DAOException {
-        PartakeDAOFactory factory = getFactory();       
+        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             return factory.getEventActivityAccess().findByEventId(con, eventId, length);
         } finally {
             con.invalidate();
-        } 
+        }
 
     }
 
@@ -1098,7 +1098,7 @@ public final class EventService extends PartakeService {
         doc.add(new Field("CATEGORY", eventEmbryo.getCategory(), Store.NO, Index.NOT_ANALYZED, TermVector.WITH_POSITIONS));
         doc.add(new Field("CREATED-AT", Util.getTimeString(eventEmbryo.getCreatedAt().getTime()), Store.NO, Index.NOT_ANALYZED));
         doc.add(new Field("BEGIN-TIME", Util.getTimeString(beginTime), Store.NO, Index.NOT_ANALYZED));
-        doc.add(new Field("DEADLINE-TIME", Util.getTimeString(deadlineTime), Store.NO, Index.NOT_ANALYZED));    	
+        doc.add(new Field("DEADLINE-TIME", Util.getTimeString(deadlineTime), Store.NO, Index.NOT_ANALYZED));
         doc.add(new Field("TITLE", eventEmbryo.getTitle(), Store.NO, Index.ANALYZED, TermVector.WITH_POSITIONS));
         doc.add(new Field("CONTENT", builder.toString(), Store.NO, Index.ANALYZED, TermVector.WITH_POSITIONS));
 
@@ -1123,7 +1123,7 @@ public final class EventService extends PartakeService {
         }
     }
 
-    private void tweetNewEventArrival(PartakeDAOFactory factory, PartakeConnection con, Event event) { 
+    private void tweetNewEventArrival(PartakeDAOFactory factory, PartakeConnection con, Event event) {
         try {
             String shortenedURL = getShortenedURL(con, event);
             String hashTag = event.getHashTag() != null ? event.getHashTag() : "";
@@ -1145,7 +1145,7 @@ public final class EventService extends PartakeService {
             String userId = linkage.getUserId();
             if (userId == null) {
                 logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
-                return; 
+                return;
             }
 
             String messageId = factory.getDirectMessageAccess().getFreshId(con);
@@ -1165,7 +1165,7 @@ public final class EventService extends PartakeService {
     public List<Questionnaire> findQuestionnairesByEventId(String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
-        try {            
+        try {
             return factory.getQuestionnaireAccess().findQuestionnairesByEventId(con, eventId);
         } finally {
             con.invalidate();

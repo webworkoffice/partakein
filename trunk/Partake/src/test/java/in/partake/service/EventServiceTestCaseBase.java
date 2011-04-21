@@ -182,7 +182,7 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
             service.create(event, null, null);
         }
 
-        List<Event> events = service.getUpcomingEvents(100);	// ゴミが多いとこれでも足りないかも
+        List<Event> events = service.getUpcomingEvents(100, "all");	// ゴミが多いとこれでも足りないかも
         int count = 0;
         Date date = null;
         for (Event event : events) {
@@ -229,7 +229,7 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
             service.create(event, null, null);
         }
 
-        List<Event> events = service.getUpcomingEvents(100);	// ゴミが多いとこれでも足りないかも
+        List<Event> events = service.getUpcomingEvents(100, "all");	// ゴミが多いとこれでも足りないかも
         for (Event event : events) {
             if (event == null || !eventTitle.equals(event.getTitle())) { continue; }
             Assert.fail();
