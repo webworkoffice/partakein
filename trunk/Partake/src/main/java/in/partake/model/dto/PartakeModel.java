@@ -25,11 +25,13 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
      */
     public abstract Object getPrimaryKey();
     
-    
+    /**
+     * @return a copied object.
+     */
     public abstract T copy();
     
     /**
-     * check the object is fronzen. If frozen, UnsupportedOperationException will be raised.
+     * check the object is frozen. If frozen, UnsupportedOperationException will be raised.
      */
     protected final void checkFrozen() {
         if (frozen) { throw new UnsupportedOperationException(); }
