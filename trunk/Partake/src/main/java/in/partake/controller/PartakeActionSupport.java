@@ -4,6 +4,7 @@ import in.partake.model.UserEx;
 import in.partake.resource.Constants;
 import in.partake.resource.I18n;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +24,14 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 	/** */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(PartakeActionSupport.class);
-	
+
+    // TODO: 
+    //   INVALID とか見せないようにして、return renderInvalid(reason) を読んでもらうのはどうか。
+    //   ERROR とかも同様に。
+    //   renderJSON とか renderBinary とかも同様に出来る。
+    //   xml で指定するんだったら自分でこういうの作ったほうが良い。
+    //
+
 	/** return code in case parameter is invalid. (ユーザーのリクエストがおかしい場合) */
 	public static final String INVALID = "invalid"; //$NON-NLS-1$ //
 	/** return code in case redirection */
@@ -38,20 +46,16 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 //	private static final String SUCCESS = "INTENTIONALLY SEAL THE ActionSupport.SUCCESS";
 //	private static final String ERROR = "INTENTIONALLY SEAL THE ActionSupport.ERROR";
 	
-	//
-	// TODO: 
-	//   INVALID とか見せないようにして、return renderInvalid(reason) を読んでもらうのはどうか。
-	//   ERROR とかも同様に。
-	//   renderJSON とか renderBinary とかも同様に出来る。
-	//   xml で指定するんだったら自分でこういうの作ったほうが良い。
-	//
-	
-	
 	// 様々なところで使うので、redirectURL を定義しておく。
 	// あんまりよろしくないが、loginRequired でこれを使って、かつ login が必要なところは色色あるのでベースとして定義する
 	protected String redirectURL;
 	protected String currentURL;
-	
+
+    // These are used for returning stream.
+    protected InputStream stream;
+    protected String contentType;
+    protected String contentDisposition;
+
 	// somethingAware な人たち向け
     protected Map<String, Object> session = null;
     protected Map<String, Object> attributes = null;
@@ -254,5 +258,39 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     
     protected String renderLoginRequired() {
         return LOGIN;
+    }
+    
+    protected String renderStream(InputStream stream, String contentType, String contentDisposition) {
+        this.stream = stream;
+        this.contentType = contentType;
+        this.contentDisposition = contentDisposition;
+        return "stream";
+    }
+    
+    protected String renderAttachmentStream(InputStream stream, String contentType) {
+        return renderStream(stream, contentType, "attachment");
+    }
+    
+    protected String renderInlineStream(InputStream stream, String contentType) {
+        return renderStream(stream, contentType, "inline");
+    }
+    
+    protected String renderInlineStream(InputStream stream, String contentType, String filename) {
+        String contentDisposition = String.format("inline; filename=\"%s\"", filename);
+        return renderStream(stream, contentType, contentDisposition);
+    }
+    
+    /** return contentType. This function is only valid when renderStream() has been called. */
+    public String getContentType() {
+        return this.contentType;
+    }
+
+    /** return input stream. This function is only valid when renderStream() has been called. */
+    public InputStream getInputStream() {
+        return stream;
+    }
+
+    public String getContentDisposition() {
+        return this.contentDisposition;
     }
 }

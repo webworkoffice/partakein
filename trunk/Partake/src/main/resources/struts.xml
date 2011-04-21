@@ -73,6 +73,12 @@
 			<result name="notfound" type="redirect">/notfound</result>
 			<result name="prohibited" type="redirect">/prohibited</result>
 			<result name="returntop" type="redirect">/</result>
+			<result name="stream" type="stream">
+                <param name="contentType">${contentType}</param>
+                <param name="contentDisposition">${contentDisposition}</param>
+                <param name="bufferSize">1M</param>
+                <param name="allowCaching">true</param>			
+			</result>			
 		</global-results>
 	</package>
 
