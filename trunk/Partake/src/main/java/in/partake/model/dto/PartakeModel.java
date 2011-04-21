@@ -30,6 +30,9 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
      */
     public abstract T copy();
     
+    // ----------------------------------------------------------------------
+    // frozen
+    
     /**
      * check the object is frozen. If frozen, UnsupportedOperationException will be raised.
      */
@@ -53,4 +56,11 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
         this.frozen = true;
         return (T)this;
     }
+    
+    // ----------------------------------------------------------------------
+    // json
+
+    // TODO: these are should be abstract later.
+    protected String toJSON() { return ""; }
+    protected T fromJSON(String json) { return null; }
 }
