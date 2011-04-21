@@ -100,13 +100,14 @@ public class CalendarsController extends PartakeActionSupport {
         } catch (DAOException e) {
             logger.error(I18n.t(I18n.DATABASE_ERROR), e);
             addActionError(I18n.t(I18n.DATABASE_ERROR));
+            return redirectDBError();
         } catch (IOException e) {
             logger.error("IOException occured.", e);
+            return redirectError("内部でカレンダーを作成集にエラーが発生しました。");
         } catch (ValidationException e) {
             logger.error("Calendar Validation Exception occured.", e);
+            return redirectError("内部でカレンダーのフォーマットがエラーが発生しました。");
         }
-        
-        return ERROR;
 	}
 	
     // カレンダーの表示
@@ -132,7 +133,6 @@ public class CalendarsController extends PartakeActionSupport {
     		
     		outputCalendar(calendar);
     		return SUCCESS;
-    		
     	} catch (DAOException e) {
     		e.printStackTrace();
     		return ERROR;

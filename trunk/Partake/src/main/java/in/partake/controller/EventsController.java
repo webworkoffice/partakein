@@ -249,7 +249,9 @@ public class EventsController extends PartakeActionSupport {
         UserEx user = ensureLogin();
     	
 	    String eventId = getParameter("eventId");
-	    if (eventId == null) { return ERROR; }
+	    if (eventId == null) {
+	        return renderInvalid("event id が指定されていません。");
+	    }
 
 	    this.eventId = eventId;
 	    
