@@ -12,6 +12,8 @@ import org.junit.Test;
 public abstract class AbstractPartakeModelTest<T extends PartakeModel<?>> {
 	private Logger logger = Logger.getLogger(getClass());
 
+	protected abstract T createModel();
+
 	/**
 	 * freezeしてから破壊的メソッドを実行するとUnsupportedOperationExceptionが投げられることを保証する。
 	 * freezeしていない時に正しく実行できることの保証は、各サブクラスのテストが担う。
@@ -38,7 +40,19 @@ public abstract class AbstractPartakeModelTest<T extends PartakeModel<?>> {
 			}
 		}
 	}
+	
+	@Test
+	public final void testToJSONAndGetJSON() {
+	    final PartakeModel<?> expected = createModel();
+	    final PartakeModel<?> actual = createModel();
+	    actual.fromJSON(expected.toJSON());
 
+	    Assert.assertEquals(expected, actual);
+	}
+
+	
+	// ----------------------------------------------------------------------
+	
 	private Object[] createArgsFor(final Method m) {
 		final Type[] types = m.getGenericParameterTypes();
 		final Object[] result = new Object[types.length];
@@ -74,6 +88,4 @@ public abstract class AbstractPartakeModelTest<T extends PartakeModel<?>> {
 	private boolean checkDestructiveMethod(final Method m) {
 		return m.getReturnType().equals(Void.TYPE) && !Modifier.isStatic(m.getModifiers());
 	}
-
-	protected abstract T createModel();
 }
