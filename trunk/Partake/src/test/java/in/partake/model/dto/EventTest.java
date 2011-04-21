@@ -161,6 +161,43 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
 	    Assert.assertFalse(event.isManager("a"));
 	    Assert.assertFalse(event.isManager("hoge"));
 	}
+	
+	@Test
+	public void testIsManagerWhenManagerScreenNamesIsNull() throws Exception {
+	    Event event = new Event();
+	    event.setManagerScreenNames(null);
+	    
+	    Assert.assertFalse(event.isManager(null));
+	    Assert.assertFalse(event.isManager(""));
+	    Assert.assertFalse(event.isManager("A"));
+	    Assert.assertFalse(event.isManager("B"));
+	    Assert.assertFalse(event.isManager("manager"));
+	}
+
+	@Test
+	public void testIsManagerWhenManagerScreenNameIsEmpty() throws Exception {
+	    Event event = new Event();
+	    event.setManagerScreenNames("");
+
+	    Assert.assertFalse(event.isManager(null));
+	    Assert.assertFalse(event.isManager(""));
+	    Assert.assertFalse(event.isManager("A"));
+	    Assert.assertFalse(event.isManager("B"));
+	    Assert.assertFalse(event.isManager("manager"));
+	}
+
+	@Test
+	public void testIsManagerWhenManagerScreenNameIsBlank() throws Exception {
+	    Event event = new Event();
+	    event.setManagerScreenNames("    ");
+
+	    Assert.assertFalse(event.isManager(null));
+        Assert.assertFalse(event.isManager(""));
+        Assert.assertFalse(event.isManager("A"));
+        Assert.assertFalse(event.isManager("B"));
+        Assert.assertFalse(event.isManager("manager"));
+	}
+	
 
 	private void invokeMethod(Method method, Class<?> arg, Event source)
 			throws IllegalAccessException, InvocationTargetException {
