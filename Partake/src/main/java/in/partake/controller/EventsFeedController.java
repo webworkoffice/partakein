@@ -33,21 +33,21 @@ public class EventsFeedController extends PartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
 	// private static final Logger logger = Logger.getLogger(EventsFeedController.class);
-	
+
 	private String contentType = null;
 	private ByteArrayInputStream inputStream = null;
 
 	public String feedRecentEvents() {
 	    // TODO: CACHE!
-	    
+
 		SyndFeed feed = new SyndFeedImpl();
 		feed.setFeedType("rss_2.0");
 		feed.setEncoding("utf-8");
-		
+
 		feed.setTitle("Recent 100 events - [PARTAKE]");
 		feed.setLink("http://partake.in/");
 		feed.setDescription("最近登録されたイベントを(最大100)フィードします。");
-		
+
 		try {
 			List<Event> events = EventService.get().getRecentEvents(100);
 			createFeed(feed, events);
@@ -68,16 +68,25 @@ public class EventsFeedController extends PartakeActionSupport {
 	public String feedUpcomingEvents() {
 		// TODO: CACHE!
 
+		String category = getParameter("category");
+
+		// check category is correct.
+		if (!EventCategory.isValidCategoryName(category) && !category.equals("all")) { return NOT_FOUND; }
+
 		SyndFeed feed = new SyndFeedImpl();
 		feed.setFeedType("rss_2.0");
 		feed.setEncoding("utf-8");
-		
-		feed.setTitle("Upcoming 100 events - [PARTAKE]");
+
+		if (category.equals("all")) {
+			feed.setTitle("Upcoming 100 events - [PARTAKE]");
+		} else {
+			feed.setTitle("Upcoming 100 events - " + EventCategory.getReadableCategoryName(category) + " - [PARTAKE]");
+		}
 		feed.setLink("http://partake.in/");
 		feed.setDescription("近日開催されるイベントを(最大100)フィードします。");
-		
+
 		try {
-			List<Event> events = EventService.get().getUpcomingEvents(100);
+			List<Event> events = EventService.get().getUpcomingEvents(100, category);
 			createFeed(feed, events);
 
 			return SUCCESS;
@@ -95,24 +104,24 @@ public class EventsFeedController extends PartakeActionSupport {
 
 	public String feedCategory() {
 	    // TODO: CACHE!
-	    
+
 		String category = getParameter("category");
-		
+
 		// check category is correct.
 		if (!EventCategory.isValidCategoryName(category)) { return NOT_FOUND; }
-		
+
 		SyndFeed feed = new SyndFeedImpl();
 		feed.setFeedType("rss_2.0");
 		feed.setEncoding("utf-8");
-		
+
 		feed.setTitle("Recent 100 events - " + EventCategory.getReadableCategoryName(category) + " - [PARTAKE]");
 		feed.setLink(PartakeProperties.get().getTopPath() + "/");
 		feed.setDescription("最近登録されたイベントを(最大100)フィードします。");
-		
+
 		try {
 			List<Event> events = EventService.get().getRecentCategoryEvents(category, 100);
 			createFeed(feed, events);
-			
+
 			return SUCCESS;
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -125,26 +134,26 @@ public class EventsFeedController extends PartakeActionSupport {
 			return ERROR;
 		}
 	}
-	
-	
+
+
 	public String feedEvent() {
 		String feedId = getParameter("feedId");
 		if (feedId == null) { return NOT_FOUND; }
-		
+
 		try {
 			Event event = EventService.get().getEventByFeedId(feedId);
 			if (event == null) { return NOT_FOUND; }
-			
+
 			SyndFeed feed = new SyndFeedImpl();
 			feed.setFeedType("rss_2.0");
 			feed.setEncoding("utf-8");
-			
+
 			feed.setTitle(event.getTitle() + " - [PARTAKE]");
 			feed.setLink(event.getEventURL());
 			feed.setDescription(event.getSummary());
-			
+
 			createEventFeed(feed, event.getId());
-			
+
 			return SUCCESS;
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -158,21 +167,21 @@ public class EventsFeedController extends PartakeActionSupport {
         }
 	}
 
-	
-	
+
+
 	public String getContentType() {
 		return this.contentType;
 	}
-	
+
 	public ByteArrayInputStream getInputStream() {
         return inputStream;
     }
-	
+
 	// ----------------------------------------------------------------------
 
-	private void createFeed(SyndFeed feed, List<Event> events) throws IOException, FeedException {			
+	private void createFeed(SyndFeed feed, List<Event> events) throws IOException, FeedException {
 		List<SyndEntry> entries = new ArrayList<SyndEntry>();
-		
+
 		for (Event event : events) {
 		    if (event == null) { continue; }
 		    if (event.isPrivate()) { continue; }
@@ -180,7 +189,7 @@ public class EventsFeedController extends PartakeActionSupport {
 		    SyndContent content = new SyndContentImpl();
             content.setType("text/html");
             content.setValue(Helper.cleanupHTML(event.getDescription()));
-	            
+
 			SyndEntry entry = new SyndEntryImpl();
 			entry.setTitle(event.getTitle());
 			entry.setLink(event.getEventURL());
@@ -191,16 +200,16 @@ public class EventsFeedController extends PartakeActionSupport {
 				entry.setAuthor(ex.getOwner().getScreenName());
 			} catch (DAOException e) {
 				LOGGER.warn("Fail to get Author name.", e);
-			}			
+			}
 			entry.setDescription(content);
-			
+
 			entries.add(entry);
 		}
-		
-		feed.setEntries(entries);		
+
+		feed.setEntries(entries);
 		outputSyndFeed(feed);
 	}
-	
+
 	private void createEventFeed(SyndFeed feed, String eventId) throws IOException, FeedException, DAOException {
 	    List<SyndEntry> entries = new ArrayList<SyndEntry>();
 
@@ -209,24 +218,24 @@ public class EventsFeedController extends PartakeActionSupport {
 	    //     1. Event 更新記録
 	    //     2. コメント
 	    //     3. 参加変更
-	    
+
 	    List<EventActivity> activities = EventService.get().getEventActivities(eventId, 100);
 	    if (activities != null) {
 	        for (EventActivity activity : activities) {
 	            SyndContent content = new SyndContentImpl();
 	            content.setType("text/html");
 	            content.setValue(Helper.cleanupHTML(activity.getContent()));
-	            
+
 	            SyndEntry entry = new SyndEntryImpl();
 	            entry.setTitle(Helper.h(activity.getTitle()));
 	            entry.setDescription(content);
-	            
+
 	            entries.add(entry);
 	        }
 	    }
-	    
+
 	    feed.setEntries(entries);
-	    
+
         outputSyndFeed(feed);
 	}
 
@@ -235,9 +244,9 @@ public class EventsFeedController extends PartakeActionSupport {
         SyndFeedOutput output = new SyndFeedOutput();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         output.output(feed, new OutputStreamWriter(baos, "utf-8"));
-        
+
         baos.flush();
-        
+
         this.contentType = "application/rss+xml";
         this.inputStream = new ByteArrayInputStream(baos.toByteArray());
 

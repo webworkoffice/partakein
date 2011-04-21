@@ -35,16 +35,16 @@
 	    	</interceptor-stack>
 
 	    	<interceptor-stack name="partakeStack">
-                <interceptor-ref name="partakeBaseStack"/>	    	
+                <interceptor-ref name="partakeBaseStack"/>
 	    		<interceptor-ref name="exceptionHandler"/>
 	    	</interceptor-stack>
-	    	
+
 	    	<interceptor-stack name="authenticateStack">
                 <interceptor-ref name="partakeBaseStack"/>
                 <interceptor-ref name="authenticate"/>
                 <interceptor-ref name="exceptionHandler"/>
             </interceptor-stack>
-            
+
             <interceptor-stack name="adminStack">
                 <interceptor-ref name="partakeBaseStack"/>
                 <interceptor-ref name="adminAuth" />
@@ -57,10 +57,10 @@
                 <interceptor-ref name="exceptionHandler"/>
 	    		<interceptor-ref name="csrfTokenCheck" /><!-- This may throw PartakeResultException -->
 	    	</interceptor-stack>
- 	    </interceptors>	
+ 	    </interceptors>
 
 		<default-interceptor-ref name="partakeStack"/>
-		
+
 		<global-results>
 			<result name="login" type="redirectAction">
 				<param name="namespace">/auth</param>
@@ -73,14 +73,14 @@
 			<result name="notfound" type="redirect">/notfound</result>
 			<result name="prohibited" type="redirect">/prohibited</result>
 			<result name="returntop" type="redirect">/</result>
-		</global-results>		
+		</global-results>
 	</package>
 
 	<package name="top" namespace="/" extends="partake-default">
         <action name="" method="index" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/index.jsp</result>
         </action>
-        
+
         <action name="error" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/error.jsp</result>
         </action>
@@ -92,7 +92,7 @@
         <action name="contact" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/contact.jsp</result>
         </action>
-        
+
         <action name="termofuse" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/termofuse.jsp</result>
         </action>
@@ -100,7 +100,7 @@
         <action name="feedlist" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/feedlist.jsp</result>
         </action>
-        
+
         <action name="notfound" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/notfound.jsp</result>
         </action>
@@ -108,30 +108,30 @@
         <action name="prohibited" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/prohibited</result>
         </action>
-	
+
 		<action name="mypage" method="show" class="in.partake.controller.MypageController">
 			<interceptor-ref name="authenticateStack" />
 			<result name="success">/WEB-INF/mypage.jsp</result>
 		</action>
-		
+
 		<action name="preference" method="showPreference" class="in.partake.controller.UsersPreferenceController">
 			<interceptor-ref name="authenticateStack" />
 			<result name="success">/WEB-INF/preference.jsp</result>
 		</action>
-		
+
 		<action name="setPreference" method="setPreference" class="in.partake.controller.UsersPreferenceController">
             <interceptor-ref name="checkTokenStack" />
 			<result name="input" type="redirect">/preference</result>
-			<result name="success" type="redirect">/preference</result>    
+			<result name="success" type="redirect">/preference</result>
 		</action>
 
 		<action name="revokeCalendar" method="revokeCalendar" class="in.partake.controller.UsersController">
             <interceptor-ref name="checkTokenStack" />
 			<result name="input">/WEB-INF/setting.jsp</result>
-			<result name="success" type="redirect">/preference</result>            
+			<result name="success" type="redirect">/preference</result>
 		</action>
 	</package>
-	
+
 	<package name="auth" namespace="/auth" extends="partake-default">
         <action name="loginByTwitter" method="loginByTwitter" class="in.partake.controller.AuthenticationController">
             <result name="success" type="redirect">${redirectURL}</result>
@@ -158,7 +158,7 @@
 			<result name="success">/WEB-INF/auth/loginRequired.jsp</result>
 		</action>
 	</package>
-	
+
 	<!-- API. The default will be returned stream. -->
 	<package name="api" namespace="/api" extends="partake-default">
        <global-results>
@@ -172,7 +172,7 @@
             </result>
             <result name="prohibited" type="httpheader">
                 <param name="error">403</param>
-            </result>                 
+            </result>
             <result name="notfound" type="httpheader">
                 <param name="error">404</param>
             </result>
@@ -180,12 +180,12 @@
                 <param name="error">500</param>
             </result>
         </global-results>
-        
+
         <action name="changeAttendance" method="changeAttendance" class="in.partake.controller.APIController">
             <interceptor-ref name="authenticateStack" />
         </action>
 	</package>
-	
+
 	<package name="admin" namespace="/admin" extends="partake-default">
         <action name="" method="index" class="in.partake.controller.AdministratorController">
             <interceptor-ref name="adminStack" />
@@ -202,19 +202,19 @@
         <action name="addFeedIdToAllEvents" method="addFeedIdToAllEvents" class="in.partake.controller.AdministratorController">
             <interceptor-ref name="adminStack" />
             <result name="success" type="redirect">/</result>
-        </action>        
+        </action>
 	</package>
-	
+
 	<package name="users" namespace="/users" extends="partake-default">
 		<action name="*" method="show" class="in.partake.controller.UsersController">
-			<interceptor-ref name="partakeStack"/>		
+			<interceptor-ref name="partakeStack"/>
 
 	        <param name="userId">{1}</param>
 			<result name="success">/WEB-INF/users/show.jsp</result>
 			<result name="prohibited">/WEB-INF/users/private.jsp</result>
 		</action>
 	</package>
-	
+
 	<package name="calendars" namespace="/calendars" extends="partake-default">
         <action name="all" method="all" class="in.partake.controller.CalendarsController">
             <result name="success" type="stream">
@@ -224,10 +224,10 @@
                 <param name="allowCaching">true</param><!-- TODO: true? false? -->
             </result>
         </action>
-        
+
         <action name="category/*" method="showCategory" class="in.partake.controller.CalendarsController">
             <param name="category">{1}</param>
-            
+
             <result name="success" type="stream">
                 <param name="contentType">text/calendar; charset=utf-8</param>
                 <param name="contentDisposition">inline; filename="category.ics"</param>
@@ -235,10 +235,10 @@
                 <param name="allowCaching">true</param>
             </result>
         </action>
-        
+
 		<action name="*" method="show" class="in.partake.controller.CalendarsController">
 			<param name="calendarId">{1}</param>
-			
+
 			<result name="success" type="stream">
 				<param name="contentType">text/calendar; charset=utf-8</param>
 				<param name="contentDisposition">inline; filename="partake.ics"</param>
@@ -252,7 +252,7 @@
 		<!-- Event Editing -->
 		<action name="new" method="editNew" class="in.partake.controller.EventsEditController">
 			<interceptor-ref name="authenticateStack"/>
-			<result name="input">/WEB-INF/events/new.jsp</result>			
+			<result name="input">/WEB-INF/events/new.jsp</result>
 		</action>
 		<action name="create" method="create" class="in.partake.controller.EventsEditController">
             <interceptor-ref name="checkTokenStack" />
@@ -279,7 +279,7 @@
 
 		<action name="search" method="search" class="in.partake.controller.EventsSearchController">
 			<interceptor-ref name="partakeStack"/>
-			
+
 			<result name="success">/WEB-INF/events/search.jsp</result>
 			<result name="input">/WEB-INF/events/search.jsp</result>
 		</action>
@@ -309,11 +309,11 @@
                 <param name="actionName">${eventId}</param>
             </result>
         </action>
-		
+
 		<!-- Event Messaging -->
 		<action name="send" method="send" class="in.partake.controller.EventsMessageController">
 			<interceptor-ref name="authenticateStack" />
-	
+
 			<result name="success" type="redirectAction">
 				<param name="actionName">${eventId}</param>
 			</result>
@@ -321,7 +321,7 @@
 				<param name="actionName">${eventId}</param>
 			</result>
 		</action>
-		
+
 		<!-- Event Commenting -->
 		<action name="comment" method="comment" class="in.partake.controller.EventsController">
             <interceptor-ref name="checkTokenStack" />
@@ -341,11 +341,11 @@
 				<param name="actionName">${eventId}</param>
 			</result>
 		</action>
-		
+
 		<!-- Event Image Showing -->
 		<action name="images/*" method="show" class="in.partake.controller.EventsImageController">
 			<param name="imageId">{1}</param>
-			
+
 			<result name="success" type="stream">
 				<param name="contentType">${contentType}</param>
 				<param name="contentDisposition">inline</param>
@@ -353,17 +353,17 @@
 				<param name="allowCaching">true</param>
 			</result>
 		</action>
-		
+
 		<!-- Event Viewing -->
 		<action name="passcode" method="passcode" class="in.partake.controller.EventsPasscodeController">
 			<interceptor-ref name="partakeStack"/>
-	
+
             <result name="success" type="redirectAction">
                 <param name="actionName">${eventId}</param>
             </result>
             <result name="input">/WEB-INF/events/passcode.jsp</result>
 		</action>
-		
+
 		<!-- Questionnaire -->
 		<action name="editQuestionnaire" method="edit" class="in.partake.controller.action.QuestionnaireController">
 			<interceptor-ref name="authenticateStack" />
@@ -376,13 +376,13 @@
 			</result>
 			<result name="input">/WEB-INF/events/questionnaire/edit.jsp</result>
 		</action>
-		
+
 		<!-- Event Participants -->
 		<!-- URL はきれいにしたいな... -->
 		<action name="participants/*" method="showCSV" class="in.partake.controller.EventParticipantsController">
             <interceptor-ref name="partakeStack" />
             <param name="eventId">{1}</param>
-            
+
             <result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
                 <param name="contentDisposition">attachment</param>
@@ -390,20 +390,20 @@
                 <param name="allowCaching">true</param>
             </result>
         </action>
-        
+
         <action name="showParticipants/*" method="showParticipants" class="in.partake.controller.EventParticipantsController">
             <interceptor-ref name="partakeStack" />
             <param name="eventId">{1}</param>
-            
+
             <result name="success">/WEB-INF/events/participants/show.jsp</result>
         </action>
-        
+
         <action name="printParticipants/*" method="showParticipants" class="in.partake.controller.EventParticipantsController">
             <interceptor-ref name="partakeStack" />
             <param name="eventId">{1}</param>
-                     
+
             <result name="success">/WEB-INF/events/participants/print.jsp</result>
-        </action>        
+        </action>
 
         <action name="makeAttendantVIP" method="makeAttendantVIP" class="in.partake.controller.EventParticipantsController">
             <interceptor-ref name="checkTokenStack" />
@@ -417,11 +417,11 @@
             	<param name="actionName">showParticipants/${eventId}</param>
             </result>
         </action>
-        
-		
+
+
 		<!-- Event Show -->
 		<action name="*" method="show" class="in.partake.controller.EventsController">
-			<interceptor-ref name="partakeStack"/>		
+			<interceptor-ref name="partakeStack"/>
 
 	        <param name="eventId">{1}</param>
             <result name="success">/WEB-INF/events/show.jsp</result>
@@ -432,13 +432,13 @@
 			</result>
 		</action>
 	</package>
-		
+
 	<package name="feed" namespace="/feed" extends="partake-default">
 		<action name="all" method="feedRecentEvents" class="in.partake.controller.EventsFeedController">
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
                 <param name="bufferSize">1M</param>
-                <param name="allowCaching">true</param>			
+                <param name="allowCaching">true</param>
 			</result>
 		</action>
 
@@ -447,7 +447,7 @@
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
                 <param name="bufferSize">1M</param>
-                <param name="allowCaching">true</param>			
+                <param name="allowCaching">true</param>
 			</result>
 		</action>
 
@@ -456,7 +456,7 @@
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
                 <param name="bufferSize">1M</param>
-                <param name="allowCaching">true</param>			
+                <param name="allowCaching">true</param>
 			</result>
 		</action>
 
@@ -465,11 +465,12 @@
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
                 <param name="bufferSize">1M</param>
-                <param name="allowCaching">true</param>			
+                <param name="allowCaching">true</param>
 			</result>
 		</action>
 
-		<action name="upcoming" method="feedUpcomingEvents" class="in.partake.controller.EventsFeedController">
+		<action name="upcoming/*" method="feedUpcomingEvents" class="in.partake.controller.EventsFeedController">
+			<param name="category">{1}</param>
 			<result name="success" type="stream">
 				<param name="contentType">${contentType}</param>
 				<param name="bufferSize">1M</param>
@@ -477,5 +478,5 @@
 			</result>
 		</action>
 	</package>
-	
+
 </struts>

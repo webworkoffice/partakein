@@ -18,7 +18,7 @@
 
 <ul>
     <li><a href="<%= request.getContextPath() %>/feed/all">全て</a></li>
-    <li><a href="<%= request.getContextPath() %>/feed/upcoming">近日開催</a></li>
+    <li><a href="<%= request.getContextPath() %>/feed/upcoming/all">近日開催</a></li><%-- TODO 「新着イベント」と「近日開催されるイベント」は分けて配置すべき？ --%>
     <% for (KeyValuePair kv : EventCategory.CATEGORIES) { %>
     <li><a href="<%= request.getContextPath() %>/feed/category/<%= kv.getKey() %>"><%= kv.getValue() %></a></li>
     <% } %>
