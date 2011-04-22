@@ -1179,6 +1179,10 @@ ul.actionMessage, ul.errorMessage, ul.warningMessage {
  * dialog
  * ==================================================================
  */
+.ui-widget-overlay {
+    background: url("images/ui-bg_diagonals-thick_20_666666_40x40.png") repeat scroll 50% 50% #666666;
+    opacity: 0.35;
+}
 #openid-dialog {
     margin:2px 10px;
 }
@@ -1194,7 +1198,7 @@ ul.actionMessage, ul.errorMessage, ul.warningMessage {
 }
 
 #openid-dialog fieldset {
-	font-weight:normal; http://localhost:8080/events/08434810-f2fe-45a7-8950-556374f6c806#
+	font-weight:normal;
     font-size:0.80em;
 }
 
