@@ -44,6 +44,10 @@ public class DebugAction extends PartakeAPIActionSupport {
         return renderError("intentional error response");
     }
     
+    /**
+     * 常に <code>{ "result": "error", "reason": "intentional invalid response" }</code> を返す。
+     * ステータスは 400 を返す。 
+     */
     public String invalid() {
         return renderInvalid("intentional invalid response");
     }
