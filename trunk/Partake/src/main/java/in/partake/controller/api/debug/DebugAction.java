@@ -37,10 +37,14 @@ public class DebugAction extends PartakeAPIActionSupport {
     }
     
     /**
-     * 常に <code>{ "result": "error", "reason": "intentional error" }</code> を返す。
+     * 常に <code>{ "result": "error", "reason": "intentional error response" }</code> を返す。
      * ステータスは 500 を返す。 
      */
     public String error() {
-        return renderError("intentional error");
+        return renderError("intentional error response");
+    }
+    
+    public String invalid() {
+        return renderInvalid("intentional invalid response");
     }
 }
