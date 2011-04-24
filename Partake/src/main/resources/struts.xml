@@ -15,6 +15,10 @@
 	<constant name="struts.action.extension" value=",action,ics,csv" />
 
 	<package name="partake-default" extends="struts-default">
+		<result-types>
+			<result-type name="partake-stream" class="in.partake.controller.PartakeStreamResult" />
+		</result-types>
+	
 		<interceptors>
 			<interceptor name="utf8encoding"     class="in.partake.controller.interceptor.UTF8EncodingInterceptor" />
 	    	<interceptor name="authenticate"     class="in.partake.controller.interceptor.LoginRequiredInterceptor" />
@@ -78,7 +82,14 @@
                 <param name="contentDisposition">${contentDisposition}</param>
                 <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param>			
-			</result>			
+			</result>
+			<result name="json" type="partake-stream">
+                <param name="contentType">text/json; charset=utf-8</param>
+                <param name="bufferSize">20K</param>
+                <param name="allowCaching">false</param>
+                <param name="status">${status}</param>
+                <param name="headers">${headers}</param>
+            </result>			
 		</global-results>
 	</package>
 
