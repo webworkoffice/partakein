@@ -22,7 +22,37 @@ public class DebugAPITest extends APIControllerTest {
 
         Assert.assertEquals(200, response.getStatus());
     }
+    
+    @Test
+    public void testEchoWithData() throws Exception {
+        ActionProxy proxy = getActionProxy("/debug/echo");
+        
+        addParameter(proxy, "data", "test");
 
+        String r = proxy.execute();
+        Assert.assertEquals("json", r);
+
+        JSONObject obj = getJSON(proxy);
+        Assert.assertEquals("ok", obj.get("result"));
+        Assert.assertEquals("test", obj.get("data"));
+
+        Assert.assertEquals(200, response.getStatus());        
+    }
+
+    @Test
+    public void testEchoWithoutData() throws Exception {
+        ActionProxy proxy = getActionProxy("/debug/echo");
+        
+        String r = proxy.execute();
+        Assert.assertEquals("json", r);
+
+        JSONObject obj = getJSON(proxy);
+        Assert.assertEquals("invalid", obj.get("result"));
+
+        Assert.assertEquals(400, response.getStatus());        
+    }
+
+    
     @Test
     public void testSuccessIfLoginWhenLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/debug/successIfLogin");

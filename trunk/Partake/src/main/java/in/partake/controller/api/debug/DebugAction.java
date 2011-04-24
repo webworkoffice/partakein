@@ -1,5 +1,6 @@
 package in.partake.controller.api.debug;
 
+import net.sf.json.JSONObject;
 import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.UserEx;
 
@@ -19,6 +20,24 @@ public class DebugAction extends PartakeAPIActionSupport {
      */
     public String success() {
         return renderOK();
+    }
+    
+    
+    /**
+     * data を読んで、それを echo して返す。
+     * data があれば 200 を返し、なければ 400 を返す。
+     * @return
+     */
+    public String echo() {
+        String data = getParameter("data");
+        if (data != null) {
+            JSONObject obj = new JSONObject();
+            obj.put("data", data);
+            
+            return renderOK(obj);
+        } else {
+            return renderInvalid("parameter 'data' is not set.");
+        }
     }
     
     /**
