@@ -20,7 +20,7 @@ public abstract class APIControllerTest extends PartakeControllerTestCase {
     @BeforeClass
     public static void setUpOnce() throws Exception {
         PartakeProperties.get().reset("jpa");        
-        createFixtures();
+        createDefaultFixtures();
     }    
 
     /**

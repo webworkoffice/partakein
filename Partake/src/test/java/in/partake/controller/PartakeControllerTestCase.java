@@ -25,7 +25,7 @@ import com.opensymphony.xwork2.ActionProxy;
 @RunWith(JUnit4.class)
 public class PartakeControllerTestCase extends StrutsTestCase {
 
-    public static void createFixtures() throws Exception {
+    public static void createDefaultFixtures() throws Exception {
         // testUser という id の user がいることを保証する。
         User user = new User("testUser", 1, new Date(), null);
         TwitterLinkage linkage = new TwitterLinkage(1, "testUser", "testUser", "accessToken", "accessTokenSecret", "http://www.example.com/", "testUser");
