@@ -496,4 +496,9 @@
 		</action>
 	</package>
 
+	<package name="debug" namespace="/debug" extends="partake-default">
+		<action name="success" method="success" class="in.partake.controller.api.debug.DebugAction" />
+		<action name="successIfLogin" method="successIfLogin" class="in.partake.controller.api.debug.DebugAction" />
+		<action name="error" method="error" class="in.partake.controller.api.debug.DebugAction" />
+	</package>
 </struts>
