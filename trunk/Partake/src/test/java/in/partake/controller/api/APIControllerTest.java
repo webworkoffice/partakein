@@ -15,15 +15,6 @@ import com.opensymphony.xwork2.ActionProxy;
 public abstract class APIControllerTest extends PartakeControllerTestCase {
 
     /**
-     * TODO: とりあえず JPA を指定します。後で変更できるようにする。
-     */
-    @BeforeClass
-    public static void setUpOnce() throws Exception {
-        PartakeProperties.get().reset("jpa");        
-        createDefaultFixtures();
-    }    
-
-    /**
      * proxy から JSON を取得する。取得できなかった場合は null を返す。
      * @param proxy
      * @return
