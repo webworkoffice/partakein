@@ -13,9 +13,9 @@ import net.sf.json.JSONObject;
 public class PartakeAPIActionSupport extends PartakeActionSupport {
     private static final long serialVersionUID = 1L;
 
-    protected InputStream stream;
-    protected int status;
-    protected Map<String, String> headers;
+    private InputStream stream;
+    private int status;
+    private Map<String, String> headers;
         
     public PartakeAPIActionSupport() {
         this.status = 200;
@@ -47,7 +47,8 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     }
     
     /**
-     * <code>{ "result": "ok"; }</code> をレスポンスとして返す。
+     * <code>{ "result": "ok" }</code> をレスポンスとして返す。
+     * with status code 200.
      * @return
      */
     public String renderOK() {
@@ -57,13 +58,27 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     }
     
     /**
-     * <code>{ "result": "error"; "reason": reason }</code> をレスポンスとして返す。
+     * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
+     * ステータスコードは 500 を返す。
      */
     public String renderError(String reason) {
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
+        obj.put("reason", reason); 
         this.status = 500;
         return renderJSON(obj);
+    }
+    
+    /**
+     * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
+     * ステータスコードは 400 を返す。
+     */
+    public String renderInvalid(String reason) {
+        JSONObject obj = new JSONObject();
+        obj.put("result", "invalid");
+        obj.put("reason", reason); 
+        this.status = 400;
+        return renderJSON(obj);        
     }
     
     @Override
