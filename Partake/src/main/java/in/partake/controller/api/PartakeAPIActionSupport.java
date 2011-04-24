@@ -52,7 +52,18 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      * @return
      */
     public String renderOK() {
-        JSONObject obj = new JSONObject();
+        return renderOK(new JSONObject());
+    }
+    
+    /**
+     * obj に result: ok を追加して返す。obj に result が既に含まれていれば RuntimeException を投げる。
+     * @param obj
+     * @return
+     */
+    public String renderOK(JSONObject obj) {
+        if (obj.containsKey("result")) {
+            throw new RuntimeException("obj should not contain result");
+        }
         obj.put("result", "ok");
         return renderJSON(obj);
     }

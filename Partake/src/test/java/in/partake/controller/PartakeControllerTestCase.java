@@ -55,9 +55,14 @@ public class PartakeControllerTestCase extends StrutsTestCase {
         if (proxy == null) { return null; }
 
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
+        
         if (actionContext.getSession() == null) {
             Map<String, Object> session = new HashMap<String, Object>();
             actionContext.setSession(session);
+        }
+        if (actionContext.getParameters() == null) {
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            actionContext.setParameters(parameters);
         }
         
         return proxy;
@@ -66,7 +71,6 @@ public class PartakeControllerTestCase extends StrutsTestCase {
     /** log in した状態にする */
     protected void login(ActionProxy proxy) throws DAOException {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
-        
         assert actionContext.getSession() != null;
         
         UserEx user = UserService.get().getUserExById("testUser");
@@ -74,5 +78,12 @@ public class PartakeControllerTestCase extends StrutsTestCase {
             throw new RuntimeException();
         }
         actionContext.getSession().put(Constants.ATTR_USER, user);
+    }
+    
+    protected void addParameter(ActionProxy proxy, String key, Object obj) throws DAOException {
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();        
+        assert actionContext.getSession() != null;
+
+        actionContext.getParameters().put(key, obj);
     }
 }
