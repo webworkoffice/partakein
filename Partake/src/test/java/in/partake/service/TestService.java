@@ -5,10 +5,8 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
-import in.partake.resource.PartakeProperties;
 
 import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
 
 /**
  * test 用の関数が登録された
