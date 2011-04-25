@@ -42,6 +42,9 @@ public class EventSearchTest extends StrutsTestCase {
 		Assert.assertEquals(Action.INPUT, controller.search());
 	}
 
+	/**
+	 * 存在しないソート順を指定して検索した場合、スコア順にソートされて返却される
+	 */
 	public void testToUseUnknownSortOrder() {
 		request.setParameter("sortOrder", "unknown");
 		ActionProxy proxy = getActionProxy("/events/search");
@@ -49,6 +52,7 @@ public class EventSearchTest extends StrutsTestCase {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> requestMap = new HashMap<String, Object>(request.getParameterMap());
 		controller.setRequest(requestMap);
-		Assert.assertEquals(Action.INPUT, controller.search());
+		Assert.assertEquals(Action.SUCCESS, controller.search());
+		// TODO スコア順にソートされていることを確認
 	}
 }
