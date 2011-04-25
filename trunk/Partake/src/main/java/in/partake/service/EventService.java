@@ -184,7 +184,7 @@ public final class EventService extends PartakeService {
      * @throws DAOException
      * @throws ParseException
      */
-    public List<Event> search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws DAOException, ParseException {
+    public List<Event> search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws DAOException, ParseException, IllegalArgumentException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
@@ -1017,7 +1017,7 @@ public final class EventService extends PartakeService {
             newEnrollment.setModifiedAt(new Date());
         }
 
-        // 
+        //
         if (status != null) {
             IEventActivityAccess eaa = factory.getEventActivityAccess();
             UserEx user = getUserEx(con, userId);
@@ -1034,7 +1034,7 @@ public final class EventService extends PartakeService {
             case NOT_ENROLLED:  title = user.getScreenName() + " さんはもう参加していません"; break;
             default:            title = user.getScreenName() + " さんが不明なステータスになっています"; break; // TODO: :-P
             }
-            
+
             String content = String.format("<p>詳細は <a href=\"%s\">%s</a> をごらんください。</p>", event.getEventURL(), event.getEventURL());
             eaa.put(con, new EventActivity(eaa.getFreshId(con), eventId, title, content, new Date()));
         }
