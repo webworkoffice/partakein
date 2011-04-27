@@ -2,14 +2,11 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dto.TwitterLinkage;
-import in.partake.model.dto.User;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.TestService;
 import in.partake.service.UserService;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,17 +33,9 @@ public class PartakeControllerTestCase extends StrutsTestCase {
     @BeforeClass
     public static void setUpOnce() throws Exception {
         PartakeProperties.get().reset("jpa");        
-        createDefaultFixtures();
+        TestService.get().setDefaultFixtures();
     }    
 
-    public static void createDefaultFixtures() throws Exception {
-        // testUser という id の user がいることを保証する。
-        User user = new User("testUser", 1, new Date(), null);
-        TwitterLinkage linkage = new TwitterLinkage(1, "testUser", "testUser", "accessToken", "accessTokenSecret", "http://www.example.com/", "testUser");
-        
-        TestService.get().createUser(user, linkage);
-    }    
-    
     @Override
     @Before
     public void setUp() throws Exception {
@@ -60,7 +49,9 @@ public class PartakeControllerTestCase extends StrutsTestCase {
     }
 
     /**
-     * action proxy を取得し、session がなければ付与する。
+     * action proxy を取得し、
+     *  1) session がなければ付与する。
+     *  2) parameters がなければ付与する。
      */
     @Override
     protected ActionProxy getActionProxy(String uri) {
@@ -81,7 +72,7 @@ public class PartakeControllerTestCase extends StrutsTestCase {
         return proxy;
     }
     
-    /** log in した状態にする */
+    /** testUser で log in した状態にする */
     protected void login(ActionProxy proxy) throws DAOException {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         assert actionContext.getSession() != null;

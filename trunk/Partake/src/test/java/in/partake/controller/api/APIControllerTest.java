@@ -1,11 +1,8 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeControllerTestCase;
-import in.partake.resource.PartakeProperties;
 
 import java.io.IOException;
-
-import org.junit.BeforeClass;
 
 import net.sf.json.JSONObject;
 
