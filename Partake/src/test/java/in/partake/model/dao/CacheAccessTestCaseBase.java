@@ -3,12 +3,15 @@ package in.partake.model.dao;
 import java.util.Date;
 
 import in.partake.model.dto.CacheData;
+import in.partake.model.fixture.CacheTestDataProvider;
 import in.partake.util.PDate;
 
 import org.junit.Assert;
 import org.junit.Before;
 
 public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase<ICacheAccess, CacheData, String> {
+    private CacheTestDataProvider provider;
+    
     private Date oneHourAfter() {
         return new Date(new Date().getTime() + 3600 * 1000);
     }
@@ -19,17 +22,7 @@ public abstract class CacheAccessTestCaseBase extends AbstractDaoTestCaseBase<IC
     
     @Override
     protected CacheData create(long pkNumber, String pkSalt, int objNumber) {
-        if (objNumber == 0) {
-            int N = 1024 * 1024;
-            byte[] data = new byte[N];
-            for (int i = 0; i < N; ++i) {
-                data[i] = (byte)(i % N);
-            }
-            return new CacheData(pkSalt + pkNumber, data, new Date(Long.MAX_VALUE));
-
-        } else {
-            return new CacheData(pkSalt + pkNumber, new byte[] { 1, 2, (byte)objNumber }, new Date(Long.MAX_VALUE));
-        }
+        return provider.create(pkNumber, pkSalt, objNumber);
     }
         
     @Before
