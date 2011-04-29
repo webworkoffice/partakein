@@ -24,7 +24,9 @@ public class AttendanceAction extends PartakeAPIActionSupport {
         if (eventId == null) { return renderInvalid("eventId should be specified"); }
         
         String status = getParameter("status");
-        if (status == null) { return renderInvalid("status should be specified"); }
+        if (status == null || !AttendanceStatus.isValueOf(status)) {
+            return renderInvalid("status should be specified");
+        }
         
         EventEx event = EventService.get().getEventExById(eventId);
         if (event == null) { return renderInvalid("invalid eventId was specified."); }
