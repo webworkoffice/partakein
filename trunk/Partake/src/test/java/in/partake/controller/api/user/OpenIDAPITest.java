@@ -6,6 +6,7 @@ import in.partake.controller.api.APIControllerTest;
 import in.partake.service.UserService;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -65,6 +66,7 @@ public class OpenIDAPITest extends APIControllerTest {
 
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("invalid", obj.get("result"));
+        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
 
         Assert.assertEquals(400, response.getStatus());
     }

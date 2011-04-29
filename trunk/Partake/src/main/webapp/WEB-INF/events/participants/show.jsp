@@ -56,7 +56,7 @@
     		"userId": userId,
     		"status": status
     	};
-    	$.post("<%= request.getContextPath() %>/api/changeAttendance", map)
+    	$.post("<%= request.getContextPath() %>/api/attendance/change", map)
     	    .error(function(data) {
                 $("#attendance-status-" + userId).html("保存時にエラーが発生しました");    	    	
             })

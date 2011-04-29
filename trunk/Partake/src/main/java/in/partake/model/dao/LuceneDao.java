@@ -217,6 +217,23 @@ public class LuceneDao {
 		}
 	}
 
+	/**
+	 * Lucene index を全て捨てる
+	 * @throws DAOException
+	 */
+	public void truncate() throws DAOException {
+	    try {
+           indexWriter.deleteAll();
+           indexWriter.commit();
+           reset();
+        } catch (CorruptIndexException e) {
+            throw new DAOException(e);
+        } catch (IOException e) {
+            throw new DAOException(e);
+        }
+
+	}
+	
 
 	/**
      * When index is changed, reset() should be called.

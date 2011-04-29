@@ -554,10 +554,13 @@ public final class EventService extends PartakeService {
         return result;
     }
 
+    // TODO: this function is not thread safe?
     public void recreateEventIndex() throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
+            LuceneDao.get().truncate();
+            
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
             while (it.hasNext()) {
                 Event event = it.next();

@@ -41,16 +41,6 @@ public abstract class AbstractPartakeModelTest<T extends PartakeModel<?>> {
 		}
 	}
 	
-	@Test
-	public final void testToJSONAndGetJSON() {
-	    final PartakeModel<?> expected = createModel();
-	    final PartakeModel<?> actual = createModel();
-	    actual.fromJSON(expected.toJSON());
-
-	    Assert.assertEquals(expected, actual);
-	}
-
-	
 	// ----------------------------------------------------------------------
 	
 	private Object[] createArgsFor(final Method m) {

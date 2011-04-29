@@ -55,12 +55,5 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
     public final T freeze() {
         this.frozen = true;
         return (T)this;
-    }
-    
-    // ----------------------------------------------------------------------
-    // json
-
-    // TODO: these are should be abstract later.
-    protected String toJSON() { return ""; }
-    protected T fromJSON(String json) { return null; }
+    }    
 }
