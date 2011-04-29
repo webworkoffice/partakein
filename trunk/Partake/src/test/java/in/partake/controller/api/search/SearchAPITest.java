@@ -68,4 +68,6 @@ public class SearchAPITest extends APIControllerTest {
         proxy.execute();
         assertResultInvalid(proxy);
     }
+    
+    // TODO: もっとテストが必要
 }
