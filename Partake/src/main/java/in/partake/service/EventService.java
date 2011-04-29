@@ -560,7 +560,6 @@ public final class EventService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             LuceneDao.get().truncate();
-            
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
             while (it.hasNext()) {
                 Event event = it.next();
