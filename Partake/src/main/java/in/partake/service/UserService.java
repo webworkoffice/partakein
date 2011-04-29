@@ -1,11 +1,5 @@
 package in.partake.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -21,6 +15,13 @@ import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.util.PDate;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.http.AccessToken;
@@ -187,13 +188,29 @@ public final class UserService extends PartakeService {
         }
     }
     
-    public void removeOpenIDLinkage(String userId, String identifier) throws DAOException {
+    /**
+     * OpenID をデータベースから消去します。
+     * @param identifier
+     * @throws DAOException
+     */
+    public boolean removeOpenIDLinkage(String userId, String identifier) throws DAOException {
+        if (userId == null || identifier == null) { return false; }
+        
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            con.beginTransaction(); 
-            factory.getOpenIDLinkageAccess().remove(con, identifier);
-            con.commit();
+            con.beginTransaction();
+            
+            OpenIDLinkage linkage = factory.getOpenIDLinkageAccess().find(con, identifier);
+            if (linkage == null) { return false; }
+            
+            if (userId.equals(linkage.getUserId())) {
+                factory.getOpenIDLinkageAccess().remove(con, identifier);
+                con.commit();
+                return true;
+            } else {
+                return false;
+            }
         } finally {            
             con.invalidate();
         }         

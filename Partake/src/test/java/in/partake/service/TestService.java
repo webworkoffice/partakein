@@ -8,6 +8,7 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.fixture.CacheTestDataProvider;
+import in.partake.model.fixture.OpenIDLinkageTestDataProvider;
 import in.partake.model.fixture.TwitterLinkageTestDataProvider;
 import in.partake.model.fixture.UserTestDataProvider;
 
@@ -39,6 +40,7 @@ public final class TestService extends PartakeService {
             new CacheTestDataProvider().createFixtures(con, factory);
             new UserTestDataProvider().createFixtures(con, factory);
             new TwitterLinkageTestDataProvider().createFixtures(con, factory);
+            new OpenIDLinkageTestDataProvider().createFixtures(con, factory);            
             con.commit();
         } finally {
             con.invalidate();

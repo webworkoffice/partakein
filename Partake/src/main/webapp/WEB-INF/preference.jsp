@@ -41,7 +41,6 @@
         <jsp:param name="usesToken" value="true" />
     </jsp:include>
     
-    <%-- TODO: 現在結び付けられている OpenID を表示する --%>
     <h3><span class="accent">＞ </span>現在、次の URL と結び付けられています。</h3>
     <p>
     <%
@@ -50,7 +49,10 @@
         if (associatedOpenIds != null && !associatedOpenIds.isEmpty()) {
             %> <ul> <%
             for (String openid : associatedOpenIds) { %>
-                <li><%= openid %></li>
+                <li>
+                	<span><%= openid %></span>
+                	<span><a href="#" title="結びつけを解除する">[x]</a></span>
+                </li>
             <% } %>
             </ul>
     <% } %>
