@@ -1,6 +1,7 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeActionSupport;
+import in.partake.resource.I18n;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -79,6 +80,18 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
         this.status = 500;
         return renderJSON(obj);
     }
+
+    /**
+     * renderError(String) と同じだが、DB エラーの場合はこちらを使うこと。
+     * @return
+     */
+    public String renderDBError() {
+        JSONObject obj = new JSONObject();
+        obj.put("result", "error");
+        obj.put("reason", I18n.t(I18n.DATABASE_ERROR)); 
+        this.status = 500;
+        return renderJSON(obj);
+    }
     
     /**
      * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
@@ -96,6 +109,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     protected String renderLoginRequired() {
         JSONObject obj = new JSONObject();
         obj.put("result", "auth");
+        obj.put("reason", "login is required");
 
         this.status = 401;
         addHeader("WWW-Authenticate", "OAuth");

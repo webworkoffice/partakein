@@ -1,8 +1,10 @@
 package in.partake.controller.api.debug;
 
 import in.partake.controller.api.APIControllerTest;
+import in.partake.resource.I18n;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,6 +52,7 @@ public class DebugAPITest extends APIControllerTest {
         Assert.assertEquals("invalid", obj.get("result"));
 
         Assert.assertEquals(400, response.getStatus());        
+        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
     }
 
     
@@ -85,8 +88,22 @@ public class DebugAPITest extends APIControllerTest {
         
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("auth", obj.get("result"));
+        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
     }
 
+    @Test
+    public void testInvalid() throws Exception {
+        ActionProxy proxy = getActionProxy("/debug/invalid");
+        
+        proxy.execute();
+        
+        Assert.assertEquals(400, response.getStatus());
+        
+        JSONObject obj = getJSON(proxy);
+        Assert.assertEquals("invalid", obj.get("result"));        
+        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
+    }
+    
     @Test
     public void testError() throws Exception {
         ActionProxy proxy = getActionProxy("/debug/error");
@@ -97,5 +114,46 @@ public class DebugAPITest extends APIControllerTest {
         
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("error", obj.get("result"));
+        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
     }
+
+    @Test
+    public void testErrorException() throws Exception {
+        ActionProxy proxy = getActionProxy("/debug/errorException");
+        
+        proxy.execute();
+        
+        Assert.assertEquals(500, response.getStatus());
+        
+        JSONObject obj = getJSON(proxy);
+        Assert.assertEquals("error", obj.get("result"));
+        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
+    }
+
+    @Test
+    public void testErrorDB() throws Exception {
+        ActionProxy proxy = getActionProxy("/debug/errorDB");
+        
+        proxy.execute();
+        
+        Assert.assertEquals(500, response.getStatus());
+        
+        JSONObject obj = getJSON(proxy);
+        Assert.assertEquals("error", obj.get("result"));
+        Assert.assertEquals(I18n.t(I18n.DATABASE_ERROR), obj.get("reason"));
+    }
+    
+    @Test
+    public void testErrorDBException() throws Exception {
+        ActionProxy proxy = getActionProxy("/debug/errorDBException");
+        
+        proxy.execute();
+        
+        Assert.assertEquals(500, response.getStatus());
+        
+        JSONObject obj = getJSON(proxy);
+        Assert.assertEquals("error", obj.get("result"));
+        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
+    }
+
 }

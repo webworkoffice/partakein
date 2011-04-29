@@ -3,6 +3,7 @@ package in.partake.controller.api.debug;
 import net.sf.json.JSONObject;
 import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.UserEx;
+import in.partake.model.dao.DAOException;
 
 
 /**
@@ -54,7 +55,15 @@ public class DebugAction extends PartakeAPIActionSupport {
             return renderLoginRequired();
         }
     }
-    
+
+    /**
+     * 常に <code>{ "result": "error", "reason": "intentional invalid response" }</code> を返す。
+     * ステータスは 400 を返す。 
+     */
+    public String invalid() {
+        return renderInvalid("intentional invalid response");
+    }
+
     /**
      * 常に <code>{ "result": "error", "reason": "intentional error response" }</code> を返す。
      * ステータスは 500 を返す。 
@@ -62,12 +71,28 @@ public class DebugAction extends PartakeAPIActionSupport {
     public String error() {
         return renderError("intentional error response");
     }
+
+    /**
+     * RuntimeException が不意に起こった場合の対応をテスト
+     * @return
+     */
+    public String errorException() {
+        throw new RuntimeException("Some Error");
+    }
     
     /**
-     * 常に <code>{ "result": "error", "reason": "intentional invalid response" }</code> を返す。
-     * ステータスは 400 を返す。 
+     * データベースエラー。
+     * ステータスは 500 を返す。
      */
-    public String invalid() {
-        return renderInvalid("intentional invalid response");
+    public String errorDB() {
+        return renderDBError();
+    }
+    
+    /**
+     * DAOException が不意に起こった場合のテスト。
+     * @return
+     */
+    public String errorDBException() throws DAOException {
+        throw new DAOException();
     }
 }
