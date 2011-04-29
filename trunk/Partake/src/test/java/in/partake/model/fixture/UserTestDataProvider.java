@@ -17,5 +17,9 @@ public class UserTestDataProvider {
         
         // testUser という id の user がいることを保証する。
         dao.put(con, new User("testUser", 1, new Date(), null)); 
+
+        dao.put(con, new User("openid-remove-0", 1000, new Date(), null));
+        dao.put(con, new User("openid-remove-1", 1001, new Date(), null));
+        dao.put(con, new User("openid-remove-2", 1002, new Date(), null));
     }
 }

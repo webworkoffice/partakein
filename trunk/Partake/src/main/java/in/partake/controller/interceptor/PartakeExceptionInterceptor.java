@@ -2,6 +2,7 @@ package in.partake.controller.interceptor;
 
 import in.partake.controller.PartakeInvalidResultException;
 import in.partake.controller.PartakeResultException;
+import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -16,6 +17,8 @@ public class PartakeExceptionInterceptor extends AbstractInterceptor {
     public String intercept(ActionInvocation invocation) throws Exception {
         try {
             return invocation.invoke();
+        } catch (DAOException e) {
+            return "error";
         } catch (PartakeInvalidResultException e) {
             // invalid は redirect がはいるので、session に保持しておく
             final ActionContext context = invocation.getInvocationContext();

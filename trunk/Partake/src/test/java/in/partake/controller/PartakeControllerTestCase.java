@@ -74,12 +74,16 @@ public class PartakeControllerTestCase extends StrutsTestCase {
     
     /** testUser で log in した状態にする */
     protected void login(ActionProxy proxy) throws DAOException {
+        loginAs(proxy, "testUser");
+    }
+    
+    protected void loginAs(ActionProxy proxy, String userId) throws DAOException {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         assert actionContext.getSession() != null;
         
-        UserEx user = UserService.get().getUserExById("testUser");
+        UserEx user = UserService.get().getUserExById(userId);
         if (user == null) {
-            throw new RuntimeException();
+            throw new RuntimeException("No such user.");
         }
         actionContext.getSession().put(Constants.ATTR_USER, user);
     }

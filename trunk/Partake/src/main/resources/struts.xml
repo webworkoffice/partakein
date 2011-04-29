@@ -504,4 +504,8 @@
 		<action name="error" method="error" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="invalid" method="invalid" class="in.partake.controller.api.debug.DebugAction" />
 	</package>
+	
+	<package name="user-api" namespace="/api/user" extends="partake-default">
+		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.user.OpenIDAction" />
+	</package>
 </struts>
