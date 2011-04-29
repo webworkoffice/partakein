@@ -2,10 +2,8 @@ package in.partake.controller.api.debug;
 
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.fixture.TestDataProvider;
-import in.partake.resource.I18n;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,7 +16,7 @@ public class DebugAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/debug/success");
 
         proxy.execute();
-        assertOK(proxy);
+        assertResultOK(proxy);
     }
     
     @Test
@@ -27,7 +25,7 @@ public class DebugAPITest extends APIControllerTest {
         addParameter(proxy, "data", "test");
 
         proxy.execute();
-        assertOK(proxy);
+        assertResultOK(proxy);
 
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("test", obj.get("data"));
@@ -48,7 +46,7 @@ public class DebugAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         proxy.execute();
-        assertOK(proxy);
+        assertResultOK(proxy);
     }
     
     @Test

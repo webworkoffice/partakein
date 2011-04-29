@@ -1,12 +1,10 @@
 package in.partake.controller.api.user;
 
-import java.util.List;
-
 import in.partake.controller.api.APIControllerTest;
 import in.partake.service.UserService;
-import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,13 +19,8 @@ public class OpenIDAPITest extends APIControllerTest {
         loginAs(proxy, "openid-remove-0");
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-0");
         
-        String r = proxy.execute();
-        Assert.assertEquals("json", r);
-
-        JSONObject obj = getJSON(proxy);
-        Assert.assertEquals("ok", obj.get("result"));
-
-        Assert.assertEquals(200, response.getStatus());
+        proxy.execute();
+        assertResultOK(proxy);
         
         // Check the proxy is really removed.
         List<String> identifiers = UserService.get().getOpenIDIdentifiers("openid-remove-0");
@@ -43,13 +36,8 @@ public class OpenIDAPITest extends APIControllerTest {
         
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-1");
         
-        String r = proxy.execute();
-        Assert.assertEquals("json", r);
-
-        JSONObject obj = getJSON(proxy);
-        Assert.assertEquals("auth", obj.get("result"));
-
-        Assert.assertEquals(401, response.getStatus());
+        proxy.execute();
+        assertResultLoginRequired(proxy);
     }
 
     @Test
@@ -61,14 +49,8 @@ public class OpenIDAPITest extends APIControllerTest {
         
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-2");
         
-        String r = proxy.execute();
-        Assert.assertEquals("json", r);
-
-        JSONObject obj = getJSON(proxy);
-        Assert.assertEquals("invalid", obj.get("result"));
-        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
-
-        Assert.assertEquals(400, response.getStatus());
+        proxy.execute();
+        assertResultInvalid(proxy);
     }
 
 }
