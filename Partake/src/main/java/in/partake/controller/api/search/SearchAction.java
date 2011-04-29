@@ -129,7 +129,6 @@ public class SearchAction extends PartakeAPIActionSupport {
         
         try {
             int v = Integer.parseInt(maxNum);
-            System.out.println(v);
             if (v <= 0 || MAX_NUM < v) { return null; }
             
             return maxNum;
