@@ -38,7 +38,7 @@ public abstract class APIControllerTest extends PartakeControllerTestCase {
 
     // ----------------------------------------------------------------------
     
-    protected void assertOK(ActionProxy proxy) throws Exception {
+    protected void assertResultOK(ActionProxy proxy) throws Exception {
         Assert.assertEquals(200, response.getStatus());
         
         JSONObject obj = getJSON(proxy);

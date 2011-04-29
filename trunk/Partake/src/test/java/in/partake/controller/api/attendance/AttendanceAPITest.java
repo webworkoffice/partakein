@@ -29,7 +29,7 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "status", "present");
 
         proxy.execute();
-        assertOK(proxy);
+        assertResultOK(proxy);
         
         // Check status is changed.
         {
@@ -54,7 +54,7 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "status", "absent");
 
         proxy.execute();
-        assertOK(proxy);
+        assertResultOK(proxy);
         
         // Check status is changed.
         {
@@ -79,7 +79,7 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "status", "unknown");
 
         proxy.execute();
-        assertOK(proxy);
+        assertResultOK(proxy);
         
         // Check status is changed.
         {

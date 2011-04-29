@@ -23,6 +23,7 @@ public class SearchAPITest extends APIControllerTest {
         Assert.assertEquals("ok", obj.get("result"));
         
         // 任意のオーダーで Event が出力される。
+        throw new RuntimeException("Not implemented yet");
     }
         
     @Test
