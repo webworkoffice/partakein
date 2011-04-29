@@ -1,13 +1,11 @@
 package in.partake.service;
 
-import java.util.Date;
-
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dto.TwitterLinkage;
-import in.partake.model.dto.User;
 import in.partake.model.fixture.CacheTestDataProvider;
+import in.partake.model.fixture.EnrollmentTestDataProvider;
+import in.partake.model.fixture.EventTestDataProvider;
 import in.partake.model.fixture.OpenIDLinkageTestDataProvider;
 import in.partake.model.fixture.TwitterLinkageTestDataProvider;
 import in.partake.model.fixture.UserTestDataProvider;
@@ -40,8 +38,13 @@ public final class TestService extends PartakeService {
             new CacheTestDataProvider().createFixtures(con, factory);
             new UserTestDataProvider().createFixtures(con, factory);
             new TwitterLinkageTestDataProvider().createFixtures(con, factory);
-            new OpenIDLinkageTestDataProvider().createFixtures(con, factory);            
+            new OpenIDLinkageTestDataProvider().createFixtures(con, factory);
+            new EventTestDataProvider().createFixtures(con, factory);
+            new EnrollmentTestDataProvider().createFixtures(con, factory);
             con.commit();
+            
+            // create lucene search index
+            EventService.get().recreateEventIndex();
         } finally {
             con.invalidate();
         }

@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -204,6 +206,47 @@ public class Event extends PartakeModel<Event> {
     @Override
     public Event copy() {
         return new Event(this);
+    }
+    
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("shortId", shortId);
+        obj.put("title", title);
+        obj.put("summary", summary);
+        obj.put("category", category);
+        if (deadline != null) {
+            obj.put("deadline", deadline.getTime());
+        }
+        if (beginDate != null) {
+            obj.put("beginDate", beginDate.getTime());
+        }
+        if (beginDate != null) {
+            obj.put("endDate", endDate.getTime());
+        }
+        obj.put("capacity", capacity);
+        obj.put("url", url);
+        obj.put("place", place);
+        obj.put("address", address);
+        obj.put("description", description);
+        obj.put("hashTag", hashTag);
+        obj.put("ownerId", ownerId);
+        obj.put("managerScreenNames", managerScreenNames);
+        obj.put("foreImageId", foreImageId);
+        obj.put("backImageId", backImageId);
+        obj.put("isPrivate", isPrivate);
+        obj.put("passcode", passcode);
+        obj.put("isPreview", isPreview);
+        // obj.put("isRemoved", isRemoved);
+        if (createdAt != null) {
+            obj.put("createdAt", createdAt.getTime());
+        }
+        if (modifiedAt != null) {
+            obj.put("modofiedAt", modifiedAt.getTime());
+        }
+        obj.put("revision", revision);
+
+        return obj;
     }
     
     // ----------------------------------------------------------------------

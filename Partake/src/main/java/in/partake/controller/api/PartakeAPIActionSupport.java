@@ -115,6 +115,17 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
         addHeader("WWW-Authenticate", "OAuth");
         return renderJSON(obj);
     }
+
+    @Override
+    protected String renderForbidden() {
+        JSONObject obj = new JSONObject();
+        obj.put("result", "forbidden");
+        obj.put("reason", "forbidden action");
+
+        this.status = 403;
+        return renderJSON(obj);
+    }
+
     
     // ----------------------------------------------------------------------
     // 

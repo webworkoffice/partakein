@@ -8,15 +8,16 @@ import in.partake.model.dto.User;
 
 import java.util.Date;
 
-public class UserTestDataProvider {
-
+public class UserTestDataProvider extends TestDataProvider {
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
         
         IUserAccess dao = factory.getUserAccess();
         dao.truncate(con);
         
         // testUser という id の user がいることを保証する。
-        dao.put(con, new User("testUser", 1, new Date(), null)); 
+        dao.put(con, new User(USER_ID1, 1, new Date(), null)); 
+        dao.put(con, new User(USER_ID2, 2, new Date(), null)); 
+        dao.put(con, new User(USER_ID3, 3, new Date(), null)); 
 
         dao.put(con, new User("openid-remove-0", 1000, new Date(), null));
         dao.put(con, new User("openid-remove-1", 1001, new Date(), null));

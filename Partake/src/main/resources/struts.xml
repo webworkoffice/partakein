@@ -190,33 +190,6 @@
 		</action>
 	</package>
 
-	<!-- API. The default will be returned stream. -->
-	<package name="api" namespace="/api" extends="partake-default">
-       <global-results>
-            <result name="success" type="stream">
-                <param name="contentType">text/json; charset=utf-8</param>
-                <param name="bufferSize">20K</param>
-                <param name="allowCaching">false</param>
-            </result>
-            <result name="invalid" type="httpheader">
-                <param name="error">400</param>
-            </result>
-            <result name="prohibited" type="httpheader">
-                <param name="error">403</param>
-            </result>
-            <result name="notfound" type="httpheader">
-                <param name="error">404</param>
-            </result>
-            <result name="error" type="httpheader">
-                <param name="error">500</param>
-            </result>
-        </global-results>
-
-        <action name="changeAttendance" method="changeAttendance" class="in.partake.controller.APIController">
-            <interceptor-ref name="authenticateStack" />
-        </action>
-	</package>
-
 	<package name="admin" namespace="/admin" extends="partake-default">
         <action name="" method="index" class="in.partake.controller.AdministratorController">
             <interceptor-ref name="adminStack" />
@@ -521,8 +494,23 @@
 		<action name="errorDB" method="errorDB" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="errorDBException" method="errorDBException" class="in.partake.controller.api.debug.DebugAction" />
 	</package>
-	
+
+	<!-- User API -->	
 	<package name="user-api" namespace="/api/user" extends="partake-api-default">
 		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.user.OpenIDAction" />
-	</package>	
+	</package>
+
+	<!-- Event API -->	
+	<package name="event-api" namespace="/api/event" extends="partake-api-default">
+	</package>
+	
+	<!-- 検索 API -->	
+	<package name="search-api" namespace="/api/search" extends="partake-api-default">
+		<action name="" method="search" class="in.partake.controller.api.search.SearchAction" />
+	</package>
+
+	<!-- 出欠 API -->	
+	<package name="attendance-api" namespace="/api/attendance" extends="partake-api-default">
+		<action name="change" method="change" class="in.partake.controller.api.attendance.AttendanceAction" />
+	</package>
 </struts>

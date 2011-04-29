@@ -50,54 +50,6 @@ public class EventEx extends Event {
         return Collections.unmodifiableList(eventRelations);
     }
     
-    public String toJSON() {
-        JSONObject obj = new JSONObject();
-        obj.put("id", getId());
-        obj.put("shortId", getShortId());
-        obj.put("title", getTitle());
-        obj.put("summary", getSummary());
-        obj.put("category", getCategory());
-        obj.put("deadline", getDeadline() != null ? getDeadline().getTime() : null);
-        obj.put("beginDate", getBeginDate() != null ? getBeginDate().getTime() : null);
-        obj.put("endDate", getEndDate() != null ? getEndDate().getTime() : null);
-        obj.put("capacity", getCapacity());
-        obj.put("url", getUrl());
-        obj.put("place", getPlace());
-        obj.put("address", getAddress());
-        obj.put("description", getAddress());
-        obj.put("hashTag", getAddress());
-        obj.put("managerScreenNames", getManagerScreenNames());
-        
-        // TODO: Hmm...
-        
-//        @Column
-//        private String ownerId;
-//
-//        @Column
-//        private String foreImageId;
-//        @Column
-//        private String backImageId;
-//
-//        @Column
-//        private boolean isPrivate;  // true if the event is private.
-//        @Column
-//        private String passcode;    // passcode to show (if not public)
-//        
-//        @Column
-//        private boolean isPreview;    // true if the event is preview.
-//        @Column
-//        private boolean isRemoved;
-//        
-//        @Column
-//        private Date createdAt;     //
-//        @Column
-//        private Date modifiedAt;    //
-//        @Column
-//        private int revision;       // used for RSS.
-        
-        return obj.toString();
-    }
-    
     // ----------------------------------------------------------------------
     
     public boolean hasEndDate() {

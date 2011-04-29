@@ -17,6 +17,10 @@ public class EventCategory {
                     new KeyValuePair("others", "その他")
             ));
             
+    public static String getAllEventCategory() {
+        return "all";
+    }
+    
     public static boolean isValidCategoryName(String categoryName) {
         for (KeyValuePair kv : CATEGORIES) {
             if (kv.getKey().equals(categoryName)) { return true; }
