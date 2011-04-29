@@ -16,7 +16,7 @@ public class SearchAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/search");
 
         proxy.execute();
-        this.assertResultOK(proxy);
+        assertResultOK(proxy);
         
         JSONObject obj = getJSON(proxy);
         JSONArray events = obj.getJSONArray("events");
@@ -54,7 +54,7 @@ public class SearchAPITest extends APIControllerTest {
     @Test
     public void testToSeachWithInvalidMaxNum4() throws Exception {
         ActionProxy proxy = getActionProxy("/api/search");
-        addParameter(proxy, "maxNum", SearchAction.MAX_NUM + 1);
+        addParameter(proxy, "maxNum", String.valueOf(SearchAction.MAX_NUM + 1));
 
         proxy.execute();
         assertResultInvalid(proxy);
