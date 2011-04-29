@@ -495,7 +495,11 @@
 		<action name="errorDBException" method="errorDBException" class="in.partake.controller.api.debug.DebugAction" />
 	</package>
 
-	<!-- User API -->	
+	<package name="api" namespace="/api" extends="partake-api-default">
+		<action name="search" method="search" class="in.partake.controller.api.search.SearchAction" />
+	</package>
+	
+	<!-- User API -->
 	<package name="user-api" namespace="/api/user" extends="partake-api-default">
 		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.user.OpenIDAction" />
 	</package>
@@ -504,10 +508,6 @@
 	<package name="event-api" namespace="/api/event" extends="partake-api-default">
 	</package>
 	
-	<!-- 検索 API -->	
-	<package name="search-api" namespace="/api/search" extends="partake-api-default">
-		<action name="" method="search" class="in.partake.controller.api.search.SearchAction" />
-	</package>
 
 	<!-- 出欠 API -->	
 	<package name="attendance-api" namespace="/api/attendance" extends="partake-api-default">
