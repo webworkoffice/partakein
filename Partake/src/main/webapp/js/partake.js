@@ -12,7 +12,7 @@ function $partake() {
  * @param {!String} status
  * 
  * for example
- * $partke.changeAttendance(...).success(function(json) {...} ).error(function(json) {...});
+ * $partake.changeAttendance(...).success(function(json) {...} ).error(function(json) {...});
  */
 $partke.changeAttendance = function(userId, eventId, status) {
 	var arg = {
