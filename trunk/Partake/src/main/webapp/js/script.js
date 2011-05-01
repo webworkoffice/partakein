@@ -17,7 +17,8 @@ function onReady() {
     		"signin-dialog": { width: 500, resizable: false },
     		"enroll-form": { width: 350, resizable: false },
     		"reserve-form": { width: 500, resizable: false },
-    		"cancel-form": { width: 350, resizable: false }
+    		"cancel-form": { width: 350, resizable: false },
+    		"change-comment-form": { width: 350, resiable: false }
     };
     
     function merge(option, mergingOption) {
