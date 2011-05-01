@@ -484,7 +484,7 @@
 	</package>
 
 	<!-- ここから下は Web API 実装 -->
-	<package name="debug" namespace="/debug" extends="partake-api-default">
+	<package name="debug-api" namespace="/api/debug" extends="partake-api-default">
 		<action name="success" method="success" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="echo" method="echo" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="successIfLogin" method="successIfLogin" class="in.partake.controller.api.debug.DebugAction" />
