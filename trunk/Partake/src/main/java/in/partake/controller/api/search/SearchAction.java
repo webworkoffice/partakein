@@ -27,7 +27,6 @@ public class SearchAction extends PartakeAPIActionSupport {
 
     public static final int MAX_NUM = 100;
     
-    // TODO: Not tested yet.
     public String search() throws DAOException {
         String query = getQuery();
         if (query == null) { return renderInvalid("query is invalid."); }
