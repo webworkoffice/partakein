@@ -26,10 +26,14 @@ public final class CSRFPrevention {
         return sessionToken;
     }
     
+    public boolean isValidSessionToken(String token) {
+        return sessionToken.equals(token);
+    }
+    
     public String issueOnetimeToken() {
         return Util.randomString(32);
     }
-
+    
     public synchronized boolean isConsumed(String token) {
         return consumedOnetimeTokens.contains(token);
     }

@@ -15,6 +15,8 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.Constants;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
+import in.partake.servlet.PartakeSession;
+import in.partake.util.SessionUtil;
 import in.partake.util.Util;
 import in.partake.util.security.CSRFPrevention;
 
@@ -44,6 +46,13 @@ public final class Helper {
         }
     }
 
+    public static String getSessionToken() {
+        PartakeSession session = SessionUtil.getSession();
+        if (session == null) { return null; }
+        return session.getCSRFPrevention().getSessionToken();
+    }
+    
+    // TODO: should be renamed to tokenTags()
     public static String token() {
         return sessionTokenInputTag() + onetimeTokenInputTag();
     }
@@ -70,7 +79,6 @@ public final class Helper {
 
         return onetimeInput;
     }
-
 
     /**
      * escapeHTML の短縮関数名

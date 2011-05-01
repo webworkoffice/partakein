@@ -3,6 +3,8 @@ package in.partake.controller;
 import in.partake.model.UserEx;
 import in.partake.resource.Constants;
 import in.partake.resource.I18n;
+import in.partake.servlet.PartakePageAttribute;
+import in.partake.servlet.PartakeSession;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -69,6 +71,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         this.session = session;
         
         // session に、自分自身を付け加えておく。
+        // TODO: これは session じゃなくて page attribute に付け加えるべき
         if (this.session != null) {
             this.session.put(Constants.ATTR_ACTION, this);
         }
@@ -179,6 +182,16 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
             
         this.session.put(key, null);
         return Collections.unmodifiableCollection(warningMessage);
+    }
+
+    public PartakeSession getPartakeSession() {
+        if (session == null) { return null; }
+        return (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
+    }
+    
+    public PartakePageAttribute getPartakePageAttribute() {
+        if (request == null) { return null; }
+        return (PartakePageAttribute) request.getAttribute(Constants.ATTR_PARTAKE_PAGE_ATTRIBUTE);
     }
 
     // ----------------------------------------------------------------------

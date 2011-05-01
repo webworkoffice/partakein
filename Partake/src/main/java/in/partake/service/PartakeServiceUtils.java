@@ -101,7 +101,6 @@ class PartakeServiceUtils {
                     String bitlyShortenedURL = Util.callBitlyShortenURL(event.getEventURL());
                     shortenedURLData = new ShortenedURLData(event.getEventURL(), "bitly", bitlyShortenedURL); 
                     factory.getURLShortenerAccess().put(con, shortenedURLData);
-                    
                 }
             } catch (BitlyException e) {
                 // TODO: debugging...

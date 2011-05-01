@@ -484,6 +484,10 @@
 	</package>
 
 	<!-- ここから下は Web API 実装 -->
+	<package name="api" namespace="/api" extends="partake-api-default">
+		<action name="search" method="search" class="in.partake.controller.api.search.SearchAction" />
+	</package>
+	
 	<package name="debug-api" namespace="/api/debug" extends="partake-api-default">
 		<action name="success" method="success" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="echo" method="echo" class="in.partake.controller.api.debug.DebugAction" />
@@ -493,10 +497,6 @@
 		<action name="errorException" method="errorException" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="errorDB" method="errorDB" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="errorDBException" method="errorDBException" class="in.partake.controller.api.debug.DebugAction" />
-	</package>
-
-	<package name="api" namespace="/api" extends="partake-api-default">
-		<action name="search" method="search" class="in.partake.controller.api.search.SearchAction" />
 	</package>
 	
 	<!-- User API -->

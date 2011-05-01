@@ -51,7 +51,7 @@
             for (String openid : associatedOpenIds) { %>
                 <li>
                 	<span><%= openid %></span>
-                	<span><a href="#" title="結びつけを解除する">[x]</a></span>
+                	<%--<span><a href="#" title="結びつけを解除する">[x]</a></span> --%>
                 </li>
             <% } %>
             </ul>

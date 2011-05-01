@@ -1,3 +1,4 @@
+<%@page import="in.partake.util.Util"%>
 <%@page import="in.partake.view.Helper"%>
 <%@page import="in.partake.model.dto.auxiliary.AttendanceStatus"%>
 <%@page import="in.partake.model.dto.EventRelation"%>
@@ -49,20 +50,15 @@
     	
     	document.makeAttendantVIPForm.submit();	
     }    
-    
-    function changeAttendance(eventId, userId, status) {
-    	var map = {
-    		"eventId": eventId,
-    		"userId": userId,
-    		"status": status
-    	};
-    	$.post("<%= request.getContextPath() %>/api/attendance/change", map)
-    	    .error(function(data) {
-                $("#attendance-status-" + userId).html("保存時にエラーが発生しました");    	    	
-            })
-            .success(function(data) {
-                $("#attendance-status-" + userId).html("保存しました");
-    		});
+
+    function changeAttendance(userId, eventId, status) {
+        $partake.changeAttendance(userId, eventId, status)
+        .success(function(json) {
+            $("#attendance-status-" + userId).html("保存しました");
+        })
+		.error(function(json) {
+        	$("#attendance-status-" + userId).html("保存時にエラーが発生しました");    	    	
+        })
     }
     
     </script>
@@ -130,9 +126,9 @@
 	        </ul>
         </td>
         <td class="print-del">
-	        <input type="radio" onchange="changeAttendance('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>', 'unknown')" name="present-<%= h(p.getUserId()) %>" value="unknown" <%= AttendanceStatus.UNKNOWN.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 未選択<br />
-	        <input type="radio" onchange="changeAttendance('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>', 'present')" name="present-<%= h(p.getUserId()) %>" value="present" <%= AttendanceStatus.PRESENT.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 出席
-	        <input type="radio" onchange="changeAttendance('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>', 'absent')" name="present-<%= h(p.getUserId()) %>" value="absent"   <%= AttendanceStatus.ABSENT.equals(p.getAttendanceStatus())  ? "checked" : "" %> /> 欠席<br />
+	        <input type="radio" onchange="changeAttendance('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'unknown')" name="present-<%= h(p.getUserId()) %>" value="unknown" <%= AttendanceStatus.UNKNOWN.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 未選択<br />
+	        <input type="radio" onchange="changeAttendance('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'present')" name="present-<%= h(p.getUserId()) %>" value="present" <%= AttendanceStatus.PRESENT.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 出席
+	        <input type="radio" onchange="changeAttendance('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'absent')" name="present-<%= h(p.getUserId()) %>" value="absent"   <%= AttendanceStatus.ABSENT.equals(p.getAttendanceStatus())  ? "checked" : "" %> /> 欠席<br />
             <span id="attendance-status-<%= h(p.getUserId()) %>"></span>	        	        
         </td>        
     </tr>
