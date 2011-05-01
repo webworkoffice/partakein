@@ -13,7 +13,7 @@ public class DebugAPITest extends APIControllerTest {
 
     @Test
     public void testSuccess() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/success");
+        ActionProxy proxy = getActionProxy("/api/debug/success");
 
         proxy.execute();
         assertResultOK(proxy);
@@ -21,7 +21,7 @@ public class DebugAPITest extends APIControllerTest {
     
     @Test
     public void testEchoWithData() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/echo");
+        ActionProxy proxy = getActionProxy("/api/debug/echo");
         addParameter(proxy, "data", "test");
 
         proxy.execute();
@@ -33,7 +33,7 @@ public class DebugAPITest extends APIControllerTest {
 
     @Test
     public void testEchoWithoutData() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/echo");
+        ActionProxy proxy = getActionProxy("/api/debug/echo");
         
         proxy.execute();
         assertResultInvalid(proxy);
@@ -42,7 +42,7 @@ public class DebugAPITest extends APIControllerTest {
     
     @Test
     public void testSuccessIfLoginWhenLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/successIfLogin");
+        ActionProxy proxy = getActionProxy("/api/debug/successIfLogin");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         proxy.execute();
@@ -51,7 +51,7 @@ public class DebugAPITest extends APIControllerTest {
     
     @Test
     public void testSuccessIfLoginWhenNotLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/successIfLogin");
+        ActionProxy proxy = getActionProxy("/api/debug/successIfLogin");
         
         // I don't care what proxy.execute returns.
         // However, http status code and header are tested.
@@ -61,7 +61,7 @@ public class DebugAPITest extends APIControllerTest {
 
     @Test
     public void testInvalid() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/invalid");
+        ActionProxy proxy = getActionProxy("/api/debug/invalid");
         
         proxy.execute();
         
@@ -71,7 +71,7 @@ public class DebugAPITest extends APIControllerTest {
     
     @Test
     public void testError() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/error");
+        ActionProxy proxy = getActionProxy("/api/debug/error");
         
         proxy.execute();
         assertResultError(proxy);        
@@ -79,7 +79,7 @@ public class DebugAPITest extends APIControllerTest {
 
     @Test
     public void testErrorException() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/errorException");
+        ActionProxy proxy = getActionProxy("/api/debug/errorException");
         
         proxy.execute();
         assertResultError(proxy);        
@@ -87,7 +87,7 @@ public class DebugAPITest extends APIControllerTest {
 
     @Test
     public void testErrorDB() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/errorDB");
+        ActionProxy proxy = getActionProxy("/api/debug/errorDB");
         
         proxy.execute();
         assertResultError(proxy);        
@@ -95,7 +95,7 @@ public class DebugAPITest extends APIControllerTest {
     
     @Test
     public void testErrorDBException() throws Exception {
-        ActionProxy proxy = getActionProxy("/debug/errorDBException");
+        ActionProxy proxy = getActionProxy("/api/debug/errorDBException");
         
         proxy.execute();
         assertResultError(proxy);        
