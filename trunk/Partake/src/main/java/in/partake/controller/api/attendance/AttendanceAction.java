@@ -11,6 +11,11 @@ import in.partake.service.EventService;
 public class AttendanceAction extends PartakeAPIActionSupport {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 出欠を変更します。
+     * @return
+     * @throws DAOException
+     */
     public String change() throws DAOException {
         UserEx user = getLoginUser();
         if (user == null) {
@@ -27,6 +32,12 @@ public class AttendanceAction extends PartakeAPIActionSupport {
         if (status == null || !AttendanceStatus.isValueOf(status)) {
             return renderInvalid("status should be specified");
         }
+        
+        // To prevent CSRF, we should check token.
+        String token = getParameter("sessionToken");
+        if (!getPartakeSession().getCSRFPrevention().isValidSessionToken(token)) {
+            return renderInvalid("Session token is invalid");
+        }        
         
         EventEx event = EventService.get().getEventExById(eventId);
         if (event == null) { return renderInvalid("invalid eventId was specified."); }

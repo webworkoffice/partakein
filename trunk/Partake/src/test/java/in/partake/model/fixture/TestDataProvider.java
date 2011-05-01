@@ -9,5 +9,8 @@ public class TestDataProvider {
     public static final String EVENT_ID1 = "event1";
     public static final String EVENT_ID2 = "event2";
     public static final String EVENT_ID3 = "event3";
+    public static final String EVENT_PRIVATE_ID1 = "event-private-id1";
+    public static final String EVENT_PRIVATE_ID2 = "event-private-id2";
+    public static final String EVENT_PRIVATE_ID3 = "event-private-id3";
 
 }
