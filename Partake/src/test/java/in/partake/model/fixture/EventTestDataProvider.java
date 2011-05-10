@@ -14,7 +14,16 @@ import in.partake.model.dto.Event;
  *
  */
 public class EventTestDataProvider extends TestDataProvider {
-
+	/**
+	 * <p>以下のtest用データがDatastoreにあることを保証します。
+	 * <ul>
+	 * <li>{@link TestDataProvider#EVENT_ID1}〜{@link TestDataProvider#EVENT_ID3}のEventIDを持つ公開イベント3つ
+	 * <li>{@link TestDataProvider#EVENT_PRIVATE_ID1}〜{@link TestDataProvider#EVENT_PRIVATE_ID3}のEventIDを持つ非公開イベント3つ
+	 * </ul>
+	 * @param con Datastoreへの接続
+	 * @param factory DAOファクトリクラスのインスタンス
+	 * @throws DAOException
+	 */
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
         IEventAccess dao = factory.getEventAccess();
         dao.truncate(con);

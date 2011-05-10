@@ -556,6 +556,7 @@ public final class EventService extends PartakeService {
 
     // TODO: this function is not thread safe?
     public void recreateEventIndex() throws DAOException {
+        logger.trace("start to recreate event index.");
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
@@ -577,6 +578,7 @@ public final class EventService extends PartakeService {
         } finally {
             con.invalidate();
         }
+        logger.trace("recreating event index is done.");
     }
 
     // ----------------------------------------------------------------------
