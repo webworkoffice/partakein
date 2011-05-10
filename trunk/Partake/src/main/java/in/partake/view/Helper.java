@@ -1,13 +1,5 @@
 package in.partake.view;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Map;
-
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
@@ -19,6 +11,15 @@ import in.partake.servlet.PartakeSession;
 import in.partake.util.SessionUtil;
 import in.partake.util.Util;
 import in.partake.util.security.CSRFPrevention;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
 import org.owasp.validator.html.AntiSamy;
@@ -310,5 +311,23 @@ public final class Helper {
     }
     public static void setCssVersion(String version) {
         cachedCssVersion = version;
+    }
+
+    public static String javascript(String... relativePaths) {
+        // TODO: すべてつなげて minify したものを作成し、それを常によむようにすると高速化されるので、そうしたい。
+        StringBuilder builder = new StringBuilder();
+        
+        String contextPath = ServletActionContext.getRequest().getContextPath();
+        for (String relativePath : relativePaths) {
+            String filePath = ServletActionContext.getServletContext().getRealPath(relativePath);
+            File file = new File(filePath);
+            if (!file.exists()) { continue; }
+            long time = file.lastModified();
+            
+            String absolutePath = String.format("%s%s", contextPath, relativePath);
+            builder.append(String.format("<script type=\"text/javascript\" src=\"%s?%ld\"></script>\n", h(absolutePath), time));                    
+        }
+        
+        return builder.toString();
     }
 }
