@@ -325,7 +325,7 @@ public final class EventService extends PartakeService {
 
             List<Enrollment> enrollments = factory.getEnrollmentAccess().findByUserId(con, userId);
             for (Enrollment enrollment : enrollments) {
-                if (enrollment == null) { continue; }
+                if (enrollment == null || enrollment.getStatus() == null || !enrollment.getStatus().isEnrolled()) { continue; }
                 Event e = factory.getEventAccess().find(con, enrollment.getEventId());
                 if (e == null) { continue; }
                 if (!e.getBeginDate().before(now)) {
