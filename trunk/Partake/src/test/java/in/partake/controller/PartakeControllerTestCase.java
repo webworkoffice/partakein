@@ -84,6 +84,14 @@ public class PartakeControllerTestCase extends StrutsTestCase {
         actionContext.getSession().put(Constants.ATTR_USER, user);
     }
     
+    /** logout する */
+    protected void logout(ActionProxy proxy) throws DAOException {
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();
+        assert actionContext.getSession() != null;
+        
+        actionContext.getSession().remove(Constants.ATTR_USER);
+    }
+    
     protected void addParameter(ActionProxy proxy, String key, Object obj) throws DAOException {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();        
         assert actionContext.getSession() != null;
