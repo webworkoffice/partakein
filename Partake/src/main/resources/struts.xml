@@ -506,6 +506,7 @@
 
 	<!-- Event API -->	
 	<package name="event-api" namespace="/api/event" extends="partake-api-default">
+		<action name="get" method="get" class="in.partake.controller.api.event.EventAction" />
 	</package>
 	
 
