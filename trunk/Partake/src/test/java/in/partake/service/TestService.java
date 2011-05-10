@@ -24,7 +24,7 @@ public final class TestService extends PartakeService {
     public static TestService get() {
         return instance;
     }
-    
+
     private TestService() {
     }
 
@@ -42,11 +42,10 @@ public final class TestService extends PartakeService {
             new EventTestDataProvider().createFixtures(con, factory);
             new EnrollmentTestDataProvider().createFixtures(con, factory);
             con.commit();
-            
-            // create lucene search index
-            EventService.get().recreateEventIndex();
         } finally {
             con.invalidate();
         }
-    }    
+        // create lucene search index
+        EventService.get().recreateEventIndex();
+    }
 }
