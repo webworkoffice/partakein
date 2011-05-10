@@ -53,7 +53,7 @@
 	<% if (!StringUtils.isEmpty(event.getSummary())) { %>
 		<meta name="description" content="<%= h(event.getSummary()) %>" />
 	<% } else { %>
-		<meta name="description" content="<%= h(Util.removeTags(event.getDescription())) %>" />
+		<meta name="description" content="<%= h(Util.shorten(Util.removeTags(event.getDescription()), 128)) %>" />
 	<% } %>
 	<title><%= h(event.getTitle()) %> - [PARTAKE]</title>
 
