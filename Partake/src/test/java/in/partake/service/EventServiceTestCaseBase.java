@@ -1,9 +1,17 @@
 package in.partake.service;
 
+import static me.prettyprint.cassandra.utils.StringUtils.bytes;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.fixture.TestDataProvider;
+import in.partake.model.fixture.UserTestDataProvider;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,8 +21,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
-
-import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 
 public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBase {
     private final EventService service = EventService.get();
@@ -248,4 +254,20 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
         }
         return services;
     }
+
+	@Test
+	public void testToFindCanceledEvent() throws DAOException {
+		TestService.get().setDefaultFixtures();
+
+		String userId = UserTestDataProvider.USER_ID1;
+		String eventId = TestDataProvider.EVENT_ID1;
+		assertThat(service.getEventById(eventId), is(not(nullValue())));
+
+		service.enroll(userId, eventId, ParticipationStatus.ENROLLED, "", false, false);
+		int enrolledEvents = service.getUnfinishedEnrolledEvents(userId).size();
+		service.enroll(userId, eventId, ParticipationStatus.CANCELLED, "", false, false);
+		assertThat(service.getUnfinishedEnrolledEvents(userId).size(), is(enrolledEvents - 1));
+		service.enroll(userId, eventId, ParticipationStatus.RESERVED, "", false, false);
+		assertThat(service.getUnfinishedEnrolledEvents(userId).size(), is(enrolledEvents));
+	}
 }
