@@ -1,4 +1,4 @@
-<%@page import="in.partake.view.Helper"%>
+<%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -19,15 +19,14 @@
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.model.dto.User"%>
 <%@page import="in.partake.model.dto.Event"%>
-<%@page import="in.partake.view.Helper"%>
 <%@page import="in.partake.util.Util"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.resource.Constants"%>
 
-<%@page import="static in.partake.view.Helper.h"%>
-<%@page import="static in.partake.view.Helper.cleanupHTML"%>
-<%@page import="static in.partake.view.Helper.escapeTwitterResponse"%>
+<%@page import="static in.partake.view.util.Helper.h"%>
+<%@page import="static in.partake.view.util.Helper.cleanupHTML"%>
+<%@page import="static in.partake.view.util.Helper.escapeTwitterResponse"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.EventRelationEx"%>
 

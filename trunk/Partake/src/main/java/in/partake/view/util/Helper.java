@@ -1,4 +1,4 @@
-package in.partake.view;
+package in.partake.view.util;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;

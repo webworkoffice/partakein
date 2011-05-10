@@ -26,7 +26,7 @@ import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
-import in.partake.view.Helper;
+import in.partake.view.util.Helper;
 
 public class EventsFeedController extends PartakeActionSupport {
 	private static final Logger LOGGER = Logger.getLogger(EventsFeedController.class);

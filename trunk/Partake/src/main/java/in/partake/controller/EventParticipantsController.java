@@ -157,7 +157,7 @@ public class EventParticipantsController extends PartakeActionSupport {
                 
                 String[] lst = new String[4];
                 lst[0] = user.getTwitterLinkage().getScreenName();
-                // TODO why don't you use in.partake.view.Helper.enrollmentStatus to get status?
+                // TODO why don't you use in.partake.view.util.Helper.enrollmentStatus to get status?
                 if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) {
                     lst[1] = "参加";
                 } else if (ParticipationStatus.RESERVED.equals(participation.getStatus())) {

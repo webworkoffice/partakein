@@ -1,7 +1,7 @@
 package in.partake.servlet.listener;
 
 import in.partake.daemon.TwitterDaemon;
-import in.partake.view.Helper;
+import in.partake.view.util.Helper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
