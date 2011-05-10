@@ -57,7 +57,7 @@ while (my $dir_name = readdir DIR) {
       # TODO exception handling
       opendir INNER_DIR, "." || die $!;
       while (my $testcasebase_name = readdir INNER_DIR) {
-        if (-f $testcasebase_name && $testcasebase_name =~ /.java$/ && $testcasebase_name !~ /^Abstract/) {
+        if (-f $testcasebase_name && $testcasebase_name =~ /.java$/ && $testcasebase_name !~ /^Abstract/ && not $testcasebase_name eq "TestService.java") {
           my $testcasebase_filename = $testcasebase_name;
           $testcasebase_filename =~ s/^(.*)[.].*$/$1/; # remove extension
           &create_testcase($testcasebase_filename, $dir_name);
