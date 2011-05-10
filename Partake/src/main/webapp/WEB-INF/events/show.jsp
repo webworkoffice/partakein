@@ -51,6 +51,11 @@
 	<% if (event.getFeedId() != null) { %>
 		<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed/event/<%= event.getFeedId() %>" />
 	<% } %>
+	<% if (!StringUtils.isEmpty(event.getSummary())) { %>
+		<meta name="description" content="<%= h(event.getSummary()) %>" />
+	<% } else { %>
+		<meta name="description" content="<%= h(Util.removeTags(event.getDescription())) %>" />
+	<% } %>
 	<title><%= h(event.getTitle()) %> - [PARTAKE]</title>
 
 <% if (event.getBackImageId() != null) { %>
