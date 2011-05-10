@@ -14,6 +14,7 @@ public class OpenIDLinkageTestDataProvider extends TestDataProvider {
         
         // testUser 
         dao.put(con, new OpenIDLinkage("http://www.example.com/testuser", USER_ID1));
+        dao.put(con, new OpenIDLinkage("http://www.example.com/testuser-alternative", USER_ID1));
         
         dao.put(con, new OpenIDLinkage("http://www.example.com/openid-remove-0", "openid-remove-0"));
         dao.put(con, new OpenIDLinkage("http://www.example.com/openid-remove-1", "openid-remove-1"));
