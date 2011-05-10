@@ -18,11 +18,11 @@ import org.apache.log4j.Logger;
  *
  */
 public final class TestService extends PartakeService {
-    private static TestService instance = new TestService();
-    private static Logger logger = Logger.getLogger(TestService.class);
+    private static TestService INSTANCE = new TestService();
+    private static Logger LOGGER = Logger.getLogger(TestService.class);
 
     public static TestService get() {
-        return instance;
+        return INSTANCE;
     }
 
     private TestService() {
@@ -30,7 +30,17 @@ public final class TestService extends PartakeService {
 
     // ----------------------------------------------------------------------
 
+    /**
+     * <p>test用のデータがDatastoreに存在することを保証する。作成されるデータは各Fixtureを参照。
+     * @see CacheTestDataProvider
+     * @see UserTestDataProvider
+     * @see TwitterLinkageTestDataProvider
+     * @see OpenIDLinkageTestDataProvider
+     * @see EventTestDataProvider
+     * @see EnrollmentTestDataProvider
+     */
     public void setDefaultFixtures() throws DAOException {
+        LOGGER.trace("TestService#setDefaultFixtures() is called, now start to create all fixtures.");
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
         try {
