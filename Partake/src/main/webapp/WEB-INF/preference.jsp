@@ -1,4 +1,4 @@
-<%@page import="in.partake.view.Helper"%>
+<%@page import="in.partake.view.util.Helper"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.controller.UsersPreferenceController"%>
 <%@page import="in.partake.model.UserEx"%>

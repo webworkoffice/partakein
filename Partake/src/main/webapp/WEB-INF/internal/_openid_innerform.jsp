@@ -1,4 +1,4 @@
-<%@page import="in.partake.view.Helper"%>
+<%@page import="in.partake.view.util.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 

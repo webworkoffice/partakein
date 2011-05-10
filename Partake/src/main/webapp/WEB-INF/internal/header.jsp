@@ -6,7 +6,7 @@
 <%@ page import="in.partake.resource.Constants"%>
 <%@ page import="in.partake.resource.I18n"%>
 <%@ page import="in.partake.util.Util"%>
-<%@ page import="static in.partake.view.Helper.h"%>
+<%@ page import="static in.partake.view.util.Helper.h"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 
 <%

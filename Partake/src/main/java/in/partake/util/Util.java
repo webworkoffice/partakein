@@ -1,7 +1,7 @@
 package in.partake.util;
 
 import in.partake.resource.PartakeProperties;
-import in.partake.view.Helper;
+import in.partake.view.util.Helper;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

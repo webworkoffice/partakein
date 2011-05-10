@@ -1,5 +1,5 @@
 <%@page import="in.partake.resource.PartakeProperties"%>
-<%@page import="in.partake.view.Helper"%>
+<%@page import="in.partake.view.util.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

@@ -1,4 +1,4 @@
-<%@page import="static in.partake.view.Helper.h"%>
+<%@page import="static in.partake.view.util.Helper.h"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
     

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 <%@page import="in.partake.resource.Constants"%>
-<%@page import="static in.partake.view.Helper.h"%>
+<%@page import="static in.partake.view.util.Helper.h"%>
 
 <html lang="ja">
 <head>

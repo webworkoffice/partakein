@@ -1,5 +1,5 @@
 <%@page import="in.partake.util.Util"%>
-<%@page import="in.partake.view.Helper"%>
+<%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.auxiliary.AttendanceStatus"%>
 <%@page import="in.partake.model.dto.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
@@ -11,7 +11,7 @@
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@page import="in.partake.model.dto.Message"%>
-<%@page import="static in.partake.view.Helper.h"%>
+<%@page import="static in.partake.view.util.Helper.h"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
