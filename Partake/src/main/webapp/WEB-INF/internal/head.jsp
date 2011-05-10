@@ -10,14 +10,17 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-<script type="text/javascript" src="<%= request.getContextPath() %>/js/jquery.openid.js"></script>
+<%= Helper.javascript("/js/jquery.openid.js", "/js/script.js", "/js/partake.js",
+        			  "/js/scrolltopcontrol.js", "/js/jquery.switchHat.js") %>
+<%-- <script type="text/javascript" src="<%= request.getContextPath() %>/js/jquery.openid.js"></script>
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/script.js"></script>
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/partake.js"></script>
+<script type="text/javascript" src="<%= request.getContextPath() %>/js/scrolltopcontrol.js"></script>
+<script type="text/javascript" src="<%= request.getContextPath() %>/js/jquery.switchHat.js"></script>
+--%>
 <script type="text/javascript">
 	$partake = createPartakeClient('<%= Helper.getSessionToken() %>');
 </script>
-<script type="text/javascript" src="<%= request.getContextPath() %>/js/scrolltopcontrol.js"></script>
-<script type="text/javascript" src="<%= request.getContextPath() %>/js/jquery.switchHat.js"></script>
 <link rel="shortcut icon" href="<%= request.getContextPath() %>/images/favicon.ico">
 
 <%-- if google analytics is installed, analytics code will be shown here. --%>
