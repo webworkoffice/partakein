@@ -1,7 +1,7 @@
 <%@page import="in.partake.view.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
-    
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -16,7 +16,7 @@
 <s:form method="post" action="passcode" id="passcode-checking-form">
 	<%= Helper.token() %>
     <s:hidden id="eventId" name="eventId" value="%{eventId}" />
-    <label for="passcode">パスコード:</label><s:textfield id="passcode-checking" name="passcode" label="Passcode"/><br />
+    <label for="passcode">パスコード:</label><s:textfield id="passcode-checking" name="passcode" label="Passcode" autofocus="autofocus" /><br />
     <s:submit />
 </s:form>
 
