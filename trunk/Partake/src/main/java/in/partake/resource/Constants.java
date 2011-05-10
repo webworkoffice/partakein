@@ -17,6 +17,8 @@ public final class Constants {
 
     // TODO: なんでこれ形式が統一されてないの？
     // TODO: あと、Attribute で渡して JSP で表示というのがださ過ぎるのでなんとかしたい。
+    // TODO: このあたりの定数は全て廃止し、PartakeSession 及び、ParatkePageAttribute に統合予定。
+    // また、View へのデータの渡し方も attribute 経由でなく、refine する予定。 
     
     // Session attribute keys
     public static final String ATTR_ACTION = "action-model"; // 
