@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
@@ -34,6 +35,7 @@ import org.owasp.validator.html.ScanException;
  * @author shinyak
  */
 public final class Helper {
+    private static final Logger LOGGER = Logger.getLogger(Helper.class);
     private static Policy antiSamyPolicy;
 
     static {
@@ -321,11 +323,14 @@ public final class Helper {
         for (String relativePath : relativePaths) {
             String filePath = ServletActionContext.getServletContext().getRealPath(relativePath);
             File file = new File(filePath);
-            if (!file.exists()) { continue; }
+            if (!file.exists() || !file.isFile()) {
+                LOGGER.warn(String.format("specified file(%s) doesn't exist. check argument(%s) and stored files.", filePath, relativePath));
+                continue;
+            }
             long time = file.lastModified();
             
             String absolutePath = String.format("%s%s", contextPath, relativePath);
-            builder.append(String.format("<script type=\"text/javascript\" src=\"%s?%ld\"></script>\n", h(absolutePath), time));                    
+            builder.append(String.format("<script type=\"text/javascript\" src=\"%s?%d\"></script>\n", h(absolutePath), time));
         }
         
         return builder.toString();
