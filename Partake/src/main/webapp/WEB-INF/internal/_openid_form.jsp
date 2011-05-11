@@ -14,9 +14,9 @@
 <%-- display: none をここにかくのは見苦しいのでなんとかしたい --%>
 <div id="signin-dialog" title="Sign in with OpenID" style="display: none">
 <div id="openid-dialog">
-<h1><img src="<%= request.getContextPath() %>/images/openidico.png" alt="" />
+<h2><img src="<%= request.getContextPath() %>/images/openidico.png" alt="" />
  OpenIDでログイン
-</h1>
+</h2>
 <p>なんらかの理由で Twitter でログインできない場合に、Open ID でもログインすることができます。</p>
 <p><span><span>T</span>witter ID と Open ID の 結び付け設定 はお済みですか？<br /></span>
 まだの方は、Twitterでログインして設定してください。<br />
