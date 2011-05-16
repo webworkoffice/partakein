@@ -1,8 +1,6 @@
 package in.partake.model.dto;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
@@ -113,35 +111,6 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
 		Assert.assertFalse(new Event(source).isFrozen());
 	}
 
-	// TODO PartakeModelの全サブクラスについて行うべきテスト、そのうち適切な場所に移動すること
-	@Test
-	public void testSetterOfFrozenInstance() throws IllegalAccessException, InvocationTargetException {
-		for (Method method : Event.class.getMethods()) {
-			if (!method.getName().startsWith("set")) continue;
-			Class<?>[] args = method.getParameterTypes();
-			if (args.length != 1) {
-				Assert.fail("引数が2つ以上のセッターはテスト対象外");
-			}
-
-			Event event = new Event();
-			Assert.assertFalse(event.isFrozen());
-			invokeMethod(method, args[0], event);
-
-			event.freeze();
-			Assert.assertTrue(event.isFrozen());
-			try {
-				invokeMethod(method, args[0], event);
-				Assert.fail("UnsupportedOperationException should be throwed.");
-			} catch (InvocationTargetException e) {
-				if (e.getCause().getClass().equals(UnsupportedOperationException.class)) {
-					// OK, it's the expected behavior.
-				} else {
-					throw e;
-				}
-			}
-		}
-	}
-	
 	@Test
 	public void testIsManager() throws Exception {
 	    Event event = new Event();
@@ -196,28 +165,6 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
         Assert.assertFalse(event.isManager("A"));
         Assert.assertFalse(event.isManager("B"));
         Assert.assertFalse(event.isManager("manager"));
-	}
-	
-
-	private void invokeMethod(Method method, Class<?> arg, Event source)
-			throws IllegalAccessException, InvocationTargetException {
-		if (arg.isPrimitive()) {
-			if (arg.equals(int.class)) {
-				method.invoke(source, 0);
-			} else if (arg.equals(long.class)) {
-				method.invoke(source, 0L);
-			} else if (arg.equals(float.class)) {
-				method.invoke(source, 0.0f);
-			} else if (arg.equals(double.class)) {
-				method.invoke(source, 0.0d);
-			} else if (arg.equals(boolean.class)) {
-				method.invoke(source, true);
-			} else {
-				Assert.fail("Unsupported arguments:" + arg.getName());
-			}
-		} else {
-			method.invoke(source, arg.cast(null));
-		}
 	}
 
 	@Override
