@@ -11,8 +11,7 @@
     } 
 %>
 
-<%-- display: none をここにかくのは見苦しいのでなんとかしたい --%>
-<div id="signin-dialog" title="Sign in with OpenID" style="display: none">
+<div id="signin-dialog" title="Sign in with OpenID">
 <div id="openid-dialog">
 <h2><img src="<%= request.getContextPath() %>/images/openidico.png" alt="" />
  OpenIDでログイン
