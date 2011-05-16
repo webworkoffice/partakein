@@ -24,6 +24,7 @@ public abstract class CommentAccessTestCaseBase extends AbstractDaoTestCaseBase<
     }
     
     @Test
+    // TODO tell about order of the DataIterator's value.
     public void testToFindByEventId() throws Exception {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
