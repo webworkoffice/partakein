@@ -36,6 +36,7 @@ public class PartakeHeartbeatServlet extends HttpServlet {
 
 	private void checkSiteState(Config config) {
 		final SiteStateAccessor accessor = new SiteStateAccessor();
+		// TODO use future pattern based on async datastore api http://code.google.com/appengine/docs/java/datastore/async.html
 		final boolean siteWasAlive = accessor.loadPreviousState();
 		final boolean siteIsAlive = new SiteChecker().execute(config);
 
