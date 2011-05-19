@@ -1,6 +1,7 @@
 #summary 公開WebAPIの仕様について議論してまとめるページ
 
-テスト運用中。
+under construction.
+テスト運用中。書いてあるURLやJS、レスポンスなどは架空のものです。
 
 = Event =
 == URL ==
@@ -33,6 +34,14 @@
 
 if your request is rejected, partake-server response 400(Bad Request).
 if specified event doesn't exist, partake-server response 404(Not Found).
+
+== How to access through partake.js ==
+{{{
+var event = $.partake().event('<event_id>');
+if (!!event) {
+  $('#title').text(event.title);
+}
+}}}
 
 == TODO ==
 - fix the date format
