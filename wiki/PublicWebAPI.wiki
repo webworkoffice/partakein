@@ -1,13 +1,39 @@
 #summary 公開WebAPIの仕様について議論してまとめるページ
 
-= Introduction =
+テスト運用中。
 
-Add your content here.
+= Event =
+== URL ==
+`http://partake.in/api/1/event/<event_id>`
+
+== Response sample ==
+{{{
+{
+  "id": "test_id",
+  "title": "sample event",
+  "summary": "a sample event to explain partake api",
+  "category": "neta",
+  "deadline": "2011/05/20 18:00",
+  "beginDate": "2011/05/20 20:00",
+  "endDate": "2011/05/20 22:00",
+  "capacity": 20,
+  "url": "http://partake.in/",
+  "place": "here",
+  "address": "somewhere",
+  "description": "<p>hogehoge</p>",
+  "hashTag": "#partakein",
+  "ownerId": "1234567890",
+  "managerIdList": ["1234567890a", "1234567890b"],
+  "isPrivate": false,
+  "createdAt": "2011/05/19 12:00",
+  "modifiedAt": "2011/05/19 15:00"
+}
+}}}
 
 
-= Details =
+if your request is rejected, partake-server response 400(Bad Request).
+if specified event doesn't exist, partake-server response 404(Not Found).
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== TODO ==
+- fix the date format
+- fix the format for managerId
