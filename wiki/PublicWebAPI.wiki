@@ -5,9 +5,11 @@ under construction.
 
 <wiki:toc max_depth="2" />
 
-= User =
+= Account =
 
-== ユーザーの取得 ==
+ユーザー自身に関する API
+
+== 自分自身の情報の取得 ==
 
 TBW
 
@@ -16,6 +18,19 @@ TBW
 TBW
 
 == ユーザーの設定の変更 ==
+
+TBW
+
+== OpenID 結びつけ状態の習得 ==
+== OpenID 結びつけ状態の変更 ==
+
+= User =
+
+== ユーザーの取得 ==
+
+TBW
+
+== ユーザーが参加しているイベント情報の習得 ==
 
 TBW
 
