@@ -137,7 +137,7 @@ if specified event doesn't exist, partake-server response 404(Not Found).
 
 == How to access through partake.js ==
 {{{
-var event = $.partake().event('<event_id>');
+var event = $.partake().event('<event_id>').get();
 if (!!event) {
   $('#title').text(event.title);
 }
