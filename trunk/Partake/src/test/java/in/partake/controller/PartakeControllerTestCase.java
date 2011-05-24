@@ -22,7 +22,7 @@ import com.opensymphony.xwork2.ActionProxy;
 // When a test class extends TestCase class, such a test class seems to run on JUnit3.
 // To avoid it, @RunWith(JUnit4.class) is set.
 @RunWith(JUnit4.class)
-public class PartakeControllerTestCase extends StrutsTestCase {
+public /* XXX もしかして: abstract */ class PartakeControllerTestCase extends StrutsTestCase {
 
     /*
      * TODO: とりあえず JPA を指定します。後で変更できるようにする。
