@@ -24,7 +24,8 @@ public abstract class AbstractPartakeModelTest<T extends PartakeModel<?>> {
 		final PartakeModel<?> model = createModel().freeze();
 
 		for (Method method : model.getClass().getMethods()) {
-			if (!checkDestructiveMethod(method) || method.getDeclaringClass().equals(Object.class)) continue;
+			if (method.getName().startsWith("pc") // mvn openjpa:enhanceで埋めこまれたメソッドは対象外にする TODO もっといい方法は？
+					|| !checkDestructiveMethod(method) || method.getDeclaringClass().equals(Object.class)) continue;
 			logger.debug(String.format("Test for %s#%s starts.", model.getClass().getName(), method.getName()));
 			Object[] args = createArgsFor(method);
 
