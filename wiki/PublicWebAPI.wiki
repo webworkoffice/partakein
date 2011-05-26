@@ -5,24 +5,41 @@ under construction.
 
 <wiki:toc max_depth="2" />
 
+以下のおける URL は、/ 以下を指定していますが、公式サイトの API にアクセスする場合は、http://partake.in/ を付加してください。
+
 = Account =
 
 ユーザー自身に関する API
 
 == 自分自身の情報の取得 ==
 
+`/api/account/get`
+
+{{{
 TBW
+}}}
+
+{{{
+TBW
+}}}
 
 == ユーザーの設定の取得 ==
+
+`/api/account/getPreference`
 
 TBW
 
 == ユーザーの設定の変更 ==
 
-TBW
+`/api/account/setPreference`
 
-== OpenID 結びつけ状態の習得 ==
-== OpenID 結びつけ状態の変更 ==
+== OpenID 結びつけ状態の取得 ==
+
+`/api/account/getOpenID`
+
+== OpenID 結びつけ状態を解除 ==
+
+`/api/account/removeOpenID`
 
 = User =
 
