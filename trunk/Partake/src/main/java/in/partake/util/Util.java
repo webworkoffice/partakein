@@ -255,8 +255,7 @@ public final class Util {
     
     /**
      * URL を bitly で短縮する。
-     * 名前が良くないので、deprecated 扱い。これからは shortenURL を使うこと。
-     * TODO: あと、これがここにいるのはよくないんじゃないかなー。URLService 的なものを作った方がよいような気がする。
+     * TODO: これがここにいるのはよくないんじゃないかなー。URLService 的なものを作った方がよいような気がする。
      * 
      * @param sourceURL
      * @return
