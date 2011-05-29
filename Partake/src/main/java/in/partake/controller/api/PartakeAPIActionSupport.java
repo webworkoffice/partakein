@@ -1,7 +1,9 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeActionSupport;
+import in.partake.resource.ServerErrorCode;
 import in.partake.resource.I18n;
+import in.partake.resource.UserErrorCode;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -52,7 +54,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      * with status code 200.
      * @return
      */
-    public String renderOK() {
+    protected String renderOK() {
         return renderOK(new JSONObject());
     }
     
@@ -61,7 +63,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      * @param obj
      * @return
      */
-    public String renderOK(JSONObject obj) {
+    protected String renderOK(JSONObject obj) {
         if (obj.containsKey("result")) {
             throw new RuntimeException("obj should not contain result");
         }
@@ -73,7 +75,8 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
      * ステータスコードは 500 を返す。
      */
-    public String renderError(String reason) {
+    @Deprecated
+    protected String renderError(String reason) {
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
         obj.put("reason", reason); 
@@ -85,25 +88,53 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      * renderError(String) と同じだが、DB エラーの場合はこちらを使うこと。
      * @return
      */
-    public String renderDBError() {
+    @Deprecated
+    protected String renderDBError() {
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
         obj.put("reason", I18n.t(I18n.DATABASE_ERROR)); 
         this.status = 500;
         return renderJSON(obj);
     }
+
+    /**
+     * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
+     * ステータスコードは 500 を返す。
+     */
+    protected String renderError(ServerErrorCode errorCode) {
+        assert errorCode != null;
+        
+        JSONObject obj = new JSONObject();
+        obj.put("result", "error");
+        obj.put("reason", errorCode.getReasonString()); 
+        this.status = 500;
+        return renderJSON(obj);        
+    }
     
     /**
      * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。
      */
-    public String renderInvalid(String reason) {
+    @Deprecated
+    protected String renderInvalid(String reason) {
         JSONObject obj = new JSONObject();
         obj.put("result", "invalid");
         obj.put("reason", reason); 
         this.status = 400;
         return renderJSON(obj);        
     }
+    
+    /**
+     * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
+     * ステータスコードは 400 を返す。
+     */
+    protected String renderInvalid(UserErrorCode errorCode) {
+        JSONObject obj = new JSONObject();
+        obj.put("result", "invalid");
+        obj.put("reason", errorCode.getReasonString()); 
+        this.status = 400;
+        return renderJSON(obj);                
+    }    
     
     @Override
     protected String renderLoginRequired() {
