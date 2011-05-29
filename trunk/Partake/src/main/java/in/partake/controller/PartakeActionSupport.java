@@ -3,6 +3,8 @@ package in.partake.controller;
 import in.partake.model.UserEx;
 import in.partake.resource.Constants;
 import in.partake.resource.I18n;
+import in.partake.resource.ServerErrorCode;
+import in.partake.resource.UserErrorCode;
 import in.partake.servlet.PartakePageAttribute;
 import in.partake.servlet.PartakeSession;
 
@@ -223,7 +225,13 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     /**
      * invalid user request.
      */
+    @Deprecated
     protected String renderInvalid(String reason) {
+        // TODO: reason should be added.
+        return INVALID;
+    }
+    
+    protected String renderInvalid(UserErrorCode errorCode) {
         // TODO: reason should be added.
         return INVALID;
     }
@@ -232,7 +240,17 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
      * occured an internal server error
      * @return
      */
+    @Deprecated
     protected String redirectError(String reason) {
+        // TODO: reason should be added.
+        return ERROR;
+    }
+
+    /**
+     * occured an internal server error
+     * @return
+     */
+    protected String redirectError(ServerErrorCode errorCode) {
         // TODO: reason should be added.
         return ERROR;
     }
