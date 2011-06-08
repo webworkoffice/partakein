@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
-    
+
 <dl class="event-form">
 <dt><label for="title">タイトル<span class="required">(必須)</span></label>:</dt>
 	<dd><s:textfield id="title" name="title" cssClass="text-input" /></dd>
@@ -44,22 +44,22 @@
  フリー画像はこちら (別ウインドウ)
 </a>
 </div>
-		<span class="accent">＞</span> 画像を設定できます。画像は上部に掲載されます。(png, gif, ipeg 画像のみが送信できます)</dd>
+		<span class="accent">＞</span> 画像を設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</dd>
     </s:if>
     <s:else>
     	<dd><s:checkbox name="removingForeImage" id="removingForeImage" />画像を消去する<br />
     		<s:file name="foreImage" id="foreImage" label="File"/><br />
-			<span class="accent">＞</span> 画像を再設定できます。画像は上部に掲載されます。(png, gif, ipeg 画像のみが送信できます)</dd>
+			<span class="accent">＞</span> 画像を再設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</dd>
     </s:else>
 <dt><label for="backImage">背景画像</label>:</dt>
 	<s:if test="%{backImageId == null}">
 		<dd><s:file name="backImage" id="backImage" label="File"/><br />
-		<span class="accent">＞</span> 背景画像を設定できます。(png, gif, ipeg 画像のみが送信できます)</dd>
+		<span class="accent">＞</span> 背景画像を設定できます。(png, gif, jpeg 画像のみが送信できます)</dd>
 	</s:if>
 	<s:else>
     	<dd><s:checkbox name="removingBackImage" id="removingBackImage" />背景画像を消去する<br />
     		<s:file name="backImage" id="backImage" label="File"/><br />
-			<span class="accent">＞</span> 背景画像を再設定できます。(png, gif, ipeg 画像のみが送信できます)</dd>
+			<span class="accent">＞</span> 背景画像を再設定できます。(png, gif, jpeg 画像のみが送信できます)</dd>
 	</s:else>
 <dt><label for="place">会場</label>:</dt>
 	<dd><s:textfield id="place" name="place" cssClass="text-input" /></dd>
@@ -106,7 +106,7 @@
 				</tr>
 			</tbody>
 		</table>
-	
+
         <span class="accent">＞</span>関連イベントを設定できます。<br />
         <span class="accent">＞</span>登録必須にチェックすると、そのイベントに登録されていなければこのイベントに登録することは出来ません。<br />
         <span class="accent">＞</span>優先参加にチェックすると、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。<br />
