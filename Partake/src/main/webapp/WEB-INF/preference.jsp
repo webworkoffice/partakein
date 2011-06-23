@@ -40,7 +40,7 @@
         <jsp:param name="callingURL" value="/auth/connectWithOpenID" />
         <jsp:param name="usesToken" value="true" />
     </jsp:include>
-    
+
     <h3><span class="accent">＞ </span>現在、次の URL と結び付けられています。</h3>
     <p>
     <%
@@ -61,7 +61,7 @@
 
 
 
-<div class="setting-subtitle"> 
+<div class="setting-subtitle">
 <h2><img src="<%= request.getContextPath() %>/images/setting.png" alt="">各種設定</h2>
 </div>
 
@@ -75,7 +75,7 @@
 </s:form>
 </div>
 
-<div class="setting-subtitle"> 
+<div class="setting-subtitle">
 <h2><img src="<%= request.getContextPath() %>/images/calendar.png" alt="">カレンダーと RSS</h2></div>
 
 <div class="setting-set">
@@ -84,10 +84,10 @@
 
 <%-- NOTE: RSS の ID はカレンダー ID と共通です。 --%>
 <% if (user.getCalendarId() != null && !"".equals(user.getCalendarId())) { %>
-    <input type="text" value="http://partake.in<%= request.getContextPath() %>/calendars/<%= h(user.getCalendarId()) %>.ics" style="width: 80%;"/>
+    <input type="text" value="http://partake.in<%= request.getContextPath() %>/calendars/<%= h(user.getCalendarId()) %>.ics" style="width: 80%;"/><%-- TODO use in.partake.toppath from properties file --%>
 <%--
     <input type="text" value="http://partake.in<%= request.getContextPath() %>/feed/user/<%= h(user.getCalendarId()) %>" style="width: 80%;"/>
- --%>        
+ --%>
 <% } %>
 
 <p>IDは友人と共有することも可能です。</p>
