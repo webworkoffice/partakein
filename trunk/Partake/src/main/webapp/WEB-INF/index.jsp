@@ -28,7 +28,7 @@
 <body>
 
 <div id="right-tweet">
-	<a href="http://twitter.com/home?status=PARTAKE%20http://partake.in/" target="_blank"></a>
+	<a href="http://twitter.com/home?status=PARTAKE%20http://partake.in/" target="_blank"></a><%-- TODO use in.partake.toppath from properties file --%>
 </div>
 
 <div id="right-momonga">

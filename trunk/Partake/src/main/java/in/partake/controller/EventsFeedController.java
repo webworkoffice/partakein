@@ -45,7 +45,7 @@ public class EventsFeedController extends PartakeActionSupport {
 		feed.setEncoding("utf-8");
 
 		feed.setTitle("Recent 100 events - [PARTAKE]");
-		feed.setLink("http://partake.in/");
+		feed.setLink("http://partake.in/");	// TODO use in.partake.toppath from properties file
 		feed.setDescription("最近登録されたイベントを(最大100)フィードします。");
 
 		try {
@@ -82,7 +82,7 @@ public class EventsFeedController extends PartakeActionSupport {
 		} else {
 			feed.setTitle("Upcoming 100 events - " + EventCategory.getReadableCategoryName(category) + " - [PARTAKE]");
 		}
-		feed.setLink("http://partake.in/");
+		feed.setLink("http://partake.in/");	// TODO use in.partake.toppath from properties file
 		feed.setDescription("近日開催されるイベントを(最大100)フィードします。");
 
 		try {

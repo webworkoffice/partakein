@@ -110,7 +110,7 @@
         <span class="accent">＞</span>関連イベントを設定できます。<br />
         <span class="accent">＞</span>登録必須にチェックすると、そのイベントに登録されていなければこのイベントに登録することは出来ません。<br />
         <span class="accent">＞</span>優先参加にチェックすると、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。<br />
-        <span class="accent">＞</span>イベント ID とは、 http://partake.in/events/{ID} の {ID} の部分の文字列です。
+        <span class="accent">＞</span>イベント ID とは、 http://partake.in/events/{ID} の {ID} の部分の文字列です。<%-- TODO use in.partake.toppath from properties file --%>
         </dd>
 <dt><label for="managers">自分以外の管理者：</label></dt>
     <dd><s:textfield id="managers" name="managers" cssClass="text-input" /><br />
