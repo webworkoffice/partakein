@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "Users")
@@ -49,6 +51,19 @@ public class User extends PartakeModel<User> {
     @Override
     public User copy() {
         return new User(this);
+    }
+    
+    /**
+     * sensitive な情報を含まないような user を取得します。
+     * id 及び twitter id のみが取得できます。
+     * @return
+     */
+    public JSONObject toSafeJSON() {
+    	JSONObject obj = new JSONObject();
+    	obj.put("id", id);
+    	obj.put("twitterId", twitterId);
+    	
+    	return obj;
     }
     
     // ----------------------------------------------------------------------
