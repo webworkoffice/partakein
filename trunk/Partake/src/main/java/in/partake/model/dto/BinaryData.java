@@ -2,6 +2,7 @@ package in.partake.model.dto;
 
 import java.util.Arrays;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,6 +11,7 @@ import javax.persistence.Lob;
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "BinaryData")
+@Cacheable(false)
 public class BinaryData extends PartakeModel<BinaryData> {
     @Id
     private String id;
