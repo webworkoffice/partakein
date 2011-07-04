@@ -9,6 +9,7 @@ import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.UserPermission;
+import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 
 public class EventAction extends PartakeAPIActionSupport {
@@ -16,10 +17,10 @@ public class EventAction extends PartakeAPIActionSupport {
 
     public String get() throws DAOException {
         String eventId = getParameter("eventId");
-        if (StringUtils.isBlank(eventId)) { return renderInvalid("invalid eventId was specified."); }
+        if (StringUtils.isBlank(eventId)) { return renderInvalid(UserErrorCode.MISSING_EVENT_ID); } 
         
         EventEx event = EventService.get().getEventExById(eventId);
-        if (event == null) { return renderInvalid("invalid eventId was specified."); }
+        if (event == null) { return renderInvalid(UserErrorCode.INVALID_EVENT_ID); } 
             
         if (event.isPrivate()) {
             // TODO: EventsController とコードが同じなので共通化するべき　
