@@ -41,7 +41,7 @@ public class UserEx extends User {
     	assert obj.get("twitter") == null;
     	
     	if (withTwitter) {
-    		obj.put("twitterLinkage", twitterLinkage.toJSON());
+    	    obj.put("twitterLinkage", twitterLinkage.toSafeJSON());
     	}
     	
     	return obj;

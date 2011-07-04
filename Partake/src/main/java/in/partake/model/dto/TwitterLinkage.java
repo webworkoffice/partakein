@@ -24,11 +24,11 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     private String profileImageURL;
     @Column
     private String userId;
-    
+
     public TwitterLinkage() {
-        
+
     }
-    
+
     public TwitterLinkage(String twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
         this.twitterId = twitterId;
         this.screenName = screenName;
@@ -57,34 +57,33 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     public Object getPrimaryKey() {
         return twitterId;
     }
-    
+
     @Override
     public TwitterLinkage copy() {
         return new TwitterLinkage(this);
     }
-    
-    public JSONObject toSafeJSON() {
-    	JSONObject obj = new JSONObject();
 
-    	obj.put("twitterId", twitterId);
-    	obj.put("screenName", screenName);
-    	obj.put("name", name);
-    	obj.put("profileImageURL", profileImageURL);
-    	
-    	return obj;
-        
+    public JSONObject toSafeJSON() {
+        JSONObject obj = new JSONObject();
+
+        obj.put("twitterId", twitterId);
+        obj.put("screenName", screenName);
+        obj.put("name", name);
+        obj.put("profileImageURL", profileImageURL);
+
+        return obj;
     }
-    
+
     // ----------------------------------------------------------------------
     // equals method
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof TwitterLinkage)) { return false; }
-        
+
         TwitterLinkage lhs = this;
         TwitterLinkage rhs = (TwitterLinkage) obj;
-        
+
         if (!ObjectUtils.equals(lhs.twitterId,         rhs.twitterId)) { return false; }
         if (!ObjectUtils.equals(lhs.screenName,        rhs.screenName)) { return false; }
         if (!ObjectUtils.equals(lhs.name,              rhs.name)) { return false; }
@@ -92,14 +91,14 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         if (!ObjectUtils.equals(lhs.accessTokenSecret, rhs.accessTokenSecret)) { return false; }
         if (!ObjectUtils.equals(lhs.profileImageURL,   rhs.profileImageURL)) { return false; }
         if (!ObjectUtils.equals(lhs.userId,            rhs.userId)) { return false; }
-        
+
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int code = 0;
-        
+
         code = code * 37 + ObjectUtils.hashCode(twitterId);
         code = code * 37 + ObjectUtils.hashCode(screenName);
         code = code * 37 + ObjectUtils.hashCode(name);
@@ -107,12 +106,12 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         code = code * 37 + ObjectUtils.hashCode(accessTokenSecret);
         code = code * 37 + ObjectUtils.hashCode(profileImageURL);
         code = code * 37 + ObjectUtils.hashCode(userId);
-        
+
         return code;
     }
-    
+
     // ----------------------------------------------------------------------
-    // 
+    //
 
     public String getTwitterId() {
         return twitterId;
@@ -121,7 +120,7 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     public String getScreenName() {
         return screenName;
     }
-    
+
     public String getName() {
         return name;
     }
