@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "TwitterLinkages")
@@ -59,6 +61,18 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     @Override
     public TwitterLinkage copy() {
         return new TwitterLinkage(this);
+    }
+    
+    public JSONObject toSafeJSON() {
+    	JSONObject obj = new JSONObject();
+
+    	obj.put("twitterId", twitterId);
+    	obj.put("screenName", screenName);
+    	obj.put("name", name);
+    	obj.put("profileImageURL", profileImageURL);
+    	
+    	return obj;
+        
     }
     
     // ----------------------------------------------------------------------
