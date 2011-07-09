@@ -1,9 +1,13 @@
 package in.partake.controller.api.account;
 
 import in.partake.controller.api.APIControllerTest;
+import in.partake.model.fixture.TestDataProvider;
 import in.partake.service.UserService;
 
 import java.util.List;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -53,4 +57,28 @@ public class OpenIDAPITest extends APIControllerTest {
         assertResultInvalid(proxy);
     }
 
+    @Test
+    public void testToGetOpenIDWithoutLogin() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/account/getOpenID");
+
+        proxy.execute();
+        assertResultLoginRequired(proxy);
+    }
+    
+    @Test
+    public void testToGetOpenIDWithLogin() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/account/getOpenID");
+
+        loginAs(proxy, TestDataProvider.USER_ID1);
+        
+        proxy.execute();
+        assertResultOK(proxy);
+        
+        JSONObject json = getJSON(proxy);
+        JSONArray identifiers = json.getJSONArray("identifiers");
+
+        Assert.assertEquals(2, identifiers.size());
+        Assert.assertTrue(identifiers.contains("http://www.example.com/testuser"));
+        Assert.assertTrue(identifiers.contains("http://www.example.com/testuser-alternative"));
+    }
 }

@@ -6,6 +6,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
+import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 
 public class AttendanceAction extends PartakeAPIActionSupport {
@@ -21,26 +22,29 @@ public class AttendanceAction extends PartakeAPIActionSupport {
         if (user == null) {
             return renderLoginRequired();
         }
-        
+
+        assert getPartakeSession() != null;
+        assert getPartakeSession().getCSRFPrevention() != null;
+
         String userId = getParameter("userId");
-        if (userId == null) { return renderInvalid("userId should be specified"); }
+        if (userId == null) { return renderInvalid(UserErrorCode.MISSING_USER_ID); }
             
         String eventId = getParameter("eventId");
-        if (eventId == null) { return renderInvalid("eventId should be specified"); }
+        if (eventId == null) { return renderInvalid(UserErrorCode.MISSING_EVENT_ID); }
         
         String status = getParameter("status");
         if (status == null || !AttendanceStatus.isValueOf(status)) {
-            return renderInvalid("status should be specified");
+            return renderInvalid(UserErrorCode.MISSING_ATTENDANCE_STATUS);
         }
         
         // To prevent CSRF, we should check token.
         String token = getParameter("sessionToken");
         if (!getPartakeSession().getCSRFPrevention().isValidSessionToken(token)) {
             return renderInvalid("Session token is invalid");
-        }        
+        }
         
         EventEx event = EventService.get().getEventExById(eventId);
-        if (event == null) { return renderInvalid("invalid eventId was specified."); }
+        if (event == null) { return renderInvalid(UserErrorCode.INVALID_EVENT_ID); }
         
         if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
             return renderForbidden();
@@ -49,7 +53,7 @@ public class AttendanceAction extends PartakeAPIActionSupport {
         if (EventService.get().updateAttendanceStatus(userId, eventId, AttendanceStatus.safeValueOf(status))) {
             return renderOK();
         } else {
-            return renderInvalid("some invalid argument is specified.");
+            return renderInvalid(UserErrorCode.UNKNOWN_USER_ERROR);
         }
     }
 

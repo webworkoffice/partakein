@@ -5,8 +5,11 @@ package in.partake.resource;
  * @author shinyak
  */
 public enum ServerErrorCode {
+    UNKNOWN_ERROR("error.unknown"),
+    LOGIC_ERROR("error.logic_error"), // some logic error
+    
+    // TODO: DB_ERROR は後で名前かえるべき直す (or id をかえる)
     DB_ERROR("in.partake.database_error"),
-    // TODO: あといろいろ追加する
 
     NO_CSRF_PREVENTION("error.no_csrf_prevention"),
     NO_CREATED_SESSION_TOKEN("error.no_created_session_token");

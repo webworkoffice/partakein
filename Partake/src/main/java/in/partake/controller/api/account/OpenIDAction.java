@@ -1,8 +1,13 @@
 package in.partake.controller.api.account;
 
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
 import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.UserService;
 
@@ -25,5 +30,18 @@ public class OpenIDAction extends PartakeAPIActionSupport {
         } else {
             return renderInvalid(UserErrorCode.INVALID_OPENID);
         }
+    }
+    
+    public String getOpenID() throws DAOException {
+        UserEx user = getLoginUser();
+        if (user == null) { return renderLoginRequired(); }
+        
+        List<String> identifiers = UserService.get().getOpenIDIdentifiers(user.getId());
+        if (identifiers == null) { return renderError(ServerErrorCode.LOGIC_ERROR); }
+        
+        JSONObject obj = new JSONObject();
+        obj.put("identifiers", identifiers);
+        
+        return renderOK(obj);
     }
 }
