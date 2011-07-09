@@ -502,6 +502,7 @@
 	<!-- Account API -->
 	<package name="account-api" namespace="/api/account" extends="partake-api-default">
 		<action name="getSessionToken" method="getSessionToken" class="in.partake.controller.api.account.SessionAction" />
+		<action name="getOpenID" method="getOpenID" class="in.partake.controller.api.account.OpenIDAction" />
 		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.account.OpenIDAction" />
 	</package>
 	

@@ -6,6 +6,9 @@ package in.partake.resource;
  *
  */
 public enum UserErrorCode {
+    // 
+    UNKNOWN_USER_ERROR("invalid.unknown"),
+    
     // EVENT ID
     INVALID_EVENT_ID("invalid.invalid_eventid"),
     MISSING_EVENT_ID("invalid.missing_eventid"),
@@ -19,7 +22,9 @@ public enum UserErrorCode {
     MISSING_OPENID("invalid.missing_openid"),
 
     // SESSION
-    MISSING_SESSION("invalid.missing_session");
+    MISSING_SESSION("invalid.missing_session"),
+    
+    MISSING_ATTENDANCE_STATUS("invalid.missing_attendance_status");
     
     // ----------------------------------------------------------------------
     private String errorDescriptionId;
