@@ -114,6 +114,8 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     /**
      * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。
+     * 
+     * Use renderInvalid(UserErrorCode) instead. 
      */
     @Deprecated
     protected String renderInvalid(String reason) {

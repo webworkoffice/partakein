@@ -5,15 +5,17 @@ package in.partake.resource;
  * @author shinyak
  */
 public enum ServerErrorCode {
-    DB_ERROR("in.partake.database_error");
+    DB_ERROR("in.partake.database_error"),
     // TODO: あといろいろ追加する
 
+    NO_CSRF_PREVENTION("error.no_csrf_prevention"),
+    NO_CREATED_SESSION_TOKEN("error.no_created_session_token");
     
     // ----------------------------------------------------------------------
     private String errorDescriptionId;
     
-    private ServerErrorCode(String errorReason) {
-        this.errorDescriptionId = errorReason;
+    private ServerErrorCode(String errorReasonId) {
+        this.errorDescriptionId = errorReasonId;
     }
     
     public String getReasonString() {

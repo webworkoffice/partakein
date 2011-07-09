@@ -6,12 +6,20 @@ package in.partake.resource;
  *
  */
 public enum UserErrorCode {
+    // EVENT ID
     INVALID_EVENT_ID("invalid.invalid_eventid"),
-    MISSING_EVENT_ID("invalid.missing_evnetid"),
-    INVALID_USER_ID("invalid.invalid_userid"),
-    MISSING_USER_ID("invalid.missing_userid");
+    MISSING_EVENT_ID("invalid.missing_eventid"),
 
-    // TODO: あといろいろ追加する
+    // USER ID
+    INVALID_USER_ID("invalid.invalid_userid"),
+    MISSING_USER_ID("invalid.missing_userid"),
+
+    // OPEN ID 
+    INVALID_OPENID("invalid.invalid_openid"),
+    MISSING_OPENID("invalid.missing_openid"),
+
+    // SESSION
+    MISSING_SESSION("invalid.missing_session");
     
     // ----------------------------------------------------------------------
     private String errorDescriptionId;
