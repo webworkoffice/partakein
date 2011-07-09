@@ -6,6 +6,7 @@ import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.TestService;
 import in.partake.service.UserService;
+import in.partake.servlet.PartakeSession;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +64,11 @@ public /* XXX もしかして: abstract */ class PartakeControllerTestCase exten
         if (actionContext.getSession() == null) {
             Map<String, Object> session = new HashMap<String, Object>();
             actionContext.setSession(session);
+            
+            // Adds Partake session 
+            session.put(Constants.ATTR_PARTAKE_SESSION, PartakeSession.createInitialPartakeSession());
         }
+        
         if (actionContext.getParameters() == null) {
             Map<String, Object> parameters = new HashMap<String, Object>();
             actionContext.setParameters(parameters);
@@ -97,5 +102,18 @@ public /* XXX もしかして: abstract */ class PartakeControllerTestCase exten
         assert actionContext.getSession() != null;
 
         actionContext.getParameters().put(key, obj);
+    }
+    
+    protected void addValidSessionTokenToParameter(ActionProxy proxy) throws DAOException {
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();        
+        assert actionContext.getSession() != null;
+
+        PartakeSession session = (PartakeSession) actionContext.getSession().get(Constants.ATTR_PARTAKE_SESSION);
+        actionContext.getParameters().put("sessionToken", session.getCSRFPrevention().getSessionToken());        
+    }
+    
+    protected void addInvalidSessionTokenToParameter(ActionProxy proxy) throws DAOException {
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();        
+        actionContext.getParameters().put("sessionToken", "INVALID-SESSION-TOKEN");        
     }
 }

@@ -22,11 +22,12 @@ public class OpenIDAPITest extends APIControllerTest {
 
         loginAs(proxy, "openid-remove-0");
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-0");
+        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultOK(proxy);
         
-        // Check the proxy is really removed.
+        // Check the OpenID has been really removed.
         List<String> identifiers = UserService.get().getOpenIDIdentifiers("openid-remove-0");
         Assert.assertNotNull(identifiers);
         Assert.assertFalse(identifiers.contains("http://www.example.com/openid-remove-0"));
@@ -37,8 +38,8 @@ public class OpenIDAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
         // When not login, should fail.
-        
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-1");
+        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultLoginRequired(proxy);
@@ -52,11 +53,26 @@ public class OpenIDAPITest extends APIControllerTest {
         loginAs(proxy, "openid-remove-0");
         
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-2");
+        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultInvalid(proxy);
     }
 
+    @Test
+    public void testToRemoveOpenIDWithInvalidSessionToken() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
+
+        // Check CSRF prevention works.
+        loginAs(proxy, "openid-remove-3");
+        
+        addParameter(proxy, "identifier", "http://www.example.com/openid-remove-3");
+        addInvalidSessionTokenToParameter(proxy);
+        
+        proxy.execute();
+        assertResultInvalid(proxy);
+    }
+    
     @Test
     public void testToGetOpenIDWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/getOpenID");
@@ -70,6 +86,7 @@ public class OpenIDAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/account/getOpenID");
 
         loginAs(proxy, TestDataProvider.USER_ID1);
+        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultOK(proxy);
@@ -81,4 +98,16 @@ public class OpenIDAPITest extends APIControllerTest {
         Assert.assertTrue(identifiers.contains("http://www.example.com/testuser"));
         Assert.assertTrue(identifiers.contains("http://www.example.com/testuser-alternative"));
     }
+    
+    @Test
+    public void testToGetOpenIDWithInvalidSessionToken() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/account/getOpenID");
+
+        loginAs(proxy, TestDataProvider.USER_ID1);
+        addInvalidSessionTokenToParameter(proxy);
+        
+        proxy.execute();
+        assertResultInvalid(proxy);
+    }
+
 }
