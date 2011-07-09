@@ -30,11 +30,10 @@
 		return $.post('/api/attendance/change', arg);
 	};
 	
-	
 	// expose partake client to global.
 	createPartakeClient = function(sessionToken) {
 		return new $partake(sessionToken);
-	} ;
+	};
 })();
 
 

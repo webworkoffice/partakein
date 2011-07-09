@@ -499,9 +499,15 @@
 		<action name="errorDBException" method="errorDBException" class="in.partake.controller.api.debug.DebugAction" />
 	</package>
 	
+	<!-- Account API -->
+	<package name="account-api" namespace="/api/account" extends="partake-api-default">
+		<action name="getSessionToken" method="getSessionToken" class="in.partake.controller.api.account.SessionAction" />
+		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.account.OpenIDAction" />
+	</package>
+	
 	<!-- User API -->
 	<package name="user-api" namespace="/api/user" extends="partake-api-default">
-		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.user.OpenIDAction" />
+		<action name="get" method="get" class="in.partake.controller.api.user.UserAction" />
 	</package>
 
 	<!-- Event API -->	
@@ -509,8 +515,7 @@
 		<action name="get" method="get" class="in.partake.controller.api.event.EventAction" />
 	</package>
 	
-
-	<!-- 出欠 API -->	
+	<!-- Attendance API -->	
 	<package name="attendance-api" namespace="/api/attendance" extends="partake-api-default">
 		<action name="change" method="change" class="in.partake.controller.api.attendance.AttendanceAction" />
 	</package>
