@@ -14,11 +14,23 @@ public class PartakeSession {
         // Do nothing for while.
     }
     
+    public static PartakeSession createInitialPartakeSession() {
+        PartakeSession session = new PartakeSession();
+        
+        session.csrfPrevention = new CSRFPrevention();
+        
+        return session;
+    }
+    
+    // NOTE: setCSRFPrevention を自分で呼ばずに、createInitialPartakeSession() を用いること。
+    @Deprecated
     public void setCSRFPrevention(CSRFPrevention prevention) {
         this.csrfPrevention = prevention;
     }
 
     public CSRFPrevention getCSRFPrevention() {
         return this.csrfPrevention;
-    }    
+    }
+    
+    
 }

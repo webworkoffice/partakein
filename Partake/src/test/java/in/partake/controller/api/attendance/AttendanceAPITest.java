@@ -27,7 +27,8 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID2);
         addParameter(proxy, "status", "present");
-
+        addValidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultOK(proxy);
         
@@ -52,7 +53,8 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID3);
         addParameter(proxy, "status", "absent");
-
+        addValidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultOK(proxy);
         
@@ -77,7 +79,8 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "status", "unknown");
-
+        addValidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultOK(proxy);
         
@@ -92,10 +95,12 @@ public class AttendanceAPITest extends APIControllerTest {
     @Test
     public void testLoginRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/attendance/change");
+        
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "status", "present");
-
+        addValidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultLoginRequired(proxy);
     }
@@ -108,7 +113,8 @@ public class AttendanceAPITest extends APIControllerTest {
         // addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "status", "present");
-
+        addValidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -121,7 +127,8 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         // addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "status", "present");
-
+        addValidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -134,7 +141,8 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         // addParameter(proxy, "status", "present");
-
+        addValidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -147,7 +155,8 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "status", "present");
-
+        addValidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultForbidden(proxy);
     }
@@ -160,7 +169,23 @@ public class AttendanceAPITest extends APIControllerTest {
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "status", "hogehoge");
+        addValidSessionTokenToParameter(proxy);
+        
+        proxy.execute();
+        assertResultInvalid(proxy);
+    }
 
+
+    @Test
+    public void testInvalidSessionToken() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        loginAs(proxy, TestDataProvider.USER_ID1);
+        
+        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "status", "present");
+        addInvalidSessionTokenToParameter(proxy);
+        
         proxy.execute();
         assertResultInvalid(proxy);
     }

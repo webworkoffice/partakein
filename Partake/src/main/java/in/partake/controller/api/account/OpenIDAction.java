@@ -18,7 +18,7 @@ public class OpenIDAction extends PartakeAPIActionSupport {
     public String removeOpenID() throws DAOException {
         UserEx user = getLoginUser();
         if (user == null) { return renderLoginRequired(); }
-
+        
         String identifier = getParameter("identifier");
         if (identifier == null) {
             return renderInvalid(UserErrorCode.MISSING_OPENID);

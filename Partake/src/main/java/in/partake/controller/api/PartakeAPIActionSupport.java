@@ -1,6 +1,8 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeActionSupport;
+import in.partake.model.UserEx;
+import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.I18n;
 import in.partake.resource.UserErrorCode;
@@ -27,10 +29,10 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     
     // ----------------------------------------------------------------------
     
-    public void addHeader(String key, String value) {
+    protected void addHeader(String key, String value) {
         headers.put(key, value);
     }
-    
+        
     // ----------------------------------------------------------------------
     
     /**
@@ -38,7 +40,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      * @param obj
      * @return
      */
-    public String renderJSON(JSONObject obj) {
+    protected String renderJSON(JSONObject obj) {
         assert obj != null;
         
         try {

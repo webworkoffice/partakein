@@ -20,7 +20,6 @@ public class UserTestDataProvider extends TestDataProvider {
 	 * @throws DAOException
 	 */
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
-        
         IUserAccess dao = factory.getUserAccess();
         dao.truncate(con);
         
@@ -34,5 +33,6 @@ public class UserTestDataProvider extends TestDataProvider {
         dao.put(con, new User("openid-remove-0", 1000, new Date(), null));
         dao.put(con, new User("openid-remove-1", 1001, new Date(), null));
         dao.put(con, new User("openid-remove-2", 1002, new Date(), null));
+        dao.put(con, new User("openid-remove-3", 1003, new Date(), null));
     }
 }

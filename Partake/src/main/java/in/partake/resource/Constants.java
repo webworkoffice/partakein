@@ -14,7 +14,6 @@ public final class Constants {
     public static final String ATTR_PARTAKE_SESSION = "partake.session";
     public static final String ATTR_PARTAKE_PAGE_ATTRIBUTE = "partake.page.attribute";
     
-
     // TODO: なんでこれ形式が統一されてないの？
     // TODO: あと、Attribute で渡して JSP で表示というのがださ過ぎるのでなんとかしたい。
     // TODO: このあたりの定数は全て廃止し、PartakeSession 及び、ParatkePageAttribute に統合予定。
@@ -27,8 +26,11 @@ public final class Constants {
     public static final String ATTR_SHOWING_USER = "user_showing"; // user (for show())
     public static final String ATTR_ERRORMSGS = "errormsg";	// List<String>
     
+    @Deprecated
     public static final String ATTR_CSRF_PREVENTION = "csrf_prevention_token";
+    @Deprecated
     public static final String ATTR_PARTAKE_TOKEN = "partake.token";
+    @Deprecated
     public static final String ATTR_PARTAKE_ONETIME_TOKEN = "partake.onetime.token";
     
     /** error が発生した場合の詳細を説明するために用いる */
