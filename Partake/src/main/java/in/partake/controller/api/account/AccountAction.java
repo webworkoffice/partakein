@@ -4,7 +4,7 @@ import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 
-public class AccontAction extends PartakeAPIActionSupport {
+public class AccountAction extends PartakeAPIActionSupport {
     private static final long serialVersionUID = 1L;
     // private static final Logger logger = Logger.getLogger(AccountAction.class);
 
