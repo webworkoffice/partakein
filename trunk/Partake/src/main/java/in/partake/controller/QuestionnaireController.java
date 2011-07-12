@@ -1,7 +1,5 @@
-package in.partake.controller.action;
+package in.partake.controller;
 
-import in.partake.controller.PartakeActionSupport;
-import in.partake.controller.PartakeResultException;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
