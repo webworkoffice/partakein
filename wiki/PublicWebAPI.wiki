@@ -125,11 +125,19 @@ TBW
 
 == 常に 200 OK を返す ==
 
-TBW 
+`/api/debug/success`
+
+{{{
+TBW
+}}}
 
 == 常に 400 Bad Request を返す ==
 
-TBW 
+`/api/debug/invalid`
+
+{{{
+TBW
+}}}
 
 == 常に 404 Not found を返す ==
 
