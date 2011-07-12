@@ -34,21 +34,21 @@ Copy `h2-<version>.jar` to %CATALINA_HOME%\lib.
 This library is included in H2 database.
 
 == Rewrite persistence.xml ==
-Open \WEB-INF\classes\META-INF\persistence.xml and rewrire *openjpa.ConnectionURL*, *openjpa.ConnectionDriverName* and *openjpa.jdbc.DBDictionary* property.
+Open \WEB-INF\classes\META-INF\persistence.xml and rewrire *openjpa.ConnectionProperties* and *openjpa.jdbc.DBDictionary* property.
 If you changed password of partake user, you should also rewrite *openjpa.ConnectionPassword*.
 {{{
 <persistence-unit name="partake">
   ...
   <properties>
-    <property name="openjpa.ConnectionURL" value="jdbc:h2:file:C:/work/partake.h2"/>
-    <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/>
-    <property name="openjpa.ConnectionUserName" value="partake"/>
-    <property name="openjpa.ConnectionPassword" value="partake"/>
-    <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add')" />
+    <property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource"/>
+    <property name="openjpa.ConnectionProperties" value="DriverClassName=org.h2.Driver,Url=jdbc:h2:file:C:/work/partake.h2,Username=partake,Password=partake"/>
+    <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+
     <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
 
-    <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+    <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add')" />
     <property name="openjpa.RuntimeUnenhancedClasses" value="unsupported"/>
+
     <property name="openjpa.DataCache" value="true"/>
     <property name="openjpa.QueryCache" value="false"/>
     <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
