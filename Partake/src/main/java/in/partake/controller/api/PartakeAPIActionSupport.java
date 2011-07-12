@@ -1,10 +1,8 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeActionSupport;
-import in.partake.model.UserEx;
-import in.partake.resource.Constants;
-import in.partake.resource.ServerErrorCode;
 import in.partake.resource.I18n;
+import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
 import java.io.ByteArrayInputStream;
@@ -21,20 +19,20 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     private InputStream stream;
     private int status;
     private Map<String, String> headers;
-        
+
     public PartakeAPIActionSupport() {
         this.status = 200;
         this.headers = new HashMap<String, String>();
     }
-    
+
     // ----------------------------------------------------------------------
-    
+
     protected void addHeader(String key, String value) {
         headers.put(key, value);
     }
-        
+
     // ----------------------------------------------------------------------
-    
+
     /**
      * JSON object をレスポンスとして返す。
      * @param obj
@@ -42,15 +40,15 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      */
     protected String renderJSON(JSONObject obj) {
         assert obj != null;
-        
+
         try {
             this.stream = new ByteArrayInputStream(obj.toString().getBytes("utf-8"));
             return "json";
         } catch (UnsupportedEncodingException e) {
             return ERROR;
-        }      
+        }
     }
-    
+
     /**
      * <code>{ "result": "ok" }</code> をレスポンスとして返す。
      * with status code 200.
@@ -59,7 +57,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     protected String renderOK() {
         return renderOK(new JSONObject());
     }
-    
+
     /**
      * obj に result: ok を追加して返す。obj に result が既に含まれていれば RuntimeException を投げる。
      * @param obj
@@ -72,7 +70,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
         obj.put("result", "ok");
         return renderJSON(obj);
     }
-    
+
     /**
      * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
      * ステータスコードは 500 を返す。
@@ -81,7 +79,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     protected String renderError(String reason) {
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
-        obj.put("reason", reason); 
+        obj.put("reason", reason);
         this.status = 500;
         return renderJSON(obj);
     }
@@ -94,7 +92,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     protected String renderDBError() {
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
-        obj.put("reason", I18n.t(I18n.DATABASE_ERROR)); 
+        obj.put("reason", I18n.t(I18n.DATABASE_ERROR));
         this.status = 500;
         return renderJSON(obj);
     }
@@ -105,41 +103,43 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      */
     protected String renderError(ServerErrorCode errorCode) {
         assert errorCode != null;
-        
+
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
-        obj.put("reason", errorCode.getReasonString()); 
+        obj.put("reason", errorCode.getReasonString());
         this.status = 500;
-        return renderJSON(obj);        
+        return renderJSON(obj);
     }
-    
+
     /**
      * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。
-     * 
-     * Use renderInvalid(UserErrorCode) instead. 
+     *
+     * Use renderInvalid(UserErrorCode) instead.
      */
+    @Override
     @Deprecated
     protected String renderInvalid(String reason) {
         JSONObject obj = new JSONObject();
         obj.put("result", "invalid");
-        obj.put("reason", reason); 
+        obj.put("reason", reason);
         this.status = 400;
-        return renderJSON(obj);        
+        return renderJSON(obj);
     }
-    
+
     /**
      * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。
      */
+    @Override
     protected String renderInvalid(UserErrorCode errorCode) {
         JSONObject obj = new JSONObject();
         obj.put("result", "invalid");
-        obj.put("reason", errorCode.getReasonString()); 
+        obj.put("reason", errorCode.getReasonString());
         this.status = 400;
-        return renderJSON(obj);                
-    }    
-    
+        return renderJSON(obj);
+    }
+
     @Override
     protected String renderLoginRequired() {
         JSONObject obj = new JSONObject();
@@ -161,23 +161,25 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
         return renderJSON(obj);
     }
 
-    
+
     // ----------------------------------------------------------------------
-    // 
-    
+    //
+
     /** return input stream. */
+    @Override
     public InputStream getInputStream() {
         return stream;
     }
-    
+
+    @Override
     public String getContentType() {
         return "text/json";
     }
-    
+
     public int getStatus() {
         return this.status;
     }
-    
+
     public Map<String, String> getHeaders() {
         return this.headers;
     }
