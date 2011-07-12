@@ -1,0 +1,57 @@
+#summary One-sentence summary of this page.
+ ※作成中
+
+= Introduction =
+
+Description to set up [http://www.h2database.com/ H2 database] for Windows.
+
+<wiki:toc max_depth="2" />
+
+= Detail =
+== Install H2 database ==
+
+[http://www.h2database.com/html/download.html Download] and install it.
+
+== Deploy PARTAKE ==
+
+Deploy PARTAKE to Web Application Server like Tomcat6.
+
+== Create administrator and schema ==
+[http://www.h2database.com/html/tutorial.html#tutorial_starting_h2_console Run h2 console] and login as System Administrator like SA.
+Take care that JDBC url means a data file's path.
+http://partake-stat.appspot.com/wiki/loginConsole.png
+
+
+Execute below SQL and create administrator and schema.
+{{{
+CREATE USER partake PASSWORD 'partake';
+ALTER USER partake ADMIN TRUE;
+CREATE SCHEMA partake AUTHORIZATION partake;
+}}}
+
+== Copy library to %CATALINA_HOME%\lib ==
+Copy `h2-<version>.jar` to %CATALINA_HOME%\lib.
+This library is included in H2 database.
+
+== Rewrite persistence.xml ==
+Open \WEB-INF\classes\META-INF\persistence.xml and rewrire *openjpa.ConnectionURL*, *openjpa.ConnectionDriverName* and *openjpa.jdbc.DBDictionary* property.
+If you changed password of partake user, you should also rewrite *openjpa.ConnectionPassword*.
+{{{
+<persistence-unit name="partake">
+  ...
+  <properties>
+    <property name="openjpa.ConnectionURL" value="jdbc:h2:file:C:/work/partake.h2"/>
+    <property name="openjpa.ConnectionDriverName" value="org.h2.Driver"/>
+    <property name="openjpa.ConnectionUserName" value="partake"/>
+    <property name="openjpa.ConnectionPassword" value="partake"/>
+    <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add')" />
+    <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
+
+    <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+    <property name="openjpa.RuntimeUnenhancedClasses" value="unsupported"/>
+    <property name="openjpa.DataCache" value="true"/>
+    <property name="openjpa.QueryCache" value="false"/>
+    <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+  </properties>
+  ...
+}}}
