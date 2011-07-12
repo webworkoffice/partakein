@@ -13,12 +13,12 @@
 	<constant name="struts.enable.SlashesInActionNames" value="true" />
 	<constant name="struts.mapper.alwaysSelectFullNamespace" value="false" />
 	<constant name="struts.action.extension" value=",action,ics,csv" />
-	
+
 	<package name="partake-default" extends="struts-default">
 		<result-types>
 			<result-type name="partake-stream" class="in.partake.controller.PartakeStreamResult" />
 		</result-types>
-	
+
 		<interceptors>
 			<interceptor name="utf8encoding"     class="in.partake.controller.interceptor.UTF8EncodingInterceptor" />
 	    	<interceptor name="authenticate"     class="in.partake.controller.interceptor.LoginRequiredInterceptor" />
@@ -81,7 +81,7 @@
                 <param name="contentType">${contentType}</param>
                 <param name="contentDisposition">${contentDisposition}</param>
                 <param name="bufferSize">1M</param>
-                <param name="allowCaching">true</param>			
+                <param name="allowCaching">true</param>
 			</result>
 			<result name="json" type="partake-stream">
                 <param name="contentType">text/json; charset=utf-8</param>
@@ -89,7 +89,7 @@
                 <param name="allowCaching">false</param>
                 <param name="status">${status}</param>
                 <param name="headers">${headers}</param>
-            </result>			
+            </result>
 		</global-results>
 	</package>
 
@@ -104,7 +104,7 @@
                 <param name="bufferSize">20K</param>
                 <param name="allowCaching">false</param>
 			</result>
-		</global-results>	
+		</global-results>
 	</package>
 
 	<package name="top" namespace="/" extends="partake-default">
@@ -204,6 +204,10 @@
             <result name="success" type="redirect">/</result>
         </action>
         <action name="addFeedIdToAllEvents" method="addFeedIdToAllEvents" class="in.partake.controller.AdministratorController">
+            <interceptor-ref name="adminStack" />
+            <result name="success" type="redirect">/</result>
+        </action>
+        <action name="recreateEventIndex" method="recreateEventIndex" class="in.partake.controller.AdministratorController">
             <interceptor-ref name="adminStack" />
             <result name="success" type="redirect">/</result>
         </action>
@@ -487,7 +491,7 @@
 	<package name="api" namespace="/api" extends="partake-api-default">
 		<action name="search" method="search" class="in.partake.controller.api.search.SearchAction" />
 	</package>
-	
+
 	<package name="debug-api" namespace="/api/debug" extends="partake-api-default">
 		<action name="success" method="success" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="echo" method="echo" class="in.partake.controller.api.debug.DebugAction" />
@@ -498,27 +502,27 @@
 		<action name="errorDB" method="errorDB" class="in.partake.controller.api.debug.DebugAction" />
 		<action name="errorDBException" method="errorDBException" class="in.partake.controller.api.debug.DebugAction" />
 	</package>
-	
+
 	<!-- Account API -->
 	<package name="account-api" namespace="/api/account" extends="partake-api-default">
 		<action name="getSessionToken" method="getSessionToken" class="in.partake.controller.api.account.SessionAction" />
 		<action name="getOpenID" method="getOpenID" class="in.partake.controller.api.account.OpenIDAction" />
 		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.account.OpenIDAction" />
 		<action name="getPreference" method="getPreference" class="in.partake.controller.api.account.PreferenceAction" />
-		<action name="setPreference" method="setPreference" class="in.partake.controller.api.account.PreferenceAction" />		
+		<action name="setPreference" method="setPreference" class="in.partake.controller.api.account.PreferenceAction" />
 	</package>
-	
+
 	<!-- User API -->
 	<package name="user-api" namespace="/api/user" extends="partake-api-default">
 		<action name="get" method="get" class="in.partake.controller.api.user.UserAction" />
 	</package>
 
-	<!-- Event API -->	
+	<!-- Event API -->
 	<package name="event-api" namespace="/api/event" extends="partake-api-default">
 		<action name="get" method="get" class="in.partake.controller.api.event.EventAction" />
 	</package>
-	
-	<!-- Attendance API -->	
+
+	<!-- Attendance API -->
 	<package name="attendance-api" namespace="/api/attendance" extends="partake-api-default">
 		<action name="change" method="change" class="in.partake.controller.api.attendance.AttendanceAction" />
 	</package>
