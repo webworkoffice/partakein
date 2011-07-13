@@ -39,35 +39,40 @@ public class UtilTest {
 	    Assert.assertTrue(Util.isValidHashtag("#hashtag1"));
 	    Assert.assertTrue(Util.isValidHashtag("#hÀshtag"));
 	    Assert.assertTrue(Util.isValidHashtag("＃hashtag"));
+	    Assert.assertTrue(Util.isValidHashtag("#hashタグ"));
+	    Assert.assertTrue(Util.isValidHashtag("#ﾊｯｼｭﾀｸﾞ"));
+	    Assert.assertTrue(Util.isValidHashtag("#À"));
 
 	    Assert.assertFalse(Util.isValidHashtag("#012"));
 	    Assert.assertFalse(Util.isValidHashtag("#hash\\tag"));
 	    Assert.assertFalse(Util.isValidHashtag("#hash-tag"));
-	    Assert.assertFalse(Util.isValidHashtag("#hashタグ"));
-	    Assert.assertFalse(Util.isValidHashtag("#À"));
+	    Assert.assertFalse(Util.isValidHashtag("#らき☆すた"));
+	    Assert.assertFalse(Util.isValidHashtag("#まどか☆マギカ"));
+	    Assert.assertFalse(Util.isValidHashtag("これは#ダメ"));
+	    Assert.assertFalse(Util.isValidHashtag("これも、#ダメ"));
 	}
-	
+
 	@Test
     public void shortenAlphabetTest() {
-        Assert.assertEquals("ABCAB", Util.shorten("ABCAB", 6)); 
-        Assert.assertEquals("ABCABC", Util.shorten("ABCABC", 6)); 
-        Assert.assertEquals("ABC...", Util.shorten("ABCABCD", 6)); 
+        Assert.assertEquals("ABCAB", Util.shorten("ABCAB", 6));
+        Assert.assertEquals("ABCABC", Util.shorten("ABCABC", 6));
+        Assert.assertEquals("ABC...", Util.shorten("ABCABCD", 6));
         Assert.assertEquals("ABC...", Util.shorten("ABCABCDE", 6));
 
-        Assert.assertEquals("", Util.shorten("ABCABC", 0)); 
-        Assert.assertEquals(".", Util.shorten("ABCABC", 1)); 
-        Assert.assertEquals("..", Util.shorten("ABCABC", 2)); 
+        Assert.assertEquals("", Util.shorten("ABCABC", 0));
+        Assert.assertEquals(".", Util.shorten("ABCABC", 1));
+        Assert.assertEquals("..", Util.shorten("ABCABC", 2));
         Assert.assertEquals("...", Util.shorten("ABCABC", 3));
 	}
-	
+
 	@Test
     public void shortenJapaneseTest() {
-        Assert.assertEquals("日本語", Util.shorten("日本語", 6)); 
-        Assert.assertEquals("日本語...", Util.shorten("日本語は難しい", 6)); 
-        Assert.assertEquals("日本語...", Util.shorten("日本語難しすぎ", 6)); 
-        Assert.assertEquals("日本語...", Util.shorten("日本語aほえほえ", 6)); 
+        Assert.assertEquals("日本語", Util.shorten("日本語", 6));
+        Assert.assertEquals("日本語...", Util.shorten("日本語は難しい", 6));
+        Assert.assertEquals("日本語...", Util.shorten("日本語難しすぎ", 6));
+        Assert.assertEquals("日本語...", Util.shorten("日本語aほえほえ", 6));
     }
-	
+
 	@Test
     public void shortenSurrogatePairTest() {
 	    Assert.assertEquals("𠮟𠮟𠮟𠮟𠮟𠮟", Util.shorten("𠮟𠮟𠮟𠮟𠮟𠮟", 6));
@@ -84,7 +89,7 @@ public class UtilTest {
 	public void shortenNegativeValueTest() {
 		Util.shorten("", -1);
 	}
-	
+
 	@Test
 	public void testToRemoveHash() {
 	    Assert.assertEquals(null, Util.removeURLFragment(null));
@@ -136,7 +141,7 @@ public class UtilTest {
 			calendar.clear();
 			calendar.set(Calendar.YEAR, 2010);
 			calendar.set(Calendar.MONTH, 0);
-	
+
 			for (int day = 2; day <= 31; ++day) {
 				calendar.set(Calendar.DAY_OF_MONTH, day);
 				Date now = calendar.getTime();
@@ -205,7 +210,7 @@ public class UtilTest {
 			calendar.clear();
 			calendar.set(Calendar.YEAR, 2010);
 			calendar.set(Calendar.MONTH, 0);
-	
+
 			for (int day = 2; day <= 31; ++day) {
 				calendar.set(Calendar.DAY_OF_MONTH, day);
 				calendar.set(Calendar.HOUR_OF_DAY, 0);

@@ -70,7 +70,7 @@
 	<dd><s:textfield id="url" name="url" cssClass="text-input" /></dd>
 <dt><label for="hashTag">ハッシュタグ</label></dt>
 	<dd><s:textfield id="hashTag" name="hashTag" cssClass="text-input" /><br />
-		<span class="accent">＞</span> twitter で用いる公式ハッシュタグを設定できます。# から始まる英数字、アンダースコアのみの文字列が使用できます。<br />100 文字まで設定できます。</dd>
+		<span class="accent">＞</span> twitter で用いる公式ハッシュタグを設定できます。# から始まる英数字、日本語、アンダースコアなどを含む文字列が使用できます。<br />100 文字まで設定できます。</dd>
 <dt><label for="secret">非公開設定</label>:</dt>
 	<dd><s:checkbox id="secret" name="secret"/>非公開にする<br />
 		<span class="accent">＞</span> 非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</dd>
