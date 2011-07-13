@@ -39,10 +39,10 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 
 // ModelDriven にして annotation を Model の方に書きたいのだが、そのように書くときちんと動いてくれないので、ModelDriven はやめる
-// implements ModelDriven<EventEmbryo> 
+// implements ModelDriven<EventEmbryo>
 public class EventsEditController extends PartakeActionSupport implements Validateable {
 	/** */
-	private static final long serialVersionUID = 1L;			
+	private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(EventsEditController.class);
 
 	private String shortId;     // event short id
@@ -50,27 +50,27 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     private String title;		// event title
     private String summary;     // event summary
     private String category;	// event category
-    
+
     private int syear;
     private int smonth;
     private int sday;
     private int shour;
     private int smin;
-    
+
     private boolean usesEndDate;
 	private int eyear;
     private int emonth;
     private int eday;
     private int ehour;
     private int emin;
-    
+
     private boolean usesDeadline;
     private int dyear;
     private int dmonth;
     private int dday;
     private int dhour;
     private int dmin;
-    
+
     private int capacity;		// how many people can attend?
     private String url;			// URL
     private String place;		// event place
@@ -81,7 +81,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     private boolean secret;	    // true if the event is private.
     private String passcode;	// passcode to show (if not public)
     private String managers;
-	
+
     // 掲載画像
     private boolean removingForeImage;
     private String foreImageId;
@@ -91,23 +91,23 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     private String backImageId;
     private File backImage;
     private String backImageContentType;
-    
+
     // 関連イベント
     // TODO: あーこのへん超汚い。もっときれいな解決策があるはず。
     private String  relatedEventID1, relatedEventID2, relatedEventID3;
     private boolean relatedEventRequired1, relatedEventRequired2, relatedEventRequired3;
     private boolean relatedEventPriority1, relatedEventPriority2, relatedEventPriority3;
-    
-    
-    // NOTE: required for showing jsp. TODO: really? 
+
+
+    // NOTE: required for showing jsp. TODO: really?
     public List<KeyValuePair> getCategories() {
         return EventCategory.CATEGORIES;
     }
-    
+
     @Override
     public void validate() {
     	// annotation で書ききれなかった validation を行う
-    	
+
     	// short id は英数字のみ
     	if (!StringUtils.isEmpty(shortId)) {
     	    if (!shortId.matches("[A-Za-z0-9_]*")) {
@@ -117,20 +117,20 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     	        addFieldError("shortId", "ショート ID は 15 文字以内で入力してください。");
     	    }
     	}
-    	
+
         // カテゴリーのチェック
         if (!EventCategory.isValidCategoryName(category)) {
             addFieldError("category", "不正なカテゴリーが指定されました");
         }
-    	
+
     	// 開始/終了が日付として不正でないかチェック。２月３０日とか...
     	GregorianCalendar calendar = new GregorianCalendar();
     	calendar.set(Calendar.MINUTE, 0);
     	calendar.set(Calendar.MILLISECOND, 0);
-    	
+
     	calendar.setLenient(false);
     	Date sdate = null, edate = null, ddate = null;
-    	
+
     	try {
     		// NOTE: 月は 0 から始まる。
     		calendar.set(syear, smonth - 1, sday, shour, smin, 0);
@@ -140,18 +140,18 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		calendar.get(Calendar.DATE);
     		calendar.get(Calendar.HOUR_OF_DAY);
     		calendar.get(Calendar.MINUTE);
-    		
+
     		sdate = calendar.getTime();
-    		
+
     		// 今より昔のイベントはナシ -- と思ったけどまあ、いいや。これがあると結構うざかった。
 //    		if (sdate.before(new Date())) {
 //        		addFieldError("sday", "開始日時が現在より前です");
 //    		}
-    		
+
     	} catch (IllegalArgumentException e) {
     		addFieldError("sday", "不正な開始日時です");
     	}
-    	
+
     	if (isUsesEndDate()) {
         	try {
         		calendar.set(eyear, emonth - 1, eday, ehour, emin, 0);
@@ -160,7 +160,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         		calendar.get(Calendar.DATE);
         		calendar.get(Calendar.HOUR_OF_DAY);
         		calendar.get(Calendar.MINUTE);
-        		
+
         		// この時点で edate のチェックは終わりなので、sdate <= edate をここでチェックできるはず
         		edate = calendar.getTime();
         		if (sdate != null && edate != null) {
@@ -172,7 +172,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         		addFieldError("eyear", "不正な終了日時です");
         	}
     	}
-    	
+
     	// deadline の設定
     	if (isUsesDeadline()) {
         	try {
@@ -182,7 +182,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         		calendar.get(Calendar.DATE);
         		calendar.get(Calendar.HOUR_OF_DAY);
         		calendar.get(Calendar.MINUTE);
-        		
+
         		// deadline は、開始日時より前でなければならない。
         		ddate = calendar.getTime();
         		if (sdate != null && ddate != null) {
@@ -193,30 +193,30 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         	} catch (IllegalArgumentException e) {
         		addFieldError("dyear", "不正な締切日時です");
         	}
-    	}    	
-    	
-    	
+    	}
+
+
     	// secret が設定されているのに passcode が空であってはならない。
     	if (isSecret()) {
     		if (StringUtils.isEmpty(getPasscode())) {
     			addFieldError("passcode", "パスコードが空です");
     		}
     	} else {
-    		
+
     	}
-    	
+
     	if (!StringUtils.isEmpty(url)) {
     		// OK if the url starts with http or https.
     		if (!url.startsWith("http://") && !url.startsWith("https://")) {
     			addFieldError("url", "URL が不正です");
     		}
     	}
-    	
+
     	// hashtag は # から始まり、 a-zA-Z0-9_- のいずれかで構成されているべき
     	if (!StringUtils.isEmpty(hashTag) && !Util.isValidHashtag(hashTag)) {
-    		addFieldError("hashtag", "ハッシュタグは # から始まる英数字のみが指定できます。");
+    		addFieldError("hashtag", "ハッシュタグは # から始まる英数字や日本語が指定できます。記号は使えません。");
     	}
-    	
+
     	// EventRelation は、同じ eventId が複数でてはならない
     	{
     	    Set<String> set = new HashSet<String>();
@@ -231,16 +231,16 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	            }
     	    }
     	}
-    	
-    	
+
+
     	// TODO: 画像のチェック？
-    	
+
     	super.validate();
     }
-    
+
     // ------------------------------
     // 新しい event を作成
-    
+
 	// GET /orders/new
     @SkipValidation
     public String editNew() {
@@ -252,11 +252,11 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		sday   = eday   = dday   = oneDayAfter.get(Calendar.DAY_OF_MONTH);
 		shour  = ehour  = dhour  = oneDayAfter.get(Calendar.HOUR_OF_DAY);
 		smin   = emin   = dmin   = 0;
-		
+
     	return INPUT;
     }
 
-    
+
     // POST /events/create
 	// TODO: create と update の関数が似ているので結構マージ出来るはず。
     public String create() {
@@ -266,7 +266,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 
     	calendar.set(syear, smonth - 1, sday, shour, smin, 0);
     	Date beginDate = calendar.getTime();
-    	
+
     	Date endDate;
     	if (usesEndDate) {
     		calendar.set(eyear, emonth - 1, eday, ehour, emin, 0);
@@ -274,7 +274,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     	} else {
     		endDate = null;
     	}
-    	
+
     	Date deadline;
     	if (usesDeadline) {
     		calendar.set(dyear, dmonth - 1, dday, dhour, dmin, 0);
@@ -282,30 +282,30 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     	} else {
     		deadline = null;
     	}
-    	
+
     	// login しているはずなので owner が null なことはないはず
-        UserEx owner = getLoginUser(); 
+        UserEx owner = getLoginUser();
         if (owner == null) { return ERROR; }
-        
+
         Date createdAt = new Date(); // now.
-        
+
         // image を生成
         BinaryData foreImageEmbryo = createBinaryDataEmbryo(foreImage, foreImageContentType);
         BinaryData backImageEmbryo = createBinaryDataEmbryo(backImage, backImageContentType);
-        
+
         // TODO: preview を仕様に組み込む
         Event embryo = new Event(
         		shortId, title, summary, category, deadline, beginDate, endDate, capacity, url, place, address, description,
         		hashTag, owner.getId(), managers,
         		secret, passcode, false, false, createdAt, null
         );
-                
+
         try {
         	this.eventId = EventService.get().create(embryo, foreImageEmbryo, backImageEmbryo);
         	embryo.setId(this.eventId);
-        	
+
             // TODO: これはひどい
-            // related event を登録        
+            // related event を登録
             List<EventRelation> eventRelations = new ArrayList<EventRelation>();
             Set<EventRelationPK> eventRelationPKs = new HashSet<EventRelationPK>();
             if (!StringUtils.isEmpty(relatedEventID1) && !eventRelationPKs.contains(new EventRelationPK(eventId, Util.removeURLFragment(relatedEventID1)))) {
@@ -320,9 +320,9 @@ public class EventsEditController extends PartakeActionSupport implements Valida
                 eventRelations.add(new EventRelation(eventId, Util.removeURLFragment(relatedEventID3), relatedEventRequired3, relatedEventPriority3));
                 eventRelationPKs.add(new EventRelationPK(eventId, Util.removeURLFragment(relatedEventID1)));
             }
-            
+
         	EventService.get().setEventRelations(eventId, eventRelations);
-        	
+
         	addActionMessage("新しいイベントが作成されました。");
         	return SUCCESS;
         } catch (DAOException e) {
@@ -330,42 +330,42 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         	return ERROR;
         }
     }
-    
+
     // event を edit
 	@SkipValidation
 	public String edit() {
 	    UserEx partakeUser = getLoginUser();
         if (partakeUser == null) { return LOGIN; }
-	    
+
         EventEx event;
         List<EventRelation> eventRelations;
 		try {
 		    if (eventId == null) { return ERROR; }
 			event = EventService.get().getEventExById(eventId);
 			if (event == null) { return NOT_FOUND; }
-			eventRelations = EventService.get().getEventRelations(eventId);			
+			eventRelations = EventService.get().getEventRelations(eventId);
         } catch (DAOException e) {
             e.printStackTrace();
             return ERROR;
         }
-        
+
 		// check permission
 		if (!event.hasPermission(partakeUser, UserPermission.EVENT_EDIT)) { return PROHIBITED; }
-		
+
 		// event から data を copy して input
 		copyFromEvent(event);
 		copyFromEventRelation(eventRelations);
 
-		// TODO: edate, ddate はなんとかきれいにしてあげたい。		
-		
+		// TODO: edate, ddate はなんとかきれいにしてあげたい。
+
 		return INPUT;
 	}
-	
+
 	// event を edit して commit
 	public String commit() {
 	    UserEx user = getLoginUser();
 		if (user == null) { return LOGIN; }
-    	
+
     	EventEx event;
     	try {
     	    if (eventId == null) { return ERROR; }
@@ -375,15 +375,15 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		e.printStackTrace();
     		return ERROR;
     	}
-    	
+
     	// check permission
     	if (!event.hasPermission(user, UserPermission.EVENT_EDIT)) { return PROHIBITED; }
-    	
+
     	GregorianCalendar calendar = new GregorianCalendar();
     	calendar.set(syear, smonth - 1, sday, shour, smin, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
     	Date beginDate = calendar.getTime();
-    	
+
     	Date endDate;
     	if (usesEndDate) {
     		calendar.set(eyear, emonth - 1, eday, ehour, emin, 0);
@@ -392,7 +392,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     	} else {
     		endDate = null;
     	}
-    	
+
     	Date deadline;
     	if (usesDeadline) {
     		calendar.set(dyear, dmonth - 1, dday, dhour, dmin, 0);
@@ -401,8 +401,8 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     	} else {
     		deadline = null;
     	}
-    	
-    	// 
+
+    	//
     	try {
     		Date now = new Date();
     		BinaryData foreImageEmbryo = createBinaryDataEmbryo(foreImage, foreImageContentType);
@@ -415,7 +415,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        );
 
 	        // TODO: これはひどい
-	        // related event を登録        
+	        // related event を登録
 	        List<EventRelation> eventRelations = new ArrayList<EventRelation>();
 	        Set<EventRelationPK> eventRelationPKs = new HashSet<EventRelationPK>();
 	        if (!StringUtils.isEmpty(relatedEventID1) && !eventRelationPKs.contains(new EventRelationPK(event.getId(), Util.removeURLFragment(relatedEventID1)))) {
@@ -432,10 +432,10 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	        }
 
 	        EventService.get().update(event, eventEmbryo,
-	        		foreImageEmbryo != null || removingForeImage, foreImageEmbryo, 
+	        		foreImageEmbryo != null || removingForeImage, foreImageEmbryo,
 	        		backImageEmbryo != null || removingBackImage, backImageEmbryo);
 	        EventService.get().setEventRelations(event.getId(), eventRelations);
-	        
+
         	addActionMessage("イベント情報が変更されました。");
         	this.eventId = event.getId();
         	return SUCCESS;
@@ -444,25 +444,25 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         	return ERROR;
         }
 	}
-	
+
     // POST /events/destroy
 	// destroy の時は validation する必要がない
 	@SkipValidation
     public String destroy() {
 	    UserEx user = getLoginUser();
 	    if (user == null) { return LOGIN; }
-	    
+
 	    if (eventId == null) { return ERROR; }
-	    
+
 	    EventEx event;
 	    try {
     	    event = EventService.get().getEventExById(eventId);
-    	    
+
             if (event == null) { return NOT_FOUND; }
             if (!event.hasPermission(user, UserPermission.EVENT_REMOVE)) { return PROHIBITED; }
-            
+
             EventService.get().remove(eventId);
-            
+
             return SUCCESS;
         } catch (DAOException e) {
             logger.warn("destroy() failed.", e);
@@ -471,7 +471,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     }
 
 	// ----------------------------------------------------------------------
-	
+
 	private BinaryData createBinaryDataEmbryo(File imageFile, String contentType) {
 		BinaryData imageEmbryo = null;
         try {
@@ -482,17 +482,17 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         		} else {
         			imageEmbryo = new BinaryData(contentType, foreImageByteArray);
         		}
-        		
+
         	}
         } catch (IOException e) {
         	e.printStackTrace();
         	imageEmbryo = null;
         }
-        
+
         return imageEmbryo;
 	}
-	
-	
+
+
     // ======================================================================
     // setter and getters
 
@@ -501,24 +501,24 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	// copy constructor でなんとかなりませんか。
 	private void copyFromEvent(Event event) {
 		assert (event != null);
-		
+
 		this.shortId = event.getShortId();
 		this.eventId = event.getId();
 		this.title = event.getTitle();
 		this.summary = event.getSummary();
 		this.category = event.getCategory();
-		
+
 		{
 			Calendar date = new GregorianCalendar();
 			date.setTime(event.getBeginDate());
-			
+
 			this.syear = date.get(Calendar.YEAR);
 			this.smonth = date.get(Calendar.MONTH) + 1;
 			this.sday = date.get(Calendar.DATE);
 			this.shour = date.get(Calendar.HOUR_OF_DAY);
 			this.smin = date.get(Calendar.MINUTE);
 		}
-		
+
 		Date oneDayAfter = new Date(PDate.getCurrentTime() + 1000 * 3600 * 24);
 		{
 			this.usesEndDate = event.getEndDate() != null;
@@ -534,7 +534,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 			this.ehour = date.get(Calendar.HOUR_OF_DAY);
 			this.emin = date.get(Calendar.MINUTE);
 		}
-		
+
 		{
 			this.usesDeadline = (event.getDeadline() != null);
 			Calendar date = new GregorianCalendar();
@@ -564,7 +564,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		this.passcode = event.getPasscode();
 		this.hashTag = event.getHashTag();
 	}
-	
+
 	private void copyFromEventRelation(List<EventRelation> eventRelations) {
 		// TODO: これは本当にひどい。目が腐る。みちゃだめー！！！
 		if (eventRelations.size() >= 1) {
@@ -585,10 +585,10 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 			relatedEventPriority3 = eventRelations.get(2).hasPriority();
 		}
 	}
-	
+
     // ======================================================================
     // setter and getters
-	
+
     public String getEventId() {
 		return eventId;
 	}
@@ -596,15 +596,15 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     public String getShortId() {
         return shortId;
     }
-    
+
 	public String getTitle() {
 		return title;
 	}
-	
+
 	public String getSummary() {
 		return summary;
 	}
-	
+
 	public String getCategory() {
 		return category;
 	}
@@ -632,7 +632,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public int getSmin() {
 		return smin;
 	}
-	
+
 	// TODO: 英語おかしいんだけどこうしないとちゃんと取ってこれないのよねえ。field 名変えたい
 	// TODO: isUsing だったらよかったのに
     public boolean isUsesEndDate() {
@@ -662,7 +662,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public int getEmin() {
 		return emin;
 	}
-	
+
     public boolean isUsesDeadline() {
 		return usesDeadline;
 	}
@@ -702,7 +702,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public String getPlace() {
 		return place;
 	}
-	
+
 	public String getAddress() {
 		return address;
 	}
@@ -710,7 +710,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public String getHashTag() {
 		return hashTag;
 	}
@@ -726,35 +726,35 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public String getPasscode() {
 		return passcode;
 	}
-	
+
 	public String getManagers() {
 	    return managers;
 	}
-	
+
 	public String getForeImageId() {
 		return foreImageId;
 	}
-	
+
 	public File getForeImage() {
 		return foreImage;
 	}
-	
+
 	public String getForeImageContentType() {
 		return foreImageContentType;
 	}
-	
+
 	public String getBackImageId() {
 		return backImageId;
 	}
-	
+
 	public File getBackImage() {
 		return backImage;
 	}
-	
+
 	public String getBackImageContentType() {
 		return backImageContentType;
 	}
-	
+
 	public boolean isRemovingForeImage() {
 		return removingForeImage;
 	}
@@ -762,11 +762,11 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public boolean isRemovingBackImage() {
 		return removingBackImage;
 	}
-	
+
 	public String getRelatedEventID1() { return relatedEventID1; }
 	public String getRelatedEventID2() { return relatedEventID2; }
 	public String getRelatedEventID3() { return relatedEventID3; }
-	
+
 	public boolean getRelatedEventRequired1() { return relatedEventRequired1; }
 	public boolean getRelatedEventRequired2() { return relatedEventRequired2; }
 	public boolean getRelatedEventRequired3() { return relatedEventRequired3; }
@@ -774,14 +774,14 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public boolean getRelatedEventPriority1() { return relatedEventPriority1; }
 	public boolean getRelatedEventPriority2() { return relatedEventPriority2; }
 	public boolean getRelatedEventPriority3() { return relatedEventPriority3; }
-	
+
 	// ----------------------------------------------------------------------
 	// setters
-	
+
 	public void setEventId(String eventId) {
 		this.eventId = eventId;
 	}
-	
+
 	public void setShortId(String shortId) {
 	    this.shortId = shortId;
 	}
@@ -792,12 +792,12 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public void setTitle(String title) {
     	this.title = title;
 	}
-	
+
     @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "100", message = "概要のながさは 100 文字以下です")
 	public void setSummary(String summary) {
 		this.summary = summary;
 	}
-    
+
     @RequiredFieldValidator(type = ValidatorType.FIELD, message = "カテゴリの指定が必要です")
     public void setCategory(String category) {
     	this.category = category;
@@ -893,7 +893,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 		this.dmin = dmin;
 	}
 
-    
+
     @RequiredFieldValidator(type = ValidatorType.FIELD, message = "参加人数の上限の設定が必要です")
     @IntRangeFieldValidator(type = ValidatorType.FIELD, min = "0", max = "1000", message = "参加人数の上限の定数が範囲外です")
 	public void setCapacity(int capacity) {
@@ -909,23 +909,23 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public void setPlace(String place) {
 		this.place = place;
 	}
-    
+
     @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "100", message = "住所は100文字以下で記入してください")
 	public void setAddress(String address) {
 		this.address = address;
 	}
-    
+
 
     @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "50000", message = "説明は(HTMLのタグを含めて)50000文字以下で記入してください")
 	public void setDescription(String description) {
 		this.description = description;
 	}
-    
+
     @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "100", message = "ハッシュタグは１００文字以内で記述してください")
 	public void setHashTag(String hashTag) {
-    	this.hashTag = hashTag;		
+    	this.hashTag = hashTag;
 	}
-    
+
 
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
@@ -940,28 +940,28 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public void setPasscode(String passcode) {
 		this.passcode = passcode;
 	}
-    
+
     @StringLengthFieldValidator(type = ValidatorType.FIELD, maxLength = "120", message = "マネージャーが多すぎます。")
     public void setManagers(String managers) {
         this.managers = managers;
     }
-    
+
 	public void setForeImage(File foreImage) {
 		this.foreImage = foreImage;
 	}
-	
+
 	public void setForeImageContentType(String foreImageContentType) {
 		this.foreImageContentType = foreImageContentType;
 	}
-	
+
 	public void setBackImage(File backImage) {
 		this.backImage = backImage;
 	}
-	
+
 	public void setBackImageContentType(String backImageContentType) {
 		this.backImageContentType = backImageContentType;
 	}
-	
+
 	public void setRemovingForeImage(boolean removingForeImage) {
 		this.removingForeImage = removingForeImage;
 	}
@@ -969,11 +969,11 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 	public void setRemovingBackImage(boolean removingBackImage) {
 		this.removingBackImage = removingBackImage;
 	}
-	
+
 	public void setRelatedEventID1(String id) { relatedEventID1 = id; }
 	public void setRelatedEventID2(String id) { relatedEventID2 = id; }
 	public void setRelatedEventID3(String id) { relatedEventID3 = id; }
-	
+
 	public void setRelatedEventRequired1(boolean b) { relatedEventRequired1 = b; }
 	public void setRelatedEventRequired2(boolean b) { relatedEventRequired2 = b; }
 	public void setRelatedEventRequired3(boolean b) { relatedEventRequired3 = b; }
