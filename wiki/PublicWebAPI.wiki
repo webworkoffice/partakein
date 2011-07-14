@@ -107,7 +107,7 @@ TBW
 
 == イベントの登録 == 
 
-`/api/event/register`
+`/api/event/create`
 
 TBW
 
