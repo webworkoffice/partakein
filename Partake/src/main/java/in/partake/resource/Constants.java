@@ -73,6 +73,8 @@ public final class Constants {
     
     public static final String ATTR_QUESTIONNAIRES = "QUESTIONNAIRES";
     
+    public static final String ATTR_BOOKMARK_COUNT = "BOOKMARK_COUNT";
+    
     private Constants() {
     	// prevent from instantiation.
     }

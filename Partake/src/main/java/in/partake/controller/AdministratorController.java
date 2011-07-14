@@ -2,8 +2,10 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.HatenaDao;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.resource.Constants;
 import in.partake.resource.I18n;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
@@ -23,8 +25,13 @@ public class AdministratorController extends PartakeActionSupport {
 
     public String index() throws PartakeResultException {
         ensureAdmin();
-		return SUCCESS;
-	}
+
+        HatenaDao dao = new HatenaDao();
+        int bookmarkCount = dao.getTotalBookmarkCount(PartakeProperties.get().getTopPath() + '/');
+        attributes.put(Constants.ATTR_BOOKMARK_COUNT, Integer.valueOf(bookmarkCount));
+
+        return SUCCESS;
+    }
 
     public String show() throws PartakeResultException {
         ensureAdmin();
