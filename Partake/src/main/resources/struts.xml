@@ -373,11 +373,11 @@
 		</action>
 
 		<!-- Questionnaire -->
-		<action name="editQuestionnaire" method="edit" class="in.partake.controller.action.QuestionnaireController">
+		<action name="editQuestionnaire" method="edit" class="in.partake.controller.QuestionnaireController">
 			<interceptor-ref name="authenticateStack" />
 			<result name="success">/WEB-INF/events/questionnaire/edit.jsp</result>
 		</action>
-		<action name="makeQuestionnaire" method="commit" class="in.partake.controller.action.QuestionnaireController">
+		<action name="makeQuestionnaire" method="commit" class="in.partake.controller.QuestionnaireController">
 			<interceptor-ref name="checkTokenStack" />
 			<result name="success" type="redirectAction">
 				<param name="actionName">${eventId}</param>
