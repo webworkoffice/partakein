@@ -3,6 +3,7 @@ package in.partake.controller.interceptor;
 import in.partake.controller.PartakeActionSupport;
 import in.partake.controller.PartakeInvalidResultException;
 import in.partake.resource.Constants;
+import in.partake.servlet.PartakeSession;
 import in.partake.util.security.CSRFPrevention;
 
 import com.opensymphony.xwork2.ActionInvocation;
@@ -13,7 +14,10 @@ public class CSRFTokenCheckInterceptor extends PartakeAbstractInterceptor {
 
     @Override
     public String intercept(ActionInvocation invocation) throws Exception {
-        CSRFPrevention prevention = (CSRFPrevention) invocation.getInvocationContext().getSession().get(Constants.ATTR_CSRF_PREVENTION);
+        PartakeSession session = getSession(invocation);
+        if (session == null) { return PartakeActionSupport.ERROR; }
+        
+        CSRFPrevention prevention = session.getCSRFPrevention(); 
         if (prevention == null) { return PartakeActionSupport.ERROR; }
         
         String sessionToken = getParameter(Constants.ATTR_PARTAKE_TOKEN);

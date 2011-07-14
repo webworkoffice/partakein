@@ -62,9 +62,10 @@ public final class Helper {
 
     /** CSRF 対策用の token を発行。*/
     public static String sessionTokenInputTag() {
-        Map<String, Object> session = ServletActionContext.getContext().getSession();
-        CSRFPrevention prevention = (CSRFPrevention) session.get(Constants.ATTR_CSRF_PREVENTION);
-
+        PartakeSession session = (PartakeSession) ServletActionContext.getContext().getSession().get(Constants.ATTR_PARTAKE_SESSION);
+        assert session != null;
+        
+        CSRFPrevention prevention = session.getCSRFPrevention(); 
         assert (prevention != null);
 
         String tokenInput  = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_TOKEN, prevention.getSessionToken());
@@ -73,11 +74,12 @@ public final class Helper {
 
     /** 重複チェック用の onetime token を発行 */
     public static String onetimeTokenInputTag() {
-        Map<String, Object> session = ServletActionContext.getContext().getSession();
-        CSRFPrevention prevention = (CSRFPrevention) session.get(Constants.ATTR_CSRF_PREVENTION);
-
+        PartakeSession session = (PartakeSession) ServletActionContext.getContext().getSession().get(Constants.ATTR_PARTAKE_SESSION);
+        assert session != null;
+        
+        CSRFPrevention prevention = session.getCSRFPrevention(); 
         assert (prevention != null);
-
+        
         String onetimeInput = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_ONETIME_TOKEN, prevention.issueOnetimeToken());
 
         return onetimeInput;

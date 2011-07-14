@@ -26,11 +26,10 @@ public final class Constants {
     public static final String ATTR_SHOWING_USER = "user_showing"; // user (for show())
     public static final String ATTR_ERRORMSGS = "errormsg";	// List<String>
     
-    @Deprecated
-    public static final String ATTR_CSRF_PREVENTION = "csrf_prevention_token";
-    @Deprecated
+    // PartakeSession から取得するように変更すること。
+//    @Deprecated
+//    public static final String ATTR_CSRF_PREVENTION = "csrf_prevention_token";
     public static final String ATTR_PARTAKE_TOKEN = "partake.token";
-    @Deprecated
     public static final String ATTR_PARTAKE_ONETIME_TOKEN = "partake.onetime.token";
     
     /** error が発生した場合の詳細を説明するために用いる */
