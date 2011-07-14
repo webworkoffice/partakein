@@ -10,27 +10,15 @@ import in.partake.util.security.CSRFPrevention;
 public class PartakeSession {
     private CSRFPrevention csrfPrevention;
     
-    public PartakeSession() {
-        // Do nothing for while.
+    private PartakeSession(CSRFPrevention prevention) {
+        this.csrfPrevention = prevention;
     }
     
     public static PartakeSession createInitialPartakeSession() {
-        PartakeSession session = new PartakeSession();
-        
-        session.csrfPrevention = new CSRFPrevention();
-        
-        return session;
+        return new PartakeSession(new CSRFPrevention());
     }
     
-    // NOTE: setCSRFPrevention を自分で呼ばずに、createInitialPartakeSession() を用いること。
-    @Deprecated
-    public void setCSRFPrevention(CSRFPrevention prevention) {
-        this.csrfPrevention = prevention;
-    }
-
     public CSRFPrevention getCSRFPrevention() {
         return this.csrfPrevention;
     }
-    
-    
 }

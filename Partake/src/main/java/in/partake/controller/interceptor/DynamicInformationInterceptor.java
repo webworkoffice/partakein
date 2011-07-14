@@ -39,7 +39,7 @@ public class DynamicInformationInterceptor extends AbstractInterceptor {
 		
 		// create PartakeSession & PartakePageAttribute
 		if (context.getSession() != null && !context.getSession().containsKey(Constants.ATTR_PARTAKE_SESSION)) {
-		    PartakeSession partakeSession = new PartakeSession();
+		    PartakeSession partakeSession = PartakeSession.createInitialPartakeSession();
 		    context.getSession().put(Constants.ATTR_PARTAKE_SESSION, partakeSession);
 		}
 		if (ServletActionContext.getRequest().getAttribute(Constants.ATTR_PARTAKE_PAGE_ATTRIBUTE) == null) {

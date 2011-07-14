@@ -10,8 +10,8 @@ import java.util.LinkedHashSet;
  *  CSRF 対策には、sessionToken を付与し、token check を行う。
  *  二重投稿の防止には、onetime token を付与し、token が複数回使われていると invalid token 扱いとする。
  *    onetime token は使われているかどうかしかチェックしない。
- * @author shinyak
  *
+ * @author shinyak
  */
 public final class CSRFPrevention {
     private String sessionToken;

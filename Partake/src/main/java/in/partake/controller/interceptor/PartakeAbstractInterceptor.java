@@ -4,7 +4,6 @@ import in.partake.controller.PartakeInvalidResultException;
 import in.partake.controller.PartakeResultException;
 import in.partake.resource.Constants;
 import in.partake.servlet.PartakeSession;
-import in.partake.util.security.CSRFPrevention;
 
 import java.util.Map;
 
