@@ -2,12 +2,16 @@ package in.partake.controller.interceptor;
 
 import in.partake.controller.PartakeInvalidResultException;
 import in.partake.controller.PartakeResultException;
+import in.partake.resource.Constants;
+import in.partake.servlet.PartakeSession;
+import in.partake.util.security.CSRFPrevention;
 
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
 public abstract class PartakeAbstractInterceptor extends AbstractInterceptor {
@@ -37,6 +41,13 @@ public abstract class PartakeAbstractInterceptor extends AbstractInterceptor {
             logger.warn("shouldn't happen.");
             return null;
         }
+    }
+    
+    protected PartakeSession getSession(ActionInvocation invocation) {
+         Map<String, Object> session = invocation.getInvocationContext().getSession();
+         assert session != null;
+         
+         return (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
     }
 
 }
