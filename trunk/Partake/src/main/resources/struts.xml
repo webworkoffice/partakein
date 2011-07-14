@@ -25,7 +25,6 @@
 	    	<interceptor name="adminAuth"        class="in.partake.controller.interceptor.AdminRequiredInterceptor" />
 	    	<interceptor name="dynamicInfo"      class="in.partake.controller.interceptor.DynamicInformationInterceptor" />
 	    	<interceptor name="exceptionHandler" class="in.partake.controller.interceptor.PartakeExceptionInterceptor" />
-	    	<interceptor name="csrfToken"        class="in.partake.controller.interceptor.CSRFTokenInterceptor" />
 	    	<interceptor name="csrfTokenCheck"   class="in.partake.controller.interceptor.CSRFTokenCheckInterceptor" />
 
 	    	<interceptor-stack name="partakeBaseStack">
@@ -35,7 +34,6 @@
 	    		</interceptor-ref>
 	    		<interceptor-ref name="dynamicInfo" />
 	    		<interceptor-ref name="defaultStack" />
-	    		<interceptor-ref name="csrfToken" />
 	    	</interceptor-stack>
 
 	    	<interceptor-stack name="partakeStack">
