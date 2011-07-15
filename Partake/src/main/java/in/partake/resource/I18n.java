@@ -13,10 +13,6 @@ import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
 public class I18n {
-    // Use ServerErrorCode instead.
-    @Deprecated
-    public static final String DATABASE_ERROR = "in.partake.database_error";
-    
     private static I18n instance = new I18n();
     
     private ResourceBundle jaBundle;

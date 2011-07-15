@@ -2,7 +2,6 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.resource.I18n;
 import in.partake.service.UserService;
 
 import org.apache.log4j.Logger;
@@ -22,19 +21,14 @@ public class UserFeedController extends PartakeActionSupport {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(UserFeedController.class);
 
-    public String feed() {
-        try {
-            String feedId = getParameter("feedId");
-            if (feedId == null) { return INVALID; }
-            
-            // NOTE: feedId と calendarId は同じにしてある。
-            UserEx user = UserService.get().getUserFromCalendarId(feedId);
-            if (user == null) { return INVALID; }
-            
-            throw new RuntimeException("Not implemented yet");
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            return ERROR;
-        }
+    public String feed() throws DAOException {
+        String feedId = getParameter("feedId");
+        if (feedId == null) { return INVALID; }
+        
+        // NOTE: feedId と calendarId は同じにしてある。
+        UserEx user = UserService.get().getUserFromCalendarId(feedId);
+        if (user == null) { return INVALID; }
+        
+        throw new RuntimeException("Not implemented yet");
     }
 }

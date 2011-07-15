@@ -3,6 +3,7 @@ package in.partake.controller.interceptor;
 import in.partake.controller.PartakeInvalidResultException;
 import in.partake.controller.PartakeResultException;
 import in.partake.resource.Constants;
+import in.partake.resource.UserErrorCode;
 import in.partake.servlet.PartakeSession;
 
 import java.util.Map;
@@ -17,8 +18,13 @@ public abstract class PartakeAbstractInterceptor extends AbstractInterceptor {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(PartakeAbstractInterceptor.class);
 
+    @Deprecated
     protected void returnInvalid(String why) throws PartakeResultException {
         throw new PartakeInvalidResultException(why);
+    }
+    
+    protected void returnInvalid(UserErrorCode errorCode) throws PartakeResultException {
+        throw new PartakeInvalidResultException(errorCode);
     }
     
     // 最初の parameter を取る utility function.

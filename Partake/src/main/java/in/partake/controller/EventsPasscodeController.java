@@ -2,7 +2,6 @@ package in.partake.controller;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
-import in.partake.resource.I18n;
 import in.partake.service.EventService;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,34 +19,26 @@ public class EventsPasscodeController extends PartakeActionSupport implements Va
 	private String passcode;
 	
 	// /events/passcode
-	public String passcode() {
-	    try {
-	        if (passcode == null) {
-	            return INPUT;
-	        }
-	        
-	        Event event = EventService.get().getEventById(eventId);
-	        if (event == null) {
-	            logger.info("無効な eventId です。");
-	            return ERROR;
-	        }
-	        
-            String pass = StringUtils.trim(passcode);
-            
-            if (!pass.equals(event.getPasscode())) {
-                addWarningMessage("passcode が一致しませんでした。");
-                return INPUT;
-            }
-            
-            session.put("event:" + eventId, passcode);
-            return SUCCESS;
-	    } catch (DAOException e) {
-            logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
-            addActionError(I18n.t(I18n.DATABASE_ERROR));
+	public String passcode() throws DAOException {
+	    if (passcode == null) {
+	        return INPUT;
 	    }
-	    
-		session.put("event:" + eventId, passcode);
-		return SUCCESS;
+
+	    Event event = EventService.get().getEventById(eventId);
+	    if (event == null) {
+	        logger.info("無効な eventId です。");
+	        return ERROR;
+	    }
+
+	    String pass = StringUtils.trim(passcode);
+
+	    if (!pass.equals(event.getPasscode())) {
+	        addWarningMessage("passcode が一致しませんでした。");
+	        return INPUT;
+	    }
+
+	    session.put("event:" + eventId, passcode);
+	    return SUCCESS;
 	}
 	
 	@Override

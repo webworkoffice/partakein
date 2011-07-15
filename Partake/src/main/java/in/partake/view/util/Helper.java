@@ -19,8 +19,6 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.owasp.validator.html.AntiSamy;

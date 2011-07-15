@@ -40,7 +40,7 @@ public class AttendanceAction extends PartakeAPIActionSupport {
         // To prevent CSRF, we should check token.
         String token = getParameter("sessionToken");
         if (!getPartakeSession().getCSRFPrevention().isValidSessionToken(token)) {
-            return renderInvalid("Session token is invalid");
+            return renderInvalid(UserErrorCode.INVALID_SESSION);
         }
         
         EventEx event = EventService.get().getEventExById(eventId);

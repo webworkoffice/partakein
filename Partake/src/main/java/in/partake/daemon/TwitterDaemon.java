@@ -1,8 +1,8 @@
 package in.partake.daemon;
 
 import in.partake.model.dao.DAOException;
-import in.partake.resource.I18n;
 import in.partake.resource.PartakeProperties;
+import in.partake.resource.ServerErrorCode;
 import in.partake.service.MessageService;
 
 import java.util.Timer;
@@ -18,44 +18,37 @@ class TwitterDaemonTask extends TimerTask {
     public void run() {
         if (PartakeProperties.get().isEnabledTwitterDaemon()) {
             logger.info("TWITTER DAEMON TASK START.");
-            runTwitterReminderTask();
-            runStatusChangeTask();
-            runTwitterMessageSendingTask();
+            try {
+                runTwitterReminderTask();
+                runStatusChangeTask();
+                runTwitterMessageSendingTask();
+            } catch (DAOException e) {
+                // run() には DAOException を出させたくない
+                logger.warn(ServerErrorCode.DB_ERROR, e);
+            }
             logger.info("TWITTER DAEMON TASK END.");
         } else {
             logger.debug("Twitter daemon task is disabled.");
         }
     }
     
-    private void runTwitterReminderTask() {
+    private void runTwitterReminderTask() throws DAOException {
         logger.info("TwitterReminderTask START");
-        try {
-            MessageService.get().sendReminders();
-        } catch (DAOException e) {
-            logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
-        }
+        MessageService.get().sendReminders();
         logger.info("TwitterReminderTask END");
     }
     
-    private void runStatusChangeTask() {
+    private void runStatusChangeTask() throws DAOException {
         logger.info("ParticipationStatusChangeTask START.");
 
-        try {
-            MessageService.get().sendParticipationStatusChangeNotifications();
-        } catch (DAOException e) {
-            logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
-        }     
+        MessageService.get().sendParticipationStatusChangeNotifications();
         logger.info("ParticipationStatusChangeTask END.");
     }
     
     
-    private void runTwitterMessageSendingTask() {
+    private void runTwitterMessageSendingTask() throws DAOException {
         logger.info("DirectMessageSendingTask START");
-        try {
-            MessageService.get().sendEnvelopes();
-        } catch (DAOException e) {
-            logger.warn(I18n.t(I18n.DATABASE_ERROR), e);
-        }        
+        MessageService.get().sendEnvelopes();
         logger.info("DirectMessageSendingTask END");
     }
 }

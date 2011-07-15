@@ -4,7 +4,7 @@ import in.partake.controller.PartakeInvalidResultException;
 import in.partake.controller.PartakeResultException;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
-import in.partake.resource.I18n;
+import in.partake.resource.ServerErrorCode;
 
 import org.apache.log4j.Logger;
 
@@ -26,7 +26,7 @@ public class PartakeExceptionInterceptor extends AbstractInterceptor {
             logger.error("Uncaught Runtime Exception", e);
             return "error";
         } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
+            logger.error(ServerErrorCode.DB_ERROR.getReasonString(), e);
             return "error";
         } catch (PartakeInvalidResultException e) {
             // invalid は redirect がはいるので、session に保持しておく
