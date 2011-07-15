@@ -1,5 +1,12 @@
 package in.partake.controller;
 
+import in.partake.model.UserEx;
+import in.partake.model.dao.DAOException;
+import in.partake.model.dto.User;
+import in.partake.resource.Constants;
+import in.partake.resource.PartakeProperties;
+import in.partake.service.UserService;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,21 +23,13 @@ import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
 import org.openid4java.message.ParameterList;
 
-import in.partake.model.UserEx;
-import in.partake.model.dao.DAOException;
-import in.partake.model.dto.User;
-import in.partake.resource.Constants;
-import in.partake.resource.I18n;
-import in.partake.resource.PartakeProperties;
-import in.partake.service.UserService;
-
-import com.opensymphony.xwork2.ActionContext;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 import twitter4j.http.RequestToken;
+
+import com.opensymphony.xwork2.ActionContext;
 
 public class AuthenticationController extends PartakeActionSupport {
 	/** */
@@ -143,7 +142,7 @@ public class AuthenticationController extends PartakeActionSupport {
     }
     
     // なんでかしらないけど、open id の URL を一緒にしないと残念なことになる。
-    public String verifyOpenID() {
+    public String verifyOpenID() throws DAOException {
         String purpose = (String) session.get(Constants.ATTR_OPENID_PURPOSE);
         session.remove(Constants.ATTR_OPENID_PURPOSE);
         
@@ -156,29 +155,23 @@ public class AuthenticationController extends PartakeActionSupport {
         }
     }
     
-    private String verifyOpenIDForLogin() {
+    private String verifyOpenIDForLogin() throws DAOException {
         String identity = getIdentifier();
         if (identity == null) {
             logger.info("OpenID でのログインに失敗しました。");
             addWarningMessage("OpenID でのログインに失敗しました。");
             return RETURNTOP;
         }
-        
-        try {
-            // TODO: UserEx が identifier から取れるべき
-            UserEx user = UserService.get().loginByOpenID(identity);
-            if (user != null) {
-                session.put(Constants.ATTR_USER, user);
-                return SUCCESS;
-            } else {
-                addWarningMessage("ログインに失敗しました。OpenID と twitter ID が結び付けられていません。 Twitter でログイン後、設定から Open ID との結び付けを行ってください。");
-                return RETURNTOP;
-            }
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            addWarningMessage(I18n.t(I18n.DATABASE_ERROR));
-            return ERROR;
-        }
+
+        // TODO: UserEx が identifier から取れるべき
+        UserEx user = UserService.get().loginByOpenID(identity);
+        if (user != null) {
+            session.put(Constants.ATTR_USER, user);
+            return SUCCESS;
+        } else {
+            addWarningMessage("ログインに失敗しました。OpenID と twitter ID が結び付けられていません。 Twitter でログイン後、設定から Open ID との結び付けを行ってください。");
+            return RETURNTOP;
+        }        
     }
     
     private String verifyOpenIDForConnection() {

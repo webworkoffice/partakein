@@ -15,7 +15,6 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
-import in.partake.resource.I18n;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
 
@@ -47,36 +46,32 @@ public class EventParticipantsController extends PartakeActionSupport {
 
     // ----------------------------------------------------------------------
 
-    public String showParticipants() throws PartakeResultException {
+    public String showParticipants() throws PartakeResultException, DAOException {
         UserEx user = ensureLogin();
 
         eventId = getParameter("eventId");
         if (eventId == null) { throw new PartakeResultException(ERROR); }
 
-        try {
-            EventEx event = EventService.get().getEventExById(eventId);
-            if (event == null) { throw new PartakeResultException(ERROR); }
+        EventEx event = EventService.get().getEventExById(eventId);
+        if (event == null) { throw new PartakeResultException(ERROR); }
 
-            // Only owner can retrieve the participants list.
-            if (!event.hasPermission(user, UserPermission.EVENT_PARTICIPATION_LIST)) {
-                addErrorMessage("イベント参加者の取得権限がありません。");
-                throw new PartakeResultException(PROHIBITED);
-            }
-
-            List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(eventId);
-            ParticipationList list = event.calculateParticipationList(participations);
-
-            attributes.put(Constants.ATTR_EVENT, event);
-            attributes.put(Constants.ATTR_PARTICIPATIONLIST, list);
-
-            return SUCCESS;
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            throw new PartakeResultException(ERROR);
+        // Only owner can retrieve the participants list.
+        if (!event.hasPermission(user, UserPermission.EVENT_PARTICIPATION_LIST)) {
+            // TODO: Hmm...
+            addErrorMessage("イベント参加者の取得権限がありません。");
+            throw new PartakeResultException(PROHIBITED);
         }
+
+        List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(eventId);
+        ParticipationList list = event.calculateParticipationList(participations);
+
+        attributes.put(Constants.ATTR_EVENT, event);
+        attributes.put(Constants.ATTR_PARTICIPATIONLIST, list);
+
+        return SUCCESS;
     }
 
-    public String makeAttendantVIP() throws PartakeResultException {
+    public String makeAttendantVIP() throws PartakeResultException, DAOException {
         UserEx user = ensureLogin();
 
         eventId = getParameter("eventId");
@@ -87,29 +82,23 @@ public class EventParticipantsController extends PartakeActionSupport {
 
         boolean vip = "true".equals(getParameter("vip"));
 
-        try {
-            EventEx event = EventService.get().getEventExById(eventId);
-            if (event == null) { throw new PartakeResultException(ERROR); }
+        EventEx event = EventService.get().getEventExById(eventId);
+        if (event == null) { throw new PartakeResultException(ERROR); }
 
-            // Only owner can retrieve the participants list.
-            if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
-                addErrorMessage("イベント参加者の編集権限がありません。");
-                throw new PartakeResultException(PROHIBITED);
-            }
+        // Only owner can retrieve the participants list.
+        if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
+            addErrorMessage("イベント参加者の編集権限がありません。");
+            throw new PartakeResultException(PROHIBITED);
+        }
 
-            if (EventService.get().makeAttendantVIP(eventId, userId, vip)) {
-                return SUCCESS;
-            } else {
-                return ERROR;
-            }
-
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            throw new PartakeResultException(ERROR);
+        if (EventService.get().makeAttendantVIP(eventId, userId, vip)) {
+            return SUCCESS;
+        } else {
+            return ERROR;
         }
     }
 
-    public String removeAttendant() throws PartakeResultException {
+    public String removeAttendant() throws PartakeResultException, DAOException {
         UserEx user = ensureLogin();
 
         eventId = getParameter("eventId");
@@ -118,25 +107,19 @@ public class EventParticipantsController extends PartakeActionSupport {
         String userId = getParameter("userId");
         if (StringUtils.isEmpty(userId)) { throw new PartakeResultException(ERROR); }
 
-        try {
-            EventEx event = EventService.get().getEventExById(eventId);
-            if (event == null) { throw new PartakeResultException(ERROR); }
+        EventEx event = EventService.get().getEventExById(eventId);
+        if (event == null) { throw new PartakeResultException(ERROR); }
 
-            // Only owner can retrieve the participants list.
-            if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
-                addErrorMessage("イベント参加者の編集権限がありません。");
-                throw new PartakeResultException(PROHIBITED);
-            }
+        // Only owner can retrieve the participants list.
+        if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
+            addErrorMessage("イベント参加者の編集権限がありません。");
+            throw new PartakeResultException(PROHIBITED);
+        }
 
-            if (EventService.get().removeEnrollment(eventId, userId)) {
-                return SUCCESS;
-            } else {
-                return ERROR;
-            }
-
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            throw new PartakeResultException(ERROR);
+        if (EventService.get().removeEnrollment(eventId, userId)) {
+            return SUCCESS;
+        } else {
+            return ERROR;
         }
     }
 
@@ -211,27 +194,22 @@ public class EventParticipantsController extends PartakeActionSupport {
      * @return
      * @throws PartakeResultException
      */
-    private ParticipationList calculateParticipationList() throws PartakeResultException {
+    private ParticipationList calculateParticipationList() throws PartakeResultException, DAOException {
         UserEx user = ensureLogin();
 
         eventId = getParameter("eventId");
         if (eventId == null) { throw new PartakeResultException(ERROR); }
+        
+        EventEx event = EventService.get().getEventExById(eventId);
+        if (event == null) { throw new PartakeResultException(ERROR); }
 
-        try {
-            EventEx event = EventService.get().getEventExById(eventId);
-            if (event == null) { throw new PartakeResultException(ERROR); }
-
-            // Only owner can retrieve the participants list.
-            if (!event.hasPermission(user, UserPermission.EVENT_PARTICIPATION_LIST)) {
-                addErrorMessage("イベント参加者の取得権限がありません。");
-                throw new PartakeResultException(PROHIBITED);
-            }
-
-            List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(eventId);
-            return event.calculateParticipationList(participations);
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            throw new PartakeResultException(ERROR);
+        // Only owner can retrieve the participants list.
+        if (!event.hasPermission(user, UserPermission.EVENT_PARTICIPATION_LIST)) {
+            addErrorMessage("イベント参加者の取得権限がありません。");
+            throw new PartakeResultException(PROHIBITED);
         }
+
+        List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(eventId);
+        return event.calculateParticipationList(participations);
     }
 }

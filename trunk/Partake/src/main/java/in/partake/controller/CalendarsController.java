@@ -4,7 +4,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.EventCategory;
-import in.partake.resource.I18n;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
 import in.partake.util.functional.Function;
@@ -58,12 +57,12 @@ public class CalendarsController extends PartakeActionSupport {
 
 	// 全てのイベントのカレンダーの表示
 	// TODO: cache!
-	public String all() {
+	public String all() throws DAOException {
 	    return showByCategory("all");
 	}
 
 	// TODO: cache!
-	public String showCategory() {
+	public String showCategory() throws DAOException {
 	    String categoryName = getParameter("category");
 	    if (StringUtils.isEmpty(categoryName)) { return NOT_FOUND; }
 	    if (!EventCategory.isValidCategoryName(categoryName)) { return NOT_FOUND; }
@@ -71,7 +70,7 @@ public class CalendarsController extends PartakeActionSupport {
 	    return showByCategory(categoryName);
 	}
 
-	private String showByCategory(String categoryName) {
+	private String showByCategory(String categoryName) throws DAOException {
 	    assert(!StringUtils.isEmpty(categoryName));
 
         try {
@@ -98,11 +97,6 @@ public class CalendarsController extends PartakeActionSupport {
 
             outputCalendar(calendar);
             return SUCCESS;
-
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            addActionError(I18n.t(I18n.DATABASE_ERROR));
-            return redirectDBError();
         } catch (IOException e) {
             logger.error("IOException occured.", e);
             return redirectError("内部でカレンダーを作成集にエラーが発生しました。");
@@ -115,7 +109,7 @@ public class CalendarsController extends PartakeActionSupport {
     // カレンダーの表示
 	// user に関連する ics を生成して返す。
 	// TODO: why not cache?
-    public String show() {
+    public String show() throws DAOException {
     	String calendarId = getParameter("calendarId");
     	if (StringUtils.isEmpty(calendarId)) { return ERROR; }
 
@@ -135,9 +129,6 @@ public class CalendarsController extends PartakeActionSupport {
 
     		outputCalendar(calendar);
     		return SUCCESS;
-    	} catch (DAOException e) {
-    		e.printStackTrace();
-    		return ERROR;
     	} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return ERROR;

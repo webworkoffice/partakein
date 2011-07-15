@@ -6,8 +6,8 @@ import in.partake.model.dao.HatenaDao;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.Constants;
-import in.partake.resource.I18n;
 import in.partake.resource.PartakeProperties;
+import in.partake.resource.ServerErrorCode;
 import in.partake.service.EventService;
 
 import java.util.Calendar;
@@ -64,7 +64,7 @@ public class AdministratorController extends PartakeActionSupport {
 
             return SUCCESS;
         } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
+            logger.error(ServerErrorCode.DB_ERROR.getReasonString(), e);
             return redirectDBError();
         }
     }
@@ -83,25 +83,15 @@ public class AdministratorController extends PartakeActionSupport {
     /**
      * append a feed id to each event if it does not have feed id.
      */
-    public String addFeedIdToAllEvents() throws PartakeResultException {
+    public String addFeedIdToAllEvents() throws PartakeResultException, DAOException {
         ensureAdmin();
-    	try {
-    	    EventService.get().addFeedIdToAllEvents();
-    		return SUCCESS;
-    	} catch (DAOException e) {
-    	    logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-    		return ERROR;
-    	}
+	    EventService.get().addFeedIdToAllEvents();
+		return SUCCESS;
     }
 
-    public String recreateEventIndex() {
-        try {
-            EventService.get().recreateEventIndex();
-            return SUCCESS;
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            return ERROR;
-        }
+    public String recreateEventIndex() throws DAOException {
+        EventService.get().recreateEventIndex();
+        return SUCCESS;
     }
 
     // ----------------------------------------------------------------------

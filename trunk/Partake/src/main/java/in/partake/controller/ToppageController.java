@@ -4,7 +4,6 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.resource.Constants;
-import in.partake.resource.I18n;
 import in.partake.service.EventService;
 
 import java.util.Collections;
@@ -19,7 +18,7 @@ public class ToppageController extends PartakeActionSupport {
 	private static final Logger logger = Logger.getLogger(ToppageController.class);
 	private static final int DISPLAYED_EVENTS = 5;
 
-	public String index() {
+	public String index() throws DAOException {
 		// 最近登録されたイベントを出す。
 		// TODO: 毎回表示するの大変なので、cache するべきですよねー。なんとかならないかな。
 		try {
@@ -33,12 +32,8 @@ public class ToppageController extends PartakeActionSupport {
 		// もしログインしていれば、最近のイベントを表示する。
 		UserEx user = getLoginUser();
 		if (user != null) {
-		    try {
-		        attributes.put(Constants.ATTR_OWNED_EVENTSET, EventService.get().getUnfinishedEventsOwnedBy(user.getId()));
-		        attributes.put(Constants.ATTR_ENROLLED_EVENTSET, EventService.get().getUnfinishedEnrolledEvents(user.getId()));
-		    } catch (DAOException e) {
-		        logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-		    }
+	        attributes.put(Constants.ATTR_OWNED_EVENTSET, EventService.get().getUnfinishedEventsOwnedBy(user.getId()));
+	        attributes.put(Constants.ATTR_ENROLLED_EVENTSET, EventService.get().getUnfinishedEnrolledEvents(user.getId()));
 		}
 
 		return SUCCESS;

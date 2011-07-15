@@ -1,7 +1,6 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeActionSupport;
-import in.partake.resource.I18n;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
@@ -92,7 +91,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     protected String renderDBError() {
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
-        obj.put("reason", I18n.t(I18n.DATABASE_ERROR));
+        obj.put("reason", ServerErrorCode.DB_ERROR.getReasonString());
         this.status = 500;
         return renderJSON(obj);
     }

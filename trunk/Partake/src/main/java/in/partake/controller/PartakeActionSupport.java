@@ -2,7 +2,6 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.resource.Constants;
-import in.partake.resource.I18n;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.servlet.PartakePageAttribute;
@@ -260,7 +259,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
      * @return
      */
     protected String redirectDBError() {
-        return redirectError(I18n.t(I18n.DATABASE_ERROR));
+        return redirectError(ServerErrorCode.DB_ERROR);
     }
 
     /**

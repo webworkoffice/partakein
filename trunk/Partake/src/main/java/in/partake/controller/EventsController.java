@@ -14,7 +14,7 @@ import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
-import in.partake.resource.I18n;
+import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
 import in.partake.service.UserService;
@@ -172,7 +172,7 @@ public class EventsController extends PartakeActionSupport {
      * @return
      * @throws PartakeResultException
      */
-    public String removeComment() throws PartakeResultException {
+    public String removeComment() throws PartakeResultException, DAOException {
     	UserEx user = ensureLogin();
     	if (user == null) { return LOGIN; }
     	
@@ -182,76 +182,59 @@ public class EventsController extends PartakeActionSupport {
     	this.eventId = getParameter("eventId");
     	if (eventId == null) { return ERROR; }
     	
-    	try {
-    		// これ Service にいれてしまわないといけないんじゃないかなー。transaction 的には。select for update というか。
-    		// update conflict してもまあ問題ないのでいいか。
-    		CommentEx comment = EventService.get().getCommentExById(commentId);
-    		
-    		// should be event owner or 
-    		if (comment.getUser().getId().equals(user.getId()) || comment.getEvent().hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT)) {
-    			EventService.get().removeComment(commentId);
-    			return SUCCESS;
-    		} else {
-    			addWarningMessage("イベント管理者もしくはコメントした本人だけがコメントを削除することが出来ます。");
-    			return PROHIBITED;
-    		}
-    	} catch (DAOException e) {
-    		String message = I18n.t(I18n.DATABASE_ERROR);
-    		logger.error(message, e);
-    		addWarningMessage(message);
-    		return ERROR;
-    	}
-    	
+		// これ Service にいれてしまわないといけないんじゃないかなー。transaction 的には。select for update というか。
+		// update conflict してもまあ問題ないのでいいか。
+		CommentEx comment = EventService.get().getCommentExById(commentId);
+		
+		// should be event owner or 
+		if (comment.getUser().getId().equals(user.getId()) || comment.getEvent().hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT)) {
+			EventService.get().removeComment(commentId);
+			return SUCCESS;
+		} else {
+			addWarningMessage("イベント管理者もしくはコメントした本人だけがコメントを削除することが出来ます。");
+			return PROHIBITED;
+		}    	
     }
     
     // ----------------------------------------------------------------------
     // enroll 
     
-    public String enroll() throws PartakeResultException {
+    public String enroll() throws PartakeResultException, DAOException {
     	return changeParticipationStatus(ParticipationStatus.ENROLLED, false);
     }
     
-    public String reserve() throws PartakeResultException {
+    public String reserve() throws PartakeResultException, DAOException {
     	return changeParticipationStatus(ParticipationStatus.RESERVED, false);
     }
     
-    public String cancel() throws PartakeResultException {
+    public String cancel() throws PartakeResultException, DAOException {
         return changeParticipationStatus(ParticipationStatus.CANCELLED, false);       
     }
     
-    public String changeComment() throws PartakeResultException {
+    public String changeComment() throws PartakeResultException, DAOException {
         return changeParticipationStatus(null, true);
     }
     
-    public String changeEnrollment() throws PartakeResultException {
+    public String changeEnrollment() throws PartakeResultException, DAOException {
         UserEx user = ensureLogin();
         if (user == null) { return ERROR; }
         
         String eventId = getParameter("eventId");
         if (StringUtils.isEmpty(eventId)) { return ERROR; }
         
-        try {
-            EventEx event = EventService.get().getEventExById(eventId);
-            if (event == null) { return ERROR; }
-            
-            throw new RuntimeException("Not implemented yet.");
-            
-        } catch (DAOException e) {
-            logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-            return ERROR;
-        }
+        EventEx event = EventService.get().getEventExById(eventId);
+        if (event == null) { return ERROR; }
         
+        throw new RuntimeException("Not implemented yet.");        
     }
 
     // ----------------------------------------------------------------------
     
-    private String changeParticipationStatus(ParticipationStatus status, boolean changesOnlyComment) throws PartakeResultException {
+    private String changeParticipationStatus(ParticipationStatus status, boolean changesOnlyComment) throws PartakeResultException, DAOException {
         UserEx user = ensureLogin();
     	
 	    String eventId = getParameter("eventId");
-	    if (eventId == null) {
-	        return renderInvalid("event id が指定されていません。");
-	    }
+	    if (eventId == null) { return renderInvalid(UserErrorCode.MISSING_EVENT_ID); }
 
 	    this.eventId = eventId;
 	    
@@ -263,39 +246,34 @@ public class EventsController extends PartakeActionSupport {
 	        return INPUT;
 	    }
 	    
-	    try {
-	        EventEx event = EventService.get().getEventExById(eventId);
-	        if (event == null) { return ERROR; }
+        EventEx event = EventService.get().getEventExById(eventId);
+        if (event == null) { return ERROR; }
 
-	        Date deadline = event.getCalculatedDeadline();
-	        
-	        // もし、締め切りを過ぎている場合、変更が出来なくなる。
-	        if (deadline.before(new Date())) {
-	        	addActionError("締め切りを過ぎているため変更できません。");
-	        	return ERROR;
-	        }
-	        
-	        // 現在の状況が登録されていない場合、
-	        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
-	        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user.getId(), event.getId());	        
-	        if (!currentStatus.isEnrolled()) {
-	        	List<Event> requiredEvents = getRequiredEventsNotEnrolled(user, relations); 
-	        	if (requiredEvents != null && !requiredEvents.isEmpty()) {
-	        		addActionError("登録必須のイベントがあるため参加登録が出来ません。");
-	        		return ERROR;
-	        	}
-	        }
-	        
-	        EventService.get().enroll(user.getId(), event.getId(), status, comment, changesOnlyComment, event.isReservationTimeOver());
-	        
-	        // Twitter で参加をつぶやく
-	        if (!changesOnlyComment) { tweetEnrollment(user, event, status); }
+        Date deadline = event.getCalculatedDeadline();
+        
+        // もし、締め切りを過ぎている場合、変更が出来なくなる。
+        if (deadline.before(new Date())) {
+        	addActionError("締め切りを過ぎているため変更できません。");
+        	return ERROR;
+        }
+        
+        // 現在の状況が登録されていない場合、
+        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
+        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user.getId(), event.getId());	        
+        if (!currentStatus.isEnrolled()) {
+        	List<Event> requiredEvents = getRequiredEventsNotEnrolled(user, relations); 
+        	if (requiredEvents != null && !requiredEvents.isEmpty()) {
+        		addActionError("登録必須のイベントがあるため参加登録が出来ません。");
+        		return ERROR;
+        	}
+        }
+        
+        EventService.get().enroll(user.getId(), event.getId(), status, comment, changesOnlyComment, event.isReservationTimeOver());
+        
+        // Twitter で参加をつぶやく
+        if (!changesOnlyComment) { tweetEnrollment(user, event, status); }
 
-	        return SUCCESS;
-	    } catch (DAOException e) {
-	        logger.error(I18n.t(I18n.DATABASE_ERROR), e);
-	        return ERROR;
-	    }
+        return SUCCESS;
     }
 
     private void tweetEnrollment(UserEx user, EventEx event, ParticipationStatus status) throws DAOException {    	
