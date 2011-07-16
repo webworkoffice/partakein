@@ -8,6 +8,7 @@ import in.partake.model.fixture.EnrollmentTestDataProvider;
 import in.partake.model.fixture.EventTestDataProvider;
 import in.partake.model.fixture.OpenIDLinkageTestDataProvider;
 import in.partake.model.fixture.TwitterLinkageTestDataProvider;
+import in.partake.model.fixture.UserPreferenceTestDataProvider;
 import in.partake.model.fixture.UserTestDataProvider;
 
 import org.apache.log4j.Logger;
@@ -46,11 +47,12 @@ public final class TestService extends PartakeService {
         try {
             con.beginTransaction();
             new CacheTestDataProvider().createFixtures(con, factory);
-            new UserTestDataProvider().createFixtures(con, factory);
-            new TwitterLinkageTestDataProvider().createFixtures(con, factory);
-            new OpenIDLinkageTestDataProvider().createFixtures(con, factory);
-            new EventTestDataProvider().createFixtures(con, factory);
             new EnrollmentTestDataProvider().createFixtures(con, factory);
+            new EventTestDataProvider().createFixtures(con, factory);
+            new OpenIDLinkageTestDataProvider().createFixtures(con, factory);
+            new TwitterLinkageTestDataProvider().createFixtures(con, factory);
+            new UserTestDataProvider().createFixtures(con, factory);
+            new UserPreferenceTestDataProvider().createFixtures(con, factory);
             con.commit();
         } finally {
             con.invalidate();

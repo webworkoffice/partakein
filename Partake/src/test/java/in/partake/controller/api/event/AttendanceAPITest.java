@@ -1,4 +1,4 @@
-package in.partake.controller.api.attendance;
+package in.partake.controller.api.event;
 
 import junit.framework.Assert;
 import in.partake.controller.api.APIControllerTest;

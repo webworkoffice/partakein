@@ -3,6 +3,7 @@ package in.partake.controller.interceptor;
 import in.partake.controller.PartakeActionSupport;
 import in.partake.controller.PartakeInvalidResultException;
 import in.partake.resource.Constants;
+import in.partake.resource.UserErrorCode;
 import in.partake.servlet.PartakeSession;
 import in.partake.util.security.CSRFPrevention;
 
@@ -25,12 +26,12 @@ public class CSRFTokenCheckInterceptor extends PartakeAbstractInterceptor {
         
         // invalid request
         if (sessionToken == null) {
-            throw new PartakeInvalidResultException("セッショントークンがリクエストに含まれていません。");
+            throw new PartakeInvalidResultException(UserErrorCode.MISSING_SESSION);
         }
 
         synchronized (prevention) {
             if (!prevention.getSessionToken().equals(sessionToken)) {
-                throw new PartakeInvalidResultException("リクエストに含まれるセッショントークンが一致しませんでした。");
+                throw new PartakeInvalidResultException(UserErrorCode.INVALID_SESSION);
             }
             
             // onetime token はある場合のみ利用される。

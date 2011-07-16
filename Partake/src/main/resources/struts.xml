@@ -487,7 +487,6 @@
 
 	<!-- ここから下は Web API 実装 -->
 	<package name="api" namespace="/api" extends="partake-api-default">
-		<action name="search" method="search" class="in.partake.controller.api.search.SearchAction" />
 	</package>
 
 	<package name="debug-api" namespace="/api/debug" extends="partake-api-default">
@@ -505,11 +504,11 @@
 	<package name="account-api" namespace="/api/account" extends="partake-api-default">
 		<action name="getSessionToken" method="getSessionToken" class="in.partake.controller.api.account.SessionAction" />
 		<action name="get" method="get" class="in.partake.controller.api.account.AccountAction" />
-		<action name="getCalendar" method="getCalendar" class="in.partake.controller.api.account.CalendarAction" />
+		<action name="getCalendar" method="getCalendar" class="in.partake.controller.api.account.AccountAction" />
 		<action name="getOpenID" method="getOpenID" class="in.partake.controller.api.account.OpenIDAction" />
 		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.account.OpenIDAction" />
-		<action name="getPreference" method="getPreference" class="in.partake.controller.api.account.PreferenceAction" />
-		<action name="setPreference" method="setPreference" class="in.partake.controller.api.account.PreferenceAction" />
+		<action name="preference" method="getPreference" class="in.partake.controller.api.account.AccountAction" />
+		<action name="setPreference" method="setPreference" class="in.partake.controller.api.account.AccountAction" />
 	</package>
 
 	<!-- User API -->
@@ -523,15 +522,15 @@
 		<action name="get" method="get" class="in.partake.controller.api.event.EventAction" />
 		<action name="create" method="create" class="in.partake.controller.api.event.EventAction" />
 		<action name="modify" method="modify" class="in.partake.controller.api.event.EventAction" />
-
-		<action name="search" method="search" class="in.partake.controller.api.event.EventAction" />
+		<action name="remove" method="remove" class="in.partake.controller.api.event.EventAction" />		
+		<action name="search" method="search" class="in.partake.controller.api.search.SearchAction" />
 		<action name="enroll" method="enroll" class="in.partake.controller.api.event.EventAction" />
 		<action name="participants" method="participants" class="in.partake.controller.api.event.EventAction" />
 		<action name="comments" method="comments" class="in.partake.controller.api.event.EventAction" />
 		<action name="messages" method="messages" class="in.partake.controller.api.event.EventAction" />
 		<action name="sendMessage" method="sendMessage" class="in.partake.controller.api.event.EventAction" />
 
-		<action name="attendance" method="attendance" class="in.partake.controller.api.attendance.AttendanceAction" />
-		<action name="attend" method="attend" class="in.partake.controller.api.attendance.AttendanceAction" />
+		<action name="attendance" method="attendance" class="in.partake.controller.api.event.EventAction" />
+		<action name="attend" method="attend" class="in.partake.controller.api.event.EventAction" />
  	</package>
 </struts>

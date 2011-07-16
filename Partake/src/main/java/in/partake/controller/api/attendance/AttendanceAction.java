@@ -33,9 +33,8 @@ public class AttendanceAction extends PartakeAPIActionSupport {
         if (eventId == null) { return renderInvalid(UserErrorCode.MISSING_EVENT_ID); }
         
         String status = getParameter("status");
-        if (status == null || !AttendanceStatus.isValueOf(status)) {
-            return renderInvalid(UserErrorCode.MISSING_ATTENDANCE_STATUS);
-        }
+        if (status == null) { return renderInvalid(UserErrorCode.MISSING_ATTENDANCE_STATUS); }
+        if (!AttendanceStatus.isValueOf(status)) { return renderInvalid(UserErrorCode.INVALID_ATTENDANCE_STATUS); }
         
         // To prevent CSRF, we should check token.
         String token = getParameter("sessionToken");

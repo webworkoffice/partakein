@@ -1,4 +1,4 @@
-package in.partake.controller.api.search;
+package in.partake.controller.api.event;
 
 import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.dao.DAOException;
