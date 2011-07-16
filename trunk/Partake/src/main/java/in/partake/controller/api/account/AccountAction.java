@@ -14,6 +14,7 @@ public class AccountAction extends PartakeAPIActionSupport {
 
         // Should take the following:
         //  - user data
+        //  - calendar
         //  - all events?
 
         throw new RuntimeException("Not implemented yet.");

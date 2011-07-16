@@ -27,7 +27,7 @@
 			sessionToken: this.sessionToken 
 		};
 		
-		return $.post('/api/attendance/change', arg);
+		return $.post('/api/event/attend', arg);
 	};
 	
 	// expose partake client to global.
