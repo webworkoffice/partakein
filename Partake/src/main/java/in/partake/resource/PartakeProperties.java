@@ -2,7 +2,10 @@ package in.partake.resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -10,8 +13,10 @@ import org.apache.log4j.Logger;
 public class PartakeProperties {
     private static final Logger logger = Logger.getLogger(PartakeProperties.class);
     private static final PartakeProperties instance = new PartakeProperties();
+	private static final String PROP_ADMIN_NAMES = "in.partake.twitter.admin";
     private String mode;
     private Properties properties;
+	private Set<String> administratorNames;
 
     public static PartakeProperties get() {
         return instance;
@@ -26,6 +31,7 @@ public class PartakeProperties {
         logger.info("Loading " + mode + ".partake.properties...");
         this.mode = mode;
         this.properties = readFrom("/" + mode + ".partake.properties");
+        this.administratorNames = Collections.unmodifiableSet(parseAdministratorNames());
     }
 
     /** mode 名を fetch してから読みなおす。初期化及びユニットテスト用途。 */
@@ -50,8 +56,8 @@ public class PartakeProperties {
         return this.mode;
     }
 
-    public String getTwitterAdminName() {
-        return properties.getProperty("in.partake.twitter.admin");
+    public Set<String> getTwitterAdminNames() {
+        return this.administratorNames;
     }
 
     public String getLuceneIndexDirectory() {
@@ -161,6 +167,26 @@ public class PartakeProperties {
         }
 
         return null;
+    }
+
+    private Set<String> parseAdministratorNames() {
+        String adminNames = properties.getProperty(PROP_ADMIN_NAMES);
+        Set<String> result = new HashSet<String>();
+        if (adminNames == null) {
+            logger.warn(PROP_ADMIN_NAMES + " is not found in current property file.");
+            return result;
+        }
+
+        for (String name : adminNames.split(",")) {
+            String adminName = name.trim().toLowerCase();
+            if (!adminName.isEmpty()) {
+                result.add(adminName);
+            }
+        }
+        if (result.isEmpty()) {
+            logger.warn(PROP_ADMIN_NAMES + " in current property file is empty.");
+        }
+        return result;
     }
 
 }
