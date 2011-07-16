@@ -24,7 +24,6 @@ public enum UserErrorCode {
     // SESSION
     INVALID_SESSION("invalid.invalid_session"),
     MISSING_SESSION("invalid.missing_session"),
-    
 
     MISSING_ATTENDANCE_STATUS("invalid.missing_attendance_status");
 

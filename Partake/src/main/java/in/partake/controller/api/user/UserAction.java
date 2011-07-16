@@ -10,4 +10,10 @@ public class UserAction extends PartakeAPIActionSupport {
         // TODO:
         throw new RuntimeException("Not implemented yet.");
     }
+
+    // 参加しているイベントを列挙
+    public String getEvents() {
+        // TODO:
+        throw new RuntimeException("Not implemented yet.");
+    }
 }

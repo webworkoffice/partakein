@@ -21,7 +21,7 @@ public class AttendanceAPITest extends APIControllerTest {
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus()); 
         }
         
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -47,7 +47,7 @@ public class AttendanceAPITest extends APIControllerTest {
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus()); 
         }
         
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -73,7 +73,7 @@ public class AttendanceAPITest extends APIControllerTest {
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus()); 
         }
         
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -94,7 +94,7 @@ public class AttendanceAPITest extends APIControllerTest {
     
     @Test
     public void testLoginRequired() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
@@ -107,7 +107,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testUserIdRequired() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         // addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -121,7 +121,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testEventIdRequired() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -135,7 +135,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testStatusRequired() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -149,7 +149,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testInvalidOwner() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID3); // not USER_ID1
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -163,7 +163,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testInvalidArgument() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -178,7 +178,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testInvalidSessionToken() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/attendance/change");
+        ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
