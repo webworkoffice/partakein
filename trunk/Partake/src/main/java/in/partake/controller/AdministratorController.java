@@ -102,7 +102,7 @@ public class AdministratorController extends PartakeActionSupport {
             throw new PartakeResultException(PROHIBITED);
         }
 
-        if (!PartakeProperties.get().getTwitterAdminName().equals(user.getScreenName())) {
+        if (!user.isAdministrator()) {
             throw new PartakeResultException(PROHIBITED);
         }
     }

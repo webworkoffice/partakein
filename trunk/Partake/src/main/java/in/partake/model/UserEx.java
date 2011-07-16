@@ -1,5 +1,7 @@
 package in.partake.model;
 
+import java.util.Set;
+
 import net.sf.json.JSONObject;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
@@ -32,7 +34,8 @@ public class UserEx extends User {
     
     public boolean isAdministrator() {
         String screenName = twitterLinkage.getScreenName();
-        return screenName.equals(PartakeProperties.get().getTwitterAdminName());
+        Set<String> adminScreenNames = PartakeProperties.get().getTwitterAdminNames();
+        return adminScreenNames.contains(screenName);
     }
     
     public JSONObject toSafeJSON(boolean withTwitter) {
