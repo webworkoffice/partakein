@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "UserPreferences")
@@ -47,6 +49,15 @@ public class UserPreference extends PartakeModel<UserPreference> {
     @Override
     public UserPreference copy() {
         return new UserPreference(this);
+    }
+    
+    public JSONObject toSafeJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("profilePublic", profilePublic);
+        obj.put("receivingTwitterMessage", receivingTwitterMessage);
+        obj.put("tweetingAttendanceAutomatically", tweetingAttendanceAutomatically);
+        
+        return obj;
     }
     
     // ---------------------------------------------------------------

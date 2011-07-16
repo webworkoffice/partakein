@@ -86,7 +86,6 @@ public class OpenIDAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/account/getOpenID");
 
         loginAs(proxy, TestDataProvider.USER_ID1);
-        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultOK(proxy);
@@ -98,16 +97,4 @@ public class OpenIDAPITest extends APIControllerTest {
         Assert.assertTrue(identifiers.contains("http://www.example.com/testuser"));
         Assert.assertTrue(identifiers.contains("http://www.example.com/testuser-alternative"));
     }
-    
-    @Test
-    public void testToGetOpenIDWithInvalidSessionToken() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/getOpenID");
-
-        loginAs(proxy, TestDataProvider.USER_ID1);
-        addInvalidSessionTokenToParameter(proxy);
-        
-        proxy.execute();
-        assertResultInvalid(proxy);
-    }
-
 }

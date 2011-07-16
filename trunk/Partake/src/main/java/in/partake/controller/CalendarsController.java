@@ -99,7 +99,7 @@ public class CalendarsController extends PartakeActionSupport {
             return SUCCESS;
         } catch (IOException e) {
             logger.error("IOException occured.", e);
-            return redirectError("内部でカレンダーを作成集にエラーが発生しました。");
+            return redirectError("内部でカレンダーを作成中にエラーが発生しました。");
         } catch (ValidationException e) {
             logger.error("Calendar Validation Exception occured.", e);
             return redirectError("内部でカレンダーのフォーマットがエラーが発生しました。");

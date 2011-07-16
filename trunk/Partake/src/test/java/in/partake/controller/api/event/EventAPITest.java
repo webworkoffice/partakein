@@ -1,5 +1,6 @@
 package in.partake.controller.api.event;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -93,5 +94,218 @@ public class EventAPITest extends APIControllerTest {
         
         proxy.execute();
         assertResultForbidden(proxy);
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToCreateAnEventWithLogin() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToCreateAnEventWithoutLogin() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToCreateAnEventWithLoginWithInavlidSessionToken() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToModifyAnEventWithLogin() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToModifyAnEventWithoutLogin() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToModifyAnEventWithLoginWithInavlidSessionToken() throws Exception {
+        throw new RuntimeException();
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToRemoveOwnedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToRemoveManagedEvent() throws Exception {
+        // manager cannot remove the event.
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToRemoveNotOwnedEvent() throws Exception {
+        // only owner can remove the event
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToRemoveAnEventWithoutLogin() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToRemoveAnEventWithLoginWithInavlidSessionToken() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToSearchAnEvent() throws Exception {
+        throw new RuntimeException();
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToSearchAnEventWithEmptyQuery() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToEnrollAnEventWithLogin() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToEnrollAnEventWithoutLogin() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToEnrollAnEventWithLoginWithInavlidSessionToken() throws Exception {
+        throw new RuntimeException();
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetParticipants() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetParticipantsOfPasscodedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetParticipantsOfInvalidEvent() throws Exception {
+        throw new RuntimeException();
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetComments() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetCommentsOfPasscodedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetCommentsOfInvalidEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetMessages() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetMessagesOfPasscodedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetMessagesOfInvalidEvent() throws Exception {
+        throw new RuntimeException();
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetAttendanceOfOwnedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetAttendanceOfManagedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetAttendanceWithoutLogin() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetAttendanceOfNotOwnedEvent() throws Exception {
+        // only owner (or manager) can take attendance.
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToSendMessageForOwnedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToSendLongMessage() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToSendVeryLongMessage() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToSendMessageForManagedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToSendMessageForNotOwnedEvent() throws Exception {
+        throw new RuntimeException();
+    }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToSendMessageWithoutLogin() throws Exception {
+        throw new RuntimeException();
     }
 }

@@ -10,6 +10,7 @@ import junit.framework.Assert;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -119,5 +120,46 @@ public class UserAPITest extends APIControllerTest {
         JSONObject openIDLinkage = obj.getJSONObject("openIDLinkage");
         Assert.assertNull(openIDLinkage);
     }
+
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetEventsWithLogin() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/user/getEvents");
+        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
+        
+        loginAs(proxy, TestDataProvider.USER_ID1);
+        
+        proxy.execute();
+        assertResultOK(proxy);
+        
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetEventsWithoutLogin() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/user/getEvents");
+        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
+
+        loginAs(proxy, TestDataProvider.USER_ID1);
+
+        proxy.execute();
+        assertResultOK(proxy);
+        
+        // NOTE: the same data should be available if not logged in. 
+        
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testToGetInvalidUserEvent() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/user/getEvents");
+        addParameter(proxy, "userId", TestDataProvider.INVALID_USER_ID);
+
+        proxy.execute();
+        assertResultInvalid(proxy);
+    }
+
 
 }
