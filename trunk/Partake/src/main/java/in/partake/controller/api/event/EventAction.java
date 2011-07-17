@@ -10,6 +10,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
+import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 
@@ -97,7 +98,7 @@ public class EventAction extends PartakeAPIActionSupport {
         }
         
         // To prevent CSRF, we should check token.
-        String token = getParameter("sessionToken");
+        String token = getParameter(Constants.ATTR_PARTAKE_API_SESSION_TOKEN);
         if (!getPartakeSession().getCSRFPrevention().isValidSessionToken(token)) {
             return renderInvalid(UserErrorCode.INVALID_SESSION);
         }

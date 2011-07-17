@@ -16,14 +16,19 @@ public class OpenIDAction extends PartakeAPIActionSupport {
     // private static final Logger logger = Logger.getLogger(OpenIDAction.class);
 
     public String removeOpenID() throws DAOException {
+        // check login
         UserEx user = getLoginUser();
         if (user == null) { return renderLoginRequired(); }
 
-        String identifier = getParameter("identifier");
-        if (identifier == null) {
-            return renderInvalid(UserErrorCode.MISSING_OPENID);
-        }
+        // check session token
+        if (!checkSessionToken()) { return renderInvalid(UserErrorCode.INVALID_SESSION); } 
 
+        // check arguments
+        String identifier = getParameter("identifier");
+        if (identifier == null) { return renderInvalid(UserErrorCode.MISSING_OPENID); }
+        
+        // execute
+        
         // identifier が user と結び付けられているか検査して消去
         if (UserService.get().removeOpenIDLinkage(user.getId(), identifier)) {
             return renderOK();
@@ -36,6 +41,8 @@ public class OpenIDAction extends PartakeAPIActionSupport {
         UserEx user = getLoginUser();
         if (user == null) { return renderLoginRequired(); }
 
+        // no need to check session token
+        
         List<String> identifiers = UserService.get().getOpenIDIdentifiers(user.getId());
         if (identifiers == null) { return renderError(ServerErrorCode.LOGIC_ERROR); }
 

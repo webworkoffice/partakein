@@ -1,6 +1,7 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeActionSupport;
+import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
@@ -31,6 +32,15 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
 
     protected void addHeader(String key, String value) {
         headers.put(key, value);
+    }
+
+    /**
+     * parameter から session token を取得し、チェックします。
+     * @return true if valid token. false otherwise.
+     */
+    protected boolean checkSessionToken() {
+        String token = getParameter(Constants.ATTR_PARTAKE_API_SESSION_TOKEN);
+        return getPartakeSession().getCSRFPrevention().isValidSessionToken(token); 
     }
 
     // ----------------------------------------------------------------------
