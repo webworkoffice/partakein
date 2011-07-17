@@ -37,12 +37,12 @@
 		<dt>Event</dt><dd><%= format.format(eventCount.numEvent) %></dd>
 		<dt>private event</dt><dd><%= format.format(eventCount.numPrivateEvent) %></dd>
 	</dl>
-
+<%--
 	<h2>Count of Hatena bookmarks</h2>
 	<dl>
 		<dt>Sum of all pages</dt><dd><%= format.format(hatenaBookmarkCount) %></dd>
 	</dl>
-
+--%>
 	<h2>いろんなリンク</h2>
 	<ul>
 		<li><a href="<%= request.getContextPath() %>/admin/recreateEventIndex">Luceneインデックス の再生成</a></li>
