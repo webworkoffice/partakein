@@ -224,25 +224,9 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     /**
      * invalid user request.
      */
-    @Deprecated
-    protected String renderInvalid(String reason) {
-        // TODO: reason should be added.
-        return INVALID;
-    }
-    
     protected String renderInvalid(UserErrorCode errorCode) {
         // TODO: reason should be added.
         return INVALID;
-    }
-
-    /**
-     * occured an internal server error
-     * @return
-     */
-    @Deprecated
-    protected String redirectError(String reason) {
-        // TODO: reason should be added.
-        return ERROR;
     }
 
     /**
