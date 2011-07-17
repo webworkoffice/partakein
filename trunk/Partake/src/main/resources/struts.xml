@@ -523,7 +523,7 @@
 		<action name="create" method="create" class="in.partake.controller.api.event.EventAction" />
 		<action name="modify" method="modify" class="in.partake.controller.api.event.EventAction" />
 		<action name="remove" method="remove" class="in.partake.controller.api.event.EventAction" />		
-		<action name="search" method="search" class="in.partake.controller.api.search.SearchAction" />
+		<action name="search" method="search" class="in.partake.controller.api.event.SearchAction" />
 		<action name="enroll" method="enroll" class="in.partake.controller.api.event.EventAction" />
 		<action name="participants" method="participants" class="in.partake.controller.api.event.EventAction" />
 		<action name="comments" method="comments" class="in.partake.controller.api.event.EventAction" />

@@ -11,11 +11,12 @@ import org.junit.Test;
 import com.opensymphony.xwork2.ActionProxy;
 
 public class SessionAPITest extends APIControllerTest {
-
+    private final String SESSION_TOKEN_URL = "/api/account/getSessionToken";
+    
     @Test
     public void testToGetSessionTokenWithoutLogin() throws Exception {
         // Even if not logged in, the token session should be available.
-        ActionProxy proxy = getActionProxy("/api/account/getSessionToken");
+        ActionProxy proxy = getActionProxy(SESSION_TOKEN_URL);
 
         proxy.execute();
         assertResultOK(proxy);
@@ -27,7 +28,7 @@ public class SessionAPITest extends APIControllerTest {
     @Test
     public void testToGetSessionTokenWithLogin() throws Exception {
         // If logged in, the token session should be available also.
-        ActionProxy proxy = getActionProxy("/api/account/getSessionToken");
+        ActionProxy proxy = getActionProxy(SESSION_TOKEN_URL);
 
         loginAs(proxy, TestDataProvider.USER_ID1);
         

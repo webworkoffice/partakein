@@ -44,6 +44,7 @@ public class JPAQuestionnaireDao extends JPADao<Questionnaire> implements IQuest
         return getFreshIdImpl(con, Questionnaire.class);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Questionnaire> findQuestionnairesByEventId(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);

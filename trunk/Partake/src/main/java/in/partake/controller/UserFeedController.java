@@ -4,8 +4,6 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.service.UserService;
 
-import org.apache.log4j.Logger;
-
 /**
  * User に関連する RSS を作成して返す。
  * 

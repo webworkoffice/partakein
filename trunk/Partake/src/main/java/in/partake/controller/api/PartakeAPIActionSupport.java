@@ -133,22 +133,6 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     /**
      * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。
-     *
-     * Use renderInvalid(UserErrorCode) instead.
-     */
-    @Override
-    @Deprecated
-    protected String renderInvalid(String reason) {
-        JSONObject obj = new JSONObject();
-        obj.put("result", "invalid");
-        obj.put("reason", reason);
-        this.status = 400;
-        return renderJSON(obj);
-    }
-
-    /**
-     * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
-     * ステータスコードは 400 を返す。
      */
     @Override
     protected String renderInvalid(UserErrorCode errorCode) {
@@ -179,7 +163,6 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
         this.status = 403;
         return renderJSON(obj);
     }
-
 
     // ----------------------------------------------------------------------
     //

@@ -40,4 +40,20 @@ public class UserActivity extends PartakeModel<UserActivity> {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    public String getId() {
+        return id;
+    }
+    
+    public String getUserId() {
+        return userId;
+    }
+    
+    public String getContent() {
+        return content;
+    }
+    
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 }

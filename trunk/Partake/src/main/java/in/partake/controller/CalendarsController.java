@@ -4,6 +4,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.resource.ServerErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
 import in.partake.util.functional.Function;
@@ -34,13 +35,12 @@ import net.fortuna.ical4j.model.property.Url;
 import net.fortuna.ical4j.model.property.Version;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
 
 public class CalendarsController extends PartakeActionSupport {
 	/** */
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(CalendarsController.class);
+    // private static final Logger logger = Logger.getLogger(CalendarsController.class);
 
     private static final TimeZone JST_TIMEZONE;
     static {
@@ -98,11 +98,9 @@ public class CalendarsController extends PartakeActionSupport {
             outputCalendar(calendar);
             return SUCCESS;
         } catch (IOException e) {
-            logger.error("IOException occured.", e);
-            return redirectError("内部でカレンダーを作成中にエラーが発生しました。");
+            return redirectError(ServerErrorCode.CALENDAR_CREATION_FAILURE, e);
         } catch (ValidationException e) {
-            logger.error("Calendar Validation Exception occured.", e);
-            return redirectError("内部でカレンダーのフォーマットがエラーが発生しました。");
+            return redirectError(ServerErrorCode.CALENDAR_INVALID_FORMAT, e);
         }
 	}
 
