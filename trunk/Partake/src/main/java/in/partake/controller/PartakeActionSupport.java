@@ -254,6 +254,11 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         return ERROR;
     }
     
+    protected String redirectError(ServerErrorCode errorCode, Throwable e) {
+        // TODO: reason should be added.
+        return ERROR;
+    }
+    
     /**
      * a utility function to show database error.
      * @return

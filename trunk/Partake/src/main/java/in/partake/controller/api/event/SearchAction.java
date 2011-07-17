@@ -4,6 +4,7 @@ import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.log4j.Logger;
 import org.apache.lucene.queryParser.ParseException;
 
 // search API can take
@@ -23,28 +23,37 @@ import org.apache.lucene.queryParser.ParseException;
 
 public class SearchAction extends PartakeAPIActionSupport {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(SearchAction.class);
+    // private static final Logger logger = Logger.getLogger(SearchAction.class);
 
     public static final int MAX_NUM = 100;
     
     public String search() throws DAOException {
         String query = getQuery();
-        if (query == null) { return renderInvalid("query is invalid."); }
+        if (query == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_QUERY); }
         
         String category = getCategory();
-        if (category == null) { return renderInvalid("category is invalid."); }
+        if (category == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_CATEGORY); }
         
         String beforeDeadlineOnly = getBeforeDeadlineOnly();
-        if (beforeDeadlineOnly == null) { return renderInvalid("beforeDeadlineOnly is invalid"); }
+        if (beforeDeadlineOnly == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_DEADLINE); }
 
         String sortOrder = getSortOrder();
-        if (sortOrder == null) { return renderInvalid("order is invalid"); }
+        if (sortOrder == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_ORDER); }
         
-        String maxNum = getMaxNum();
-        if (maxNum == null) { return renderInvalid("maxNum is invalid"); }
+        String maxNumArg = getMaxNum();
+        if (maxNumArg == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_MAXNUM); }
+        
+        final int maxNum; 
+        try {
+            maxNum = Integer.parseInt(maxNumArg);
+        } catch (NumberFormatException e) {
+            return renderInvalid(UserErrorCode.INVALID_SEARCH_MAXNUM);
+        }
+        // TODO(mayah): 100 is a magic number. This number should be externalized.
+        if (maxNum < 0 || 100 < maxNum) { return renderInvalid(UserErrorCode.INVALID_SEARCH_MAXNUM); }
         
         try {
-            List<Event> events = EventService.get().search(query, category, sortOrder, Boolean.parseBoolean(beforeDeadlineOnly), Integer.parseInt(maxNum));;
+            List<Event> events = EventService.get().search(query, category, sortOrder, Boolean.parseBoolean(beforeDeadlineOnly), maxNum);
              
             JSONArray jsonEventsArray = new JSONArray();
             for (Event event : events) {
@@ -53,16 +62,13 @@ public class SearchAction extends PartakeAPIActionSupport {
             JSONObject obj = new JSONObject();
             obj.put("events", jsonEventsArray);
             return renderOK(obj);
-        } catch (NumberFormatException e) {
-            // NOT REACHED
-            logger.error("NOT REACHED", e);
-            return renderError("Integernal Error");
         } catch (IllegalArgumentException e) {
-            return renderInvalid("query is invalid");
+            return renderInvalid(UserErrorCode.INVALID_SEARCH_QUERY);
         } catch (ParseException e) {
-            return renderInvalid("query is invalid");
+            return renderInvalid(UserErrorCode.INVALID_SEARCH_QUERY);
         }
         
+
     }
     
     private String getQuery() {

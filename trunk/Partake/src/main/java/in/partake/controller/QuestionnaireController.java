@@ -6,16 +6,14 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Questionnaire;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
+import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-
 public class QuestionnaireController extends PartakeActionSupport {
-    private static final Logger logger = Logger.getLogger(QuestionnaireController.class);
+    // private static final Logger logger = Logger.getLogger(QuestionnaireController.class);
 
     /**
      * 
@@ -29,17 +27,12 @@ public class QuestionnaireController extends PartakeActionSupport {
         UserEx user = ensureLogin();
 
         String eventId = getParameter("eventId");
-        if (StringUtils.isBlank(eventId)) {
-            return renderInvalid("イベント ID が適切にしていされていません。");
-        }
+        if (eventId == null) { return renderInvalid(UserErrorCode.MISSING_EVENT_ID); }
 
         EventEx event = EventService.get().getEventExById(eventId);
-        if (event == null) {
-            return renderInvalid("イベント ID が適切に指定されていません。");
-        }
-        if (!event.hasPermission(user, UserPermission.EVENT_EDIT_QUESTIONNAIRE)) {
-            return renderForbidden();
-        }
+        if (event == null) { return renderInvalid(UserErrorCode.INVALID_EVENT_ID); }
+
+        if (!event.hasPermission(user, UserPermission.EVENT_EDIT_QUESTIONNAIRE)) { return renderForbidden(); }
 
         // 権限チェックは終了。
 

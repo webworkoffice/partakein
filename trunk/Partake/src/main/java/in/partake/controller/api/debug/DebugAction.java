@@ -4,6 +4,8 @@ import net.sf.json.JSONObject;
 import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.resource.ServerErrorCode;
+import in.partake.resource.UserErrorCode;
 
 
 /**
@@ -31,14 +33,14 @@ public class DebugAction extends PartakeAPIActionSupport {
      */
     public String echo() {
         String data = getParameter("data");
-        if (data != null) {
-            JSONObject obj = new JSONObject();
-            obj.put("data", data);
-            
-            return renderOK(obj);
-        } else {
-            return renderInvalid("parameter 'data' is not set.");
+        if (data == null) {
+            return renderInvalid(UserErrorCode.INVALID_ARGUMENT);
         }
+        
+        JSONObject obj = new JSONObject();
+        obj.put("data", data);
+        
+        return renderOK(obj);
     }
     
     /**
@@ -61,7 +63,7 @@ public class DebugAction extends PartakeAPIActionSupport {
      * ステータスは 400 を返す。 
      */
     public String invalid() {
-        return renderInvalid("intentional invalid response");
+        return renderInvalid(UserErrorCode.INTENTIONAL_USER_ERROR);
     }
 
     /**
@@ -69,7 +71,7 @@ public class DebugAction extends PartakeAPIActionSupport {
      * ステータスは 500 を返す。 
      */
     public String error() {
-        return renderError("intentional error response");
+        return renderError(ServerErrorCode.INTENTIONAL_ERROR);
     }
 
     /**
@@ -85,7 +87,7 @@ public class DebugAction extends PartakeAPIActionSupport {
      * ステータスは 500 を返す。
      */
     public String errorDB() {
-        return renderDBError();
+        return renderError(ServerErrorCode.DB_ERROR);
     }
     
     /**

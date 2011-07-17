@@ -6,6 +6,7 @@ import in.partake.model.dto.Message;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.UserPermission;
+import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
 import in.partake.util.Util;
@@ -43,13 +44,12 @@ public class EventsMessageController extends PartakeActionSupport {
 		    return INPUT;
 		}
 
-
 		try {
 			EventEx event = EventService.get().getEventExById(eventId);
 			if (event == null) {
-			    throw new PartakeInvalidResultException(String.format("Event Id (%s) からイベントを取得できませんでした。", eventId));
+			    throw new PartakeInvalidResultException(UserErrorCode.INVALID_EVENT_ID);
 			}
-
+			
 			if (!event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE)) { return PROHIBITED; }
 
 			// ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。

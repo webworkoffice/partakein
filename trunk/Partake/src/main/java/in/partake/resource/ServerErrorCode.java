@@ -6,6 +6,7 @@ package in.partake.resource;
  */
 public enum ServerErrorCode {
     UNKNOWN_ERROR("error.unknown"),
+    INTENTIONAL_ERROR("error.intentional"),
     LOGIC_ERROR("error.logic_error"), // some logic error
     
     // TODO: DB_ERROR は後で名前かえるべき直す (or id をかえる)
