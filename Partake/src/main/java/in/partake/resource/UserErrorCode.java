@@ -8,7 +8,10 @@ package in.partake.resource;
 public enum UserErrorCode {
     //
     UNKNOWN_USER_ERROR("invalid.unknown"),
+    INTENTIONAL_USER_ERROR("invalid.intentional"),
 
+    INVALID_ARGUMENT("invalid.argument"),
+    
     // EVENT ID
     INVALID_EVENT_ID("invalid.invalid_eventid"),
     MISSING_EVENT_ID("invalid.missing_eventid"),
@@ -25,9 +28,23 @@ public enum UserErrorCode {
     INVALID_SESSION("invalid.invalid_session"),
     MISSING_SESSION("invalid.missing_session"),
 
+    // ATTENDANCE
     INVALID_ATTENDANCE_STATUS("invalid.invalid_attendance_status"),
-    MISSING_ATTENDANCE_STATUS("invalid.missing_attendance_status");
+    MISSING_ATTENDANCE_STATUS("invalid.missing_attendance_status"),
+    
+    // SEARCH
+    INVALID_SEARCH_QUERY("invalid.invalid_search_query"),
+    MISSING_SEARCH_QUERY("invalid.missing_search_query"),
+    INVALID_SEARCH_CATEGORY("invalid.invalid_search_category"),
+    MISSING_SEARCH_CATEGORY("invalid.missing_search_category"),
+    INVALID_SEARCH_DEADLINE("invalid.invalid_search_deadline"),
+    MISSING_SEARCH_DEADLINE("invalid.missing_search_deadline"),
+    INVALID_SEARCH_ORDER("invalid.invalid_search_order"),
+    MISSING_SEARCH_ORDER("invalid.missing_search_order"),
+    INVALID_SEARCH_MAXNUM("invalid.invalid_search_max_num"),
+    MISSING_SEARCH_MAXNUM("invalid.missing_search_max_num");
 
+    
     // ----------------------------------------------------------------------
     private String errorDescriptionId;
 

@@ -10,11 +10,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import net.sf.json.JSONObject;
 
 public class PartakeAPIActionSupport extends PartakeActionSupport {
     private static final long serialVersionUID = 1L;
-
+    private static final Logger logger = Logger.getLogger(PartakeAPIActionSupport.class);
+    
     private InputStream stream;
     private int status;
     private Map<String, String> headers;
@@ -44,6 +47,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
             this.stream = new ByteArrayInputStream(obj.toString().getBytes("utf-8"));
             return "json";
         } catch (UnsupportedEncodingException e) {
+            logger.error("This exception should not be thrown!", e);
             return ERROR;
         }
     }
@@ -76,6 +80,8 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      */
     @Deprecated
     protected String renderError(String reason) {
+        logger.error(reason);
+        
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
         obj.put("reason", reason);
@@ -84,11 +90,13 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     }
 
     /**
-     * renderError(String) と同じだが、DB エラーの場合はこちらを使うこと。
+     * @deprected Use renderError(ServerError.DB_ERROR) instead.
      * @return
      */
     @Deprecated
     protected String renderDBError() {
+        logger.error(ServerErrorCode.DB_ERROR.getReasonString());
+        
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
         obj.put("reason", ServerErrorCode.DB_ERROR.getReasonString());
@@ -101,15 +109,27 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      * ステータスコードは 500 を返す。
      */
     protected String renderError(ServerErrorCode errorCode) {
+        return renderError(errorCode, null);
+    }
+
+    /**
+     * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
+     * ステータスコードは 500 を返す。
+     */
+    protected String renderError(ServerErrorCode errorCode, Throwable e) {
         assert errorCode != null;
+        
+        final String reasonString = errorCode.toString() + ":" + errorCode.getReasonString(); 
+        if (e != null) { logger.error(reasonString, e); }
+        else { logger.error(reasonString); }
 
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
         obj.put("reason", errorCode.getReasonString());
         this.status = 500;
-        return renderJSON(obj);
+        return renderJSON(obj);        
     }
-
+    
     /**
      * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。

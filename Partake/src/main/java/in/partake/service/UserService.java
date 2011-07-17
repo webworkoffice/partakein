@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.http.AccessToken;
@@ -36,7 +34,7 @@ import twitter4j.http.AccessToken;
  */
 public final class UserService extends PartakeService {
     private static UserService instance = new UserService();
-    private static Logger logger = Logger.getLogger(UserService.class);
+    // private static Logger logger = Logger.getLogger(UserService.class);
 
     public static UserService get() {
         return instance;

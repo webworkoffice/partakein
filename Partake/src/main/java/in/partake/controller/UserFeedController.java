@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 public class UserFeedController extends PartakeActionSupport {
     /** */
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(UserFeedController.class);
+    // private static final Logger logger = Logger.getLogger(UserFeedController.class);
 
     public String feed() throws DAOException {
         String feedId = getParameter("feedId");
