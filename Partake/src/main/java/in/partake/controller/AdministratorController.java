@@ -1,9 +1,12 @@
 package in.partake.controller;
 
+import in.partake.mashup.hatena.HatenaBookmarkCountLoader;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.resource.Constants;
+import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
 import in.partake.service.EventService;
 
@@ -22,6 +25,11 @@ public class AdministratorController extends PartakeActionSupport {
 
     public String index() throws PartakeResultException {
         ensureAdmin();
+
+        HatenaBookmarkCountLoader loader = new HatenaBookmarkCountLoader();
+        final int bookmarkCount = loader.loadCountOfAllPages(PartakeProperties.get().getTopPath() + '/');
+        attributes.put(Constants.ATTR_BOOKMARK_COUNT, Integer.valueOf(bookmarkCount));
+
         return SUCCESS;
     }
 
