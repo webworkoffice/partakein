@@ -1,9 +1,8 @@
 #summary One-sentence summary of this page.
- ※作成中
 
 = Introduction =
 
-Description to set up [http://www.h2database.com/ H2 database] for Windows.
+Description to set up PARTAKE with [http://www.h2database.com/ H2 database] for Windows.
 
 <wiki:toc max_depth="2" />
 
@@ -15,6 +14,10 @@ Description to set up [http://www.h2database.com/ H2 database] for Windows.
 == Deploy PARTAKE ==
 
 Deploy PARTAKE to Web Application Server like Tomcat6.
+To create war file, you can use Maven like below at top directory:
+{{{
+ mvn clean package openjpa:enhance war:war
+}}}
 
 == Create administrator and schema ==
 [http://www.h2database.com/html/tutorial.html#tutorial_starting_h2_console Run h2 console] and login as System Administrator like SA.
@@ -34,7 +37,7 @@ Copy `h2-<version>.jar` to %CATALINA_HOME%\lib.
 This library is included in H2 database.
 
 == Rewrite persistence.xml ==
-Open \WEB-INF\classes\META-INF\persistence.xml and rewrire *openjpa.ConnectionProperties* and *openjpa.jdbc.DBDictionary* property.
+Open WEB-INF\classes\META-INF\persistence.xml and rewrire *openjpa.ConnectionProperties* and *openjpa.jdbc.DBDictionary* property.
 If you changed password of partake user, you should also rewrite *openjpa.ConnectionPassword*.
 {{{
 <persistence-unit name="partake">
@@ -43,6 +46,7 @@ If you changed password of partake user, you should also rewrite *openjpa.Connec
     <property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource"/>
     <property name="openjpa.ConnectionProperties" value="DriverClassName=org.h2.Driver,Url=jdbc:h2:file:C:/work/partake.h2,Username=partake,Password=partake"/>
     <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+    <property name="openjpa.jdbc.Schema" value="partake" />
 
     <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
 
@@ -55,3 +59,6 @@ If you changed password of partake user, you should also rewrite *openjpa.Connec
   </properties>
   ...
 }}}
+
+== Startup Tomcat ==
+Finally, kick %CATALINA_HOME%\bin\startup.bat and access to http://localhost:8080/ .
