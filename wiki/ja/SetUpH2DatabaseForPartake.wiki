@@ -1,0 +1,69 @@
+#summary H2データベースを使ってPARTAKEを手軽に動かす方法を紹介します。
+
+= 概要 =
+
+PARTAKEを[http://www.h2database.com/ H2 database]を使って実行する方法を紹介します。
+各コマンドはWindowsでのものですが、LinuxやMac OSXなどでも基本的な手順は同じです。
+
+<wiki:toc max_depth="2" />
+
+= 詳細 =
+== H2データベースのインストール ==
+
+H2の[http://www.h2database.com/html/download.html Download]ページから最新の配布物を入手し、インストールしてください。
+
+== PARTAKEのデプロイ ==
+
+Tomcat6のようなサーブレットコンテナを用意し、PARTAKEをデプロイします。例えば%CATALINA_HOME%\webappsフォルダに
+warファイルをROOT.warという名前で保存することで、 http://localhost:8080/ からPARTAKEを利用できるようになります。
+warファイルの作成は、以下のコマンドをプロジェクトのトップディレクトリで実行することにより行えます。
+{{{
+ mvn clean package openjpa:enhance war:war
+}}}
+
+== データベースの管理者とスキーマを作成 ==
+[http://www.h2database.com/html/tutorial.html#tutorial_starting_h2_console H2コンソールを実行し]、デフォルトで用意されている
+SAユーザでデータベースに接続します。JDBC URLがデータファイルの置き場所を表すことに注意してください。以下のスクリーンショットでは
+C:/workディレクトリにファイルを作成しています。
+http://partake-stat.appspot.com/wiki/loginConsole.png
+
+
+接続したら以下のSQLを実行し、データベースの管理者とスキーマを作成します。partakeユーザのパスワードは必要に応じて変更してください。
+{{{
+CREATE USER partake PASSWORD 'partake';
+ALTER USER partake ADMIN TRUE;
+CREATE SCHEMA partake AUTHORIZATION partake;
+}}}
+
+== H2のライブラリをTomcat6にコピーする ==
+先ほどダウンロードしたH2データベースに同梱されている `h2-<version>.jar` を %CATALINA_HOME%\libにコピーします。
+
+== persistence.xmlの書き換え ==
+%CATALINA_HOME%\webappsに展開されているフォルダを開き、WEB-INF\classes\META-INF\persistence.xmlを編集します。フォルダ名はwarファイルと同じです。
+
+編集内容は以下のとおりです。少なくとも *openjpa.ConnectionProperties* と *openjpa.jdbc.DBDictionary* 、 *openjpa.jdbc.Schema* を書き換える必要があります。
+{{{
+<persistence-unit name="partake">
+  ...
+  <properties>
+    <property name="openjpa.ConnectionDriverName" value="org.apache.commons.dbcp.BasicDataSource"/>
+    <property name="openjpa.ConnectionProperties" value="DriverClassName=org.h2.Driver,Url=jdbc:h2:file:C:/work/partake.h2,Username=partake,Password=partake"/>
+    <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO"/>
+    <property name="openjpa.jdbc.Schema" value="partake" />
+
+    <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
+
+    <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(SchemaAction='add')" />
+    <property name="openjpa.RuntimeUnenhancedClasses" value="unsupported"/>
+
+    <property name="openjpa.DataCache" value="true"/>
+    <property name="openjpa.QueryCache" value="false"/>
+    <property name="openjpa.RemoteCommitProvider" value="sjvm"/>
+  </properties>
+  ...
+}}}
+
+まだwarファイルが展開されておらず、ROOTフォルダが存在しない場合、%CATALINA_HOME%\bin\startup.batを実行することでこの問題を解消できます。
+
+== Tomcatを起動する ==
+最後に %CATALINA_HOME%\bin\startup.bat を実行して http://localhost:8080/ にアクセスしてください。
