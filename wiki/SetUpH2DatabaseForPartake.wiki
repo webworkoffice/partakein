@@ -37,8 +37,7 @@ Copy `h2-<version>.jar` to %CATALINA_HOME%\lib.
 This library is included in H2 database.
 
 == Rewrite persistence.xml ==
-Open WEB-INF\classes\META-INF\persistence.xml and rewrire *openjpa.ConnectionProperties* and *openjpa.jdbc.DBDictionary* property.
-If you changed password of partake user, you should also rewrite *openjpa.ConnectionPassword*.
+Open WEB-INF\classes\META-INF\persistence.xml and rewrire *openjpa.ConnectionProperties*, *openjpa.jdbc.DBDictionary* and *openjpa.jdbc.Schema* property.
 {{{
 <persistence-unit name="partake">
   ...
