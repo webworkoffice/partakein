@@ -1,47 +1,47 @@
-#summary H2�f�[�^�x�[�X���g����PARTAKE����y�ɓ��������@���Љ�܂��B
+#summary H2データベースを使ってPARTAKEを手軽に動かす方法を紹介します。
 
-= �T�v =
+= 概要 =
 
-PARTAKE��[http://www.h2database.com/ H2 database]���g���Ď��s������@���Љ�܂��B
-�e�R�}���h��Windows�ł̂��̂ł����ALinux��Mac OSX�Ȃǂł���{�I�Ȏ菇�͓����ł��B
+PARTAKEを[http://www.h2database.com/ H2 database]を使って実行する方法を紹介します。
+各コマンドはWindowsでのものですが、LinuxやMac OSXなどでも基本的な手順は同じです。
 
 <wiki:toc max_depth="2" />
 
-= �ڍ� =
-== H2�f�[�^�x�[�X�̃C���X�g�[�� ==
+= 詳細 =
+== H2データベースのインストール ==
 
-H2��[http://www.h2database.com/html/download.html Download]�y�[�W����ŐV�̔z�z������肵�A�C���X�g�[�����Ă��������B
+H2の[http://www.h2database.com/html/download.html Download]ページから最新の配布物を入手し、インストールしてください。
 
-== PARTAKE�̃f�v���C ==
+== PARTAKEのデプロイ ==
 
-Tomcat6�̂悤�ȃT�[�u���b�g�R���e�i��p�ӂ��APARTAKE���f�v���C���܂��B�Ⴆ��%CATALINA_HOME%\webapps�t�H���_��
-war�t�@�C����ROOT.war�Ƃ������O�ŕۑ����邱�ƂŁA http://localhost:8080/ ����PARTAKE�𗘗p�ł���悤�ɂȂ�܂��B
-war�t�@�C���̍쐬�́A�ȉ��̃R�}���h���v���W�F�N�g�̃g�b�v�f�B���N�g���Ŏ��s���邱�Ƃɂ��s���܂��B
+Tomcat6のようなサーブレットコンテナを用意し、PARTAKEをデプロイします。例えば%CATALINA_HOME%\webappsフォルダに
+warファイルをROOT.warという名前で保存することで、 http://localhost:8080/ からPARTAKEを利用できるようになります。
+warファイルの作成は、以下のコマンドをプロジェクトのトップディレクトリで実行することにより行えます。
 {{{
  mvn clean package openjpa:enhance war:war
 }}}
 
-== �f�[�^�x�[�X�̊Ǘ��҂ƃX�L�[�}���쐬 ==
-[http://www.h2database.com/html/tutorial.html#tutorial_starting_h2_console H2�R���\�[�������s��]�A�f�t�H���g�ŗp�ӂ���Ă���
-SA���[�U�Ńf�[�^�x�[�X�ɐڑ����܂��BJDBC URL���f�[�^�t�@�C���̒u���ꏊ��\�����Ƃɒ��ӂ��Ă��������B�ȉ��̃X�N���[���V���b�g�ł�
-C:/work�f�B���N�g���Ƀt�@�C�����쐬���Ă��܂��B
+== データベースの管理者とスキーマを作成 ==
+[http://www.h2database.com/html/tutorial.html#tutorial_starting_h2_console H2コンソールを実行し]、デフォルトで用意されている
+SAユーザでデータベースに接続します。JDBC URLがデータファイルの置き場所を表すことに注意してください。以下のスクリーンショットでは
+C:/workディレクトリにファイルを作成しています。
 http://partake-stat.appspot.com/wiki/loginConsole.png
 
 
-�ڑ�������ȉ���SQL�����s���A�f�[�^�x�[�X�̊Ǘ��҂ƃX�L�[�}���쐬���܂��Bpartake���[�U�̃p�X���[�h�͕K�v�ɉ����ĕύX���Ă��������B
+接続したら以下のSQLを実行し、データベースの管理者とスキーマを作成します。partakeユーザのパスワードは必要に応じて変更してください。
 {{{
 CREATE USER partake PASSWORD 'partake';
 ALTER USER partake ADMIN TRUE;
 CREATE SCHEMA partake AUTHORIZATION partake;
 }}}
 
-== H2�̃��C�u������Tomcat6�ɃR�s�[���� ==
-��قǃ_�E�����[�h����H2�f�[�^�x�[�X�ɓ�������Ă��� `h2-<version>.jar` �� %CATALINA_HOME%\lib�ɃR�s�[���܂��B
+== H2のライブラリをTomcat6にコピーする ==
+先ほどダウンロードしたH2データベースに同梱されている `h2-<version>.jar` を %CATALINA_HOME%\libにコピーします。
 
-== persistence.xml�̏������� ==
-%CATALINA_HOME%\webapps�ɓW�J����Ă���t�H���_���J���AWEB-INF\classes\META-INF\persistence.xml��ҏW���܂��B�t�H���_����war�t�@�C���Ɠ����ł��B
+== persistence.xmlの書き換え ==
+%CATALINA_HOME%\webappsに展開されているフォルダを開き、WEB-INF\classes\META-INF\persistence.xmlを編集します。フォルダ名はwarファイルと同じです。
 
-�ҏW���e�͈ȉ��̂Ƃ���ł��B���Ȃ��Ƃ� *openjpa.ConnectionProperties* �� *openjpa.jdbc.DBDictionary* �A *openjpa.jdbc.Schema* ������������K�v������܂��B
+編集内容は以下のとおりです。少なくとも *openjpa.ConnectionProperties* と *openjpa.jdbc.DBDictionary* 、 *openjpa.jdbc.Schema* を書き換える必要があります。
 {{{
 <persistence-unit name="partake">
   ...
@@ -63,7 +63,7 @@ CREATE SCHEMA partake AUTHORIZATION partake;
   ...
 }}}
 
-�܂�war�t�@�C�����W�J����Ă��炸�AROOT�t�H���_�����݂��Ȃ��ꍇ�A%CATALINA_HOME%\bin\startup.bat�����s���邱�Ƃł��̖��������ł��܂��B
+まだwarファイルが展開されておらず、ROOTフォルダが存在しない場合、%CATALINA_HOME%\bin\startup.batを実行することでこの問題を解消できます。
 
-== Tomcat���N������ ==
-�Ō�� %CATALINA_HOME%\bin\startup.bat �����s���� http://localhost:8080/ �ɃA�N�Z�X���Ă��������B
+== Tomcatを起動する ==
+最後に %CATALINA_HOME%\bin\startup.bat を実行して http://localhost:8080/ にアクセスしてください。
