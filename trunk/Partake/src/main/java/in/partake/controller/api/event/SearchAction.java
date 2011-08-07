@@ -12,6 +12,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
 
 // search API can take
@@ -39,19 +40,14 @@ public class SearchAction extends PartakeAPIActionSupport {
 
         String sortOrder = getSortOrder();
         if (sortOrder == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_ORDER); }
-        
-        String maxNumArg = getMaxNum();
-        if (maxNumArg == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_MAXNUM); }
-        
-        final int maxNum; 
+
+        final int maxNum;
         try {
-            maxNum = Integer.parseInt(maxNumArg);
-        } catch (NumberFormatException e) {
-            return renderInvalid(UserErrorCode.INVALID_SEARCH_MAXNUM);
+            maxNum = getMaxNum();
+        } catch (IllegalRequestException e) {
+            return renderInvalid(e.getErrorCode());
         }
-        // TODO(mayah): 100 is a magic number. This number should be externalized.
-        if (maxNum < 0 || 100 < maxNum) { return renderInvalid(UserErrorCode.INVALID_SEARCH_MAXNUM); }
-        
+
         try {
             List<Event> events = EventService.get().search(query, category, sortOrder, Boolean.parseBoolean(beforeDeadlineOnly), maxNum);
              
@@ -125,20 +121,35 @@ public class SearchAction extends PartakeAPIActionSupport {
         return null;
     }
     
-    private String getMaxNum() {
+    private int getMaxNum() throws IllegalRequestException {
         String maxNum = getParameter("maxNum");
-        if (maxNum == null) { return "10"; }
-        
-        maxNum = maxNum.trim();
-        if (maxNum.length() > 5) { return null; }
-        
+        if (maxNum == null) {
+            throw new IllegalRequestException(UserErrorCode.MISSING_SEARCH_MAXNUM);
+        }
+
         try {
-            int v = Integer.parseInt(maxNum);
-            if (v <= 0 || MAX_NUM < v) { return null; }
-            
-            return maxNum;
+            int v = Integer.parseInt(StringUtils.trim(maxNum));
+            if (v <= 0 || MAX_NUM < v) {
+                throw new IllegalRequestException(UserErrorCode.INVALID_SEARCH_MAXNUM);
+            }
+
+            return v;
         } catch (NumberFormatException e) {
-            return null;
+            throw new IllegalRequestException(UserErrorCode.INVALID_SEARCH_MAXNUM);
+        }
+    }
+
+    private static class IllegalRequestException extends Exception {
+        private static final long serialVersionUID = -2150899144288175828L;
+        private final UserErrorCode errorCode;
+        IllegalRequestException(UserErrorCode errorCode) {
+            if (errorCode == null) {
+                throw new IllegalArgumentException();
+            }
+            this.errorCode = errorCode;
+        }
+        UserErrorCode getErrorCode() {
+            return this.errorCode;
         }
     }
 }
