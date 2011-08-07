@@ -21,7 +21,12 @@ public abstract class APIControllerTest extends PartakeControllerTestCase {
      * @throws IOException
      */
     protected String getJSONString(ActionProxy proxy) throws Exception {
-        return response.getContentAsString();
+        byte[] streamData = response.getContentAsByteArray();
+        if (streamData == null) {
+            return null;
+        } else {
+            return new String(streamData, "UTF-8");
+        }
     }
 
     /**
