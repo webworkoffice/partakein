@@ -139,6 +139,7 @@ public class SearchAction extends PartakeAPIActionSupport {
         }
     }
 
+    // 他のActionクラスでも使うようならcontroller.apiパッケージに移動することも検討
     private static class IllegalRequestException extends Exception {
         private static final long serialVersionUID = -2150899144288175828L;
         private final UserErrorCode errorCode;
