@@ -21,6 +21,8 @@ public abstract class APIControllerTest extends PartakeControllerTestCase {
      * @throws IOException
      */
     protected String getJSONString(ActionProxy proxy) throws Exception {
+        // response.setCharacterEncoding("UTF-8") すればgetContentAsStringでも正常に取得できるはずだが、
+        // このメソッドがresponseの状態を破壊するのは不適と考えて自前でbyte[]->Stringの変換を行っている
         byte[] streamData = response.getContentAsByteArray();
         if (streamData == null) {
             return null;
