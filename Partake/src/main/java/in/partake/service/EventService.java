@@ -1033,7 +1033,7 @@ public final class EventService extends PartakeService {
             String title;
             switch (status) {
             case ENROLLED:      title = user.getScreenName() + " さんが参加しました";        break;
-            case CANCELLED:     title = user.getScreenName() + " さんがを取りやめました";     break;
+            case CANCELLED:     title = user.getScreenName() + " さんが参加を取りやめました";     break;
             case RESERVED:      title = user.getScreenName() + " さんが仮参加しました";      break;
             case NOT_ENROLLED:  title = user.getScreenName() + " さんはもう参加していません"; break;
             default:            title = user.getScreenName() + " さんが不明なステータスになっています"; break; // TODO: :-P
