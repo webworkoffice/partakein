@@ -34,7 +34,8 @@
 
 	<h2>Count of events</h2>
 	<dl>
-		<dt>Event</dt><dd><%= format.format(eventCount.numEvent) %></dd>
+		<dt>event</dt><dd><%= format.format(eventCount.numEvent) %></dd>
+		<dt>public event</dt><dd><%= format.format(eventCount.numPublicEvent) %></dd>
 		<dt>private event</dt><dd><%= format.format(eventCount.numPrivateEvent) %></dd>
 	</dl>
 
