@@ -1191,8 +1191,6 @@ public final class EventService extends PartakeService {
                 count.numEvent++;
                 if (event.isPrivate()) {
                     count.numPrivateEvent++;
-                } else {
-                	count.numPublicEvent++;
                 }
             }
             con.commit();
@@ -1206,7 +1204,6 @@ public final class EventService extends PartakeService {
     public static final class EventCount {
         public int numEvent;
         public int numPrivateEvent;
-        public int numPublicEvent;
     }
 
 }

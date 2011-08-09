@@ -34,8 +34,7 @@
 
 	<h2>Count of events</h2>
 	<dl>
-		<dt>event</dt><dd><%= format.format(eventCount.numEvent) %></dd>
-		<dt>public event</dt><dd><%= format.format(eventCount.numPublicEvent) %></dd>
+		<dt>Event</dt><dd><%= format.format(eventCount.numEvent) %></dd>
 		<dt>private event</dt><dd><%= format.format(eventCount.numPrivateEvent) %></dd>
 	</dl>
 
@@ -47,7 +46,7 @@
 	<h2>いろんなリンク</h2>
 	<ul>
 		<li><a href="<%= request.getContextPath() %>/admin/recreateEventIndex">Luceneインデックス の再生成</a></li>
-		<li><a href="<%= request.getContextPath() %>/admin/createDemoPage">デモページ の生成</a></li>
+		<li><a href="<%= request.getContextPath() %>/admin/createDemoPage">デモページ の再生成</a></li>
 	</ul>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
