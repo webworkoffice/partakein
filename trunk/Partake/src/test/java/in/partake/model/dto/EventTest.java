@@ -171,4 +171,11 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
 	protected Event createModel() {
 		return new Event();
 	}
+
+	@Test
+	public void testToJsonWhenBeginDateExistsAndEndDateIsNull() {
+		Event event = new Event();
+		event.setBeginDate(new Date());
+		event.toJSON();
+	}
 }
