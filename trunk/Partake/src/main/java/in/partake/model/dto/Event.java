@@ -1,12 +1,16 @@
 package in.partake.model.dto;
 
 import in.partake.model.dao.DAOException;
+import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
 import in.partake.util.Util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -215,14 +219,16 @@ public class Event extends PartakeModel<Event> {
         obj.put("title", title);
         obj.put("summary", summary);
         obj.put("category", category);
+        // TODO Localeは外部ファイルなどで設定可能にする
+        DateFormat format = new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
         if (deadline != null) {
-            obj.put("deadline", deadline.getTime());
+            obj.put("deadline", format.format(deadline));
         }
         if (beginDate != null) {
-            obj.put("beginDate", beginDate.getTime());
+            obj.put("beginDate", format.format(beginDate));
         }
         if (endDate != null) {
-            obj.put("endDate", endDate.getTime());
+            obj.put("endDate", format.format(endDate));
         }
         obj.put("capacity", capacity);
         obj.put("url", url);
@@ -239,10 +245,10 @@ public class Event extends PartakeModel<Event> {
         obj.put("isPreview", isPreview);
         // obj.put("isRemoved", isRemoved);
         if (createdAt != null) {
-            obj.put("createdAt", createdAt.getTime());
+            obj.put("createdAt", format.format(createdAt));
         }
         if (modifiedAt != null) {
-            obj.put("modofiedAt", modifiedAt.getTime());
+            obj.put("modofiedAt", format.format(modifiedAt));
         }
         obj.put("revision", revision);
 

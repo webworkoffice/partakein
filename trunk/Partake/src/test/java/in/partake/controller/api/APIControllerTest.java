@@ -1,8 +1,12 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeControllerTestCase;
+import in.partake.resource.Constants;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
@@ -89,5 +93,15 @@ public abstract class APIControllerTest extends PartakeControllerTestCase {
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("error", obj.get("result"));
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
+    }
+
+    /**
+     * PARTAKE API標準のDateフォーマットをparseするためのフォーマットを作成する。
+     * このメソッドが返すインスタンスはスレッドセーフではないため、他スレッドとの共用は避けること。
+     * @return API標準のDateフォーマット
+     */
+    protected DateFormat createDateFormat() {
+        // TODO Localeは外部ファイルなどで設定可能にする
+        return new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
     }
 }
