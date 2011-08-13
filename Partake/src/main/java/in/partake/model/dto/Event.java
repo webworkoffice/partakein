@@ -221,7 +221,7 @@ public class Event extends PartakeModel<Event> {
         if (beginDate != null) {
             obj.put("beginDate", beginDate.getTime());
         }
-        if (beginDate != null) {
+        if (endDate != null) {
             obj.put("endDate", endDate.getTime());
         }
         obj.put("capacity", capacity);
