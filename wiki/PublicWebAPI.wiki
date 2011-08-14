@@ -127,7 +127,7 @@ TBW
 ||category||all||検索対象のカテゴリ（複数指定不可）（[PublicWebAPI#Category]を参照）||
 ||beforeDeadlineOnly||true||trueの場合、締切りを過ぎたイベントを検索結果に含めない||
 ||sortOrder||score||検索結果のソート順（[PublicWebAPI#SortOrder]を参照）||
-||maxNum||10||取得するイベントの最大数||
+||maxNum||10||取得するイベントの最大数（最大100）||
 
 
 == イベントへの参加、仮参加、キャンセル ==
