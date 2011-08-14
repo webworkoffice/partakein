@@ -71,13 +71,13 @@ public class EventsFeedController extends PartakeActionSupport {
 		String category = getParameter("category");
 
 		// check category is correct.
-		if (!EventCategory.isValidCategoryName(category) && !category.equals("all")) { return NOT_FOUND; }
+		if (!EventCategory.isValidCategoryName(category) && !category.equals(EventCategory.getAllEventCategory())) { return NOT_FOUND; }
 
 		SyndFeed feed = new SyndFeedImpl();
 		feed.setFeedType("rss_2.0");
 		feed.setEncoding("utf-8");
 
-		if (category.equals("all")) {
+		if (category.equals(EventCategory.getAllEventCategory())) {
 			feed.setTitle("Upcoming 100 events - [PARTAKE]");
 		} else {
 			feed.setTitle("Upcoming 100 events - " + EventCategory.getReadableCategoryName(category) + " - [PARTAKE]");

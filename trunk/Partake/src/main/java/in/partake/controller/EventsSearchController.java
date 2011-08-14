@@ -34,7 +34,7 @@ public class EventsSearchController extends PartakeActionSupport {
 	private static final List<KeyValuePair> CATEGORIES_FOR_SEARCH;
 	static {
 		List<KeyValuePair> categories = new ArrayList<KeyValuePair>();
-		categories.add(new KeyValuePair("all", "全て"));
+		categories.add(new KeyValuePair(EventCategory.getAllEventCategory(), "全て"));
 		categories.addAll(EventCategory.CATEGORIES);
 		CATEGORIES_FOR_SEARCH = Collections.unmodifiableList(categories);
 	}

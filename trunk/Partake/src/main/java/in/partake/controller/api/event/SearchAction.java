@@ -25,7 +25,7 @@ import org.apache.lucene.queryParser.ParseException;
 public class SearchAction extends PartakeAPIActionSupport {
 	private static final long serialVersionUID = 1L;
     // private static final Logger logger = Logger.getLogger(SearchAction.class);
-	private static final String DEFAULT_CATEGORY = "all";
+	private static final String DEFAULT_CATEGORY = EventCategory.getAllEventCategory();
 	private static final String DEFAULT_BEFORE_DEADLINE_ONLY = "true";
     private static final String DEFAULT_SORT_ORDER = "score";
 
@@ -79,7 +79,7 @@ public class SearchAction extends PartakeAPIActionSupport {
         if (category == null) { return DEFAULT_CATEGORY; }
         
         category = category.trim();
-        if ("all".equals(category) || EventCategory.isValidCategoryName(category)) {
+        if (EventCategory.getAllEventCategory().equals(category) || EventCategory.isValidCategoryName(category)) {
             return category;
         } else {
             return null;
