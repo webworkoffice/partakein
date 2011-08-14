@@ -121,7 +121,14 @@ TBW
 
 `/api/event/search`
 
-TBW
+=== parameters ===
+||*name*||*default value*||*explanation*||
+||query||(Empty String)||検索キーワード||
+||category||all||検索対象のカテゴリ（複数指定不可）（[PublicWebAPI#Category]を参照）||
+||beforeDeadlineOnly||true||trueの場合、締切りを過ぎたイベントを検索結果に含めない||
+||sortOrder||score||検索結果のソート順（[PublicWebAPI#SortOrder]を参照）||
+||maxNum||10||取得するイベントの最大数||
+
 
 == イベントへの参加、仮参加、キャンセル ==
 
@@ -185,6 +192,29 @@ TBW
 
 TBW 
 
+= Note =
+== Category ==
+PARTAKEが扱うイベントのカテゴリは以下のとおり。APIの引数にカテゴリを指定する場合は、大文字小文字が区別されることに注意。
+||*name*||*explanation*||
+||all||カテゴリ制限なし||
+||meeting||懇親会・オフ会||
+||computer||コンピューター||
+||sports||スポーツ||
+||game||ゲーム||
+||watching||鑑賞(芸術、映画)||
+||neta||ネタ||
+||others||その他||
+
+== SortOrder ==
+PARTAKEの検索APIに指定できるソート順は以下のとおり。APIの引数にカテゴリを指定する場合は、大文字小文字が区別されることに注意。
+||*name*||*explanation*||
+||score||マッチ度順||
+||createdAt||新着順||
+||deadline||締切の早い順||
+||deadline-r||締切の遅い順||
+||beginDate||開始日時の早い順||
+||beginDate-r||開始日時の遅い順||
+        
 = Sample =
 
 基本的に API のパラメータは URL の query 部分で表現される。
@@ -242,5 +272,5 @@ if (!!event) {
 }}}
 
 = TODO =
-- fix the date format
-- fix the format for managerId
+ * fix the format for managerId
+ * allow to specify response format (ex. json, jsonp, rss, xml)
