@@ -28,9 +28,10 @@ public class SearchAction extends PartakeAPIActionSupport {
 	private static final String DEFAULT_CATEGORY = EventCategory.getAllEventCategory();
 	private static final String DEFAULT_BEFORE_DEADLINE_ONLY = "true";
     private static final String DEFAULT_SORT_ORDER = "score";
+    private static final int DEFAULT_MAX_NUM = 10;
 
     public static final int MAX_NUM = 100;
-    
+
     public String search() throws DAOException {
         String query = getQuery();
 
@@ -52,7 +53,7 @@ public class SearchAction extends PartakeAPIActionSupport {
 
         try {
             List<Event> events = EventService.get().search(query, category, sortOrder, Boolean.parseBoolean(beforeDeadlineOnly), maxNum);
-             
+
             JSONArray jsonEventsArray = new JSONArray();
             for (Event event : events) {
                 jsonEventsArray.add(event.toJSON());
@@ -65,19 +66,19 @@ public class SearchAction extends PartakeAPIActionSupport {
         } catch (ParseException e) {
             return renderInvalid(UserErrorCode.INVALID_SEARCH_QUERY);
         }
-        
+
 
     }
-    
+
     private String getQuery() {
         String query = getParameter("query");
         return StringUtils.trimToEmpty(query);
     }
-    
+
     private String getCategory() {
         String category = getParameter("category");
         if (category == null) { return DEFAULT_CATEGORY; }
-        
+
         category = category.trim();
         if (EventCategory.getAllEventCategory().equals(category) || EventCategory.isValidCategoryName(category)) {
             return category;
@@ -85,11 +86,11 @@ public class SearchAction extends PartakeAPIActionSupport {
             return null;
         }
     }
-    
+
     private String getBeforeDeadlineOnly() throws IllegalRequestException {
         String beforeDeadlineOnly = getParameter("beforeDeadlineOnly");
         if (beforeDeadlineOnly == null) { return DEFAULT_BEFORE_DEADLINE_ONLY; }
-        
+
         if ("true".equalsIgnoreCase(beforeDeadlineOnly)) {
             return "true";
         }
@@ -99,7 +100,7 @@ public class SearchAction extends PartakeAPIActionSupport {
 
         throw new IllegalRequestException(UserErrorCode.INVALID_SEARCH_DEADLINE);
     }
-    
+
     private String getSortOrder() {
         String sortOrder = getParameter("sortOrder");
         if (sortOrder == null) { return DEFAULT_SORT_ORDER; }
@@ -111,14 +112,14 @@ public class SearchAction extends PartakeAPIActionSupport {
         if ("deadline-r".equalsIgnoreCase(sortOrder))  { return "deadline-r"; }
         if ("beginDate".equalsIgnoreCase(sortOrder))   { return "beginDate"; }
         if ("beginDate-r".equalsIgnoreCase(sortOrder)) { return "beginDate-r"; }
-        
+
         return null;
     }
-    
+
     private int getMaxNum() throws IllegalRequestException {
         String maxNum = getParameter("maxNum");
         if (maxNum == null) {
-            throw new IllegalRequestException(UserErrorCode.MISSING_SEARCH_MAXNUM);
+            return DEFAULT_MAX_NUM;
         }
 
         try {

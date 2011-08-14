@@ -173,16 +173,24 @@ public class SearchActionTest extends APIControllerTest {
         assertThat(json.getString("reason"), equalTo(UserErrorCode.INVALID_SEARCH_MAXNUM.getReasonString()));
     }
 
+    /**
+     * maxNum省略時はデフォルト（10）と解釈する
+     * @throws Exception
+     */
     @Test
     public void testSearchEventMissingMaxNum() throws Exception {
+        for (int i = 1; i <= 11; ++i) {
+            storeEventBeforeDeadline();
+        }
         ActionProxy proxy = getActionProxy("/api/event/search");
         addBasicParameter(proxy);
         addParameter(proxy, "maxNum", null);
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultInvalid(proxy);
+        assertResultOK(proxy);
         JSONObject json = getJSON(proxy);
-        assertThat(json.getString("reason"), equalTo(UserErrorCode.MISSING_SEARCH_MAXNUM.getReasonString()));
+        assertThat(json.containsKey("reason"), equalTo(false));
+        assertThat(json.getJSONArray("events").size(), equalTo(10));
     }
 
     @Test
@@ -209,17 +217,25 @@ public class SearchActionTest extends APIControllerTest {
         assertThat(json.getString("reason"), equalTo(UserErrorCode.INVALID_SEARCH_MAXNUM.getReasonString()));
     }
 
+    /**
+     * 大文字小文字間違えて指定した場合はデフォルト値が有効になる
+     */
     @Test
     public void testSearchEventNotLowerCamelMaxNum() throws Exception {
+        for (int i = 1; i <= 11; ++i) {
+            storeEventBeforeDeadline();
+        }
+
         ActionProxy proxy = getActionProxy("/api/event/search");
         addBasicParameter(proxy);
         addParameter(proxy, "maxNum", null);
         addParameter(proxy, "maxnum", "10");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultInvalid(proxy);
+        assertResultOK(proxy);
         JSONObject json = getJSON(proxy);
-        assertThat(json.getString("reason"), equalTo(UserErrorCode.MISSING_SEARCH_MAXNUM.getReasonString()));
+        assertThat(json.containsKey("reason"), equalTo(false));
+        assertThat(json.getJSONArray("events").size(), equalTo(10));
     }
 
     // =========================================================================
