@@ -11,6 +11,7 @@ import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -25,16 +26,32 @@ public class SearchActionTest extends APIControllerTest {
     private static final String SEARCH_QUERY = "あ";
     @Test
     public void testSearchEventAllCategory() throws Exception {
+        storeEventBeforeDeadline();
         ActionProxy proxy = getActionProxy("/api/event/search");
         addBasicParameter(proxy);
         assertThat(proxy.execute(), equalTo("json"));
 
         assertResultOK(proxy);
         JSONObject json = getJSON(proxy);
+        assertPublicEventsAreFound(json);
         assertThat(json.containsKey("reason"), equalTo(false));
     }
 
-    // =========================================================================
+    @Test
+    public void testSearchEventWithoutQuery() throws Exception {
+        storeEventBeforeDeadline();
+        ActionProxy proxy = getActionProxy("/api/event/search");
+        addBasicParameter(proxy);
+        addParameter(proxy, "query", null);
+        assertThat(proxy.execute(), equalTo("json"));
+
+        assertResultOK(proxy);
+        JSONObject json = getJSON(proxy);
+        assertThat(json.containsKey("reason"), equalTo(false));
+        assertPublicEventsAreFound(json);
+    }
+
+	// =========================================================================
     // beforeDeadlineOnly
     @Test
     public void testSearchEventBeforeDeadlineOnly() throws Exception {
@@ -48,16 +65,7 @@ public class SearchActionTest extends APIControllerTest {
 
         assertResultOK(proxy);
         JSONObject json = getJSON(proxy);
-        DateFormat format = createDateFormat();
-        Date now = new Date();
-        boolean findEvents = false;
-        for (@SuppressWarnings("unchecked") Iterator<JSONObject> iter = json.getJSONArray("events").iterator(); iter.hasNext();) {
-            JSONObject event = iter.next();
-            String deadlineAsString = event.getString("deadline");
-            assertThat("締め切り後のイベントが見つかってしまいました", format.parse(deadlineAsString), is(greaterThan(now)));
-            findEvents = true;
-        }
-        assertTrue("見つかるはずのイベントが見つかりませんでした", findEvents);
+        assertOnlyBeforeDeadlineAreFound(json);
     }
 
     @Test
@@ -104,16 +112,7 @@ public class SearchActionTest extends APIControllerTest {
 
         assertResultOK(proxy);
         JSONObject json = getJSON(proxy);
-        DateFormat format = createDateFormat();
-        Date now = new Date();
-        boolean findEvents = false;
-        for (@SuppressWarnings("unchecked")Iterator<JSONObject> iter = json.getJSONArray("events").iterator(); iter.hasNext();) {
-            JSONObject event = iter.next();
-            String deadlineAsString = event.getString("deadline");
-            assertThat("締め切り後のイベントが見つかってしまいました", format.parse(deadlineAsString), is(greaterThan(now)));
-            findEvents = true;
-        }
-        assertTrue("見つかるはずのイベントが見つかりませんでした", findEvents);
+        assertOnlyBeforeDeadlineAreFound(json);
     }
     /**
      * beforeDeadlineOnlyにtrueでもfalseでもない値が渡されたら引数が異常としてエラー
@@ -231,5 +230,27 @@ public class SearchActionTest extends APIControllerTest {
         addParameter(proxy, "beforeDeadlineOnly", "true");
         addParameter(proxy, "sortOrder", "score");
         addParameter(proxy, "maxNum", "10");
-	}
+    }
+
+    private void assertPublicEventsAreFound(JSONObject json) {
+        boolean findEvents = false;
+        for (@SuppressWarnings("unchecked") Iterator<JSONObject> iter = json.getJSONArray("events").iterator(); iter.hasNext();) {
+            iter.next();
+            findEvents = true;
+        }
+        assertTrue(findEvents);
+    }
+
+    private void assertOnlyBeforeDeadlineAreFound(JSONObject json) throws ParseException {
+        DateFormat format = createDateFormat();
+        Date now = new Date();
+        boolean findEvents = false;
+        for (@SuppressWarnings("unchecked")Iterator<JSONObject> iter = json.getJSONArray("events").iterator(); iter.hasNext();) {
+            JSONObject event = iter.next();
+            String deadlineAsString = event.getString("deadline");
+            assertThat("締め切り後のイベントが見つかってしまいました", format.parse(deadlineAsString), is(greaterThan(now)));
+            findEvents = true;
+        }
+        assertTrue("見つかるはずのイベントが見つかりませんでした", findEvents);
+    }
 }

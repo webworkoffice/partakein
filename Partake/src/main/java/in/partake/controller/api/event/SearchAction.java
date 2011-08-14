@@ -23,15 +23,17 @@ import org.apache.lucene.queryParser.ParseException;
 //  5) maxNum (integer)
 
 public class SearchAction extends PartakeAPIActionSupport {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
     // private static final Logger logger = Logger.getLogger(SearchAction.class);
+	private static final String DEFAULT_CATEGORY = "all";
+	private static final String DEFAULT_BEFORE_DEADLINE_ONLY = "true";
+    private static final String DEFAULT_SORT_ORDER = "score";
 
     public static final int MAX_NUM = 100;
     
     public String search() throws DAOException {
         String query = getQuery();
-        if (query == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_QUERY); }
-        
+
         String category = getCategory();
         if (category == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_CATEGORY); }
 
@@ -69,23 +71,15 @@ public class SearchAction extends PartakeAPIActionSupport {
     
     private String getQuery() {
         String query = getParameter("query");
-        if (query == null) {
-            query = "";
-        } else {
-            query = query.trim();
-        }
-
-        return query;
+        return StringUtils.trimToEmpty(query);
     }
     
     private String getCategory() {
         String category = getParameter("category");
-        if (category == null) { return "all"; }
+        if (category == null) { return DEFAULT_CATEGORY; }
         
         category = category.trim();
-        if ("all".equals(category)) {
-            return category;
-        } else if (EventCategory.isValidCategoryName(category)) {
+        if ("all".equals(category) || EventCategory.isValidCategoryName(category)) {
             return category;
         } else {
             return null;
@@ -94,7 +88,7 @@ public class SearchAction extends PartakeAPIActionSupport {
     
     private String getBeforeDeadlineOnly() throws IllegalRequestException {
         String beforeDeadlineOnly = getParameter("beforeDeadlineOnly");
-        if (beforeDeadlineOnly == null) { return "true"; }
+        if (beforeDeadlineOnly == null) { return DEFAULT_BEFORE_DEADLINE_ONLY; }
         
         if ("true".equalsIgnoreCase(beforeDeadlineOnly)) {
             return "true";
@@ -108,7 +102,7 @@ public class SearchAction extends PartakeAPIActionSupport {
     
     private String getSortOrder() {
         String sortOrder = getParameter("sortOrder");
-        if (sortOrder == null) { return "score"; }
+        if (sortOrder == null) { return DEFAULT_SORT_ORDER; }
 
         sortOrder = sortOrder.trim();
         if ("score".equalsIgnoreCase(sortOrder))       { return "score"; }

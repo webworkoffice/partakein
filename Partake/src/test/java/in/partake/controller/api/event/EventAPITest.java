@@ -166,18 +166,6 @@ public class EventAPITest extends APIControllerTest {
 
     @Test
     @Ignore("Not implemented yet")
-    public void testToSearchAnEvent() throws Exception {
-        throw new RuntimeException();
-    }
-    
-    @Test
-    @Ignore("Not implemented yet")
-    public void testToSearchAnEventWithEmptyQuery() throws Exception {
-        throw new RuntimeException();
-    }
-
-    @Test
-    @Ignore("Not implemented yet")
     public void testToEnrollAnEventWithLogin() throws Exception {
         throw new RuntimeException();
     }
