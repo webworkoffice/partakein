@@ -58,7 +58,7 @@ public class CalendarsController extends PartakeActionSupport {
 	// 全てのイベントのカレンダーの表示
 	// TODO: cache!
 	public String all() throws DAOException {
-	    return showByCategory("all");
+	    return showByCategory(EventCategory.getAllEventCategory());
 	}
 
 	// TODO: cache!
@@ -87,7 +87,7 @@ public class CalendarsController extends PartakeActionSupport {
                 public Void apply(Event event) {
                     if (event == null) { return null; }
                     if (event.isPrivate()) { return null; } // private calendar should not be displayed.
-                    if (!"all".equals(categoryName) && !categoryName.equals(event.getCategory())) { return null; }
+                    if (!EventCategory.getAllEventCategory().equals(categoryName) && !categoryName.equals(event.getCategory())) { return null; }
                     addToCalendar(calendar, event);
                     return null;
                 }

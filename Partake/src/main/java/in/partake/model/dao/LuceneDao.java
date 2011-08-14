@@ -167,7 +167,7 @@ public class LuceneDao {
 			Filter filter;
 			if (beforeDeadlineOnly) {
 				long current = new Date().getTime();
-				if ("all".equals(category) || "".equals(category)) {
+				if (EventCategory.getAllEventCategory().equals(category) || "".equals(category)) {
 					Query filterQuery = new TermRangeQuery("DEADLINE-TIME", Util.getTimeString(current), Util.getTimeString(Long.MAX_VALUE), true, true);
 					filter = new QueryWrapperFilter(filterQuery);
 				} else {
@@ -180,7 +180,7 @@ public class LuceneDao {
 					filter = new QueryWrapperFilter(filterQuery);
 				}
 			} else {
-				if ("all".equals(category) || "".equals(category)) {
+				if (EventCategory.getAllEventCategory().equals(category) || "".equals(category)) {
 					filter = null;
 					// filter = new QueryWrapperFilter(new MatchAllDocsQuery());
 				} else {
