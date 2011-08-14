@@ -205,7 +205,7 @@ PARTAKEが扱うイベントのカテゴリは以下のとおり。APIの引数�
 ||neta||ネタ||
 ||others||その他||
 
-== SortOrder ==
+== {{{SortOrder}}} ==
 PARTAKEの検索APIに指定できるソート順は以下のとおり。APIの引数にカテゴリを指定する場合は、大文字小文字が区別されることに注意。
 ||*name*||*explanation*||
 ||score||マッチ度順||
