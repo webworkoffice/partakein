@@ -1,8 +1,12 @@
 package in.partake.model.dto;
 
+import in.partake.model.dto.Event;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Date;
+
+import net.sf.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -175,7 +179,8 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
 	@Test
 	public void testToJsonWhenBeginDateExistsAndEndDateIsNull() {
 		Event event = new Event();
-		event.setBeginDate(new Date());
-		event.toJSON();
+		event.setBeginDate(new Date(0L));
+		JSONObject json = event.toJSON();
+		Assert.assertEquals("1970/01/01 09:00:00", json.getString("beginDate"));
 	}
 }
