@@ -261,6 +261,11 @@ public final class Util {
      * @return
      */
     public static String callBitlyShortenURL(String sourceURL) throws BitlyException {
+    	if (sourceURL.startsWith("http://localhost:") || sourceURL.startsWith("http://localhost/")) {
+    		// bitly API may throw Exception if its argument means localhost
+    		logger.debug(String.format("avoid shortening URL(%s)", sourceURL));
+    		return sourceURL;
+    	}
         final String bitlyUserName = PartakeProperties.get().getBitlyUserName();
         final String bitlyAPIKey = PartakeProperties.get().getBitlyAPIKey();
         final Provider bitly = Bitly.as(bitlyUserName, bitlyAPIKey);
