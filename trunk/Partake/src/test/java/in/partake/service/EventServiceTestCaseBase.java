@@ -271,4 +271,52 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
 		service.enroll(userId, eventId, ParticipationStatus.RESERVED, "", false, false);
 		assertThat(service.getUnfinishedEnrolledEvents(userId).size(), is(enrolledEvents));
 	}
+
+	/**
+	 * @see http://code.google.com/p/partakein/issues/detail?id=204
+	 */
+	@Test
+	public void testToCancelToUseDeadline() throws DAOException {
+		final User owner = createUser(createRandomId());
+		final Event source = createEvent("this id will be overwritten.");
+		final Date deadline = new Date();
+		source.setOwnerId(owner.getId());
+		source.setDeadline(deadline);
+		{
+			String eventId = service.create(source, null, null);
+			Event storedEvent = service.getEventById(eventId);
+			assertThat(storedEvent.getDeadline(), is(not(nullValue())));
+		}
+		Event updated = source.copy();
+		updated.setDeadline(null);
+		{
+			service.update(source, updated, false, null, false, null);
+			Event storedEvent = service.getEventById(updated.getId());
+			assertThat(storedEvent.getDeadline(), is(nullValue()));
+		}
+	}
+
+	/**
+	 * @see http://code.google.com/p/partakein/issues/detail?id=204
+	 */
+	@Test
+	public void testToCancelToUseEndDate() throws DAOException {
+		final User owner = createUser(createRandomId());
+		final Event source = createEvent("this id will be overwritten.");
+		final Date endDate = new Date();
+		source.setOwnerId(owner.getId());
+		source.setEndDate(endDate);
+		{
+			String eventId = service.create(source, null, null);
+			Event storedEvent = service.getEventById(eventId);
+			assertThat(storedEvent.getEndDate(), is(not(nullValue())));
+		}
+		Event updated = source.copy();
+		updated.setEndDate(null);
+		{
+			service.update(source, updated, false, null, false, null);
+			Event storedEvent = service.getEventById(updated.getId());
+			assertThat(storedEvent.getEndDate(), is(nullValue()));
+		}
+	}
 }
