@@ -41,6 +41,7 @@
     if (redirectURL == null) {
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL);
     }
+    Integer maxCodePointsOfMessage = (Integer) request.getAttribute(Constants.ATTR_MAX_CODE_POINTS_OF_MESSAGE);
 %>
 
 
@@ -207,12 +208,12 @@ body {
     </div>
 
     <div id="message-form" title="参加者にメッセージを送信します">
-        <p>参加者に twitter 経由でメッセージを送ることができます。メッセージは、長くとも１００文字以内で記述してください（様々な制限により１００文字未満でなければならない場合もあります）。最大で１時間３回１日５回まで送ることができます。</p>
+        <p>参加者に twitter 経由でメッセージを送ることができます。メッセージは、長くとも<%= maxCodePointsOfMessage.intValue() %>文字以内で記述してください。最大で１時間３回１日５回まで送ることができます。</p>
         <s:form method="post" action="send">
             <%= Helper.token() %>
             <s:hidden name="eventId" value="%{eventId}" />
             <s:textarea name="message"></s:textarea>
-            <s:submit value="メッセージ送信" /><span id="message_length">100</span>
+            <s:submit value="メッセージ送信" /><span id="message_length"><%= maxCodePointsOfMessage.intValue() %></span>
         </s:form>
     </div>
 </div>
@@ -459,7 +460,7 @@ body {
 <script language="javascript">
 var message=$('textarea#send_message');
 function handler(e){
-	var left = 100 - codePointCount(message.val());
+	var left = <%= maxCodePointsOfMessage.intValue() %> - codePointCount(message.val());
 	$('span#message_length').text(left).css('color', left > 20 ? '#000' : '#f00').parent().find('input[type=submit]').attr('disabled', left < 0 ? 'disabled' : '');
 }
 message.keydown(handler).keyup(handler);<%-- keydownだけではctrl-BS時に表示があわなくなる、keyupだけではBS長押し時に表示があわなくなる --%>
