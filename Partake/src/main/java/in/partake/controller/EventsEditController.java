@@ -372,7 +372,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		event = EventService.get().getEventExById(eventId);
     		if (event == null) { return ERROR; }
     	} catch (DAOException e) {
-    		e.printStackTrace();
+    		logger.warn("commit() failed.", e); 
     		return ERROR;
     	}
 
