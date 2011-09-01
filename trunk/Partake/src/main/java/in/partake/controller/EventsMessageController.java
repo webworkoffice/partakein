@@ -9,6 +9,7 @@ import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
+import in.partake.service.MessageService.TooLongMessageException;
 import in.partake.util.Util;
 
 import java.util.Date;
@@ -39,17 +40,13 @@ public class EventsMessageController extends PartakeActionSupport {
 		    addWarningMessage("メッセージが必要です。");
 		    return INPUT;
 		}
-		if (Util.codePointCount(message) > 100) {
-		    addWarningMessage("メッセージは長くとも 100 文字以内で記述してください。(様々な制限により 100 文字未満でなければならない場合もあります。)");
-		    return INPUT;
-		}
 
 		try {
 			EventEx event = EventService.get().getEventExById(eventId);
 			if (event == null) {
 			    throw new PartakeInvalidResultException(UserErrorCode.INVALID_EVENT_ID);
 			}
-			
+
 			if (!event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE)) { return PROHIBITED; }
 
 			// ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。
@@ -76,17 +73,9 @@ public class EventsMessageController extends PartakeActionSupport {
 				}
 			}
 
-			assert (message != null && Util.codePointCount(message) <= 100);
-			String left = "[PARTAKE] 「";
-			String right = String.format("」 %s の管理者(@%s)よりメッセージ：%s", event.getShortenedURL(), user.getScreenName(), message);
-			int length = Util.codePointCount(left) + Util.codePointCount(right);
-			if (length  > 140) {
-				addWarningMessage(String.format("メッセージの長さをあと%d文字短くしてください。", length - 140));
-				return INPUT;
-			}
-
-			String msg = left + Util.shorten(event.getTitle(), 140 - Util.codePointCount(left) - Util.codePointCount(right)) + right;
-			assert (Util.codePointCount(msg) <= 140);
+			assert (message != null);
+			final String msg = MessageService.get().buildMessage(user, event.getShortenedURL(), event.getTitle(), message);
+			assert (Util.codePointCount(msg) <= MessageService.MESSAGE_MAX_CODEPOINTS);
 
 			String messageId = MessageService.get().addMessage(user.getId(), msg,event.getId(), true);
 
@@ -109,6 +98,9 @@ public class EventsMessageController extends PartakeActionSupport {
 
 			addActionMessage("メッセージを送信しました");
 			return SUCCESS;
+		} catch (TooLongMessageException e) {
+			addWarningMessage(String.format("メッセージの長さをあと%d文字短くしてください。", e.getCodePoints() - MessageService.MESSAGE_MAX_CODEPOINTS));
+			return INPUT;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ERROR;
@@ -144,5 +136,4 @@ public class EventsMessageController extends PartakeActionSupport {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-
 }

@@ -30,13 +30,13 @@ import com.twitter.Regex;
 public final class Util {
 	private static final Logger logger = Logger.getLogger(Util.class);
 	private static final Random random = new Random();
-	
+
 	private static final Pattern REMOVETAG_PATTERN = Pattern.compile("(<!--.+?-->)|(<.+?>)", Pattern.DOTALL | Pattern.MULTILINE);
 	private static final String ALNUM = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	// ----------------------------------------------------------------------
-	// Time 
-	
+	// Time
+
 	public static Date dateFromTimeString(String timeString) {
 		try {
 			return new Date(Long.parseLong(timeString));
@@ -45,7 +45,7 @@ public final class Util {
 			return null;
 		}
 	}
-	
+
     public static String getTimeString(Date date) {
         return getTimeString(date.getTime());
     }
@@ -53,36 +53,36 @@ public final class Util {
     public static String getTimeString(long time) {
         return new Formatter().format("%020d", time).toString();
     }
-    
+
     public static String getReversedTimeString(Date date) {
         return getReversedTimeString(date.getTime());
     }
-    
+
     public static String getReversedTimeString(long time) {
         return new Formatter().format("%020d", Long.MAX_VALUE - time).toString();
     }
-    
+
     public static Date oneDayBefore(Date date) {
-        return new Date(date.getTime() - 1000 * 3600 * 24); 
+        return new Date(date.getTime() - 1000 * 3600 * 24);
     }
 
     public static Date halfDayBefore(Date date) {
-        return new Date(date.getTime() - 1000 * 3600 * 12); 
+        return new Date(date.getTime() - 1000 * 3600 * 12);
     }
 
 	// ----------------------------------------------------------------------
 	// Text
-    
+
     // Use StringUtils.isEmpty() instead.
     @Deprecated
     public static boolean isEmpty(String str) {
         return StringUtils.isEmpty(str);
     }
-    
+
     public static boolean isValidHashtag(String hashTag) {
         return Regex.AUTO_LINK_HASHTAGS.matcher(hashTag).matches();
     }
-    
+
     public static String randomString(int length) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < length; ++i) {
@@ -90,11 +90,11 @@ public final class Util {
         }
         return builder.toString();
     }
-    
+
     public static int codePointCount(String s) {
     	return s.codePointCount(0, s.length());
     }
-    
+
     public static String substring(String source, int startCodePoints) {
         final int endCodePoints = source.codePointCount(0, source.length());
         return substring(source, startCodePoints, endCodePoints);
@@ -105,85 +105,85 @@ public final class Util {
         final int endIndex = source.offsetByCodePoints(startIndex, endCodePoints - startCodePoints);
         return source.substring(startIndex, endIndex);
     }
-    
+
     public static String shorten(String message, int maxLength) {
         if (message.codePointCount(0, message.length()) <= maxLength) { return message; }
-        
-        return substring(substring(message, 0, Math.max(maxLength - 3, 0)) + "...", 0, maxLength);
+
+        return substring(substring(message, 0, Math.max(maxLength - 3, 0)) + "...", 0, Math.max(maxLength, 0));
     }
-    
+
     /**
      * 文字列から'#'と後続の文字列を取り除いたものを返す。
      * URLから # + fragment を取り除区などの用途を想定。
-     * 
+     *
      * @param str 改行を含まない加工対象文字列
      * @return '#'と後続の文字列を取り除いた文字列
      */
     public static String removeURLFragment(String str) {
         if (str == null) { return null; }
-        return str.replaceAll("#.*", "");        
+        return str.replaceAll("#.*", "");
     }
 
     @Deprecated
     public static String removeHash(String str) {
         return removeURLFragment(str);
     }
-    
+
     // ----------------------------------------------------------------------
 	// Image
-    
+
     public static boolean isImageContentType(String s) {
     	if (s == null) { return false; }
-    	
+
     	if ("image/jpeg".equals(s)) { return true; }
     	if ("image/png".equals(s)) { return true; }
     	if ("image/gif".equals(s)) { return true; }
     	if ("image/pjpeg".equals(s)){ return true; }
-    	
+
     	return false;
     }
-    
+
     /**
      * file の内容を byte array に変換する
      */
     public static byte[] getContentOfFile(File file) throws IOException {
     	if (file == null) { return new byte[0]; }
-    	
+
     	InputStream is = new BufferedInputStream(new FileInputStream(file));
     	try {
 	    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	    	final int SIZE = 1024 * 1024;
 	    	byte[] buf = new byte[SIZE];
-	    	
+
 	    	int len;
 	    	while ((len = is.read(buf)) > 0) {
 	    		baos.write(buf, 0, len);
 	    	}
-	    	
+
 	    	return baos.toByteArray();
     	} finally {
     		is.close();
     	}
     }
-    
+
     public static InputStream createInputSteram(String resource) throws IOException {
         InputStream stream = Util.class.getResourceAsStream(resource);
         if (stream != null) { return stream; }
-        
+
         stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
         if (stream != null) { return stream; }
-        
+
         try {
             return new FileInputStream(new File(resource));
         } catch (Exception e) {
             return null;
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------------------
-	// HTML  
-    
+	// HTML
+
     // TODO: These functions are should be moved to Helper.
     // HTML escape
     @Deprecated
@@ -195,15 +195,15 @@ public final class Util {
     public static String cleanupText(String dirtyText) {
         return Helper.cleanupText(dirtyText);
     }
-    
+
     @Deprecated
     public static String cleanupHTML(String dirtyHTML) {
         return Helper.cleanupHTML(dirtyHTML);
     }
-    
+
     /**
      * validなHTMLから、HTMLタグとコメントを取り除く。
-     * 
+     *
      * @param html 加工するHTML文字列
      * @return HTMLタグとコメントを取り除いた文字列
      */
@@ -211,16 +211,16 @@ public final class Util {
         if (html == null) { return null; }
         return REMOVETAG_PATTERN.matcher(html).replaceAll("");
     }
-    
+
     // ----------------------------------------------------------------------
 	// URI
-    
+
     // escapeURI の代わりに encodeURI を使うこと。encodeURIComponent
     @Deprecated
     public static String escapeURI(String s) {
         return encodeURI(s);
     }
-    
+
     // URLへの文字列埋込みではencodeURIComponentを使うべき＆他の使い道がない
     @Deprecated
     public static String encodeURI(String s) {
@@ -232,7 +232,7 @@ public final class Util {
             return "";
         }
     }
-    
+
     /**
      * Javascriptの同名関数と同様、
      * 文字列をURIのパラメータとして使用できるようにエンコードを施す。
@@ -252,11 +252,11 @@ public final class Util {
             return "";
         }
     }
-    
+
     /**
      * URL を bitly で短縮する。
      * TODO: これがここにいるのはよくないんじゃないかなー。URLService 的なものを作った方がよいような気がする。
-     * 
+     *
      * @param sourceURL
      * @return
      */
@@ -264,7 +264,7 @@ public final class Util {
         final String bitlyUserName = PartakeProperties.get().getBitlyUserName();
         final String bitlyAPIKey = PartakeProperties.get().getBitlyAPIKey();
         final Provider bitly = Bitly.as(bitlyUserName, bitlyAPIKey);
-        
+
         ShortenedUrl bUrl = bitly.call(Bitly.shorten(sourceURL));
         return bUrl.getShortUrl().toString();
     }
