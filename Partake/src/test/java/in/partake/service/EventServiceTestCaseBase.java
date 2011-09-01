@@ -137,6 +137,7 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
         {
             String eventId = service.create(source, null, null);
             Event storedEvent = service.getEventById(eventId);
+            // TODO PostgresのTimestampの精度上、equals()が成立しない可能性が高い
             Assert.assertEquals(source, storedEvent);
         }
         final BinaryData foreImageEmbryo = new BinaryData("text", bytes("foreImage"));
@@ -157,7 +158,7 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
             event.setCreatedAt(new Date(timestamp));
             event.setTitle(eventTitle);
             event.setPrivate(false);
-            event.setDeadline(new Date(Long.MAX_VALUE));	// 締切りを過ぎたイベントは表示されないので大きく設定する
+            event.setDeadline(new Date(System.currentTimeMillis() + 60 * 1000));	// 締切りを過ぎたイベントは表示されないので大きく設定する
             service.create(event, null, null);
         }
 
@@ -184,7 +185,7 @@ public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBa
             event.setBeginDate(new Date(timestamp));
             event.setTitle(eventTitle);
             event.setPrivate(false);
-            event.setDeadline(new Date(Long.MAX_VALUE));	// 締切りを過ぎたイベントは表示されないので大きく設定する
+            event.setDeadline(new Date(System.currentTimeMillis() + 60 * 1000));	// 締切りを過ぎたイベントは表示されないので大きく設定する
             service.create(event, null, null);
         }
 
