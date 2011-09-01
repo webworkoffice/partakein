@@ -85,9 +85,9 @@ public class UtilTest {
 		Util.shorten(null, 0);
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void shortenNegativeValueTest() {
-		Util.shorten("", -1);
+		Assert.assertEquals("", Util.shorten("", -1));
 	}
 
 	@Test
