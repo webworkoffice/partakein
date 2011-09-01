@@ -402,7 +402,6 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     		deadline = null;
     	}
 
-    	//
     	try {
     		Date now = new Date();
     		BinaryData foreImageEmbryo = createBinaryDataEmbryo(foreImage, foreImageContentType);
@@ -440,7 +439,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
         	this.eventId = event.getId();
         	return SUCCESS;
         } catch (DAOException e) {
-            e.printStackTrace();
+            logger.warn("commit() failed.", e);
         	return ERROR;
         }
 	}
@@ -485,7 +484,8 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 
         	}
         } catch (IOException e) {
-        	e.printStackTrace();
+        	// XXX 握りつぶしていいのか？
+            logger.warn("createBinaryDataEmbryo() failed.", e);
         	imageEmbryo = null;
         }
 
