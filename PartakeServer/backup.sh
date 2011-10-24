@@ -1,6 +1,9 @@
 #!/bin/sh
 
 LOG_FILE=~/backup/logs/backup_`/bin/date '+%Y%m%d_%H_%M_%S'`
+BACKUP_WAR=~/backup/wars/ROOT-`/bin/date +%s`.war
+BACKUP_SQL=~/backup/sqls/partake-`/bin/date +%s`.sql
+BACKUP_MDL=~/backup/logs/middleware_`/bin/date '+%Y%m%d_%H_%M_%S'`.tar.gz
 /bin/echo backup start >> $LOG_FILE 2>> $LOG_FILE
 /bin/echo `/bin/date` >> $LOG_FILE 2>> $LOG_FILE
 
@@ -8,8 +11,8 @@ if ! [ -e ~/.pgpass ]; then
   /bin/echo '~/.pgpass does not exist.' >> $LOG_FILE 2>> $LOG_FILE
 fi
 
-/bin/cp ~/ROOT.war ~/backup/wars/ROOT-`/bin/date +%s`.war >> $LOG_FILE 2>> $LOG_FILE
-/usr/bin/pg_dump partake -U partake > ~/backup/sqls/partake-`/bin/date +%s`.sql 2>> $LOG_FILE
+/bin/cp ~/ROOT.war $BACKUP_WAR >> $LOG_FILE 2>> $LOG_FILE
+/usr/bin/pg_dump partake -U partake > $BACKUP_SQL 2>> $LOG_FILE
 
 
 TMP_LOG_DIR=/tmp/logs.d
@@ -33,10 +36,31 @@ do
   /bin/cp $LOG $TMP_LOG_DIR
 done
 
-/bin/tar cvfz ~/backup/logs/middleware_`/bin/date '+%Y%m%d_%H_%M_%S'`.tar.gz $TMP_LOG_DIR >> $LOG_FILE 2>> $LOG_FILE
+/bin/tar cvfz $BACKUP_MDL $TMP_LOG_DIR >> $LOG_FILE 2>> $LOG_FILE
+
+TMP_BACKUP_DIR=/tmp/backups/
+BACKUP_ALL=/tmp/backup.tar.gz
+/bin/rm -rf $TMP_BACKUP_DIR
+/bin/mkdir $TMP_BACKUP_DIR
+/bin/cp $LOG_FILE $TMP_BACKUP_DIR
+/bin/cp $BACKUP_WAR $TMP_BACKUP_DIR
+/bin/cp $BACKUP_SQL $TMP_BACKUP_DIR
+/bin/cp $BACKUP_MDL $TMP_BACKUP_DIR
+/bin/tar cvfz $BACKUP_ALL $TMP_BACKUP_DIR >> $LOG_FILE 2>> $LOG_FILE
+
+java \
+    -jar S3MultipartTransportTool-0.1-jar-with-dependencies.jar \
+    -b <<BUCKET_NAME>> \
+    -c s3.properties \
+    -e encryptionkey.txt \
+    -l $BACKUP_ALL \
+    -s backup`date '+%Y_%m_%d__%H_%M_%S'`.tar.gz \
+    >> $LOG_FILE 2>> $LOG_FILE
+
 /bin/rm -f $LOG_LIST
 /bin/rm -rf $TMP_LOG_DIR
-
+/bin/rm -rf $TMP_BACKUP_DIR
+# /bin/rm -f /tmp/backup.tar.gz
 
 /bin/echo backup end >> $LOG_FILE 2>> $LOG_FILE
 
