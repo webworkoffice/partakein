@@ -12,7 +12,7 @@ if ! [ -e ~/.pgpass ]; then
 fi
 
 /bin/cp ~/ROOT.war $BACKUP_WAR >> $LOG_FILE 2>> $LOG_FILE
-/usr/bin/pg_dump partake -U partake > $BACKUP_SQL 2>> $LOG_FILE
+/usr/bin/pg_dump -Fc partake -U partake > $BACKUP_SQL 2>> $LOG_FILE
 
 
 TMP_LOG_DIR=/tmp/logs.d
