@@ -5,7 +5,7 @@ SPECIFIED_DAY=`date +%s -d $2`
 TODAY=`date +%s`
 OFFSET=`echo "($TODAY-$SPECIFIED_DAY)/60/60/24" | bc`
 
-one_of() {
+contains() {
   TARGET=$1
   shift
   ENTRY=$1
@@ -29,7 +29,7 @@ remove(){
   for FILE in `find "$BACKUP_DIR" -type f -mtime +$DAY_COUNT`
   do
     DAY=`ls -l "$FILE" | awk '{print $6}' | awk 'BEGIN{FS="-"}{print $3}'`
-    one_of $DAY $@
+    contains $DAY $@
     if [ $? -eq 0 ]
     then
       : # its day of month is specified, so keep this file as weekly/monthly backup
