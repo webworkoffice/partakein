@@ -1,9 +1,9 @@
 #!/bin/bash
 
-PG_BACKUP_DIR=$1
-TODAY=`date +%s -d $2`
-REAL_TODAY=`date +%s`
-OFFSET=`echo "($REAL_TODAY-$TODAY)/60/60/24" | bc`
+BACKUP_DIR=$1
+SPECIFIED_DAY=`date +%s -d $2`
+TODAY=`date +%s`
+OFFSET=`echo "($TODAY-$SPECIFIED_DAY)/60/60/24" | bc`
 
 one_of() {
   TARGET=$1
@@ -26,13 +26,13 @@ remove(){
   DAY_COUNT=`echo $1+$OFFSET | bc`
   shift
 
-  for FILE in `find "$PG_BACKUP_DIR" -type f -mtime +$DAY_COUNT`
+  for FILE in `find "$BACKUP_DIR" -type f -mtime +$DAY_COUNT`
   do
     DAY=`ls -l "$FILE" | awk '{print $6}' | awk 'BEGIN{FS="-"}{print $3}'`
     one_of $DAY $@
     if [ $? -eq 0 ]
     then
-      : # its day of month is specified, so keep this file as weekly backup
+      : # its day of month is specified, so keep this file as weekly/monthly backup
     else
       rm "$FILE"
     fi
