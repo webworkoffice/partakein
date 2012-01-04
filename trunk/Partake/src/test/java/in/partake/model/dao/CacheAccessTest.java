@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 
 public class CacheAccessTest extends AbstractDaoTestCaseBase<ICacheAccess, CacheData, String> {
-    private CacheTestDataProvider provider; // XXX どこでインスタンス生成を行う？
+    private CacheTestDataProvider provider = new CacheTestDataProvider();
     
     private Date oneHourAfter() {
         return new Date(new Date().getTime() + 3600 * 1000);
