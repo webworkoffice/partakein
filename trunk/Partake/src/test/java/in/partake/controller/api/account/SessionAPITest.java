@@ -6,6 +6,7 @@ import in.partake.model.fixture.TestDataProvider;
 import net.sf.json.JSONObject;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
