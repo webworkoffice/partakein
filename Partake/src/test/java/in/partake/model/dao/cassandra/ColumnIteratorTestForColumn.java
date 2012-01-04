@@ -16,8 +16,7 @@ import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Assume;
 import org.junit.Test;
 
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
@@ -29,21 +28,11 @@ public class ColumnIteratorTestForColumn extends AbstractConnectionTestCaseBase 
     private static final String COLUMNFAMILY = "Standard2";
     private static final ConsistencyLevel CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel CL_W = ConsistencyLevel.ALL;
-    
-    @BeforeClass
-    public static void setUpOnce() {
-        PartakeProperties.get().reset("cassandra");
-        reset();
-    }
 
-    @AfterClass
-    public static void tearDownOnce() {
-        PartakeProperties.get().reset();
-        reset();
-    }
-    
     @Test
     public void testForColumnIteratorToGetSmall() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         testForColumnIteratorToGet(0);
         testForColumnIteratorToGet(1);
         testForColumnIteratorToGet(100);
@@ -51,19 +40,21 @@ public class ColumnIteratorTestForColumn extends AbstractConnectionTestCaseBase 
         testForColumnIteratorToGet(1000);
         testForColumnIteratorToGet(1001);
     }
-    
+
     @Test
     public void testForColumnIteratorToGetLarge() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         testForColumnIteratorToGet(10001);
     }
-    
+
     private void testForColumnIteratorToGet(int n) throws DAOException {
         CassandraConnection con = (CassandraConnection) getPool().getConnection();
         try {
             // create
             String id = PREFIX + UUID.randomUUID().toString();
             createColumns(con, id, n);
-            
+
             // get
             {
                 ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
@@ -81,13 +72,15 @@ public class ColumnIteratorTestForColumn extends AbstractConnectionTestCaseBase 
             con.invalidate();
         }
     }
-    
+
     @Test
     public void testForColumnIteratorToUpdate() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         CassandraConnection con = (CassandraConnection) getPool().getConnection();
         try {
             final int n = 100;
-            
+
             // create
             String id = PREFIX + UUID.randomUUID().toString();
             createColumns(con, id, n);
@@ -101,14 +94,14 @@ public class ColumnIteratorTestForColumn extends AbstractConnectionTestCaseBase 
                     Column column = cosc.getColumn();
                     Assert.assertEquals(s, string(column.getName()));
                     Assert.assertEquals(s, string(column.getValue()));
-                    
+
                     String t = String.format("%08d", i);
                     column.setValue(bytes(t));
                     it.update(cosc);
                 }
                 Assert.assertEquals(n, i);
             }
-               
+
             {
                 ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
                 int i = 0;
@@ -116,7 +109,7 @@ public class ColumnIteratorTestForColumn extends AbstractConnectionTestCaseBase 
                     String s = String.format("%08d", i);
                     String t = String.format("%08d", i + 1);
                     ++i;
-                    
+
                     ColumnOrSuperColumn cosc = it.next();
                     Column column = cosc.getColumn();
                     Assert.assertEquals(s, string(column.getName()));
@@ -124,42 +117,44 @@ public class ColumnIteratorTestForColumn extends AbstractConnectionTestCaseBase 
                 }
                 Assert.assertEquals(n, i);
             }
-            
+
         } finally {
             con.invalidate();
         }
     }
-    
+
     @Test
     public void testForColumnIteratorToRemove() throws DAOException {
-        CassandraConnection con = (CassandraConnection) getPool().getConnection();    
-       try {
-           final int n = 100;
-           
-           // create
-           String id = PREFIX + UUID.randomUUID().toString();
-           createColumns(con, id, n);
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
 
-           {
-               ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
-               int i = 0;
-               while (it.hasNext()) {
-                   it.next();
-                   it.remove();
-                   ++i;
-               }
-               Assert.assertEquals(n, i);
-           }
-              
-           {
-               ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
-               int i = 0;
-               while (it.hasNext()) {
-                   it.next();
-                   ++i;
-               }
-               Assert.assertEquals(0, i);
-           }
+        CassandraConnection con = (CassandraConnection) getPool().getConnection();    
+        try {
+            final int n = 100;
+
+            // create
+            String id = PREFIX + UUID.randomUUID().toString();
+            createColumns(con, id, n);
+
+            {
+                ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+                int i = 0;
+                while (it.hasNext()) {
+                    it.next();
+                    it.remove();
+                    ++i;
+                }
+                Assert.assertEquals(n, i);
+            }
+
+            {
+                ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+                int i = 0;
+                while (it.hasNext()) {
+                    it.next();
+                    ++i;
+                }
+                Assert.assertEquals(0, i);
+            }
         } finally {
             con.invalidate();
         }
@@ -171,7 +166,7 @@ public class ColumnIteratorTestForColumn extends AbstractConnectionTestCaseBase 
             addColumn(con.getClient(), id, s, s, con.getAcquiredTime());
         }
     }
-    
+
     private void addColumn(Client client, String id, String name, String value, long time) throws DAOException {
         try {
             String key = PREFIX + id;

@@ -13,9 +13,8 @@ import junit.framework.Assert;
 
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
-import org.junit.AfterClass;
+import org.junit.Assume;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CassandraKeyIteratorTest extends AbstractConnectionTestCaseBase {
@@ -24,47 +23,39 @@ public class CassandraKeyIteratorTest extends AbstractConnectionTestCaseBase {
     private static final String COLUMNFAMILY = "Standard2";
     private static final ConsistencyLevel CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel CL_W = ConsistencyLevel.ALL;
-    
-    @BeforeClass
-    public static void setUpOnce() {
-        PartakeProperties.get().reset("cassandra");
-        reset();
-    }
 
-    @AfterClass
-    public static void tearDownOnce() {
-        PartakeProperties.get().reset();
-        reset();
-    }
-    
     @Before
     public void setup() throws DAOException {
         super.setup();
     }
-    
+
     @Test
     public void testToIterateSmall() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         testToIterate(0);
         testToIterate(1);
         testToIterate(100);
     }
-    
+
     @Test
     public void testToIterateLarge() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         testToIterate(999);
         testToIterate(1000);
         testToIterate(1001);
         testToIterate(10001);
     }
-    
+
     private void testToIterate(int n) throws DAOException {
         CassandraConnection con = (CassandraConnection) getPool().getConnection();
         String prefix = PREFIX + UUID.randomUUID().toString();
-        
+
         try {
             // create keys
             createKeys(con, prefix, n);
-            
+
             // iterate
             CassandraKeyIterator it = new CassandraKeyIterator(con, KEYSPACE, prefix, COLUMNFAMILY, CL_R);
             int i = 0;
