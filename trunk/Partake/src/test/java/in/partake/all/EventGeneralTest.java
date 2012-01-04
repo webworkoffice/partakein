@@ -1,10 +1,11 @@
 package in.partake.all;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EventGeneralTest {
     
-    @Test
+    @Test @Ignore("Not implemented yet.")
     public void testToCreateAndGetAnEvent() throws Exception {
         // TODO not implemented yet.
         // 1. create an event.
@@ -15,7 +16,7 @@ public class EventGeneralTest {
         throw new RuntimeException("Not implemented yet.");
     }
     
-    @Test
+    @Test @Ignore("Not implemented yet.")
     public void testToSendReminder() throws Exception {
         // TODO not implemented yet.
         // 1. create an event, whose begin time is a few days after.
