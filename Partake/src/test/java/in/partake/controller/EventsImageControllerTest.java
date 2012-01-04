@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
+//TODO: should extends PartakeControllerTestCase
 public class EventsImageControllerTest extends StrutsTestCase {
 	@Test
 	public void testToShowWithoutImageId() {

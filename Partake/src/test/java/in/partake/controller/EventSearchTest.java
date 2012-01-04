@@ -10,6 +10,7 @@ import org.apache.struts2.StrutsTestCase;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
 
+//TODO: should extends PartakeControllerTestCase
 public class EventSearchTest extends StrutsTestCase {
 
 	public void setUp() throws Exception {

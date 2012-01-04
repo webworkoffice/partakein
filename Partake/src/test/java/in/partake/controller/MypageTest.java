@@ -9,6 +9,7 @@ import org.junit.Test;
 import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
 
+//TODO: should extends PartakeControllerTestCase
 public class MypageTest extends StrutsTestCase {
 	@Test
 	public void testLoginIsRequired() throws DAOException {

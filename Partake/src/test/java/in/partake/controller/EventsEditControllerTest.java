@@ -18,6 +18,7 @@ import org.junit.Assert;
 
 import com.opensymphony.xwork2.Action;
 
+//TODO: should extends PartakeControllerTestCase
 public final class EventsEditControllerTest extends StrutsTestCase {
 
 	/**
