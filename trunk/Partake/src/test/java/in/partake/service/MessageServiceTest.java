@@ -9,7 +9,6 @@ import in.partake.service.MessageService.TooLongMessageException;
 
 import org.junit.Test;
 
-
 public class MessageServiceTest extends AbstractServiceTestCaseBase {
 	@Test
 	public void testBuildMessage() throws NullPointerException, TooLongMessageException {

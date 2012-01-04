@@ -12,6 +12,7 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.model.fixture.UserTestDataProvider;
+import in.partake.resource.PartakeProperties;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,8 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBase {
