@@ -3,8 +3,6 @@ package in.partake.controller;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
-import in.partake.resource.PartakeProperties;
-import in.partake.service.TestService;
 import in.partake.service.UserService;
 import in.partake.servlet.PartakeSession;
 
@@ -13,7 +11,6 @@ import java.util.Map;
 
 import org.apache.struts2.StrutsTestCase;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -23,19 +20,7 @@ import com.opensymphony.xwork2.ActionProxy;
 // When a test class extends TestCase class, such a test class seems to run on JUnit3.
 // To avoid it, @RunWith(JUnit4.class) is set.
 @RunWith(JUnit4.class)
-public /* XXX もしかして: abstract */ class PartakeControllerTestCase extends StrutsTestCase {
-
-    /*
-     * TODO: とりあえず JPA を指定します。後で変更できるようにする。
-     * これ JPA 版と Cassandra が両方テストケースにいるのはめんどいので、何かで指定できるようにしたい。
-     * しばらくは JPA 版のみでテスト？
-     * JPA で開発をすすめる間に Cassandra 0.7 対応をやりたいが。
-     */
-    @BeforeClass
-    public static void setUpOnce() throws Exception {
-        PartakeProperties.get().reset("jpa");        
-        TestService.get().setDefaultFixtures();
-    }    
+public abstract class PartakeControllerTestCase extends StrutsTestCase {
 
     @Override
     @Before
