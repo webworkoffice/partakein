@@ -25,7 +25,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public abstract class EventServiceTestCaseBase extends AbstractServiceTestCaseBase {
+public class EventServiceTestCaseBase extends AbstractServiceTestCaseBase {
     private final EventService service = EventService.get();
 
     @Test
