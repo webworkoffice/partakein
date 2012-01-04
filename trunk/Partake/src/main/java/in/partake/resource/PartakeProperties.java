@@ -13,10 +13,10 @@ import org.apache.log4j.Logger;
 public class PartakeProperties {
     private static final Logger logger = Logger.getLogger(PartakeProperties.class);
     private static final PartakeProperties instance = new PartakeProperties();
-	private static final String PROP_ADMIN_NAMES = "in.partake.twitter.admin";
+    private static final String PROP_ADMIN_NAMES = "in.partake.twitter.admin";
     private String mode;
     private Properties properties;
-	private Set<String> administratorNames;
+    private Set<String> administratorNames;
 
     public static PartakeProperties get() {
         return instance;
@@ -66,6 +66,10 @@ public class PartakeProperties {
 
     public String getBitlyUserName() {
         return properties.getProperty("in.partake.bitly.username");
+    }
+
+    public boolean usesCassandra() {
+        return getDAOFactoryClassName().equals("in.partake.model.dao.cassandra.CassandraDAOFactory");
     }
 
     public String getDAOFactoryClassName() {
@@ -123,16 +127,16 @@ public class PartakeProperties {
             return -1;
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------------------
     // JPA Connection properties
 
     public String getJPAPersistenceUnitName() {
         return properties.getProperty("in.partake.database.jpa.persistenceunit");
     }
-    
-    
+
+
 
     // --------------------------------------------------
 

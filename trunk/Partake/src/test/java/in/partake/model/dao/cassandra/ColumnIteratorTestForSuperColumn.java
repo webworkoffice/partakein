@@ -17,8 +17,7 @@ import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ConsistencyLevel;
 import org.apache.cassandra.thrift.Mutation;
 import org.apache.cassandra.thrift.SuperColumn;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Assume;
 import org.junit.Test;
 
 import static me.prettyprint.cassandra.utils.StringUtils.bytes;
@@ -30,40 +29,32 @@ public class ColumnIteratorTestForSuperColumn extends AbstractConnectionTestCase
     private static final String COLUMNFAMILY = "Super1";
     private static final ConsistencyLevel CL_R = ConsistencyLevel.ONE;
     private static final ConsistencyLevel CL_W = ConsistencyLevel.ALL;
-    
-    @BeforeClass
-    public static void setUpOnce() {
-        PartakeProperties.get().reset("cassandra");
-        reset();
-    }
 
-    @AfterClass
-    public static void tearDownOnce() {
-        PartakeProperties.get().reset();
-        reset();
-    }
-    
     @Test
     public void testForColumnIteratorToGetSmall() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         testForColumnIteratorToGet(1);
         testForColumnIteratorToGet(100);
         testForColumnIteratorToGet(999);
         testForColumnIteratorToGet(1000);
         testForColumnIteratorToGet(1001);
     }
-    
+
     @Test
     public void testForColumnIteratorToGetLarge() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         testForColumnIteratorToGet(10001);
     }
-    
+
     private void testForColumnIteratorToGet(int n) throws DAOException {
         CassandraConnection con = (CassandraConnection) getPool().getConnection();
         try {
             // create
             String id = PREFIX + UUID.randomUUID().toString();
             createColumns(con, id, n);
-            
+
             // get
             {
                 ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
@@ -71,7 +62,7 @@ public class ColumnIteratorTestForSuperColumn extends AbstractConnectionTestCase
                 while (it.hasNext()) {
                     String s = String.format("%08d", i++);
                     ColumnOrSuperColumn cosc = it.next();
-                    
+
                     SuperColumn superColumn = cosc.getSuper_column();
                     Assert.assertEquals(s, string(superColumn.getName()));
                     for (Column column : superColumn.getColumns()) {
@@ -90,13 +81,15 @@ public class ColumnIteratorTestForSuperColumn extends AbstractConnectionTestCase
             con.invalidate();
         }
     }
-    
+
     @Test
     public void testForColumnIteratorToUpdate() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         CassandraConnection con = (CassandraConnection) getPool().getConnection();
         try {
             final int n = 1001;
-            
+
             // create
             String id = PREFIX + UUID.randomUUID().toString();
             createColumns(con, id, n);
@@ -107,7 +100,7 @@ public class ColumnIteratorTestForSuperColumn extends AbstractConnectionTestCase
                 while (it.hasNext()) {
                     String s = String.format("%08d", i++);
                     ColumnOrSuperColumn cosc = it.next();
-                    
+
                     SuperColumn superColumn = cosc.getSuper_column();
                     Assert.assertEquals(s, string(superColumn.getName()));
                     for (Column column : superColumn.getColumns()) {
@@ -119,19 +112,19 @@ public class ColumnIteratorTestForSuperColumn extends AbstractConnectionTestCase
                             column.setValue(bytes("v3"));
                         }
                     }
-                    
+
                     it.update(cosc);
                 }
                 Assert.assertEquals(n, i);
             }
-               
+
             {
                 ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
                 int i = 0;
                 while (it.hasNext()) {
                     String s = String.format("%08d", i++);
                     ColumnOrSuperColumn cosc = it.next();
-                    
+
                     SuperColumn superColumn = cosc.getSuper_column();
                     Assert.assertEquals(s, string(superColumn.getName()));
                     for (Column column : superColumn.getColumns()) {
@@ -146,42 +139,44 @@ public class ColumnIteratorTestForSuperColumn extends AbstractConnectionTestCase
                 }
                 Assert.assertEquals(n, i);
             }
-            
+
         } finally {
             con.invalidate();
         }
     }
-    
+
     @Test
     public void testForColumnIteratorToRemove() throws DAOException {
+        Assume.assumeTrue(PartakeProperties.get().usesCassandra());
+
         CassandraConnection con = (CassandraConnection) getPool().getConnection();
         try {
-           final int n = 1001;
-           
-           // create
-           String id = PREFIX + UUID.randomUUID().toString();
-           createColumns(con, id, n);
+            final int n = 1001;
 
-           {
-               ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
-               int i = 0;
-               while (it.hasNext()) {
-                   it.next();
-                   it.remove();
-                   ++i;
-               }
-               Assert.assertEquals(n, i);
-           }
-              
-           {
-               ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
-               int i = 0;
-               while (it.hasNext()) {
-                   it.next();
-                   ++i;
-               }
-               Assert.assertEquals(0, i);
-           }
+            // create
+            String id = PREFIX + UUID.randomUUID().toString();
+            createColumns(con, id, n);
+
+            {
+                ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+                int i = 0;
+                while (it.hasNext()) {
+                    it.next();
+                    it.remove();
+                    ++i;
+                }
+                Assert.assertEquals(n, i);
+            }
+
+            {
+                ColumnIterator it = new ColumnIterator(con, KEYSPACE, PREFIX + id, COLUMNFAMILY, false, CL_R, CL_W);
+                int i = 0;
+                while (it.hasNext()) {
+                    it.next();
+                    ++i;
+                }
+                Assert.assertEquals(0, i);
+            }
         } finally {
             con.invalidate();
         }
@@ -193,17 +188,17 @@ public class ColumnIteratorTestForSuperColumn extends AbstractConnectionTestCase
             addSuperColumn(con.getClient(), id, s, s, con.getAcquiredTime());
         }
     }
-    
+
     private void addSuperColumn(Client client, String id, String name, String value, long time) throws DAOException {
         try {
             String key = PREFIX + id;
-            
+
             SuperColumn superColumn = new SuperColumn();
             superColumn.setName(bytes(name));
             superColumn.addToColumns(new Column(bytes("v1"), bytes(value), time));
             superColumn.addToColumns(new Column(bytes("v2"), bytes(value), time));
             superColumn.addToColumns(new Column(bytes("v3"), bytes(value), time));
-            
+
             List<Mutation> mutations = new ArrayList<Mutation>();
             mutations.add(CassandraDaoUtils.createSuperColumnMutation(superColumn));
             client.batch_mutate(KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(COLUMNFAMILY, mutations)), CL_W);
