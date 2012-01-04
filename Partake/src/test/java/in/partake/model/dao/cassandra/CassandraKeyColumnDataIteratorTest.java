@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+// TODO: このような Cassandra 関係のユーティリティーは、PARTAKE からは分離して別プロジェクトとして持つようにするべき
 public class CassandraKeyColumnDataIteratorTest extends AbstractConnectionTestCaseBase {
     // MASTER TABLE
     private static final String PREFIX_BASE = "ckcdi:id:";

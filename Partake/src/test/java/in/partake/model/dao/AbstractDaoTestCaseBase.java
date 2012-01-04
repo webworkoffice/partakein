@@ -1,8 +1,10 @@
 package in.partake.model.dao;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import in.partake.model.dto.PartakeModel;
@@ -10,8 +12,7 @@ import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;
 
 /**
- * Dao のテストケースのベース。extends して、BeforeClass, AfterClass で
- * 利用する Connection の種類を設定のこと。
+ * Dao のテストケースのベース。
  * 
  * @author shinyak
  *
@@ -27,6 +28,19 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     protected static PartakeDAOFactory getFactory() {
         return factory;
     }
+    
+    @BeforeClass
+    public static void setUpOnce() {
+        PartakeProperties.get().reset("unittest");
+        reset();
+    }
+
+    @AfterClass
+    public static void tearDownOnce() {
+        PartakeProperties.get().reset();
+        reset();
+    }
+
     
     /**
      * PartakeService に必要なデータを読み直す。最初の初期化とユニットテスト用途のみを想定。
@@ -52,7 +66,6 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     public void tearDown() throws DAOException {
         
     }
-    
     
     // setup() should be implemented in each test case.
     @Before
