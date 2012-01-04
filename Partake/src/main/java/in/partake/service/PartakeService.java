@@ -35,7 +35,8 @@ public abstract class PartakeService {
         return pool;
     }
 
-    protected static void reset() {
+    /** reset database connection. Call this carefully. */
+    public static void reset() {
         try {
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();

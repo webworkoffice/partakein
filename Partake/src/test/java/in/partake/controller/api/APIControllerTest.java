@@ -1,7 +1,9 @@
 package in.partake.controller.api;
 
 import in.partake.controller.PartakeControllerTestCase;
+import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
+import in.partake.service.TestService;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -9,7 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 
 import net.sf.json.JSONObject;
 
@@ -18,6 +22,17 @@ import com.opensymphony.xwork2.ActionProxy;
 
 public abstract class APIControllerTest extends PartakeControllerTestCase {
 
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        TestService.get().setDefaultFixtures();
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+    }
+    
     /**
      * proxy から JSON を取得する。取得できなかった場合は null を返す。
      * @param proxy

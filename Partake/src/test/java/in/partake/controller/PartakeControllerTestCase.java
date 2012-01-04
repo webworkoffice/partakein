@@ -3,14 +3,19 @@ package in.partake.controller;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
+import in.partake.resource.PartakeProperties;
+import in.partake.service.PartakeService;
 import in.partake.service.UserService;
 import in.partake.servlet.PartakeSession;
+import in.partake.util.PDate;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.struts2.StrutsTestCase;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -21,6 +26,26 @@ import com.opensymphony.xwork2.ActionProxy;
 // To avoid it, @RunWith(JUnit4.class) is set.
 @RunWith(JUnit4.class)
 public abstract class PartakeControllerTestCase extends StrutsTestCase {
+
+    @BeforeClass
+    public static void setUpOnce() {
+        PartakeProperties.get().reset("unittest");
+        reset();
+    }
+
+    @AfterClass
+    public static void tearDownOnce() {
+        PartakeProperties.get().reset();
+        reset();
+    }
+
+    /**
+     * call this method and {@link PartakeProperties#reset(String)} at EachTestCase#setUpOnce() which is annotated as @BeforeClass.
+     */
+    protected static void reset() {
+        PDate.resetCurrentDate();
+        PartakeService.reset();
+    }
 
     @Override
     @Before
