@@ -25,7 +25,7 @@ import com.opensymphony.xwork2.ActionProxy;
 // When a test class extends TestCase class, such a test class seems to run on JUnit3.
 // To avoid it, @RunWith(JUnit4.class) is set.
 @RunWith(JUnit4.class)
-public abstract class PartakeControllerTestCase extends StrutsTestCase {
+public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
     @BeforeClass
     public static void setUpOnce() {

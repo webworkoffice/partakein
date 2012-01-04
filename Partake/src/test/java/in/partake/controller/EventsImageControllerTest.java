@@ -1,13 +1,11 @@
 package in.partake.controller;
 
-import org.apache.struts2.StrutsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-//TODO: should extends PartakeControllerTestCase
-public class EventsImageControllerTest extends StrutsTestCase {
+public class EventsImageControllerTest extends AbstractPartakeControllerTest {
 	@Test
 	public void testToShowWithoutImageId() {
 		request.removeParameter(EventsImageController.IMAGE_ID_PARAM_NAME);

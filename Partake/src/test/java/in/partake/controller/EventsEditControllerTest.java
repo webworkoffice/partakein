@@ -13,13 +13,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.apache.struts2.StrutsTestCase;
 import org.junit.Assert;
+import org.junit.Test;
 
 import com.opensymphony.xwork2.Action;
 
-//TODO: should extends PartakeControllerTestCase
-public final class EventsEditControllerTest extends StrutsTestCase {
+public final class EventsEditControllerTest extends AbstractPartakeControllerTest {
 
 	/**
 	 * {@link EventsEditController#editNew()}メソッドについて、以下のように
@@ -33,6 +32,7 @@ public final class EventsEditControllerTest extends StrutsTestCase {
 	 * @author skypencil (@eller86)
 	 * @throws InterruptedException 
 	 */
+    @Test
 	public void testToEditNewTest() throws InterruptedException {		
 	    TimeZone timeZone = TimeZone.getDefault();
 	    
@@ -86,6 +86,7 @@ public final class EventsEditControllerTest extends StrutsTestCase {
 	/**
 	 * @see http://code.google.com/p/partakein/issues/detail?id=120
 	 */
+    @Test
 	public void testIssue120() throws DAOException {
 		UserEx loginUser = createUserEx("issue120");
 		Map<String, Object> session = new HashMap<String, Object>();

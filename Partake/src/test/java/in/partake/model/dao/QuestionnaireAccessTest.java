@@ -17,7 +17,6 @@ public class QuestionnaireAccessTest extends AbstractDaoTestCaseBase<IQuestionna
         super.setup(getFactory().getQuestionnaireAccess());
     }
 
-
     @Override
     protected Questionnaire create(long pkNumber, String pkSalt, int objNumber) {
         return new Questionnaire("questionnaire-" + pkSalt + pkNumber, "eventId", "question", objNumber, QuestionnaireType.CHOICE, "answers");

@@ -1,15 +1,13 @@
 package in.partake.view;
 
+import static in.partake.view.util.Helper.escapeTwitterResponse;
+import static in.partake.view.util.Helper.h;
 import in.partake.view.util.Helper;
 
-import org.apache.struts2.StrutsTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static in.partake.view.util.Helper.escapeTwitterResponse;
-import static in.partake.view.util.Helper.h;
-
-public class ViewHelperTest extends StrutsTestCase {
+public class ViewHelperTest {
     
     @Test
     public void testToEscapeHTML() {
