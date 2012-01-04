@@ -1,6 +1,6 @@
 package in.partake.controller.api;
 
-import in.partake.controller.PartakeControllerTestCase;
+import in.partake.controller.AbstractPartakeControllerTest;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.service.TestService;
@@ -20,7 +20,7 @@ import net.sf.json.JSONObject;
 import com.opensymphony.xwork2.ActionProxy;
 
 
-public abstract class APIControllerTest extends PartakeControllerTestCase {
+public abstract class APIControllerTest extends AbstractPartakeControllerTest {
 
     @Before
     public void setUp() throws Exception {
