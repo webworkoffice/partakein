@@ -5,6 +5,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
+import in.partake.resource.ServerErrorCode;
 import in.partake.service.UserService;
 
 import java.util.List;
@@ -83,8 +84,7 @@ public class AuthenticationController extends PartakeActionSupport {
             setRedirectURL(requestToken.getAuthenticationURL());
             return SUCCESS;
         } catch (TwitterException e) {
-            e.printStackTrace();
-            return ERROR;
+            return redirectError(ServerErrorCode.TWITTER_OAUTH_ERROR);
         }
     }
     

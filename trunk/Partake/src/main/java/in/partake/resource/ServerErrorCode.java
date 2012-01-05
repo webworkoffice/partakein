@@ -18,6 +18,10 @@ public enum ServerErrorCode {
     NO_CSRF_PREVENTION("error.no_csrf_prevention"),
     NO_CREATED_SESSION_TOKEN("error.no_created_session_token"),
     
+    TWITTER_OAUTH_ERROR("error.twitter.oauth"),
+    
+    BITLY_ERROR("error.bitly"),
+    
     LUCENE_INITIALIZATION_FAILURE("error.lucene.initialization_failure");
     
     // ----------------------------------------------------------------------

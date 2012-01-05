@@ -1128,43 +1128,41 @@ public final class EventService extends PartakeService {
         }
     }
 
-    private void tweetNewEventArrival(PartakeDAOFactory factory, PartakeConnection con, Event event) {
-        try {
-            String shortenedURL = getShortenedURL(con, event);
-            String hashTag = event.getHashTag() != null ? event.getHashTag() : "";
-            String messagePrefix = "[PARTAKE] 新しいイベントが追加されました :";
-            int length = (messagePrefix.length() + 1) + (shortenedURL.length() + 1) + (hashTag.length() + 1);
-            String title = Util.shorten(event.getTitle(), 140 - length);
+    private void tweetNewEventArrival(PartakeDAOFactory factory, PartakeConnection con, Event event) throws DAOException {
+        String shortenedURL = getShortenedURL(con, event);
+        if (shortenedURL == null)
+            shortenedURL = event.getEventURL();
 
-            String message = messagePrefix + " " + title + " " + shortenedURL + " " + hashTag;
-            int twitterId = PartakeProperties.get().getTwitterBotTwitterId();
-            if (twitterId < 0) {
-                logger.info("No bot id.");
-                return;
-            }
-            TwitterLinkage linkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(twitterId));
-            if (linkage == null) {
-                logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
-                return;
-            }
-            String userId = linkage.getUserId();
-            if (userId == null) {
-                logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
-                return;
-            }
+        String hashTag = event.getHashTag() != null ? event.getHashTag() : "";
+        String messagePrefix = "[PARTAKE] 新しいイベントが追加されました :";
+        int length = (messagePrefix.length() + 1) + (shortenedURL.length() + 1) + (hashTag.length() + 1);
+        String title = Util.shorten(event.getTitle(), 140 - length);
 
-            String messageId = factory.getDirectMessageAccess().getFreshId(con);
-            Message embryo = new Message(messageId, userId, message, null, new Date());
-            factory.getDirectMessageAccess().put(con, embryo);
-            String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
-            Envelope envelope = new Envelope(envelopeId, userId, null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
-            factory.getEnvelopeAccess().put(con, envelope);
-
-            logger.info("bot will tweet: " + message);
-        } catch (Exception e) {
-            logger.error("Something happened.", e);
-
+        String message = messagePrefix + " " + title + " " + shortenedURL + " " + hashTag;
+        int twitterId = PartakeProperties.get().getTwitterBotTwitterId();
+        if (twitterId < 0) {
+            logger.info("No bot id.");
+            return;
         }
+        TwitterLinkage linkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(twitterId));
+        if (linkage == null) {
+            logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
+            return;
+        }
+        String userId = linkage.getUserId();
+        if (userId == null) {
+            logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
+            return;
+        }
+
+        String messageId = factory.getDirectMessageAccess().getFreshId(con);
+        Message embryo = new Message(messageId, userId, message, null, new Date());
+        factory.getDirectMessageAccess().put(con, embryo);
+        String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
+        Envelope envelope = new Envelope(envelopeId, userId, null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
+        factory.getEnvelopeAccess().put(con, envelope);
+
+        logger.info("bot will tweet: " + message);
     }
 
     public List<Questionnaire> findQuestionnairesByEventId(String eventId) throws DAOException {
