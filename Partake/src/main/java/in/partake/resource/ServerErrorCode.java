@@ -16,7 +16,9 @@ public enum ServerErrorCode {
     CALENDAR_INVALID_FORMAT("error.calendar.invalid_format"),
     
     NO_CSRF_PREVENTION("error.no_csrf_prevention"),
-    NO_CREATED_SESSION_TOKEN("error.no_created_session_token");
+    NO_CREATED_SESSION_TOKEN("error.no_created_session_token"),
+    
+    LUCENE_INITIALIZATION_FAILURE("error.lucene.initialization_failure");
     
     // ----------------------------------------------------------------------
     private String errorDescriptionId;
