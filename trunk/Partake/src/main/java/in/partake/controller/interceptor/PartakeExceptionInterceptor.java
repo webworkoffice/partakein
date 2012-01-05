@@ -1,10 +1,12 @@
 package in.partake.controller.interceptor;
 
+import in.partake.base.PartakeRuntimeException;
 import in.partake.controller.PartakeInvalidResultException;
 import in.partake.controller.PartakeResultException;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
+import in.partake.servlet.PartakeSession;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +24,18 @@ public class PartakeExceptionInterceptor extends AbstractInterceptor {
     public String intercept(ActionInvocation invocation) throws Exception {
         try {
             return invocation.invoke();
+        } catch (PartakeRuntimeException e) {
+            logger.error("PartakeRuntimeException", e);
+            final ActionContext context = invocation.getInvocationContext();
+            if (context.getSession().containsKey(Constants.ATTR_PARTAKE_SESSION)) {
+                PartakeSession session = (PartakeSession) context.getSession().get(Constants.ATTR_PARTAKE_SESSION);
+                if (e.getServerErrorCode() != null)
+                    session.setLastServerError(e.getServerErrorCode());
+                if (e.getUserErrorCode() != null)
+                    session.setLastUserError(e.getUserErrorCode());
+            }
+            
+            return "error";
         } catch (RuntimeException e) {
             logger.error("Uncaught Runtime Exception", e);
             return "error";
@@ -30,6 +44,7 @@ public class PartakeExceptionInterceptor extends AbstractInterceptor {
             return "error";
         } catch (PartakeInvalidResultException e) {
             // invalid は redirect がはいるので、session に保持しておく
+            // TODO: PartakeSession を使え
             final ActionContext context = invocation.getInvocationContext();
             context.getSession().put(Constants.ATTR_ERROR_DESCRIPTION, e.getDescription());
             

@@ -128,15 +128,12 @@ public class PartakeProperties {
         }
     }
 
-
     // ----------------------------------------------------------------------
     // JPA Connection properties
 
     public String getJPAPersistenceUnitName() {
         return properties.getProperty("in.partake.database.jpa.persistenceunit");
     }
-
-
 
     // --------------------------------------------------
 

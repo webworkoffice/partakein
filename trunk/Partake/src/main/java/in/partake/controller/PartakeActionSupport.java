@@ -234,12 +234,20 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
      * @return
      */
     protected String redirectError(ServerErrorCode errorCode) {
-        // TODO: reason should be added.
+        PartakeSession session = getPartakeSession();
+        if (session != null) {
+            session.setLastServerError(errorCode);
+        }
+        
         return ERROR;
     }
     
     protected String redirectError(ServerErrorCode errorCode, Throwable e) {
-        // TODO: reason should be added.
+        PartakeSession session = getPartakeSession();
+        if (session != null) {
+            session.setLastServerError(errorCode);
+        }
+        
         return ERROR;
     }
     

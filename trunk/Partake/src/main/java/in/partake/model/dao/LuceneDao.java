@@ -1,7 +1,9 @@
 package in.partake.model.dao;
 
+import in.partake.base.PartakeRuntimeException;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
+import in.partake.resource.ServerErrorCode;
 import in.partake.util.Util;
 
 import java.io.File;
@@ -43,14 +45,28 @@ import org.apache.lucene.util.Version;
  *
  */
 public class LuceneDao {
-	private static volatile LuceneDao instance = new LuceneDao();
+	private static volatile LuceneDao instance;
 
 	private IndexWriter indexWriter;
 	private IndexReader indexReader;
 	private IndexSearcher indexSearcher;
 	private Analyzer analyzer;
+	
+	static {
+	    // Lucene の設定は誤っていることが多く、その場合は RuntimeException が飛ぶことが多い。
+	    // Lucene の設定が誤っているせいであることを示すために、get() したときに Exception が飛ぶようにする。
+	    try { 
+	        instance = new LuceneDao();
+	    } catch (RuntimeException e) {
+	        instance = null;
+	    }
+	}
 
 	public static LuceneDao get() {
+	    if (instance == null) {
+	        throw new PartakeRuntimeException(ServerErrorCode.LUCENE_INITIALIZATION_FAILURE);
+	    }
+	    
 	    return instance;
 	}
 
@@ -66,7 +82,10 @@ public class LuceneDao {
 			indexSearcher = new IndexSearcher(indexReader);
 			analyzer = new CJKAnalyzer(Version.LUCENE_30);
 		} catch (IOException e) {
-		    throw new RuntimeException(e);
+		    indexWriter = null;
+		    indexReader = null;
+		    indexSearcher = null;
+		    analyzer = null;
 		}
 	}
 
