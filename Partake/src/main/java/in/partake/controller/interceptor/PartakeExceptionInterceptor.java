@@ -13,7 +13,13 @@ import org.apache.log4j.Logger;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import com.rosaloves.bitlyj.BitlyException;
 
+/**
+ * Exception を catch し、適切な処理を行う。
+ * @author shinyak
+ *
+ */
 public class PartakeExceptionInterceptor extends AbstractInterceptor {
     /** */
     private static final long serialVersionUID = 1L;
@@ -25,21 +31,20 @@ public class PartakeExceptionInterceptor extends AbstractInterceptor {
         try {
             return invocation.invoke();
         } catch (PartakeRuntimeException e) {
-            logger.error("PartakeRuntimeException", e);
-            final ActionContext context = invocation.getInvocationContext();
-            if (context.getSession().containsKey(Constants.ATTR_PARTAKE_SESSION)) {
-                PartakeSession session = (PartakeSession) context.getSession().get(Constants.ATTR_PARTAKE_SESSION);
-                if (e.getServerErrorCode() != null)
-                    session.setLastServerError(e.getServerErrorCode());
-                if (e.getUserErrorCode() != null)
-                    session.setLastUserError(e.getUserErrorCode());
-            }
-            
+            setServerErrorCode(invocation, e.getServerErrorCode());            
             return "error";
         } catch (RuntimeException e) {
-            logger.error("Uncaught Runtime Exception", e);
+            ServerErrorCode ec = ServerErrorCode.UNKNOWN_ERROR;
+            if (e.getCause() instanceof BitlyException) {
+                // TODO: なんで bitly は RuntimeException にくるまれてやってくるのか？ 
+                setServerErrorCode(invocation, ServerErrorCode.BITLY_ERROR);
+                ec = ServerErrorCode.BITLY_ERROR;
+            }
+
+            logger.error(ec.getReasonString(), e);
             return "error";
         } catch (DAOException e) {
+            setServerErrorCode(invocation, ServerErrorCode.DB_ERROR);
             logger.error(ServerErrorCode.DB_ERROR.getReasonString(), e);
             return "error";
         } catch (PartakeInvalidResultException e) {
@@ -53,4 +58,15 @@ public class PartakeExceptionInterceptor extends AbstractInterceptor {
             return e.getResult();
         }
     }
+
+
+    private void setServerErrorCode(ActionInvocation invocation, ServerErrorCode ec) {
+        final ActionContext context = invocation.getInvocationContext();
+        if (context.getSession().containsKey(Constants.ATTR_PARTAKE_SESSION)) {
+            PartakeSession session = (PartakeSession) context.getSession().get(Constants.ATTR_PARTAKE_SESSION);
+            if (ec != null)
+                session.setLastServerError(ec);
+        }
+    }
+    
 }
