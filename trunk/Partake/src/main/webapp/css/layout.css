@@ -296,7 +296,6 @@ body {
     right: 0;
 }
 
-
 .event-content {
     float: left;
     width: 610px;
@@ -465,12 +464,11 @@ max-height:980px;
 /* event-promotion 
 ---------------------------*/
 .event-promotion {
+	text-align: right;
     margin: 1px 0 0 0px;
     padding: 7px 1px ;
-    text-align: center;
-    border-bottom : 1px solid #DDD9D7;
-    border-right : 1px solid #DDD9D7;
 }
+
 .event-promotion iframe#facebook-like-button {
 	border: none;
 	overflow: hidden;

@@ -66,6 +66,16 @@ body {
 }
 </style>
 <% } %>
+
+<script type="text/javascript">
+  window.___gcfg = {lang: 'ja'};
+
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
 </head>
 <body class="event">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
@@ -82,6 +92,27 @@ body {
 <% if (event.getFeedId() != null) { %>
     <p class="event-feed-rss cler"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-15x15.png" /></a></p>
 <% } %>
+
+<div class="event-promotion">
+	<!-- hatena -->
+	<div style="display:inline-block;">
+		<a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+		<script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+	</div>
+	
+	<!-- facebook -->
+	<iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+
+	<!--  twitter -->
+	<div style="display:inline-block; width:105px">
+		<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>" data-width="105px">Tweet</a>
+		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+	</div>
+
+	<!-- +1 -->
+	<div style="display:inline-block; width:70px;"><div class="g-plusone" data-size="medium" data-href="<%= h(event.getEventURL()) %>"></div></div>
+	
+</div>
 
 <div class="event-content">
 
@@ -335,30 +366,12 @@ body {
 	<% } %>
 </div>
 
-<div class="event-promotion rad">
-
-	<!--  twitter -->
-
-	<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>">Tweet</a>
-
-	<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-
-	<!-- facebook -->
-
-	<iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
-
-</div>
-
-
-
 <%
 	ParticipationList participationList = (ParticipationList) request.getAttribute(Constants.ATTR_PARTICIPATIONLIST);
 	List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
 	List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
 	List<EnrollmentEx> cancelledParticipations = participationList.getCancelledParticipations();
 %>
-
-
 
 <div class="event-participants rad">
 <div class="event-status">
@@ -465,5 +478,6 @@ function handler(e){
 }
 message.keydown(handler).keyup(handler);<%-- keydownだけではctrl-BS時に表示があわなくなる、keyupだけではBS長押し時に表示があわなくなる --%>
 </script>
+
 </body>
 </html>
