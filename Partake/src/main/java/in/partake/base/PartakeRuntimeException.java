@@ -3,6 +3,12 @@ package in.partake.base;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
+/**
+ * A RuntimeException which contains ServerErrorCode or UserErrorCode.
+ * Either ServerErrorCode or UserErrorCode should be included.
+ *
+ * @author shinyak
+ */
 public class PartakeRuntimeException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
