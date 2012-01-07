@@ -4,10 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Connection 関連のテストケースベース。
- * extends して、BeforeClass, AfterClass で Connection などを設定のこと。
+ * Connection 関連のテストケース。
  */
-public abstract class PartakeConnectionTestCaseBase extends AbstractConnectionTestCaseBase {
+public class PartakeConnectionTest extends AbstractConnectionTestCaseBase {
     @Test
     public void testToConnectAndRelease() throws DAOException {
         PartakeConnection con = getPool().getConnection();
