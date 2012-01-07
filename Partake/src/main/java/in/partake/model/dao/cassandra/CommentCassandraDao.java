@@ -20,8 +20,8 @@ import org.apache.cassandra.thrift.Cassandra.Client;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.ICommentAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dto.Comment;
 import in.partake.util.Util;
 

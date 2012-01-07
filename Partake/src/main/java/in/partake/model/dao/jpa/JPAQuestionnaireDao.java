@@ -8,8 +8,8 @@ import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IQuestionnaireAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IQuestionnaireAccess;
 import in.partake.model.dto.Questionnaire;
 
 public class JPAQuestionnaireDao extends JPADao<Questionnaire> implements IQuestionnaireAccess {

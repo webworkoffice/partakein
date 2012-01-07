@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IQuestionnaireAccess;
 import in.partake.model.dto.Questionnaire;
 import in.partake.model.dto.auxiliary.QuestionnaireType;
 

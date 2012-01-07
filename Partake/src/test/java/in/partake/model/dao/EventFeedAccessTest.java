@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dto.EventFeedLinkage;
 
 import org.junit.Before;

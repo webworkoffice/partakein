@@ -2,8 +2,8 @@ package in.partake.model.dao.jpa;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
 
 import java.util.ArrayList;

@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dto.BinaryData;
 
 import org.junit.Before;

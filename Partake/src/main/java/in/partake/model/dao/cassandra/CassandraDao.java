@@ -4,7 +4,7 @@ import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IAccess;
+import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
 import in.partake.util.Util;
 

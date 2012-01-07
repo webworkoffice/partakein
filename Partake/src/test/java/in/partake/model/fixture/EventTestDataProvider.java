@@ -3,9 +3,9 @@ package in.partake.model.fixture;
 import java.util.Date;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.IEventAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
 
 /**

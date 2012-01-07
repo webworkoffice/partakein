@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.User;

@@ -7,8 +7,8 @@ import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.ICacheAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dto.CacheData;
 
 class JPACacheDao extends JPADao<CacheData> implements ICacheAccess {

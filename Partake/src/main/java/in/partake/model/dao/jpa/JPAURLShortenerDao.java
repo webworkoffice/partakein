@@ -7,8 +7,8 @@ import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IURLShortenerAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.pk.ShortenedURLDataPK;
 

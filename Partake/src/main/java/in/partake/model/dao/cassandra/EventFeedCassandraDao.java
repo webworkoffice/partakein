@@ -12,8 +12,8 @@ import org.apache.cassandra.thrift.Mutation;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IEventFeedAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dto.EventFeedLinkage;
 
 // import static me.prettyprint.cassandra.utils.StringUtils.bytes;

@@ -15,9 +15,9 @@ import org.apache.cassandra.thrift.SuperColumn;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IEventRelationAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.pk.EventRelationPK;
 

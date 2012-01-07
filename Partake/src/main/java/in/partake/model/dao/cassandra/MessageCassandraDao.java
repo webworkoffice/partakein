@@ -4,8 +4,8 @@ package in.partake.model.dao.cassandra;
 import static me.prettyprint.cassandra.utils.StringUtils.string;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dto.Message;
 import in.partake.util.Util;
 

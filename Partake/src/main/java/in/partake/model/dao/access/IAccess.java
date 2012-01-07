@@ -1,10 +1,12 @@
-package in.partake.model.dao;
+package in.partake.model.dao.access;
 
+import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.PartakeModel;
 
 /**
  * 全ての DAO が兼ね備えるべき、put, find, remove を提供する層。
- * TODO: 全ての Access Interface が IAccess を継承するようにする。
  * 
  * @author shinyak
  *

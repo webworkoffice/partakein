@@ -2,6 +2,7 @@ package in.partake.model.dao;
 
 import java.util.Date;
 
+import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dto.CacheData;
 import in.partake.model.fixture.CacheTestDataProvider;
 import in.partake.util.PDate;

@@ -1,5 +1,7 @@
-package in.partake.model.dao;
+package in.partake.model.dao.access;
 
+import in.partake.model.dao.DAOException;
+import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.pk.EventRelationPK;
 

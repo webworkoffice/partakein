@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dto.OpenIDLinkage;
 
 import org.junit.Before;

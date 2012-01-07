@@ -2,6 +2,7 @@ package in.partake.model.dao;
 
 import java.util.Date;
 
+import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.User;
 
 import org.junit.Before;

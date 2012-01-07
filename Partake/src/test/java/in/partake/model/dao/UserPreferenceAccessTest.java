@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dto.UserPreference;
 
 import org.junit.Before;

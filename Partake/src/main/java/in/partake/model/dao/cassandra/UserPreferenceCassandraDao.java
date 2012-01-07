@@ -5,8 +5,8 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dto.UserPreference;
 
 import java.util.ArrayList;

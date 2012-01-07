@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dto.EventActivity;
 
 public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActivityAccess, EventActivity, String> {

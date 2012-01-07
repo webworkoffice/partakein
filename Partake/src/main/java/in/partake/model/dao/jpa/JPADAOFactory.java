@@ -1,24 +1,24 @@
 package in.partake.model.dao.jpa;
 
-import in.partake.model.dao.IBinaryAccess;
-import in.partake.model.dao.ICacheAccess;
-import in.partake.model.dao.ICalendarLinkageAccess;
-import in.partake.model.dao.ICommentAccess;
-import in.partake.model.dao.IEnvelopeAccess;
-import in.partake.model.dao.IEventActivityAccess;
-import in.partake.model.dao.IEventReminderAccess;
-import in.partake.model.dao.IMessageAccess;
-import in.partake.model.dao.IEnrollmentAccess;
-import in.partake.model.dao.IEventAccess;
-import in.partake.model.dao.IEventRelationAccess;
-import in.partake.model.dao.IEventFeedAccess;
-import in.partake.model.dao.IOpenIDLinkageAccess;
-import in.partake.model.dao.IQuestionnaireAccess;
-import in.partake.model.dao.ITwitterLinkageAccess;
-import in.partake.model.dao.IURLShortenerAccess;
-import in.partake.model.dao.IUserAccess;
-import in.partake.model.dao.IUserPreferenceAccess;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.IBinaryAccess;
+import in.partake.model.dao.access.ICacheAccess;
+import in.partake.model.dao.access.ICalendarLinkageAccess;
+import in.partake.model.dao.access.ICommentAccess;
+import in.partake.model.dao.access.IEnrollmentAccess;
+import in.partake.model.dao.access.IEnvelopeAccess;
+import in.partake.model.dao.access.IEventAccess;
+import in.partake.model.dao.access.IEventActivityAccess;
+import in.partake.model.dao.access.IEventFeedAccess;
+import in.partake.model.dao.access.IEventRelationAccess;
+import in.partake.model.dao.access.IEventReminderAccess;
+import in.partake.model.dao.access.IMessageAccess;
+import in.partake.model.dao.access.IOpenIDLinkageAccess;
+import in.partake.model.dao.access.IQuestionnaireAccess;
+import in.partake.model.dao.access.ITwitterLinkageAccess;
+import in.partake.model.dao.access.IURLShortenerAccess;
+import in.partake.model.dao.access.IUserAccess;
+import in.partake.model.dao.access.IUserPreferenceAccess;
 
 public class JPADAOFactory extends PartakeDAOFactory {
 

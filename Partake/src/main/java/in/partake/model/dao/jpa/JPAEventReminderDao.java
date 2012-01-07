@@ -7,8 +7,8 @@ import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IEventReminderAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dto.EventReminder;
 
 public class JPAEventReminderDao extends JPADao<EventReminder> implements IEventReminderAccess {

@@ -5,8 +5,8 @@ import javax.persistence.EntityManager;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IEnvelopeAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IEnvelopeAccess;
 import in.partake.model.dto.Envelope;
 
 public class JPAEnvelopeDao extends JPADao<Envelope> implements IEnvelopeAccess {
