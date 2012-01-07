@@ -65,4 +65,7 @@ public abstract class PartakeConnectionPool {
     }
     
     protected abstract void releaseConnectionImpl(PartakeConnection connection);
+    
+    /** この Connection Pool が不要になる直前に呼ばれる。必要に応じてコネクションプールを解放する。*/
+    public abstract void willDestroy();
 }

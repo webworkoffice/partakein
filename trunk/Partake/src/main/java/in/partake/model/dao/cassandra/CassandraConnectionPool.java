@@ -48,4 +48,9 @@ public class CassandraConnectionPool extends PartakeConnectionPool {
             logger.warn("connection is not instanceof CassandraConnection");
         }
     }
+    
+    @Override
+    public void willDestroy() {
+        
+    }
 }

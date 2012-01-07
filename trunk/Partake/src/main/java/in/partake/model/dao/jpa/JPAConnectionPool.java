@@ -39,4 +39,9 @@ public class JPAConnectionPool extends PartakeConnectionPool {
             logger.warn("connection is not instanceof JPAConnection");
         }
     }
+    
+    @Override
+    public void willDestroy() {
+        entityManagerFactory.close();
+    }
 }
