@@ -18,7 +18,6 @@ import org.junit.Before;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-
 public abstract class APIControllerTest extends AbstractPartakeControllerTest {
 
     @Before

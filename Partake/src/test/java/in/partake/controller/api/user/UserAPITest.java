@@ -21,7 +21,7 @@ public class UserAPITest extends APIControllerTest {
     // ログインなしに取得することができるデータは限られている必要がある。
     @Test
     public void testGetUserWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/get");
+        ActionProxy proxy = getActionProxy("/api/user");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         
         proxy.execute();
@@ -50,7 +50,7 @@ public class UserAPITest extends APIControllerTest {
     
     @Test
     public void testGetUserWithLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/get");
+        ActionProxy proxy = getActionProxy("/api/user");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         
         // User 1 としてログイン
@@ -90,7 +90,7 @@ public class UserAPITest extends APIControllerTest {
     
     @Test
     public void testGetUserWithLoginAsAnotherUser() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/get");
+        ActionProxy proxy = getActionProxy("/api/user");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1); 
 
         // USER 1 ではなく、USER 2 としてログイン。
@@ -124,7 +124,7 @@ public class UserAPITest extends APIControllerTest {
     @Test
     @Ignore("Not implemented yet")
     public void testToGetEventsWithLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/getEvents");
+        ActionProxy proxy = getActionProxy("/api/user/events");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         
         loginAs(proxy, TestDataProvider.USER_ID1);
@@ -138,7 +138,7 @@ public class UserAPITest extends APIControllerTest {
     @Test
     @Ignore("Not implemented yet")
     public void testToGetEventsWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/getEvents");
+        ActionProxy proxy = getActionProxy("/api/user/events");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
 
         loginAs(proxy, TestDataProvider.USER_ID1);
@@ -154,7 +154,7 @@ public class UserAPITest extends APIControllerTest {
     @Test
     @Ignore("Not implemented yet")
     public void testToGetInvalidUserEvent() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/getEvents");
+        ActionProxy proxy = getActionProxy("/api/user/events");
         addParameter(proxy, "userId", TestDataProvider.INVALID_USER_ID);
 
         proxy.execute();

@@ -75,7 +75,7 @@ public class OpenIDAPITest extends APIControllerTest {
     
     @Test
     public void testToGetOpenIDWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/getOpenID");
+        ActionProxy proxy = getActionProxy("/api/account/openID");
 
         proxy.execute();
         assertResultLoginRequired(proxy);
@@ -83,7 +83,7 @@ public class OpenIDAPITest extends APIControllerTest {
     
     @Test
     public void testToGetOpenIDWithLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/getOpenID");
+        ActionProxy proxy = getActionProxy("/api/account/openID");
 
         loginAs(proxy, TestDataProvider.USER_ID1);
         
