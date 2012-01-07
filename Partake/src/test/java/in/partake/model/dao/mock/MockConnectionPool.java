@@ -47,4 +47,8 @@ public class MockConnectionPool extends PartakeConnectionPool {
         }
         this.preparedConnection = prepared;
     }
+
+    @Override
+    public void willDestroy() {
+    }
 }
