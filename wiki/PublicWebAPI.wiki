@@ -13,7 +13,7 @@ under construction.
 
 == セッショントークンの取得 ==
 
-`/api/account/getSessionToken`
+`/api/account/sessionToken`
 
 {{{
 TBW
@@ -21,7 +21,7 @@ TBW
 
 == 自分自身の情報の取得 ==
 
-`/api/account/get`
+`/api/account`
 
 {{{
 TBW
@@ -29,7 +29,7 @@ TBW
 
 == 自分自身の参加・管理するイベントを取得 ==
 
-`/api/account/getEvents`
+`/api/account/events`
 
 MyPage で取得可能なイベントが見られる。
 get と統合するべきか？
@@ -41,7 +41,7 @@ TBW
 
 == ユーザーの設定の取得 ==
 
-`/api/account/getPreference`
+`/api/account/preference`
 
 get と統合するべきか？　分けておいたほうがよいか？
 
@@ -59,7 +59,7 @@ TBW
 
 == OpenID 結びつけ状態の取得 ==
 
-`/api/account/getOpenID`
+`/api/account/openID`
 
 get と統合するべきか？　分けておいたほうがよいか？
 
@@ -77,7 +77,7 @@ TBW
 
 == カレンダー URL の取得 ==
 
-`/api/account/getCalendar`
+`/api/account/calendar`
 
 TBW
 
@@ -85,13 +85,13 @@ TBW
 
 == ユーザーの取得 ==
 
-`/api/user/get`
+`/api/user`
 
 TBW
 
 == ユーザーが参加しているイベント情報の習得 ==
 
-`/api/user/getEvents`
+`/api/user/events`
 
 ユーザーページと同じ情報を得ることができる。MyPage で見られる情報とは異なる。
 
@@ -101,7 +101,7 @@ TBW
 
 == イベントの取得 == 
 
-`/api/event/get`
+`/api/event`
 
 TBW
 
@@ -156,7 +156,7 @@ TBW
 
 == 参加者へのメッセージの取得 == 
 
-`/api/event/getMessage`
+`/api/event/message`
 
 TBW
 
