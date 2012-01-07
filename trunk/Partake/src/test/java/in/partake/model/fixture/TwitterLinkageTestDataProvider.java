@@ -1,9 +1,9 @@
 package in.partake.model.fixture;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.ITwitterLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dto.TwitterLinkage;
 
 public class TwitterLinkageTestDataProvider extends TestDataProvider {

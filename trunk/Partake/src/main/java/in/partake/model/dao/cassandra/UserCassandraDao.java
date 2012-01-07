@@ -2,8 +2,8 @@ package in.partake.model.dao.cassandra;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.User;
 import in.partake.util.Util;
 

@@ -2,6 +2,7 @@ package in.partake.model.dao;
 
 import java.util.Date;
 
+import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dto.EventReminder;
 
 import org.junit.Before;

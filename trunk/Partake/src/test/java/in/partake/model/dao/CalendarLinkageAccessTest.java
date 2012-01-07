@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.ICalendarLinkageAccess;
 import in.partake.model.dto.CalendarLinkage;
 import org.junit.Before;
 

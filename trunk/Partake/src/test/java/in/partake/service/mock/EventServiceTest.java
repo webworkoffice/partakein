@@ -5,10 +5,10 @@ import java.util.List;
 
 import junit.framework.Assert;
 import in.partake.model.EventEx;
-import in.partake.model.dao.IEventAccess;
-import in.partake.model.dao.IEventRelationAccess;
-import in.partake.model.dao.ITwitterLinkageAccess;
-import in.partake.model.dao.IUserAccess;
+import in.partake.model.dao.access.IEventAccess;
+import in.partake.model.dao.access.IEventRelationAccess;
+import in.partake.model.dao.access.ITwitterLinkageAccess;
+import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.mock.MockConnection;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;

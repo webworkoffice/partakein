@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dto.Message;
 
 import java.util.Date;

@@ -18,9 +18,9 @@ import org.apache.cassandra.thrift.SuperColumn;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IEnvelopeAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.IEnvelopeAccess;
 import in.partake.model.dto.Envelope;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.util.Util;

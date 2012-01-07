@@ -1,9 +1,9 @@
 package in.partake.model.fixture;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.User;
 
 import java.util.Date;

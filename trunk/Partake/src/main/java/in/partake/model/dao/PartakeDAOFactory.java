@@ -1,5 +1,25 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IBinaryAccess;
+import in.partake.model.dao.access.ICacheAccess;
+import in.partake.model.dao.access.ICalendarLinkageAccess;
+import in.partake.model.dao.access.ICommentAccess;
+import in.partake.model.dao.access.IEnrollmentAccess;
+import in.partake.model.dao.access.IEnvelopeAccess;
+import in.partake.model.dao.access.IEventAccess;
+import in.partake.model.dao.access.IEventActivityAccess;
+import in.partake.model.dao.access.IEventFeedAccess;
+import in.partake.model.dao.access.IEventRelationAccess;
+import in.partake.model.dao.access.IEventReminderAccess;
+import in.partake.model.dao.access.IMessageAccess;
+import in.partake.model.dao.access.IOpenIDLinkageAccess;
+import in.partake.model.dao.access.IQuestionnaireAccess;
+import in.partake.model.dao.access.ITruncatable;
+import in.partake.model.dao.access.ITwitterLinkageAccess;
+import in.partake.model.dao.access.IURLShortenerAccess;
+import in.partake.model.dao.access.IUserAccess;
+import in.partake.model.dao.access.IUserPreferenceAccess;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

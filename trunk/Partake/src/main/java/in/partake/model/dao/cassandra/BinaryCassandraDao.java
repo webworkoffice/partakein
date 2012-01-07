@@ -4,8 +4,8 @@ import static me.prettyprint.cassandra.utils.StringUtils.string;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IBinaryAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dto.BinaryData;
 
 import java.util.ArrayList;

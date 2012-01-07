@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dto.TwitterLinkage;
 import org.junit.Before;
 

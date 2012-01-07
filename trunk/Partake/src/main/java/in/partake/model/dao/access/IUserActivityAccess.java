@@ -1,8 +1,9 @@
-package in.partake.model.dao;
+package in.partake.model.dao.access;
 
 import java.util.Date;
 import java.util.List;
 
+import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.UserActivity;
 
 public interface IUserActivityAccess extends IAccess<UserActivity, String> {

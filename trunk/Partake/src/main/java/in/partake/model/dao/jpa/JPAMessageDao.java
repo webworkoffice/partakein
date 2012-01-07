@@ -8,8 +8,8 @@ import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IMessageAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dto.Message;
 
 public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {

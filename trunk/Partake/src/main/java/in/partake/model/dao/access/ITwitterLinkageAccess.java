@@ -1,4 +1,4 @@
-package in.partake.model.dao;
+package in.partake.model.dao.access;
 
 import in.partake.model.dto.TwitterLinkage;
 

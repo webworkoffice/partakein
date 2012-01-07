@@ -5,8 +5,8 @@ import javax.persistence.Query;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.IUserAccess;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.User;
 
 class JPAUserDao extends JPADao<User> implements IUserAccess {

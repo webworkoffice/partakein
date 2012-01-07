@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
 import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;

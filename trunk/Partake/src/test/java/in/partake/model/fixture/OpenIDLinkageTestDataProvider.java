@@ -1,9 +1,9 @@
 package in.partake.model.fixture;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.IOpenIDLinkageAccess;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dto.OpenIDLinkage;
 
 public class OpenIDLinkageTestDataProvider extends TestDataProvider {
