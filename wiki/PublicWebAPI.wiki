@@ -21,7 +21,7 @@ TBW
 
 == 自分自身の情報の取得 ==
 
-`/api/account`
+`/api/account/`
 
 {{{
 TBW
@@ -85,7 +85,7 @@ TBW
 
 == ユーザーの取得 ==
 
-`/api/user`
+`/api/user/`
 
 TBW
 
@@ -101,7 +101,7 @@ TBW
 
 == イベントの取得 == 
 
-`/api/event`
+`/api/event/`
 
 TBW
 
