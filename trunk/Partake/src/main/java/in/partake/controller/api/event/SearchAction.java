@@ -38,7 +38,6 @@ public class SearchAction extends PartakeAPIActionSupport {
         String category = getCategory();
         if (category == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_CATEGORY); }
 
-
         String sortOrder = getSortOrder();
         if (sortOrder == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_ORDER); }
 
