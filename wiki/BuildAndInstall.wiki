@@ -66,14 +66,34 @@ in.partake.database.pool=in.partake.model.dao.jpa.JPAConnectionPool
 <property name="openjpa.ConnectionProperties" value="DriverClassName=org.postgresql.Driver,Url=jdbc:postgresql:partake,Username=partake,Password=partake"/>
 }}}  
 
-Then PARTAKE should run now. If you have any difficulties, please tell @partakein or @mayahjp.
+== edit server.xml ==
+You should add URIEncoding and useBodyEncodingForURI in your Connector.
+{{{
+    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443"
+      		   URIEncoding="UTF-8" useBodyEncodingForURI="true" />
+}}}
 
+If you are just testing PARTAKE, 8080 port may help you. Do not forget to add URIEncoding and useBodyEncodingForURI in the Connector.
+{{{
+    <Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443"
+    		   URIEncoding="UTF-8" useBodyEncodingForURI="true"
+    />
+}}}
+
+And probably you should set mod_ajp in your Apache HTTP server.
+
+
+== Register your application ==
 Do not forget to register your application to the twitter.
     * http://twitter.com/apps/new
     * Application Type should be "Browser"
     * Callback URL is any valid URL. But do not use localhost.
     * Default Access Type should be "Read & Write".
     * Check "Yes, use Twitter for login"
+
+== DONE! ==
+
+Then PARTAKE should run now. If you have any difficulties, please tell @partakein or @mayahjp.
 
 
 == NOTE ==
