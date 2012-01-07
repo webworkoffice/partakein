@@ -502,10 +502,10 @@
 
 	<!-- Account API -->
 	<package name="account-api" namespace="/api/account" extends="partake-api-default">
-		<action name="getSessionToken" method="getSessionToken" class="in.partake.controller.api.account.SessionAction" />
-		<action name="get" method="get" class="in.partake.controller.api.account.AccountAction" />
-		<action name="getCalendar" method="getCalendar" class="in.partake.controller.api.account.AccountAction" />
-		<action name="getOpenID" method="getOpenID" class="in.partake.controller.api.account.OpenIDAction" />
+		<action name="" method="get" class="in.partake.controller.api.account.AccountAction" />
+		<action name="sessionToken" method="getSessionToken" class="in.partake.controller.api.account.SessionAction" />
+		<action name="calendar" method="getCalendar" class="in.partake.controller.api.account.AccountAction" />
+		<action name="openID" method="getOpenID" class="in.partake.controller.api.account.OpenIDAction" />
 		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.account.OpenIDAction" />
 		<action name="preference" method="getPreference" class="in.partake.controller.api.account.AccountAction" />
 		<action name="setPreference" method="setPreference" class="in.partake.controller.api.account.AccountAction" />
@@ -513,13 +513,14 @@
 
 	<!-- User API -->
 	<package name="user-api" namespace="/api/user" extends="partake-api-default">
-		<action name="get" method="get" class="in.partake.controller.api.user.UserAction" />
-		<action name="getEvents" method="getEvents" class="in.partake.controller.api.user.UserAction" />
+		<action name="" method="get" class="in.partake.controller.api.user.UserAction" />
+		<action name="events" method="getEvents" class="in.partake.controller.api.user.UserAction" />
 	</package>
 
 	<!-- Event API -->
 	<package name="event-api" namespace="/api/event" extends="partake-api-default">
-		<action name="get" method="get" class="in.partake.controller.api.event.EventAction" />
+		<action name="" method="get" class="in.partake.controller.api.event.EventAction" />
+		<action name="get" method="get" class="in.partake.controller.api.event.EventAction" /> <!-- DEPRECATED -->
 		<action name="create" method="create" class="in.partake.controller.api.event.EventAction" />
 		<action name="modify" method="modify" class="in.partake.controller.api.event.EventAction" />
 		<action name="remove" method="remove" class="in.partake.controller.api.event.EventAction" />		

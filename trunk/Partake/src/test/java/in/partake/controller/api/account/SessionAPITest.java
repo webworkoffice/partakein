@@ -10,7 +10,7 @@ import org.junit.Test;
 import com.opensymphony.xwork2.ActionProxy;
 
 public class SessionAPITest extends APIControllerTest {
-    private final String SESSION_TOKEN_URL = "/api/account/getSessionToken";
+    private final String SESSION_TOKEN_URL = "/api/account/sessionToken";
     
     @Test
     public void testToGetSessionTokenWithoutLogin() throws Exception {

@@ -15,7 +15,7 @@ public class AccountAPITest extends APIControllerTest {
     @Test
     @Ignore("Not implemented yet")
     public void testToGetWithLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/get");
+        ActionProxy proxy = getActionProxy("/api/account");
 
         loginAs(proxy, TestDataProvider.USER_ID1);
         
@@ -28,7 +28,7 @@ public class AccountAPITest extends APIControllerTest {
     
     @Test
     public void testToGetWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/get");
+        ActionProxy proxy = getActionProxy("/api/account/");
 
         proxy.execute();
         assertResultLoginRequired(proxy);
@@ -37,7 +37,7 @@ public class AccountAPITest extends APIControllerTest {
     @Test
     @Ignore("Not implemented yet")
     public void testToGetCalendarWithLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/getCalendar");
+        ActionProxy proxy = getActionProxy("/api/account/Calendar");
 
         loginAs(proxy, TestDataProvider.USER_ID1);
         
@@ -51,7 +51,7 @@ public class AccountAPITest extends APIControllerTest {
     @Test
     @Ignore("Not implemented yet")
     public void testToGetCalendarWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/getCalendar");
+        ActionProxy proxy = getActionProxy("/api/account/Calendar");
 
         proxy.execute();
         assertResultLoginRequired(proxy);
