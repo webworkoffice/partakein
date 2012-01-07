@@ -24,6 +24,7 @@ import com.opensymphony.xwork2.ActionProxy;
 
 public class SearchActionTest extends APIControllerTest {
     private static final String SEARCH_QUERY = "あ";
+
     @Test
     public void testSearchEventAllCategory() throws Exception {
         storeEventBeforeDeadline();
@@ -37,6 +38,19 @@ public class SearchActionTest extends APIControllerTest {
         assertThat(json.containsKey("reason"), equalTo(false));
     }
 
+    @Test
+    public void testSearchJapaneseQuery() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/search");
+        addQueryParameter(proxy, "昇竜拳");
+        
+        assertThat(proxy.execute(), equalTo("json"));
+        
+        assertResultOK(proxy);
+        JSONObject json = getJSON(proxy);
+        assertPublicEventsAreFound(json);
+        assertThat(json.containsKey("reason"), equalTo(false));
+    }
+    
     @Test
     public void testSearchEventWithoutQuery() throws Exception {
         storeEventBeforeDeadline();
@@ -132,6 +146,7 @@ public class SearchActionTest extends APIControllerTest {
         assertThat(json.getString("reason"), equalTo(UserErrorCode.INVALID_SEARCH_DEADLINE.getReasonString()));
     }
 
+    // TODO: Use EventTestDataProvider instead. 
     private Event createEvent() {
         Event event = new Event();
         event.setTitle(SEARCH_QUERY);
@@ -240,6 +255,21 @@ public class SearchActionTest extends APIControllerTest {
 
     // =========================================================================
     // utility
+
+    /**
+     * queryString を入力としてセットする。
+     * @param proxy
+     * @param queryString
+     */
+    // TODO: なんで DAOException が必要？
+    private void addQueryParameter(ActionProxy proxy, String queryString) throws DAOException {
+        addParameter(proxy, "query", queryString);
+        addParameter(proxy, "category", "all");
+        addParameter(proxy, "beforeDeadlineOnly", "true");
+        addParameter(proxy, "sortOrder", "score");
+        addParameter(proxy, "maxNum", "10");        
+    }
+    
     private void addBasicParameter(ActionProxy proxy) throws DAOException {
         addParameter(proxy, "query", SEARCH_QUERY);
         addParameter(proxy, "category", "all");
