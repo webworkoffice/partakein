@@ -105,6 +105,8 @@ TBW
 
 TBW
 
+とりあえずは `/api/event/get` でもアクセスできますが、`/api/event/` の使用を推奨します。
+
 == イベントの登録 == 
 
 `/api/event/create`
