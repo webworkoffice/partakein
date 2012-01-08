@@ -40,17 +40,32 @@ public class SearchActionTest extends APIControllerTest {
 
     @Test
     public void testSearchJapaneseQuery() throws Exception {
+        // http://code.google.com/p/partakein/issues/detail?id=233
         ActionProxy proxy = getActionProxy("/api/event/search");
         addQueryParameter(proxy, "昇竜拳");
-        
+
         assertThat(proxy.execute(), equalTo("json"));
-        
+
         assertResultOK(proxy);
         JSONObject json = getJSON(proxy);
         assertPublicEventsAreFound(json);
         assertThat(json.containsKey("reason"), equalTo(false));
     }
-    
+
+    @Test
+    public void testSearchJapaneseQueryWithBeforeDeadlineOnly() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/search");
+        addQueryParameter(proxy, "昇竜拳", "all", "false", "score", "10");
+        
+        assertThat(proxy.execute(), equalTo("json"));
+
+        assertResultOK(proxy);
+        JSONObject json = getJSON(proxy);
+        assertPublicEventsAreFound(json);
+        assertThat(json.containsKey("reason"), equalTo(false));
+
+    }
+
     @Test
     public void testSearchEventWithoutQuery() throws Exception {
         storeEventBeforeDeadline();
@@ -65,7 +80,7 @@ public class SearchActionTest extends APIControllerTest {
         assertPublicEventsAreFound(json);
     }
 
-	// =========================================================================
+    // =========================================================================
     // beforeDeadlineOnly
     @Test
     public void testSearchEventBeforeDeadlineOnly() throws Exception {
@@ -269,7 +284,15 @@ public class SearchActionTest extends APIControllerTest {
         addParameter(proxy, "sortOrder", "score");
         addParameter(proxy, "maxNum", "10");        
     }
-    
+
+    private void addQueryParameter(ActionProxy proxy, String queryString, String category, String beforeDeadlineOnly, String sortOrder, String maxNum) throws DAOException {
+        addParameter(proxy, "query", queryString);
+        addParameter(proxy, "category", category);
+        addParameter(proxy, "beforeDeadlineOnly", beforeDeadlineOnly);
+        addParameter(proxy, "sortOrder", sortOrder);
+        addParameter(proxy, "maxNum", maxNum);
+    }
+
     private void addBasicParameter(ActionProxy proxy) throws DAOException {
         addParameter(proxy, "query", SEARCH_QUERY);
         addParameter(proxy, "category", "all");
