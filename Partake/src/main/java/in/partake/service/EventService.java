@@ -200,7 +200,10 @@ public final class EventService extends PartakeService {
                     continue;
                 }
 
-                events.add(factory.getEventAccess().find(con, id));
+                Event event = factory.getEventAccess().find(con, id);
+                if (event != null) {
+                    events.add(event);
+                }
             }
             con.commit();
 
