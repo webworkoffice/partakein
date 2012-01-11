@@ -25,13 +25,13 @@ public class MockServiceTestBase extends PartakeService {
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("mock");
-        reset();
+        initialize();
     }
 
     @AfterClass
     public static void tearDownOnce() {
         PartakeProperties.get().reset();
-        reset();
+        initialize();
     }
 
     

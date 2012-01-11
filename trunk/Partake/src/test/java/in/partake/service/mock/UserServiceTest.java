@@ -35,7 +35,7 @@ public class UserServiceTest extends MockServiceTestBase {
 	@Before
     public void setup() throws Exception {
         // create fixtures.
-        reset();
+        initialize();
         createFixtures();
         PDate.setCurrentTime(System.currentTimeMillis());
     }

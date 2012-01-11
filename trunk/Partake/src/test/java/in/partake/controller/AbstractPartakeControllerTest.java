@@ -44,7 +44,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
      */
     protected static void reset() {
         PDate.resetCurrentDate();
-        PartakeService.reset();
+        PartakeService.initialize();
     }
 
     @Override
