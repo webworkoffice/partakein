@@ -20,7 +20,7 @@ abstract class JPADao<T extends PartakeModel<T>> {
         return ((JPAConnection) con).getEntityManager();
     }
     
-    public void init() {
+    public void initialize(PartakeConnection con) {
         // DO NOTHING.
     }
     

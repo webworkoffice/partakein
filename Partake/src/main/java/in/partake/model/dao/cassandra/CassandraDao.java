@@ -4,6 +4,7 @@ import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
 import in.partake.util.Util;
@@ -35,7 +36,7 @@ abstract class CassandraDao {
         this.factory = factory;
     }
     
-    public void init() {
+    public void initialize(PartakeConnection con) {
         // DO NOTHING
     }
     

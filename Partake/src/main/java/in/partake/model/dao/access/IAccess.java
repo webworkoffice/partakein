@@ -17,7 +17,7 @@ public interface IAccess<T extends PartakeModel<T>, PK> {
     /** Will be called once after DAOs are created. If there are multiple DAOs,
      *  the order of call is not determined.
      */
-    public abstract void init() throws DAOException;
+    public abstract void initialize(PartakeConnection con) throws DAOException;
     
     /**
      * Removes all data. NEVER use unless in unittest. 
