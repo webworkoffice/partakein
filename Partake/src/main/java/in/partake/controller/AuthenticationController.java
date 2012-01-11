@@ -84,7 +84,7 @@ public class AuthenticationController extends PartakeActionSupport {
             setRedirectURL(requestToken.getAuthenticationURL());
             return SUCCESS;
         } catch (TwitterException e) {
-            return redirectError(ServerErrorCode.TWITTER_OAUTH_ERROR);
+            return redirectError(ServerErrorCode.TWITTER_OAUTH_ERROR, e);
         }
     }
     
