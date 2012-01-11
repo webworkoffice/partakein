@@ -16,7 +16,7 @@ import java.util.UUID;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public abstract class AbstractServiceTestCaseBase  {
+public abstract class AbstractServiceTestCaseBase {
 
     @BeforeClass
     public static void setUpOnce() {

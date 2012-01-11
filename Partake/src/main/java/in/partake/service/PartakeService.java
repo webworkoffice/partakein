@@ -1,28 +1,26 @@
 package in.partake.service;
 
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import in.partake.base.PartakeRuntimeException;
 import in.partake.model.CommentEx;
-import in.partake.model.EventEx;
 import in.partake.model.EnrollmentEx;
+import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeConnectionPool;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
 
-public abstract class PartakeService {
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+public abstract class PartakeService extends PartakeConnectionService {
     private static PartakeDAOFactory factory;
-    private static PartakeConnectionPool pool;
     private static final Logger logger = Logger.getLogger(PartakeService.class);
 
     static {
@@ -33,24 +31,16 @@ public abstract class PartakeService {
         return factory;
     }
 
-    protected static PartakeConnectionPool getPool() {
-        return pool;
-    }
-
     /** reset database connection. Call this carefully. */
     public static void reset() {
         try {
-            if (pool != null)
-                pool.willDestroy();
-
-            Class<?> poolClass = Class.forName(PartakeProperties.get().getConnectionPoolClassName());
-            pool = (PartakeConnectionPool) poolClass.newInstance();
+            PartakeConnectionService.initialize();
 
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();
 
             if (factory != null)
-                factory.initialize(pool);
+                factory.initialize(getPool());
         } catch (ClassNotFoundException e) {
             logger.fatal("Specified factory or pool class doesn't exist.", e);
             throw new RuntimeException(e);
