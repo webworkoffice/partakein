@@ -79,7 +79,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         
         if (dao != null) {
             // truncate all data.
-            PartakeConnection con = pool.getConnection();
+            PartakeConnection con = getPool().getConnection();
             try {
                 con.beginTransaction();
                 dao.truncate(con);
