@@ -1,16 +1,15 @@
 package in.partake.model.dao;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
 import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Dao のテストケースのベース。
@@ -22,10 +21,6 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     private static PartakeDAOFactory factory;
     protected DAO dao;
     
-    static {
-        reset();
-    }
-    
     protected static PartakeDAOFactory getFactory() {
         return factory;
     }
@@ -33,22 +28,15 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("unittest");
-        reset();
+        initializeDAOFactory();
     }
 
-    @AfterClass
-    public static void tearDownOnce() {
-        PartakeProperties.get().reset();
-        reset();
-    }
-
-    
     /**
      * PartakeService に必要なデータを読み直す。最初の初期化とユニットテスト用途のみを想定。
      */
-    protected static void reset() {
+    protected static void initializeDAOFactory() {
         try {
-            AbstractConnectionTestCaseBase.reset();
+            initializeConnectionPool();
             
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();

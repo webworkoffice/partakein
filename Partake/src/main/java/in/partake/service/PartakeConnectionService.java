@@ -21,7 +21,7 @@ public abstract class PartakeConnectionService {
         return pool;
     }
 
-    public static void initialize() {
+    public static void initializeConnectionPool() {
         try {
             if (pool != null)
                 pool.willDestroy();

@@ -23,18 +23,14 @@ public abstract class PartakeService extends PartakeConnectionService {
     private static PartakeDAOFactory factory;
     private static final Logger logger = Logger.getLogger(PartakeService.class);
 
-    static {
-        reset();
-    }
-
     protected static PartakeDAOFactory getFactory() {
         return factory;
     }
 
     /** reset database connection. Call this carefully. */
-    public static void reset() {
+    public static void initialize() {
         try {
-            PartakeConnectionService.initialize();
+            PartakeConnectionService.initializeConnectionPool();
 
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();

@@ -35,7 +35,7 @@ public abstract class AbstractServiceTestCaseBase {
      */
     protected static void reset() {
         PDate.resetCurrentDate();
-        PartakeService.reset();
+        PartakeService.initialize();
     }
 
     protected final String createRandomId() {

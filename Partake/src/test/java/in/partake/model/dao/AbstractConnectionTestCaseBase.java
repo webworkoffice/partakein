@@ -1,34 +1,25 @@
 package in.partake.model.dao;
 
+import in.partake.resource.PartakeProperties;
 import in.partake.service.PartakeConnectionService;
 import in.partake.util.PDate;
 
-import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author shinyak
  *
  */
-public abstract class AbstractConnectionTestCaseBase extends PartakeConnectionService {
-    static {
-        reset();
+public abstract class AbstractConnectionTestCaseBase extends PartakeConnectionService {    
+    @BeforeClass
+    public static void setUpOnce() {
+        PartakeProperties.get().reset("unittest");
+        initializeConnectionPool();
     }
-    
-    /**
-     * PartakeService に必要なデータを読み直す。最初の初期化とユニットテスト用途のみを想定。
-     */
-    protected static void reset() {
-        PartakeConnectionService.initialize();
-    }
-    
+
     // ------------------------------------------------------------
-    
-    @After
-    public void tearDown() throws DAOException {
-        
-    }
-    
+
     protected void setup() throws DAOException {
         // remove the current data
         PDate.resetCurrentDate();        
