@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import in.partake.base.PartakeRuntimeException;
 import in.partake.model.CommentEx;
 import in.partake.model.EventEx;
 import in.partake.model.EnrollmentEx;
@@ -17,6 +18,7 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.resource.PartakeProperties;
+import in.partake.resource.ServerErrorCode;
 
 public abstract class PartakeService {
     private static PartakeDAOFactory factory;
@@ -40,12 +42,15 @@ public abstract class PartakeService {
         try {
             if (pool != null)
                 pool.willDestroy();
-            
-            Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
-            factory = (PartakeDAOFactory) factoryClass.newInstance();
-            
+
             Class<?> poolClass = Class.forName(PartakeProperties.get().getConnectionPoolClassName());
             pool = (PartakeConnectionPool) poolClass.newInstance();
+
+            Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
+            factory = (PartakeDAOFactory) factoryClass.newInstance();
+
+            if (factory != null)
+                factory.initialize(pool);
         } catch (ClassNotFoundException e) {
             logger.fatal("Specified factory or pool class doesn't exist.", e);
             throw new RuntimeException(e);
@@ -55,6 +60,9 @@ public abstract class PartakeService {
         } catch (IllegalAccessException e) {
             logger.fatal("Illegal access.", e);
             throw new RuntimeException(e);
+        } catch (DAOException e) {
+            logger.fatal("DAOException", e);
+            throw new PartakeRuntimeException(ServerErrorCode.DAO_INITIALIZATION_ERROR, e);
         }
     }
 

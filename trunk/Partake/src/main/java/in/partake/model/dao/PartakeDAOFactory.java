@@ -69,6 +69,19 @@ public abstract class PartakeDAOFactory {
         addDao(urlShortenerAccess    = createUrlShortenerAccess());
     }
     
+    public void initialize(PartakeConnectionPool pool) throws DAOException {
+        assert pool != null;
+
+        PartakeConnection con = pool.getConnection();
+        try {
+            for (IAccess<?, ?> dao : daos) {
+                dao.initialize(con);
+            }
+        } finally {
+            con.invalidate();
+        }
+    }
+    
     // ----------------------------------------------------------------------
     // 
     
