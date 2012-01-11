@@ -20,6 +20,10 @@ abstract class JPADao<T extends PartakeModel<T>> {
         return ((JPAConnection) con).getEntityManager();
     }
     
+    public void init() {
+        // DO NOTHING.
+    }
+    
     protected String getFreshIdImpl(PartakeConnection con, Class<T> clazz) throws DAOException {
         JPAConnection jcon = (JPAConnection) con;
 

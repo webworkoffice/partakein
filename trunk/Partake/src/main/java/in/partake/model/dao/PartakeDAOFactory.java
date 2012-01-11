@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IAccess;
 import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dao.access.ICalendarLinkageAccess;
@@ -14,7 +15,6 @@ import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.IQuestionnaireAccess;
-import in.partake.model.dao.access.ITruncatable;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
@@ -44,40 +44,40 @@ public abstract class PartakeDAOFactory {
     private final IUserPreferenceAccess userPreferenceAccess;
     private final IURLShortenerAccess urlShortenerAccess;
     
-    private final List<ITruncatable> truncatables;
+    private final List<IAccess<?, ?>> daos;
     
-    public PartakeDAOFactory() {
-        truncatables = new ArrayList<ITruncatable>();
+    protected PartakeDAOFactory() {
+        daos = new ArrayList<IAccess<?, ?>>();
         
-        addTruncatable(cacheAccess           = createCacheAccess());
-        addTruncatable(calendarLinkageAccess = createCalendarLinkageAccess());
-        addTruncatable(binaryAccess          = createBinaryAccess());
-        addTruncatable(commentAccess         = createCommentAccess());
-        addTruncatable(directMessageAccess   = createDirectMessageAccess());
-        addTruncatable(envelopeAccess        = createEnvelopeAccess());
-        addTruncatable(enrollmentAccess      = createEnrollmentAccess());
-        addTruncatable(eventAccess           = createEventAccess());
-        addTruncatable(eventRelationAccess   = createEventRelationAccess());
-        addTruncatable(eventReminderAccess   = createEventReminderAccess());
-        addTruncatable(eventFeedAccess       = createEventFeedAccess());
-        addTruncatable(eventActivityAccess   = createEventActivityAccess());
-        addTruncatable(openIDLinkageAccess   = createOpenIDLinkageAccess());
-        addTruncatable(questionnaireAccess   = createQuestionnaireAccess());
-        addTruncatable(twitterLinkageAccess  = createTwitterLinkageAccess());
-        addTruncatable(userAccess            = creataeUserAccess());
-        addTruncatable(userPreferenceAccess  = createUserPreferenceAccess());
-        addTruncatable(urlShortenerAccess    = createUrlShortenerAccess());
+        addDao(cacheAccess           = createCacheAccess());
+        addDao(calendarLinkageAccess = createCalendarLinkageAccess());
+        addDao(binaryAccess          = createBinaryAccess());
+        addDao(commentAccess         = createCommentAccess());
+        addDao(directMessageAccess   = createDirectMessageAccess());
+        addDao(envelopeAccess        = createEnvelopeAccess());
+        addDao(enrollmentAccess      = createEnrollmentAccess());
+        addDao(eventAccess           = createEventAccess());
+        addDao(eventRelationAccess   = createEventRelationAccess());
+        addDao(eventReminderAccess   = createEventReminderAccess());
+        addDao(eventFeedAccess       = createEventFeedAccess());
+        addDao(eventActivityAccess   = createEventActivityAccess());
+        addDao(openIDLinkageAccess   = createOpenIDLinkageAccess());
+        addDao(questionnaireAccess   = createQuestionnaireAccess());
+        addDao(twitterLinkageAccess  = createTwitterLinkageAccess());
+        addDao(userAccess            = creataeUserAccess());
+        addDao(userPreferenceAccess  = createUserPreferenceAccess());
+        addDao(urlShortenerAccess    = createUrlShortenerAccess());
     }
     
     // ----------------------------------------------------------------------
     // 
     
-    private void addTruncatable(ITruncatable t) {
-        truncatables.add(t);
+    private void addDao(IAccess<?, ?> t) {
+        daos.add(t);
     }
     
-    public List<ITruncatable> getTruncatables() {
-        return Collections.unmodifiableList(truncatables);
+    public List<IAccess<?, ?>> getDaos() {
+        return Collections.unmodifiableList(daos);
     }
     
     

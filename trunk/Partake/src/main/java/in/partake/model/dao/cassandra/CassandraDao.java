@@ -35,6 +35,10 @@ abstract class CassandraDao {
         this.factory = factory;
     }
     
+    public void init() {
+        // DO NOTHING
+    }
+    
     // ----------------------------------------------------------------------
     // Utility methods
     
