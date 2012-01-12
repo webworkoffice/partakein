@@ -2,6 +2,8 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
+import net.sf.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +35,17 @@ public class UserTest extends AbstractPartakeModelTest<User> {
         }
     }
 
+    @Test
+    public void testToJSONFromJSON() {
+        User validUser = new User("id", 1, new Date(), "calendar1");
+        Assert.assertEquals(validUser, User.fromJSON(validUser.toJSON())); 
+
+        // For invalid user.
+        JSONObject obj = new JSONObject();
+        obj.put("id", "id");
+        Assert.assertNull(User.fromJSON(obj));
+    }
+    
 	@Override
 	protected User createModel() {
 		return new User();
