@@ -66,6 +66,43 @@ public class User extends PartakeModel<User> {
     	return obj;
     }
     
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("twitterId", twitterId);
+        
+        if (lastLoginAt != null)
+            obj.put("lastLoginAt", lastLoginAt.getTime());
+        
+        if (calendarId != null)
+            obj.put("calendarId", calendarId);
+
+        return obj;
+    }
+    
+    public static User fromJSON(JSONObject obj) {
+        User user = new User();
+
+        final String[] requiredFields = new String[] { "id", "twitterId" }; 
+        for (String field : requiredFields) {
+            if (!obj.containsKey(field))
+                return null;
+        }
+        
+        user.setId(obj.getString("id"));        
+        user.setTwitterId(obj.getString("twitterId"));
+        
+        // lastLoginAt can be NULL.
+        if (obj.containsKey("lastLoginAt"))
+            user.setLastLoginAt(new Date(obj.getLong("lastLoginAt")));
+        
+        // calendarId can be NULL.
+        if (obj.containsKey("calendarId"))
+            user.setCalendarId(obj.getString("calendarId"));
+
+        return user;
+    }
+
     // ----------------------------------------------------------------------
     // equal methods
     
