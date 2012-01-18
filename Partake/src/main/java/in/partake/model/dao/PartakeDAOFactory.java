@@ -49,6 +49,8 @@ public abstract class PartakeDAOFactory {
     protected PartakeDAOFactory() {
         daos = new ArrayList<IAccess<?, ?>>();
         
+        willCreateDAOs();
+        
         addDao(cacheAccess           = createCacheAccess());
         addDao(calendarLinkageAccess = createCalendarLinkageAccess());
         addDao(binaryAccess          = createBinaryAccess());
@@ -68,17 +70,13 @@ public abstract class PartakeDAOFactory {
         addDao(userPreferenceAccess  = createUserPreferenceAccess());
         addDao(urlShortenerAccess    = createUrlShortenerAccess());
     }
-    
-    public void initialize(PartakeConnectionPool pool) throws DAOException {
-        assert pool != null;
 
-        PartakeConnection con = pool.getConnection();
-        try {
-            for (IAccess<?, ?> dao : daos) {
-                dao.initialize(con);
-            }
-        } finally {
-            con.invalidate();
+    protected void willCreateDAOs() {
+    }
+    
+    public void initialize(PartakeConnection con) throws DAOException {
+        for (IAccess<?, ?> dao : daos) {
+            dao.initialize(con);
         }
     }
     
@@ -86,7 +84,8 @@ public abstract class PartakeDAOFactory {
     // 
     
     private void addDao(IAccess<?, ?> t) {
-        daos.add(t);
+        if (t != null)
+            daos.add(t);
     }
     
     public List<IAccess<?, ?>> getDaos() {

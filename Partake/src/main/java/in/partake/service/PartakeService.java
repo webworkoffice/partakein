@@ -35,8 +35,12 @@ public abstract class PartakeService extends PartakeConnectionService {
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
             factory = (PartakeDAOFactory) factoryClass.newInstance();
 
-            if (factory != null)
-                factory.initialize(getPool());
+            PartakeConnection con = getPool().getConnection();
+            try {
+                factory.initialize(con);
+            } finally {
+                con.invalidate();
+            }
         } catch (ClassNotFoundException e) {
             logger.fatal("Specified factory or pool class doesn't exist.", e);
             throw new RuntimeException(e);
