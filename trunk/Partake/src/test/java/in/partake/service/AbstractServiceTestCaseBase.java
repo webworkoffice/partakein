@@ -13,20 +13,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 public abstract class AbstractServiceTestCaseBase {
 
     @BeforeClass
     public static void setUpOnce() {
-        PartakeProperties.get().reset("unittest");
-        reset();
-    }
-
-    @AfterClass
-    public static void tearDownOnce() {
-        PartakeProperties.get().reset();
+        PartakeProperties.get().reset("mock");
         reset();
     }
 

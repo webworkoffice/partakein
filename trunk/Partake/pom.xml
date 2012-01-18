@@ -196,6 +196,11 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-juli</artifactId>
+			<version>7.0.23</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
 </project>

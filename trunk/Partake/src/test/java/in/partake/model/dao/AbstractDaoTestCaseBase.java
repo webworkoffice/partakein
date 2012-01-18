@@ -2,13 +2,10 @@ package in.partake.model.dao;
 
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
-import in.partake.resource.PartakeProperties;
 import in.partake.util.PDate;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -18,43 +15,7 @@ import org.junit.Test;
  *
  */
 public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T extends PartakeModel<T>, PK> extends AbstractConnectionTestCaseBase {
-    private static PartakeDAOFactory factory;
     protected DAO dao;
-    
-    protected static PartakeDAOFactory getFactory() {
-        return factory;
-    }
-    
-    @BeforeClass
-    public static void setUpOnce() {
-        PartakeProperties.get().reset("unittest");
-        initializeDAOFactory();
-    }
-
-    /**
-     * PartakeService に必要なデータを読み直す。最初の初期化とユニットテスト用途のみを想定。
-     */
-    protected static void initializeDAOFactory() {
-        try {
-            initializeConnectionPool();
-            
-            Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
-            factory = (PartakeDAOFactory) factoryClass.newInstance();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }        
-    }
-    
-    // ------------------------------------------------------------
-    
-    @After
-    public void tearDown() throws DAOException {
-        
-    }
     
     // setup() should be implemented in each test case.
     @Before
@@ -65,17 +26,18 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         PDate.resetCurrentDate();
         this.dao = dao;
         
-        if (dao != null) {
-            // truncate all data.
-            PartakeConnection con = getPool().getConnection();
-            try {
-                con.beginTransaction();
-                dao.truncate(con);
-                con.commit();
-            } finally {
-                con.invalidate();
-            }
-        }
+        if (dao == null)
+            return;
+        
+        // truncate all data.
+        PartakeConnection con = getPool().getConnection();
+        try {
+            con.beginTransaction();
+            dao.truncate(con);
+            con.commit();
+        } finally {
+            con.invalidate();
+        }        
     }
     
     // 同じ (pkNumber, pkSalt) なら同じ結果を返すようにする。
