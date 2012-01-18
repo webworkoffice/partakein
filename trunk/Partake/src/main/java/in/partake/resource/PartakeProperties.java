@@ -50,6 +50,13 @@ public class PartakeProperties {
         return Integer.parseInt(properties.getProperty(name));
     }
 
+    public boolean getBoolean(String name) {
+        String value = properties.getProperty(name);
+        if (value == null)
+            return false;
+        return Boolean.parseBoolean(value);
+    }
+    
     // ----------------------------------------------------------------------
 
     public String getMode() {
