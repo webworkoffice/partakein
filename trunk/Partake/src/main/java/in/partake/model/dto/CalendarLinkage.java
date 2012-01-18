@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Unique;
 
@@ -40,6 +42,14 @@ public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
     @Override
     public CalendarLinkage copy() {
         return new CalendarLinkage(this);
+    }
+    
+    public JSONObject toJSON() {
+        return JSONObject.fromObject(this);
+    }
+    
+    public static CalendarLinkage fromJSON(JSONObject json) {
+        return (CalendarLinkage) JSONObject.toBean(json, CalendarLinkage.class);
     }
     
     // ----------------------------------------------------------------------
