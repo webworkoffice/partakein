@@ -30,6 +30,12 @@ public class CalendarLinkageTest extends AbstractPartakeModelTest<CalendarLinkag
         }
     }
 
+    @Test
+    public void testToJSONFromJSON() {
+        CalendarLinkage linkage = new CalendarLinkage("id", "userId");
+        Assert.assertEquals(linkage, CalendarLinkage.fromJSON(linkage.toJSON())); 
+    }
+
 	@Override
 	protected CalendarLinkage createModel() {
 		return new CalendarLinkage();
