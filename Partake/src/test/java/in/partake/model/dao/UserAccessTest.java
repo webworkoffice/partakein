@@ -1,9 +1,11 @@
 package in.partake.model.dao;
 
 import java.util.Date;
+import java.util.UUID;
 
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.User;
+import in.partake.model.fixture.UserTestDataProvider;
 
 import org.junit.Before;
 
@@ -16,6 +18,6 @@ public class UserAccessTest extends AbstractDaoTestCaseBase<IUserAccess, User, S
     
     @Override
     protected User create(long pkNumber, String pkSalt, int objNumber) {
-        return new User("userId" + pkSalt + pkNumber, 1, new Date(0), "calendarId" + objNumber);
+        return new UserTestDataProvider().create(pkNumber, pkSalt, objNumber);
     }    
 }
