@@ -1,5 +1,7 @@
 package in.partake.model.dto;
 
+import net.sf.json.JSONObject;
+
 /**
  * PARTAKE で用いるモデルのベースクラス。
  * 
@@ -29,6 +31,11 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
      * @return a copied object.
      */
     public abstract T copy();
+    
+    /** @return a json object. FIXME: This method should be abstract. */
+    public JSONObject toJSON() {
+        throw new UnsupportedOperationException();
+    }
     
     // ----------------------------------------------------------------------
     // frozen
