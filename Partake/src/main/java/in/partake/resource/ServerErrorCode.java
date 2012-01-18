@@ -11,7 +11,8 @@ public enum ServerErrorCode {
     
     // TODO: DB_ERROR は後で名前かえるべき直す (or id をかえる)
     DB_ERROR("in.partake.database_error"),
-
+    DB_CONNECTION_POOL_INITIALIZATION_FAILURE("error.db.pool.initialization_error"),
+    
     DAO_INITIALIZATION_ERROR("error.dao.initialization_error"),
     
     CALENDAR_CREATION_FAILURE("error.calendar.creation_failure"),
