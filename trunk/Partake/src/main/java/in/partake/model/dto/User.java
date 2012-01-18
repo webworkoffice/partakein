@@ -27,8 +27,8 @@ public class User extends PartakeModel<User> {
     
     public User(String id, String twitterId, Date lastLoginAt, String calendarId) {
         this.id = id;
-        this.lastLoginAt = lastLoginAt;
         this.twitterId = String.valueOf(twitterId);
+        this.lastLoginAt = lastLoginAt;
         this.calendarId = calendarId;
     }
 
@@ -38,8 +38,8 @@ public class User extends PartakeModel<User> {
 
     public User(User user) {
         this.id = user.id;
-        this.lastLoginAt = user.lastLoginAt;
         this.twitterId = user.twitterId;
+        this.lastLoginAt = user.lastLoginAt;
         this.calendarId = user.calendarId;
     }
 
