@@ -29,6 +29,7 @@ We use eclipse 3.6 (Java EE platform) with [http://m2eclipse.sonatype.org/sites/
 == setup Database ==
 
   When running PARTAKE, you can choose either Cassandra 0.6 or RDB as database. You should do either of these.
+  However, currently only RDB will work well. Cassandra 0.6 might not work.
 
 === setup Cassandra ===
 
@@ -82,14 +83,16 @@ If you are just testing PARTAKE, 8080 port may help you. Do not forget to add UR
 
 And probably you should set mod_ajp in your Apache HTTP server.
 
-
 == Register your application ==
 Do not forget to register your application to the twitter.
     * http://twitter.com/apps/new
     * Application Type should be "Browser"
-    * Callback URL is any valid URL. But do not use localhost.
+    * Callback URL is any valid URL. But do not use localhost. This will rejected by twitter.
     * Default Access Type should be "Read & Write".
+        * We don't need DirectMessage Read.
     * Check "Yes, use Twitter for login"
+
+Also, please register your application to bit.ly. Without this, PARTAKE will work. but shows error messages in console.
 
 == DONE! ==
 
@@ -99,8 +102,6 @@ Then PARTAKE should run now. If you have any difficulties, please tell @partakei
 == NOTE ==
 
 When you failed eclipse operations, web.xml may be rewritten. In this case, please revert web.xml.
-
-PARTAKE also run on RDB using OpenJPA. (Sorry, this document is not described yet.)
 
 == FOR RELEASE PACKAGING ==
 
