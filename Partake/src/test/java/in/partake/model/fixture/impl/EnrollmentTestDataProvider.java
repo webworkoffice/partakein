@@ -1,4 +1,4 @@
-package in.partake.model.fixture;
+package in.partake.model.fixture.impl;
 
 import java.util.Date;
 
@@ -10,9 +10,20 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.fixture.TestDataProvider;
 
-public class EnrollmentTestDataProvider extends TestDataProvider {
+public class EnrollmentTestDataProvider extends TestDataProvider<Enrollment> {
 
+    @Override
+    public Enrollment create() {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public Enrollment create(long pkNumber, String pkSalt, int objNumber) {
+        throw new RuntimeException("Not implemented yet");
+    }    
+    
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
         IEnrollmentAccess dao = factory.getEnrollmentAccess();
         

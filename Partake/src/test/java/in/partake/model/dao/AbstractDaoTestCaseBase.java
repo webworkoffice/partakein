@@ -41,6 +41,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     }
     
     // 同じ (pkNumber, pkSalt) なら同じ結果を返すようにする。
+    // TODO: We should use TestDataProvider instead.
     protected abstract T create(long pkNumber, String pkSalt, int objNumber);
     
     // ------------------------------------------------------------

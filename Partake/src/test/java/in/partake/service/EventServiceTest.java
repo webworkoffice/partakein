@@ -11,7 +11,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.fixture.TestDataProvider;
-import in.partake.model.fixture.UserTestDataProvider;
+import in.partake.model.fixture.impl.UserTestDataProvider;
 
 import java.util.ArrayList;
 import java.util.Date;

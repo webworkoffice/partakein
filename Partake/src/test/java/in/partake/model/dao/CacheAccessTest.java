@@ -4,7 +4,7 @@ import java.util.Date;
 
 import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dto.CacheData;
-import in.partake.model.fixture.CacheTestDataProvider;
+import in.partake.model.fixture.impl.CacheTestDataProvider;
 import in.partake.util.PDate;
 
 import org.junit.Assert;
