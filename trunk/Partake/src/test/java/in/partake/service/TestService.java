@@ -3,13 +3,13 @@ package in.partake.service;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.fixture.CacheTestDataProvider;
-import in.partake.model.fixture.EnrollmentTestDataProvider;
-import in.partake.model.fixture.EventTestDataProvider;
-import in.partake.model.fixture.OpenIDLinkageTestDataProvider;
-import in.partake.model.fixture.TwitterLinkageTestDataProvider;
-import in.partake.model.fixture.UserPreferenceTestDataProvider;
-import in.partake.model.fixture.UserTestDataProvider;
+import in.partake.model.fixture.PartakeTestDataProviderSet;
+import in.partake.model.fixture.impl.CacheTestDataProvider;
+import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
+import in.partake.model.fixture.impl.EventTestDataProvider;
+import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
+import in.partake.model.fixture.impl.TwitterLinkageTestDataProvider;
+import in.partake.model.fixture.impl.UserTestDataProvider;
 
 import org.apache.log4j.Logger;
 
@@ -21,12 +21,15 @@ import org.apache.log4j.Logger;
 public final class TestService extends PartakeService {
     private static TestService INSTANCE = new TestService();
     private static Logger LOGGER = Logger.getLogger(TestService.class);
-
+    
+    protected final PartakeTestDataProviderSet testDataProviderFactory;
+    
     public static TestService get() {
         return INSTANCE;
     }
 
-    private TestService() {
+    protected TestService() {
+        this.testDataProviderFactory = new PartakeTestDataProviderSet();
     }
 
     // ----------------------------------------------------------------------
@@ -46,13 +49,7 @@ public final class TestService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         try {
             con.beginTransaction();
-            new CacheTestDataProvider().createFixtures(con, factory);
-            new EnrollmentTestDataProvider().createFixtures(con, factory);
-            new EventTestDataProvider().createFixtures(con, factory);
-            new OpenIDLinkageTestDataProvider().createFixtures(con, factory);
-            new TwitterLinkageTestDataProvider().createFixtures(con, factory);
-            new UserTestDataProvider().createFixtures(con, factory);
-            new UserPreferenceTestDataProvider().createFixtures(con, factory);
+            testDataProviderFactory.createFixtures(con, factory);
             con.commit();
         } finally {
             con.invalidate();

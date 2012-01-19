@@ -9,6 +9,8 @@ import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "Comments")
@@ -60,6 +62,44 @@ public class Comment extends PartakeModel<Comment> {
     @Override
     public Comment copy() {
         return new Comment(this);
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+
+        json.put("id", id);
+        json.put("eventId", eventId);
+        json.put("userId", userId);
+        json.put("comment", comment);
+        json.put("isHTML", isHTML);
+        json.put("createdAt", createdAt.getTime());
+        
+        return json;
+    }
+    
+    public static Comment fromJSON(JSONObject json) {
+        if (!json.containsKey("id"))
+            return null;
+        if (!json.containsKey("eventId"))
+            return null;
+        if (!json.containsKey("userId"))
+            return null;
+        
+        Comment comment = new Comment();
+        comment.id = json.getString("id");
+        comment.eventId = json.getString("eventId");
+        comment.userId = json.getString("userId");
+        comment.comment = json.getString("comment");
+        if (json.containsKey("isHTML"))
+            comment.isHTML = json.getBoolean("isHTML");
+        else
+            comment.isHTML = false;
+        if (json.containsKey("createdAt"))
+            comment.createdAt = new Date(json.getLong("createdAt"));
+        else
+            comment.createdAt = null;
+        return comment;
     }
     
     // ----------------------------------------------------------------------

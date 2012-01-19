@@ -1,11 +1,8 @@
 package in.partake.model.dao;
 
-import java.util.Date;
-import java.util.UUID;
-
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.User;
-import in.partake.model.fixture.UserTestDataProvider;
+import in.partake.model.fixture.impl.UserTestDataProvider;
 
 import org.junit.Before;
 

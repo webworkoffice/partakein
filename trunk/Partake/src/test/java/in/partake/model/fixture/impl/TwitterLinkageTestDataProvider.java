@@ -1,13 +1,25 @@
-package in.partake.model.fixture;
+package in.partake.model.fixture.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.fixture.TestDataProvider;
 
-public class TwitterLinkageTestDataProvider extends TestDataProvider {
+public class TwitterLinkageTestDataProvider extends TestDataProvider<TwitterLinkage> {
 
+    @Override
+    public TwitterLinkage create() {
+        return create(0, "", 0);
+    }
+    
+    @Override
+    public TwitterLinkage create(long pkNumber, String pkSalt, int objNumber) {
+        return new TwitterLinkage("twitterId" + pkNumber + pkSalt, "screenName", "name", "accessToken",
+                "accessTokenSecret", "profileImageURL", "userId" + objNumber);
+    }
+    
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
         ITwitterLinkageAccess dao = factory.getTwitterLinkageAccess();        
         dao.truncate(con);

@@ -1,4 +1,4 @@
-package in.partake.model.fixture;
+package in.partake.model.fixture.impl;
 
 import java.util.Date;
 
@@ -7,13 +7,25 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
+import in.partake.model.fixture.TestDataProvider;
 
 /**
  * Event のテストデータを作成します。
  * @author shinyak
  *
  */
-public class EventTestDataProvider extends TestDataProvider {
+public class EventTestDataProvider extends TestDataProvider<Event> {
+    
+    @Override
+    public Event create() {
+        return new Event();
+    }
+    
+    @Override
+    public Event create(long pkNumber, String pkSalt, int objNumber) {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
 	/**
 	 * <p>以下のtest用データがDatastoreにあることを保証します。
 	 * <ul>
