@@ -1,5 +1,7 @@
 package in.partake.model.dao.postgres9;
 
+import in.partake.model.dao.DAOException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +9,15 @@ import java.sql.SQLException;
 
 public abstract class Postgres9Dao {
 
-    protected boolean existsTable(Connection con, String tableName) throws SQLException {
+    protected boolean existsTable(Postgres9Connection pcon, String tableName) throws DAOException {
+        try {
+            return existsTable(pcon.getConnection(), tableName);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+    
+    private boolean existsTable(Connection con, String tableName) throws SQLException {
         PreparedStatement ps = con.prepareStatement(
                 "SELECT table_name FROM information_schema.tables " +
                         "WHERE table_schema = 'public' " +

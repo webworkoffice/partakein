@@ -24,23 +24,12 @@ public class Postgres9EntityDao extends Postgres9Dao {
         makeSureExistEntitiesTable(pcon);
     }
     
-    protected boolean existsTable(PartakeConnection con, String tableName) throws DAOException {
-        Postgres9Connection pcon = (Postgres9Connection) con;
-        try {
-            return existsTable(pcon.getConnection(), tableName);
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-    }
-    
-    private void makeSureExistEntitiesTable(Postgres9Connection pcon) throws DAOException {
-        Connection con = pcon.getConnection();
-
+    private void makeSureExistEntitiesTable(Postgres9Connection con) throws DAOException {
         try {
             if (existsTable(con, "entities"))
                 return;
 
-            createEntitiesTable(con);
+            createEntitiesTable(con.getConnection());
         } catch (SQLException e) {
             throw new DAOException(e);
         }
