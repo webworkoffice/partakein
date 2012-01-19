@@ -1,5 +1,7 @@
 package in.partake.model.dao;
 
+import java.util.UUID;
+
 import in.partake.model.dao.access.ICalendarLinkageAccess;
 import in.partake.model.dto.CalendarLinkage;
 import org.junit.Before;
@@ -12,6 +14,7 @@ public class CalendarLinkageAccessTest extends AbstractDaoTestCaseBase<ICalendar
     
     @Override
     protected CalendarLinkage create(long pkNumber, String pkSalt, int objNumber) {
-        return new CalendarLinkage(pkSalt + pkNumber, "userId" + objNumber);
+        UUID id = new UUID(pkNumber, ("calendarLinkage" + pkSalt).hashCode());
+        return new CalendarLinkage(id.toString(), "calendarLinkage" + objNumber);
     }
 }
