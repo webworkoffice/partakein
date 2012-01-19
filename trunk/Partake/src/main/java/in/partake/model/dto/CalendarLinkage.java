@@ -45,11 +45,19 @@ public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
     }
     
     public JSONObject toJSON() {
-        return JSONObject.fromObject(this);
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("userId", userId);
+        return obj;
     }
     
     public static CalendarLinkage fromJSON(JSONObject json) {
-        return (CalendarLinkage) JSONObject.toBean(json, CalendarLinkage.class);
+        if (!json.containsKey("id"))
+            return null;
+        if (!json.containsKey("userId"))
+            return null;
+        
+        return new CalendarLinkage(json.getString("id"), json.getString("userId"));
     }
     
     // ----------------------------------------------------------------------

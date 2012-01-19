@@ -155,7 +155,6 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         } finally {
             con.invalidate();
         }
-
     }
     
     @Test
