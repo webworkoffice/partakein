@@ -2,6 +2,7 @@ package in.partake.model.dao.postgres9;
 
 import in.partake.model.dao.DAOException;
 
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +14,7 @@ import java.sql.SQLException;
  *
  */
 public abstract class Postgres9Dao {
+    static protected Charset UTF8 = Charset.forName("utf-8");
 
     /** Checks the existence of table. 
      * @return true if the specified table exists. 
