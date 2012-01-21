@@ -48,7 +48,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
     public void put(PartakeConnection con, CalendarLinkage t) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(t.getId(), SCHEMA, t.toJSON().toString(), PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(t.getId(), SCHEMA, t.toJSON().toString().getBytes(UTF8), PDate.getCurrentDate().getDate());
         if (entityDao.exists(pcon, t.getId()))
             entityDao.update(pcon, entity);            
         else
@@ -61,7 +61,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
         if (entity == null)
             return null;
 
-        CalendarLinkage t = CalendarLinkage.fromJSON(JSONObject.fromObject(entity.getData()));
+        CalendarLinkage t = CalendarLinkage.fromJSON(JSONObject.fromObject(entity.getBody()));
         if (t != null)
             return t.freeze();
         return null;
@@ -93,6 +93,6 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
         if (entity == null)
             return null;
         
-        return CalendarLinkage.fromJSON(JSONObject.fromObject(entity.getData()));
+        return CalendarLinkage.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
     }
 }

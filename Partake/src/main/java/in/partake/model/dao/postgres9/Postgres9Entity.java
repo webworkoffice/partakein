@@ -3,20 +3,25 @@ package in.partake.model.dao.postgres9;
 import java.util.Date;
 
 public class Postgres9Entity {
-    private String id;           // UUID
-    private String schema;       // schema
-    private String data;         // Data
-    private Date createdAt;      // time created at
-    private Date modifiedAt;     // time modified at
+    /** UUID */
+    private String id;
+    /** Schema type */
+    private String schema;
+    /** Entity Body */
+    private byte[] body;
+    /** Time created at */
+    private Date createdAt;
+    /** Time modified at */
+    private Date modifiedAt;
     
-    public Postgres9Entity(String id, String schema, String data, Date createdAt) {
-        this(id, schema, data, createdAt, null);
+    public Postgres9Entity(String id, String schema, byte[] body, Date createdAt) {
+        this(id, schema, body, createdAt, null);
     }
     
-    public Postgres9Entity(String id, String schema, String data, Date createdAt, Date modifiedAt) {
+    public Postgres9Entity(String id, String schema, byte[] body, Date createdAt, Date modifiedAt) {
         this.id = id;
         this.schema = schema;
-        this.data = data;
+        this.body = body;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
@@ -29,8 +34,12 @@ public class Postgres9Entity {
         return schema;
     }
     
-    public String getData() {
-        return data;
+    public byte[] getBody() {
+        return body;
+    }
+    
+    public int getBodyLength() {
+        return body.length;
     }
 
     public Date getCreatedAt() {

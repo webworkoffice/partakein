@@ -38,7 +38,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     public void put(PartakeConnection con, User user) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(user.getId(), SCHEMA, user.toJSON().toString(), PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(user.getId(), SCHEMA, user.toJSON().toString().getBytes(UTF8), PDate.getCurrentDate().getDate());
         if (entityDao.exists(pcon, user.getId()))
             entityDao.update(pcon, entity);            
         else
@@ -51,7 +51,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
         if (entity == null)
             return null;
 
-        User user = User.fromJSON(JSONObject.fromObject(entity.getData()));
+        User user = User.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
         if (user != null)
             return user.freeze();
         return null;
