@@ -73,7 +73,8 @@ public class Comment extends PartakeModel<Comment> {
         json.put("userId", userId);
         json.put("comment", comment);
         json.put("isHTML", isHTML);
-        json.put("createdAt", createdAt.getTime());
+        if (createdAt != null)
+            json.put("createdAt", createdAt.getTime());
         
         return json;
     }
@@ -95,7 +96,7 @@ public class Comment extends PartakeModel<Comment> {
             comment.isHTML = json.getBoolean("isHTML");
         else
             comment.isHTML = false;
-        if (json.containsKey("createdAt"))
+        if (json.containsKey("createdAt") && json.get("createdAt") != null)
             comment.createdAt = new Date(json.getLong("createdAt"));
         else
             comment.createdAt = null;
