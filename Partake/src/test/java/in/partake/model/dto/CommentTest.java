@@ -19,7 +19,6 @@ public final class CommentTest extends AbstractPartakeModelTest<Comment> {
 	@Before
 	public void createSamples() {
 		samples = new Comment[] {
-			new Comment(),
 			new Comment("id1", "eventId1", "userId1", "comment1", false, new Date()),
 			new Comment("id2", "eventId2", "userId2", "comment2", true, new Date(1)),
 		};
@@ -72,6 +71,13 @@ public final class CommentTest extends AbstractPartakeModelTest<Comment> {
 
 		Assert.assertFalse(new Comment(source).isFrozen());
 	}
+
+    @Test
+    public void testToJSONFromJSON() {
+        for (Comment comment : samples) {
+            Assert.assertEquals(comment, Comment.fromJSON(comment.toJSON()));             
+        }
+    }
 
 	@Override
 	protected Comment createModel() {
