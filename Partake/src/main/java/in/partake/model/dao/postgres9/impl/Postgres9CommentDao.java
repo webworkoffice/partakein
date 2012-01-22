@@ -2,6 +2,7 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.DataMapper;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
@@ -10,7 +11,6 @@ import in.partake.model.dao.postgres9.Postgres9DataIterator;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
-import in.partake.model.dao.postgres9.Postgres9ResultSetMapper;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.Comment;
 
@@ -97,11 +97,17 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY createdAt ASC",
                 new Object[] { eventId });
 
-        return new Postgres9DataIterator<Comment>(new Postgres9ResultSetMapper<Comment>((Postgres9Connection) con) {
+        class Mapper implements DataMapper<ResultSet, Comment> {
+            private Postgres9Connection con;
+            
+            public Mapper(Postgres9Connection con) {
+                this.con = con;
+            }
+            
             @Override
-            public Comment map(ResultSet resultSet) throws DAOException {
+            public Comment map(ResultSet rs) throws DAOException {
                 try {
-                    String id = resultSet.getString("id");
+                    String id = rs.getString("id");
                     if (id == null)
                         return null;
                     
@@ -110,7 +116,14 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
                     throw new DAOException(e);
                 }
             }
-        }, psars);
+
+            @Override
+            public ResultSet unmap(Comment t) throws DAOException {
+                throw new UnsupportedOperationException();
+            }
+        }
+        
+        return new Postgres9DataIterator<Comment>(new Mapper((Postgres9Connection) con), psars);
     }
 
 }

@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 /**
@@ -71,6 +73,25 @@ public class Envelope extends PartakeModel<Envelope> {
         this.createdAt = envelope.createdAt != null ? (Date) envelope.createdAt.clone() : null;
     }
     
+    public Envelope(JSONObject json) {
+        this.envelopeId = json.getString("id");
+        if (json.containsKey("senderId"))
+            this.senderId = json.getString("senderId"); 
+        if (json.containsKey("receiverId"))
+            this.receiverId = json.getString("receiverId"); 
+        this.messageId = json.getString("messageId");
+        if (json.containsKey("deadline"))
+            this.deadline = new Date(json.getLong("deadline"));
+        this.numTried = json.getInt("numTried");
+        if (json.containsKey("lastTriedAt"))
+            this.lastTriedAt = new Date(json.getLong("lastTriedAt"));
+        if (json.containsKey("tryAfter"))
+            this.tryAfter = new Date(json.getLong("tryAfter"));
+        this.postingType = DirectMessagePostingType.valueOf(json.getString("postingType"));
+        if (json.containsKey("createdAt"))
+            this.createdAt = new Date(json.getLong("createdAt"));
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return envelopeId;
@@ -79,6 +100,30 @@ public class Envelope extends PartakeModel<Envelope> {
     @Override
     public Envelope copy() {
         return new Envelope(this);
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", envelopeId);
+        if (senderId != null)
+            obj.put("senderId", senderId);
+        if (receiverId != null)
+            obj.put("receiverId", receiverId);
+        obj.put("messageId", messageId);
+        if (deadline != null)
+            obj.put("deadline", deadline.getTime());
+        obj.put("numTried", numTried);
+        if (lastTriedAt != null)
+            obj.put("lastTriedAt", lastTriedAt.getTime());
+        if (tryAfter != null)
+            obj.put("tryAfter", tryAfter.getTime());
+        if (postingType != null)
+            obj.put("postingType", postingType.toString());
+        if (createdAt != null)
+            obj.put("createdAt", createdAt.getTime());
+
+        return obj;
     }
     
     // ----------------------------------------------------------------------

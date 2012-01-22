@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import java.util.Date;
+import java.util.UUID;
 
 import in.partake.model.dao.access.IEnvelopeAccess;
 import in.partake.model.dto.Envelope;
@@ -24,7 +25,8 @@ public class EnvelopeAccessTest extends AbstractDaoTestCaseBase<IEnvelopeAccess,
     protected Envelope create(long pkNumber, String pkSalt, int objNumber) {
         final Envelope envelope = new Envelope();
 
-        envelope.setEnvelopeId(pkSalt + pkNumber);
+        UUID uuid = new UUID(pkNumber, ("envelope" + pkSalt).hashCode());
+        envelope.setEnvelopeId(uuid.toString());
         envelope.setMessageId(DEFAULT_MESSAGE_ID);
         envelope.setCreatedAt(new Date(objNumber));
         envelope.setPostingType(DEFAULT_POSTING_TYPE);
