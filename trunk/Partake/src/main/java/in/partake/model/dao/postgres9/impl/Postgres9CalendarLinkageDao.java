@@ -14,47 +14,47 @@ import in.partake.util.PDate;
 import net.sf.json.JSONObject;
 
 public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalendarLinkageAccess {
-    static final String SCHEMA = "calendarlinkage1";
-    static final String[] ALL_SCHEMA = new String[] {
-        SCHEMA
-    };
+    static final String TABLE_NAME = "CalendarLinkageEntities";
+    static final int CURRENT_VERSION = 1;
     
-    static final String INDEX_TABLE_NAME = "CalendarLinkageIndex1";
+    static final String INDEX_TABLE_NAME = "CalendarLinkageIndex";
 
-    private Postgres9EntityDao entityDao;
-    private Postgres9IndexDao userIndexDao;
+    private final Postgres9EntityDao entityDao;
+    private final Postgres9IndexDao userIndexDao;
     
-    public Postgres9CalendarLinkageDao(Postgres9EntityDao entityDao) {
-        this.entityDao = entityDao;
+    public Postgres9CalendarLinkageDao() {
+        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.userIndexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
     }
 
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
+        entityDao.initialize((Postgres9Connection) con);
+
         Postgres9Connection pcon = (Postgres9Connection) con;
         if (existsTable(pcon, INDEX_TABLE_NAME))
             return;
         
-        userIndexDao.createIndexTable(pcon, "CREATE TABLE CalendarLinkageIndex1(id UUID PRIMARY KEY, userId TEXT NOT NULL)");
-        userIndexDao.createIndex(pcon, "CREATE INDEX CalendarLinkageIndex1UserId ON CalendarLinkageIndex1(userId)");
+        userIndexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL)");
+        userIndexDao.createIndex(pcon, "CREATE INDEX "+ INDEX_TABLE_NAME + "UserId ON " + INDEX_TABLE_NAME + "(userId)");
     }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        entityDao.removeEntitiesHavingSchema((Postgres9Connection) con, SCHEMA);
+        entityDao.truncate((Postgres9Connection) con);
+        userIndexDao.truncate((Postgres9Connection) con);
     }
 
     @Override
     public void put(PartakeConnection con, CalendarLinkage linkage) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        System.out.println(linkage.toJSON().toString());
-        System.out.println(linkage.toJSON().toString().getBytes(UTF8).length);
-        Postgres9Entity entity = new Postgres9Entity(linkage.getId(), SCHEMA, linkage.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(linkage.getId(), CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
         if (entityDao.exists(pcon, linkage.getId()))
             entityDao.update(pcon, entity);            
         else
             entityDao.insert(pcon, entity);
+        userIndexDao.put(pcon, new String[] { "id", "userId" }, new String[] { linkage.getId(), linkage.getUserId() });
     }
 
     @Override
@@ -63,8 +63,6 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
         if (entity == null)
             return null;
 
-        System.out.println(new String(entity.getBody(), UTF8));
-        System.out.println(entity.getBody().length);
         CalendarLinkage t = CalendarLinkage.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
         if (t != null)
             return t.freeze();
@@ -74,6 +72,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
     @Override
     public void remove(PartakeConnection con, String id) throws DAOException {
         entityDao.remove((Postgres9Connection) con, id);
+        userIndexDao.remove((Postgres9Connection) con, "id", id);
     }
 
     @Override
@@ -92,19 +91,10 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
             return null;
         
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = userIndexDao.find(pcon, "userId", userId);
+        String id = userIndexDao.find(pcon, "id", "userId", userId);
         if (id == null)
             return null;
         
-        Postgres9Entity entity = entityDao.find(pcon, id);
-        if (entity == null)
-            return null;
-        
-        // We do not trust index!
-        CalendarLinkage linkage = CalendarLinkage.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
-        if (linkage == null || userId.equals(linkage.getUserId()))
-            return null;
-        
-        return linkage;
+        return new CalendarLinkage(id, userId);
     }
 }

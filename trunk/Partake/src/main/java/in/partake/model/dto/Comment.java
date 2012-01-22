@@ -54,6 +54,15 @@ public class Comment extends PartakeModel<Comment> {
     	this.createdAt = comment.createdAt == null ? null : (Date) comment.createdAt.clone();
     }
     
+    public Comment(JSONObject obj) {
+        this.id = obj.getString("id");
+        this.eventId = obj.getString("eventId");
+        this.userId = obj.getString("userId");
+        this.comment = obj.getString("comment");
+        this.isHTML = obj.getBoolean("isHTML");
+        this.createdAt = new Date(obj.getLong("createdAt"));
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return id;

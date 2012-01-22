@@ -8,6 +8,7 @@ import in.partake.model.dto.CacheData;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Cache のテストデータを作成します。
@@ -18,21 +19,23 @@ public class CacheTestDataProvider extends TestDataProvider<CacheData> {
 
     @Override
     public CacheData create() {
-        return new CacheData("id", new byte[] { 1, 2, 3 }, new Date());
+        UUID uuid = new UUID(0, 1);
+        return new CacheData(uuid.toString(), new byte[] { 1, 2, 3 }, new Date());
     }
     
     @Override
     public CacheData create(long pkNumber, String pkSalt, int objNumber) {
+        UUID uuid = new UUID(pkNumber, ("cache" + pkSalt).hashCode());
         if (objNumber == 0) {
             int N = 1024 * 1024;
             byte[] data = new byte[N];
             for (int i = 0; i < N; ++i) {
                 data[i] = (byte)(i % N);
             }
-            return new CacheData(pkSalt + pkNumber, data, new Date(Long.MAX_VALUE));
-
+            
+            return new CacheData(uuid.toString(), data, new Date(Long.MAX_VALUE));
         } else {
-            return new CacheData(pkSalt + pkNumber, new byte[] { 1, 2, (byte)objNumber }, new Date(Long.MAX_VALUE));
+            return new CacheData(uuid.toString(), new byte[] { 1, 2, (byte) objNumber }, new Date(Long.MAX_VALUE));
         }
     }
     

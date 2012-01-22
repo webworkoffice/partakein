@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "CacheData")
@@ -27,6 +29,13 @@ public class CacheData extends PartakeModel<CacheData> {
         this.id = id;
         this.data = data;
         this.invalidAfter = invalidAfter;
+    }
+    
+    public CacheData(String id, byte[] data, JSONObject obj) {
+        this.id = id;
+        this.data = data;
+        if (obj.containsKey("invalidAfter"))
+            this.invalidAfter = new Date(obj.getLong("invalidAfter"));
     }
     
     public CacheData(CacheData cacheData) {
@@ -51,6 +60,12 @@ public class CacheData extends PartakeModel<CacheData> {
     @Override
     public CacheData copy() {
         return new CacheData(this);
+    }
+    
+    public JSONObject toJSONWithoutData() {
+        JSONObject obj = new JSONObject();
+        obj.put("invalidAfter", invalidAfter.getTime()); 
+        return obj;
     }
     
     // ----------------------------------------------------------------------

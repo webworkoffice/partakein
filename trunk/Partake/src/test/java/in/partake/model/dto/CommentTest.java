@@ -58,7 +58,7 @@ public final class CommentTest extends AbstractPartakeModelTest<Comment> {
 
 	@Test(expected = NullPointerException.class)
 	public void testCopyConstructorByNullValue() {
-		new Comment(null);
+		new Comment((Comment) null);
 	}
 
 	@Test
