@@ -2,17 +2,19 @@ package in.partake.model.dao.postgres9;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.DataMapper;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
 public class Postgres9DataIterator<T> extends DataIterator<T> {
     private Postgres9StatementAndResultSet sars;
-    private Postgres9ResultSetMapper<T> mapper;
+    private DataMapper<ResultSet, T> mapper;
     private T next;
     private T current;
     
-    public Postgres9DataIterator(Postgres9ResultSetMapper<T> mapper, Postgres9StatementAndResultSet sars) {
+    public Postgres9DataIterator(DataMapper<ResultSet, T> mapper, Postgres9StatementAndResultSet sars) {
         this.mapper = mapper;
         this.sars = sars;
     }

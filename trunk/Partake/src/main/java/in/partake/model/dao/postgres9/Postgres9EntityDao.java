@@ -1,6 +1,8 @@
 package in.partake.model.dao.postgres9;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.DataMapper;
 import in.partake.util.PDate;
 
 import java.io.ByteArrayInputStream;
@@ -187,5 +189,54 @@ public class Postgres9EntityDao extends Postgres9Dao {
         } finally {
             close(ps);
         }
+    }
+    
+    public DataIterator<Postgres9Entity> getIterator(Postgres9Connection pcon) throws DAOException {
+        final String sql = "SELECT id, version, body, opt, createdAt, modifiedAt FROM " + tableName;
+
+        Connection con = pcon.getConnection();
+        
+        boolean shouldClose = true;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            shouldClose = false;
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            if (shouldClose) {
+                close(rs);
+                close(ps);
+                return null;
+            }
+        }
+
+        DataMapper<ResultSet, Postgres9Entity> mapper = new DataMapper<ResultSet, Postgres9Entity>() {
+            @Override
+            public Postgres9Entity map(ResultSet rs) throws DAOException {
+                try {
+                    String id = rs.getString(1);
+                    int version = rs.getInt(2);
+                    byte[] body = rs.getBytes(3);
+                    byte[] opt = rs.getBytes(4);
+                    Date createdAt = rs.getDate(5);
+                    Date modifiedAt = rs.getDate(6);
+                    return new Postgres9Entity(id, version, body, opt, createdAt, modifiedAt);
+                } catch (SQLException e) {
+                    throw new DAOException(e);
+                }
+            }
+
+            @Override
+            public ResultSet unmap(Postgres9Entity t) throws DAOException {
+                throw new UnsupportedOperationException();
+            }
+        };
+        
+        Postgres9StatementAndResultSet sars = new Postgres9StatementAndResultSet(ps, rs);
+        return new Postgres9DataIterator<Postgres9Entity>(mapper, sars);
     }
 }
