@@ -42,7 +42,7 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     public TwitterLinkage(int twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
         this(String.valueOf(twitterId), screenName, name, accessToken, accessTokenSecret, profileImageURL, userId);
     }
-
+    
     public TwitterLinkage(TwitterLinkage linkage) {
         this.twitterId = linkage.twitterId;
         this.screenName = linkage.screenName;
@@ -51,6 +51,17 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         this.accessTokenSecret = linkage.accessTokenSecret;
         this.profileImageURL = linkage.profileImageURL;
         this.userId = linkage.userId;
+    }
+    
+    public TwitterLinkage(JSONObject obj) {
+        this.twitterId = obj.getString("twitterId");
+        this.screenName = obj.getString("screenName");
+        this.name = obj.getString("name");
+        this.accessToken = obj.getString("accessToken");
+        this.accessTokenSecret = obj.getString("accessTokenSecret");
+        this.profileImageURL = obj.getString("profileImageURL");
+        this.userId = obj.getString("userId");
+
     }
 
     @Override
@@ -71,6 +82,19 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         obj.put("name", name);
         obj.put("profileImageURL", profileImageURL);
 
+        return obj;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("twitterId", twitterId);
+        obj.put("screenName", screenName);
+        obj.put("name", name);
+        obj.put("accessToken", accessToken);
+        obj.put("accessTokenSecret", accessTokenSecret);
+        obj.put("profileImageURL", profileImageURL);
+        obj.put("userId", userId);
         return obj;
     }
 

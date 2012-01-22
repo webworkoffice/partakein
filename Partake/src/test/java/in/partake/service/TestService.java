@@ -18,18 +18,22 @@ import org.apache.log4j.Logger;
  * @author shinyak
  *
  */
-public final class TestService extends PartakeService {
+public class TestService extends PartakeService {
     private static TestService INSTANCE = new TestService();
     private static Logger LOGGER = Logger.getLogger(TestService.class);
     
-    protected final PartakeTestDataProviderSet testDataProviderFactory;
+    protected final PartakeTestDataProviderSet testDataProviderSet;
     
     public static TestService get() {
         return INSTANCE;
     }
 
     protected TestService() {
-        this.testDataProviderFactory = new PartakeTestDataProviderSet();
+        this.testDataProviderSet = new PartakeTestDataProviderSet();
+    }
+    
+    protected PartakeTestDataProviderSet getTestDataProviderSet() {
+        return testDataProviderSet;
     }
 
     // ----------------------------------------------------------------------
@@ -49,7 +53,7 @@ public final class TestService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
         try {
             con.beginTransaction();
-            testDataProviderFactory.createFixtures(con, factory);
+            testDataProviderSet.createFixtures(con, factory);
             con.commit();
         } finally {
             con.invalidate();

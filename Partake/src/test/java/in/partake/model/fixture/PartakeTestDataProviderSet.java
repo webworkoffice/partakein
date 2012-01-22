@@ -4,6 +4,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.fixture.impl.CacheTestDataProvider;
+import in.partake.model.fixture.impl.CommentTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
@@ -22,6 +23,7 @@ public class PartakeTestDataProviderSet {
     private ArrayList<TestDataProvider<?>> providers;
     
     private CacheTestDataProvider cacheDataProvider;
+    private CommentTestDataProvider commentDataprovider;
     private EnrollmentTestDataProvider enrollmentProvider;
     private EventTestDataProvider eventProvider;
     private OpenIDLinkageTestDataProvider openIDLinkageProvider;
@@ -33,6 +35,7 @@ public class PartakeTestDataProviderSet {
         this.providers = new ArrayList<TestDataProvider<?>>();
         
         providers.add(cacheDataProvider = createCacheTestDataProvider());
+        providers.add(commentDataprovider = createCommentTestDataProvider());
         providers.add(enrollmentProvider = createEnrollmentTestDataProvider());
         providers.add(eventProvider = createEventTestDataProvider());
         providers.add(openIDLinkageProvider = createOpenIDLinkageTestDataProvider());
@@ -49,6 +52,10 @@ public class PartakeTestDataProviderSet {
 
     public CacheTestDataProvider getCacheDataProvider() {
         return cacheDataProvider;
+    }
+    
+    public CommentTestDataProvider getCommentDataProvider() {
+        return commentDataprovider;
     }
 
     public EnrollmentTestDataProvider getEnrollmentProvider() {
@@ -79,6 +86,10 @@ public class PartakeTestDataProviderSet {
         return new CacheTestDataProvider();
     }
 
+    private CommentTestDataProvider createCommentTestDataProvider() {
+        return new CommentTestDataProvider();
+    }
+    
     private EnrollmentTestDataProvider createEnrollmentTestDataProvider() {
         return new EnrollmentTestDataProvider();
     }

@@ -49,8 +49,6 @@ public abstract class PartakeDAOFactory {
     protected PartakeDAOFactory() {
         daos = new ArrayList<IAccess<?, ?>>();
         
-        willCreateDAOs();
-        
         addDao(cacheAccess           = createCacheAccess());
         addDao(calendarLinkageAccess = createCalendarLinkageAccess());
         addDao(binaryAccess          = createBinaryAccess());
@@ -71,9 +69,6 @@ public abstract class PartakeDAOFactory {
         addDao(urlShortenerAccess    = createUrlShortenerAccess());
     }
 
-    protected void willCreateDAOs() {
-    }
-    
     public void initialize(PartakeConnection con) throws DAOException {
         for (IAccess<?, ?> dao : daos) {
             dao.initialize(con);

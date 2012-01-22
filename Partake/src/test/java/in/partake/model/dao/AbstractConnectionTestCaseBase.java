@@ -1,7 +1,7 @@
 package in.partake.model.dao;
 
 import in.partake.resource.PartakeProperties;
-import in.partake.service.PartakeService;
+import in.partake.service.TestService;
 import in.partake.util.PDate;
 
 import javax.naming.Context;
@@ -17,7 +17,7 @@ import org.junit.Test;
  * @author shinyak
  *
  */
-public abstract class AbstractConnectionTestCaseBase extends PartakeService {    
+public abstract class AbstractConnectionTestCaseBase extends TestService {    
     @BeforeClass
     public static void setUpOnce() {
         PartakeProperties.get().reset("unittest");

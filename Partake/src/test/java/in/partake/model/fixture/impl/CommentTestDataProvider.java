@@ -18,12 +18,13 @@ public class CommentTestDataProvider extends TestDataProvider<Comment> {
 
     @Override
     public Comment create(long pkNumber, String pkSalt, int objNumber) {
+        UUID uuid = new UUID(pkNumber, ("comment" + pkSalt).hashCode());
         String eventId = new UUID(pkNumber, ("comment" + pkSalt).hashCode()).toString();
         String userId  = new UUID(objNumber, "user".hashCode()).toString();
         String comment = "";
         boolean isHTML = false;
         Date createdAt = new Date(objNumber);
-        return new Comment(eventId, userId, comment, isHTML, createdAt); 
+        return new Comment(uuid.toString(), eventId, userId, comment, isHTML, createdAt); 
     }
 
     @Override

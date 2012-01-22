@@ -1,7 +1,6 @@
 package in.partake.model.dao.postgres9;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.PartakeConnection;
 import in.partake.util.PDate;
 
 import java.io.ByteArrayInputStream;
@@ -19,14 +18,19 @@ import java.util.UUID;
  *
  */
 public class Postgres9EntityDao extends Postgres9Dao {
-    public void initialize(PartakeConnection con) throws DAOException {
-        Postgres9Connection pcon = (Postgres9Connection) con;        
-        makeSureExistEntitiesTable(pcon);
+    private final String tableName;
+    
+    public Postgres9EntityDao(String tableName) {
+        this.tableName = tableName;
+    }
+    
+    public void initialize(Postgres9Connection con) throws DAOException {
+        makeSureExistEntitiesTable(con);
     }
     
     private void makeSureExistEntitiesTable(Postgres9Connection con) throws DAOException {
         try {
-            if (existsTable(con, "entities"))
+            if (existsTable(con, tableName))
                 return;
 
             createEntitiesTable(con.getConnection());
@@ -40,10 +44,10 @@ public class Postgres9EntityDao extends Postgres9Dao {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(
-                    "CREATE TABLE entities(" +
-                    "    seq        SERIAL      PRIMARY KEY," +
+                    "CREATE TABLE " + tableName + "(" +
+                    "    seq        BIGSERIAL   PRIMARY KEY," +
                     "    id         UUID        UNIQUE NOT NULL," +
-                    "    schema     TEXT        NOT NULL," +
+                    "    version    INTEGER     NOT NULL," +
                     "    body       BYTEA       NOT NULL," +
                     "    opt        BYTEA," +
                     "    createdAt  TIMESTAMP   NOT NULL," +
@@ -70,9 +74,9 @@ public class Postgres9EntityDao extends Postgres9Dao {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("INSERT INTO entities(id, schema, body, opt, createdAt) VALUES(?, ?, ?, ?, ?)");            
+            ps = con.prepareStatement("INSERT INTO " + tableName + "(id, version, body, opt, createdAt) VALUES(?, ?, ?, ?, ?)");            
             ps.setObject(1, entity.getId(), Types.OTHER);
-            ps.setString(2, entity.getSchema());
+            ps.setInt(2, entity.getVersion());
             ps.setBinaryStream(3, new ByteArrayInputStream(entity.getBody()), entity.getBodyLength());
             if (entity.getOpt() != null)
                 ps.setBinaryStream(4, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
@@ -92,14 +96,15 @@ public class Postgres9EntityDao extends Postgres9Dao {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("UPDATE entities SET body = ?, opt = ?, modifiedAt = ? WHERE id = ?");
-            ps.setBinaryStream(1, new ByteArrayInputStream(entity.getBody()), entity.getBodyLength());
+            ps = con.prepareStatement("UPDATE " + tableName + " SET version = ?, body = ?, opt = ?, modifiedAt = ? WHERE id = ?");
+            ps.setInt(1, entity.getVersion());
+            ps.setBinaryStream(2, new ByteArrayInputStream(entity.getBody()), entity.getBodyLength());
             if (entity.getOpt() != null)
-                ps.setBinaryStream(2, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
+                ps.setBinaryStream(3, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
             else
-                ps.setNull(2, Types.NULL);
-            ps.setDate(3, new Date(PDate.getCurrentTime()));
-            ps.setObject(4, entity.getId(), Types.OTHER);
+                ps.setNull(3, Types.NULL);
+            ps.setDate(4, new Date(PDate.getCurrentTime()));
+            ps.setObject(5, entity.getId(), Types.OTHER);
             
             ps.execute();
         } catch (SQLException e) {
@@ -114,7 +119,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = con.prepareStatement("SELECT 1 FROM entities WHERE id = ?");
+            ps = con.prepareStatement("SELECT 1 FROM " + tableName + " WHERE id = ?");
             ps.setObject(1, id, Types.OTHER);
 
             rs = ps.executeQuery();
@@ -132,17 +137,17 @@ public class Postgres9EntityDao extends Postgres9Dao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = con.prepareStatement("SELECT schema, body, opt, createdAt, modifiedAt FROM entities WHERE id = ?");
+            ps = con.prepareStatement("SELECT version, body, opt, createdAt, modifiedAt FROM " + tableName + " WHERE id = ?");
             ps.setObject(1, id, Types.OTHER);
 
             rs = ps.executeQuery();
             if (rs.next()) {
-                String schema = rs.getString(1);
+                int version = rs.getInt(1);
                 byte[] body = rs.getBytes(2);
                 byte[] opt = rs.getBytes(3);
                 Date createdAt = rs.getDate(4);
                 Date modifiedAt = rs.getDate(5);
-                return new Postgres9Entity(id, schema, body, opt, createdAt, modifiedAt);
+                return new Postgres9Entity(id, version, body, opt, createdAt, modifiedAt);
             } else {
                 return null;
             }
@@ -159,7 +164,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("DELETE FROM entities WHERE id = ?");
+            ps = con.prepareStatement("DELETE FROM " + tableName + " WHERE id = ?");
             ps.setObject(1, id, Types.OTHER);
 
             ps.execute();
@@ -170,13 +175,12 @@ public class Postgres9EntityDao extends Postgres9Dao {
         }                
     }
     
-    /** Removes all entities having <code>schema</code>. All data might be lost. You should call this very carefully. */ 
-    public void removeEntitiesHavingSchema(Postgres9Connection pcon, String schema) throws DAOException {
+    /** Removes all entities. All data might be lost. You should call this very carefully. */
+    public void truncate(Postgres9Connection pcon) throws DAOException {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("DELETE FROM entities WHERE schema = ?");
-            ps.setString(1, schema);
+            ps = con.prepareStatement("DELETE FROM " + tableName);
             ps.execute();
         } catch (SQLException e) {
             throw new DAOException(e);

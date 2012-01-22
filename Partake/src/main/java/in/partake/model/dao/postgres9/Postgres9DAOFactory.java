@@ -22,131 +22,122 @@ import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dao.postgres9.impl.Postgres9BinaryDao;
+import in.partake.model.dao.postgres9.impl.Postgres9CacheDao;
 import in.partake.model.dao.postgres9.impl.Postgres9CalendarLinkageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9CommentDao;
+import in.partake.model.dao.postgres9.impl.Postgres9DirectMessageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EnrollmentDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EnvelopeDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EventActivityDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EventDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EventFeedDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EventRelationDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EventReminderDao;
+import in.partake.model.dao.postgres9.impl.Postgres9OpenIDLinkageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9QuestionnaireDao;
+import in.partake.model.dao.postgres9.impl.Postgres9TwitterLinkageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UrlShortenerDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserPreferenceDao;
 
 public class Postgres9DAOFactory extends PartakeDAOFactory {
-    private Postgres9EntityDao entityDao;
-
     public Postgres9DAOFactory() {
         super();
     }
     
-    // FIXME: This seems a bad architecture.
-    @Override
-    protected void willCreateDAOs() {
-        entityDao = new Postgres9EntityDao();
-    }
-    
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
-        entityDao.initialize(con);
         super.initialize(con);
     }
     
     @Override
     protected ICacheAccess createCacheAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9CacheDao();
     }
 
     @Override
     protected ICalendarLinkageAccess createCalendarLinkageAccess() {
-        return new Postgres9CalendarLinkageDao(entityDao);
+        return new Postgres9CalendarLinkageDao();
     }
 
     @Override
     protected IBinaryAccess createBinaryAccess() {
-        return new Postgres9BinaryDao(entityDao);
+        return new Postgres9BinaryDao();
     }
 
     @Override
     protected ICommentAccess createCommentAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9CommentDao();
     }
 
     @Override
     protected IMessageAccess createDirectMessageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9DirectMessageDao();
     }
 
     @Override
     protected IEnrollmentAccess createEnrollmentAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9EnrollmentDao();
     }
 
     @Override
     protected IEnvelopeAccess createEnvelopeAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9EnvelopeDao();
     }
 
     @Override
     protected IEventAccess createEventAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9EventDao();
     }
 
     @Override
     protected IEventRelationAccess createEventRelationAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9EventRelationDao();
     }
 
     @Override
     protected IEventReminderAccess createEventReminderAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9EventReminderDao();
     }
 
     @Override
     protected IEventFeedAccess createEventFeedAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9EventFeedDao();
     }
 
     @Override
     protected IEventActivityAccess createEventActivityAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9EventActivityDao();
     }
 
     @Override
     protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9OpenIDLinkageDao();
     }
 
     @Override
     protected IQuestionnaireAccess createQuestionnaireAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9QuestionnaireDao();
     }
 
     @Override
     protected ITwitterLinkageAccess createTwitterLinkageAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9TwitterLinkageDao();
     }
 
     @Override
     protected IUserAccess creataeUserAccess() {
-        return new Postgres9UserDao(entityDao);
+        return new Postgres9UserDao();
     }
 
     @Override
     protected IUserPreferenceAccess createUserPreferenceAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9UserPreferenceDao();
     }
 
     @Override
     protected IURLShortenerAccess createUrlShortenerAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9UrlShortenerDao();
     }
 
 }

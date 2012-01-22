@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import java.util.Date;
+import java.util.UUID;
 
 import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dto.CacheData;
@@ -36,17 +37,18 @@ public class CacheAccessTest extends AbstractDaoTestCaseBase<ICacheAccess, Cache
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         
+        String id = UUID.randomUUID().toString();
         try {
             {
                 con.beginTransaction();
-                CacheData data = new CacheData("test", new byte[] {1, 2, 3}, oneHourBefore());
+                CacheData data = new CacheData(id, new byte[] {1, 2, 3}, oneHourBefore());
                 factory.getCacheAccess().put(con, data);
                 con.commit();
             }
             
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().find(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, id);
                 Assert.assertNull(data);
                 con.commit();
             }
@@ -60,12 +62,13 @@ public class CacheAccessTest extends AbstractDaoTestCaseBase<ICacheAccess, Cache
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         
+        String id = UUID.randomUUID().toString();
         try {
             long now = oneHourAfter().getTime();
                         
             {
                 con.beginTransaction();
-                CacheData data = new CacheData("test", new byte[] {1, 2, 3}, new Date(now + 1));
+                CacheData data = new CacheData(id, new byte[] {1, 2, 3}, new Date(now + 1));
                 factory.getCacheAccess().put(con, data);
                 con.commit();
             }
@@ -74,7 +77,7 @@ public class CacheAccessTest extends AbstractDaoTestCaseBase<ICacheAccess, Cache
             PDate.setCurrentDate(new PDate(now - 1));
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().find(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, id);
                 Assert.assertNotNull(data);
                 con.commit();
             }
@@ -83,7 +86,7 @@ public class CacheAccessTest extends AbstractDaoTestCaseBase<ICacheAccess, Cache
             PDate.setCurrentDate(new PDate(now + 1));
             {
                 con.beginTransaction();
-                CacheData data = factory.getCacheAccess().find(con, "test");
+                CacheData data = factory.getCacheAccess().find(con, id);
                 Assert.assertNull(data);
                 con.commit();
             }

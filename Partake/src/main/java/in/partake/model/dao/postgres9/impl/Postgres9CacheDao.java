@@ -3,56 +3,56 @@ package in.partake.model.dao.postgres9.impl;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IUserAccess;
+import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
-import in.partake.model.dto.User;
+import in.partake.model.dto.CacheData;
 import in.partake.util.PDate;
 import net.sf.json.JSONObject;
 
-public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
-    static final String TABLE_NAME = "UserEntities";
+public class Postgres9CacheDao extends Postgres9Dao implements ICacheAccess {
+    static final String TABLE_NAME = "CacheEntities";
     static final int CURRENT_VERSION = 1;
-
+    
     private final Postgres9EntityDao entityDao;
 
-    public Postgres9UserDao() {
+    public Postgres9CacheDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
     }
 
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
-    }
-
-    @Override
-    public void truncate(PartakeConnection con) throws DAOException {
         entityDao.initialize((Postgres9Connection) con);
     }
 
     @Override
-    public void put(PartakeConnection con, User user) throws DAOException {
+    public void truncate(PartakeConnection con) throws DAOException {
+        entityDao.truncate((Postgres9Connection) con);
+    }
+
+    @Override
+    public void put(PartakeConnection con, CacheData cache) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        // TODO: Why User does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(user.getId(), CURRENT_VERSION, user.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
-        if (entityDao.exists(pcon, user.getId()))
+        byte[] opt = cache.toJSONWithoutData().toString().getBytes(UTF8);
+        Postgres9Entity entity = new Postgres9Entity(cache.getId(), CURRENT_VERSION, cache.getData(), opt, PDate.getCurrentDate().getDate());
+        if (entityDao.exists(pcon, entity.getId()))
             entityDao.update(pcon, entity);            
         else
             entityDao.insert(pcon, entity);
     }
 
     @Override
-    public User find(PartakeConnection con, String id) throws DAOException {
+    public CacheData find(PartakeConnection con, String id) throws DAOException {
         Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
         if (entity == null)
             return null;
 
-        User user = User.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
-        if (user != null)
-            return user.freeze();
-        return null;
+        JSONObject opt = JSONObject.fromObject(new String(entity.getOpt(), UTF8));
+        CacheData cache = new CacheData(id, entity.getBody(), opt);
+        return cache.freeze();
     }
 
     @Override
@@ -61,13 +61,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     }
 
     @Override
-    public DataIterator<User> getIterator(PartakeConnection con) throws DAOException {
+    public DataIterator<CacheData> getIterator(PartakeConnection con) throws DAOException {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public String getFreshId(PartakeConnection con) throws DAOException {
-        return entityDao.getFreshId((Postgres9Connection) con);
-    }
-
 }

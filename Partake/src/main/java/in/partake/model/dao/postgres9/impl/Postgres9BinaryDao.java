@@ -12,25 +12,23 @@ import in.partake.model.dto.BinaryData;
 import in.partake.util.PDate;
 
 public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
-    static final String SCHEMA = "binary1";
-    static final String[] ALL_SCHEMA = new String[] {
-        "binary1"
-    };
+    static final String TABLE_NAME = "BinaryEntities";
+    static final int CURRENT_VERSION = 1;
 
-    private Postgres9EntityDao entityDao;
-
-    public Postgres9BinaryDao(Postgres9EntityDao entityDao) {
-        this.entityDao = entityDao;
+    private final Postgres9EntityDao entityDao;
+    
+    public Postgres9BinaryDao() {
+        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
     }
 
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
+        entityDao.initialize((Postgres9Connection) con);
     }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
-        for (String schema : ALL_SCHEMA)
-            entityDao.removeEntitiesHavingSchema((Postgres9Connection) con, schema);
+        entityDao.truncate((Postgres9Connection) con);
     }
 
     @Override
@@ -38,7 +36,7 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why BinaryData does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(binary.getId(), SCHEMA, binary.getData(), binary.getType().getBytes(UTF8), PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(binary.getId(), CURRENT_VERSION, binary.getData(), binary.getType().getBytes(UTF8), PDate.getCurrentDate().getDate());
         if (entityDao.exists(pcon, binary.getId()))
             entityDao.update(pcon, entity);            
         else
@@ -48,7 +46,7 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
     @Override
     public BinaryData find(PartakeConnection con, String id) throws DAOException {
         Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
-        if (entity == null || !SCHEMA.equals(entity.getSchema()))
+        if (entity == null)
             return null;
 
         BinaryData binary = new BinaryData(entity.getId(), new String(entity.getOpt(), UTF8), entity.getBody());
@@ -69,5 +67,4 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
     public String getFreshId(PartakeConnection con) throws DAOException {
         return entityDao.getFreshId((Postgres9Connection) con);
     }
-
 }

@@ -63,7 +63,6 @@ public class QuestionnaireAccessTest extends AbstractDaoTestCaseBase<IQuestionna
             con.beginTransaction();
             for (int i = 0; i < 10; ++i) {
                 String id = dao.getFreshId(con);
-                System.out.println(id);
                 Questionnaire q = new Questionnaire(id, eventId1, "Q?", i, QuestionnaireType.TEXT, null);
                 originals1.add(q);
                 dao.put(con, q);
@@ -75,7 +74,6 @@ public class QuestionnaireAccessTest extends AbstractDaoTestCaseBase<IQuestionna
                 dao.put(con, q);
             }
             con.commit();
-            System.out.println("hoge");
 
             {
                 List<Questionnaire> fetched1 = dao.findQuestionnairesByEventId(con, eventId1);

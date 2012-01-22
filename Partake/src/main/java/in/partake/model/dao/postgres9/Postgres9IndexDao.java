@@ -1,12 +1,17 @@
 package in.partake.model.dao.postgres9;
 
+import in.partake.base.PartakeRuntimeException;
+import in.partake.model.dao.DAOException;
+import in.partake.resource.ServerErrorCode;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
-import in.partake.model.dao.DAOException;
+import org.apache.commons.lang.StringUtils;
 
 public class Postgres9IndexDao extends Postgres9Dao {
     private String indexTableName;
@@ -23,6 +28,41 @@ public class Postgres9IndexDao extends Postgres9Dao {
         executeSQL(con, indexDeclaration);        
     }
     
+    /** Be careful about using this. Do not use TAINTED columnName. */
+    public String find(Postgres9Connection con, String columnForRetrieve, String columnForSearch, String value) throws DAOException {
+        try {
+            return find(con.getConnection(), columnForRetrieve, columnForSearch, value);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+    
+    public Postgres9StatementAndResultSet select(Postgres9Connection con, String sql, Object[] values) throws DAOException {
+        try {
+            return select(con.getConnection(), sql, values);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /** We treat the first column as primary key. */
+    public void put(Postgres9Connection con, String[] columns, Object values[]) throws DAOException {
+        try {
+            put(con.getConnection(), columns, values);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+    
+    /** Removes all entries whose <code>column</code> has <code>value</code>. */
+    public void remove(Postgres9Connection con, String column, String value) throws DAOException {
+        try {
+            remove(con.getConnection(), column, value);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }        
+    }
+
     public void truncate(Postgres9Connection con) throws DAOException {
         try {
             truncate(con.getConnection());
@@ -31,32 +71,142 @@ public class Postgres9IndexDao extends Postgres9Dao {
         }
     }
 
-    /** Be careful about using this. Do not use TAINTED columnName. */
-    public String find(Postgres9Connection con, String columnName, String value) throws DAOException {
-        try {
-            return find(con.getConnection(), columnName, value);
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-    }
-    
-    private String find(Connection con, String columnName, String value) throws SQLException {
-        String sql = "SELECT id FROM " + indexTableName + " WHERE " + columnName + " = ?";
+    // ----------------------------------------------------------------------
+
+    private String find(Connection con, String columnForRetrieve, String columnForSearch, String value) throws SQLException {
+        String sql = "SELECT " + columnForRetrieve + " FROM " + indexTableName + " WHERE " + columnForSearch + " = ?";
 
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = con.prepareStatement(sql);
+            ps.setString(1, value);
             rs = ps.executeQuery();
             
             if (rs.next())
-                return (String) rs.getObject(1);
+                return rs.getString(1);
             else
                 return null;
         } finally {
             close(rs);
             close(ps);
         }
+    }
+    
+    private Postgres9StatementAndResultSet select(Connection con, String sql, Object[] values) throws SQLException {
+        boolean shouldClose = true;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            ps = con.prepareStatement(sql);
+            for (int i = 0; i < values.length; ++i) {
+                if (values[i] instanceof String)
+                    ps.setString(i + 1, (String) values[i]);
+                else if (values[i] instanceof Date)
+                    ps.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
+                else
+                    throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
+            }
+          
+            rs = ps.executeQuery();
+            shouldClose = false;
+        } finally {
+            if (shouldClose) {
+                close(rs);
+                close(ps);
+                return null;
+            }
+        }
+
+        return new Postgres9StatementAndResultSet(ps, rs);
+    }
+
+    
+    private void put(Connection con, String[] columns, Object values[]) throws SQLException {
+        if (exists(con, columns[0], (String) values[0]))
+            update(con, columns, values);
+        else
+            insert(con, columns, values);
+    }
+    
+    private void insert(Connection con, String[] columns, Object values[]) throws SQLException {
+        String sqlColumns = StringUtils.join(columns, ",");
+        String[] questions = new String[values.length];
+        for (int i = 0; i < values.length; ++i)
+            questions[i] = "?";
+        String sqlQuestions = StringUtils.join(questions, ",");
+        String sql = "INSERT INTO " + indexTableName + "(" + sqlColumns + ") VALUES(" + sqlQuestions + ")";
+        
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(sql);
+            for (int i = 0; i < values.length; ++i) {
+                if (values[i] instanceof String)
+                    ps.setString(i + 1, (String) values[i]);
+                else if (values[i] instanceof Date)
+                    ps.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
+                else
+                    throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
+            }
+            ps.execute();
+        } finally {
+            close(ps);
+        }
+    }
+    
+    private void update(Connection con, String[] columns, Object values[]) throws SQLException {
+        String[] questions = new String[columns.length - 1];
+        for (int i = 1; i < columns.length; ++i)
+            questions[i - 1] = columns[i] + " = ?"; 
+        
+        String sql = "UPDATE " + indexTableName + " SET " + StringUtils.join(questions, ",") + " WHERE " + columns[0] + " = ?";
+        
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(sql);
+            for (int i = 1; i < columns.length; ++i) {
+                if (values[i] instanceof String)
+                    ps.setString(i, (String) values[i]);
+                else if (values[i] instanceof Date)
+                    ps.setDate(i, new java.sql.Date(((Date) values[i]).getTime()));
+                else
+                    throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
+            }
+            
+            ps.setString(columns.length, (String) values[0]);
+            ps.execute();
+        } finally {
+            close(ps);
+        }
+    }
+    
+    private void remove(Connection con, String column, String value) throws SQLException {
+        String sql = "DELETE FROM " + indexTableName + " WHERE " + column + " = ?";
+        PreparedStatement ps = null;
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, value);
+            
+            ps.execute();
+        } finally {
+            close(ps);
+        }
+    }
+    
+    private boolean exists(Connection con, String columnName, String columnValue) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement("SELECT 1 FROM " + indexTableName + " WHERE " + columnName + " = ?");
+            ps.setString(1, columnValue);
+
+            rs = ps.executeQuery();
+            return rs.next();
+        } finally {
+            close(rs);
+            close(ps);
+        }        
     }
     
     private void truncate(Connection con) throws SQLException {

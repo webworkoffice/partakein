@@ -5,8 +5,8 @@ import java.util.Date;
 public class Postgres9Entity {
     /** UUID */
     private String id;
-    /** Schema type */
-    private String schema;
+    /** Version type */
+    private int version;
     /** Entity Body */
     private byte[] body;
     /** Optional Body */
@@ -16,13 +16,13 @@ public class Postgres9Entity {
     /** Time modified at */
     private Date modifiedAt;
     
-    public Postgres9Entity(String id, String schema, byte[] body, byte[] opt, Date createdAt) {
-        this(id, schema, body, opt, createdAt, null);
+    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, Date createdAt) {
+        this(id, version, body, opt, createdAt, null);
     }
     
-    public Postgres9Entity(String id, String schema, byte[] body, byte[] opt, Date createdAt, Date modifiedAt) {
+    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, Date createdAt, Date modifiedAt) {
         this.id = id;
-        this.schema = schema;
+        this.version = version;
         this.body = body;
         this.opt = opt;
         this.createdAt = createdAt;
@@ -33,8 +33,8 @@ public class Postgres9Entity {
         return id;
     }
 
-    public String getSchema() {
-        return schema;
+    public int getVersion() {
+        return version;
     }
     
     public byte[] getBody() {
