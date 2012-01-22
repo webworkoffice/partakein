@@ -55,6 +55,10 @@ public class CassandraKeyColumnDataIterator<T> extends DataIterator<T> {
     }
     
     @Override
+    public void close() {
+    }
+    
+    @Override
     public void remove() throws DAOException, UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }

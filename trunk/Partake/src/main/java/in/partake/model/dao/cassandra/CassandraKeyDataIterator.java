@@ -12,20 +12,28 @@ class CassandraKeyDataIterator<T> extends DataIterator<T> {
 		this.mapper = mapper;
 	}
 
+	@Override
 	public boolean hasNext() throws DAOException {
 		return iterator.hasNext();
 	}
 	
+	@Override
 	public T next() throws DAOException {
 	    String key = iterator.next();
 	    return mapper.map(key);
 	}
 	
+	@Override
 	public void remove() throws DAOException {
 	    throw new UnsupportedOperationException();
 	}
 	
+	@Override
 	public void update(T t) throws DAOException {
 	    throw new UnsupportedOperationException();
+	}
+	
+	@Override
+	public void close() {
 	}
 }

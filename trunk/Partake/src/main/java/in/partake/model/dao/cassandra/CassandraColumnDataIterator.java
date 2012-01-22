@@ -23,6 +23,10 @@ class CassandraColumnDataIterator<T> extends DataIterator<T> {
 		return mapper.map(cosc);
 	}
 	
+	@Override
+	public void close() {
+	}
+	
 	public void remove() throws DAOException {
 		iterator.remove();
 	}

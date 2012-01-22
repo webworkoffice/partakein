@@ -184,5 +184,9 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 		UnsupportedOperationException {
 			inner.update(t);
 		}
+		
+		@Override
+		public void close() {
+		}
 	}
 }
