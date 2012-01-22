@@ -39,6 +39,10 @@ public class JPAPartakeModelDataIterator<T extends PartakeModel<T>> extends Data
             throw new NoSuchElementException();
         }
     }
+    
+    @Override
+    public void close() {
+    }
 
     @Override
     public void remove() throws DAOException, UnsupportedOperationException {
