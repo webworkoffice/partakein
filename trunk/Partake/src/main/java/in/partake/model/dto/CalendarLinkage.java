@@ -59,7 +59,7 @@ public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
         
         return new CalendarLinkage(json.getString("id"), json.getString("userId"));
     }
-    
+        
     // ----------------------------------------------------------------------
     // equals methods
 

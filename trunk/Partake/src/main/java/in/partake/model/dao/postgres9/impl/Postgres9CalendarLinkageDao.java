@@ -16,7 +16,7 @@ import net.sf.json.JSONObject;
 public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalendarLinkageAccess {
     static final String SCHEMA = "calendarlinkage1";
     static final String[] ALL_SCHEMA = new String[] {
-        "calendar-linkage1"
+        SCHEMA
     };
     
     static final String INDEX_TABLE_NAME = "CalendarLinkageIndex1";
@@ -45,11 +45,13 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
     }
 
     @Override
-    public void put(PartakeConnection con, CalendarLinkage t) throws DAOException {
+    public void put(PartakeConnection con, CalendarLinkage linkage) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(t.getId(), SCHEMA, t.toJSON().toString().getBytes(UTF8), PDate.getCurrentDate().getDate());
-        if (entityDao.exists(pcon, t.getId()))
+        System.out.println(linkage.toJSON().toString());
+        System.out.println(linkage.toJSON().toString().getBytes(UTF8).length);
+        Postgres9Entity entity = new Postgres9Entity(linkage.getId(), SCHEMA, linkage.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        if (entityDao.exists(pcon, linkage.getId()))
             entityDao.update(pcon, entity);            
         else
             entityDao.insert(pcon, entity);
@@ -61,7 +63,9 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
         if (entity == null)
             return null;
 
-        CalendarLinkage t = CalendarLinkage.fromJSON(JSONObject.fromObject(entity.getBody()));
+        System.out.println(new String(entity.getBody(), UTF8));
+        System.out.println(entity.getBody().length);
+        CalendarLinkage t = CalendarLinkage.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
         if (t != null)
             return t.freeze();
         return null;
@@ -84,6 +88,9 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
 
     @Override
     public CalendarLinkage findByUserId(PartakeConnection con, String userId) throws DAOException {
+        if (userId == null)
+            return null;
+        
         Postgres9Connection pcon = (Postgres9Connection) con;
         String id = userIndexDao.find(pcon, "userId", userId);
         if (id == null)
@@ -93,6 +100,11 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
         if (entity == null)
             return null;
         
-        return CalendarLinkage.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
+        // We do not trust index!
+        CalendarLinkage linkage = CalendarLinkage.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
+        if (linkage == null || userId.equals(linkage.getUserId()))
+            return null;
+        
+        return linkage;
     }
 }
