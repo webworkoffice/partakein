@@ -9,19 +9,22 @@ public class Postgres9Entity {
     private String schema;
     /** Entity Body */
     private byte[] body;
+    /** Optional Body */
+    private byte[] opt;
     /** Time created at */
     private Date createdAt;
     /** Time modified at */
     private Date modifiedAt;
     
-    public Postgres9Entity(String id, String schema, byte[] body, Date createdAt) {
-        this(id, schema, body, createdAt, null);
+    public Postgres9Entity(String id, String schema, byte[] body, byte[] opt, Date createdAt) {
+        this(id, schema, body, opt, createdAt, null);
     }
     
-    public Postgres9Entity(String id, String schema, byte[] body, Date createdAt, Date modifiedAt) {
+    public Postgres9Entity(String id, String schema, byte[] body, byte[] opt, Date createdAt, Date modifiedAt) {
         this.id = id;
         this.schema = schema;
         this.body = body;
+        this.opt = opt;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
@@ -40,6 +43,14 @@ public class Postgres9Entity {
     
     public int getBodyLength() {
         return body.length;
+    }
+
+    public byte[] getOpt() {
+        return opt;
+    }
+
+    public int getOptLength() {
+        return opt.length;
     }
 
     public Date getCreatedAt() {

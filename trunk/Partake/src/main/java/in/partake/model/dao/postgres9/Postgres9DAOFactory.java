@@ -21,6 +21,7 @@ import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
+import in.partake.model.dao.postgres9.impl.Postgres9BinaryDao;
 import in.partake.model.dao.postgres9.impl.Postgres9CalendarLinkageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserDao;
 
@@ -56,8 +57,7 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
 
     @Override
     protected IBinaryAccess createBinaryAccess() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Postgres9BinaryDao(entityDao);
     }
 
     @Override
