@@ -38,7 +38,8 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     public void put(PartakeConnection con, User user) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(user.getId(), SCHEMA, user.toJSON().toString().getBytes(UTF8), PDate.getCurrentDate().getDate());
+        // TODO: Why User does not have createdAt and modifiedAt?
+        Postgres9Entity entity = new Postgres9Entity(user.getId(), SCHEMA, user.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
         if (entityDao.exists(pcon, user.getId()))
             entityDao.update(pcon, entity);            
         else
