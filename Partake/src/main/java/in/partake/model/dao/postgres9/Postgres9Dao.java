@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Base class of Postgres9Dao.
@@ -50,6 +51,18 @@ public abstract class Postgres9Dao {
         }
     }
 
+    /** Closes Statement silently. */
+    protected void close(Statement st) {
+        if (st == null)
+            return;
+        
+        try {
+            st.close();
+        } catch (SQLException e) {
+            // squash!
+        }
+    }
+    
     /** Closes ResultSet silently. */
     protected void close(ResultSet rs) {
         if (rs == null)

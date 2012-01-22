@@ -45,6 +45,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
                     "    id         UUID        UNIQUE NOT NULL," +
                     "    schema     TEXT        NOT NULL," +
                     "    body       BYTEA       NOT NULL," +
+                    "    opt        BYTEA," +
                     "    createdAt  TIMESTAMP   NOT NULL," +
                     "    modifiedAt TIMESTAMP " +
                     ")");             
@@ -69,11 +70,15 @@ public class Postgres9EntityDao extends Postgres9Dao {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("INSERT INTO entities(id, schema, body, createdAt) VALUES(?, ?, ?, ?)");            
+            ps = con.prepareStatement("INSERT INTO entities(id, schema, body, opt, createdAt) VALUES(?, ?, ?, ?, ?)");            
             ps.setObject(1, entity.getId(), Types.OTHER);
             ps.setString(2, entity.getSchema());
             ps.setBinaryStream(3, new ByteArrayInputStream(entity.getBody()), entity.getBodyLength());
-            ps.setDate(4, new Date(entity.getCreatedAt().getTime()));
+            if (entity.getOpt() != null)
+                ps.setBinaryStream(4, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
+            else
+                ps.setNull(4, Types.NULL);
+            ps.setDate(5, new Date(entity.getCreatedAt().getTime()));
             
             ps.execute();
         } catch (SQLException e) {
@@ -87,10 +92,14 @@ public class Postgres9EntityDao extends Postgres9Dao {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("UPDATE entities SET body = ?, modifiedAt = ? WHERE id = ?");
+            ps = con.prepareStatement("UPDATE entities SET body = ?, opt = ?, modifiedAt = ? WHERE id = ?");
             ps.setBinaryStream(1, new ByteArrayInputStream(entity.getBody()), entity.getBodyLength());
-            ps.setDate(2, new Date(PDate.getCurrentTime()));
-            ps.setObject(3, entity.getId(), Types.OTHER);
+            if (entity.getOpt() != null)
+                ps.setBinaryStream(2, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
+            else
+                ps.setNull(2, Types.NULL);
+            ps.setDate(3, new Date(PDate.getCurrentTime()));
+            ps.setObject(4, entity.getId(), Types.OTHER);
             
             ps.execute();
         } catch (SQLException e) {
@@ -123,16 +132,17 @@ public class Postgres9EntityDao extends Postgres9Dao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = con.prepareStatement("SELECT schema, body, createdAt, modifiedAt FROM entities WHERE id = ?");
+            ps = con.prepareStatement("SELECT schema, body, opt, createdAt, modifiedAt FROM entities WHERE id = ?");
             ps.setObject(1, id, Types.OTHER);
 
             rs = ps.executeQuery();
             if (rs.next()) {
                 String schema = rs.getString(1);
                 byte[] body = rs.getBytes(2);
-                Date createdAt = rs.getDate(3);
-                Date modifiedAt = rs.getDate(4);
-                return new Postgres9Entity(id, schema, body, createdAt, modifiedAt);
+                byte[] opt = rs.getBytes(3);
+                Date createdAt = rs.getDate(4);
+                Date modifiedAt = rs.getDate(5);
+                return new Postgres9Entity(id, schema, body, opt, createdAt, modifiedAt);
             } else {
                 return null;
             }

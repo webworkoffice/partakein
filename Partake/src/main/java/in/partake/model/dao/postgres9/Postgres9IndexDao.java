@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import in.partake.model.dao.DAOException;
 
@@ -21,8 +22,16 @@ public class Postgres9IndexDao extends Postgres9Dao {
     public void createIndex(Postgres9Connection con, String indexDeclaration) throws DAOException {
         executeSQL(con, indexDeclaration);        
     }
+    
+    public void truncate(Postgres9Connection con) throws DAOException {
+        try {
+            truncate(con.getConnection());
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
 
-    /** Be careful about using this. */
+    /** Be careful about using this. Do not use TAINTED columnName. */
     public String find(Postgres9Connection con, String columnName, String value) throws DAOException {
         try {
             return find(con.getConnection(), columnName, value);
@@ -47,6 +56,18 @@ public class Postgres9IndexDao extends Postgres9Dao {
         } finally {
             close(rs);
             close(ps);
+        }
+    }
+    
+    private void truncate(Connection con) throws SQLException {
+        String sql = "DELETE from " + indexTableName;
+        
+        Statement st = null;
+        try {
+            st = con.createStatement();
+            st.execute(sql);
+        } finally {
+            close(st);            
         }
     }
 }

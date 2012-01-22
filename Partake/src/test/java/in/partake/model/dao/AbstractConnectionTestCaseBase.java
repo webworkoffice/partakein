@@ -6,6 +6,7 @@ import in.partake.util.PDate;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NameAlreadyBoundException;
 import javax.naming.NamingException;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -24,6 +25,8 @@ public abstract class AbstractConnectionTestCaseBase extends PartakeService {
         try {
             if (PartakeProperties.get().getBoolean("in.partake.database.unittest_initialization"))
                 initializeDataSource();
+        } catch (NameAlreadyBoundException e) {
+            // Maybe already DataSource is created.
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }
