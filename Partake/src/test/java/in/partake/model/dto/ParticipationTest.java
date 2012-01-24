@@ -65,7 +65,7 @@ public final class ParticipationTest extends AbstractPartakeModelTest<Enrollment
 
 	@Test(expected = NullPointerException.class)
 	public void testCopyConstructorByNullValue() {
-		new Enrollment(null);
+		new Enrollment((Enrollment) null);
 	}
 
 	@Test

@@ -9,6 +9,8 @@ import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "Messages")
@@ -43,6 +45,15 @@ public class Message extends PartakeModel<Message> {
         this.createdAt = createdAt == null ? null : new Date(createdAt.getTime());
     }
 
+    public Message(JSONObject obj) {
+        this.id = obj.getString("id");
+        this.userId = obj.optString("senderId", null);
+        this.message = obj.getString("message");
+        this.eventId = obj.getString("eventId");
+        if (obj.containsKey("createdAt"))
+            this.createdAt = new Date(obj.getLong("createdAt"));
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return id;
@@ -51,6 +62,17 @@ public class Message extends PartakeModel<Message> {
     @Override
     public Message copy() {
         return new Message(this);
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("senderId", userId);
+        obj.put("message", message);
+        obj.put("eventId", eventId);        
+        obj.put("createdAt", createdAt.getTime());
+        return obj;
     }
 
     // ----------------------------------------------------------------------

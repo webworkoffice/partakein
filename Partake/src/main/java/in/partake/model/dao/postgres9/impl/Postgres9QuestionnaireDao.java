@@ -1,14 +1,15 @@
 package in.partake.model.dao.postgres9.impl;
 
-import java.util.List;
-
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IQuestionnaireAccess;
+import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dto.Questionnaire;
+
+import java.util.List;
 
 public class Postgres9QuestionnaireDao extends Postgres9Dao implements IQuestionnaireAccess {
     static final String TABLE_NAME = "QuestionnaireEntities";
@@ -22,8 +23,7 @@ public class Postgres9QuestionnaireDao extends Postgres9Dao implements IQuestion
 
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
-        // TODO Auto-generated method stub
-        
+        entityDao.initialize((Postgres9Connection) con);
     }
 
     @Override

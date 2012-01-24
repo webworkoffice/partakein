@@ -12,6 +12,7 @@ import in.partake.util.PDate;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,8 +58,8 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 	public void testPutAndGetPaticipationList() throws DAOException {
 		ParticipationStatus status = ParticipationStatus.ENROLLED;
 		
-		String eventId = "eventId-pagp-" + System.currentTimeMillis();
-		String userId  = "userId-pagp-"  + System.currentTimeMillis();
+		String eventId = UUID.randomUUID().toString();
+		String userId = UUID.randomUUID().toString();
 		
 		Event event = createEvent(eventId, userId);
 
@@ -87,8 +88,8 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 
 	@Test
 	public void testPutAndUpdatePaticipationList() throws DAOException {
-        String eventId = "eventId-paup-" + System.currentTimeMillis();
-        String userId  = "userId-paup-"  + System.currentTimeMillis();
+        String eventId = UUID.randomUUID().toString();
+        String userId  = UUID.randomUUID().toString();
         
         Event event = createEvent(eventId, userId);
 
