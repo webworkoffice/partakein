@@ -37,6 +37,14 @@ public class Postgres9IndexDao extends Postgres9Dao {
         }
     }
     
+    public String find(Postgres9Connection con, String columnForRetrieve, String[] columnsForSearch, Object[] values) throws DAOException {
+        try {
+            return find(con.getConnection(), columnForRetrieve, columnsForSearch, values);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+    
     public Postgres9StatementAndResultSet select(Postgres9Connection con, String sql, Object[] values) throws DAOException {
         try {
             return select(con.getConnection(), sql, values);
@@ -92,6 +100,38 @@ public class Postgres9IndexDao extends Postgres9Dao {
             close(ps);
         }
     }
+    
+    private String find(Connection con, String columnForRetrieve, String[] columnsForSearch, Object[] values) throws SQLException {
+        String[] questions = new String[columnsForSearch.length];
+        for (int i = 0; i < columnsForSearch.length; ++i)
+            questions[i] = columnsForSearch[i] + " = ?";
+        
+        String sql = "SELECT " + columnForRetrieve + " FROM " + indexTableName + " WHERE " + StringUtils.join(questions, " AND ");
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement(sql);
+            for (int i = 0; i < values.length; ++i) {
+                if (values[i] instanceof String)
+                    ps.setString(i + 1, (String) values[i]);
+                else if (values[i] instanceof Date)
+                    ps.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
+                else
+                    throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
+            }
+            rs = ps.executeQuery();
+            
+            if (rs.next())
+                return rs.getString(1);
+            else
+                return null;
+        } finally {
+            close(rs);
+            close(ps);
+        }
+    }
+
     
     private Postgres9StatementAndResultSet select(Connection con, String sql, Object[] values) throws SQLException {
         boolean shouldClose = true;

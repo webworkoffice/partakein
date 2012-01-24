@@ -10,6 +10,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
+import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.util.PDate;
 
 import org.junit.Assert;
@@ -17,22 +18,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event, String> {
+    private EventTestDataProvider provider;
+    
 	@Before
 	public void setup() throws DAOException {
 	    super.setup(getFactory().getEventAccess());
+	    provider = getTestDataProviderSet().getEventProvider();
 	}
 
 	@Override
 	protected Event create(long pkNumber, String pkSalt, int objNumber) {
-        Date now = new Date(1L);
-        Date beginDate = now;
-        String url = "http://localhost:8080/";
-        String place = "";
-        String address = "";
-        String description = "";
-        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT" + objNumber, "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, now, now);
-        event.setId("eventId" + pkSalt + pkNumber);
-        return event;	    
+	    return provider.create(pkNumber, pkSalt, objNumber);
 	}
 	
 	@Test
@@ -52,9 +48,6 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
             con.invalidate();
         }
 	}
-	
-
-
     
     @Test
     public void testToFindByOwnerId() throws DAOException {
