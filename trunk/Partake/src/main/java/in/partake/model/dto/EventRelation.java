@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -37,6 +39,13 @@ public class EventRelation extends PartakeModel<EventRelation> {
         this.priority = priority;
     }
     
+    public EventRelation(JSONObject json) {
+        this.srcEventId = json.getString("srcEventId");
+        this.dstEventId = json.getString("dstEventId");
+        this.required = json.getBoolean("required");
+        this.priority = json.getBoolean("priority");
+    }
+    
     @Override
     public EventRelationPK getPrimaryKey() {
         return new EventRelationPK(srcEventId, dstEventId);
@@ -45,6 +54,16 @@ public class EventRelation extends PartakeModel<EventRelation> {
     @Override
     public EventRelation copy() {
         return new EventRelation(this);
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("srcEventId", srcEventId);
+        obj.put("dstEventId", dstEventId);
+        obj.put("required", required);
+        obj.put("priority", priority);
+        return obj;
     }
 
     // ----------------------------------------------------------------------

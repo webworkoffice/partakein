@@ -23,7 +23,15 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
     
     @Override
     public Event create(long pkNumber, String pkSalt, int objNumber) {
-        throw new RuntimeException("Not implemented yet");
+        Date now = new Date(1L);
+        Date beginDate = now;
+        String url = "http://localhost:8080/";
+        String place = "";
+        String address = "";
+        String description = "";
+        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT" + objNumber, "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, now, now);
+        event.setId("eventId" + pkSalt + pkNumber);
+        return event;
     }
     
 	/**
