@@ -39,9 +39,9 @@ public abstract class AbstractConnectionTestCaseBase extends TestService {
 
         InitialContext ic = new InitialContext();
         ic.createSubcontext("java:");
-        ic.createSubcontext("java:comp");
-        ic.createSubcontext("java:comp/env");
-        ic.createSubcontext("java:comp/env/jdbc");
+        ic.createSubcontext("java:/comp");
+        ic.createSubcontext("java:/comp/env");
+        ic.createSubcontext("java:/comp/env/jdbc");
 
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(PartakeProperties.get().getString("comp.env.jdbc.postgres.driver"));
@@ -49,7 +49,7 @@ public abstract class AbstractConnectionTestCaseBase extends TestService {
         ds.setUsername(PartakeProperties.get().getString("comp.env.jdbc.postgres.user"));
         ds.setPassword(PartakeProperties.get().getString("comp.env.jdbc.postgres.password"));
 
-        ic.bind("java:comp/env/jdbc/postgres", ds);
+        ic.bind("java:/comp/env/jdbc/postgres", ds);
     }
 
     // ------------------------------------------------------------

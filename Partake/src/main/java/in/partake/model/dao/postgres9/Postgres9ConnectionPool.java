@@ -24,7 +24,7 @@ public class Postgres9ConnectionPool extends PartakeConnectionPool {
         
         DataSource ds = null;
         try {
-            ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/postgres");
+            ds = (DataSource) InitialContext.doLookup("java:/comp/env/jdbc/postgres");
         } catch (NamingException e) {
             logger.fatal("Postgres9ConnectionPool cannot be created.", e);
         }
