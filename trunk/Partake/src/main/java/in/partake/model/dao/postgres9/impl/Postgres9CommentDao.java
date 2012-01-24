@@ -125,5 +125,4 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
         
         return new Postgres9DataIterator<Comment>(new Mapper((Postgres9Connection) con), psars);
     }
-
 }

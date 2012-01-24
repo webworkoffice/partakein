@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.xwork.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -41,6 +43,12 @@ public class ShortenedURLData extends PartakeModel<ShortenedURLData> {
         this.shortenedURL = shortenedURL.shortenedURL;
     }
     
+    public ShortenedURLData(JSONObject obj) {
+        this.originalURL = obj.getString("originalURL");
+        this.serviceType = obj.getString("serviceType");
+        this.shortenedURL = obj.getString("shortenedURL");
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return new ShortenedURLDataPK(originalURL, serviceType);
@@ -50,6 +58,16 @@ public class ShortenedURLData extends PartakeModel<ShortenedURLData> {
     public ShortenedURLData copy() {
         return new ShortenedURLData(this);
     }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("originalURL", originalURL);
+        obj.put("serviceType", serviceType);
+        obj.put("shortenedURL", shortenedURL);
+        return obj;        
+    }
+    
     
     // ----------------------------------------------------------------------
     // equals method
