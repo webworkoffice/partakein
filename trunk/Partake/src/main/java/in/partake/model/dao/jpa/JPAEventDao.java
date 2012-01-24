@@ -1,3 +1,4 @@
+
 package in.partake.model.dao.jpa;
 
 import in.partake.model.dao.DAOException;

@@ -4,9 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
+
+// TODO: Should be merged into Event. 
 @Entity(name = "EventFeedLinkages")
 public class EventFeedLinkage extends PartakeModel<EventFeedLinkage> {
     @Id
@@ -28,6 +32,11 @@ public class EventFeedLinkage extends PartakeModel<EventFeedLinkage> {
         this.eventId = linkage.eventId;
     }
     
+    public EventFeedLinkage(JSONObject obj) {
+        this.id = obj.getString("id");
+        this.eventId = obj.getString("eventId");
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return id;
@@ -36,6 +45,14 @@ public class EventFeedLinkage extends PartakeModel<EventFeedLinkage> {
     @Override
     public EventFeedLinkage copy() {
         return new EventFeedLinkage(this);
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("eventId", eventId);
+        return obj;
     }
 
     // ----------------------------------------------------------------------

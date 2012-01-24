@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import java.util.Date;
+import java.util.UUID;
 
 import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dto.EventReminder;
@@ -15,7 +16,7 @@ public class EventReminderAccessTest extends AbstractDaoTestCaseBase<IEventRemin
     
     @Override
     protected EventReminder create(long pkNumber, String pkSalt, int objNumber) {
-        return new EventReminder("eventId" + pkSalt + pkNumber, new Date(objNumber), null, null);
+        UUID uuid = new UUID(pkNumber, ("reminder" + pkSalt).hashCode());
+        return new EventReminder(uuid.toString(), new Date(objNumber), null, null);
     }
-
 }

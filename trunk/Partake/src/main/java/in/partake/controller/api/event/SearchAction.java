@@ -55,7 +55,7 @@ public class SearchAction extends PartakeAPIActionSupport {
 
             JSONArray jsonEventsArray = new JSONArray();
             for (Event event : events) {
-                jsonEventsArray.add(event.toJSON());
+                jsonEventsArray.add(event.toSafeJSON());
             }
             JSONObject obj = new JSONObject();
             obj.put("events", jsonEventsArray);

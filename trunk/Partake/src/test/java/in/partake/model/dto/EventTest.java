@@ -101,7 +101,7 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
 
 	@Test(expected = NullPointerException.class)
 	public void testCopyConstructorByNullValue() {
-		new Event(null);
+		new Event((Event) null);
 	}
 
 	@Test
@@ -180,7 +180,7 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
 	public void testToJsonWhenBeginDateExistsAndEndDateIsNull() {
 		Event event = new Event();
 		event.setBeginDate(new Date(0L));
-		JSONObject json = event.toJSON();
+		JSONObject json = event.toSafeJSON();
 		Assert.assertEquals("1970/01/01 09:00:00", json.getString("beginDate"));
 		Assert.assertFalse(json.containsKey("endDate"));
 	}

@@ -6,8 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
+// TODO: EventReminder should be merged into Event.
 @Entity(name = "EventReminders")
 public class EventReminder extends PartakeModel<EventReminder> {
     @Id
@@ -35,6 +38,16 @@ public class EventReminder extends PartakeModel<EventReminder> {
         this.sentDateOfBeforeTheDay = sentDateOfBeforeTheDay == null ? null : new Date(sentDateOfBeforeTheDay.getTime());
     }
     
+    public EventReminder(JSONObject obj) {
+        this.eventId = obj.getString("id");
+        if (obj.containsKey("sentDateOfBeforeDeadlineOneday"))
+            sentDateOfBeforeDeadlineOneday = new Date(obj.getLong("sentDateOfBeforeDeadlineOneday"));
+        if (obj.containsKey("sentDateOfBeforeDeadlineHalfday"))
+            sentDateOfBeforeDeadlineHalfday = new Date(obj.getLong("sentDateOfBeforeDeadlineHalfday"));
+        if (obj.containsKey("sentDateOfBeforeTheDay"))
+            sentDateOfBeforeTheDay = new Date(obj.getLong("sentDateOfBeforeTheDay"));
+    }
+    
     public EventReminder(EventReminder status) {
         this(status.eventId, status.sentDateOfBeforeDeadlineOneday, status.sentDateOfBeforeDeadlineHalfday, status.sentDateOfBeforeTheDay);
     }
@@ -47,6 +60,19 @@ public class EventReminder extends PartakeModel<EventReminder> {
     @Override
     public EventReminder copy() {
         return new EventReminder(this);
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", eventId);
+        if (sentDateOfBeforeDeadlineOneday != null)
+            obj.put("sentDateOfBeforeDeadlineOneday", sentDateOfBeforeDeadlineOneday.getTime());
+        if (sentDateOfBeforeDeadlineHalfday != null)
+            obj.put("sentDateOfBeforeDeadlineHalfday", sentDateOfBeforeDeadlineHalfday.getTime());
+        if (sentDateOfBeforeTheDay != null)
+            obj.put("sentDateOfBeforeTheDay", sentDateOfBeforeTheDay.getTime());
+        return obj;
     }
     
     // ----------------------------------------------------------------------

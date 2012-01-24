@@ -43,7 +43,7 @@ public class EventAction extends PartakeAPIActionSupport {
         }
 
         JSONObject obj = new JSONObject();
-        obj.put("event", event.toJSON());
+        obj.put("event", event.toSafeJSON());
         return renderOK(obj);
     }
     

@@ -131,7 +131,39 @@ public class Event extends PartakeModel<Event> {
     	this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
     	this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
     	this.revision = event.revision;
-    	
+    }
+
+    public Event(JSONObject json) {
+        this.id = json.getString("id"); 
+        this.shortId = json.optString("shortId", null);
+        this.title = json.getString("title");
+        this.summary = json.getString("summary");
+        this.category = json.getString("category");
+        if (json.containsKey("deadline"))
+            this.deadline = new Date(json.getLong("deadline"));
+        if (json.containsKey("beginDate"))
+            this.beginDate = new Date(json.getLong("beginDate"));
+        if (json.containsKey("endDate"))
+            this.endDate = new Date(json.getLong("endDate"));
+        this.capacity = json.optInt("capacity", 0);
+        this.url = json.optString("url", null);
+        this.place = json.optString("place", null);
+        this.address = json.optString("address", null);
+        this.description = json.getString("description");
+        this.hashTag = json.optString("hashTag", null);
+        this.ownerId = json.getString("ownerId");
+        this.managerScreenNames = json.optString("managerScreenNames", null);
+        this.foreImageId = json.optString("foreImageId", null);
+        this.backImageId = json.optString("backImageId", null);
+        this.isPrivate = json.optBoolean("isPrivate", false);
+        this.passcode = json.optString("passcode", null);
+        this.isPreview = json.optBoolean("isPreview", false);
+        this.isRemoved = json.optBoolean("isRemoved", false);
+        if (json.containsKey("createdAt"))
+            this.createdAt = new Date(json.getLong("createdAt"));
+        if (json.containsKey("modifiedAt"))
+            this.modifiedAt = new Date(json.getLong("modifiedAt"));
+        this.revision = json.optInt("revision", 1);
     }
     
     public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
@@ -212,7 +244,11 @@ public class Event extends PartakeModel<Event> {
         return new Event(this);
     }
     
-    public JSONObject toJSON() {
+    /** JSON string for external clients. 
+     * TODO: All Date should be long instead of Formatted date. However, maybe some clients uses this values... What should we do?
+     * Maybe we should take a version number in request query. The version 2 format should obey the rule.
+     */
+    public JSONObject toSafeJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
         obj.put("shortId", shortId);
@@ -237,7 +273,8 @@ public class Event extends PartakeModel<Event> {
         obj.put("description", description);
         obj.put("hashTag", hashTag);
         obj.put("ownerId", ownerId);
-        obj.put("managerScreenNames", managerScreenNames);
+        if (managerScreenNames != null)
+            obj.put("managerScreenNames", managerScreenNames);
         obj.put("foreImageId", foreImageId);
         obj.put("backImageId", backImageId);
         obj.put("isPrivate", isPrivate);
@@ -254,6 +291,43 @@ public class Event extends PartakeModel<Event> {
 
         return obj;
     }
+    
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("shortId", shortId);
+        obj.put("title", title);
+        obj.put("summary", summary);
+        obj.put("category", category);
+        if (deadline != null)
+            obj.put("deadline", deadline.getTime());
+        if (beginDate != null)
+            obj.put("beginDate", beginDate.getTime());
+        if (endDate != null)
+            obj.put("endDate", endDate.getTime());
+        obj.put("capacity", capacity);
+        obj.put("url", url);
+        obj.put("place", place);
+        obj.put("address", address);
+        obj.put("description", description);
+        obj.put("hashTag", hashTag);
+        obj.put("ownerId", ownerId);
+        if (managerScreenNames != null)
+            obj.put("managerScreenNames", managerScreenNames);
+        obj.put("foreImageId", foreImageId);
+        obj.put("backImageId", backImageId);
+        obj.put("isPrivate", isPrivate);
+        obj.put("passcode", passcode);
+        obj.put("isPreview", isPreview);
+        obj.put("isRemoved", isRemoved);
+        if (createdAt != null)
+            obj.put("createdAt", createdAt.getTime());
+        if (modifiedAt != null)
+            obj.put("modifiedAt", modifiedAt.getTime());
+        obj.put("revision", revision);
+        return obj;
+    }
+
     
     // ----------------------------------------------------------------------
     // equals method 

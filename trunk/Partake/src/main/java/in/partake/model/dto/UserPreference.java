@@ -41,6 +41,13 @@ public class UserPreference extends PartakeModel<UserPreference> {
         this.tweetingAttendanceAutomatically = pref.tweetingAttendanceAutomatically;
     }
     
+    public UserPreference(JSONObject obj) {
+        this.userId = obj.getString("id");
+        this.profilePublic = obj.getBoolean("profilePublic");
+        this.receivingTwitterMessage = obj.getBoolean("receivingTwitterMessage");
+        this.tweetingAttendanceAutomatically = obj.getBoolean("tweetingAttendanceAutomatically");
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return userId;
@@ -57,6 +64,15 @@ public class UserPreference extends PartakeModel<UserPreference> {
         obj.put("receivingTwitterMessage", receivingTwitterMessage);
         obj.put("tweetingAttendanceAutomatically", tweetingAttendanceAutomatically);
         
+        return obj;
+    }
+    
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", userId);
+        obj.put("profilePublic", profilePublic);
+        obj.put("receivingTwitterMessage", receivingTwitterMessage);
+        obj.put("tweetingAttendanceAutomatically", tweetingAttendanceAutomatically);        
         return obj;
     }
     
