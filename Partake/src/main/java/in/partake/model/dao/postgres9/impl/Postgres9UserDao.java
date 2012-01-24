@@ -24,6 +24,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
 
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
+        entityDao.initialize((Postgres9Connection) con);
     }
 
     @Override

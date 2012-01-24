@@ -1,6 +1,7 @@
 package in.partake.model.fixture.impl;
 
 import java.util.Date;
+import java.util.UUID;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
@@ -30,7 +31,9 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
         String address = "";
         String description = "";
         Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT" + objNumber, "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, now, now);
-        event.setId("eventId" + pkSalt + pkNumber);
+        
+        UUID uuid = new UUID(pkNumber, ("event" + pkSalt).hashCode());
+        event.setId(uuid.toString());
         return event;
     }
     

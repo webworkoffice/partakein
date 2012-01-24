@@ -9,7 +9,7 @@ public class Postgres9Entity {
     private int version;
     /** Entity Body */
     private byte[] body;
-    /** Optional Body */
+    /** Optional Body. Will be used in BinaryEntity. */
     private byte[] opt;
     /** Time created at */
     private Date createdAt;
