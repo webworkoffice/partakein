@@ -7,10 +7,10 @@ import in.partake.util.PDate;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.UUID;
 
@@ -84,7 +84,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
                 ps.setBinaryStream(4, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
             else
                 ps.setNull(4, Types.NULL);
-            ps.setDate(5, new Date(entity.getCreatedAt().getTime()));
+            ps.setTimestamp(5, new Timestamp(entity.getCreatedAt().getTime()));
             
             ps.execute();
         } catch (SQLException e) {
@@ -105,7 +105,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
                 ps.setBinaryStream(3, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
             else
                 ps.setNull(3, Types.NULL);
-            ps.setDate(4, new Date(PDate.getCurrentTime()));
+            ps.setTimestamp(4, new Timestamp(PDate.getCurrentTime()));
             ps.setObject(5, entity.getId(), Types.OTHER);
             
             ps.execute();
@@ -147,9 +147,9 @@ public class Postgres9EntityDao extends Postgres9Dao {
                 int version = rs.getInt(1);
                 byte[] body = rs.getBytes(2);
                 byte[] opt = rs.getBytes(3);
-                Date createdAt = rs.getDate(4);
-                Date modifiedAt = rs.getDate(5);
-                return new Postgres9Entity(id, version, body, opt, createdAt, modifiedAt);
+                Timestamp createdAt = rs.getTimestamp(4);
+                Timestamp modifiedAt = rs.getTimestamp(5);
+                return new Postgres9Entity(id, version, body, opt, createdAt, modifiedAt); 
             } else {
                 return null;
             }
@@ -222,8 +222,8 @@ public class Postgres9EntityDao extends Postgres9Dao {
                     int version = rs.getInt(2);
                     byte[] body = rs.getBytes(3);
                     byte[] opt = rs.getBytes(4);
-                    Date createdAt = rs.getDate(5);
-                    Date modifiedAt = rs.getDate(6);
+                    Timestamp createdAt = rs.getTimestamp(5);
+                    Timestamp modifiedAt = rs.getTimestamp(6);
                     return new Postgres9Entity(id, version, body, opt, createdAt, modifiedAt);
                 } catch (SQLException e) {
                     throw new DAOException(e);

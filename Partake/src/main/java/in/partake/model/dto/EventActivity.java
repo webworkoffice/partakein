@@ -9,6 +9,8 @@ import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
@@ -39,6 +41,15 @@ public class EventActivity extends PartakeModel<EventActivity> {
     public EventActivity(EventActivity eventActivity) {
         this(eventActivity.id, eventActivity.eventId, eventActivity.title, eventActivity.content, eventActivity.createdAt);
     }
+    
+    public EventActivity(JSONObject obj) {
+        this.id = obj.getString("id");
+        this.eventId = obj.getString("eventId");
+        this.title = obj.getString("title");
+        this.content = obj.getString("content");
+        if (obj.containsKey("createdAt"))
+            this.createdAt = new Date(obj.getLong("createdAt"));
+    }
 
     @Override
     public EventActivity copy() {
@@ -48,6 +59,18 @@ public class EventActivity extends PartakeModel<EventActivity> {
     @Override
     public Object getPrimaryKey() {
         return id;
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("eventId", eventId);
+        obj.put("title", title);
+        obj.put("content", content);
+        if (createdAt != null)
+            obj.put("createdAt", createdAt.getTime());
+        return obj;
     }
 
     // ----------------------------------------------------------------------

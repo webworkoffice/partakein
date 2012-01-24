@@ -2,6 +2,7 @@ package in.partake.model.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +19,8 @@ public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActiv
     
     @Override
     public EventActivity create(long pkNumber, String pkSalt, int objNumber) {
-        return new EventActivity(pkSalt + pkNumber, "eventId", "title" + objNumber, "content", new Date(objNumber % 10));
+        UUID uuid = new UUID(pkNumber, ("activity" + pkSalt).hashCode());
+        return new EventActivity(uuid.toString(), "eventId", "title" + objNumber, "content", new Date(objNumber % 10));
     }
     
     @Test

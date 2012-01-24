@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -112,14 +113,8 @@ public class Postgres9IndexDao extends Postgres9Dao {
         ResultSet rs = null;
         try {
             ps = con.prepareStatement(sql);
-            for (int i = 0; i < values.length; ++i) {
-                if (values[i] instanceof String)
-                    ps.setString(i + 1, (String) values[i]);
-                else if (values[i] instanceof Date)
-                    ps.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
-                else
-                    throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
-            }
+            for (int i = 0; i < values.length; ++i)
+                setObject(ps, i + 1, values[i]);
             rs = ps.executeQuery();
             
             if (rs.next())
@@ -140,14 +135,8 @@ public class Postgres9IndexDao extends Postgres9Dao {
         
         try {
             ps = con.prepareStatement(sql);
-            for (int i = 0; i < values.length; ++i) {
-                if (values[i] instanceof String)
-                    ps.setString(i + 1, (String) values[i]);
-                else if (values[i] instanceof Date)
-                    ps.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
-                else
-                    throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
-            }
+            for (int i = 0; i < values.length; ++i)
+                setObject(ps, i + 1, values[i]);
           
             rs = ps.executeQuery();
             shouldClose = false;
@@ -181,14 +170,8 @@ public class Postgres9IndexDao extends Postgres9Dao {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(sql);
-            for (int i = 0; i < values.length; ++i) {
-                if (values[i] instanceof String)
-                    ps.setString(i + 1, (String) values[i]);
-                else if (values[i] instanceof Date)
-                    ps.setDate(i + 1, new java.sql.Date(((Date) values[i]).getTime()));
-                else
-                    throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
-            }
+            for (int i = 0; i < values.length; ++i)
+                setObject(ps, i + 1, values[i]);
             ps.execute();
         } finally {
             close(ps);
@@ -205,14 +188,8 @@ public class Postgres9IndexDao extends Postgres9Dao {
         PreparedStatement ps = null;
         try {
             ps = con.prepareStatement(sql);
-            for (int i = 1; i < columns.length; ++i) {
-                if (values[i] instanceof String)
-                    ps.setString(i, (String) values[i]);
-                else if (values[i] instanceof Date)
-                    ps.setDate(i, new java.sql.Date(((Date) values[i]).getTime()));
-                else
-                    throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
-            }
+            for (int i = 1; i < columns.length; ++i)
+                setObject(ps, i, values[i]);
             
             ps.setString(columns.length, (String) values[0]);
             ps.execute();
@@ -247,6 +224,17 @@ public class Postgres9IndexDao extends Postgres9Dao {
             close(rs);
             close(ps);
         }        
+    }
+    
+    private void setObject(PreparedStatement ps, int nth, Object obj) throws SQLException {
+        if (obj instanceof String)
+            ps.setString(nth, (String) obj);
+        else if (obj instanceof Date)
+            ps.setTimestamp(nth, new Timestamp(((Date) obj).getTime())); 
+        else if (obj instanceof Integer)
+            ps.setInt(nth, (Integer) obj);
+        else
+            throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
     }
     
     private void truncate(Connection con) throws SQLException {

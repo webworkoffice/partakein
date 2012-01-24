@@ -1,5 +1,7 @@
 package in.partake.model.dao;
 
+import java.util.UUID;
+
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dto.EventFeedLinkage;
 
@@ -13,6 +15,7 @@ public class EventFeedAccessTest extends AbstractDaoTestCaseBase<IEventFeedAcces
     
     @Override
     protected EventFeedLinkage create(long pkNumber, String pkSalt, int objNumber) {
-        return new EventFeedLinkage("feedId" + pkSalt + pkNumber, "eventId" + objNumber);
+        UUID uuid = new UUID(pkNumber, ("feed" + pkSalt).hashCode());
+        return new EventFeedLinkage(uuid.toString(), "eventId" + objNumber);
     }
 }
