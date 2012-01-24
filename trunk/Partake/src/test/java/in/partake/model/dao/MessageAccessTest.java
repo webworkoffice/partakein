@@ -4,6 +4,7 @@ import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dto.Message;
 
 import java.util.Date;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -21,7 +22,8 @@ public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, M
 	
 	@Override
 	protected Message create(long pkNumber, String pkSalt, int objNumber) {
-	    return new Message(pkSalt + pkNumber, "userId" + objNumber, "some message", "eventId" + objNumber, new Date(1L));
+	    UUID uuid = new UUID(pkNumber, ("message" + pkSalt).hashCode());
+	    return new Message(uuid.toString(), "userId" + objNumber, "some message", "eventId" + objNumber, new Date(1L));
 	}
 	
 	@Test
@@ -39,13 +41,20 @@ public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, M
 			Date date = null;
 			int count = 0;
 			con.beginTransaction();
-			for (DataIterator<Message> iter = access.findByEventId(con, eventId); iter.hasNext();) {
-				Message m = iter.next();
-				if (date != null) {
-					Assert.assertTrue(date.after(m.getCreatedAt()));
-				}
-				date = m.getCreatedAt();
-				++count;
+			DataIterator<Message> iter = access.findByEventId(con, eventId);
+			try {
+    			while (iter.hasNext()) {
+    				Message m = iter.next();
+    				if (m == null)
+    				    continue;
+    				if (date != null) {
+    					Assert.assertTrue(date.after(m.getCreatedAt()));
+    				}
+    				date = m.getCreatedAt();
+    				++count;
+    			}
+			} finally {
+			    iter.close();
 			}
 			Assert.assertEquals(3, count);
 		} finally {

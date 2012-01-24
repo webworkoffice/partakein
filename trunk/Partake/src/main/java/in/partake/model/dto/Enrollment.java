@@ -14,6 +14,8 @@ import javax.persistence.IdClass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 @IdClass(EnrollmentPK.class)
@@ -67,6 +69,18 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.attendanceStatus = p.attendanceStatus;
         this.modifiedAt = p.modifiedAt == null ? null : (Date) p.modifiedAt.clone();
     }
+    
+    public Enrollment(JSONObject obj) {
+        this.userId = obj.getString("userId");
+        this.eventId = obj.getString("eventId");
+        this.comment = obj.getString("comment");
+        this.vip = obj.getBoolean("vip");
+        this.status = ParticipationStatus.safeValueOf(obj.getString("status"));
+        this.modificationStatus = ModificationStatus.safeValueOf(obj.getString("modificationStatus"));
+        this.attendanceStatus = AttendanceStatus.safeValueOf(obj.getString("attendanceStatus"));
+        if (obj.containsKey("modifiedAt"))
+            this.modifiedAt = new Date(obj.getLong("modifiedAt"));
+    }
 
     @Override
     public Object getPrimaryKey() {
@@ -76,6 +90,21 @@ public class Enrollment extends PartakeModel<Enrollment> {
     @Override
     public Enrollment copy() {
         return new Enrollment(this);
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("userId", userId);
+        obj.put("eventId", eventId);
+        obj.put("comment", comment);
+        obj.put("vip", vip);
+        obj.put("status", status.toString());
+        obj.put("modificationStatus", modificationStatus.toString());
+        obj.put("attendanceStatus", attendanceStatus.toString());
+        if (modifiedAt != null) 
+            obj.put("modifiedAt", modifiedAt.getTime());
+        return obj;
     }
     
     // ----------------------------------------------------------------------

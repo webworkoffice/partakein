@@ -409,12 +409,14 @@ public final class MessageService extends PartakeService {
 
             List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
             DataIterator<Message> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
-
-            while (it.hasNext()) {
-                Message message = it.next();
-                messages.add(new DirectMessageEx(message, getUserEx(con, message.getUserId())));
+            try {
+                while (it.hasNext()) {
+                    Message message = it.next();
+                    messages.add(new DirectMessageEx(message, getUserEx(con, message.getUserId())));
+                }
+            } finally {
+                it.close();
             }
-
             con.commit();
 
             return messages;
@@ -438,12 +440,14 @@ public final class MessageService extends PartakeService {
             con.beginTransaction();
             List<Message> messages = new ArrayList<Message>();
             DataIterator<Message> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
-
-            for (int i = 0; i < maxMessage; ++i) {
-                if (!it.hasNext()) { break; }
-                messages.add(it.next());
+            try {
+                for (int i = 0; i < maxMessage; ++i) {
+                    if (!it.hasNext()) { break; }
+                    messages.add(it.next());
+                }
+            } finally {
+                it.close();
             }
-
             con.commit();
 
             return messages;
