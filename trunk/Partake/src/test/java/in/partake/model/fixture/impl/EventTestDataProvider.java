@@ -91,19 +91,19 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
                                now, now, -1));
 
 
-        dao.put(con, new Event("event-search-1", "event-search-1", "title title title", "summary", "computer", 
+        dao.put(con, new Event(EVENT_SEARCH_ID1, "event-search-1", "title title title", "summary", "computer", 
                                late, late, late, 0, "url", "place",
                                "address", "unique identifier -- djlkajsd", "#hashTag", USER_ID1, null,
                                "foreImageId", "backImageId", false, null, false, false,
                                now, now, -1));
 
-        dao.put(con, new Event("event-search-2", "event-search-2", "title title title", "summary", "computer", 
+        dao.put(con, new Event(EVENT_SEARCH_ID2, "event-search-2", "title title title", "summary", "computer", 
                                late, late, late, 0, "url", "place",
                                "address", "unique identifier -- xgnasdgb", "#hashTag", USER_ID1, null,
                                "foreImageId", "backImageId", false, null, false, false,
                                now, now, -1));
 
-        dao.put(con, new Event("event-search-3", "event-search-3", "title title title", "summary", "computer", 
+        dao.put(con, new Event(EVENT_SEARCH_ID3, "event-search-3", "title title title", "summary", "computer", 
                                late, late, late, 0, "url", "place",
                                "address", "unique identifier -- 昇竜拳", "#hashTag", USER_ID1, null,
                                "foreImageId", "backImageId", false, null, false, false,

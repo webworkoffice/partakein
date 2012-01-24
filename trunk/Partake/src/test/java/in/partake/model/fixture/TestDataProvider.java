@@ -20,6 +20,10 @@ public abstract class TestDataProvider<T> {
     public static final String EVENT_PRIVATE_ID1 = new UUID(2, 11).toString();
     public static final String EVENT_PRIVATE_ID2 = new UUID(2, 12).toString();
     public static final String EVENT_PRIVATE_ID3 = new UUID(2, 13).toString();
+
+    public static final String EVENT_SEARCH_ID1 = new UUID(2, 21).toString();
+    public static final String EVENT_SEARCH_ID2 = new UUID(2, 22).toString();
+    public static final String EVENT_SEARCH_ID3 = new UUID(2, 23).toString();
     
     public abstract T create();
     public abstract T create(long pkNumber, String pkSalt, int objNumber);
