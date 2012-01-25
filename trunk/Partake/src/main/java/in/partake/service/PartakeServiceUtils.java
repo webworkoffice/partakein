@@ -40,14 +40,18 @@ class PartakeServiceUtils {
     private static volatile Date bitlyRateLimitExceededTime;
     
     public static <T> List<T> convertToList(DataIterator<T> it) throws DAOException {
-        List<T> result = new ArrayList<T>();
-        while (it.hasNext()) {
-            T t = it.next();
-            if (t == null) { continue; }
-            result.add(t);
+        try {
+            List<T> result = new ArrayList<T>();
+            while (it.hasNext()) {
+                T t = it.next();
+                if (t == null) { continue; }
+                result.add(t);
+            }
+            
+            return result;
+        } finally {
+            it.close();
         }
-        
-        return result;
     }
     
     public static UserEx getUserEx(PartakeConnection con, PartakeDAOFactory factory, String userId) throws DAOException {

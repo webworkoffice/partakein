@@ -143,10 +143,14 @@ public final class EventService extends PartakeService {
         try {
             con.beginTransaction();
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
-            while (it.hasNext()) {
-                Event event = it.next();
-                if (event == null) { continue; }
-                f.apply(event);
+            try {
+                while (it.hasNext()) {
+                    Event event = it.next();
+                    if (event == null) { continue; }
+                    f.apply(event);
+                }
+            } finally {
+                it.close();
             }
             con.commit();
         } finally {
@@ -164,9 +168,13 @@ public final class EventService extends PartakeService {
         try {
             con.beginTransaction();
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
-            while (it.hasNext()) {
-                Event event = it.next();
-                appendFeedIfAbsent(factory, con, event.getId());
+            try {
+                while (it.hasNext()) {
+                    Event event = it.next();
+                    appendFeedIfAbsent(factory, con, event.getId());
+                }
+            } finally {
+                it.close();
             }
             con.commit();
 	    } finally {
@@ -564,18 +572,22 @@ public final class EventService extends PartakeService {
         try {
             LuceneDao.get().truncate();
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
-            while (it.hasNext()) {
-                Event event = it.next();
-                if (event == null) { continue; }
-                if (event.isPrivate()) {
-                    LuceneDao.get().removeDocument(event.getId());
-                } else if (LuceneDao.get().hasDocument(event.getId())) {
-                    Document doc = makeDocument(event.getId(), event);
-                    LuceneDao.get().updateDocument(doc);
-                } else {
-                    Document doc = makeDocument(event.getId(), event);
-                    LuceneDao.get().addDocument(doc);
+            try {
+                while (it.hasNext()) {
+                    Event event = it.next();
+                    if (event == null) { continue; }
+                    if (event.isPrivate()) {
+                        LuceneDao.get().removeDocument(event.getId());
+                    } else if (LuceneDao.get().hasDocument(event.getId())) {
+                        Document doc = makeDocument(event.getId(), event);
+                        LuceneDao.get().updateDocument(doc);
+                    } else {
+                        Document doc = makeDocument(event.getId(), event);
+                        LuceneDao.get().addDocument(doc);
+                    }
                 }
+            } finally {
+                it.close();
             }
         } finally {
             con.invalidate();
@@ -864,12 +876,16 @@ public final class EventService extends PartakeService {
             List<Comment> result = new ArrayList<Comment>();
 
             DataIterator<Comment> it = factory.getCommentAccess().getCommentsByEvent(con, eventId);
-            if (it == null) { return result; }
-
-            while (it.hasNext()) {
-                Comment comment = it.next();
-                if (comment == null) { continue; }
-                result.add(comment);
+            try {
+                if (it == null) { return result; }
+    
+                while (it.hasNext()) {
+                    Comment comment = it.next();
+                    if (comment == null) { continue; }
+                    result.add(comment);
+                }
+            } finally {
+                it.close();
             }
             con.commit();
             return result;
@@ -886,16 +902,20 @@ public final class EventService extends PartakeService {
 
             con.beginTransaction();
             DataIterator<Comment> iterator = factory.getCommentAccess().getCommentsByEvent(con, eventId);
-            if (iterator == null) { return result; }
-
-            while (iterator.hasNext()) {
-                Comment comment = iterator.next();
-                if (comment == null) { continue; }
-                String commentId = comment.getId();
-                if (commentId == null) { continue; }
-                CommentEx commentEx = getCommentEx(con, commentId);
-                if (commentEx == null) { continue; }
-                result.add(commentEx);
+            try {
+                if (iterator == null) { return result; }
+    
+                while (iterator.hasNext()) {
+                    Comment comment = iterator.next();
+                    if (comment == null) { continue; }
+                    String commentId = comment.getId();
+                    if (commentId == null) { continue; }
+                    CommentEx commentEx = getCommentEx(con, commentId);
+                    if (commentEx == null) { continue; }
+                    result.add(commentEx);
+                }
+            } finally {
+                iterator.close();
             }
             con.commit();
             return result;
@@ -1185,15 +1205,20 @@ public final class EventService extends PartakeService {
         try {
             con.beginTransaction();
             // TODO use MapReduce for speed-up
-            for (DataIterator<Event> iter = factory.getEventAccess().getIterator(con); iter.hasNext(); ) {
-                Event event = iter.next();
-                if (event == null) continue;
-                count.numEvent++;
-                if (event.isPrivate()) {
-                    count.numPrivateEvent++;
-                } else {
-                	count.numPublicEvent++;
+            DataIterator<Event> iter = factory.getEventAccess().getIterator(con);
+            try {
+                while (iter.hasNext()) {
+                    Event event = iter.next();
+                    if (event == null) continue;
+                    count.numEvent++;
+                    if (event.isPrivate()) {
+                        count.numPrivateEvent++;
+                    } else {
+                    	count.numPublicEvent++;
+                    }
                 }
+            } finally {
+                iter.close();
             }
             con.commit();
         } finally {

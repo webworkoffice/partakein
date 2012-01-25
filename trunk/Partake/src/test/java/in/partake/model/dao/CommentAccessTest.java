@@ -96,22 +96,30 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
             // update
             {
                 DataIterator<Comment> it = factory.getCommentAccess().getCommentsByEvent(con, prefix + "eventId");
-                while (it.hasNext()) {
-                    Comment comment = it.next();
-                    
-                    Comment updated = new Comment(comment);
-                    updated.setComment("New comment!");
-                    
-                    it.update(updated);
+                try {
+                    while (it.hasNext()) {
+                        Comment comment = it.next();
+                        
+                        Comment updated = new Comment(comment);
+                        updated.setComment("New comment!");
+                        
+                        it.update(updated);
+                    }
+                } finally {
+                    it.close();
                 }
             }
             // get them
             {
                 DataIterator<Comment> it = factory.getCommentAccess().getCommentsByEvent(con, prefix + "eventId");
-                while (it.hasNext()) {
-                    Comment comment = it.next();
-                    Assert.assertEquals("New comment!", comment.getComment());
-                }                
+                try {
+                    while (it.hasNext()) {
+                        Comment comment = it.next();
+                        Assert.assertEquals("New comment!", comment.getComment());
+                    }
+                } finally {
+                    it.close();
+                }
             }
             
             con.commit();            

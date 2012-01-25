@@ -332,11 +332,16 @@ public final class UserService extends PartakeService {
         try {
             con.beginTransaction();
             // TODO use MapReduce for speed-up
-            for (DataIterator<User> iter = factory.getUserAccess().getIterator(con); iter.hasNext(); ) {
-                User user = iter.next();
-                if (user == null) { continue; }
-                count.user++;
-                if (user.getLastLoginAt().after(oneMonthAgo)) { count.activeUser++; }
+            DataIterator<User> iter = factory.getUserAccess().getIterator(con);
+            try {
+                while (iter.hasNext()) {
+                    User user = iter.next();
+                    if (user == null) { continue; }
+                    count.user++;
+                    if (user.getLastLoginAt().after(oneMonthAgo)) { count.activeUser++; }
+                }
+            } finally {
+                iter.close();
             }
             con.commit();
         } finally {
