@@ -267,7 +267,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     }
 
     @Test
-    public final void fr() throws Exception {
+    public final void testToIterate() throws Exception {
         PartakeConnection con = getPool().getConnection();
         try {
             Set<T> created = new HashSet<T>();

@@ -3,6 +3,7 @@ package in.partake.controller;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.BinaryData;
 import in.partake.service.EventService;
+import in.partake.util.Util;
 
 import java.io.ByteArrayInputStream;
 
@@ -18,7 +19,10 @@ public class EventsImageController extends PartakeActionSupport {
 	
 	public String show() {
 		String imageId = getParameter(IMAGE_ID_PARAM_NAME);
+
+		// TODO: Maybe we should return INVALID in these 2 cases.
 		if (imageId == null) { return NOT_FOUND; }
+		if (!Util.isUUID(imageId)) { return NOT_FOUND; }
 		
 		try {
 			BinaryData data = EventService.get().getBinaryData(imageId);

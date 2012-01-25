@@ -7,33 +7,25 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.PartakeService;
+import in.partake.service.TestService;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
-
-
 import junit.framework.Assert;
+
+import org.junit.BeforeClass;
 
 public class MockServiceTestBase extends PartakeService {
     
     @BeforeClass
     public static void setUpOnce() {
+        // TODO: Should share the code with AbstractConnectionTestCaseBase.
         PartakeProperties.get().reset("mock");
-        initialize();
+        TestService.initialize();
     }
-
-    @AfterClass
-    public static void tearDownOnce() {
-        PartakeProperties.get().reset();
-        initialize();
-    }
-
     
     /**
      * assert that all connections are released.
