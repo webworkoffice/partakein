@@ -32,7 +32,7 @@ public class TestService extends PartakeService {
         this.testDataProviderSet = new PartakeTestDataProviderSet();
     }
     
-    protected PartakeTestDataProviderSet getTestDataProviderSet() {
+    public PartakeTestDataProviderSet getTestDataProviderSet() {
         return testDataProviderSet;
     }
 

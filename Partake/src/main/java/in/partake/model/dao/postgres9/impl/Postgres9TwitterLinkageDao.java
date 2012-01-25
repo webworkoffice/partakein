@@ -2,6 +2,8 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.DataMapper;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
@@ -97,7 +99,23 @@ public class Postgres9TwitterLinkageDao extends Postgres9Dao implements ITwitter
     }
 
     @Override
-    public DataIterator<TwitterLinkage> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+    public DataIterator<TwitterLinkage> getIterator(PartakeConnection con) throws DAOException {       
+        DataMapper<Postgres9Entity, TwitterLinkage> mapper = new DataMapper<Postgres9Entity, TwitterLinkage>() {
+            @Override
+            public TwitterLinkage map(Postgres9Entity entity) throws DAOException {
+                if (entity == null)
+                    return null;
+
+                JSONObject json = JSONObject.fromObject(new String(entity.getBody(), UTF8));
+                return new TwitterLinkage(json).freeze();
+            }
+
+            @Override
+            public Postgres9Entity unmap(TwitterLinkage t) throws DAOException {
+                throw new UnsupportedOperationException();
+            }
+        };
+        DataIterator<Postgres9Entity> iterator = entityDao.getIterator((Postgres9Connection) con); 
+        return new MapperDataIterator<Postgres9Entity, TwitterLinkage>(mapper, iterator);
     }
 }

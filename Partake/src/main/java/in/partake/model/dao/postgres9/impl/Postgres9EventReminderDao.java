@@ -2,24 +2,34 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.EventReminder;
 import in.partake.util.PDate;
 import net.sf.json.JSONObject;
+
+class EntityEventReminderMapper extends Postgres9EntityDataMapper<EventReminder> {   
+    public EventReminder map(JSONObject obj) {
+        return new EventReminder(obj).freeze();
+    }
+}
 
 public class Postgres9EventReminderDao extends Postgres9Dao implements IEventReminderAccess {
     static final String TABLE_NAME = "EventReminderEntities";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
+    private final EntityEventReminderMapper mapper;
 
     public Postgres9EventReminderDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.mapper = new EntityEventReminderMapper();
     }
 
     @Override
@@ -47,12 +57,7 @@ public class Postgres9EventReminderDao extends Postgres9Dao implements IEventRem
 
     @Override
     public EventReminder find(PartakeConnection con, String id) throws DAOException {
-        Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
-        if (entity == null)
-            return null;
-
-        JSONObject json = JSONObject.fromObject(new String(entity.getBody(), UTF8));
-        return new EventReminder(json).freeze();
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -62,7 +67,7 @@ public class Postgres9EventReminderDao extends Postgres9Dao implements IEventRem
 
     @Override
     public DataIterator<EventReminder> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, EventReminder>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
 }

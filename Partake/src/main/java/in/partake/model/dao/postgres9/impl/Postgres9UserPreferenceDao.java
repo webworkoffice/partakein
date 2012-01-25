@@ -2,15 +2,23 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.UserPreference;
 import in.partake.util.PDate;
 import net.sf.json.JSONObject;
+
+class EntityUserPreferenceMapper extends Postgres9EntityDataMapper<UserPreference> {   
+    public UserPreference map(JSONObject obj) {
+        return new UserPreference(obj).freeze();
+    }
+}
 
 //TODO: UserPreference should be merged into User.
 public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPreferenceAccess {
@@ -18,9 +26,11 @@ public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPre
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
+    private final EntityUserPreferenceMapper mapper;
 
     public Postgres9UserPreferenceDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.mapper = new EntityUserPreferenceMapper();
     }
 
     @Override
@@ -47,13 +57,7 @@ public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPre
 
     @Override
     public UserPreference find(PartakeConnection con, String id) throws DAOException {
-        Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
-        if (entity == null)
-            return null;
-
-        JSONObject json = JSONObject.fromObject(new String(entity.getBody(), UTF8));
-        UserPreference pref = new UserPreference(json);
-        return pref.freeze();
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -63,6 +67,6 @@ public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPre
 
     @Override
     public DataIterator<UserPreference> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, UserPreference>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 }

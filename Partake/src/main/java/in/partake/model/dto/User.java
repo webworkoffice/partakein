@@ -42,6 +42,15 @@ public class User extends PartakeModel<User> {
         this.lastLoginAt = user.lastLoginAt;
         this.calendarId = user.calendarId;
     }
+    
+    public User(JSONObject obj) {
+        this.id = obj.getString("id");
+        this.twitterId = obj.getString("twitterId");
+        if (obj.containsKey("lastLoginAt"))
+            this.lastLoginAt = new Date(obj.getLong("lastLoginAt"));
+        if (obj.containsKey("calendarId"))
+            this.calendarId = obj.getString("calendarId");        
+    }
 
     @Override
     public Object getPrimaryKey() {
@@ -79,29 +88,6 @@ public class User extends PartakeModel<User> {
 
         return obj;
     }
-    
-    public static User fromJSON(JSONObject obj) {
-        User user = new User();
-
-        final String[] requiredFields = new String[] { "id", "twitterId" }; 
-        for (String field : requiredFields) {
-            if (!obj.containsKey(field))
-                return null;
-        }
-        
-        user.setId(obj.getString("id"));        
-        user.setTwitterId(obj.getString("twitterId"));
-        
-        // lastLoginAt can be NULL.
-        if (obj.containsKey("lastLoginAt"))
-            user.setLastLoginAt(new Date(obj.getLong("lastLoginAt")));
-        
-        // calendarId can be NULL.
-        if (obj.containsKey("calendarId"))
-            user.setCalendarId(obj.getString("calendarId"));
-
-        return user;
-    }
 
     // ----------------------------------------------------------------------
     // equal methods
@@ -122,17 +108,8 @@ public class User extends PartakeModel<User> {
     
     @Override
     public int hashCode() {
-        int code = 0;
-        
-        code = code * 37 + ObjectUtils.hashCode(id);
-        code = code * 37 + ObjectUtils.hashCode(lastLoginAt);
-        code = code * 37 + ObjectUtils.hashCode(twitterId);
-        code = code * 37 + ObjectUtils.hashCode(calendarId);
-        
-        return code;
+        return ObjectUtils.hashCode(id);
     }
-    
-
     
     // ----------------------------------------------------------------------
     // accessors

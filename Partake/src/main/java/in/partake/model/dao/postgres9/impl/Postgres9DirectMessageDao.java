@@ -2,7 +2,7 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.DataMapper;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
@@ -10,15 +10,19 @@ import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9DataIterator;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
+import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.Message;
 import in.partake.util.PDate;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import net.sf.json.JSONObject;
+
+class EntityMessageMapper extends Postgres9EntityDataMapper<Message> {   
+    public Message map(JSONObject obj) {
+        return new Message(obj).freeze();
+    }
+}
 
 // TODO: Should be renamed to Postgres9MessageDao.
 public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageAccess {
@@ -28,10 +32,12 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
+    private final EntityMessageMapper mapper;
 
     public Postgres9DirectMessageDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
+        this.mapper = new EntityMessageMapper();
     }
 
     @Override
@@ -68,12 +74,7 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
 
     @Override
     public Message find(PartakeConnection con, String id) throws DAOException {
-        Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
-        if (entity == null)
-            return null;
-
-        JSONObject json = JSONObject.fromObject(new String(entity.getBody(), UTF8));
-        return new Message(json).freeze();
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -85,7 +86,7 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
 
     @Override
     public DataIterator<Message> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, Message>(mapper, entityDao.getIterator((Postgres9Connection) con));        
     }
 
     @Override
@@ -99,33 +100,8 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY createdAt DESC",
                 new Object[] { eventId });
 
-        class Mapper implements DataMapper<ResultSet, Message> {
-            private Postgres9Connection con;
-            
-            public Mapper(Postgres9Connection con) {
-                this.con = con;
-            }
-            
-            @Override
-            public Message map(ResultSet rs) throws DAOException {
-                try {
-                    String id = rs.getString("id");
-                    if (id == null)
-                        return null;
-                    
-                    return Postgres9DirectMessageDao.this.find((Postgres9Connection) con, id);
-                } catch (SQLException e) {
-                    throw new DAOException(e);
-                }
-            }
-
-            @Override
-            public ResultSet unmap(Message t) throws DAOException {
-                throw new UnsupportedOperationException();
-            }
-        }
-        
-        return new Postgres9DataIterator<Message>(new Mapper((Postgres9Connection) con), psars);
+        Postgres9IdMapper<Message> idMapper = new Postgres9IdMapper<Message>((Postgres9Connection) con, mapper, entityDao);
+        return new Postgres9DataIterator<Message>(idMapper, psars);
     }
 
 }

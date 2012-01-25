@@ -2,7 +2,7 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.DataMapper;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
@@ -10,14 +10,18 @@ import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9DataIterator;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
+import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.Comment;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import net.sf.json.JSONObject;
+
+class EntityCommentMapper extends Postgres9EntityDataMapper<Comment> {   
+    public Comment map(JSONObject obj) {
+        return new Comment(obj).freeze();
+    }
+}
 
 public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess {
     static final String TABLE_NAME = "CommentEntities";
@@ -26,10 +30,12 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
     
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
+    private final EntityCommentMapper mapper;
     
     public Postgres9CommentDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
+        this.mapper = new EntityCommentMapper();
     }
 
     @Override
@@ -64,15 +70,7 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
 
     @Override
     public Comment find(PartakeConnection con, String id) throws DAOException {
-        Postgres9Connection pcon = (Postgres9Connection) con;
-        
-        Postgres9Entity entity = entityDao.find(pcon, id);
-        if (entity == null)
-            return null;
-        
-        // Checks the entity.
-        JSONObject obj = JSONObject.fromObject(new String(entity.getBody(), UTF8));
-        return new Comment(obj).freeze();
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -83,7 +81,7 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
 
     @Override
     public DataIterator<Comment> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, Comment>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override
@@ -97,32 +95,7 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY createdAt ASC",
                 new Object[] { eventId });
 
-        class Mapper implements DataMapper<ResultSet, Comment> {
-            private Postgres9Connection con;
-            
-            public Mapper(Postgres9Connection con) {
-                this.con = con;
-            }
-            
-            @Override
-            public Comment map(ResultSet rs) throws DAOException {
-                try {
-                    String id = rs.getString("id");
-                    if (id == null)
-                        return null;
-                    
-                    return Postgres9CommentDao.this.find((Postgres9Connection) con, id);
-                } catch (SQLException e) {
-                    throw new DAOException(e);
-                }
-            }
-
-            @Override
-            public ResultSet unmap(Comment t) throws DAOException {
-                throw new UnsupportedOperationException();
-            }
-        }
-        
-        return new Postgres9DataIterator<Comment>(new Mapper((Postgres9Connection) con), psars);
+        Postgres9IdMapper<Comment> idMapper = new Postgres9IdMapper<Comment>((Postgres9Connection) con, mapper, entityDao);
+        return new Postgres9DataIterator<Comment>(idMapper, psars);
     }
 }

@@ -82,8 +82,8 @@ public class BinaryData extends PartakeModel<BinaryData> {
         int code = 0;
         
         code = code * 37 + ObjectUtils.hashCode(id);
-        code = code * 37 + ObjectUtils.hashCode(type);
-        code = code * 37 + ObjectUtils.hashCode(data);
+//        code = code * 37 + ObjectUtils.hashCode(type);
+//        code = code * 37 + ObjectUtils.hashCode(data);
         
         return code;
     }

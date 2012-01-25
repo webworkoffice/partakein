@@ -2,7 +2,7 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.DataMapper;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
@@ -10,18 +10,24 @@ import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9DataIterator;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
+import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.util.PDate;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONObject;
+
+class EntityEnrollmentMapper extends Postgres9EntityDataMapper<Enrollment> {   
+    public Enrollment map(JSONObject obj) {
+        return new Enrollment(obj).freeze();
+    }
+}
 
 public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentAccess {
     static final String TABLE_NAME = "EnrollmentEntities";
@@ -30,10 +36,12 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
+    private final EntityEnrollmentMapper mapper;
 
     public Postgres9EnrollmentDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
+        this.mapper = new EntityEnrollmentMapper();
     }
 
     @Override
@@ -85,13 +93,7 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
     }
 
     Enrollment findById(PartakeConnection con, String id) throws DAOException {
-        Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
-        if (entity == null)
-            return null;
-        
-        // TODO: Check the entity is regular.
-        JSONObject obj = JSONObject.fromObject(new String(entity.getBody(), UTF8));
-        return new Enrollment(obj).freeze();
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -112,7 +114,7 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
 
     @Override
     public DataIterator<Enrollment> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, Enrollment>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override
@@ -121,34 +123,11 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ?",
                 new Object[] { eventId });
 
-        class Mapper implements DataMapper<ResultSet, Enrollment> {
-            private Postgres9Connection con;
-            
-            public Mapper(Postgres9Connection con) {
-                this.con = con;
-            }
-            
-            @Override
-            public Enrollment map(ResultSet rs) throws DAOException {
-                try {
-                    String id = rs.getString("id");
-                    if (id == null)
-                        return null;
-                    
-                    return Postgres9EnrollmentDao.this.findById((Postgres9Connection) con, id);
-                } catch (SQLException e) {
-                    throw new DAOException(e);
-                }
-            }
+        Postgres9IdMapper<Enrollment> idMapper = new Postgres9IdMapper<Enrollment>((Postgres9Connection) con, mapper, entityDao);
 
-            @Override
-            public ResultSet unmap(Enrollment t) throws DAOException {
-                throw new UnsupportedOperationException();
-            }
-        }
         
         try {
-            DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(new Mapper((Postgres9Connection) con), psars);
+            DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
             
             ArrayList<Enrollment> rels = new ArrayList<Enrollment>();
             while (it.hasNext()) {
@@ -170,34 +149,10 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE userId = ?",
                 new Object[] { userId });
 
-        class Mapper implements DataMapper<ResultSet, Enrollment> {
-            private Postgres9Connection con;
-            
-            public Mapper(Postgres9Connection con) {
-                this.con = con;
-            }
-            
-            @Override
-            public Enrollment map(ResultSet rs) throws DAOException {
-                try {
-                    String id = rs.getString("id");
-                    if (id == null)
-                        return null;
-                    
-                    return Postgres9EnrollmentDao.this.findById((Postgres9Connection) con, id);
-                } catch (SQLException e) {
-                    throw new DAOException(e);
-                }
-            }
-
-            @Override
-            public ResultSet unmap(Enrollment t) throws DAOException {
-                throw new UnsupportedOperationException();
-            }
-        }
+        Postgres9IdMapper<Enrollment> idMapper = new Postgres9IdMapper<Enrollment>((Postgres9Connection) con, mapper, entityDao);
         
         try {
-            DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(new Mapper((Postgres9Connection) con), psars);
+            DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
             
             ArrayList<Enrollment> rels = new ArrayList<Enrollment>();
             while (it.hasNext()) {

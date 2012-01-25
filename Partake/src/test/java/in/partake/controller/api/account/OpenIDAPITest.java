@@ -20,7 +20,7 @@ public class OpenIDAPITest extends APIControllerTest {
     public void testToRemoveOpenID() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
-        loginAs(proxy, "openid-remove-0");
+        loginAs(proxy, TestDataProvider.EVENT_REMOVE_ID0);
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-0");
         addValidSessionTokenToParameter(proxy);
         
@@ -28,7 +28,7 @@ public class OpenIDAPITest extends APIControllerTest {
         assertResultOK(proxy);
         
         // Check the OpenID has been really removed.
-        List<String> identifiers = UserService.get().getOpenIDIdentifiers("openid-remove-0");
+        List<String> identifiers = UserService.get().getOpenIDIdentifiers(TestDataProvider.EVENT_REMOVE_ID0);
         Assert.assertNotNull(identifiers);
         Assert.assertFalse(identifiers.contains("http://www.example.com/openid-remove-0"));
     }
@@ -50,7 +50,7 @@ public class OpenIDAPITest extends APIControllerTest {
         // openid-remove-0 user does not have openid-remove-2 identifier.
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
-        loginAs(proxy, "openid-remove-0");
+        loginAs(proxy, TestDataProvider.EVENT_REMOVE_ID0);
         
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-2");
         addValidSessionTokenToParameter(proxy);
@@ -64,7 +64,7 @@ public class OpenIDAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
         // Check CSRF prevention works.
-        loginAs(proxy, "openid-remove-3");
+        loginAs(proxy, TestDataProvider.EVENT_REMOVE_ID3);
         
         addParameter(proxy, "identifier", "http://www.example.com/openid-remove-3");
         addInvalidSessionTokenToParameter(proxy);

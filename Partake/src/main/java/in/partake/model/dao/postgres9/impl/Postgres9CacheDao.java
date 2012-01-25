@@ -2,24 +2,38 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.CacheData;
 import in.partake.util.PDate;
 import net.sf.json.JSONObject;
+
+class EntityCacheMapper extends Postgres9EntityDataMapper<CacheData> {   
+    public CacheData map(Postgres9Entity entity) throws DAOException {
+        if (entity == null)
+            return null;
+
+        JSONObject opt = JSONObject.fromObject(new String(entity.getOpt(), UTF8));
+        return new CacheData(entity.getId(), entity.getBody(), opt).freeze();
+    }
+}
 
 public class Postgres9CacheDao extends Postgres9Dao implements ICacheAccess {
     static final String TABLE_NAME = "CacheEntities";
     static final int CURRENT_VERSION = 1;
     
     private final Postgres9EntityDao entityDao;
+    private final EntityCacheMapper mapper;
 
     public Postgres9CacheDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.mapper = new EntityCacheMapper();
     }
 
     @Override
@@ -46,13 +60,7 @@ public class Postgres9CacheDao extends Postgres9Dao implements ICacheAccess {
 
     @Override
     public CacheData find(PartakeConnection con, String id) throws DAOException {
-        Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
-        if (entity == null)
-            return null;
-
-        JSONObject opt = JSONObject.fromObject(new String(entity.getOpt(), UTF8));
-        CacheData cache = new CacheData(id, entity.getBody(), opt);
-        return cache.freeze();
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -62,6 +70,6 @@ public class Postgres9CacheDao extends Postgres9Dao implements ICacheAccess {
 
     @Override
     public DataIterator<CacheData> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, CacheData>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 }

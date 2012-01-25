@@ -2,26 +2,34 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.DataMapper;
-import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.MapperDataIterator;
+import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEnvelopeAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.Envelope;
 import in.partake.util.PDate;
 import net.sf.json.JSONObject;
+
+class EntityEnvelopeMapper extends Postgres9EntityDataMapper<Envelope> {   
+    public Envelope map(JSONObject obj) {
+        return new Envelope(obj).freeze();
+    }
+}
 
 public class Postgres9EnvelopeDao extends Postgres9Dao implements IEnvelopeAccess {
     static final String TABLE_NAME = "EnvelopeEntities";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
+    private final EntityEnvelopeMapper mapper;
 
     public Postgres9EnvelopeDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.mapper = new EntityEnvelopeMapper();
     }
 
     @Override
@@ -64,23 +72,7 @@ public class Postgres9EnvelopeDao extends Postgres9Dao implements IEnvelopeAcces
 
     @Override
     public DataIterator<Envelope> getIterator(PartakeConnection con) throws DAOException {
-        DataMapper<Postgres9Entity, Envelope> mapper = new DataMapper<Postgres9Entity, Envelope>() {
-            @Override
-            public Envelope map(Postgres9Entity entity) throws DAOException {
-                if (entity == null)
-                    return null;
-
-                JSONObject json = JSONObject.fromObject(new String(entity.getBody(), UTF8));
-                return new Envelope(json).freeze();
-            }
-
-            @Override
-            public Postgres9Entity unmap(Envelope t) throws DAOException {
-                throw new UnsupportedOperationException();
-            }
-        };
-        DataIterator<Postgres9Entity> iterator = entityDao.getIterator((Postgres9Connection) con); 
-        return new MapperDataIterator<Postgres9Entity, Envelope>(mapper, iterator);
+        return new MapperDataIterator<Postgres9Entity, Envelope>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override

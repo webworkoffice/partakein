@@ -42,8 +42,8 @@ public class UtilTest {
 	    Assert.assertTrue(Util.isValidHashtag("#hashタグ"));
 	    Assert.assertTrue(Util.isValidHashtag("#ﾊｯｼｭﾀｸﾞ"));
 	    Assert.assertTrue(Util.isValidHashtag("#À"));
-
-	    Assert.assertFalse(Util.isValidHashtag("#012"));
+	    Assert.assertTrue(Util.isValidHashtag("#012"));
+	    
 	    Assert.assertFalse(Util.isValidHashtag("#hash\\tag"));
 	    Assert.assertFalse(Util.isValidHashtag("#hash-tag"));
 	    Assert.assertFalse(Util.isValidHashtag("#らき☆すた"));

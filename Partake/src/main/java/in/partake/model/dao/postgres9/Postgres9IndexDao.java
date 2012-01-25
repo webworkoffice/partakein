@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -227,7 +228,9 @@ public class Postgres9IndexDao extends Postgres9Dao {
     }
     
     private void setObject(PreparedStatement ps, int nth, Object obj) throws SQLException {
-        if (obj instanceof String)
+        if (obj == null)
+            ps.setNull(nth, Types.NULL);
+        else if (obj instanceof String)
             ps.setString(nth, (String) obj);
         else if (obj instanceof Date)
             ps.setTimestamp(nth, new Timestamp(((Date) obj).getTime())); 

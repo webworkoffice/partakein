@@ -2,23 +2,38 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.BinaryData;
 import in.partake.util.PDate;
+
+class EntityBinaryMapper extends Postgres9EntityDataMapper<BinaryData> {   
+    public BinaryData map(Postgres9Entity entity) throws DAOException {
+        if (entity == null)
+            return null;
+
+        BinaryData binary = new BinaryData(entity.getId(), new String(entity.getOpt(), UTF8), entity.getBody());
+        return binary.freeze();
+    }
+}
 
 public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
     static final String TABLE_NAME = "BinaryEntities";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
+    private final EntityBinaryMapper mapper;
+
     
     public Postgres9BinaryDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.mapper = new EntityBinaryMapper();
     }
 
     @Override
@@ -45,12 +60,7 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
 
     @Override
     public BinaryData find(PartakeConnection con, String id) throws DAOException {
-        Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
-        if (entity == null)
-            return null;
-
-        BinaryData binary = new BinaryData(entity.getId(), new String(entity.getOpt(), UTF8), entity.getBody());
-        return binary.freeze();
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -60,7 +70,7 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
 
     @Override
     public DataIterator<BinaryData> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, BinaryData>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override
