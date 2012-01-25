@@ -21,7 +21,7 @@ public class UserAPITest extends APIControllerTest {
     // ログインなしに取得することができるデータは限られている必要がある。
     @Test
     public void testGetUserWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user");
+        ActionProxy proxy = getActionProxy("/api/user/");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         
         proxy.execute();
@@ -50,7 +50,7 @@ public class UserAPITest extends APIControllerTest {
     
     @Test
     public void testGetUserWithLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user");
+        ActionProxy proxy = getActionProxy("/api/user/");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
         
         // User 1 としてログイン
@@ -90,7 +90,7 @@ public class UserAPITest extends APIControllerTest {
     
     @Test
     public void testGetUserWithLoginAsAnotherUser() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user");
+        ActionProxy proxy = getActionProxy("/api/user/");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1); 
 
         // USER 1 ではなく、USER 2 としてログイン。

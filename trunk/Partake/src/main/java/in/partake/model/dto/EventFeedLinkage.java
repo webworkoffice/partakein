@@ -70,6 +70,10 @@ public class EventFeedLinkage extends PartakeModel<EventFeedLinkage> {
         return true;
     }
     
+    @Override
+    public int hashCode() {
+        return ObjectUtils.hashCode(id);
+    }
     
     // ----------------------------------------------------------------------
     // accessors

@@ -3,6 +3,7 @@ package in.partake.model.dao.postgres9.impl;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.DataMapper;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
@@ -10,6 +11,8 @@ import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9DataIterator;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
+import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.Event;
@@ -22,6 +25,12 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
+class EntityEventMapper extends Postgres9EntityDataMapper<Event> {   
+    public Event map(JSONObject obj) {
+        return new Event(obj).freeze();
+    }
+}
+
 public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     static final String TABLE_NAME = "EventEntities";
     static final int CURRENT_VERSION = 1;
@@ -31,11 +40,13 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao ownerIndexDao;
     private final Postgres9IndexDao editorIndexDao;
+    private final EntityEventMapper mapper;
 
     public Postgres9EventDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.ownerIndexDao = new Postgres9IndexDao(OWNER_INDEX_TABLE_NAME);
         this.editorIndexDao = new Postgres9IndexDao(EDITOR_INDEX_TABLE_NAME);
+        this.mapper = new EntityEventMapper();
     }
 
     @Override
@@ -81,16 +92,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
 
     @Override
     public Event find(PartakeConnection con, String id) throws DAOException {
-        Postgres9Connection pcon = (Postgres9Connection) con;        
-        Postgres9Entity entity = entityDao.find(pcon, id);
-        if (entity == null)
-            return null;
-        
-        // Checks the entity.
-        JSONObject json = JSONObject.fromObject(new String(entity.getBody(), UTF8));
-        Event event = new Event(json);
-
-        return event.freeze();
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -103,7 +105,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
 
     @Override
     public DataIterator<Event> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, Event>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override
@@ -173,35 +175,11 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                 "SELECT id FROM " + EDITOR_INDEX_TABLE_NAME + " WHERE editorNames LIKE ?",
                 new Object[] { "%" + screenName + "%" });
 
-        class Mapper implements DataMapper<ResultSet, Event> {
-            private Postgres9Connection con;
-            
-            public Mapper(Postgres9Connection con) {
-                this.con = con;
-            }
-            
-            @Override
-            public Event map(ResultSet rs) throws DAOException {
-                try {
-                    String id = rs.getString("id");
-                    if (id == null)
-                        return null;
-                    
-                    return Postgres9EventDao.this.find((Postgres9Connection) con, id);
-                } catch (SQLException e) {
-                    throw new DAOException(e);
-                }
-            }
-
-            @Override
-            public ResultSet unmap(Event t) throws DAOException {
-                throw new UnsupportedOperationException();
-            }
-        }
+        Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
         
         try {
             ArrayList<Event> events = new ArrayList<Event>();
-            DataIterator<Event> it = new Postgres9DataIterator<Event>(new Mapper((Postgres9Connection) con), psars);
+            DataIterator<Event> it = new Postgres9DataIterator<Event>(idMapper, psars);
             while (it.hasNext()) {
                 Event event = it.next();
                 if (event == null)

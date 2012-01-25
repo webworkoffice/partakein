@@ -2,16 +2,24 @@ package in.partake.model.dao.postgres9.impl;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ICalendarLinkageAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
+import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.util.PDate;
 import net.sf.json.JSONObject;
+
+class EntityCalendarLinkageMapper extends Postgres9EntityDataMapper<CalendarLinkage> {   
+    public CalendarLinkage map(JSONObject obj) {
+        return new CalendarLinkage(obj).freeze();
+    }
+}
 
 public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalendarLinkageAccess {
     static final String TABLE_NAME = "CalendarLinkageEntities";
@@ -21,10 +29,12 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao userIndexDao;
+    private final EntityCalendarLinkageMapper mapper;
     
     public Postgres9CalendarLinkageDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.userIndexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
+        this.mapper = new EntityCalendarLinkageMapper();
     }
 
     @Override
@@ -59,14 +69,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
 
     @Override
     public CalendarLinkage find(PartakeConnection con, String id) throws DAOException {
-        Postgres9Entity entity = entityDao.find((Postgres9Connection) con, id);
-        if (entity == null)
-            return null;
-
-        CalendarLinkage t = CalendarLinkage.fromJSON(JSONObject.fromObject(new String(entity.getBody(), UTF8)));
-        if (t != null)
-            return t.freeze();
-        return null;
+        return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
@@ -74,10 +77,11 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
         entityDao.remove((Postgres9Connection) con, id);
         userIndexDao.remove((Postgres9Connection) con, "id", id);
     }
+    
 
     @Override
     public DataIterator<CalendarLinkage> getIterator(PartakeConnection con) throws DAOException {
-        throw new UnsupportedOperationException();
+        return new MapperDataIterator<Postgres9Entity, CalendarLinkage>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override
@@ -87,14 +91,11 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
 
     @Override
     public CalendarLinkage findByUserId(PartakeConnection con, String userId) throws DAOException {
-        if (userId == null)
-            return null;
-        
         Postgres9Connection pcon = (Postgres9Connection) con;
         String id = userIndexDao.find(pcon, "id", "userId", userId);
         if (id == null)
             return null;
-        
-        return new CalendarLinkage(id, userId);
+
+        return mapper.map(entityDao.find(pcon, id));
     }
 }

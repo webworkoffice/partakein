@@ -34,6 +34,11 @@ public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
         this.userId = src.userId;
     }
     
+    public CalendarLinkage(JSONObject obj) {
+        this.id = obj.getString("id");
+        this.userId = obj.getString("userId");
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return id;
@@ -49,16 +54,7 @@ public class CalendarLinkage extends PartakeModel<CalendarLinkage> {
         obj.put("id", id);
         obj.put("userId", userId);
         return obj;
-    }
-    
-    public static CalendarLinkage fromJSON(JSONObject json) {
-        if (!json.containsKey("id"))
-            return null;
-        if (!json.containsKey("userId"))
-            return null;
-        
-        return new CalendarLinkage(json.getString("id"), json.getString("userId"));
-    }
+    }    
         
     // ----------------------------------------------------------------------
     // equals methods

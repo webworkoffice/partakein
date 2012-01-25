@@ -85,9 +85,10 @@ public class CacheData extends PartakeModel<CacheData> {
     
     @Override
     public int hashCode() {
-        return ObjectUtils.hashCode(id) * 37 * 37 +
-            ObjectUtils.hashCode(data) * 37 +
-            ObjectUtils.hashCode(invalidAfter);
+        return ObjectUtils.hashCode(id);
+//        return ObjectUtils.hashCode(id) * 37 * 37 +
+//            ObjectUtils.hashCode(data) * 37 +
+//            ObjectUtils.hashCode(invalidAfter);
     }
     
     

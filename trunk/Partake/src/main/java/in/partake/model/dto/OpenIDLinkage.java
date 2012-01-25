@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "OpenIDLinkages")
@@ -27,6 +29,11 @@ public class OpenIDLinkage extends PartakeModel<OpenIDLinkage> {
         this.userId = linkage.userId;
     }
     
+    public OpenIDLinkage(JSONObject obj) {
+        this.id = obj.getString("id");
+        this.userId = obj.getString("userId");
+    }
+    
     @Override
     public Object getPrimaryKey() {
         return id;
@@ -35,6 +42,15 @@ public class OpenIDLinkage extends PartakeModel<OpenIDLinkage> {
     @Override
     public OpenIDLinkage copy() {
         return new OpenIDLinkage(this);
+    }
+    
+    @Override
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("userId", userId);
+        
+        return obj;
     }
     
     // -----------------------------------------------------------------------------

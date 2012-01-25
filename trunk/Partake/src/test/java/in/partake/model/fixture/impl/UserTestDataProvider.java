@@ -44,10 +44,9 @@ public class UserTestDataProvider extends TestDataProvider<User> {
         dao.put(con, new User(USER_ID3, 3, new Date(), null)); 
 
         // TODO 上記3ユーザと何が違うのか、UserID命名の意図をコメント
-        // TODO ユーザ名をTestDataProviderに定数として定義
-        dao.put(con, new User("openid-remove-0", 1000, new Date(), null));
-        dao.put(con, new User("openid-remove-1", 1001, new Date(), null));
-        dao.put(con, new User("openid-remove-2", 1002, new Date(), null));
-        dao.put(con, new User("openid-remove-3", 1003, new Date(), null));
+        dao.put(con, new User(EVENT_REMOVE_ID0, 1000, new Date(), null));
+        dao.put(con, new User(EVENT_REMOVE_ID1, 1001, new Date(), null));
+        dao.put(con, new User(EVENT_REMOVE_ID2, 1002, new Date(), null));
+        dao.put(con, new User(EVENT_REMOVE_ID3, 1003, new Date(), null));
     }
 }

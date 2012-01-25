@@ -47,8 +47,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
         try {
             ps = con.prepareStatement(
                     "CREATE TABLE " + tableName + "(" +
-                    "    seq        BIGSERIAL   PRIMARY KEY," +
-                    "    id         UUID        UNIQUE NOT NULL," +
+                    "    id         UUID        PRIMARY KEY," +
                     "    version    INTEGER     NOT NULL," +
                     "    body       BYTEA       NOT NULL," +
                     "    opt        BYTEA," +

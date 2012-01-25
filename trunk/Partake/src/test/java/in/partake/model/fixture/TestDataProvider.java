@@ -25,6 +25,11 @@ public abstract class TestDataProvider<T> {
     public static final String EVENT_SEARCH_ID2 = new UUID(2, 22).toString();
     public static final String EVENT_SEARCH_ID3 = new UUID(2, 23).toString();
     
+    public static final String EVENT_REMOVE_ID0 = new UUID(2, 30).toString();
+    public static final String EVENT_REMOVE_ID1 = new UUID(2, 31).toString();
+    public static final String EVENT_REMOVE_ID2 = new UUID(2, 32).toString();
+    public static final String EVENT_REMOVE_ID3 = new UUID(2, 33).toString();
+    
     public abstract T create();
     public abstract T create(long pkNumber, String pkSalt, int objNumber);
     public abstract void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException;

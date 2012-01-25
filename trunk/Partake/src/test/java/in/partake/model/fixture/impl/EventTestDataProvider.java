@@ -19,7 +19,7 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
     
     @Override
     public Event create() {
-        return new Event();
+        return create(0, "", 0);
     }
     
     @Override

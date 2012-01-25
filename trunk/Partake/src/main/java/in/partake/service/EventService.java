@@ -411,7 +411,6 @@ public final class EventService extends PartakeService {
             }
             factory.getEventAccess().put(con, eventEmbryo);
 
-
             if (foreImageEmbryo != null) {
                 foreImageEmbryo.setId(foreImageId);
                 binaryAccess.put(con, foreImageEmbryo);

@@ -37,6 +37,6 @@ public class MapperDataIterator<S, T> extends DataIterator<T> {
 
     @Override
     public void update(T t) throws DAOException, UnsupportedOperationException {
-        throw new UnsupportedOperationException();
+        iterator.update(mapper.unmap(t));
     }
 }
