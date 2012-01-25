@@ -4,11 +4,9 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.PartakeService;
 import in.partake.service.TestService;
 import in.partake.service.UserService;
 import in.partake.servlet.PartakeSession;
-import in.partake.util.PDate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +18,8 @@ import javax.naming.NamingException;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.struts2.StrutsTestCase;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -66,13 +66,17 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
         ic.bind("java:/comp/env/jdbc/postgres", ds);
     }
-
-    /**
-     * call this method and {@link PartakeProperties#reset(String)} at EachTestCase#setUpOnce() which is annotated as @BeforeClass.
-     */
-    protected static void reset() {
-        PDate.resetCurrentDate();
-        PartakeService.initialize();
+    
+    // Make setUp called before each test. 
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+    
+    // Make tearDown called after each test. 
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
     }
 
     /**

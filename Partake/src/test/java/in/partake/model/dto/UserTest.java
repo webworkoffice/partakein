@@ -2,8 +2,6 @@ package in.partake.model.dto;
 
 import java.util.Date;
 
-import net.sf.json.JSONObject;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

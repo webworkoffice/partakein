@@ -20,6 +20,7 @@ public class UserAPITest extends APIControllerTest {
     // User は、取得インタフェースはあるものの、基本的にはどのデータも非公開であるため、
     // ログインなしに取得することができるデータは限られている必要がある。
     @Test
+    @Ignore("Not implemented yet.")
     public void testGetUserWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -49,6 +50,7 @@ public class UserAPITest extends APIControllerTest {
     }
     
     @Test
+    @Ignore("Not implemented yet.")
     public void testGetUserWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1);
@@ -89,6 +91,7 @@ public class UserAPITest extends APIControllerTest {
     }
     
     @Test
+    @Ignore("Not implemented yet.")
     public void testGetUserWithLoginAsAnotherUser() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/");
         addParameter(proxy, "userId", TestDataProvider.USER_ID1); 
@@ -160,6 +163,4 @@ public class UserAPITest extends APIControllerTest {
         proxy.execute();
         assertResultInvalid(proxy);
     }
-
-
 }

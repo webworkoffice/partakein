@@ -8,8 +8,10 @@ import java.util.TimeZone;
  * Partake 用の時刻。Immutable Object として実装すること。
  *
  * @author shinyak
- *
  */
+// TODO: We should remove PDate object.
+// However, get/set CurrentDate, waitForTick() are useful for testing purpose.
+// Maybe we should extract TimeUtil.
 public class PDate {
     private static PDate currentDate;
     private Date date;

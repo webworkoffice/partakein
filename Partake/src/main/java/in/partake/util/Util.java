@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.Random;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +34,18 @@ public final class Util {
 
 	private static final Pattern REMOVETAG_PATTERN = Pattern.compile("(<!--.+?-->)|(<.+?>)", Pattern.DOTALL | Pattern.MULTILINE);
 	private static final String ALNUM = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    // ----------------------------------------------------------------------
+    // UUID
+	
+	public static boolean isUUID(String str) {
+	    try {
+	        UUID.fromString(str);
+	        return true;
+	    } catch (IllegalArgumentException e) {
+	        return false;
+	    }
+	}
 
 	// ----------------------------------------------------------------------
 	// Time

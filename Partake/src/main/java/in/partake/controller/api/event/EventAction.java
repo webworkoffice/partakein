@@ -1,5 +1,7 @@
 package in.partake.controller.api.event;
 
+import java.util.UUID;
+
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +22,13 @@ public class EventAction extends PartakeAPIActionSupport {
     public String get() throws DAOException {
         String eventId = getParameter("eventId");
         if (StringUtils.isBlank(eventId)) { return renderInvalid(UserErrorCode.MISSING_EVENT_ID); } 
+        
+        // Checks eventId is UUID form.
+        try {
+            UUID.fromString(eventId);
+        } catch (IllegalArgumentException e) {
+            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+        }
         
         EventEx event = EventService.get().getEventExById(eventId);
         if (event == null) { return renderInvalid(UserErrorCode.INVALID_EVENT_ID); } 

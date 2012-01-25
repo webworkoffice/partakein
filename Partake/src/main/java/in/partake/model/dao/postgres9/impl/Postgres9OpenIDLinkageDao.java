@@ -7,13 +7,17 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
+import in.partake.model.dao.postgres9.Postgres9DataIterator;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
+import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
+import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.OpenIDLinkage;
 import in.partake.util.PDate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -104,9 +108,32 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
         return new MapperDataIterator<Postgres9Entity, OpenIDLinkage>(mapper, iterator);
     }
 
+    // TODO: Why not DataIterator?
+    // TODO: Why not List<OpenIdLinkage>?
     @Override
     public List<String> findByUserId(PartakeConnection con, String userId) throws DAOException {
-        throw new UnsupportedOperationException();
+        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE userId = ?",
+                new Object[] { userId });
+
+        Postgres9IdMapper<OpenIDLinkage> idMapper = new Postgres9IdMapper<OpenIDLinkage>((Postgres9Connection) con, mapper, entityDao);
+
+        DataIterator<OpenIDLinkage> it = new Postgres9DataIterator<OpenIDLinkage>(idMapper, psars);
+        try {
+            ArrayList<String> results = new ArrayList<String>();
+            while (it.hasNext()) {
+                OpenIDLinkage t = it.next();
+                if (t == null)
+                    continue;
+                
+                results.add(t.getId());
+            }
+
+            return results;
+        } finally {
+            it.close();
+        }
+
     }
 
 }
