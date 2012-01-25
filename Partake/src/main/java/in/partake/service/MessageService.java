@@ -91,28 +91,31 @@ public final class MessageService extends PartakeService {
 
             // TODO: 開始時刻が現在時刻より後の event のみを取り出したい
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
-            while (it.hasNext()) {
-                Event e = it.next();
-                if (e == null) { continue; }
-                String eventId = e.getId();
-                if (eventId == null) { continue; }
-                EventEx event = getEventEx(con, eventId);
-                if (event == null) { continue; }
-                if (event.getBeginDate().before(now)) { continue; }
-
-                // NOTE: Since the reminderStatus gotten from getEventReminderStatus is frozen,
-                //       the object should be copied to use.
-                EventReminder reminderStatus = new EventReminder(getEventReminderImpl(con, eventId));
-
-                boolean changed = sendEventNotification(con, event, reminderStatus, topPath, now);
-                if (changed) {
-                    reminderStatus.setEventId(eventId);
-                    con.beginTransaction();
-                    factory.getEventReminderAccess().put(con, reminderStatus);
-                    con.commit();
+            try {
+                while (it.hasNext()) {
+                    Event e = it.next();
+                    if (e == null) { continue; }
+                    String eventId = e.getId();
+                    if (eventId == null) { continue; }
+                    EventEx event = getEventEx(con, eventId);
+                    if (event == null) { continue; }
+                    if (event.getBeginDate().before(now)) { continue; }
+    
+                    // NOTE: Since the reminderStatus gotten from getEventReminderStatus is frozen,
+                    //       the object should be copied to use.
+                    EventReminder reminderStatus = new EventReminder(getEventReminderImpl(con, eventId));
+    
+                    boolean changed = sendEventNotification(con, event, reminderStatus, topPath, now);
+                    if (changed) {
+                        reminderStatus.setEventId(eventId);
+                        con.beginTransaction();
+                        factory.getEventReminderAccess().put(con, reminderStatus);
+                        con.commit();
+                    }
                 }
+            } finally {
+                it.close();
             }
-
         } finally {
             con.invalidate();
         }
@@ -233,116 +236,119 @@ public final class MessageService extends PartakeService {
         try {
             con.beginTransaction();
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
-            while (it.hasNext()) {
-                Event e = it.next();
-                if (e == null) { continue; }
-                String eventId = e.getId();
-                if (eventId == null) { continue; }
-                EventEx event = getEventEx(con, eventId);
-                if (event == null) { continue; }
-
-                if (!now.before(event.getBeginDate())) { continue; }
-
-                List<EnrollmentEx> participations = getEnrollmentExs(con, eventId);
-                ParticipationList list = event.calculateParticipationList(participations);
-
-                String enrollingMessage = "[PARTAKE] 補欠から参加者へ繰り上がりました。 " + event.getShortenedURL() + " " + event.getTitle();
-                String cancellingMessage = "[PARTAKE] 参加者から補欠扱い(あるいはキャンセル扱い)に変更になりました。 " + event.getShortenedURL() + " " + event.getTitle();
-                enrollingMessage = Util.shorten(enrollingMessage, 140);
-                cancellingMessage = Util.shorten(cancellingMessage, 140);
-
-                String okMessageId = null;
-                String ngMessageId = null;
-
-                // TODO: ここのソース汚い。同一化できる。とくに、あとの２つは一緒。
-                for (Enrollment p : list.getEnrolledParticipations()) {
-                    // -- 参加者向
-
-                    ModificationStatus status = p.getModificationStatus();
-                    if (status == null) { continue; }
-
-                    switch (status) {
-                    case CHANGED: { // 自分自身の力で変化させていた場合は status を enrolled にのみ変更して対応
-                        updateLastStatus(con, eventId, p, ModificationStatus.ENROLLED);
-                        break;
-                    }
-                    case NOT_ENROLLED: {
-                        if (okMessageId == null) {
-                            okMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                            Message okEmbryo = new Message(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date());
-                            factory.getDirectMessageAccess().put(con, okEmbryo);
+            try {
+                while (it.hasNext()) {
+                    Event e = it.next();
+                    if (e == null) { continue; }
+                    String eventId = e.getId();
+                    if (eventId == null) { continue; }
+                    EventEx event = getEventEx(con, eventId);
+                    if (event == null) { continue; }
+    
+                    if (!now.before(event.getBeginDate())) { continue; }
+    
+                    List<EnrollmentEx> participations = getEnrollmentExs(con, eventId);
+                    ParticipationList list = event.calculateParticipationList(participations);
+    
+                    String enrollingMessage = "[PARTAKE] 補欠から参加者へ繰り上がりました。 " + event.getShortenedURL() + " " + event.getTitle();
+                    String cancellingMessage = "[PARTAKE] 参加者から補欠扱い(あるいはキャンセル扱い)に変更になりました。 " + event.getShortenedURL() + " " + event.getTitle();
+                    enrollingMessage = Util.shorten(enrollingMessage, 140);
+                    cancellingMessage = Util.shorten(cancellingMessage, 140);
+    
+                    String okMessageId = null;
+                    String ngMessageId = null;
+    
+                    // TODO: ここのソース汚い。同一化できる。とくに、あとの２つは一緒。
+                    for (Enrollment p : list.getEnrolledParticipations()) {
+                        // -- 参加者向
+    
+                        ModificationStatus status = p.getModificationStatus();
+                        if (status == null) { continue; }
+    
+                        switch (status) {
+                        case CHANGED: { // 自分自身の力で変化させていた場合は status を enrolled にのみ変更して対応
+                            updateLastStatus(con, eventId, p, ModificationStatus.ENROLLED);
+                            break;
                         }
-
-                        updateLastStatus(con, eventId, p, ModificationStatus.ENROLLED);
-                        String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
-                        Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
-                                okMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                        getFactory().getEnvelopeAccess().put(con, envelope);
-
-                        break;
+                        case NOT_ENROLLED: {
+                            if (okMessageId == null) {
+                                okMessageId = factory.getDirectMessageAccess().getFreshId(con);
+                                Message okEmbryo = new Message(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date());
+                                factory.getDirectMessageAccess().put(con, okEmbryo);
+                            }
+    
+                            updateLastStatus(con, eventId, p, ModificationStatus.ENROLLED);
+                            String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
+                            Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
+                                    okMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
+                            getFactory().getEnvelopeAccess().put(con, envelope);
+    
+                            break;
+                        }
+                        case ENROLLED:
+                            break;
+                        }
                     }
-                    case ENROLLED:
-                        break;
+    
+                    for (Enrollment p : list.getSpareParticipations()) {
+                        ModificationStatus status = p.getModificationStatus();
+                        if (status == null) { continue; }
+    
+                        switch (status) {
+                        case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
+                            updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
+                            break;
+                        case NOT_ENROLLED:
+                            break;
+                        case ENROLLED:
+                            if (ngMessageId == null) {
+                                ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
+                                Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
+                                factory.getDirectMessageAccess().put(con, ngEmbryo);
+                            }
+    
+                            updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
+    
+                            String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
+                            Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
+                                    ngMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
+                            getFactory().getEnvelopeAccess().put(con, envelope);
+    
+    
+                            break;
+                        }
+                    }
+    
+                    for (Enrollment p : list.getCancelledParticipations()) {
+                        ModificationStatus status = p.getModificationStatus();
+                        if (status == null) { continue; }
+    
+                        switch (status) {
+                        case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
+                            updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
+                            break;
+                        case NOT_ENROLLED:
+                            break;
+                        case ENROLLED:
+                            if (ngMessageId == null) {
+                                ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
+                                Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
+                                factory.getDirectMessageAccess().put(con, ngEmbryo);
+                            }
+    
+                            updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
+    
+                            String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
+                            Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
+                                    ngMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
+                            getFactory().getEnvelopeAccess().put(con, envelope);
+                            break;
+                        }
                     }
                 }
-
-                for (Enrollment p : list.getSpareParticipations()) {
-                    ModificationStatus status = p.getModificationStatus();
-                    if (status == null) { continue; }
-
-                    switch (status) {
-                    case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
-                        updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
-                        break;
-                    case NOT_ENROLLED:
-                        break;
-                    case ENROLLED:
-                        if (ngMessageId == null) {
-                            ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                            Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
-                            factory.getDirectMessageAccess().put(con, ngEmbryo);
-                        }
-
-                        updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
-
-                        String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
-                        Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
-                                ngMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                        getFactory().getEnvelopeAccess().put(con, envelope);
-
-
-                        break;
-                    }
-                }
-
-                for (Enrollment p : list.getCancelledParticipations()) {
-                    ModificationStatus status = p.getModificationStatus();
-                    if (status == null) { continue; }
-
-                    switch (status) {
-                    case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
-                        updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
-                        break;
-                    case NOT_ENROLLED:
-                        break;
-                    case ENROLLED:
-                        if (ngMessageId == null) {
-                            ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                            Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
-                            factory.getDirectMessageAccess().put(con, ngEmbryo);
-                        }
-
-                        updateLastStatus(con, eventId, p, ModificationStatus.NOT_ENROLLED);
-
-                        String envelopeId = getFactory().getEnvelopeAccess().getFreshId(con);
-                        Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
-                                ngMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                        getFactory().getEnvelopeAccess().put(con, envelope);
-                        break;
-                    }
-                }
+            } finally {
+                it.close();
             }
-
             con.commit();
         } finally {
             con.invalidate();
@@ -518,35 +524,39 @@ public final class MessageService extends PartakeService {
         try {
             con.beginTransaction();
             DataIterator<Envelope> it = factory.getEnvelopeAccess().getIterator(con);
-            while (it.hasNext()) {
-                Envelope envelope = it.next();
-                if (envelope == null) { it.remove(); continue; }
-
-                logger.debug("run : Try to send... " + envelope.getEnvelopeId());
-
-                // deadline を超えていれば送らない。
-                Date now = new Date();
-                if (envelope.getDeadline() != null && envelope.getDeadline().before(now)) {
-                    logger.warn("run : envelope id " + envelope.getEnvelopeId() + " could not be sent : Time out.");
-                    it.remove();
-                    continue;
+            try {
+                while (it.hasNext()) {
+                    Envelope envelope = it.next();
+                    if (envelope == null) { it.remove(); continue; }
+    
+                    logger.debug("run : Try to send... " + envelope.getEnvelopeId());
+    
+                    // deadline を超えていれば送らない。
+                    Date now = new Date();
+                    if (envelope.getDeadline() != null && envelope.getDeadline().before(now)) {
+                        logger.warn("run : envelope id " + envelope.getEnvelopeId() + " could not be sent : Time out.");
+                        it.remove();
+                        continue;
+                    }
+    
+                    // tryAfter 前であれば送らない。
+                    if (envelope.getTryAfter() != null && !envelope.getTryAfter().before(now)) {
+                        logger.debug("run : envelope id " + envelope.getEnvelopeId() + " should be sent after " + envelope.getTryAfter());
+                        continue;
+                    }
+    
+    
+                    switch (envelope.getPostingType()) {
+                    case POSTING_TWITTER_DIRECT:
+                        if (sendDirectMessage(con, it, envelope)) { it.remove(); }
+                        break;
+                    case POSTING_TWITTER:
+                        if (sendTwitterMessage(con, it, envelope)) { it.remove(); }
+                        break;
+                    }
                 }
-
-                // tryAfter 前であれば送らない。
-                if (envelope.getTryAfter() != null && !envelope.getTryAfter().before(now)) {
-                    logger.debug("run : envelope id " + envelope.getEnvelopeId() + " should be sent after " + envelope.getTryAfter());
-                    continue;
-                }
-
-
-                switch (envelope.getPostingType()) {
-                case POSTING_TWITTER_DIRECT:
-                    if (sendDirectMessage(con, it, envelope)) { it.remove(); }
-                    break;
-                case POSTING_TWITTER:
-                    if (sendTwitterMessage(con, it, envelope)) { it.remove(); }
-                    break;
-                }
+            } finally {
+                it.close();
             }
             con.commit();
         } finally {
