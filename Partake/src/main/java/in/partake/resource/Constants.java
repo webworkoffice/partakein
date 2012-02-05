@@ -1,5 +1,7 @@
 package in.partake.resource;
 
+import java.util.UUID;
+
 @SuppressWarnings("nls")
 public final class Constants {
     // twitter settings
@@ -19,6 +21,8 @@ public final class Constants {
     // TODO: このあたりの定数は全て廃止し、PartakeSession 及び、ParatkePageAttribute に統合予定。
     // また、View へのデータの渡し方も attribute 経由でなく、refine する予定。
 
+    public static final UUID DEMO_ID = UUID.fromString("ff24c3ad-98b6-4fe3-b2be-68d220d6a866");
+    
     // Session attribute keys
     public static final String ATTR_ACTION = "action-model"; //
 
