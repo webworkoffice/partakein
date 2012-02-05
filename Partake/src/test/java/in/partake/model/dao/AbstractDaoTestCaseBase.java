@@ -3,9 +3,9 @@ package in.partake.model.dao;
 import java.util.HashSet;
 import java.util.Set;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
-import in.partake.util.PDate;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     
     protected void setup(DAO dao) throws DAOException {
         // remove the current data
-        PDate.resetCurrentDate();
+        TimeUtil.resetCurrentDate();
         this.dao = dao;
         
         if (dao == null)
@@ -138,7 +138,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             dao.put(con, t1);
             con.commit();
 
-            PDate.waitForTick();
+            TimeUtil.waitForTick();
             
             con.beginTransaction();
             T t2 = create(time, "putputfind", 1); 
@@ -167,14 +167,14 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         PartakeConnection con = getPool().getConnection();
 
         try {
-            PDate.waitForTick();
+            TimeUtil.waitForTick();
             
             con.beginTransaction();
             T t1 = create(System.currentTimeMillis(), "putremovefind", 0); 
             dao.put(con, t1);
             con.commit();
             
-            PDate.waitForTick();
+            TimeUtil.waitForTick();
             
             con.beginTransaction();
             dao.remove(con, (PK) t1.getPrimaryKey());
@@ -201,13 +201,13 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             dao.put(con, t1);
             con.commit();
             
-            PDate.waitForTick();
+            TimeUtil.waitForTick();
             
             con.beginTransaction();
             dao.remove(con, (PK) t1.getPrimaryKey());
             con.commit();
             
-            PDate.waitForTick();
+            TimeUtil.waitForTick();
 
             con.beginTransaction();
             dao.put(con, t1);

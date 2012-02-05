@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
@@ -11,7 +12,6 @@ import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.BinaryData;
-import in.partake.util.PDate;
 
 class EntityBinaryMapper extends Postgres9EntityDataMapper<BinaryData> {   
     public BinaryData map(Postgres9Entity entity) throws DAOException {
@@ -51,7 +51,7 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why BinaryData does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(binary.getId(), CURRENT_VERSION, binary.getData(), binary.getType().getBytes(UTF8), PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(binary.getId(), CURRENT_VERSION, binary.getData(), binary.getType().getBytes(UTF8), TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, binary.getId()))
             entityDao.update(pcon, entity);            
         else

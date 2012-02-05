@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
@@ -12,7 +13,6 @@ import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.CalendarLinkage;
-import in.partake.util.PDate;
 import net.sf.json.JSONObject;
 
 class EntityCalendarLinkageMapper extends Postgres9EntityDataMapper<CalendarLinkage> {   
@@ -59,7 +59,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
     public void put(PartakeConnection con, CalendarLinkage linkage) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(linkage.getId(), CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(linkage.getId(), CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, linkage.getId()))
             entityDao.update(pcon, entity);            
         else

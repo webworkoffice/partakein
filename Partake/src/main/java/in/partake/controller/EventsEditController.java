@@ -1,5 +1,6 @@
 package in.partake.controller;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -11,7 +12,6 @@ import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.model.dto.pk.EventRelationPK;
 import in.partake.service.EventService;
 import in.partake.util.KeyValuePair;
-import in.partake.util.PDate;
 import in.partake.util.Util;
 
 import java.io.File;
@@ -245,7 +245,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
     @SkipValidation
     public String editNew() {
 		Calendar oneDayAfter = Calendar.getInstance();	// TODO use Locale
-		oneDayAfter.setTimeInMillis(PDate.getCurrentTime() + 1000 * 3600 * 24);
+		oneDayAfter.setTimeInMillis(TimeUtil.getCurrentTime() + 1000 * 3600 * 24);
 
 		syear  = eyear  = dyear  = oneDayAfter.get(Calendar.YEAR);
 		smonth = emonth = dmonth = oneDayAfter.get(Calendar.MONTH) + 1;
@@ -519,7 +519,7 @@ public class EventsEditController extends PartakeActionSupport implements Valida
 			this.smin = date.get(Calendar.MINUTE);
 		}
 
-		Date oneDayAfter = new Date(PDate.getCurrentTime() + 1000 * 3600 * 24);
+		Date oneDayAfter = new Date(TimeUtil.getCurrentTime() + 1000 * 3600 * 24);
 		{
 			this.usesEndDate = event.getEndDate() != null;
 			Calendar date = new GregorianCalendar();

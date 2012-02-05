@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
@@ -15,7 +16,6 @@ import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.OpenIDLinkage;
-import in.partake.util.PDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
         if (id == null)
             id = entityDao.getFreshId(pcon);
         
-        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
 
         if (entityDao.exists(pcon, id)) {
             entityDao.update(pcon, entity);

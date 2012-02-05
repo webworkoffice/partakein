@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
@@ -11,7 +12,6 @@ import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.Envelope;
-import in.partake.util.PDate;
 import net.sf.json.JSONObject;
 
 class EntityEnvelopeMapper extends Postgres9EntityDataMapper<Envelope> {   
@@ -48,7 +48,7 @@ public class Postgres9EnvelopeDao extends Postgres9Dao implements IEnvelopeAcces
 
         // TODO: Entity should have getId() instead of getEnvelopeId().
         // TODO: Why User does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(envelope.getEnvelopeId(), CURRENT_VERSION, envelope.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(envelope.getEnvelopeId(), CURRENT_VERSION, envelope.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, envelope.getEnvelopeId()))
             entityDao.update(pcon, entity);            
         else

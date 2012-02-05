@@ -1,9 +1,9 @@
 package in.partake.model.dao.postgres9;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.DataMapper;
-import in.partake.util.PDate;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
@@ -104,7 +104,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
                 ps.setBinaryStream(3, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
             else
                 ps.setNull(3, Types.NULL);
-            ps.setTimestamp(4, new Timestamp(PDate.getCurrentTime()));
+            ps.setTimestamp(4, new Timestamp(TimeUtil.getCurrentTime()));
             ps.setObject(5, entity.getId(), Types.OTHER);
             
             ps.execute();

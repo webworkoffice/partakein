@@ -1,10 +1,10 @@
 package in.partake.controller;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
-import in.partake.util.PDate;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,24 +38,24 @@ public final class EventsEditControllerTest extends AbstractPartakeControllerTes
 	    TimeZone timeZone = TimeZone.getDefault();
 	    
 	    // 現在時刻に依存するテストケースであるため、少なくとも分（minute）が異なる2点でテストする必要がある
-	    PDate.setCurrentDate(new PDate(2010, 1, 1, 0, 0, 0, timeZone));
+	    TimeUtil.setCurrentDate(TimeUtil.create(2010, 1, 1, 0, 0, 0, timeZone));
 		editNewTestInner();
 
-		PDate.setCurrentDate(new PDate(2010, 1, 1, 0, 1, 20, timeZone));
+		TimeUtil.setCurrentDate(TimeUtil.create(2010, 1, 1, 0, 1, 20, timeZone));
         editNewTestInner();
 
-        PDate.setCurrentDate(new PDate(2015, 12, 31, 23, 59, 59, timeZone));
+        TimeUtil.setCurrentDate(TimeUtil.create(2015, 12, 31, 23, 59, 59, timeZone));
         editNewTestInner();
 
-        PDate.setCurrentDate(new PDate(2000, 10, 30, 23, 59, 48, timeZone));
+        TimeUtil.setCurrentDate(TimeUtil.create(2000, 10, 30, 23, 59, 48, timeZone));
         editNewTestInner();
 
-        PDate.resetCurrentDate();
+        TimeUtil.resetCurrentDate();
 	}
 	
 	private void editNewTestInner() {
 		EventsEditController controller = new EventsEditController();
-		Date oneDayAfter = new Date(PDate.getCurrentTime() + 1000 * 3600 * 24);
+		Date oneDayAfter = new Date(TimeUtil.getCurrentTime() + 1000 * 3600 * 24);
 		final Calendar oneDayAfterCalendar = Calendar.getInstance();
 		oneDayAfterCalendar.setTime(oneDayAfter);
 

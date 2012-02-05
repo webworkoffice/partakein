@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
@@ -11,7 +12,6 @@ import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.CacheData;
-import in.partake.util.PDate;
 import net.sf.json.JSONObject;
 
 class EntityCacheMapper extends Postgres9EntityDataMapper<CacheData> {   
@@ -51,7 +51,7 @@ public class Postgres9CacheDao extends Postgres9Dao implements ICacheAccess {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         byte[] opt = cache.toJSONWithoutData().toString().getBytes(UTF8);
-        Postgres9Entity entity = new Postgres9Entity(cache.getId(), CURRENT_VERSION, cache.getData(), opt, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(cache.getId(), CURRENT_VERSION, cache.getData(), opt, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, entity.getId()))
             entityDao.update(pcon, entity);            
         else

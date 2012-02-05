@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
@@ -11,7 +12,6 @@ import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.User;
-import in.partake.util.PDate;
 import net.sf.json.JSONObject;
 
 class EntityUserMapper extends Postgres9EntityDataMapper<User> {   
@@ -47,7 +47,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why User does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(user.getId(), CURRENT_VERSION, user.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(user.getId(), CURRENT_VERSION, user.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, user.getId()))
             entityDao.update(pcon, entity);            
         else

@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.DataMapper;
@@ -16,7 +17,6 @@ import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.Event;
-import in.partake.util.PDate;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -77,7 +77,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     public void put(PartakeConnection con, Event event) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(event.getId(), CURRENT_VERSION, event.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(event.getId(), CURRENT_VERSION, event.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, event.getId()))
             entityDao.update(pcon, entity);            
         else
