@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
@@ -16,7 +17,6 @@ import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.pk.EventRelationPK;
-import in.partake.util.PDate;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class Postgres9EventRelationDao extends Postgres9Dao implements IEventRel
             id = entityDao.getFreshId(pcon);
 
         // TODO: EventRelation should be merged into Event.
-        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, relation.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, relation.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
 
         if (entityDao.exists(pcon, id))
             entityDao.update(pcon, entity);

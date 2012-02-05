@@ -3,9 +3,9 @@ package in.partake.model.dao.cassandra;
 import org.apache.cassandra.thrift.Cassandra.Client;
 
 import me.prettyprint.cassandra.service.CassandraClient;
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.util.PDate;
 
 class CassandraConnection extends PartakeConnection {
     private CassandraClient client;
@@ -44,7 +44,7 @@ class CassandraConnection extends PartakeConnection {
     
     @Override
     public void beginTransaction() throws DAOException {
-        long now = PDate.getCurrentTime();
+        long now = TimeUtil.getCurrentTime();
         this.transactionAcquiredTime = now;
         if (transactionAcquiredTime == lastTransactionAcquiredTime) {
             transactionAcquiredTime = lastTransactionAcquiredTime + 1;

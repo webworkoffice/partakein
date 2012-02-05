@@ -6,11 +6,11 @@ import javax.persistence.Persistence;
 
 import org.apache.log4j.Logger;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeConnectionPool;
 import in.partake.resource.PartakeProperties;
-import in.partake.util.PDate;
 
 public class JPAConnectionPool extends PartakeConnectionPool {
     private static final Logger logger = Logger.getLogger(JPAConnectionPool.class);
@@ -25,7 +25,7 @@ public class JPAConnectionPool extends PartakeConnectionPool {
     protected JPAConnection getConnectionImpl(String name) throws DAOException {
         try {
             EntityManager em = entityManagerFactory.createEntityManager();
-            return new JPAConnection(this, em, name, PDate.getCurrentTime());
+            return new JPAConnection(this, em, name, TimeUtil.getCurrentTime());
         } catch (Exception e) {
             throw new DAOException(e);
         }

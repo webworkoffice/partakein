@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
@@ -13,7 +14,6 @@ import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.pk.ShortenedURLDataPK;
-import in.partake.util.PDate;
 import net.sf.json.JSONObject;
 
 class EntityURLShortenerMapper extends Postgres9EntityDataMapper<ShortenedURLData> {   
@@ -63,7 +63,7 @@ public class Postgres9UrlShortenerDao extends Postgres9Dao implements IURLShorte
             id = entityDao.getFreshId(pcon);
 
         // TODO: EventRelation should be merged into Event.
-        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
 
         if (entityDao.exists(pcon, id))
             entityDao.update(pcon, entity);

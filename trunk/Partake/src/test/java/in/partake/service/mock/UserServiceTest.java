@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doThrow;
 import java.util.Date;
 
 import junit.framework.Assert;
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
@@ -23,7 +24,6 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.service.UserService;
 import in.partake.service.UserService.UserCount;
-import in.partake.util.PDate;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class UserServiceTest extends MockServiceTestBase {
         // create fixtures.
         initialize();
         createFixtures();
-        PDate.setCurrentTime(System.currentTimeMillis());
+        TimeUtil.setCurrentTime(System.currentTimeMillis());
     }
 
     @SuppressWarnings("unchecked")
@@ -102,7 +102,7 @@ public class UserServiceTest extends MockServiceTestBase {
     @Test
     public void countOnlyOneActiveUser() throws DAOException {
         User user = new User();
-        user.setLastLoginAt(new Date(PDate.getCurrentTime()));
+        user.setLastLoginAt(new Date(TimeUtil.getCurrentTime()));
         when(mockIter.hasNext()).thenReturn(true, false);
         when(mockIter.next()).thenReturn(user);
 
@@ -117,7 +117,7 @@ public class UserServiceTest extends MockServiceTestBase {
     @Test
     public void countOnlyOneUserWhoLogin29DaysAgo() throws DAOException {
         User user = new User();
-        user.setLastLoginAt(new Date(PDate.getCurrentTime() - 29L * 24 * 60 * 60 * 1000));
+        user.setLastLoginAt(new Date(TimeUtil.getCurrentTime() - 29L * 24 * 60 * 60 * 1000));
         when(mockIter.hasNext()).thenReturn(true, false);
         when(mockIter.next()).thenReturn(user);
 
@@ -132,7 +132,7 @@ public class UserServiceTest extends MockServiceTestBase {
     @Test
     public void countOnlyOneUserWhoLogin29DaysAgo2() throws DAOException {
         User user = new User();
-        user.setLastLoginAt(new Date(PDate.getCurrentTime() - 30L * 24 * 60 * 60 * 1000 + 1));
+        user.setLastLoginAt(new Date(TimeUtil.getCurrentTime() - 30L * 24 * 60 * 60 * 1000 + 1));
         when(mockIter.hasNext()).thenReturn(true, false);
         when(mockIter.next()).thenReturn(user);
 
@@ -147,7 +147,7 @@ public class UserServiceTest extends MockServiceTestBase {
     @Test
     public void countOnlyOneUserWhoLogin30DaysAgo() throws DAOException {
         User user = new User();
-        user.setLastLoginAt(new Date(PDate.getCurrentTime() - 30L * 24 * 60 * 60 * 1000));
+        user.setLastLoginAt(new Date(TimeUtil.getCurrentTime() - 30L * 24 * 60 * 60 * 1000));
         when(mockIter.hasNext()).thenReturn(true, false);
         when(mockIter.next()).thenReturn(user);
 

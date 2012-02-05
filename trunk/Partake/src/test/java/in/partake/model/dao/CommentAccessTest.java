@@ -1,9 +1,9 @@
 package in.partake.model.dao;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dto.Comment;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
-import in.partake.util.PDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
     public void testToFindByEventId() throws Exception {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();
-        PDate.setCurrentDate(PDate.getCurrentDate());
+        TimeUtil.setCurrentDate(TimeUtil.getCurrentDate());
         
         try {
             con.beginTransaction();
@@ -43,9 +43,9 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
             for (int i = 0; i < 10; ++i) {
                 for (int j = 0; j < 10; ++j) {
                     ids[i][j] = UUID.randomUUID().toString();
-                    Comment original = new Comment(ids[i][j], prefix + "eventId" + i, "userId", "comment content", false, PDate.getCurrentDate().getDate());
+                    Comment original = new Comment(ids[i][j], prefix + "eventId" + i, "userId", "comment content", false, TimeUtil.getCurrentDate());
                     factory.getCommentAccess().put(con, original);
-                    PDate.waitForTick();
+                    TimeUtil.waitForTick();
                 }
             }
 
@@ -89,7 +89,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
             // create 
             for (int i = 0; i < 10; ++i) {
                 ids[i] = UUID.randomUUID().toString();
-                Comment original = new Comment(ids[i], prefix + "eventId", "userId", "comment content", false, PDate.getCurrentDate().getDate());
+                Comment original = new Comment(ids[i], prefix + "eventId", "userId", "comment content", false, TimeUtil.getCurrentDate());
                 factory.getCommentAccess().put(con, original);
             }
             

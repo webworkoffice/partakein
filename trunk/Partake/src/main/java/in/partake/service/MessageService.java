@@ -13,6 +13,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EventEx;
 import in.partake.model.EnrollmentEx;
@@ -35,7 +36,6 @@ import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
-import in.partake.util.PDate;
 import in.partake.util.Util;
 
 /**
@@ -83,7 +83,7 @@ public final class MessageService extends PartakeService {
      */
     public void sendReminders() throws DAOException {
         String topPath = PartakeProperties.get().getTopPath();
-        Date now = PDate.getCurrentDate().getDate();
+        Date now = TimeUtil.getCurrentDate();
 
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();

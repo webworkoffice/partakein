@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
 
 public class Main {

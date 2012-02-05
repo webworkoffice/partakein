@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.DataMapper;
@@ -12,7 +13,6 @@ import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.TwitterLinkage;
-import in.partake.util.PDate;
 import net.sf.json.JSONObject;
 
 public class Postgres9TwitterLinkageDao extends Postgres9Dao implements ITwitterLinkageAccess {
@@ -55,7 +55,7 @@ public class Postgres9TwitterLinkageDao extends Postgres9Dao implements ITwitter
         if (id == null)
             id = entityDao.getFreshId(pcon);
         
-        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, PDate.getCurrentDate().getDate());
+        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
 
         if (entityDao.exists(pcon, id)) {
             entityDao.update(pcon, entity);

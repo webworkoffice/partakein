@@ -3,10 +3,10 @@ package in.partake.model.dao;
 import java.util.Date;
 import java.util.UUID;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dto.CacheData;
 import in.partake.model.fixture.impl.CacheTestDataProvider;
-import in.partake.util.PDate;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -74,7 +74,7 @@ public class CacheAccessTest extends AbstractDaoTestCaseBase<ICacheAccess, Cache
             }
             
             // In this time, data can be retrieved.
-            PDate.setCurrentDate(new PDate(now - 1));
+            TimeUtil.setCurrentDate(new Date(now - 1));
             {
                 con.beginTransaction();
                 CacheData data = factory.getCacheAccess().find(con, id);
@@ -83,7 +83,7 @@ public class CacheAccessTest extends AbstractDaoTestCaseBase<ICacheAccess, Cache
             }
             
             // In this time, data is expired.
-            PDate.setCurrentDate(new PDate(now + 1));
+            TimeUtil.setCurrentDate(new Date(now + 1));
             {
                 con.beginTransaction();
                 CacheData data = factory.getCacheAccess().find(con, id);

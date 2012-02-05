@@ -1,12 +1,12 @@
 package in.partake.service;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.resource.PartakeProperties;
-import in.partake.util.PDate;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -64,7 +64,7 @@ public abstract class AbstractServiceTestCaseBase {
      * call this method and {@link PartakeProperties#reset(String)} at EachTestCase#setUpOnce() which is annotated as @BeforeClass.
      */
     protected static void reset() {
-        PDate.resetCurrentDate();
+        TimeUtil.resetCurrentDate();
         PartakeService.initialize();
     }
 

@@ -5,13 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.AbstractDaoTestCaseBase;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
 import in.partake.model.fixture.impl.EventTestDataProvider;
-import in.partake.util.PDate;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -184,8 +184,8 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
     
     
     private Event createEvent(String eventId, String userId) {
-        Date beginDate = PDate.getCurrentDate().getDate();
-        Date now = PDate.getCurrentDate().getDate();
+        Date beginDate = TimeUtil.getCurrentDate();
+        Date now = TimeUtil.getCurrentDate();
         String url = "http://localhost:8080/";
         String place = "";
         String address = "";

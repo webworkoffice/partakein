@@ -1,12 +1,12 @@
 package in.partake.model.dao.mock;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.util.PDate;
 
 public class MockConnection extends PartakeConnection {
     public MockConnection(MockConnectionPool pool) {
-        super("<mock connection>", pool, PDate.getCurrentTime());
+        super("<mock connection>", pool, TimeUtil.getCurrentTime());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package in.partake.service;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -14,7 +15,6 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
-import in.partake.util.PDate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -326,7 +326,7 @@ public final class UserService extends PartakeService {
     public UserCount countUsers() throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
-        Date oneMonthAgo = new Date(PDate.getCurrentTime() - 30L * 24 * 60 * 60 * 1000);
+        Date oneMonthAgo = new Date(TimeUtil.getCurrentTime() - 30L * 24 * 60 * 60 * 1000);
         UserCount count = new UserCount();
 
         try {

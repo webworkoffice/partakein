@@ -1,5 +1,6 @@
 package in.partake.service.mock;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
@@ -8,7 +9,6 @@ import in.partake.model.dao.mock.MockConnection;
 import in.partake.model.dao.mock.MockConnectionPool;
 import in.partake.model.dto.Event;
 import in.partake.service.MessageService;
-import in.partake.util.PDate;
 
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -23,50 +23,50 @@ import static org.mockito.Mockito.*;
 
 
 public class MessageServiceTest extends MockServiceTestBase {
-        
+
     @Test
     public void testNeedsToSendWhenLastSentDateIsNull() throws Exception {
         Assert.assertTrue(needsToSend(
-                        new PDate(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()).getDate(),
-                        null));
-        
+                TimeUtil.create(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()),
+                null));
+
         Assert.assertTrue(needsToSend(
-                        new PDate(2000, 1, 10,  0,  0,  0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9, 23, 59, 59, TimeZone.getDefault()).getDate(),
-                        null));
-        
+                TimeUtil.create(2000, 1, 10,  0,  0,  0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9, 23, 59, 59, TimeZone.getDefault()),
+                null));
+
         Assert.assertFalse(needsToSend(
-                        new PDate(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1, 10, 0, 0, 1, TimeZone.getDefault()).getDate(),
-                        null));
+                TimeUtil.create(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1, 10, 0, 0, 1, TimeZone.getDefault()),
+                null));
     }
-    
+
     @Test
     public void testNeedsToSendWhenLastSentDateIsNotNull() throws Exception {
         Assert.assertTrue(needsToSend(
-                        new PDate(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()).getDate()));
+                TimeUtil.create(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9, 0, 0, 0, TimeZone.getDefault())));
 
         Assert.assertTrue(needsToSend(
-                        new PDate(2000, 1, 10,  0,  0,  1, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1, 10,  0,  0,  0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9, 22, 59, 59, TimeZone.getDefault()).getDate()));
+                TimeUtil.create(2000, 1, 10,  0,  0,  1, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1, 10,  0,  0,  0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9, 22, 59, 59, TimeZone.getDefault())));
 
         Assert.assertFalse(needsToSend(
-                        new PDate(2000, 1, 10,  0, 0, 0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9,  0, 0, 0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9, 23, 0, 1, TimeZone.getDefault()).getDate()));
-        
+                TimeUtil.create(2000, 1, 10,  0, 0, 0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9,  0, 0, 0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9, 23, 0, 1, TimeZone.getDefault())));
+
         Assert.assertFalse(needsToSend(
-                        new PDate(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()).getDate(),
-                        new PDate(2000, 1,  9, 0, 0, 1, TimeZone.getDefault()).getDate()));
+                TimeUtil.create(2000, 1, 10, 0, 0, 0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9, 0, 0, 0, TimeZone.getDefault()),
+                TimeUtil.create(2000, 1,  9, 0, 0, 1, TimeZone.getDefault())));
 
     }
-    
-    
+
+
     private boolean needsToSend(Date now, Date targetDate, Date lastSent) throws Exception {
         Method method = MessageService.class.getDeclaredMethod("needsToSend", Date.class, Date.class, Date.class);
         method.setAccessible(true);

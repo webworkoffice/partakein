@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.Enrollment;
@@ -8,7 +9,6 @@ import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
-import in.partake.util.PDate;
 
 import java.util.Date;
 import java.util.List;
@@ -139,8 +139,8 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 	}
 
 	private Event createEvent(String eventId, String userId) {
-		Date beginDate = PDate.getCurrentDate().getDate();
-		Date now = PDate.getCurrentDate().getDate();
+		Date beginDate = TimeUtil.getCurrentDate();
+		Date now = TimeUtil.getCurrentDate();
 		String url = "http://localhost:8080/";
 		String place = "";
 		String address = "";

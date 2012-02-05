@@ -1,8 +1,8 @@
 package in.partake.model.dao;
 
+import in.partake.base.TimeUtil;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.TestService;
-import in.partake.util.PDate;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -56,7 +56,7 @@ public abstract class AbstractConnectionTestCaseBase extends TestService {
 
     protected void setup() throws DAOException {
         // remove the current data
-        PDate.resetCurrentDate();        
+        TimeUtil.resetCurrentDate();        
     }
     
     // ------------------------------------------------------------
