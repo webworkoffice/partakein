@@ -9,24 +9,17 @@ public class Postgres9Entity {
     private int version;
     /** Entity Body */
     private byte[] body;
-    /** Optional Body. Will be used in BinaryEntity. */
+    /** Optional Body. Will be used in BinaryEntity and CacheEntity. */
     private byte[] opt;
-    /** Time created at */
-    private Date createdAt;
-    /** Time modified at */
-    private Date modifiedAt;
+    /** Time index updated at. */
+    private Date updatedAt;
     
-    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, Date createdAt) {
-        this(id, version, body, opt, createdAt, null);
-    }
-    
-    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, Date createdAt, Date modifiedAt) {
+    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, Date updatedAt) {
         this.id = id;
         this.version = version;
         this.body = body;
         this.opt = opt;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
+        this.updatedAt = updatedAt;
     }
 
     public String getId() {
@@ -53,11 +46,7 @@ public class Postgres9Entity {
         return opt.length;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-    
-    public Date getModifiedAt() {
-        return modifiedAt;
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 }

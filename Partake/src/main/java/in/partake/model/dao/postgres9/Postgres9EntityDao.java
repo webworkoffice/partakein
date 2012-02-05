@@ -51,8 +51,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
                     "    version    INTEGER     NOT NULL," +
                     "    body       BYTEA       NOT NULL," +
                     "    opt        BYTEA," +
-                    "    createdAt  TIMESTAMP   NOT NULL," +
-                    "    modifiedAt TIMESTAMP " +
+                    "    updatedAt  TIMESTAMP   NOT NULL" +
                     ")");             
              ps.execute();
         } finally {
@@ -75,7 +74,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("INSERT INTO " + tableName + "(id, version, body, opt, createdAt) VALUES(?, ?, ?, ?, ?)");            
+            ps = con.prepareStatement("INSERT INTO " + tableName + "(id, version, body, opt, updatedAt) VALUES(?, ?, ?, ?, ?)");            
             ps.setObject(1, entity.getId(), Types.OTHER);
             ps.setInt(2, entity.getVersion());
             ps.setBinaryStream(3, new ByteArrayInputStream(entity.getBody()), entity.getBodyLength());
@@ -83,7 +82,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
                 ps.setBinaryStream(4, new ByteArrayInputStream(entity.getOpt()), entity.getOptLength());
             else
                 ps.setNull(4, Types.NULL);
-            ps.setTimestamp(5, new Timestamp(entity.getCreatedAt().getTime()));
+            ps.setTimestamp(5, new Timestamp(entity.getUpdatedAt().getTime()));
             
             ps.execute();
         } catch (SQLException e) {
@@ -97,7 +96,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         try {
-            ps = con.prepareStatement("UPDATE " + tableName + " SET version = ?, body = ?, opt = ?, modifiedAt = ? WHERE id = ?");
+            ps = con.prepareStatement("UPDATE " + tableName + " SET version = ?, body = ?, opt = ?, updatedAt = ? WHERE id = ?");
             ps.setInt(1, entity.getVersion());
             ps.setBinaryStream(2, new ByteArrayInputStream(entity.getBody()), entity.getBodyLength());
             if (entity.getOpt() != null)
@@ -138,7 +137,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = con.prepareStatement("SELECT version, body, opt, createdAt, modifiedAt FROM " + tableName + " WHERE id = ?");
+            ps = con.prepareStatement("SELECT version, body, opt, updatedAt FROM " + tableName + " WHERE id = ?");
             ps.setObject(1, id, Types.OTHER);
 
             rs = ps.executeQuery();
@@ -146,9 +145,8 @@ public class Postgres9EntityDao extends Postgres9Dao {
                 int version = rs.getInt(1);
                 byte[] body = rs.getBytes(2);
                 byte[] opt = rs.getBytes(3);
-                Timestamp createdAt = rs.getTimestamp(4);
-                Timestamp modifiedAt = rs.getTimestamp(5);
-                return new Postgres9Entity(id, version, body, opt, createdAt, modifiedAt); 
+                Timestamp updatedAt = rs.getTimestamp(4);
+                return new Postgres9Entity(id, version, body, opt, updatedAt); 
             } else {
                 return null;
             }
@@ -191,7 +189,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
     }
     
     public DataIterator<Postgres9Entity> getIterator(Postgres9Connection pcon) throws DAOException {
-        final String sql = "SELECT id, version, body, opt, createdAt, modifiedAt FROM " + tableName;
+        final String sql = "SELECT id, version, body, opt, updatedAt FROM " + tableName;
 
         Connection con = pcon.getConnection();
         
@@ -221,9 +219,8 @@ public class Postgres9EntityDao extends Postgres9Dao {
                     int version = rs.getInt(2);
                     byte[] body = rs.getBytes(3);
                     byte[] opt = rs.getBytes(4);
-                    Timestamp createdAt = rs.getTimestamp(5);
-                    Timestamp modifiedAt = rs.getTimestamp(6);
-                    return new Postgres9Entity(id, version, body, opt, createdAt, modifiedAt);
+                    Timestamp updatedAt = rs.getTimestamp(5);
+                    return new Postgres9Entity(id, version, body, opt, updatedAt);
                 } catch (SQLException e) {
                     throw new DAOException(e);
                 }

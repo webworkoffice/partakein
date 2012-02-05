@@ -44,10 +44,8 @@ public class Postgres9EventReminderDao extends Postgres9Dao implements IEventRem
 
     @Override
     public void put(PartakeConnection con, EventReminder reminder) throws DAOException {
-        // TODO Auto-generated method stub
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        // TODO: Why User does not have createdAt and modifiedAt?
         Postgres9Entity entity = new Postgres9Entity(reminder.getEventId(), CURRENT_VERSION, reminder.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, reminder.getEventId()))
             entityDao.update(pcon, entity);            
