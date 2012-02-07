@@ -170,6 +170,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     	return this.currentURL;
     }
 
+    // TODO: Maybe we should use some enum instead of String. 
     public void addWarningMessage(String str) {
         addMessage(Constants.ATTR_WARNING_MESSAGE, str);
     }
@@ -178,6 +179,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         return getMessages(Constants.ATTR_WARNING_MESSAGE);
     }
     
+    // TODO: Maybe we should use some ENUM instead of String.
     public void addErrorMessage(String str) {
         addMessage(Constants.ATTR_ERROR_MESSAGE, str);
     }
