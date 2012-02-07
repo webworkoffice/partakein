@@ -216,6 +216,9 @@ public class AuthenticationController extends PartakeActionSupport {
             return REDIRECT;
         } catch (OpenIDException e) {
             logger.info("OpenID login failed", e);
+            
+            // TODO: addActionError should be DEPRECATED.
+            // We should use addErrorMessage.
             addActionError("OpenID でのログインに失敗しました。");
             
             this.redirectURL = PartakeProperties.get().getTopPath() + "/";

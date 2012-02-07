@@ -190,6 +190,7 @@ public class EventsController extends PartakeActionSupport {
     	this.eventId = getParameter("eventId");
     	if (eventId == null) { return ERROR; }
 
+        // TODO: Should be transactioonal.
 		// これ Service にいれてしまわないといけないんじゃないかなー。transaction 的には。select for update というか。
 		// update conflict してもまあ問題ないのでいいか。
 		CommentEx comment = EventService.get().getCommentExById(commentId);
