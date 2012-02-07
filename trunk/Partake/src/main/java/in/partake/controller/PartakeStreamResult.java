@@ -56,11 +56,8 @@ public class PartakeStreamResult extends StreamResult {
     // ----------------------------------------------------------------------
     
     public void setStatus(int status) {
-        if (status >= 400) {
-            headerResult.setError(status);
-        } else {
-            headerResult.setStatus(status);
-        }
+        // We don't call headerResult.setError(status) here, because setError will send tomcat's error page instead of our JSON result. 
+        headerResult.setStatus(status);
     }
     
     public void setAdditionalHeaders(Map<String, String> additionalHeaders) {

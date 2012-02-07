@@ -57,7 +57,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
             this.stream = new ByteArrayInputStream(obj.toString().getBytes("utf-8"));
             return "json";
         } catch (UnsupportedEncodingException e) {
-            logger.error("This exception should not be thrown!", e);
+            logger.fatal("This exception should not be thrown!", e);
             return ERROR;
         }
     }
@@ -152,7 +152,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
         this.status = 400;
         return renderJSON(obj);
     }
-
+    
     @Override
     protected String renderLoginRequired() {
         JSONObject obj = new JSONObject();

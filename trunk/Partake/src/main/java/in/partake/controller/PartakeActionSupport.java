@@ -109,6 +109,25 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 	}
 	
 	/**
+	 * Gets boolean parameter. If parameter does not exist, null will be returned.
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	protected Boolean getBooleanParameter(String key) {
+	    String value = getParameter(key);
+	    if (value == null)
+	        return null;
+	    
+        if ("true".equalsIgnoreCase(value))
+            return true;
+        if ("false".equalsIgnoreCase(value))
+            return false;
+
+        return null; 
+	}
+	
+	/**
 	 * take multiple parameters. If there is a single parameter, a new array will be created to return.
 	 * @param key
 	 * @return

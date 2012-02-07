@@ -314,6 +314,37 @@ public final class UserService extends PartakeService {
             con.invalidate();
         }
     }
+    
+    /**
+     * Updates UserPreference. Arguments which is null will not be updated.
+     * @param userId
+     * @param profilePublic
+     * @param receivingTwitterMessage
+     * @param tweetingAttendanceAutomatically
+     * @throws DAOException
+     */
+    public void updateUserPreference(String userId, Boolean profilePublic, Boolean receivingTwitterMessage, Boolean tweetingAttendanceAutomatically) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            con.beginTransaction();
+            UserPreference pref = factory.getUserPreferenceAccess().find(con, userId);
+            UserPreference newPref = new UserPreference(pref);
+            
+            if (profilePublic != null)
+                newPref.setProfilePublic(profilePublic);
+            if (receivingTwitterMessage != null)
+                newPref.setReceivingTwitterMessage(receivingTwitterMessage);
+            if (tweetingAttendanceAutomatically != null)
+                newPref.setTweetingAttendanceAutomatically(tweetingAttendanceAutomatically);
+            
+            factory.getUserPreferenceAccess().put(con, newPref);
+            con.commit();
+        } finally {
+            con.invalidate();
+        }
+
+    }
 
     // ----------------------------------------------------------------------
 
