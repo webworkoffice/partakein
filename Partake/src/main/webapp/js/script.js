@@ -1,8 +1,7 @@
 
 function onReady() {
     var dialogIDs = ["signin-dialog", "enroll-form", "reserve-form", "cancel-form",
-	                   "event-edit-form", "event-delete-form", 
-	                   "questionnaire-form",
+	                   "event-delete-form", 
 	                   "message-form", "twitter-promotion-form",
 	                   "change-comment-form", "reminder-reset-form"];
 
@@ -44,7 +43,7 @@ function onReady() {
     // passcode
     function checkPasscode() {
         if ($("#secret").is(":checked")) {
-            $("#passcode").attr('disabled', "");
+            $("#passcode").attr('disabled', null);
         } else {
             $("#passcode").attr('disabled', "disabled");                
         }
@@ -56,11 +55,11 @@ function onReady() {
     // enddate
     function checkEndDate() {
         if ($("#usesEndDate").is(":checked")) {
-            $("#eyear").attr('disabled', '');
-            $("#emonth").attr('disabled', '');
-            $("#eday").attr('disabled', '');
-            $("#ehour").attr('disabled', '');
-            $("#emin").attr('disabled', '');
+            $("#eyear").attr('disabled', null);
+            $("#emonth").attr('disabled', null);
+            $("#eday").attr('disabled', null);
+            $("#ehour").attr('disabled', null);
+            $("#emin").attr('disabled', null);
         } else {
             $("#eyear").attr('disabled', 'disabled');
             $("#emonth").attr('disabled', 'disabled');
@@ -76,11 +75,11 @@ function onReady() {
     // 
     function checkDeadline() {
         if ($("#usesDeadline").is(":checked")) {
-            $("#dyear").attr('disabled', '');
-            $("#dmonth").attr('disabled', '');
-            $("#dday").attr('disabled', '');
-            $("#dhour").attr('disabled', '');
-            $("#dmin").attr('disabled', '');
+            $("#dyear").attr('disabled', null);
+            $("#dmonth").attr('disabled', null);
+            $("#dday").attr('disabled', null);
+            $("#dhour").attr('disabled', null);
+            $("#dmin").attr('disabled', null);
         } else {
             $("#dyear").attr('disabled', 'disabled');
             $("#dmonth").attr('disabled', 'disabled');

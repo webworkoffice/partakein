@@ -1,0 +1,133 @@
+@charset "UTF-8";
+
+body {
+	padding-top: 50px;
+}
+
+.thin-padding {
+	padding-bottom: 5px;
+}
+
+.page-header {
+	padding-bottom: 5px;
+}
+
+.page-header p {
+	margin-top: 10px;
+}
+
+.well.thin {
+	margin-bottom: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.well .span1{width:20px;}
+.well .span-onehalf{width:60px;}
+.well .span2{width:100px;}
+.well .span3{width:180px;}
+.well .span4{width:260px;}
+.well .span5{width:340px;}
+.well .span6{width:440px;}
+.well .span7{width:500px;}
+.well .span8{width:580px;}
+.well .span9{width:660px;}
+.well .span10{width:740px;}
+.well .span11{width:820px;}
+.well .span12{width:900px;}
+
+h2 {
+	padding-bottom: 5px;
+}
+
+.border {
+	border-bottom: 2px solid;
+	padding-bottom: 5px;
+}
+
+.top-page-events .event-image img {
+	max-width: 60px;
+    max-height: 60px;
+}
+
+.userphoto {
+	width: 24px;
+    height: 24px;
+}
+
+input, textarea, select, li {
+	color: #222222;
+}
+
+div.event-search.well {
+	margin-top: 15px;
+	padding-bottom: 0;
+}
+
+span.event-search-inline {
+	display: inline-block;
+	margin-top: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+div.event-search .form-horizontal {
+	margin-bottom: 0;
+}
+
+div.searched-event .event-image img {
+	max-width: 120px;
+    max-height: 120px;
+}
+
+div.searched-event {
+	padding: 10px 0 10px 0;
+	border-top: 1px dashed;
+}
+
+div.searched-events div.searched-event:first-of-type {
+	border-top: 0;
+}
+
+div.event-nav {
+	border: 5px 0 5px 0;
+}
+
+div.event-nav .tab-pane {
+	min-height: 200px;
+}
+
+div.event-body {
+	background-color: white;
+	margin-left: -10px;
+	margin-right: -10px;
+	padding: 10px;
+	
+	border-radius: 5px; /* CSS3 */
+	-webkit-border-radius: 5px; /* Safari,Chrome */
+	-moz-border-radius: 5px; /* FireFox */
+	behavior:url(border-radius.htc); /* forIE */
+}
+
+footer {
+	background-color: whiteSmoke;
+	padding-top: 20px;
+	margin-top: 10px;
+	width: 100%;
+}
+
+.fixed {
+	position: fixed;
+}
+
+.inline-block {
+	display: inline-block;
+}
+
+.guest {
+	text-align: center;	
+}
+
+.guest input {
+	opacity: 0.28;
+}

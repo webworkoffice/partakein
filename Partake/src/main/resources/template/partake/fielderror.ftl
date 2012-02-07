@@ -40,23 +40,19 @@
 	</#list><#t/>
 <#else><#t/>	
 	<#if (eKeysSize > 0)><#t/>
-		<ul<#rt/>
-<#if parameters.cssClass??>
- class="${parameters.cssClass?html}"<#rt/>
-<#else>
- class="errorMessage"<#rt/>
-</#if>
+		<#rt/>
 <#if parameters.cssStyle??>
  style="${parameters.cssStyle?html}"<#rt/>
 </#if>
->
-			<#list eKeys as eKey><#t/>
-				<#assign eValue = fieldErrors[eKey]><#t/>
-				<#list eValue as eEachValue><#t/>
-					<li class="errormsg"><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></li>
-				</#list><#t/>
+		<#list eKeys as eKey><#t/>
+			<#assign eValue = fieldErrors[eKey]><#t/>
+			<#list eValue as eEachValue><#t/>
+				<div class="alert alert-error fade in">
+	        		<a class="close" data-dismiss="alert" href="#">×</a>
+	            	<#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if>
+            	</div>
 			</#list><#t/>
-		</ul>
+		</#list><#t/>
 	</#if><#t/>
 </#if><#t/>
 </#if><#t/>

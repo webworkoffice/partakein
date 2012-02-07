@@ -11,10 +11,14 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
-<div id="feedlist">
-<h1><img src="<%= request.getContextPath() %>/images/rsslist.png" alt="" />フィードリスト</h1>
 
-<p>PARTAKE では、新着イベントを RSS でフィードしています。カテゴリごとに RSS を受信することもできます。<br>ただし、パスワードが設定されているイベントは配信されません。</p>
+<div class="page-header">
+	<h1>フィードリスト</h1>
+</div>
+
+<h2>RSS 配信</h2>
+<p>PARTAKE では、新着イベントを RSS でフィードしています。カテゴリごとに RSS を受信することもできます。</p>
+<p>ただし、パスワードが設定されているイベントは配信されません。</p>
 
 <ul>
     <li><a href="<%= request.getContextPath() %>/feed/all">全て</a></li>
@@ -24,7 +28,9 @@
     <% } %>
 </ul>
 
-<p>PARTAKE では、イベントを iCal 形式でも配信しています。<br />ただし、パスワードが設定されているイベントは配信されません。</p>
+<h2>iCal 配信</h2>
+<p>PARTAKE では、イベントを iCal 形式でも配信しています。</p>
+<p>ただし、パスワードが設定されているイベントは配信されません。</p>
 
 <ul>
     <li><a href="<%= request.getContextPath() %>/calendars/all">全て</a></li>
@@ -33,7 +39,6 @@
     <% } %>    
 </ul>
 
-</div>
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>

@@ -7,5 +7,9 @@
 @import "openid.css";
 @import "print.css";
 
+/* For bootstrap. */
+@import "bootstrap.min.css";
+@import "bootstrap.fix.css";
+
 /* IE reads non-doublequoted files */
 @import fixie.css;

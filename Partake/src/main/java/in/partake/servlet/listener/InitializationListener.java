@@ -27,7 +27,10 @@ public class InitializationListener implements ServletContextListener {
 	private static final String CSS_ENCODE = "UTF-8";
 	private static final String CSS_DIR_NAME = "css";
 	/** 結合すべきCSSファイルと結合順序を記録したリスト。 */
-	private static final List<String> COMPOSITE_TARGETS = Arrays.asList(new String[]{"layout.css", "color.css", "font.css", "openid.css", "print.css"});
+	private static final List<String> COMPOSITE_TARGETS = Arrays.asList(new String[]{
+	        // "layout.css", "color.css", "font.css", "openid.css", "print.css",
+	        "bootstrap.min.css", "bootstrap.fix.css"
+	});
 	/** IEにのみ適用すべきCSSファイル。結合すべきでない。 */
 	private static final String FIXIE_FILE_NAME = "fixie.css";
 	private static final String OUTPUT_FILE_NAME = "style.css";

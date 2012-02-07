@@ -161,6 +161,13 @@
 		</action>
 	</package>
 
+	<package name="help" namespace="/help" extends="partake-default">
+        <action name="partake" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+            <result name="success">/WEB-INF/help/partake.jsp</result>
+        </action>
+        
+	</package>
+	
 	<package name="auth" namespace="/auth" extends="partake-default">
         <action name="loginByTwitter" method="loginByTwitter" class="in.partake.controller.AuthenticationController">
             <result name="success" type="redirect">${redirectURL}</result>
@@ -267,8 +274,9 @@
 			</result>
 			<result name="input">/WEB-INF/events/new.jsp</result>
 		</action>
- 		<action name="edit" method="edit" class="in.partake.controller.EventsEditController">
+ 		<action name="edit/*" method="edit" class="in.partake.controller.EventsEditController">
             <interceptor-ref name="authenticateStack" />
+            <param name="eventId">{1}</param>
 			<result name="input">/WEB-INF/events/edit.jsp</result>
 		</action>
 		<action name="commit" method="commit" class="in.partake.controller.EventsEditController">

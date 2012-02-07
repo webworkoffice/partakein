@@ -29,7 +29,6 @@ public class EventSearchTest extends AbstractPartakeControllerTest {
     public void testLoginIsNotRequired() {
         ActionProxy proxy = getActionProxy("/events/search");
         EventsSearchController controller = (EventsSearchController) proxy.getAction();
-        @SuppressWarnings("unchecked")
         Map<String, Object> requestMap = new HashMap<String, Object>(request.getParameterMap());
         controller.setRequest(requestMap);
         Assert.assertEquals(Action.SUCCESS, controller.search());
@@ -40,7 +39,6 @@ public class EventSearchTest extends AbstractPartakeControllerTest {
         request.setParameter("category", "unknown");
         ActionProxy proxy = getActionProxy("/events/search");
         EventsSearchController controller = (EventsSearchController) proxy.getAction();
-        @SuppressWarnings("unchecked")
         Map<String, Object> requestMap = new HashMap<String, Object>(request.getParameterMap());
         controller.setRequest(requestMap);
         Assert.assertEquals(Action.INPUT, controller.search());
@@ -54,7 +52,6 @@ public class EventSearchTest extends AbstractPartakeControllerTest {
         request.setParameter("sortOrder", "unknown");
         ActionProxy proxy = getActionProxy("/events/search");
         EventsSearchController controller = (EventsSearchController) proxy.getAction();
-        @SuppressWarnings("unchecked")
         Map<String, Object> requestMap = new HashMap<String, Object>(request.getParameterMap());
         controller.setRequest(requestMap);
         Assert.assertEquals(Action.SUCCESS, controller.search());

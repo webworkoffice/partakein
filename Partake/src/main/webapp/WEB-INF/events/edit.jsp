@@ -11,14 +11,29 @@
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1 id="pastel-line10ji"><img src="<%= request.getContextPath() %>/images/line-orange.png" alt="">イベントを編集します</h1>
+<div class="page-header">
+	<h1>イベントを編集します</h1>
+</div>
 
-<s:form method="post" action="commit" enctype="multipart/form-data"><%-- create じゃなくて commit なのに注意 --%>
+<s:form method="post" cssClass="form-horizontal" action="commit" enctype="multipart/form-data"><%-- create じゃなくて commit なのに注意 --%>
 	<%= Helper.token() %>
 	<s:hidden id="eventId" name="eventId" value="%{eventId}"/><%-- new.jsp とここが違う。なんか共通化するとエラーがでる。なんで？ --%>
-	<%@ include file="/WEB-INF/events/inner-form.jsp" %>
-
-    <s:submit id="event-edit-submit" type="image" src="%{#request.contextPath}/images/button-eventedit.png" label="イベント情報を変更する" />
+	<div class="row">
+		<div class="span9">
+			<%@ include file="/WEB-INF/events/inner-form.jsp" %>
+		</div>
+		<div class="span1">
+			&nbsp;
+		</div>
+		<div class="span2">
+			<div class="fixed span2">
+				<s:submit cssClass="btn btn-danger" value="イベントを変更する" />
+				<p class="help-block">このボタンでイベントが変更されます。</p>
+				<p class="help-block">テストをしたい場合、非公開イベントとして作成すると良いでしょう。</p>
+			</div>
+			&nbsp;
+		</div>
+	</div>
 </s:form>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />

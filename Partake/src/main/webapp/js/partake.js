@@ -7,9 +7,27 @@
 	 * @param {!String} sessionToken
 	 * @returns {createPartakeClient}
 	 */
-	function $partake(sessionToken) {
+	function Partake(sessionToken) {
 		this.sessionToken = sessionToken;
 	}
+
+	// ----------------------------------------------------------------------
+	
+	/**
+	 * Removes OpenID.
+	 * Usage: 
+	 *   partake.removeOpenID(...).success(function(json) { ... }).error(function(json) { ... });
+	 */
+	Partake.prototype.removeOpenID = function(identifier) {
+		var arg = {
+			sessionToken: this.sessionToken, 
+			identifier: identifier
+		};
+		
+		return $.post('/api/account/removeOpenID', arg);
+	};
+	
+	// ----------------------------------------------------------------------
 
 	/**
 	 * @param {!String} userId
@@ -19,20 +37,22 @@
 	 * for example
 	 * $partake.changeAttendance(...).success(function(json) {...} ).error(function(json) {...});
 	 */
-	$partake.prototype.changeAttendance = function(userId, eventId, status) {
+	Partake.prototype.changeAttendance = function(userId, eventId, status) {
 		var arg = {
+			sessionToken: this.sessionToken,
 			userId: userId,
 			eventId: eventId,
-			status: status,
-			sessionToken: this.sessionToken 
+			status: status
 		};
 		
 		return $.post('/api/event/attend', arg);
 	};
 	
+	// ----------------------------------------------------------------------
+
 	// expose partake client to global.
 	createPartakeClient = function(sessionToken) {
-		return new $partake(sessionToken);
+		return new Partake(sessionToken);
 	};
 })();
 
