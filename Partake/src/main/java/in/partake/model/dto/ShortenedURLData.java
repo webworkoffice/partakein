@@ -9,7 +9,7 @@ import javax.persistence.IdClass;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.xwork.ObjectUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 @IdClass(ShortenedURLDataPK.class)
