@@ -503,12 +503,11 @@
 	<!-- Account API -->
 	<package name="account-api" namespace="/api/account" extends="partake-api-default">
 		<action name="" method="get" class="in.partake.controller.api.account.AccountAction" />
-		<action name="sessionToken" method="getSessionToken" class="in.partake.controller.api.account.SessionAction" />
-		<action name="calendar" method="getCalendar" class="in.partake.controller.api.account.AccountAction" />
-		<action name="openID" method="getOpenID" class="in.partake.controller.api.account.OpenIDAction" />
-		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.account.OpenIDAction" />
-		<action name="preference" method="getPreference" class="in.partake.controller.api.account.AccountAction" />
+		<action name="events" method="getEvents" class="in.partake.controller.api.account.AccountAction" />
+		
+		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.account.AccountAction" />
 		<action name="setPreference" method="setPreference" class="in.partake.controller.api.account.AccountAction" />
+		<action name="sessionToken" method="getSessionToken" class="in.partake.controller.api.account.AccountAction" />
 	</package>
 
 	<!-- User API -->
@@ -521,17 +520,14 @@
 	<package name="event-api" namespace="/api/event" extends="partake-api-default">
 		<action name="" method="get" class="in.partake.controller.api.event.EventAction" />
 		<action name="get" method="get" class="in.partake.controller.api.event.EventAction" /> <!-- DEPRECATED -->
+
 		<action name="create" method="create" class="in.partake.controller.api.event.EventAction" />
 		<action name="modify" method="modify" class="in.partake.controller.api.event.EventAction" />
 		<action name="remove" method="remove" class="in.partake.controller.api.event.EventAction" />		
-		<action name="search" method="search" class="in.partake.controller.api.event.SearchAction" />
 		<action name="enroll" method="enroll" class="in.partake.controller.api.event.EventAction" />
-		<action name="participants" method="participants" class="in.partake.controller.api.event.EventAction" />
-		<action name="comments" method="comments" class="in.partake.controller.api.event.EventAction" />
-		<action name="messages" method="messages" class="in.partake.controller.api.event.EventAction" />
 		<action name="sendMessage" method="sendMessage" class="in.partake.controller.api.event.EventAction" />
-
-		<action name="attendance" method="attendance" class="in.partake.controller.api.event.EventAction" />
 		<action name="attend" method="attend" class="in.partake.controller.api.event.EventAction" />
+
+		<action name="search" method="search" class="in.partake.controller.api.event.SearchAction" />		
  	</package>
 </struts>
