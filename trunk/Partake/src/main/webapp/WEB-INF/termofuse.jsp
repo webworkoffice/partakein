@@ -13,7 +13,9 @@
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1>利用規約</h1>
+<div class="page-header">
+	<h1>利用規約</h1>
+</div>
 
 <h2>規約の適用</h2>
 

@@ -49,7 +49,8 @@ public class EventsController extends PartakeActionSupport {
     public String show() {
     	String eventId = getParameter("eventId");
         if (eventId == null) { return NOT_FOUND; }
-
+        if (!Util.isUUID(eventId)) { return NOT_FOUND; }
+        
      	// NOTE: login はしてないかもしれない。
         UserEx user = getLoginUser();
 
@@ -125,6 +126,8 @@ public class EventsController extends PartakeActionSupport {
 	        if (event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE)) {
 	        	Integer restCodePoints = MessageService.get().calcRestCodePoints(user, event);
 	        	attributes.put(Constants.ATTR_MAX_CODE_POINTS_OF_MESSAGE, restCodePoints);
+	        } else {
+	            attributes.put(Constants.ATTR_MAX_CODE_POINTS_OF_MESSAGE, 0);
 	        }
 
 	        return SUCCESS;

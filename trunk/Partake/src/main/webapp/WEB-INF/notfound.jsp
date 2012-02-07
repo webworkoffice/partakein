@@ -14,11 +14,18 @@
 	<jsp:param value="NO_HEADER_MESSAGES" name="true" />
 </jsp:include>
 
-<h1>リソースが見つかりませんでした</h1>
+<div class="page-header">
+	<h1>リソースが見つかりませんでした</h1>
+</div>
 
-<p>お探しのリソースが見つかりませんでした。URL を確認してください。</p>
-<p><a href="<%= request.getContextPath() %>/"><strong>トップに戻る</strong></a></p>
-<img class="musangas" src="<%= request.getContextPath() %>/images/sorry.png" alt="" />
+<div class="row">
+	<div class="span12">
+		<p>お探しのリソースが見つかりませんでした。URL を確認してください。</p>
+		<img class="musangas" src="<%= request.getContextPath() %>/images/sorry.png" alt="" />
+	</div>
+</div>
+
+<p><a href="/">トップに戻る</a></p>
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>

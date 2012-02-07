@@ -22,47 +22,64 @@
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1 id="pastel-line10ji"><img src="<%= request.getContextPath() %>/images/line-yellow.png" alt="" />イベントを検索します</h1>
-
-<div id="event-search-form" class="rad">
-	<img src="<%= request.getContextPath() %>/images/search-icon.png" alt="" />タイトル、本文からイベントを検索します。
-	<div class="line-space">
-		<s:form action="search">
-            <dl>
-                <dt>検索語句：</dt><dd><s:textfield id="searchTerm" name="searchTerm" /></dd>
-                <dt>カテゴリ：</dt><dd><s:select id="category" name="category" list="categories" listKey="key" listValue="value"></s:select></dd>
-                <dt>並べ替え：</dt><dd><s:select id="sortOrder" name="sortOrder" list="sortOrders" listKey="key" listValue="value"></s:select></dd>
-            </dl>
-			<p><s:checkbox id="beforeDeadlineOnly" name="beforeDeadlineOnly" />締め切り前のイベントのみを検索する </p>
-		    <div class="search-btn cler">
-		        <input type="image" id="search_0" src="<%= request.getContextPath() %>/images/btn-search.png" alt="search"/>
-		    </div>		
-		</s:form>
-	</div>
+<div class="page-header">
+	<h1>イベント検索</h1>
+	<p>タイトル、カテゴリ、本文などからイベントを検索します。</p>
 </div>
 
+<div class="well event-search">
+	<form class="form-horizontal" action="">
+		<fieldset>
+			<%-- <legend>タイトル、本文からイベントを検索</legend>  --%>
+			<div class="control-group">
+				<label class="control-label">検索語句</label>
+            	<div class="controls">
+              		<s:textfield cssClass="large" id="searchBox" name="searchTerm" size="30" type="text" />
+              		<input type="submit" class="btn btn-primary" alt="Search" value="Search" />
+            	</div>
+			</div>
+			<div class="control-group">
+            	<label class="control-label">オプション</label>
+            	<div class="controls">
+		            <div class="form-inline">
+	           			<span class="event-search-inline">カテゴリ</span><s:select id="category" name="category" cssClass="medium" list="categories" listKey="key" listValue="value"></s:select>
+						<span class="event-search-inline">並べ替え</span><s:select id="sortOrder" name="sortOrder" cssClass="medium" list="sortOrders" listKey="key" listValue="value"></s:select>
+	   				</div>
+	   			</div>
+	   		</div>
+	   		<div class="control-group">
+	   			<div class="controls">
+	   				<div class="form-inline">
+	                  	<s:checkbox id="beforeDeadlineOnly" name="beforeDeadlineOnly" />
+	                    <span>締め切り前のイベントのみを検索する</span>                    
+		            </div>		        
+		        </div>
+            </div>
+		</fieldset>
+	</form>
+</div>
+
+<div class="searched-events">
 <% if (events == null) { %>
-	<h2 class="head0">最近登録された締め切り前のイベント</h2>	
+	<h2>最近登録されたイベント</h2>	
 	<% if (recentEvents != null) {
 		for (Event event : recentEvents) { %>
             <% if (event == null) { continue; } %>
-            <div class="event-searched">
-				<h3><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></h3>
-				<div class="event-searched-image">
+           	<div class="row searched-event">
+           		<div class="span2 event-image">
 				    <% if (event.getForeImageId() != null) { %>
-<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
+						<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
 				        <img class="rad sdw cler" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
 				    <% } else { %>
-<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
+						<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
 				        <img class="rad sdw cler" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
 				    <% } %>
 				</div>
-				<div class="event-searched-content">
+	            <div class="span10">
+	            	<h3><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></h3>
 					<p><%= h(event.getSummary()) %></p>
-					<dl>
-						<dt>場所：</dt><dd><%= h(event.getPlace()) %></dd>
-						<dt>日時：</dt><dd><%= Helper.readableDate(event.getBeginDate()) %></dd>
-					</dl>
+					<p>場所：<%= h(event.getPlace()) %></p>
+					<p>日時：<%= Helper.readableDate(event.getBeginDate()) %></p>
 				</div>
 			</div>
 		<% } %>
@@ -70,15 +87,14 @@
 		<p>最近登録された締め切り前のイベントはありません。</p>
 	<% } %>
 <% } else if (events.isEmpty()) { %>
-	<h2 class="head0 rad">検索結果</h2>
-	<p>検索にヒットしませんでした。</p>
+	<h2>検索結果</h2>
+	<p>ヒットしませんでした。別の単語で試してみてください。</p>
 <% } else { %>
-	<h2 class="head0 rad">検索結果</h2>
+	<h2>検索結果</h2>
 	<% for (Event event : events) { %>
 		<% if (event == null) { continue; } %>
-		<div class="event-searched">
-			<h3><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></h3>
-			<div class="event-searched-image">
+		<div class="row searched-event">
+			<div class="span2">
                 <% if (event.getForeImageId() != null) { %>
 <a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
                     <img class="rad sdw cler" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" alt="" /></a>
@@ -87,16 +103,16 @@
                     <img class="rad sdw cler" src="<%= request.getContextPath() %>/images/no-image.png" alt="" /></a>
                 <% } %>
             </div>
-            <div class="event-searched-content">
+            <div class="span10">
+            	<h3><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></h3>
 				<p><%= h(event.getSummary()) %></p>
-				<dl>
-					<dt>場所：</dt><dd><%= h(event.getPlace()) %></dd>
-					<dt>日時：</dt><dd><%= Helper.readableDate(event.getBeginDate()) %></dd>
-				</dl>
+				<p>場所：<%= h(event.getPlace()) %></p>
+				<p>日時：<%= Helper.readableDate(event.getBeginDate()) %></p>
 			</div>
 		</div>
 	<% } %>
 <% } %>
+</div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

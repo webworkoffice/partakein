@@ -20,68 +20,124 @@
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<div id="setting-content">
-
-<h1 id="pastel-line5ji" >
-<img src="<%= request.getContextPath() %>/images/line-orange.png" alt="user setting" />ユーザー設定</h1>
-
-<p>各種設定などが可能です。</p>
-
-<div class="setting-subtitle">
- <h2><img src="<%= request.getContextPath() %>/images/openid.png" alt="" />OpenID でログインできるようにする</h2>
+<div class="page-header">
+	<h1>ユーザー設定</h1>
+	<p>各種設定などが可能です。</p>
 </div>
 
-<div class="setting-set">
-<h3><span class="bold"><span class="accent">＞ </span>Open ID の設定</span></h3>
-<p>
-何らかの理由でtwitter が使用できないとき、役立ちます。<br />設定には、Google や mixi などのOpenID と Twitterを結び付ける必要があります。下のリンクをクリックして twitter と OpenID を結びつけることができます！<br />
-</p>
-    <jsp:include page="/WEB-INF/internal/_openid_innerform.jsp" >
-        <jsp:param name="callingURL" value="/auth/connectWithOpenID" />
-        <jsp:param name="usesToken" value="true" />
-    </jsp:include>
+<h2>OpenID でログインできるようにする</h2>
+<p>何らかの理由でtwitter が使用できない場合に、OpenID でログインできるようにします。設定には、Google や mixi などの OpenID と Twitter ID を結び付ける必要があります。</p>
 
-    <h3><span class="accent">＞ </span>現在、次の URL と結び付けられています。</h3>
-    <p>
-    <%
-        UsersPreferenceController pref = (UsersPreferenceController) request.getSession().getAttribute(Constants.ATTR_ACTION);
-        List<String> associatedOpenIds = pref.getAssociateOpenIds();
-        if (associatedOpenIds != null && !associatedOpenIds.isEmpty()) {
-            %> <ul> <%
-            for (String openid : associatedOpenIds) { %>
-                <li>
-                	<span><%= openid %></span>
-                	<%--<span><a href="#" title="結びつけを解除する">[x]</a></span> --%>
-                </li>
-            <% } %>
-            </ul>
-    <% } %>
-    </p>
+<%  UsersPreferenceController pref = (UsersPreferenceController) request.getSession().getAttribute(Constants.ATTR_ACTION);
+    List<String> associatedOpenIds = pref.getAssociateOpenIds();
+    if (associatedOpenIds != null && !associatedOpenIds.isEmpty()) { %>
+    <script>
+    	function removeOpenID(ident) {
+    		if (!window.confirm(ident + ' の結びつけが解除されます。よろしいですか？'))
+    			return;
+    		$partake.removeOpenID(ident).success(function(json) {
+    			location.reload();
+    		}).error(function(json) {
+				alert('OpenID の結びつけの解除に失敗しました。' + json.reason);			
+    		});
+    	}
+    </script>
+	<p>現在次の URL と結び付けられています。</p>
+	<ul> <% for (String openid : associatedOpenIds) { %>
+		<li><%= h(openid) %>
+         	<a href="#" title="結びつけを解除する" onclick="removeOpenID('<%= h(openid) %>')">[x]</a>
+		</li>
+    <% } %></ul>
+<% } else { %>
+	<p>現在どの OpenID とも結び付けられていません。</p>
+<% } %>
+
+<p><input type="button" data-toggle="modal" href="#openid-connect-dialog" value="OpenID と結びつける" /></p>
+	
+<div id="openid-connect-dialog" class="modal" style="display:none">
+	<div class="modal-header">
+    	<a class="close" data-dismiss="modal">&times;</a>
+    	<h3>OpenID と結びつけ</h3>
+	</div>
+  	<div class="modal-body">
+  		<p>次の ID と結びつけ</p>
+  		<form method="post" action="/auth/connectWithOpenID" class="inline-block">
+  			<%= Helper.token() %>
+  			<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
+			<input type="submit" value="Google" />
+  		</form>
+  		<form method="post" action="/auth/connectWithOpenID" class="inline-block">
+  			<%= Helper.token() %>
+  			<input type="hidden" name="openid_identifier" value="https://mixi.jp" />
+			<input type="submit" value="Mixi" />
+  		</form>
+  		<form method="post" action="/auth/connectWithOpenID" class="inline-block">
+  			<%= Helper.token() %>
+  			<input type="hidden" name="openid_identifier" value="http://yahoo.co.jp" />
+			<input type="submit" value="Yahoo Japan" />
+  		</form>
+  		<form method="post" action="/auth/connectWithOpenID" class="inline-block">
+  			<%= Helper.token() %>
+  			<input type="hidden" name="openid_identifier" value="http://livedoor.com/" />
+			<input type="submit" value="Livedoor" />
+  		</form>
+
+		<p>はてな ID でログイン</p>
+  		<form name="connectWithHatenaForm" method="post" action="/auth/connectWithOpenID" style="display:none">
+  			<%= Helper.token() %>
+  			<input type="hidden" id="connect-hatena-openid-identifier" name="openid_identifier" value="http://www.hatena.ne.jp/" />
+			<input type="submit" value="はてな ID と結びつけ" />
+  		</form>
+  		<div>
+  			<script>
+  				function connectWithHatena() {
+  					var name = $("#connect-hatena-username").val().replace(/^\s+|\s+$/g, "");
+  					var ident = "http://www.hatena.ne.jp/" + name;
+  					$("#connect-hatena-openid-identifier").val(ident);
+  					document.connectWithHatenaForm.submit();
+  				}
+  			</script>
+  			<input type="text" id="connect-hatena-username" value="" placeholder="はてな ID を入力" />
+			<input type="button" value="はてな ID と結びつけ" onclick="connectWithHatena()" />  			
+  		</div>
+
+		<p>URL を使って結びつけ</p>
+  		<form method="post" action="/auth/connectWithOpenID">
+  			<%= Helper.token() %>
+  			<input type="text" name="openid_identifier" value="" placeholder="http:// OpenID URL を入力" />
+			<input type="submit" value="URL を使って結びつけ" />
+  		</form>
+  	</div>
 </div>
 
-
-
-<div class="setting-subtitle">
-<h2><img src="<%= request.getContextPath() %>/images/setting.png" alt="">各種設定</h2>
-</div>
-
-<div class="setting-set">
-<s:form method="post" action="setPreference">
+<h2>各種設定</h2>
+<div class="row"><s:form method="post" cssClass="form-horizontal" action="setPreference"><fieldset>
+	<%-- <legend>Example form legend</legend> --%>
 	<%= Helper.token() %>
-	<s:checkbox name="receivingTwitterMessage" />twitter 経由のリマインダーを受け取る (default:受け取る)<br />
-	<s:checkbox name="profilePublic" />マイページを他人にも公開する (default：公開)<br />
-	<s:checkbox name="tweetingAttendanceAutomatically" />イベントに参加するとき、自動的に参加をつぶやく (default：つぶやかない)<br />
-	<s:submit value="この設定を保存する" />
-</s:form>
-</div>
+	<div class="control-group">
+    	<label class="control-label">設定項目</label>
+        <div class="controls">
+              <label class="checkbox">
+              		<s:checkbox name="receivingTwitterMessage" />
+					twitter 経由のリマインダーを受け取る (default:受け取る)
+              </label>
+              <label class="checkbox">
+              		<s:checkbox name="profilePublic" />
+					マイページを他人にも公開する (default：公開)
+              </label>
+              <label class="checkbox">
+              		<s:checkbox name="tweetingAttendanceAutomatically" />
+	 				イベントに参加するとき、自動的に参加をつぶやく (default：つぶやかない)
+              </label>
+			  <s:submit value="この設定を保存する" />
+        </div>
+    </div>
+</fieldset></s:form></div>
 
-<div class="setting-subtitle">
-<h2><img src="<%= request.getContextPath() %>/images/calendar.png" alt="">カレンダーと RSS</h2></div>
+<h2>カレンダー</h2>
 
-<div class="setting-set">
-<h3><span class="accent">＞ </span><span class="bold">自分の参加・管理イベントを ics ファイル (カレンダー) で受信、あるいは自分に関連するイベントに関するデータを RSS で取得することが出来ます。</span></h3>
-<p>以下が、あなたのカレンダーID（URL）です。<br />これを、普段使っているカレンダーにインポートすればOK!</p>
-
+<p>自分の参加・管理イベントを ics ファイル (カレンダー) で受信することが出来ます。</p>
+<p>以下が、あなたのカレンダーID（URL）です。これを、普段使っている Google カレンダーなどにインポートすることができます。</p>
 <%-- NOTE: RSS の ID はカレンダー ID と共通です。 --%>
 <% if (user.getCalendarId() != null && !"".equals(user.getCalendarId())) { %>
     <input type="text" value="http://partake.in<%= request.getContextPath() %>/calendars/<%= h(user.getCalendarId()) %>.ics" style="width: 80%;"/><%-- TODO use in.partake.toppath from properties file --%>
@@ -90,18 +146,14 @@
  --%>
 <% } %>
 
-<p>IDは友人と共有することも可能です。</p>
+<h3>カレンダーIDを再生成する</h3>
 
-<h3><span class="accent">＞ </span><span class="bold">カレンダーIDを再生成する</span></h3>
-<p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。<br />
-ただし、これまでのカレンダー URL は無効になるので気をつけてください。
+<p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。ただし、これまでのカレンダー URL は無効になるので気をつけてください。</p>
+
 <s:form method="post" action="revokeCalendar">
 	<%= Helper.token() %>
 	<s:submit value="カレンダー ID を再生成する" />
 </s:form>
-</p>
-</div>
-</div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

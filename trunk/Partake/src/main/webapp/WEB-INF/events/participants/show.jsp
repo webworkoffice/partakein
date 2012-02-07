@@ -64,35 +64,33 @@
     </script>
     <title>参加者のステータスを編集</title>
 </head>
+
 <body id="status-edit">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
-<h1 id="pastel-line13ji"><img src="<%= request.getContextPath() %>/images/line-yellowgreen.png" alt="">参加者のステータスを編集</h1>  
 
-<div id="content-adjust">
-	<p>特定の参加者を削除したり、優先的に参加できるようにしたりします。</p>
-	<p>＜優先度マーク＞<br />
-	<img class="adjust1" src="<%= request.getContextPath() %>/images/star.png" alt="優先参加" /> ：優先参加マーク。関連イベントに参加することにより、優先参加権を得た人です。<br />
-	<img src="<%= request.getContextPath() %>/images/crown.png" alt="VIP" /> ：VIPマーク。あなたがVIPに指名した人は、誰よりも優先的に参加させることができます。<br />
-	</p>
+<div class="page-header">
+	<h1>参加者のステータスを編集</h1>
+	<p>特定の参加者を優遇したり、参加を拒否したりすることができます。</p>  
+</div>
 
-	<h2><img src="<%= request.getContextPath() %>/images/feature-04.png" alt="" /><%= h(event.getTitle()) %> - 参加者リスト</h2>
+<div>
+	<h3>優先度マーク</h3>
+	<ul>
+		<li><img class="adjust1" src="<%= request.getContextPath() %>/images/star.png" alt="優先参加" /> ：優先参加マーク。関連イベントに参加することにより、優先参加権を得た人です。</li>
+		<li><img src="<%= request.getContextPath() %>/images/crown.png" alt="VIP" /> ：VIPマーク。あなたがVIPに指名した人は、誰よりも優先的に参加させることができます。</li>
+	</ul>
+</div>
 
-<table class="table0">
-    <colgroup><col width="32px" /></colgroup>
-    <colgroup><col width="85px" /></colgroup>
-    <colgroup><col width="58px" /></colgroup> 
-    <colgroup><col width="150px" /></colgroup>
-    <colgroup><col width="100px" /></colgroup>
-    <colgroup><col width="50px" /></colgroup> 
-    <colgroup><col width="120px" /></colgroup>
-    <colgroup><col width="120px" /></colgroup>    
-<thead>
-    <tr>
-    	<th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th class="print-del">登録日時</th><th>優先度</th><th class="print-del">操作</th>
-    	<th>実際の出欠状況</th>
-    </tr>
-</thead>
-<tbody>
+<h3><%= h(event.getTitle()) %> - 参加者リスト</h3>
+
+<table class="table table-striped">
+    <colgroup>
+    	<col width="32px" /><col width="85px" /><col width="58px" /><col width="150px" /><col width="100px" /><col width="50px" /><col width="120px" /><col width="120px" />
+    </colgroup>    
+	<thead>
+	    <tr><th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th>登録日時</th><th>優先度</th><th>操作</th><th>実際の出欠状況</th></tr>
+	</thead>
+	<tbody>
     
     <% 
     int order = 0;    
