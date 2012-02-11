@@ -141,7 +141,7 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
     }
     
     /**
-     * <code>{ "result": "invalid", "reason": rason }</code> をレスポンスとして返す。
+     * <code>{ "result": "invalid", "reason": reason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。
      */
     @Override
