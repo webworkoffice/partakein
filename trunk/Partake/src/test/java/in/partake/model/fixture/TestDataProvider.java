@@ -7,10 +7,20 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 
 public abstract class TestDataProvider<T> {
+    // TODO: Name should be more descriptive.
     public static final String INVALID_USER_ID = new UUID(1, -1).toString();
+    
     public static final String USER_ID1 = new UUID(1, 1).toString();
+    public static final String TWITTER_ID1 = "1";
+    public static final String TWITTER_SCREENNAME1 = "testUser1";
+
     public static final String USER_ID2 = new UUID(1, 2).toString();
+    public static final String TWITTER_ID2 = "2";
+    public static final String TWITTER_SCREENNAME2 = "testUser2";
+    
     public static final String USER_ID3 = new UUID(1, 3).toString();
+    public static final String TWITTER_ID3 = "3";
+    public static final String TWITTER_SCREENNAME3 = "testUser3";
 
     public static final String INVALID_EVENT_ID = new UUID(2, -1).toString();
     public static final String EVENT_ID1 = new UUID(2, 1).toString();

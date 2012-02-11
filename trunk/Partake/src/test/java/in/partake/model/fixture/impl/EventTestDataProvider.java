@@ -60,9 +60,10 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
                                "foreImageId", "backImageId", false, null, false, false,
                                now, now, -1));
 
+        // USER2 is a editor of this event.
         dao.put(con, new Event(EVENT_ID2, "short-id2", "title", "summary", "category", 
                                late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
+                               "address", "description", "#hashTag", USER_ID1, TWITTER_SCREENNAME2,
                                "foreImageId", "backImageId", false, null, false, false,
                                now, now, -1));
 

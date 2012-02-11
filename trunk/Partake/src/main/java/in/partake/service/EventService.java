@@ -61,6 +61,7 @@ public final class EventService extends PartakeService {
     private static final Logger logger = Logger.getLogger(EventService.class);
 
     private static EventService instance = new EventService();
+    // TODO: Use Constant DEMO_ID instead.
     private static final String DEMO_EVENT_ID = "demo";
 
     public static EventService get() {
@@ -1015,6 +1016,7 @@ public final class EventService extends PartakeService {
         }
     }
 
+    // TODO: "changesOnlyComment" should die!
     private void enrollImpl(PartakeConnection con, String userId, String eventId, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         Enrollment oldEnrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
