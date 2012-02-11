@@ -85,11 +85,57 @@ public class EventAction extends PartakeAPIActionSupport {
     }
 
     public String enroll() throws DAOException {
-        throw new RuntimeException("Not implemented yet");
+        UserEx user = getLoginUser();
+        if (user == null)
+            return renderLoginRequired();
+
+        String eventId = getParameter("eventId");
+        if (eventId == null) 
+            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
+        if (!Util.isUUID(eventId))
+            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+
+        // If the comment does not exist, we use empty string instead.
+        String comment = getParameter("comment");
+        if (comment == null) { comment = ""; }
+        if (comment.length() > 1024)
+            return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
+
+        ParticipationStatus status = ParticipationStatus.safeValueOf(getParameter("status"));
+        if (status == null || status == ParticipationStatus.NOT_ENROLLED)
+            return renderInvalid(UserErrorCode.INVALID_ENROLL_STATUS);
+        
+        throw new RuntimeException("Not implemented yet.");
+//        try {
+//            EventService.get().enrollForAPI(user, eventId, status, comment);
+//            return renderOK();
+//            
+//        } catch (PartakeException e) {
+//            return renderException(e);
+//        }
     }
 
     public String sendMessage() throws DAOException {
-        throw new RuntimeException("Not implemented yet");
+        UserEx user = getLoginUser();
+        if (user == null)
+            return renderLoginRequired();
+
+        String eventId = getParameter("eventId");
+        if (eventId == null)
+            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
+        if (!Util.isUUID(eventId))
+            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+
+        String message = getParameter("message");
+        if (StringUtils.isBlank(message))
+            return renderInvalid(UserErrorCode.MISSING_MESSAGE);
+
+        try {
+            MessageService.get().sendMessage(user, eventId, message);
+            return renderOK();
+        } catch (PartakeException e) {
+            return renderException(e);
+        }
     }
     
     public String attend() throws DAOException {
@@ -104,30 +150,29 @@ public class EventAction extends PartakeAPIActionSupport {
             return renderInvalid(UserErrorCode.INVALID_SESSION);
 
         String userId = getParameter("userId");
-        if (userId == null) { return renderInvalid(UserErrorCode.MISSING_USER_ID); }
+        if (userId == null)
+            return renderInvalid(UserErrorCode.MISSING_USER_ID);
             
         String eventId = getParameter("eventId");
-        if (eventId == null) { return renderInvalid(UserErrorCode.MISSING_EVENT_ID); }
+        if (eventId == null)
+            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
         
         String status = getParameter("status");
-        if (status == null || !AttendanceStatus.isValueOf(status)) {
+        if (status == null || !AttendanceStatus.isValueOf(status))
             return renderInvalid(UserErrorCode.MISSING_ATTENDANCE_STATUS);
-        }
         
         // TODO: This should be transactional.
         EventEx event = EventService.get().getEventExById(eventId);
-        if (event == null) { return renderInvalid(UserErrorCode.INVALID_EVENT_ID); }
+        if (event == null)
+            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
         
-        if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS)) {
+        if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS))
             return renderForbidden();
-        }
         
-        if (EventService.get().updateAttendanceStatus(userId, eventId, AttendanceStatus.safeValueOf(status))) {
+        if (EventService.get().updateAttendanceStatus(userId, eventId, AttendanceStatus.safeValueOf(status)))
             return renderOK();
-        } else {
+        else
             return renderInvalid(UserErrorCode.UNKNOWN_USER_ERROR);
-        }
-
     }
 
 }

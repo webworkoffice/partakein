@@ -1,5 +1,33 @@
 package in.partake.service;
 
+import in.partake.base.PartakeException;
+import in.partake.base.TimeUtil;
+import in.partake.model.DirectMessageEx;
+import in.partake.model.EnrollmentEx;
+import in.partake.model.EventEx;
+import in.partake.model.ParticipationList;
+import in.partake.model.UserEx;
+import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.ITwitterLinkageAccess;
+import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.Envelope;
+import in.partake.model.dto.Event;
+import in.partake.model.dto.EventReminder;
+import in.partake.model.dto.Message;
+import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.User;
+import in.partake.model.dto.UserPreference;
+import in.partake.model.dto.auxiliary.DirectMessagePostingType;
+import in.partake.model.dto.auxiliary.ModificationStatus;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.auxiliary.UserPermission;
+import in.partake.resource.PartakeProperties;
+import in.partake.resource.UserErrorCode;
+import in.partake.util.Util;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,31 +40,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.http.AccessToken;
-
-import in.partake.base.TimeUtil;
-import in.partake.model.DirectMessageEx;
-import in.partake.model.EventEx;
-import in.partake.model.EnrollmentEx;
-import in.partake.model.ParticipationList;
-import in.partake.model.UserEx;
-import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.access.ITwitterLinkageAccess;
-import in.partake.model.dto.Envelope;
-import in.partake.model.dto.Message;
-import in.partake.model.dto.Event;
-import in.partake.model.dto.EventReminder;
-import in.partake.model.dto.Enrollment;
-import in.partake.model.dto.TwitterLinkage;
-import in.partake.model.dto.User;
-import in.partake.model.dto.UserPreference;
-import in.partake.model.dto.auxiliary.DirectMessagePostingType;
-import in.partake.model.dto.auxiliary.ModificationStatus;
-import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.resource.PartakeProperties;
-import in.partake.util.Util;
 
 /**
  * ユーザへのメッセージングサービスを提供する。
@@ -55,6 +58,79 @@ public final class MessageService extends PartakeService {
         return instance;
     }
 
+    public void sendMessage(UserEx senderUser, String eventId, String message) throws PartakeException, DAOException {
+        PartakeConnection con = getPool().getConnection();
+        try {
+            con.beginTransaction();
+            sendMessage(con, senderUser, eventId, message);
+            con.commit();
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    private void sendMessage(PartakeConnection con, UserEx senderUser, String eventId, String message) throws PartakeException, DAOException {
+        assert senderUser != null;
+        assert eventId != null;
+        assert message != null;
+        
+        EventEx event = getEventEx(con, eventId);
+        if (event == null)
+            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
+    
+        if (!event.hasPermission(senderUser, UserPermission.EVENT_SEND_MESSAGE))
+            throw new PartakeException(UserErrorCode.INVALID_PROHIBITED);
+
+        // ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。
+        List<Message> messages = getRecentUserMessage(con, eventId, 5); 
+        Date currentTime = new Date();
+
+        if (messages.size() >= 3) {
+            Message msg = messages.get(2);
+            Date msgDate = msg.getCreatedAt();
+            Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60); // one hour later after the message was sent.
+            if (currentTime.before(thresholdDate)) // NG
+                throw new PartakeException(UserErrorCode.INVALID_MESSAGE_TOOMUCH);
+        }
+        
+        if (messages.size() >= 5) {
+            Message msg = messages.get(4);
+            Date msgDate = msg.getCreatedAt();
+            Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60 * 24); // one day later after the message was sent.
+
+            if (currentTime.before(thresholdDate)) // NG
+                throw new PartakeException(UserErrorCode.INVALID_MESSAGE_TOOMUCH);
+        }
+
+        assert (message != null);
+        String msg;
+        try {
+            msg = buildMessage(senderUser, event.getShortenedURL(), event.getTitle(), message);
+        } catch (TooLongMessageException e) {
+            throw new PartakeException(UserErrorCode.INVALID_MESSAGE_TOOLONG);
+        }
+        assert (Util.codePointCount(msg) <= MessageService.MESSAGE_MAX_CODEPOINTS);
+
+        String messageId = addMessage(con, senderUser.getId(), msg,event.getId(), true);
+
+        List<Enrollment> participations = EventService.get().getParticipation(event.getId());
+        for (Enrollment participation : participations) {
+            boolean sendsMessage = false;
+            switch (participation.getStatus()) {
+            case ENROLLED:
+                sendsMessage = true; break;
+            case RESERVED:
+                sendsMessage = true; break;
+            default:
+                break;
+            }
+
+            if (sendsMessage) {
+                sendEnvelope(con, messageId, participation.getUserId(), participation.getUserId(), null, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
+            }
+        }
+    }
+    
     public EventReminder getReminderStatus(String eventId) throws DAOException {
         PartakeConnection con = getPool().getConnection();
         try {
@@ -383,21 +459,26 @@ public final class MessageService extends PartakeService {
      * @throws DAOException
      */
     public String addMessage(String userId, String message, String eventId, boolean isUserMessage) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
-
 
         try {
             con.beginTransaction();
-            String id = factory.getDirectMessageAccess().getFreshId(con);
-            Message embryo = new Message(id, userId, message, isUserMessage ? eventId : null, new Date());
-            factory.getDirectMessageAccess().put(con, embryo);
+            String id = addMessage(con, userId, message, eventId, isUserMessage); 
             con.commit();
-
             return id;
         } finally {
             con.invalidate();
         }
+    }
+
+    private String addMessage(PartakeConnection con, String userId, String message, String eventId, boolean isUserMessage) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+
+        String id = factory.getDirectMessageAccess().getFreshId(con);
+        Message embryo = new Message(id, userId, message, isUserMessage ? eventId : null, new Date());
+        factory.getDirectMessageAccess().put(con, embryo);
+
+        return id;
     }
 
     /**
@@ -439,21 +520,11 @@ public final class MessageService extends PartakeService {
      * @throws DAOException
      */
     public List<Message> getRecentUserMessage(String eventId, int maxMessage) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
 
         try {
             con.beginTransaction();
-            List<Message> messages = new ArrayList<Message>();
-            DataIterator<Message> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
-            try {
-                for (int i = 0; i < maxMessage; ++i) {
-                    if (!it.hasNext()) { break; }
-                    messages.add(it.next());
-                }
-            } finally {
-                it.close();
-            }
+            List<Message> messages = getRecentUserMessage(con, eventId, maxMessage); 
             con.commit();
 
             return messages;
@@ -461,34 +532,51 @@ public final class MessageService extends PartakeService {
             con.invalidate();
         }
     }
+    
+    private List<Message> getRecentUserMessage(PartakeConnection con, String eventId, int maxMessage) throws DAOException {
+        List<Message> messages = new ArrayList<Message>();
+        DataIterator<Message> it = getFactory().getDirectMessageAccess().findByEventId(con, eventId);
+        try {
+            for (int i = 0; i < maxMessage; ++i) {
+                if (!it.hasNext()) { break; }
+                messages.add(it.next());
+            }
+        } finally {
+            it.close();
+        }
+        
+        return messages;
+    }
 
     /**
      * message を tweet する。DM として tweet するのではない。
      * @param user
-     * @param messageStr
+     * @param messagStr
      * @throws DAOException
      */
-    public void tweetMessage(User user, String messageStr) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
+    public void tweetMessage(User user, String messagStr) throws DAOException {
         PartakeConnection con = getPool().getConnection();
-
         try {
             con.beginTransaction();
-            String messageId = factory.getDirectMessageAccess().getFreshId(con);
-            Message embryo = new Message(messageId, user.getId(), messageStr, null, new Date());
-
-            factory.getDirectMessageAccess().put(con, embryo);
-
-            String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
-            Envelope envelope = new Envelope(envelopeId, user.getId(), null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
-            factory.getEnvelopeAccess().put(con, envelope);
-
+            tweetMessageImpl(con, user, messagStr);
             con.commit();
         } finally {
             con.invalidate();
         }
     }
 
+    public void tweetMessageImpl(PartakeConnection con, User user, String messageStr) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        String messageId = factory.getDirectMessageAccess().getFreshId(con);
+        Message embryo = new Message(messageId, user.getId(), messageStr, null, new Date());
+
+        factory.getDirectMessageAccess().put(con, embryo);
+
+        String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
+        Envelope envelope = new Envelope(envelopeId, user.getId(), null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
+        factory.getEnvelopeAccess().put(con, envelope);
+    }
+    
     /**
      * message を、実際に送信する (ための queue に挿入する)。
      *
@@ -500,18 +588,23 @@ public final class MessageService extends PartakeService {
      * @throws DAOException
      */
     public void sendEnvelope(String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
 
         try {
             con.beginTransaction();
-            String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
-            Envelope envelope = new Envelope(envelopeId, senderId, receiverId, messageId, deadline, 0, null, null, postingType, new Date());
-            factory.getEnvelopeAccess().put(con, envelope);
+            sendEnvelope(messageId, senderId, receiverId, deadline, postingType);                    
             con.commit();
         } finally {
             con.invalidate();
         }
+    }
+
+    private void sendEnvelope(PartakeConnection con, String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+
+        String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
+        Envelope envelope = new Envelope(envelopeId, senderId, receiverId, messageId, deadline, 0, null, null, postingType, new Date());
+        factory.getEnvelopeAccess().put(con, envelope);
     }
 
     /**
