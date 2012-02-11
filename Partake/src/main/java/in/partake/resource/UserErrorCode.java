@@ -6,16 +6,24 @@ package in.partake.resource;
  *
  */
 public enum UserErrorCode {
+    // TODO: 表記を揃える。invalid.<type>.<reason> に固定すること。
+    
     //
     UNKNOWN_USER_ERROR("invalid.unknown"),
     INTENTIONAL_USER_ERROR("invalid.intentional"),
 
+    // BASE    
     INVALID_ARGUMENT("invalid.argument"),
+    INVALID_PROHIBITED("invalid.prohibited", 403),
     
-    // EVENT ID
-    INVALID_EVENT_ID("invalid.invalid_eventid"),
-    MISSING_EVENT_ID("invalid.missing_eventid"),
+    // EVENT
+    INVALID_EVENT_ID("invalid.event.id"),
+    MISSING_EVENT_ID("invalid.event.id.missing"),
 
+    INVALID_ENROLL_TIMEOVER("invalid.event.enroll.timeover"),
+    INVALID_ENROLL_STATUS("invalid.event.enroll.status"),
+    INVALID_ENROLL_REQUIRED("invalid.event.enroll.required"),
+    
     // USER ID
     INVALID_USER_ID("invalid.invalid_userid"),
     MISSING_USER_ID("invalid.missing_userid"),
@@ -42,16 +50,33 @@ public enum UserErrorCode {
     INVALID_SEARCH_ORDER("invalid.invalid_search_order"),
     MISSING_SEARCH_ORDER("invalid.missing_search_order"),
     INVALID_SEARCH_MAXNUM("invalid.invalid_search_max_num"),
-    MISSING_SEARCH_MAXNUM("invalid.missing_search_max_num");
+    MISSING_SEARCH_MAXNUM("invalid.missing_search_max_num"),
 
+    // COMMENT
+    INVALID_COMMENT_TOOLONG("invalid.comment.toolong"),
+    
+    // MESSAGE
+    MISSING_MESSAGE("invalid.message.missing"),
+    INVALID_MESSAGE_TOOMUCH("invalid.message.toomuch"),
+    INVALID_MESSAGE_TOOLONG("invalid.message.toolong");
     
     // ----------------------------------------------------------------------
-    private String errorDescriptionId;
+    private final String errorDescriptionId;
+    private final int statusCode;
 
     private UserErrorCode(String errorReason) {
-        this.errorDescriptionId = errorReason;
+        this(errorReason, 400);
     }
 
+    private UserErrorCode(String errorReason, int statusCode) {
+        this.errorDescriptionId = errorReason;
+        this.statusCode = statusCode;
+    }
+    
+    public int getStatusCode() {
+        return statusCode;
+    }
+    
     public String getReasonString() {
         return I18n.t(errorDescriptionId);
     }

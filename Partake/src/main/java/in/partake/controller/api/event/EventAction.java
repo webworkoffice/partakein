@@ -1,14 +1,17 @@
 package in.partake.controller.api.event;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
+import in.partake.service.MessageService;
 import in.partake.util.Util;
 import net.sf.json.JSONObject;
 

@@ -28,14 +28,23 @@ public enum ServerErrorCode {
     LUCENE_INITIALIZATION_FAILURE("error.lucene.initialization_failure");
     
     // ----------------------------------------------------------------------
-    private String errorDescriptionId;
+    private final String errorDescriptionId;
+    private int statusCode;
     
     private ServerErrorCode(String errorReasonId) {
+        this(errorReasonId, 500);
+    }
+    
+    private ServerErrorCode(String errorReasonId, int statusCode) {
         this.errorDescriptionId = errorReasonId;
+        this.statusCode = statusCode;
     }
     
     public String getReasonString() {
         return I18n.t(errorDescriptionId);
     }
     
+    public int getStatusCode() {
+        return statusCode;
+    }
 }

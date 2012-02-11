@@ -50,4 +50,11 @@ public class PartakeException extends Exception {
     public UserErrorCode getUserErrorCode() {
         return userErrorCode;
     }
+    
+    public int getStatusCode() {
+        if (serverErrorCode != null)
+            return serverErrorCode.getStatusCode();
+        else
+            return userErrorCode.getStatusCode();
+    }
 }
