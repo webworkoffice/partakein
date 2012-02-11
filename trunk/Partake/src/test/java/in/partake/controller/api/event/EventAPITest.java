@@ -263,15 +263,31 @@ public class EventAPITest extends APIControllerTest {
     }
 
     @Test
-    @Ignore("Not implemented yet")
     public void testToSendMessageForOwnedEvent() throws Exception {
-        throw new RuntimeException();
+        ActionProxy proxy = getActionProxy("/api/event/sendMessage");
+
+        loginAs(proxy, TestDataProvider.USER_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "message", "hogehogehoge");
+        
+        proxy.execute();
+        assertResultOK(proxy);
+        
+        // TODO: Check DB. 
     }
 
     @Test
-    @Ignore("Not implemented yet")
     public void testToSendLongMessage() throws Exception {
-        throw new RuntimeException();
+        String longMessage = Util.randomString(1024);
+
+        ActionProxy proxy = getActionProxy("/api/event/sendMessage");
+
+        loginAs(proxy, TestDataProvider.USER_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "message", longMessage);
+        
+        proxy.execute();
+        assertResultInvalid(proxy);
     }
 
     @Test
@@ -281,20 +297,38 @@ public class EventAPITest extends APIControllerTest {
     }
 
     @Test
-    @Ignore("Not implemented yet")
     public void testToSendMessageForManagedEvent() throws Exception {
-        throw new RuntimeException();
+        ActionProxy proxy = getActionProxy("/api/event/sendMessage");
+
+        // User2 is an editor of Event2. 
+        loginAs(proxy, TestDataProvider.USER_ID2);
+        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID2);
+        addParameter(proxy, "message", "hogehogehoge");
+        
+        proxy.execute();
+        assertResultOK(proxy);
     }
 
     @Test
-    @Ignore("Not implemented yet")
     public void testToSendMessageForNotOwnedEvent() throws Exception {
-        throw new RuntimeException();
+        ActionProxy proxy = getActionProxy("/api/event/sendMessage");
+        
+        loginAs(proxy, TestDataProvider.USER_ID2);
+        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "message", "hogehogehoge");
+        
+        proxy.execute();
+        assertResultForbidden(proxy);
     }
 
     @Test
-    @Ignore("Not implemented yet")
     public void testToSendMessageWithoutLogin() throws Exception {
-        throw new RuntimeException();
+        ActionProxy proxy = getActionProxy("/api/event/sendMessage");
+
+        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "message", "hogehogehoge");
+        
+        proxy.execute();
+        assertResultLoginRequired(proxy);
     }
 }

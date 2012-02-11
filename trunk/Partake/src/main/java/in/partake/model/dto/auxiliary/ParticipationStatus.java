@@ -22,7 +22,7 @@ public enum ParticipationStatus {
     	if ("".equals(str)) { return SAFE_VALUE; }
     	
     	try {
-    		return valueOf(str);
+    		return valueOf(str.toUpperCase());
     	} catch (IllegalArgumentException e) {
     		return SAFE_VALUE;
     	}
