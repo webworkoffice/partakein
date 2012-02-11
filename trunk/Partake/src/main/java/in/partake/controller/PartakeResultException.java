@@ -2,6 +2,8 @@ package in.partake.controller;
 
 /**
  * Controller can throw this exception to return a result.
+ * API cannot.
+ * 
  * @author shinyak
  */
 public class PartakeResultException extends Exception {

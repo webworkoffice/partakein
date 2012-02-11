@@ -7,6 +7,7 @@ import com.opensymphony.xwork2.ActionProxy;
 
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.util.Util;
 
 public class EventAPITest extends APIControllerTest {
 

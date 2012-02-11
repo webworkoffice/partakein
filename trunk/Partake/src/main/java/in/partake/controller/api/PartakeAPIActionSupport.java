@@ -1,5 +1,6 @@
 package in.partake.controller.api;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.PartakeActionSupport;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
@@ -173,7 +174,22 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
         this.status = 403;
         return renderJSON(obj);
     }
-
+        
+    protected String renderException(PartakeException e) {
+        if (e.getStatusCode() == 401)
+            return renderLoginRequired();
+        if (e.getStatusCode() == 403)
+            return renderForbidden();
+        
+        if (e.getUserErrorCode() != null)
+            return renderInvalid(e.getUserErrorCode());
+        else if (e.getServerErrorCode() != null)
+            return renderError(e.getServerErrorCode());    
+        
+        assert false;
+        return renderError(ServerErrorCode.LOGIC_ERROR);
+    }
+    
     // ----------------------------------------------------------------------
     //
 
