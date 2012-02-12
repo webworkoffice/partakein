@@ -38,22 +38,7 @@ public class UsersPreferenceController extends PartakeActionSupport {
 			return ERROR;
 		}
 	}
-	
-	public String setPreference() {
-		try {
-		    UserEx user = getLoginUser();
-			if (user == null) { return LOGIN; }
-			
-			UserPreference embryo = new UserPreference(user.getId(), profilePublic, receivingTwitterMessage, tweetingAttendanceAutomatically);
-			UserService.get().setUserPreference(embryo);
-			
-			return SUCCESS;
-		} catch (DAOException e) {
-			e.printStackTrace();
-			return ERROR;
-		}
-	}
-	
+		
 	// --------------------------------------------------
 	
 	public boolean isProfilePublic() {
@@ -83,6 +68,4 @@ public class UsersPreferenceController extends PartakeActionSupport {
 	public void setTweetingAttendanceAutomatically(boolean tweetingAttendanceAutomatically) {
 		this.tweetingAttendanceAutomatically = tweetingAttendanceAutomatically;
 	}
-	
-	
 }

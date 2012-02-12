@@ -131,3 +131,23 @@ footer {
 .guest input {
 	opacity: 0.28;
 }
+
+.text-info {
+	color: #3a87ad;
+	background: inherit;	
+}
+
+/* spinner */
+.spinner-container {
+	position: relative;
+}
+
+.spinner-container .spinner {
+	position: absolute;
+	display: none;
+}
+
+.controls > p:first-child {
+	padding-top: 5px;
+}
+

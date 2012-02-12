@@ -19,8 +19,9 @@ public final class CalendarService extends PartakeService {
     
     /**
      * revoke the current calendar and re-generate calendar id.
+     * Returns the generated id.
      */
-    public void revokeCalendar(User user) throws DAOException {
+    public String revokeCalendar(User user) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
@@ -38,6 +39,8 @@ public final class CalendarService extends PartakeService {
             factory.getCalendarAccess().put(con, embryo);
             
             con.commit();
+            
+            return calendarId;
         } finally {
             con.invalidate();
         }

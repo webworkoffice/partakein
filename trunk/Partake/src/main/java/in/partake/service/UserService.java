@@ -328,8 +328,8 @@ public final class UserService extends PartakeService {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            UserPreference pref = factory.getUserPreferenceAccess().find(con, userId);
-            UserPreference newPref = new UserPreference(pref);
+            final UserPreference pref = factory.getUserPreferenceAccess().find(con, userId);
+            UserPreference newPref = new UserPreference(pref != null ? pref : UserPreference.getDefaultPreference(userId));
             
             if (profilePublic != null)
                 newPref.setProfilePublic(profilePublic);

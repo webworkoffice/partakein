@@ -4,8 +4,10 @@ import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.UserPreference;
+import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
+import in.partake.service.CalendarService;
 import in.partake.service.UserService;
 import in.partake.servlet.PartakeSession;
 
@@ -19,15 +21,14 @@ public class AccountAction extends PartakeAPIActionSupport {
 
     public String getSessionToken() throws DAOException {
         PartakeSession session = getPartakeSession();
-        if (session == null) {
+        if (session == null)
             return renderInvalid(UserErrorCode.MISSING_SESSION);
-        }
-        if (session.getCSRFPrevention() == null) {
+
+        if (session.getCSRFPrevention() == null)
             return renderError(ServerErrorCode.NO_CSRF_PREVENTION);
-        }
-        if (session.getCSRFPrevention().getSessionToken() == null) {
+
+        if (session.getCSRFPrevention().getSessionToken() == null)
             return renderError(ServerErrorCode.NO_CREATED_SESSION_TOKEN);
-        }
         
         JSONObject obj = new JSONObject();
         obj.put("token", session.getCSRFPrevention().getSessionToken());
@@ -37,7 +38,8 @@ public class AccountAction extends PartakeAPIActionSupport {
 
     public String get() throws DAOException {
         UserEx user = getLoginUser();
-        if (user == null) { return renderLoginRequired(); }
+        if (user == null)
+            return renderLoginRequired();
 
         JSONObject obj = user.toSafeJSON();
         
@@ -87,5 +89,26 @@ public class AccountAction extends PartakeAPIActionSupport {
             return renderOK();
         else
             return renderInvalid(UserErrorCode.INVALID_OPENID);
+    }
+    
+    public String revokeCalendar() throws DAOException {
+        UserEx user = getLoginUser();
+        if (user == null)
+            return renderLoginRequired();
+
+        if (!checkSessionToken())
+            return renderInvalid(UserErrorCode.INVALID_SESSION);
+
+        String newCalendarId = CalendarService.get().revokeCalendar(user);
+
+        // TODO: Unfortunately, the [user] must be updated to reflect this calendar revocation.
+        // For convenient way, we retrieve user again, and set it to the session.           
+        user = UserService.get().getUserExById(user.getId());
+        session.put(Constants.ATTR_USER, user);
+
+        JSONObject obj = new JSONObject();
+        obj.put("calendarId", newCalendarId);
+                
+        return renderOK(obj);
     }
 }

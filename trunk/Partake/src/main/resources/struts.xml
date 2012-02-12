@@ -147,18 +147,6 @@
 			<interceptor-ref name="authenticateStack" />
 			<result name="success">/WEB-INF/preference.jsp</result>
 		</action>
-
-		<action name="setPreference" method="setPreference" class="in.partake.controller.UsersPreferenceController">
-            <interceptor-ref name="checkTokenStack" />
-			<result name="input" type="redirect">/preference</result>
-			<result name="success" type="redirect">/preference</result>
-		</action>
-
-		<action name="revokeCalendar" method="revokeCalendar" class="in.partake.controller.UsersController">
-            <interceptor-ref name="checkTokenStack" />
-			<result name="input">/WEB-INF/setting.jsp</result>
-			<result name="success" type="redirect">/preference</result>
-		</action>
 	</package>
 
 	<package name="help" namespace="/help" extends="partake-default">
@@ -514,6 +502,7 @@
 		<action name="events" method="getEvents" class="in.partake.controller.api.account.AccountAction" />
 		
 		<action name="removeOpenID" method="removeOpenID" class="in.partake.controller.api.account.AccountAction" />
+		<action name="revokeCalendar" method="revokeCalendar" class="in.partake.controller.api.account.AccountAction" />
 		<action name="setPreference" method="setPreference" class="in.partake.controller.api.account.AccountAction" />
 		<action name="sessionToken" method="getSessionToken" class="in.partake.controller.api.account.AccountAction" />
 	</package>

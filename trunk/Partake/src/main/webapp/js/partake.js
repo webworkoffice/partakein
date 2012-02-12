@@ -1,4 +1,7 @@
-// partake の基本 API を便利に使うための javascript library です。jQuery に依存します。
+//
+// partake.js is a JavaScript library which calls Partake API. 
+// partake.js depends on the latest jQuery.
+//
 
 // *** UNDER IMPLEMENTATION ***
 
@@ -12,6 +15,7 @@
 	}
 
 	// ----------------------------------------------------------------------
+	// Account
 	
 	/**
 	 * Removes OpenID.
@@ -26,9 +30,29 @@
 		
 		return $.post('/api/account/removeOpenID', arg);
 	};
+
+	Partake.prototype.setPreference = function(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically) {
+		var arg = {
+			sessionToken: this.sessionToken,
+			receivingTwitterMessage: receivingTwitterMessage,
+			profilePublic: profilePublic,
+			tweetingAttendanceAutomatically: tweetingAttendanceAutomatically
+		};
+		
+		return $.post('/api/account/setPreference', arg);
+	};
+	
+	Partake.prototype.revokeCalendar = function() {
+		var arg = {
+			sessionToken: this.sessionToken			
+		};
+		
+		return $.post('/api/account/revokeCalendar', arg);
+	};
 	
 	// ----------------------------------------------------------------------
-
+	// Event
+	
 	/**
 	 * @param {!String} userId
 	 * @param {!String} eventId
