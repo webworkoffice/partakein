@@ -1,45 +1,5 @@
 
 function onReady() {
-    var dialogIDs = ["signin-dialog", "enroll-form", "reserve-form", "cancel-form",
-	                   "event-delete-form", 
-	                   "message-form", "twitter-promotion-form",
-	                   "change-comment-form", "reminder-reset-form"];
-
-    var defaultDialogOptions = {
-		autoOpen: false,
-		draggable: false,
-		modal: true,
-		resizable: true				    		
-    };
-    
-    var dialogOptions = {
-    		"signin-dialog": { width: 500, resizable: false },
-    		"enroll-form": { width: 350, resizable: false },
-    		"reserve-form": { width: 500, resizable: false },
-    		"cancel-form": { width: 350, resizable: false },
-    		"change-comment-form": { width: 350, resiable: false }
-    };
-    
-    function merge(option, mergingOption) {
-    	if (!mergingOption) { return; }
-    	for (var s in mergingOption) {
-    		option[s] = mergingOption[s];
-    	}
-    }
-    
-	for (var i = 0; i < dialogIDs.length; ++i) {
-		var option = {};
-		merge(option, defaultDialogOptions);
-		merge(option, dialogOptions[dialogIDs[i]]);
-		
-		$("#" + dialogIDs[i]).dialog(option);		
-		$("#open-" + dialogIDs[i]).click((function(i) {
-			return function(event) {
-				$("#" + dialogIDs[i]).dialog('open');
-			};
-		})(i));
-	}
-
     // passcode
     function checkPasscode() {
         if ($("#secret").is(":checked")) {

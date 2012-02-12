@@ -13,12 +13,15 @@
 <%= Helper.javascript(
         "/js/script.js",
         "/js/partake.js",
+        "/js/partake-ui.js",
         "/js/scrolltopcontrol.js",
-        "/js/jquery.switchHat.js", 
+        "/js/jquery.switchHat.js",
         "/js/bootstrap.min.js"
         ) %>        
 <script type="text/javascript">
 	$partake = createPartakeClient('<%= Helper.getSessionToken() %>');
+	partake = $partake;
+	partakeUI = createPartakeUIClient();
 </script>
 <link rel="shortcut icon" href="<%= request.getContextPath() %>/images/favicon.ico">
 

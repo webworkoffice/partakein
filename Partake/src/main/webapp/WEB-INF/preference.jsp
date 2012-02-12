@@ -1,3 +1,4 @@
+<%@page import="in.partake.resource.PartakeProperties"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.controller.UsersPreferenceController"%>
@@ -29,30 +30,42 @@
 <p>何らかの理由でtwitter が使用できない場合に、OpenID でログインできるようにします。設定には、Google や mixi などの OpenID と Twitter ID を結び付ける必要があります。</p>
 
 <%  UsersPreferenceController pref = (UsersPreferenceController) request.getSession().getAttribute(Constants.ATTR_ACTION);
-    List<String> associatedOpenIds = pref.getAssociateOpenIds();
-    if (associatedOpenIds != null && !associatedOpenIds.isEmpty()) { %>
-    <script>
-    	function removeOpenID(ident) {
-    		if (!window.confirm(ident + ' の結びつけが解除されます。よろしいですか？'))
-    			return;
-    		$partake.removeOpenID(ident).success(function(json) {
-    			location.reload();
-    		}).error(function(json) {
-				alert('OpenID の結びつけの解除に失敗しました。' + json.reason);			
-    		});
-    	}
-    </script>
-	<p>現在次の URL と結び付けられています。</p>
-	<ul> <% for (String openid : associatedOpenIds) { %>
-		<li><%= h(openid) %>
-         	<a href="#" title="結びつけを解除する" onclick="removeOpenID('<%= h(openid) %>')">[x]</a>
-		</li>
-    <% } %></ul>
-<% } else { %>
-	<p>現在どの OpenID とも結び付けられていません。</p>
-<% } %>
+    List<String> associatedOpenIds = pref.getAssociateOpenIds(); %>
 
-<p><input type="button" data-toggle="modal" href="#openid-connect-dialog" value="OpenID と結びつける" /></p>
+<div class="row"><form class="form-horizontal"><fieldset>
+	<div class="control-group">
+	   	<label class="control-label">Open ID</label>
+	   	<div class="controls">
+	   	<% if (associatedOpenIds != null && !associatedOpenIds.isEmpty()) { %>
+			<% for (String openid : associatedOpenIds) { %>
+				<p><%= h(openid) %>
+		         	<a href="#" title="結びつけを解除する" onclick="removeOpenID('<%= h(openid) %>')">[&times;]</a>
+				</p>
+		    <% } %>
+		<% } else { %>
+			<p>現在どの OpenID とも結び付けられていません。</p>
+		<% } %>
+	   	</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<input type="button" data-toggle="modal" href="#openid-connect-dialog" value="新しく OpenID と結びつける..." />		
+		</div>
+	</div>
+</fieldset></form></div>
+
+<script>
+	function removeOpenID(ident) {
+		if (!window.confirm(ident + ' の結びつけが解除されます。よろしいですか？'))
+			return;
+		$partake.removeOpenID(ident).success(function(json) {
+			location.reload();
+		}).error(function(json) {
+			alert('OpenID の結びつけの解除に失敗しました。' + json.reason);			
+		});
+	}
+</script>
+
 	
 <div id="openid-connect-dialog" class="modal" style="display:none">
 	<div class="modal-header">
@@ -82,7 +95,7 @@
 			<input type="submit" value="Livedoor" />
   		</form>
 
-		<p>はてな ID でログイン</p>
+		<p>はてな ID と結びつけ</p>
   		<form name="connectWithHatenaForm" method="post" action="/auth/connectWithOpenID" style="display:none">
   			<%= Helper.token() %>
   			<input type="hidden" id="connect-hatena-openid-identifier" name="openid_identifier" value="http://www.hatena.ne.jp/" />
@@ -111,49 +124,117 @@
 </div>
 
 <h2>各種設定</h2>
-<div class="row"><s:form method="post" cssClass="form-horizontal" action="setPreference"><fieldset>
-	<%-- <legend>Example form legend</legend> --%>
-	<%= Helper.token() %>
+<div class="row"><form class="form-horizontal"><fieldset>
 	<div class="control-group">
     	<label class="control-label">設定項目</label>
         <div class="controls">
-              <label class="checkbox">
-              		<s:checkbox name="receivingTwitterMessage" />
-					twitter 経由のリマインダーを受け取る (default:受け取る)
-              </label>
-              <label class="checkbox">
-              		<s:checkbox name="profilePublic" />
-					マイページを他人にも公開する (default：公開)
-              </label>
-              <label class="checkbox">
-              		<s:checkbox name="tweetingAttendanceAutomatically" />
-	 				イベントに参加するとき、自動的に参加をつぶやく (default：つぶやかない)
-              </label>
-			  <s:submit value="この設定を保存する" />
+            <label class="checkbox">
+            	<input type="checkbox" id="receivingTwitterMessage" name="receivingTwitterMessage" <%= pref.isReceivingTwitterMessage() ? "checked" : "" %> />
+				twitter 経由のリマインダーを受け取る (default:受け取る)
+            </label>
+            <label class="checkbox">
+            	<input type="checkbox" id="profilePublic" name="profilePublic" <%= pref.isProfilePublic() ? "checked" : "" %>/>
+				マイページを他人にも公開する (default：公開)
+            </label>
+            <label class="checkbox">
+            	<input type="checkbox" id="tweetingAttendanceAutomatically" name="tweetingAttendanceAutomatically" <%= pref.isTweetingAttendanceAutomatically() ? "checked" : "" %>/>
+	 			イベントに参加するとき、自動的に参加をつぶやく (default：つぶやかない)
+            </label>
+            <p class="spinner-container">
+	            <input id="setPreferenceButton" type="button" value="この設定を保存する" />            
+	            <span id="setPreferenceMessage" class="text-info"></span>
+            </p>
+            <script>
+              	function callSetPreference() {
+              		var spinner = partakeUI.spinner(document.getElementById('setPreferenceButton'));
+              		var receivingTwitterMessage = $('#receivingTwitterMessage').is(':checked');
+              		var profilePublic = $('#profilePublic').is(':checked');
+              		var tweetingAttendanceAutomatically = $('#tweetingAttendanceAutomatically').is(':checked');
+              		
+              		spinner.show();
+              		$('setPreferenceButton').attr('disabled', '');
+              		partake.setPreference(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically).success(function(json) {
+              			$('#setPreferenceMessage').hide();
+              			$('#setPreferenceMessage').text("設定を保存しました。");
+              			$('#setPreferenceMessage').fadeIn("fast");
+
+              			$('setPreferenceButton').removeAttr("disabled");
+            			spinner.hide();
+            		}).error(function(json) {
+              			$('#setPreferenceMessage').hide();
+              			$('#setPreferenceMessage').text("設定の保存に失敗しました。: " + json.reason);
+              			$('#setPreferenceMessage').fadeIn("fast");
+        				$('setPreferenceButton').removeAttr("disabled");
+        				spinner.hide();
+              		});
+              	};
+              	
+              	$('#setPreferenceButton').click(callSetPreference);
+            </script>            
         </div>
     </div>
-</fieldset></s:form></div>
+</fieldset></form></div>
 
 <h2>カレンダー</h2>
 
 <p>自分の参加・管理イベントを ics ファイル (カレンダー) で受信することが出来ます。</p>
 <p>以下が、あなたのカレンダーID（URL）です。これを、普段使っている Google カレンダーなどにインポートすることができます。</p>
-<%-- NOTE: RSS の ID はカレンダー ID と共通です。 --%>
-<% if (user.getCalendarId() != null && !"".equals(user.getCalendarId())) { %>
-    <input type="text" value="http://partake.in<%= request.getContextPath() %>/calendars/<%= h(user.getCalendarId()) %>.ics" style="width: 80%;"/><%-- TODO use in.partake.toppath from properties file --%>
-<%--
-    <input type="text" value="http://partake.in<%= request.getContextPath() %>/feed/user/<%= h(user.getCalendarId()) %>" style="width: 80%;"/>
- --%>
-<% } %>
+
+<div class="row"><form class="form-horizontal"><fieldset>
+	<div class="control-group">
+	   	<label class="control-label">カレンダー URL</label>
+	    <div class="controls">
+			<% if (user.getCalendarId() != null && !"".equals(user.getCalendarId())) { %>
+			    <input id="calendarURL" type="text" value="<%= h(PartakeProperties.get().getTopPath()) %>/calendars/<%= h(user.getCalendarId()) %>.ics" class="span9" />
+			<% } else { %>
+				<input id="calendarURL" type="text" value="あなたのカレンダー ID はまだ生成されていません。" class="span9" />
+			<% } %>	        
+	    </div>
+	</div>
+</fieldset></form></div>
 
 <h3>カレンダーIDを再生成する</h3>
 
-<p>不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。ただし、これまでのカレンダー URL は無効になるので気をつけてください。</p>
+<p>カレンダー ID がまだ割り当てられていない場合や不意にカレンダー ID を知られてしまった場合などに、カレンダー ID を再生成できます。</p>
+<p>これまでのカレンダー URL は無効になるため、お使いのカレンダーアプリケーションを再設定する必要があります。</p>
+<form>
+    <p class="spinner-container">
+    	<input id="revokeCalendarURLButton" type="button" value="カレンダー ID を再生成する" />            
+    	<span id="revokeCalendarURLMessage" class="text-info"></span>
+    </p>
+</form>
 
-<s:form method="post" action="revokeCalendar">
-	<%= Helper.token() %>
-	<s:submit value="カレンダー ID を再生成する" />
-</s:form>
+<script>
+function callRevokeCalendar() {
+	var spinner = partakeUI.spinner(document.getElementById('revokeCalendarURLButton'));
+	var button = $('#revokeCalendarURLButton');
+
+	spinner.show();
+	button.attr('disabled', '');
+	partake.revokeCalendar().success(function (json) {
+		if (json.calendarId) {
+			$('#calendarURL').val('<%= h(PartakeProperties.get().getTopPath()) %>/calendars/' + json.calendarId + '.ics');
+		} else {
+			location.reload();
+		}
+		
+		$('#revokeCalendarURLMessage').hide();
+		$('#revokeCalendarURLMessage').text("カレンダー ID を再生成しました。");
+		$('#revokeCalendarURLMessage').fadeIn("fast");
+
+		spinner.hide();
+		button.removeAttr('disabled');
+	}).error(function (json) {		
+		$('#revokeCalendarURLMessage').hide();
+		$('#revokeCalendarURLMessage').text("カレンダー ID の生成に失敗しました。 : " + json.reason);
+		$('#revokeCalendarURLMessage').fadeIn("fast");
+
+		spinner.hide();
+		button.removeAttr('disabled');
+	});
+};
+$('#revokeCalendarURLButton').click(callRevokeCalendar);
+</script>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

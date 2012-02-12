@@ -5,7 +5,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.Constants;
-import in.partake.service.CalendarService;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
 
@@ -82,29 +81,6 @@ public class UsersController extends PartakeActionSupport {
 		} catch (DAOException e) {
 			logger.warn("データベースエラーです。", e);
 			addActionError("データベースエラーです。");
-			return ERROR;
-		}
-	}
-
-	/**
-	 * revoke calendar id. A new calendar id is automatically generated.
-	 * @return
-	 */
-	public String revokeCalendar() {
-		try {
-			UserEx user = getLoginUser();
-			if (user == null) { return ERROR; }
-
-			CalendarService.get().revokeCalendar(user);
-
-			// TODO: Unfortunately, the [user] must be updated to reflect this calendar revocation.
-			// For convenient way, we retrieve user again, and set it to the session.    		
-			user = UserService.get().getUserExById(user.getId());
-			session.put(Constants.ATTR_USER, user);
-
-			return SUCCESS;
-		} catch (DAOException e) {
-			logger.warn("revokeCalendar() failed.", e);
 			return ERROR;
 		}
 	}
