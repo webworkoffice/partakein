@@ -1,3 +1,0 @@
-# m h  dom mon dow   command
-00 04 * * * /home/<user>/backup.sh > ~/backup/logs/partake-`/bin/date +%s`.out 2> ~/backup/logs/partake-`/bin/date +%s`.err
-
