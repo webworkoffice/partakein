@@ -1,8 +1,7 @@
-package in.partake.servlet;
+package in.partake.session;
 
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.util.security.CSRFPrevention;
 
 /**
  * PartakeSession is a type safe session object.

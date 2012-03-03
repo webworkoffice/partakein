@@ -1,5 +1,6 @@
 package in.partake.view.util;
 
+import in.partake.base.Util;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
@@ -7,10 +8,9 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.Constants;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
-import in.partake.servlet.PartakeSession;
-import in.partake.util.SessionUtil;
-import in.partake.util.Util;
-import in.partake.util.security.CSRFPrevention;
+import in.partake.session.CSRFPrevention;
+import in.partake.session.PartakeSession;
+import in.partake.session.SessionUtil;
 
 import java.io.BufferedInputStream;
 import java.io.File;

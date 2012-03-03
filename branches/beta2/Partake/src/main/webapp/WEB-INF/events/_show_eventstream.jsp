@@ -1,5 +1,5 @@
 <%@page import="in.partake.view.util.Helper"%>
-<%@page import="in.partake.util.Util"%>
+<%@page import="in.partake.base.Util"%>
 <%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
 <%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="java.util.List"%>

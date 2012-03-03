@@ -1,11 +1,11 @@
 package in.partake.controller;
 
+import in.partake.base.KeyValuePair;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.Constants;
 import in.partake.service.EventService;
-import in.partake.util.KeyValuePair;
 
 import java.util.ArrayList;
 import java.util.Arrays;

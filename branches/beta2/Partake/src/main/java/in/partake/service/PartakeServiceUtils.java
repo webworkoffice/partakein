@@ -1,5 +1,6 @@
 package in.partake.service;
 
+import in.partake.base.Util;
 import in.partake.model.CommentEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
@@ -17,7 +18,6 @@ import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
-import in.partake.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;

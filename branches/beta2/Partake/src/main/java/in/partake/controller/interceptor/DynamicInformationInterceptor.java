@@ -5,7 +5,7 @@ import org.apache.struts2.ServletActionContext;
 
 import in.partake.controller.PartakeActionSupport;
 import in.partake.resource.Constants;
-import in.partake.servlet.PartakeSession;
+import in.partake.session.PartakeSession;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;

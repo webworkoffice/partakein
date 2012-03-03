@@ -6,7 +6,7 @@ import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.TestService;
 import in.partake.service.UserService;
-import in.partake.servlet.PartakeSession;
+import in.partake.session.PartakeSession;
 
 import java.util.HashMap;
 import java.util.Map;

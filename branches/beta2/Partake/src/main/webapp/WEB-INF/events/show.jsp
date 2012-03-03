@@ -16,7 +16,7 @@
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.model.dto.User"%>
 <%@page import="in.partake.model.dto.Event"%>
-<%@page import="in.partake.util.Util"%>
+<%@page import="in.partake.base.Util"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.resource.Constants"%>

@@ -1,4 +1,4 @@
-package in.partake.util;
+package in.partake.base;
 
 public class Pair<F, S> {
     private F first;

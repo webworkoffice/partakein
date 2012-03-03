@@ -6,7 +6,7 @@ import in.partake.controller.PartakeResultException;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
-import in.partake.servlet.PartakeSession;
+import in.partake.session.PartakeSession;
 
 import org.apache.log4j.Logger;
 

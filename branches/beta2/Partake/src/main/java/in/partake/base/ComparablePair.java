@@ -1,4 +1,4 @@
-package in.partake.util;
+package in.partake.base;
 
 public class ComparablePair<F extends Comparable<F>, S extends Comparable<S>>
         extends Pair<F, S>

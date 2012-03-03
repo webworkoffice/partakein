@@ -1,4 +1,4 @@
-package in.partake.util;
+package in.partake.base;
 
 import in.partake.resource.PartakeProperties;
 import in.partake.view.util.Helper;

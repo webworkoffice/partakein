@@ -8,7 +8,7 @@
 <%@page import="java.text.NumberFormat"%>
 <%@page import="in.partake.service.UserService"%>
 <%@page import="in.partake.service.UserService.UserCount"%>
-<%@page import="static in.partake.util.Util.h"%>
+<%@page import="static in.partake.base.Util.h"%>
 
 <html lang="ja">
 <head>

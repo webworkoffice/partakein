@@ -1,10 +1,10 @@
 package in.partake.model.dao;
 
 import in.partake.base.PartakeRuntimeException;
+import in.partake.base.Util;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
-import in.partake.util.Util;
 
 import java.io.File;
 import java.io.IOException;

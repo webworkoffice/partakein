@@ -1,4 +1,4 @@
-package in.partake.util.functional;
+package in.partake.base;
 
 // TODO: Who uses this?
 public interface Function<S, T> {

@@ -1,10 +1,10 @@
 package in.partake.model.dto;
 
+import in.partake.base.Util;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
-import in.partake.util.Util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

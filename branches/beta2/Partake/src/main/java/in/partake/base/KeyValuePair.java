@@ -1,4 +1,4 @@
-package in.partake.util;
+package in.partake.base;
 
 public class KeyValuePair {
 	public String key;
