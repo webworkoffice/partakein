@@ -175,7 +175,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         // Will be redirected to /auth/loginRequired
         // status code should be 401.
         // Assert.assertEquals(401, response.getStatus());
-        Assert.assertTrue(response.getRedirectedUrl().startsWith("/auth/loginRequired"));
+        Assert.assertTrue(response.getRedirectedUrl().startsWith("/loginRequired"));
     }
 
     protected void assertResultRedirect(ActionProxy proxy, String url) throws Exception {

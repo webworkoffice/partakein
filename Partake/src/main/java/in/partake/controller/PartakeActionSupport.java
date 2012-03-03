@@ -5,6 +5,7 @@ import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.servlet.PartakeSession;
+import in.partake.util.security.CSRFPrevention;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -249,6 +251,27 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         if (user == null) { throw new PartakeResultException(LOGIN); }
         return user;
     }
+    
+    // ----------------------------------------------------------------------
+    // CSRF
+    
+    public boolean checkCSRFToken() {
+        PartakeSession session = getPartakeSession();
+        if (session == null)
+            return false;
+        
+        CSRFPrevention prevention = session.getCSRFPrevention(); 
+        if (prevention == null)
+            return false;
+        
+        String sessionToken = getParameter(Constants.ATTR_PARTAKE_TOKEN);
+
+        if (sessionToken == null)
+            return false;
+
+        return prevention.isValidSessionToken(sessionToken);
+    }
+
     
     // ----------------------------------------------------------------------
     // render functions

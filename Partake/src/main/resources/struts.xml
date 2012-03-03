@@ -116,7 +116,7 @@
         <action name="error" method="execute" class="in.partake.controller.action.errorpage.StaticErrorPageAction" />
         <action name="invalid" method="execute" class="in.partake.controller.action.errorpage.StaticInvalidPageAction" />
         <action name="notfound" method="execute" class="in.partake.controller.action.errorpage.StaticNotFoundPageAction" />
-        <action name="prohibited" method="execute" class="in.partake.controller.action.errorpage.StaticProhibitedPageAction" />
+        <action name="prohibited" method="execute" class="in.partake.controller.action.errorpage.StaticForbiddenPageAction" />
         <action name="loginRequired" method="execute" class="in.partake.controller.action.errorpage.StaticLoginRequiredPageAction" />
 
         <action name="contact" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">

@@ -8,7 +8,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
-import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
@@ -66,7 +65,9 @@ public class EventAction extends PartakeAPIActionSupport {
         UserEx user = getLoginUser();
         if (user == null)
             return renderLoginRequired();
-
+        if (!checkSessionToken())
+            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
+        
         String eventId = getParameter("eventId");
         if (eventId == null)
             return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
@@ -88,6 +89,8 @@ public class EventAction extends PartakeAPIActionSupport {
         UserEx user = getLoginUser();
         if (user == null)
             return renderLoginRequired();
+        if (!checkSessionToken())
+            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
 
         String eventId = getParameter("eventId");
         if (eventId == null) 
@@ -119,6 +122,8 @@ public class EventAction extends PartakeAPIActionSupport {
         UserEx user = getLoginUser();
         if (user == null)
             return renderLoginRequired();
+        if (!checkSessionToken())
+            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
 
         String eventId = getParameter("eventId");
         if (eventId == null)
@@ -142,12 +147,8 @@ public class EventAction extends PartakeAPIActionSupport {
         UserEx user = getLoginUser();
         if (user == null)
             return renderLoginRequired();
-
-        assert getPartakeSession() != null;
-        assert getPartakeSession().getCSRFPrevention() != null;
-        String token = getParameter(Constants.ATTR_PARTAKE_API_SESSION_TOKEN);
-        if (!getPartakeSession().getCSRFPrevention().isValidSessionToken(token))
-            return renderInvalid(UserErrorCode.INVALID_SESSION);
+        if (!checkSessionToken())
+            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
 
         String userId = getParameter("userId");
         if (userId == null)

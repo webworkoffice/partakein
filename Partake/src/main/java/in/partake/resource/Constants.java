@@ -30,39 +30,43 @@ public final class Constants {
     public static final String ATTR_ERRORMSGS = "errormsg";	// List<String>
 
     public static final String ATTR_PARTAKE_TOKEN = "partake.token";
-    public static final String ATTR_PARTAKE_ONETIME_TOKEN = "partake.onetime.token";
-
+    // TODO: Why sessionToken and partake.token have the different name? They should be the same actually.
     public static final String ATTR_PARTAKE_API_SESSION_TOKEN = "sessionToken";
 
+    // TODO: Remove this.
+    public static final String ATTR_PARTAKE_ONETIME_TOKEN = "partake.onetime.token";
 
 
+    // TODO: Remove this.
     /** error が発生した場合の詳細を説明するために用いる */
     public static final String ATTR_ERROR_DESCRIPTION = "ERROR_DESCRIPTION";
-    //
+
+    // TODO: Remove these.
     public static final String ATTR_EVENTSET = "eventset";
     public static final String ATTR_EVENT = "event";
     public static final String ATTR_RECENT_EVENTS = "recent_events";
 
+    // TODO: Remove these.
     public static final String ATTR_OWNED_EVENTSET = "ownedeventset";
     public static final String ATTR_ENROLLED_EVENTSET = "enrolledeventset";
     public static final String ATTR_FINISHED_EVENTSET = "finishedeventset";
 
+    // TODO: Remove these.
     public static final String ATTR_PARTICIPATIONLIST = "PARTICIPATION_LIST";
     public static final String ATTR_REMINDER_STATUS = "REMINDER_STATUS";
 
     public static final String ATTR_REDIRECTURL = "redirectURL";
 
+    // TODO: Remove these.
     public static final String ATTR_PARTICIPATION_STATUS = "PARTICIPATION_STATUS";
-
     public static final String ATTR_DEADLINE_OVER = "DEADLINE_OVER";
-
     public static final String ATTR_COMMENTSET = "COMMENTSET";
     public static final String ATTR_MESSAGESET = "MESSAGESET";
 
     public static final String ATTR_SEARCH_RESULT = "SEARCH_RESULT";
 
     public static final String ATTR_CURRENT_URL = "CURRENT_URL";
-
+    
     public static final String ATTR_OPENID_DISCOVERY_INFORMATION = "OPENID_DISC";
     public static final String ATTR_OPENID_PURPOSE = "OPENID_PURPOSE";
 
