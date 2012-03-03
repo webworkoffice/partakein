@@ -15,10 +15,10 @@ public class MypageActionTest extends AbstractPartakeControllerTest {
         loginAs(proxy, TestDataProvider.USER_ID1);
 
         proxy.execute();
-        
         assertResultSuccess(proxy);
         
         MypageAction action = (MypageAction) proxy.getAction();
+
         assertEquals(UserService.get().getUserPreference(TestDataProvider.USER_ID1), action.getPreference());
         assertEquals(UserService.get().getOpenIDIdentifiers(TestDataProvider.USER_ID1), action.getOpenIds());
     }
@@ -27,8 +27,7 @@ public class MypageActionTest extends AbstractPartakeControllerTest {
     public void testToExecuteWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/mypage");
 
-        proxy.execute();
-        
+        proxy.execute();        
         assertResultLoginRequired(proxy);
     }
 }

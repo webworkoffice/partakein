@@ -111,42 +111,39 @@
 
 	<package name="top" namespace="/" extends="partake-default">
 		<action name="mypage" method="execute" class="in.partake.controller.action.mypage.MypageAction" />
-		
-        <action name="" method="index" class="in.partake.controller.ToppageController">
-            <result name="success">/WEB-INF/index.jsp</result>
-        </action>
+		<action name="" method="execute" class="in.partake.controller.action.toppage.ToppageAction" />
 
-        <action name="error" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+        <action name="error" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/error.jsp</result>
         </action>
 
-        <action name="invalid" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+        <action name="invalid" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/invalid.jsp</result>
         </action>
 
-        <action name="contact" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+        <action name="contact" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/contact.jsp</result>
         </action>
 
-        <action name="termofuse" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+        <action name="termofuse" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/termofuse.jsp</result>
         </action>
 
-        <action name="feedlist" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+        <action name="feedlist" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/feedlist.jsp</result>
         </action>
 
-        <action name="notfound" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+        <action name="notfound" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/notfound.jsp</result>
         </action>
 
-        <action name="prohibited" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+        <action name="prohibited" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/prohibited</result>
         </action>
 	</package>
 
 	<package name="help" namespace="/help" extends="partake-default">
-        <action name="partake" method="alwaysSuccess" class="in.partake.controller.ToppageController">
+        <action name="partake" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/help/partake.jsp</result>
         </action>
 	</package>
@@ -359,19 +356,6 @@
                 <param name="actionName">${eventId}</param>
             </result>
             <result name="input">/WEB-INF/events/passcode.jsp</result>
-		</action>
-
-		<!-- Questionnaire -->
-		<action name="editQuestionnaire" method="edit" class="in.partake.controller.QuestionnaireController">
-			<interceptor-ref name="authenticateStack" />
-			<result name="success">/WEB-INF/events/questionnaire/edit.jsp</result>
-		</action>
-		<action name="makeQuestionnaire" method="commit" class="in.partake.controller.QuestionnaireController">
-			<interceptor-ref name="checkTokenStack" />
-			<result name="success" type="redirectAction">
-				<param name="actionName">${eventId}</param>
-			</result>
-			<result name="input">/WEB-INF/events/questionnaire/edit.jsp</result>
 		</action>
 
 		<!-- Event Participants -->

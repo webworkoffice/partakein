@@ -19,18 +19,6 @@ import org.junit.Before;
 import com.opensymphony.xwork2.ActionProxy;
 
 public abstract class APIControllerTest extends AbstractPartakeControllerTest {
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        TestService.get().setDefaultFixtures();
-    }
-    
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-    
     /**
      * proxy から JSON を取得する。取得できなかった場合は null を返す。
      * @param proxy
