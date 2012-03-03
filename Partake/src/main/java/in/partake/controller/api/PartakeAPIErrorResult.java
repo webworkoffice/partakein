@@ -1,4 +1,4 @@
-package in.partake.controller;
+package in.partake.controller.api;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
