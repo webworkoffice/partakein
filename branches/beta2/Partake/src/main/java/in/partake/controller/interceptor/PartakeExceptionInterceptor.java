@@ -56,6 +56,9 @@ public class PartakeExceptionInterceptor extends AbstractInterceptor {
             return e.getResult();
         } catch (PartakeResultException e) {
             return e.getResult();
+        } catch (Exception e) {
+            logger.error("Error happened.", e);
+            throw e;
         }
     }
 

@@ -39,7 +39,7 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         this.userId = userId;
     }
 
-    public TwitterLinkage(int twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
+    public TwitterLinkage(long twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
         this(String.valueOf(twitterId), screenName, name, accessToken, accessTokenSecret, profileImageURL, userId);
     }
     

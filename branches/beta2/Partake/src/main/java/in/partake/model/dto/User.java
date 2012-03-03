@@ -32,7 +32,7 @@ public class User extends PartakeModel<User> {
         this.calendarId = calendarId;
     }
 
-    public User(String id, int twitterId, Date lastLoginAt, String calendarId) {
+    public User(String id, long twitterId, Date lastLoginAt, String calendarId) {
         this(id, String.valueOf(twitterId), lastLoginAt, calendarId);
     }
 
