@@ -97,7 +97,7 @@
 
 	<package name="partake-api-default" extends="partake-default">
 		<result-types>
-			<result-type name="partake-api-error" class="in.partake.controller.PartakeAPIErrorResult" />
+			<result-type name="partake-api-error" class="in.partake.controller.api.PartakeAPIErrorResult" />
 		</result-types>
 
 		<global-results>
@@ -149,7 +149,6 @@
         <action name="partake" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/help/partake.jsp</result>
         </action>
-        
 	</package>
 	
 	<package name="auth" namespace="/auth" extends="partake-default">
