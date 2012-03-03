@@ -4,8 +4,8 @@ import in.partake.model.UserEx;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.servlet.PartakeSession;
-import in.partake.util.security.CSRFPrevention;
+import in.partake.session.CSRFPrevention;
+import in.partake.session.PartakeSession;
 
 import java.io.InputStream;
 import java.util.ArrayList;

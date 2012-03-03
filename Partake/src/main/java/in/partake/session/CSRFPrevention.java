@@ -1,7 +1,7 @@
-package in.partake.util.security;
+package in.partake.session;
 
 
-import in.partake.util.Util;
+import in.partake.base.Util;
 
 import java.util.LinkedHashSet;
 

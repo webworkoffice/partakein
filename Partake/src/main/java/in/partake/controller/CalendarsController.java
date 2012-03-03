@@ -1,5 +1,6 @@
 package in.partake.controller;
 
+import in.partake.base.Function;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
@@ -7,7 +8,6 @@ import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.ServerErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
-import in.partake.util.functional.Function;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

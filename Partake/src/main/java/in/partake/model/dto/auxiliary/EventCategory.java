@@ -1,6 +1,6 @@
 package in.partake.model.dto.auxiliary;
 
-import in.partake.util.KeyValuePair;
+import in.partake.base.KeyValuePair;
 
 import java.util.Arrays;
 import java.util.Collections;

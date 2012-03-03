@@ -1,6 +1,7 @@
 package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
+import in.partake.base.Util;
 import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
@@ -11,7 +12,6 @@ import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
-import in.partake.util.Util;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;

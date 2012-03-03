@@ -1,5 +1,7 @@
 package in.partake.service;
 
+import in.partake.base.Function;
+import in.partake.base.Util;
 import in.partake.model.CommentEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
@@ -31,8 +33,6 @@ import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.PartakeProperties;
-import in.partake.util.Util;
-import in.partake.util.functional.Function;
 
 import java.util.ArrayList;
 import java.util.Collections;

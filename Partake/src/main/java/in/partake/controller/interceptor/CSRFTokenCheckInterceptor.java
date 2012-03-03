@@ -4,8 +4,8 @@ import in.partake.controller.PartakeActionSupport;
 import in.partake.controller.PartakeInvalidResultException;
 import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
-import in.partake.servlet.PartakeSession;
-import in.partake.util.security.CSRFPrevention;
+import in.partake.session.CSRFPrevention;
+import in.partake.session.PartakeSession;
 
 import com.opensymphony.xwork2.ActionInvocation;
 

@@ -14,7 +14,7 @@ import in.partake.resource.UserErrorCode;
 import in.partake.service.CalendarService;
 import in.partake.service.EventService;
 import in.partake.service.UserService;
-import in.partake.servlet.PartakeSession;
+import in.partake.session.PartakeSession;
 
 import java.util.ArrayList;
 import java.util.Collections;

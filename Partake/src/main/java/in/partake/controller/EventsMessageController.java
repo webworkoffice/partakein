@@ -1,5 +1,6 @@
 package in.partake.controller;
 
+import in.partake.base.Util;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dto.Message;
@@ -10,7 +11,6 @@ import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
 import in.partake.service.MessageService.TooLongMessageException;
-import in.partake.util.Util;
 
 import java.util.Date;
 import java.util.List;

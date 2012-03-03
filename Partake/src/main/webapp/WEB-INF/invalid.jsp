@@ -1,5 +1,5 @@
 <%@page import="in.partake.resource.UserErrorCode"%>
-<%@page import="in.partake.servlet.PartakeSession"%>
+<%@page import="in.partake.session.PartakeSession"%>
 <%@page import="static in.partake.view.util.Helper.h"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>

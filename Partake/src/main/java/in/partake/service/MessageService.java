@@ -2,6 +2,7 @@ package in.partake.service;
 
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
+import in.partake.base.Util;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
@@ -26,7 +27,6 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.UserErrorCode;
-import in.partake.util.Util;
 
 import java.util.ArrayList;
 import java.util.Date;

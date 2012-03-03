@@ -1,4 +1,5 @@
-package in.partake.util;
+package in.partake.base;
+
 
 import java.util.Calendar;
 import java.util.Date;

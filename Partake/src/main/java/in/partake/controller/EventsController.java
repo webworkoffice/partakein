@@ -1,5 +1,6 @@
 package in.partake.controller;
 
+import in.partake.base.Util;
 import in.partake.model.CommentEx;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EventEx;
@@ -18,7 +19,6 @@ import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 import in.partake.service.MessageService;
 import in.partake.service.UserService;
-import in.partake.util.Util;
 
 import java.util.ArrayList;
 import java.util.Date;

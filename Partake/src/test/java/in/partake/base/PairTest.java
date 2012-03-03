@@ -1,4 +1,6 @@
-package in.partake.util;
+package in.partake.base;
+
+import in.partake.base.ComparablePair;
 
 import org.junit.Assert;
 import org.junit.Test;

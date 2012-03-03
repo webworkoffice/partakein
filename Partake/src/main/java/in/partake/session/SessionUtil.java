@@ -1,11 +1,10 @@
-package in.partake.util;
+package in.partake.session;
 
 import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
 
 import in.partake.resource.Constants;
-import in.partake.servlet.PartakeSession;
 
 public class SessionUtil {
     

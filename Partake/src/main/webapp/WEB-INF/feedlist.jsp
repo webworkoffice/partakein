@@ -1,5 +1,5 @@
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
-<%@page import="in.partake.util.KeyValuePair"%>
+<%@page import="in.partake.base.KeyValuePair"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>

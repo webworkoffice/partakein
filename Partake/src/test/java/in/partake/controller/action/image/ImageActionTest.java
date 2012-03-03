@@ -1,8 +1,8 @@
 package in.partake.controller.action.image;
 
+import in.partake.base.Util;
 import in.partake.controller.AbstractPartakeControllerTest;
 import in.partake.model.fixture.impl.BinaryTestDataProvider;
-import in.partake.util.Util;
 
 import java.util.UUID;
 

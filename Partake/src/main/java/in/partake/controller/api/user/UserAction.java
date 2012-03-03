@@ -1,12 +1,12 @@
 package in.partake.controller.api.user;
 
 import net.sf.json.JSONObject;
+import in.partake.base.Util;
 import in.partake.controller.api.PartakeAPIActionSupport;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.UserService;
-import in.partake.util.Util;
 
 public class UserAction extends PartakeAPIActionSupport {
     private static final long serialVersionUID = 1L;    

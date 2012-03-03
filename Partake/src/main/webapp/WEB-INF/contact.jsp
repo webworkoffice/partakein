@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <%@page import="in.partake.resource.Constants"%>
-<%@page import="static in.partake.util.Util.h"%>
+<%@page import="static in.partake.base.Util.h"%>
 
 <!DOCTYPE html>
 
