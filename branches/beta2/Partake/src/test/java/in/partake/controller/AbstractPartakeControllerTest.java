@@ -72,6 +72,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        TestService.get().setDefaultFixtures();
     }
 
     // Make tearDown called after each test. 

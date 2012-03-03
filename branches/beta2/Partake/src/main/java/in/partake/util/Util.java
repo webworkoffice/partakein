@@ -274,7 +274,7 @@ public final class Util {
      * @return
      */
     public static String callBitlyShortenURL(String sourceURL) throws BitlyException {
-    	if (sourceURL.startsWith("http://localhost:") || sourceURL.startsWith("http://localhost/")) {
+    	if (sourceURL.startsWith("http://localhost") || sourceURL.startsWith("http://127.0.0.1")) {  
     		// bitly API may throw Exception if its argument means localhost
     		logger.debug(String.format("avoid shortening URL(%s)", sourceURL));
     		return sourceURL;

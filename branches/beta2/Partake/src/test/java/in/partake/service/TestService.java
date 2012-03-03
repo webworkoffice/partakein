@@ -58,6 +58,7 @@ public class TestService extends PartakeService {
         } finally {
             con.invalidate();
         }
+        
         // create lucene search index
         EventService.get().recreateEventIndex();
     }
