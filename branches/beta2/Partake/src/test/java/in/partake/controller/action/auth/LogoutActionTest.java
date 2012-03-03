@@ -15,7 +15,6 @@ public class LogoutActionTest extends AbstractPartakeControllerTest {
         loginAs(proxy, TestDataProvider.USER_ID1);
         
         proxy.execute();
-        assertResultSuccess(proxy);
         assertLoggedOut(proxy);
         assertRedirectedTo("/");
    }
@@ -25,7 +24,6 @@ public class LogoutActionTest extends AbstractPartakeControllerTest {
         ActionProxy proxy = getActionProxy("/auth/logout");
 
         proxy.execute();
-        assertResultSuccess(proxy);
         assertLoggedOut(proxy);
         assertRedirectedTo("/");
     }
