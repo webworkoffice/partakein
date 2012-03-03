@@ -29,7 +29,7 @@ public final class Constants {
     public static final String ATTR_SHOWING_USER = "user_showing"; // user (for show())
     public static final String ATTR_ERRORMSGS = "errormsg";	// List<String>
 
-    public static final String ATTR_PARTAKE_TOKEN = "partake.token";
+    // public static final String ATTR_PARTAKE_TOKEN = "partake.token";
     // TODO: Why sessionToken and partake.token have the different name? They should be the same actually.
     public static final String ATTR_PARTAKE_API_SESSION_TOKEN = "sessionToken";
 

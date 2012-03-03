@@ -1,6 +1,5 @@
 package in.partake.service;
 
-import in.partake.base.PartakeRuntimeException;
 import in.partake.model.CommentEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
@@ -9,54 +8,26 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.PartakeConnectionPool;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
-import in.partake.resource.PartakeProperties;
-import in.partake.resource.ServerErrorCode;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public abstract class PartakeService extends PartakeConnectionService {
-    private static PartakeDAOFactory factory;
-    private static final Logger logger = Logger.getLogger(PartakeService.class);
-
-    protected static PartakeDAOFactory getFactory() {
-        return factory;
+public abstract class PartakeService {
+    @Deprecated
+    protected PartakeDAOFactory getFactory() {
+        return DatabaseService.getFactory();
     }
-
-    /** reset database connection. Call this carefully. */
-    public static void initialize() {
-        try {
-            PartakeConnectionService.initializeConnectionPool();
-
-            Class<?> factoryClass = Class.forName(PartakeProperties.get().getDAOFactoryClassName());
-            factory = (PartakeDAOFactory) factoryClass.newInstance();
-
-            PartakeConnection con = getPool().getConnection();
-            try {
-                factory.initialize(con);
-            } finally {
-                con.invalidate();
-            }
-        } catch (ClassNotFoundException e) {
-            logger.fatal("Specified factory or pool class doesn't exist.", e);
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            logger.fatal("Failed to create instance of specified factory or pool.", e);
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            logger.fatal("Illegal access.", e);
-            throw new RuntimeException(e);
-        } catch (DAOException e) {
-            logger.fatal("DAOException", e);
-            throw new PartakeRuntimeException(ServerErrorCode.DAO_INITIALIZATION_ERROR, e);
-        }
+    
+    @Deprecated
+    protected PartakeConnectionPool getPool() {
+        return DatabaseService.getPool();
     }
-
-
+    
     // ----------------------------------------------------------------------
     // Utility functions
 
@@ -65,26 +36,26 @@ public abstract class PartakeService extends PartakeConnectionService {
     }
 
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
-        return PartakeServiceUtils.getUserEx(con, factory, userId);
+        return PartakeServiceUtils.getUserEx(con, getFactory(), userId);
     }
 
     protected EventEx getEventEx(PartakeConnection con, String eventId) throws DAOException {
-        return PartakeServiceUtils.getEventEx(con, factory, eventId);
+        return PartakeServiceUtils.getEventEx(con, getFactory(), eventId);
     }
 
     protected String getShortenedURL(PartakeConnection con, Event event) throws DAOException {
-        return PartakeServiceUtils.getShortenedURL(con, factory, event);
+        return PartakeServiceUtils.getShortenedURL(con, getFactory(), event);
     }
 
     protected CommentEx getCommentEx(PartakeConnection con, String commentId) throws DAOException {
-        return PartakeServiceUtils.getCommentEx(con, factory, commentId);
+        return PartakeServiceUtils.getCommentEx(con, getFactory(), commentId);
     }
 
     protected EventRelationEx getEventRelationEx(PartakeConnection con, EventRelation relation) throws DAOException {
-        return PartakeServiceUtils.getEventRelationEx(con, factory, relation);
+        return PartakeServiceUtils.getEventRelationEx(con, getFactory(), relation);
     }
 
     protected List<EnrollmentEx> getEnrollmentExs(PartakeConnection con, String eventId) throws DAOException {
-        return PartakeServiceUtils.getEnrollmentExs(con, factory, eventId);
+        return PartakeServiceUtils.getEnrollmentExs(con, getFactory(), eventId);
     }
 }

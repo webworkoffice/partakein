@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
-public class EventParticipantsController extends PartakeActionSupport {
+public class EventParticipantsController extends DeprecatedPartakeActionSupport {
     /** */
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(EventParticipantsController.class);

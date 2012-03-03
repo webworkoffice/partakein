@@ -12,6 +12,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
 import in.partake.model.fixture.impl.EventTestDataProvider;
+import in.partake.service.TestDatabaseService;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,7 +24,7 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
 	@Before
 	public void setup() throws DAOException {
 	    super.setup(getFactory().getEventAccess());
-	    provider = getTestDataProviderSet().getEventProvider();
+        provider = TestDatabaseService.getTestDataProviderSet().getEventProvider();
 	}
 
 	@Override

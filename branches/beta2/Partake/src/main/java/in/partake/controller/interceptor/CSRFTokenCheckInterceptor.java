@@ -1,6 +1,6 @@
 package in.partake.controller.interceptor;
 
-import in.partake.controller.PartakeActionSupport;
+import in.partake.controller.DeprecatedPartakeActionSupport;
 import in.partake.controller.PartakeInvalidResultException;
 import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
@@ -16,12 +16,12 @@ public class CSRFTokenCheckInterceptor extends PartakeAbstractInterceptor {
     @Override
     public String intercept(ActionInvocation invocation) throws Exception {
         PartakeSession session = getSession(invocation);
-        if (session == null) { return PartakeActionSupport.ERROR; }
+        if (session == null) { return DeprecatedPartakeActionSupport.ERROR; }
         
         CSRFPrevention prevention = session.getCSRFPrevention(); 
-        if (prevention == null) { return PartakeActionSupport.ERROR; }
+        if (prevention == null) { return DeprecatedPartakeActionSupport.ERROR; }
         
-        String sessionToken = getParameter(Constants.ATTR_PARTAKE_TOKEN);
+        String sessionToken = getParameter(Constants.ATTR_PARTAKE_API_SESSION_TOKEN);
         String onetimeToken = getParameter(Constants.ATTR_PARTAKE_ONETIME_TOKEN);
         
         // invalid request
@@ -36,7 +36,7 @@ public class CSRFTokenCheckInterceptor extends PartakeAbstractInterceptor {
             
             // onetime token はある場合のみ利用される。
             if (onetimeToken != null && prevention.isConsumed(onetimeToken)) {
-                return PartakeActionSupport.INVALID;
+                return DeprecatedPartakeActionSupport.INVALID;
             }
         
             prevention.consumeToken(onetimeToken);

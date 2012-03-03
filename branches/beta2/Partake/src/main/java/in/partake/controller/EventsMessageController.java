@@ -21,7 +21,7 @@ import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 
-public class EventsMessageController extends PartakeActionSupport {
+public class EventsMessageController extends DeprecatedPartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
 	// private static final Logger logger = Logger.getLogger(EventsMessageController.class);

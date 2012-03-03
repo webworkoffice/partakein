@@ -1,6 +1,6 @@
 package in.partake.controller.interceptor;
 
-import in.partake.controller.PartakeActionSupport;
+import in.partake.controller.DeprecatedPartakeActionSupport;
 import in.partake.model.UserEx;
 import in.partake.resource.Constants;
 
@@ -20,7 +20,7 @@ public class AdminRequiredInterceptor extends AbstractInterceptor {
 
 		UserEx user = (UserEx) session.get(Constants.ATTR_USER);
 		if (user == null || !user.isAdministrator()) {
-			return PartakeActionSupport.PROHIBITED;
+			return DeprecatedPartakeActionSupport.PROHIBITED;
 		} else {
 		    return invocation.invoke();
 		}		 

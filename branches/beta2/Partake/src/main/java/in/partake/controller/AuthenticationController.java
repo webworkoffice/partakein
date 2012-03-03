@@ -32,7 +32,7 @@ import twitter4j.auth.RequestToken;
 
 import com.opensymphony.xwork2.ActionContext;
 
-public class AuthenticationController extends PartakeActionSupport {
+public class AuthenticationController extends DeprecatedPartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;	
 	private static final Logger logger = Logger.getLogger(AuthenticationController.class);

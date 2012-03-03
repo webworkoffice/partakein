@@ -1,6 +1,5 @@
 package in.partake.service;
 
-import in.partake.base.TimeUtil;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
@@ -14,60 +13,16 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameAlreadyBoundException;
-import javax.naming.NamingException;
-
-import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.BeforeClass;
 
 public abstract class AbstractServiceTestCaseBase {
 
     @BeforeClass
     public static void setUpOnce() {
-        // TODO: Should share the code with AbstractConnectionTestCaseBase.
-        PartakeProperties.get().reset("unittest");
-        
-        try {
-            if (PartakeProperties.get().getBoolean("in.partake.database.unittest_initialization"))
-                initializeDataSource();
-        } catch (NameAlreadyBoundException e) {
-            // Maybe already DataSource is created.
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
-        
-        TestService.initialize();
+        PartakeProperties.get().reset("unittest");        
+        TestDatabaseService.initialize();
     }
     
-    private static void initializeDataSource() throws NamingException {
-        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
-
-        InitialContext ic = new InitialContext();
-        ic.createSubcontext("java:");
-        ic.createSubcontext("java:/comp");
-        ic.createSubcontext("java:/comp/env");
-        ic.createSubcontext("java:/comp/env/jdbc");
-
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(PartakeProperties.get().getString("comp.env.jdbc.postgres.driver"));
-        ds.setUrl(PartakeProperties.get().getString("comp.env.jdbc.postgres.url"));
-        ds.setUsername(PartakeProperties.get().getString("comp.env.jdbc.postgres.user"));
-        ds.setPassword(PartakeProperties.get().getString("comp.env.jdbc.postgres.password"));
-
-        ic.bind("java:/comp/env/jdbc/postgres", ds);
-    }
-
-
-    /**
-     * call this method and {@link PartakeProperties#reset(String)} at EachTestCase#setUpOnce() which is annotated as @BeforeClass.
-     */
-    protected static void reset() {
-        TimeUtil.resetCurrentDate();
-        PartakeService.initialize();
-    }
-
     protected final String createRandomId() {
         return UUID.randomUUID().toString();
     }
@@ -78,7 +33,7 @@ public abstract class AbstractServiceTestCaseBase {
      * @return
      */
     protected Event createEvent(String id) {
-        EventTestDataProvider provider = TestService.get().testDataProviderSet.getEventProvider();
+        EventTestDataProvider provider = TestDatabaseService.getTestDataProviderSet().getEventProvider(); 
         Event event = provider.create();
         
         event.setId(id);

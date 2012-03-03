@@ -37,7 +37,7 @@ import net.fortuna.ical4j.model.property.Version;
 import org.apache.commons.lang.StringUtils;
 
 
-public class CalendarsController extends PartakeActionSupport {
+public class CalendarsController extends DeprecatedPartakeActionSupport {
 	/** */
     private static final long serialVersionUID = 1L;
     // private static final Logger logger = Logger.getLogger(CalendarsController.class);

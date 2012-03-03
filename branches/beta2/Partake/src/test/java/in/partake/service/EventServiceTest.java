@@ -21,10 +21,17 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.opensymphony.xwork2.interceptor.annotations.Before;
+
 public class EventServiceTest extends AbstractServiceTestCaseBase {
     private static final Charset UTF8 = Charset.forName("utf-8");
     private final EventService service = EventService.get();
 
+    @Before
+    public void setUp() throws DAOException {
+        TestDatabaseService.setDefaultFixtures();
+    }
+    
     @Test
     public void testToGetEventById() throws Exception {
         String eventId = createRandomId();
@@ -258,8 +265,6 @@ public class EventServiceTest extends AbstractServiceTestCaseBase {
 
 	@Test
 	public void testToFindCanceledEvent() throws DAOException {
-		TestService.get().setDefaultFixtures();
-
 		String userId = UserTestDataProvider.USER_ID1;
 		String eventId = TestDataProvider.EVENT_ID1;
 		assertThat(service.getEventById(eventId), is(not(nullValue())));

@@ -1,6 +1,6 @@
 package in.partake.controller.interceptor;
 
-import in.partake.controller.PartakeActionSupport;
+import in.partake.controller.DeprecatedPartakeActionSupport;
 import in.partake.model.UserEx;
 import in.partake.resource.Constants;
 
@@ -27,14 +27,14 @@ public class LoginRequiredInterceptor extends AbstractInterceptor {
 		
 		if (user == null) {
 			Object action = invocation.getAction();
-			if (action instanceof PartakeActionSupport) {
-				PartakeActionSupport partake = (PartakeActionSupport)action;
+			if (action instanceof DeprecatedPartakeActionSupport) {
+				DeprecatedPartakeActionSupport partake = (DeprecatedPartakeActionSupport)action;
 				partake.setRedirectURL(ServletActionContext.getRequest().getRequestURL().toString());
 			} else {
 				logger.warn("action is not PartakeActionSupport. something wrong.");
 			}
 
-			return PartakeActionSupport.LOGIN;
+			return DeprecatedPartakeActionSupport.LOGIN;
 		} else {
 			return invocation.invoke();
 		}

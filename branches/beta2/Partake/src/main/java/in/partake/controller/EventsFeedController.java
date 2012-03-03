@@ -28,7 +28,7 @@ import in.partake.resource.PartakeProperties;
 import in.partake.service.EventService;
 import in.partake.view.util.Helper;
 
-public class EventsFeedController extends PartakeActionSupport {
+public class EventsFeedController extends DeprecatedPartakeActionSupport {
 	private static final Logger LOGGER = Logger.getLogger(EventsFeedController.class);
 	/** */
 	private static final long serialVersionUID = 1L;

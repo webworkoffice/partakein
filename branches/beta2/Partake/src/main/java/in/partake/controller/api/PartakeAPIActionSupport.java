@@ -1,7 +1,7 @@
 package in.partake.controller.api;
 
 import in.partake.base.PartakeException;
-import in.partake.controller.PartakeActionSupport;
+import in.partake.controller.DeprecatedPartakeActionSupport;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import net.sf.json.JSONObject;
 
-public class PartakeAPIActionSupport extends PartakeActionSupport {
+public class PartakeAPIActionSupport extends DeprecatedPartakeActionSupport {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(PartakeAPIActionSupport.class);
     

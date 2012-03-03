@@ -1,10 +1,10 @@
 package in.partake.controller.action.admin;
 
-import in.partake.controller.PartakeActionSupport;
+import in.partake.controller.DeprecatedPartakeActionSupport;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 
-public class AdminPageAction extends PartakeActionSupport {
+public class AdminPageAction extends DeprecatedPartakeActionSupport {
     private static final long serialVersionUID = 1L;
 
     public String execute() throws DAOException {

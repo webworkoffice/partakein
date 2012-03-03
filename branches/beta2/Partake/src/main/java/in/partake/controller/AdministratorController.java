@@ -18,7 +18,7 @@ import java.util.TimeZone;
 import org.apache.log4j.Logger;
 
 
-public class AdministratorController extends PartakeActionSupport {
+public class AdministratorController extends DeprecatedPartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(AdministratorController.class);

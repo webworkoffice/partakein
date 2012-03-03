@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.queryParser.ParseException;
 
 
-public class EventsSearchController extends PartakeActionSupport {
+public class EventsSearchController extends DeprecatedPartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(EventsSearchController.class);
