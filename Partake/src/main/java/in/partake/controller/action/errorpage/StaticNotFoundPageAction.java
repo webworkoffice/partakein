@@ -7,6 +7,6 @@ public class StaticNotFoundPageAction extends PartakeActionSupport {
     private static final long serialVersionUID = 1L;
     
     public String execute() throws DAOException {
-        return render("notfound.jsp");
+        return render("error/notfound.jsp");
     }    
 }

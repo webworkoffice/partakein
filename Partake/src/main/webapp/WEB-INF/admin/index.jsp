@@ -53,7 +53,6 @@
 		<h2>いろんなリンク</h2>
 		<ul>
 			<li><a href="<%= request.getContextPath() %>/admin/recreateEventIndex">Luceneインデックス の再生成</a></li>
-			<li><a href="<%= request.getContextPath() %>/admin/createDemoPage">デモページ の生成</a></li>
 		</ul>
 	</div>
 </div>

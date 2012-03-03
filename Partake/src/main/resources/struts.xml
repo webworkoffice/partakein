@@ -65,7 +65,7 @@
 
 		<global-results>
 			<result name="login" type="redirectAction">
-				<param name="namespace">/auth</param>
+				<param name="namespace">/</param>
 				<param name="actionName">loginRequired</param>
 				<param name="redirectURL">${redirectURL}</param>
 			</result>
@@ -117,7 +117,7 @@
         <action name="invalid" method="execute" class="in.partake.controller.action.errorpage.StaticInvalidPageAction" />
         <action name="notfound" method="execute" class="in.partake.controller.action.errorpage.StaticNotFoundPageAction" />
         <action name="prohibited" method="execute" class="in.partake.controller.action.errorpage.StaticProhibitedPageAction" />
-
+        <action name="loginRequired" method="execute" class="in.partake.controller.action.errorpage.StaticLoginRequiredPageAction" />
 
         <action name="contact" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/contact.jsp</result>
@@ -148,30 +148,13 @@
         </action>
 
 		<action name="logout" method="execute" class="in.partake.controller.action.auth.LogoutAction" />
-
-		<action name="loginRequired" method="loginRequired" class="in.partake.controller.AuthenticationController">
-			<result name="success">/WEB-INF/auth/loginRequired.jsp</result>
-		</action>
 	</package>
 
 	<package name="admin" namespace="/admin" extends="partake-default">
-        <action name="" method="index" class="in.partake.controller.AdministratorController">
-            <interceptor-ref name="adminStack" />
-            <result name="success">/WEB-INF/admin/index.jsp</result>
-        </action>
-        <action name="debug" method="debug" class="in.partake.controller.AdministratorController">
-            <interceptor-ref name="adminStack" />
-            <result name="success" type="redirect">/</result>
-        </action>
-        <action name="createDemoPage" method="createDemoPage" class="in.partake.controller.AdministratorController">
-            <interceptor-ref name="adminStack" />
-            <result name="success" type="redirect">/</result>
-        </action>
+		<action name="" method="execute" class="in.partake.controller.action.admin.AdminPageAction" />
+		<action name="recreateEventIndex" method="execute" class="in.partake.controller.action.admin.AdminEventIndexRecreationAction" />
+	
         <action name="addFeedIdToAllEvents" method="addFeedIdToAllEvents" class="in.partake.controller.AdministratorController">
-            <interceptor-ref name="adminStack" />
-            <result name="success" type="redirect">/</result>
-        </action>
-        <action name="recreateEventIndex" method="recreateEventIndex" class="in.partake.controller.AdministratorController">
             <interceptor-ref name="adminStack" />
             <result name="success" type="redirect">/</result>
         </action>
