@@ -3,6 +3,7 @@ package in.partake.controller.action.admin;
 import in.partake.controller.PartakeActionSupport;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
 
 public class AdminEventIndexRecreationAction extends PartakeActionSupport {
@@ -12,6 +13,8 @@ public class AdminEventIndexRecreationAction extends PartakeActionSupport {
         UserEx user = getLoginUser();
         if (user == null || !user.isAdministrator())
             return renderForbidden();
+        if (!checkCSRFToken())
+            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
         
         EventService.get().recreateEventIndex();
         

@@ -269,6 +269,7 @@ public class EventAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "message", "hogehogehoge");
+        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultOK(proxy);
@@ -285,6 +286,7 @@ public class EventAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.USER_ID1);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "message", longMessage);
+        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultInvalid(proxy);
@@ -304,6 +306,7 @@ public class EventAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.USER_ID2);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID2);
         addParameter(proxy, "message", "hogehogehoge");
+        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultOK(proxy);
@@ -316,6 +319,7 @@ public class EventAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.USER_ID2);
         addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
         addParameter(proxy, "message", "hogehogehoge");
+        addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultForbidden(proxy);

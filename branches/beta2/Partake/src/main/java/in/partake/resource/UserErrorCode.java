@@ -40,6 +40,9 @@ public enum UserErrorCode {
     INVALID_SESSION("invalid.invalid_session"),
     MISSING_SESSION("invalid.missing_session"),
 
+    // SECURITY
+    INVALID_SECURITY_CSRF("invalid.security.csrf"),
+    
     // ATTENDANCE
     INVALID_ATTENDANCE_STATUS("invalid.invalid_attendance_status"),
     MISSING_ATTENDANCE_STATUS("invalid.missing_attendance_status"),
