@@ -53,9 +53,14 @@ public final class Helper {
         return session.getCSRFPrevention().getSessionToken();
     }
     
-    // TODO: should be renamed to tokenTags()
-    public static String token() {
+    public static String tokenTags() {
         return sessionTokenInputTag() + onetimeTokenInputTag();
+    }
+    
+    // FIXME: Use tokenTags() instead of token().
+    @Deprecated
+    public static String token() {
+        return tokenTags();
     }
 
     /** CSRF 対策用の token を発行。*/
@@ -70,7 +75,7 @@ public final class Helper {
         return tokenInput;
     }
 
-    /** 重複チェック用の onetime token を発行 */
+    /** 重複チェック用の one time token を発行 */
     public static String onetimeTokenInputTag() {
         PartakeSession session = (PartakeSession) ServletActionContext.getContext().getSession().get(Constants.ATTR_PARTAKE_SESSION);
         assert session != null;

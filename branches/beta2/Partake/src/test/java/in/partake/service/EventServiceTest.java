@@ -1,6 +1,5 @@
 package in.partake.service;
 
-import static me.prettyprint.cassandra.utils.StringUtils.bytes;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -13,6 +12,7 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.model.fixture.impl.UserTestDataProvider;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class EventServiceTest extends AbstractServiceTestCaseBase {
+    private static final Charset UTF8 = Charset.forName("utf-8");
     private final EventService service = EventService.get();
 
     @Test
@@ -106,8 +107,8 @@ public class EventServiceTest extends AbstractServiceTestCaseBase {
         final User owner = createUser(createRandomId());
         final Event event = createEvent("this id will be overwritten.");
         event.setOwnerId(owner.getId());
-        BinaryData foreImageEmbryo = new BinaryData("text", bytes("foreImage"));
-        BinaryData backImageEmbryo = new BinaryData("text", bytes("backImage"));
+        BinaryData foreImageEmbryo = new BinaryData("text", "foreImage".getBytes(UTF8));
+        BinaryData backImageEmbryo = new BinaryData("text", "backImage".getBytes(UTF8));
         String eventId = service.create(event,foreImageEmbryo, backImageEmbryo);
         event.freeze();
         {
@@ -139,8 +140,8 @@ public class EventServiceTest extends AbstractServiceTestCaseBase {
             // TODO PostgresのTimestampの精度上、equals()が成立しない可能性が高い
             Assert.assertEquals(source, storedEvent);
         }
-        final BinaryData foreImageEmbryo = new BinaryData("text", bytes("foreImage"));
-        final BinaryData backImageEmbryo = new BinaryData("text", bytes("backImage"));
+        final BinaryData foreImageEmbryo = new BinaryData("text", "foreImage".getBytes(UTF8));
+        final BinaryData backImageEmbryo = new BinaryData("text", "backImage".getBytes(UTF8));
         {
             String eventId = service.create(source, foreImageEmbryo, backImageEmbryo);
             Event storedEvent = service.getEventById(eventId);
