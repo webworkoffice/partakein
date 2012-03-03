@@ -33,7 +33,7 @@
 	<div class="tab-content row">
 		<div id="news1" class="tab-pane span9 active">
 			<s:form action="removeComment" id="removeCommentForm" name="removeCommentForm">
-				<%= Helper.token() %>
+				<%= Helper.tokenTags() %>
 				<s:hidden id="removeCommentId" name="commentId" value="" />
 				<s:hidden name="eventId" value="%{eventId}" />
 			</s:form>
@@ -61,7 +61,7 @@
 			<div class="comment-form">
 		        <% if (user != null) { %>
 			        <s:form action="comment">
-						<%= Helper.token() %>
+						<%= Helper.tokenTags() %>
 				        <s:hidden name="eventId" value="%{eventId}" /><br /><strong>Your comment:</strong><br />
 				        <textarea id="commentForm-commentEdit" name="comment"></textarea><br />
 				        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>

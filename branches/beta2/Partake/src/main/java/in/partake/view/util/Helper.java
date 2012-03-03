@@ -57,12 +57,6 @@ public final class Helper {
         return sessionTokenInputTag() + onetimeTokenInputTag();
     }
     
-    // FIXME: Use tokenTags() instead of token().
-    @Deprecated
-    public static String token() {
-        return tokenTags();
-    }
-
     /** CSRF 対策用の token を発行。*/
     public static String sessionTokenInputTag() {
         PartakeSession session = (PartakeSession) ServletActionContext.getContext().getSession().get(Constants.ATTR_PARTAKE_SESSION);

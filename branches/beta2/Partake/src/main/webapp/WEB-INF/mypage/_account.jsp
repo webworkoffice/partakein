@@ -64,29 +64,29 @@
   	<div class="modal-body">
   		<p>次の ID と結びつけ</p>
   		<form method="post" action="/auth/connectWithOpenID" class="inline-block">
-  			<%= Helper.token() %>
+  			<%= Helper.tokenTags() %>
   			<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
 			<input type="submit" value="Google" />
   		</form>
   		<form method="post" action="/auth/connectWithOpenID" class="inline-block">
-  			<%= Helper.token() %>
+  			<%= Helper.tokenTags() %>
   			<input type="hidden" name="openid_identifier" value="https://mixi.jp" />
 			<input type="submit" value="Mixi" />
   		</form>
   		<form method="post" action="/auth/connectWithOpenID" class="inline-block">
-  			<%= Helper.token() %>
+  			<%= Helper.tokenTags() %>
   			<input type="hidden" name="openid_identifier" value="http://yahoo.co.jp" />
 			<input type="submit" value="Yahoo Japan" />
   		</form>
   		<form method="post" action="/auth/connectWithOpenID" class="inline-block">
-  			<%= Helper.token() %>
+  			<%= Helper.tokenTags() %>
   			<input type="hidden" name="openid_identifier" value="http://livedoor.com/" />
 			<input type="submit" value="Livedoor" />
   		</form>
 
 		<p>はてな ID と結びつけ</p>
   		<form name="connectWithHatenaForm" method="post" action="/auth/connectWithOpenID" style="display:none">
-  			<%= Helper.token() %>
+  			<%= Helper.tokenTags() %>
   			<input type="hidden" id="connect-hatena-openid-identifier" name="openid_identifier" value="http://www.hatena.ne.jp/" />
 			<input type="submit" value="はてな ID と結びつけ" />
   		</form>
@@ -105,7 +105,7 @@
 
 		<p>URL を使って結びつけ</p>
   		<form method="post" action="/auth/connectWithOpenID">
-  			<%= Helper.token() %>
+  			<%= Helper.tokenTags() %>
   			<input type="text" name="openid_identifier" value="" placeholder="http:// OpenID URL を入力" />
 			<input type="submit" value="URL を使って結びつけ" />
   		</form>

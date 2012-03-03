@@ -16,7 +16,7 @@
 </div>
 
 <s:form method="post" cssClass="form-horizontal" action="create" enctype="multipart/form-data">
-	<%= Helper.token() %>
+	<%= Helper.tokenTags() %>
 	<div class="row">
 		<div class="span9">
 			<%@ include file="/WEB-INF/events/inner-form.jsp" %>

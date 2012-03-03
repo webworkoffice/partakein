@@ -67,7 +67,7 @@
 				<p>本当に削除しますか？</p>
 		
 		  		<form method="post" name="eventDeleteForm" action="/events/destroy">
-		  			<%= Helper.token() %>
+		  			<%= Helper.tokenTags() %>
 		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
 		  		</form>  		
 		  	</div>
@@ -86,7 +86,7 @@
 		    	<%-- TODO: maxCodePointsOfMessage should not be null. --%>
 		        <p>参加者に twitter 経由でメッセージを送ることができます。メッセージは、長くとも<%= maxCodePointsOfMessage != null ? maxCodePointsOfMessage.intValue() : 0 %>文字以内で記述してください。最大で１時間３回１日５回まで送ることができます。</p>
 		        <form method="post" name="messageSendForm" action="/events/send">
-		            <%= Helper.token() %>
+		            <%= Helper.tokenTags() %>
 		            <input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
 		            <textarea name="message" class="span7" rows="4"></textarea><br />
 		        </form>
@@ -166,7 +166,7 @@
 				</ul>
 		
 		  		<form method="post" name="eventEnrollForm" class="form-horizontal" action="/events/enroll">
-		  			<%= Helper.token() %>
+		  			<%= Helper.tokenTags() %>
 		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
 					<textarea name="comment" class="span7">よろしくお願いします。</textarea>
 		  		</form>
@@ -192,7 +192,7 @@
 				</ul>
 		
 		  		<form method="post" name="eventReserveForm" action="/events/reserve">
-		  			<%= Helper.token() %>
+		  			<%= Helper.tokenTags() %>
 		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
 					<textarea name="comment" class="span7">よろしくお願いします。</textarea>
 		  		</form>
@@ -214,7 +214,7 @@
 					<li>参加を辞退すると確保していた順番は取り消されます。</li>
 				</ul>		
 		  		<form method="post" name="eventCancelForm" action="/events/cancel">
-		  			<%= Helper.token() %>
+		  			<%= Helper.tokenTags() %>
 		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
 					<textarea name="comment" class="span7">参加できなくなりました。</textarea>
 		  		</form>
@@ -228,7 +228,7 @@
 		<%-- コメント変更フォーム --%>
 		<div id="change-comment-form" class="dialog-ui" title="コメント変更フォーム" style="display: none">
             <s:form method="post" action="changeComment">
-                <%= Helper.token() %>
+                <%= Helper.tokenTags() %>
                 <s:hidden name="eventId" value="%{eventId}" />
                 <p>コメントを変更します</p>
                 <s:label for="comment" value="COMMENT" />:<br />
@@ -244,7 +244,7 @@
 			</div>
 		  	<div class="modal-body">
 		  		<form method="post" name="commentChangeForm" action="/events/cancel">
-		  			<%= Helper.token() %>
+		  			<%= Helper.tokenTags() %>
 		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
 		  			<%-- TODO: 元のコメントが入ってない --%>
                 	<textarea name="comment" id="comment"></textarea>
