@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.SessionAware;
@@ -50,9 +51,11 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 //	private static final String ERROR = "INTENTIONALLY SEAL THE ActionSupport.ERROR";
 	
 	// 様々なところで使うので、redirectURL を定義しておく。
-	// あんまりよろしくないが、loginRequired でこれを使って、かつ login が必要なところは色色あるのでベースとして定義する
+	// あんまりよろしくないが、loginRequired でこれを使って、かつ login が必要なところは色色あるのでベースとして定義する	
 	protected String redirectURL;
 	protected String currentURL;
+	
+	protected String location;
 
     // These are used for returning stream.
     protected InputStream stream;
@@ -69,18 +72,16 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     
     @Override
     public void setSession(Map<String, Object> session) {
-        this.session = session;
-        
-        // session に、自分自身を付け加えておく。
-        // TODO: これは session じゃなくて page attribute に付け加えるべき
-        if (this.session != null) {
-            this.session.put(Constants.ATTR_ACTION, this);
-        }
+        this.session = session;        
     }
         
     @Override
     public void setRequest(Map<String, Object> attributes) {
     	this.attributes = attributes;
+    	
+        // page attribute に、自分自身を付け加えておく。
+        if (this.attributes != null)
+            this.attributes.put(Constants.ATTR_ACTION, this);
     }
     
     @Override
@@ -127,6 +128,18 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         return null; 
 	}
 	
+	protected Integer getIntegerParameter(String key) {
+	    String value = getParameter(key);
+	    if (value == null)
+	        return null;
+	    
+	    try {
+	        return Integer.valueOf(value);
+	    } catch (NumberFormatException e) {
+	        return null;
+	    }
+	}
+	
 	/**
 	 * take multiple parameters. If there is a single parameter, a new array will be created to return.
 	 * @param key
@@ -152,6 +165,10 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
 				param.getClass().toString(),
 				key));
 	    return null;
+	}
+	
+	public String getLocation() {
+	    return location;
 	}
 	
     public void setRedirectURL(String url) {
@@ -242,6 +259,11 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     // ----------------------------------------------------------------------
     // render functions
     
+    protected String render(String location) {
+        this.location = location;
+        return "jsp";
+    }
+    
     /**
      * invalid user request.
      */
@@ -298,11 +320,14 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
      * redirect to the specified URL.
      */
     protected String renderRedirect(String url) {
-        this.redirectURL = url;
+        setRedirectURL(url);
         return REDIRECT;
     }
     
     protected String renderLoginRequired() {
+        setRedirectURL(ServletActionContext.getRequest().getRequestURL().toString());
+        // Maybe we can specify this status code. I'm not sure.
+        // ServletActionContext.getResponse().setStatus(401);
         return LOGIN;
     }
     

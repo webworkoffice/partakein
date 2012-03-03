@@ -198,6 +198,7 @@ public final class Helper {
     };
 
     /** 参加ステータスを表示します */
+    // TODO: Don't call Service from here!
     public static String enrollmentStatus(User user, Event event) {
         try {
             ParticipationStatus status = UserService.get().getParticipationStatus(user.getId(), event.getId());

@@ -191,7 +191,7 @@ public class AuthenticationController extends PartakeActionSupport {
             UserService.get().addOpenIDLinkage(user.getId(), identity);
             addActionMessage("OpenID との結びつけが成功しました");
             
-            this.redirectURL = PartakeProperties.get().getTopPath() + "/preference";
+            this.redirectURL = PartakeProperties.get().getTopPath() + "/mypage#account";
             return REDIRECT;
         } catch (DAOException e) {
             logger.error("addOpenIDLinkage", e);

@@ -17,6 +17,22 @@
 	// ----------------------------------------------------------------------
 	// Account
 	
+	Partake.prototype.account = {
+		// Gets events of account. 
+		getEvents: function(queryType, finished, offset, limit) {
+			var arg = {
+				queryType: queryType,
+				finished: finished,
+				offset: offset,
+				limit: limit
+			};
+			
+			return $.post('/api/account/events', arg);
+		}
+	};
+	
+	// TODO: All methods should be removed to the account object.
+	
 	/**
 	 * Removes OpenID.
 	 * Usage: 
