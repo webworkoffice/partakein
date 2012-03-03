@@ -27,8 +27,8 @@ import org.openid4java.message.ParameterList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.http.AccessToken;
-import twitter4j.http.RequestToken;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 import com.opensymphony.xwork2.ActionContext;
 
@@ -75,7 +75,7 @@ public class AuthenticationController extends PartakeActionSupport {
             // うーん、なんかきれいにならんもんかねえ。
             // servletpath とか設定すればいいんかな？
             
-            String callbackURL = PartakeProperties.get().getTopPath() + "/auth/verifyForTwitter";            
+            String callbackURL = PartakeProperties.get().getTopPath() + "/auth/verifyForTwitter";
             RequestToken requestToken = twitter.getOAuthRequestToken(callbackURL.toString());
 
             session.put("requestToken", requestToken);
