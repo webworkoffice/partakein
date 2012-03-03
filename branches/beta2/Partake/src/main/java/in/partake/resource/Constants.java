@@ -14,7 +14,6 @@ public final class Constants {
     public static final String ANTISAMY_POLICY_FILE_RELATIVE_LOCATION = "/antisamy-partake-from-myspace-1.4.1.xml";
 
     public static final String ATTR_PARTAKE_SESSION = "partake.session";
-    public static final String ATTR_PARTAKE_PAGE_ATTRIBUTE = "partake.page.attribute";
 
     // TODO: なんでこれ形式が統一されてないの？
     // TODO: あと、Attribute で渡して JSP で表示というのがださ過ぎるのでなんとかしたい。

@@ -4,7 +4,6 @@ import in.partake.model.UserEx;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.servlet.PartakePageAttribute;
 import in.partake.servlet.PartakeSession;
 
 import java.io.InputStream;
@@ -226,11 +225,6 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
     public PartakeSession getPartakeSession() {
         if (session == null) { return null; }
         return (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
-    }
-    
-    public PartakePageAttribute getPartakePageAttribute() {
-        if (request == null) { return null; }
-        return (PartakePageAttribute) request.getAttribute(Constants.ATTR_PARTAKE_PAGE_ATTRIBUTE);
     }
 
     // ----------------------------------------------------------------------
