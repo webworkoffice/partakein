@@ -26,7 +26,7 @@ public class GetEventsAPI extends AbstractPartakeAPI {
             return renderLoginRequired();
 
         // TODO: queryType is either of:
-        //    owner, manager, editor, participants.
+        //    draft, owner, manager, editor, participants.
         // The default value is participants. 
         //    manager means owner or editor. (?)
         // TODO: finished is either of:
@@ -35,6 +35,7 @@ public class GetEventsAPI extends AbstractPartakeAPI {
 
         // TODO: Should be refactored, and the code should be moved to EventService.
         // currently we accept only:
+        //    draft/all
         //    manager/all
         //    participants/false
         //    participants/finished
@@ -52,8 +53,10 @@ public class GetEventsAPI extends AbstractPartakeAPI {
 
         List<Event> events = new ArrayList<Event>();
 
-        if ("manager".equalsIgnoreCase(queryType) && "all".equalsIgnoreCase(finished)) {
-            // TODO: 自分自身が manager に含まれていたら２つでる
+        if ("draft".equalsIgnoreCase(queryType) && "all".equalsIgnoreCase(finished)) {
+            events.addAll(EventService.get().getDraftEvents(user.getId()));
+        } else if ("manager".equalsIgnoreCase(queryType) && "all".equalsIgnoreCase(finished)) {
+            // FIXME: 自分自身が manager に含まれていたら２つでる
             events.addAll(EventService.get().getEventsOwnedBy(user));
             events.addAll(EventService.get().getEventsManagedBy(user));
         } else if ("participants".equalsIgnoreCase(queryType) && "false".equalsIgnoreCase(finished)) {

@@ -55,19 +55,36 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 
 	@Override
 	public List<Event> findByOwnerId(PartakeConnection con, String userId) throws DAOException {
-		EntityManager em = getEntityManager(con);
-		Query q = em.createQuery("SELECT event FROM Events event WHERE event.ownerId = :userId");
-		q.setParameter("userId", userId);
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT event FROM Events event WHERE event.ownerId = :userId");
+        q.setParameter("userId", userId);
 
-		List<Event> events = new ArrayList<Event>();
-		@SuppressWarnings("unchecked")
-		List<Event> storedList = (List<Event>) q.getResultList();
-		for (Event source : storedList) {
-			Event event = decode(source);
-			events.add(event == null ? null : event.freeze());
-		}
+        List<Event> events = new ArrayList<Event>();
+        @SuppressWarnings("unchecked")
+        List<Event> storedList = (List<Event>) q.getResultList();
+        for (Event source : storedList) {
+            Event event = decode(source);
+            events.add(event == null ? null : event.freeze());
+        }
 
-		return events;
+        return events;
+	}
+	
+	@Override
+	public List<Event> findDraft(PartakeConnection con, String userId) throws DAOException {
+        EntityManager em = getEntityManager(con);
+        Query q = em.createQuery("SELECT event FROM Events event WHERE event.isPreview = true");
+        q.setParameter("userId", userId);
+
+        List<Event> events = new ArrayList<Event>();
+        @SuppressWarnings("unchecked")
+        List<Event> storedList = (List<Event>) q.getResultList();
+        for (Event source : storedList) {
+            Event event = decode(source);
+            events.add(event == null ? null : event.freeze());
+        }
+
+        return events;
 	}
 
 	@Override

@@ -173,10 +173,10 @@
 	}
 	
 	function update(nthPage) {
-		partake.account.getEvents(queryType, finished, (nthPage - 1) * 10, 10).success(function (json) {			
+		partake.account.getEvents(queryType, finished, (nthPage - 1) * 10, 10).done(function (json) {			
 			createTable(nthPage, json.participations);
 			createPagenation(nthPage, json.numEvents);
-		}).error(function (json) {
+		}).fail(function (xhr) {
 			// Hmm...
 		});
 	}

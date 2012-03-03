@@ -31,7 +31,7 @@
 		}
 	};
 	
-	// TODO: All methods should be removed to the account object.
+	// TODO: All methods should be moved to the account object.
 	
 	/**
 	 * Removes OpenID.
@@ -72,6 +72,24 @@
 	Partake.prototype.event = {
 		partake: this,
 		
+		create: function(eventArgs) {
+			var arg = {
+				sessionToken: partake.sessionToken	
+			};
+			for (var s in eventArgs)
+				arg[s] = eventArgs[s];
+			return $.post('/api/event/create', arg);
+		},
+		
+		remove: function(eventId) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				eventId: eventId
+			};
+			
+			return $.post('/api/event/remove', arg);
+		},
+		
 		removeComment: function(commentId, eventId) {
 			var arg = {
 				sessionToken: partake.sessionToken,
@@ -100,6 +118,23 @@
 		};
 		
 		return $.post('/api/event/attend', arg);
+	};
+	
+	// ----------------------------------------------------------------------
+	// Event
+	
+	Partake.prototype.message = {
+		partake: this,
+		
+		sendMessage: function(eventId, message) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				eventId: eventId,
+				message: message
+			};
+			
+			return $.post('/api/event/sendMessage', arg);
+		}
 	};
 	
 	// ----------------------------------------------------------------------

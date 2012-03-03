@@ -30,7 +30,7 @@ public class ImageActionTest extends AbstractPartakeControllerTest {
 
     @Test
     public void testToGetWithoutImageId() throws Exception {
-        ActionProxy proxy = getActionProxy("/events/images/");
+        ActionProxy proxy = getActionProxy("/images/");
 
         proxy.execute();
         assertResultInvalid(proxy);
@@ -38,7 +38,7 @@ public class ImageActionTest extends AbstractPartakeControllerTest {
 
     @Test
     public void testToGetWithInvalidId() throws Exception {
-        ActionProxy proxy = getActionProxy("/events/images/invalid");
+        ActionProxy proxy = getActionProxy("/images/invalid");
 
         proxy.execute();
         assertResultInvalid(proxy);
@@ -47,7 +47,7 @@ public class ImageActionTest extends AbstractPartakeControllerTest {
 	@Test
 	public void testToGetNonexistentImage() throws Exception {
         UUID uuid = new UUID(0, 0);
-        ActionProxy proxy = getActionProxy("/events/images/" + uuid.toString());
+        ActionProxy proxy = getActionProxy("/images/" + uuid.toString());
 
         proxy.execute();
         assertResultNotFound(proxy);

@@ -1,14 +1,14 @@
 package in.partake.controller.action;
 
-import java.io.InputStream;
-
-import org.apache.log4j.Logger;
-import org.apache.struts2.ServletActionContext;
-
 import in.partake.controller.base.AbstractPartakeController;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.session.PartakeSession;
+
+import java.io.InputStream;
+
+import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 
 public abstract class AbstractPartakeAction extends AbstractPartakeController {
     private static final long serialVersionUID = 1L;
@@ -27,15 +27,23 @@ public abstract class AbstractPartakeAction extends AbstractPartakeController {
         this.location = location;
         return "jsp";
     }
-
+    
     /**
      * invalid user request.
      */
     protected String renderInvalid(UserErrorCode errorCode) {
+        return renderInvalid(errorCode, null);
+    }
+    
+    @Override
+    protected String renderInvalid(UserErrorCode ec, Throwable e) {
+        if (e != null)
+            logger.info("renderInvalid", e);
+
         setRedirectURL("/invalid");
         PartakeSession session = getPartakeSession();
         if (session != null)
-            session.setLastUserError(errorCode);
+            session.setLastUserError(ec);
 
         return REDIRECT;
     }
@@ -99,9 +107,17 @@ public abstract class AbstractPartakeAction extends AbstractPartakeController {
      * @return 
      */
     protected String renderForbidden() {
+        return renderForbidden(null);
+    }
+    
+    protected String renderForbidden(UserErrorCode ec) {
+        if (ec != null)
+            logger.info(ec.getReasonString());
+        
         ServletActionContext.getResponse().setStatus(403);        
         return PROHIBITED;
     }
+    
 
     /**
      * show the 'not found' page.

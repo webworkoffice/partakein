@@ -15,15 +15,23 @@ public enum UserErrorCode {
     
     // BASE    
     INVALID_ARGUMENT("invalid.argument"),
+    INVALID_PARAMETERS("invalid.parameters"),
+    INVALID_LOGIN_REQUIRED("invalid.login", 401),
     INVALID_PROHIBITED("invalid.prohibited", 403),
     
     // EVENT
     INVALID_EVENT_ID("invalid.event.id"),
     MISSING_EVENT_ID("invalid.event.id.missing"),
 
+    FORBIDDEN_EVENT_EDIT("invalid.event.edit.forbidden"),
+    FORBIDDEN_EVENT_ATTENDANT_EDIT("invalid.event.attendant.edit.forbidden"),
+
     INVALID_ENROLL_TIMEOVER("invalid.event.enroll.timeover"),
     INVALID_ENROLL_STATUS("invalid.event.enroll.status"),
     INVALID_ENROLL_REQUIRED("invalid.event.enroll.required"),
+    
+    INVALID_ATTENDANT_EDIT("invalid.attendant.edit"),
+    EVENT_ALREADY_PUBLISHED("invalid.event.publish.already"),
     
     // USER ID
     INVALID_USER_ID("invalid.invalid_userid"),
@@ -69,6 +77,7 @@ public enum UserErrorCode {
     // COMMENT
     INVALID_COMMENT_ID("invalid.comment.id"),
     MISSING_COMMENT_ID("invalid.comment.id.missing"),
+    MISSING_COMMENT("invalid.comment.missing"),
     INVALID_COMMENT_TOOLONG("invalid.comment.toolong"),
     COMMENT_REMOVAL_FORBIDDEN("invalid.comment.removal.forbidden", 403),
     

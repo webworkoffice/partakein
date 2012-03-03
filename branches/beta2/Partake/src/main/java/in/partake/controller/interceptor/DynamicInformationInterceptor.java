@@ -1,12 +1,11 @@
 package in.partake.controller.interceptor;
 
-import org.apache.log4j.Logger;
-import org.apache.struts2.ServletActionContext;
-
-import in.partake.controller.DeprecatedPartakeActionSupport;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.resource.Constants;
 import in.partake.session.PartakeSession;
+
+import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;

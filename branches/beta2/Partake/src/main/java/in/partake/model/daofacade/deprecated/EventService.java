@@ -249,6 +249,19 @@ public final class EventService extends PartakeService {
         return convertToEventList(docs);
     }
 
+    public List<Event> getDraftEvents(String userId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            con.beginTransaction();
+            List<Event> events = factory.getEventAccess().findDraft(con, userId);
+            con.commit();
+            return events;
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
     /**
      * get events owned by the specified user.
      * TODO: user じゃなくて user id をとるようにする
@@ -519,7 +532,7 @@ public final class EventService extends PartakeService {
 
 
             // private でなければ Lucene にデータ挿入
-            if (eventEmbryo.isPrivate()) {
+            if (eventEmbryo.isPrivate() || eventEmbryo.isPreview()) {
                 LuceneDao.get().removeDocument(event.getId());
             } else {
                 Document doc = makeDocument(event.getId(), eventEmbryo);
@@ -562,6 +575,37 @@ public final class EventService extends PartakeService {
         return result;
     }
 
+    public void publishEvent(Event event) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        IBinaryAccess binaryAccess = factory.getBinaryAccess();
+        PartakeConnection con = getPool().getConnection();
+
+        try {
+            con.beginTransaction();
+
+            event.setPreview(false);
+            factory.getEventAccess().put(con, event);
+
+            // Event Activity にも挿入
+            {
+                IEventActivityAccess eaa = factory.getEventActivityAccess();
+                EventActivity activity = new EventActivity(eaa.getFreshId(con), event.getId(), "イベントが更新されました : " + event.getTitle(), event.getDescription(), event.getCreatedAt());
+                eaa.put(con, activity);
+            }
+
+            // private でなければ Lucene にデータ挿入
+            if (event.isPrivate()) {
+                LuceneDao.get().removeDocument(event.getId());
+            } else {
+                Document doc = makeDocument(event.getId(), event);
+                LuceneDao.get().updateDocument(doc);
+            }
+            con.commit();
+        } finally {
+            con.invalidate();
+        }
+    }
+    
     // TODO: this function is not thread safe?
     public void recreateEventIndex() throws DAOException {
         logger.trace("start to recreate event index.");
@@ -1101,9 +1145,18 @@ public final class EventService extends PartakeService {
         } finally {
             con.invalidate();
         }
-
     }
 
+    public List<String> getImageIds(String userId, int offset, int limit) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            return factory.getBinaryAccess().findIdsByUserId(con, userId, offset, limit);
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
     // ----------------------------------------------------------------------
 
     /**

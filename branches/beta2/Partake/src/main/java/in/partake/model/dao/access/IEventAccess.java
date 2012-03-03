@@ -30,5 +30,14 @@ public interface IEventAccess extends IAccess<Event, String> {
      */
     public abstract List<Event> findByScreenName(PartakeConnection con, String screenName) throws DAOException;
 
+    /**
+     * Retrieves draft events.
+     * @param con
+     * @param userId
+     * @return
+     * @throws DAOException
+     */
+    public abstract List<Event> findDraft(PartakeConnection con, String userId) throws DAOException;
+
     // TODO: counting interface is necessary.
 }

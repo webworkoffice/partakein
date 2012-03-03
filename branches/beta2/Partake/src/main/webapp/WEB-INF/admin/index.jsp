@@ -26,7 +26,7 @@
 	UserCount userCount = UserService.get().countUsers();
 	EventCount eventCount = EventService.get().countEvents();
 	NumberFormat format = NumberFormat.getInstance();
-	Integer hatenaBookmarkCount = (Integer) request.getAttribute(Constants.ATTR_BOOKMARK_COUNT);
+	// Integer hatenaBookmarkCount = (Integer) request.getAttribute(Constants.ATTR_BOOKMARK_COUNT);
 %>
 
 <div class="row">
@@ -44,11 +44,11 @@
 			<dt>private event</dt><dd><%= format.format(eventCount.numPrivateEvent) %></dd>
 		</dl>
 	
-		<h2>Count of Hatena bookmarks</h2>
+<%-- 		<h2>Count of Hatena bookmarks</h2>
 		<dl>
 			<dt>Sum of all pages</dt><dd><%= format.format(hatenaBookmarkCount) %></dd>
 		</dl>
-	</div>
+ --%>	</div>
 	<div class="span6">
 		<h2>いろんなリンク</h2>
 		<ul>

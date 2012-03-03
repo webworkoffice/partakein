@@ -1,5 +1,7 @@
 package in.partake.model.dto;
 
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +13,8 @@ public class BinaryDataTest extends AbstractPartakeModelTest<BinaryData> {
     public void createSampleData() {
         samples = new BinaryData[] {
                 new BinaryData(),
-                new BinaryData("id1", "something", new byte[] { -1, 0, 1 }),
-                new BinaryData("id2", "somewhere", new byte[] { 0, 1, 2, 3, 4 }),
+                new BinaryData("id1", "user1", "something", new byte[] { -1, 0, 1 }, new Date()),
+                new BinaryData("id2", "user2", "somewhere", new byte[] { 0, 1, 2, 3, 4 }, new Date()),
         };
     }
     

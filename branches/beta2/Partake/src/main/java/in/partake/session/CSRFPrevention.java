@@ -1,25 +1,21 @@
 package in.partake.session;
 
 
-import in.partake.base.Util;
-
-import java.util.LinkedHashSet;
+import java.util.UUID;
 
 /**
- * CSRF 対策と二重投稿防止。
- *  CSRF 対策には、sessionToken を付与し、token check を行う。
- *  二重投稿の防止には、onetime token を付与し、token が複数回使われていると invalid token 扱いとする。
- *    onetime token は使われているかどうかしかチェックしない。
+ * To prevent CSRF, we issue sessionToken, which is a unique value for each session.
+ * When a use submits something, he must submit sessionToken also. If the session token is missing or
+ * not equal to one we have, the submission is considered as invalid.
  *
  * @author shinyak
  */
 public final class CSRFPrevention {
     private String sessionToken;
-    private LinkedHashSet<String> consumedOnetimeTokens;
     
     public CSRFPrevention() {
-        sessionToken = Util.randomString(32);
-        consumedOnetimeTokens = new LinkedHashSet<String>();
+        // Note that UUID.randomUUID uses secure random. 
+        sessionToken = UUID.randomUUID().toString();
     }
     
     public String getSessionToken() {
@@ -28,23 +24,5 @@ public final class CSRFPrevention {
     
     public boolean isValidSessionToken(String token) {
         return sessionToken.equals(token);
-    }
-    
-    public String issueOnetimeToken() {
-        return Util.randomString(32);
-    }
-    
-    public synchronized boolean isConsumed(String token) {
-        return consumedOnetimeTokens.contains(token);
-    }
-    
-    /** token を consume する。 */
-    public synchronized void consumeToken(String token) {
-        consumedOnetimeTokens.add(token);
-        
-        // 10 個を超えて consumed token が現れれば、メモリ節約のために除去する。
-        while (consumedOnetimeTokens.size() > 10) {
-            consumedOnetimeTokens.remove(consumedOnetimeTokens.iterator().next());
-        }
-    }
+    }    
 }

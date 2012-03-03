@@ -60,21 +60,44 @@
 		<div id="event-delete-dialog" class="modal" style="display:none">
 			<div class="modal-header">
 		    	<a class="close" data-dismiss="modal">&times;</a>
-		    	<h3>イベントを削除しようとしています。</h3>
+		    	<h3>イベントを削除しようとしています</h3>
 			</div>
 		  	<div class="modal-body">
 		  		<p>イベントを削除しようとしています。<strong>この操作は取り消せません。</strong></p>
 				<p>本当に削除しますか？</p>
-		
-		  		<form method="post" name="eventDeleteForm" action="/events/destroy">
-		  			<%= Helper.tokenTags() %>
-		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
-		  		</form>  		
 		  	</div>
-		  	<div class="modal-footer">
-			    <a href="#" class="btn btn-danger" onclick="document.eventDeleteForm.submit()">削除</a>
+		  	<div class="modal-footer spinner-container">
+			    <a href="#" id="event-delete-dialog-submit-button" class="btn btn-danger">削除</a>
 			    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
 		  	</div>
+			<script>
+				function removeEvent() {
+					var eventId = '<%= h(event.getId()) %>';
+					var spinner = partakeUI.spinner(document.getElementById('event-delete-dialog-submit-button'));
+					var button = $('#event-delete-dialog-submit-button');
+
+					spinner.show();
+					button.attr('disabled', '');
+
+					partake.event.remove(eventId)
+					.always(function () {
+						spinner.hide();
+						button.removeAttr('disabled');
+					})
+					.done(function (json) {
+						location.href = "/";
+					})
+					.fail(function (xhr) {
+						try {
+							var json = $.parseJSON(xhr.responseText);
+							alert(json.reason);
+						} catch (e) {
+							alert('レスポンスが JSON 形式ではありません。');
+						}
+					});
+				}
+				$('#event-delete-dialog-submit-button').click(removeEvent);
+			</script>		  	
 		</div>
 	
 	    <div id="message-send-dialog" class="modal" style="display:none">
@@ -85,17 +108,59 @@
 	    	<div class="modal-body">
 		    	<%-- TODO: maxCodePointsOfMessage should not be null. --%>
 		        <p>参加者に twitter 経由でメッセージを送ることができます。メッセージは、長くとも<%= maxCodePointsOfMessage != null ? maxCodePointsOfMessage.intValue() : 0 %>文字以内で記述してください。最大で１時間３回１日５回まで送ることができます。</p>
-		        <form method="post" name="messageSendForm" action="/events/send">
-		            <%= Helper.tokenTags() %>
-		            <input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
-		            <textarea name="message" class="span7" rows="4"></textarea><br />
+		        <form>
+		            <textarea id="message-send-dialog-textarea" name="message" class="span7" rows="4"></textarea>
 		        </form>
 		        <p>残り <span id="message_length"><%= maxCodePointsOfMessage != null ? maxCodePointsOfMessage.intValue() : 0 %></span> 文字</p>
 	        </div>
-	        <div class="modal-footer">
-	        	<a href="#" class="btn btn-danger" onclick="document.messageSendForm.submit()">送信</a>
+	        <div class="modal-footer spinner-container">
+	        	<a href="#" id="message-send-dialog-submit-button" class="btn btn-danger">送信</a>
 	        	<a href="#" class="btn" data-dismiss="modal">キャンセル</a>
 	        </div>
+<script>
+function sendMessage() {
+	var eventId = '<%= h(event.getId()) %>';
+	var message = $('#message-send-dialog-textarea').val();
+	
+	var spinner = partakeUI.spinner(document.getElementById('message-send-dialog-submit-button'));
+	var button = $('#message-send-dialog-submit-button');
+
+	spinner.show();
+	button.attr('disabled', '');
+
+	partake.message.sendMessage(eventId, message)
+	.always(function () {
+		spinner.hide();
+		button.removeAttr('disabled');
+	})
+	.done(function (json) {
+		location.reload();
+	})
+	.fail(function (xhr) {
+		try {
+			var json = $.parseJSON(xhr.responseText);
+			alert(json.reason);
+		} catch (e) {
+			alert('レスポンスが JSON 形式ではありません。');
+		}
+	});
+}
+$('#message-send-dialog-submit-button').click(sendMessage);
+
+function onMessageChange() {
+	var textarea = $('#message-send-dialog-textarea');
+	var submitButton = $('#message-send-dialog-submit-button');
+	var messageSpan = $('#message_length');
+	var left = <%= maxCodePointsOfMessage != null ? maxCodePointsOfMessage.intValue() : 0 %> - codePointCount(textarea.val());
+	
+	messageSpan.text(left).css('color', left > 20 ? '#000' : '#f00');
+	if (left < 0)
+		submitButton.attr('disabled', '');
+	else
+		submitButton.removeAttr('disabled');
+}
+$('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChange);
+</script>
 	    </div>
 	</div>
 	<% } %>

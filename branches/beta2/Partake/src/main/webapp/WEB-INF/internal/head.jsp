@@ -5,19 +5,27 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 
-<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/themes/start/jquery-ui.css" />
-<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/style.css?version=<%= Helper.getCssVersion() %>" media="screen,print" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/style.css?version=<%= Helper.getCssVersion() %>" media="screen,print" />
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.8.16.custom.css" />
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-timepicker-addon.css" />
 <%= Helper.javascript(
         "/js/script.js",
         "/js/partake.js",
         "/js/partake-ui.js",
-        "/js/scrolltopcontrol.js",
+        "/js/vendor/jquery.ui.widget.js",
+        "/js/jquery.iframe-transport.js",
+        "/js/jquery.fileupload.js",
         "/js/jquery.switchHat.js",
+        "/js/jquery-ui-timepicker-addon.js",
+        "/js/jquery-ui-timepicker-ja.js",
+        "/js/scrolltopcontrol.js",
         "/js/bootstrap.min.js"
-        ) %>        
+        ) %>
+        
 <script type="text/javascript">
 	$partake = createPartakeClient('<%= Helper.getSessionToken() %>');
 	partake = $partake;

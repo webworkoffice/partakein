@@ -1,16 +1,23 @@
 package in.partake.controller.base;
 
+import in.partake.base.PartakeException;
+import in.partake.base.Util;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
+import in.partake.resource.UserErrorCode;
 import in.partake.session.CSRFPrevention;
 import in.partake.session.PartakeSession;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -63,18 +70,42 @@ public abstract class AbstractPartakeController extends ActionSupport implements
             return doExecute();
         } catch (DAOException e) {
             return renderError(ServerErrorCode.DB_ERROR, e);
+        } catch (PartakeException e) {
+            return renderException(e);
         } catch (RuntimeException e) {
             return renderError(ServerErrorCode.UNKNOWN_ERROR, e);
         }
     }
 
-    protected abstract String doExecute() throws DAOException;
+    protected abstract String doExecute() throws DAOException, PartakeException;
 
     // ----------------------------------------------------------------------
     // Render
 
+    // ----------------------------------------------------------------------
+    // Render
+
+    protected abstract String renderInvalid(UserErrorCode ec, Throwable e);
+    protected abstract String renderLoginRequired();
+    protected abstract String renderForbidden();
+
     protected abstract String renderError(ServerErrorCode ec, Throwable e);
     
+    protected String renderException(PartakeException e) {
+        if (e.getStatusCode() == 401)
+            return renderLoginRequired();
+        if (e.getStatusCode() == 403)
+            return renderForbidden();
+        
+        if (e.getUserErrorCode() != null)
+            return renderInvalid(e.getUserErrorCode(), e.getCause());
+        else if (e.getServerErrorCode() != null)
+            return renderError(e.getServerErrorCode(), e.getCause());    
+        
+        assert false;
+        return renderError(ServerErrorCode.LOGIC_ERROR, e.getCause());
+    }
+
     // ----------------------------------------------------------------------
     // Session
 
@@ -131,9 +162,9 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         if (value == null)
             return null;
 
-        if ("true".equalsIgnoreCase(value))
+        if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value))
             return true;
-        if ("false".equalsIgnoreCase(value))
+        if ("false".equalsIgnoreCase(value) || "off".equalsIgnoreCase(value))
             return false;
 
         return null; 
@@ -149,6 +180,63 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+    
+    protected Long getLongParameter(String key) {
+        String value = getParameter(key);
+        if (value == null)
+            return null;
+
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+    
+    protected Date getDateParameter(String key) {
+        String value = getParameter(key);
+        if (value == null)
+            return null;
+        
+        // TODO: Extract this procedure to TimeUtil and write tests.
+        // Try parse YYYY-MM-DD HH:MM
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try { 
+            return df.parse(value);
+        } catch (ParseException e) {
+            // Do nothing.
+        }
+        
+        // Try parse it as long.
+        try {
+            long time = Long.valueOf(value);
+            return new Date(time);
+        } catch (NumberFormatException e) {
+            // Do nothing.
+        }
+
+        return null;
+    }
+
+    protected String getValidUserIdParameter() throws PartakeException {
+        String userId = getParameter("userId");
+        if (userId == null)
+            throw new PartakeException(UserErrorCode.MISSING_USER_ID);
+        if (!Util.isUUID(userId))
+            throw new PartakeException(UserErrorCode.INVALID_USER_ID);
+        
+        return userId;
+    }
+    
+    protected String getValidEventIdParameter() throws PartakeException {
+        String eventId = getParameter("eventId");
+        if (eventId == null)
+            throw new PartakeException(UserErrorCode.MISSING_EVENT_ID);
+        if (!Util.isUUID(eventId))
+            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
+        
+        return eventId;        
     }
 
     /**
@@ -246,10 +334,18 @@ public abstract class AbstractPartakeController extends ActionSupport implements
      * get logged in user. If a user is not logged in, null is returned.
      * @return the logged in user. null if a user is not logged in.  
      */
-    public UserEx getLoginUser() {
+    protected UserEx getLoginUser() {
         if (session == null) { return null; }
         return (UserEx) session.get(Constants.ATTR_USER);
-    }    
+    }
+    
+    protected UserEx ensureLogin() throws PartakeException {
+        UserEx user = getLoginUser();
+        if (user == null)
+            throw new PartakeException(UserErrorCode.INVALID_LOGIN_REQUIRED);
+        
+        return user;
+    }
 
     // ----------------------------------------------------------------------
     // CSRF

@@ -6,52 +6,83 @@
 <html lang="ja">
 <head>
 	<jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
-	<title>新しいイベントを作成します</title>
+	<title>イベントを作成します</title>
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <div class="page-header">
-	<h1>新しいイベントを作成します</h1>
+	<h1>イベントを作成します</h1>
 </div>
 
-<s:form method="post" cssClass="form-horizontal" action="create" enctype="multipart/form-data">
+<form id="event-create-form" method="post" class="form-horizontal" action="commit">
 	<%= Helper.tokenTags() %>
 	<div class="row">
 		<div class="span9">
-			<%@ include file="/WEB-INF/events/inner-form.jsp" %>
+			<%@ include file="/WEB-INF/events/_edit_innerform.jsp" %>
 		</div>
-		<div class="span3" style="position:relative">
-			<div class="span3 fixed well">
-				<s:submit cssClass="btn btn-danger" value="イベントを作成する" />
-				<p class="help-block">このボタンでイベントが作成されます。</p>
+		<div class="span3">
+			<div class="fixed span3 spinner-container">
+				<input id="event-create-form-publish" type="button" class="btn btn-danger span3" value="イベントを公開する" />
+				<p class="help-block">イベントを公開して、他の人が参加できるようにします。</p>
+				<p></p>
+				<input id="event-create-form-save" type="button" class="btn btn-primary span3" value="イベントを保存する" />
+				<p class="help-block">イベントをドラフトとして保存します。保存しただけではまだ公開されません。</p>
 			</div>
-			&nbsp;
 		</div>
 	</div>
-</s:form>
+</form>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
-<script type="text/javascript" src="<%= request.getContextPath() %>/js/tiny_mce_jquery/jquery.tinymce.js"></script>
-<script type="text/javascript">
-$(function() {
-    $('textarea').tinymce({
-        // Location of TinyMCE script
-        script_url: "<%= request.getContextPath() %>/js/tiny_mce_jquery/tiny_mce.js",
+<script>
+$('#event-create-form-save').click(function() {
+	var spinner = partakeUI.spinner(document.getElementById('event-create-form-save'));
+	spinner.show();
+	
+	$('#event-create-form-save').attr('disabled', '');
+	$('#event-create-form-publish').attr('disabled', '');
+	
+	var argArray = $('#event-create-form').serializeArray();
+	var arg = {};
+	for (var i = 0; i < argArray.length; ++i)
+		arg[argArray[i].name] = argArray[i].value;
+	console.log(arg);
 
-        theme: "advanced",
-        language: "ja",
-        plugins: "inlinepopups,searchreplace,spellchecker,style,table,xhtmlxtras",
-
-        theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect",
-        theme_advanced_buttons2: "cut,copy,paste,|,search,replace,|,undo,redo,|,bullist,numlist,|,outdent,indent,blockquote,|,link,unlink,anchor,image,cleanup,help,code,|,forecolor,backcolor",
-        theme_advanced_buttons3: "tablecontrols,|,hr,|,cite,abbr,acronym,del,ins,|,sub,sup,|,styleprops,spellchecker",
-        theme_advanced_toolbar_location: "top",
-        theme_advanced_toolbar_align: "left",
-        theme_advanced_statusbar_location: "bottom",
-        theme_advanced_resizing: true
-    });
+	// Creates begin date.
+	
+	// Creates end date.
+	// Creates deadline.
+	
+	partake.event.create(arg)
+	.always(function (xhr) {
+		spinner.hide();
+		$('#event-create-form-save').removeAttr('disabled');
+		$('#event-create-form-publish').removeAttr('disabled');
+		
+		// Remove all input classes anyway
+		$('#event-create-form input').removeClass('error');
+		$('#event-create-form textarea').removeClass('error');
+		$('#event-create-form select').removeClass('error');
+	})
+	.done(function (json) {
+		alert('OK');
+	})
+	.fail(function (xhr) {
+		var json = $.parseJSON(xhr.responseText);
+		if (!json.errorParameters) {
+			alert(json.reason);
+			return;
+		}
+		
+		for (var key in json.errorParameters) {
+			console.log(key);
+			console.log("    " + json.errorParameters[key]);
+			var e = $('#' + key);
+			e.addClass('error');
+		}
+	});
 });
 </script>
+
+<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>

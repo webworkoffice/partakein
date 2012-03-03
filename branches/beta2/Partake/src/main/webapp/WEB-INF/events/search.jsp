@@ -50,8 +50,7 @@
 	   		<div class="control-group">
 	   			<div class="controls">
 	   				<div class="form-inline">
-	                  	<s:checkbox id="beforeDeadlineOnly" name="beforeDeadlineOnly" />
-	                    <span>締め切り前のイベントのみを検索する</span>                    
+	   					<label class="checkbox"><s:checkbox id="beforeDeadlineOnly" name="beforeDeadlineOnly" />締め切り前のイベントのみを検索する</label>
 		            </div>		        
 		        </div>
             </div>
