@@ -268,9 +268,6 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
      * invalid user request.
      */
     protected String renderInvalid(UserErrorCode errorCode) {
-        // TODO: reason should be added.
-        // return INVALID;
-        
         setRedirectURL("/invalid");
         PartakeSession session = getPartakeSession();
         if (session != null)
@@ -287,14 +284,13 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         return redirectError(errorCode, null);
     }
     
-    protected String redirectError(ServerErrorCode errorCode, Throwable e) {
+    protected String redirectError(ServerErrorCode ec, Throwable e) {
         if (e != null)
             logger.info("redirectError", e);
         
         PartakeSession session = getPartakeSession();
-        if (session != null) {
-            session.setLastServerError(errorCode);
-        }
+        if (session != null)
+            session.setLastServerError(ec);
         
         return ERROR;
     }
