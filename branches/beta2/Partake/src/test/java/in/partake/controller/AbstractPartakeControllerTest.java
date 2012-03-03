@@ -157,7 +157,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {
         // Assert.assertEquals(400, response.getStatus());
-        Assert.assertTrue(response.getRedirectedUrl().startsWith("/auth/invalid"));
+        Assert.assertTrue(response.getRedirectedUrl().startsWith("/invalid"));
     }
 
     protected void assertResultLoginRequired(ActionProxy proxy) throws Exception {
@@ -173,6 +173,10 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/forbidden"));
     }
 
+    protected void assertResultNotFound(ActionProxy proxy) throws Exception {
+        Assert.assertEquals(404, response.getStatus());
+    }
+    
     protected void assertResultError(ActionProxy proxy) throws Exception {
         // Assert.assertEquals(500, response.getStatus());
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/error"));

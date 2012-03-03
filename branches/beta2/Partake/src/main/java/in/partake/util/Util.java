@@ -160,23 +160,32 @@ public final class Util {
      * file の内容を byte array に変換する
      */
     public static byte[] getContentOfFile(File file) throws IOException {
-    	if (file == null) { return new byte[0]; }
+    	if (file == null)
+    	    return new byte[0];
 
     	InputStream is = new BufferedInputStream(new FileInputStream(file));
-    	try {
-	    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    	final int SIZE = 1024 * 1024;
-	    	byte[] buf = new byte[SIZE];
+    	return getContentOfInputStream(is);
+    }
+    
+    public static byte[] getContentOfInputStream(InputStream is) throws IOException {
+        if (is == null)
+            return null;
+        
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final int SIZE = 1024 * 1024;
+            byte[] buf = new byte[SIZE];
 
-	    	int len;
-	    	while ((len = is.read(buf)) > 0) {
-	    		baos.write(buf, 0, len);
-	    	}
+            int len;
+            while ((len = is.read(buf)) > 0) {
+                baos.write(buf, 0, len);
+            }
 
-	    	return baos.toByteArray();
-    	} finally {
-    		is.close();
-    	}
+            return baos.toByteArray();
+        } finally {
+            is.close();
+        }
+
     }
 
     public static InputStream createInputSteram(String resource) throws IOException {

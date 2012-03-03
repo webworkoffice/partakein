@@ -337,15 +337,8 @@
 		</action>
 
 		<!-- Event Image Showing -->
-		<action name="images/*" method="show" class="in.partake.controller.EventsImageController">
+		<action name="images/*" method="execute" class="in.partake.controller.action.image.ImageAction">
 			<param name="imageId">{1}</param>
-
-			<result name="success" type="stream">
-				<param name="contentType">${contentType}</param>
-				<param name="contentDisposition">inline</param>
-				<param name="bufferSize">1M</param>
-				<param name="allowCaching">true</param>
-			</result>
 		</action>
 
 		<!-- Event Viewing -->
