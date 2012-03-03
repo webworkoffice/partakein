@@ -1,0 +1,52 @@
+package in.partake.controller.api.event;
+
+import in.partake.base.Util;
+import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.model.EventEx;
+import in.partake.model.UserEx;
+import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.dto.auxiliary.UserPermission;
+import in.partake.resource.UserErrorCode;
+import net.sf.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
+
+public class GetAPI extends AbstractPartakeAPI {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected String doExecute() throws DAOException {
+        String eventId = getParameter("eventId");
+        if (StringUtils.isBlank(eventId))
+            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);        
+        if (!Util.isUUID(eventId))
+            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+        
+        EventEx event = EventService.get().getEventExById(eventId);
+        if (event == null) { return renderInvalid(UserErrorCode.INVALID_EVENT_ID); } 
+            
+        if (event.isPrivate()) {
+            // TODO: EventsController とコードが同じなので共通化するべき　
+      
+            // owner および manager は見ることが出来る。
+            // TOOD: Use PartakeSession instead of session.
+            String passcode = (String) session.get("event:" + eventId);
+            if (passcode == null) { passcode = getParameter("passcode"); }
+      
+            UserEx loginUser = getLoginUser();
+            if (loginUser != null && event.hasPermission(loginUser, UserPermission.EVENT_PRIVATE_EVENT)) {
+                // OK. You have the right to show this event.
+            } else if (StringUtils.equals(event.getPasscode(), passcode)) {
+                // OK. The same passcode. 
+            } else {
+                // public でなければ、passcode を入れなければ見ることが出来ない
+                return renderForbidden();
+            }
+        }
+
+        JSONObject obj = new JSONObject();
+        obj.put("event", event.toSafeJSON());
+        return renderOK(obj);
+    }
+}

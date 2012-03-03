@@ -34,10 +34,6 @@ public final class Constants {
     public static final String ATTR_PARTAKE_API_SESSION_TOKEN = "sessionToken";
 
     // TODO: Remove this.
-    public static final String ATTR_PARTAKE_ONETIME_TOKEN = "partake.onetime.token";
-
-
-    // TODO: Remove this.
     /** error が発生した場合の詳細を説明するために用いる */
     public static final String ATTR_ERROR_DESCRIPTION = "ERROR_DESCRIPTION";
 

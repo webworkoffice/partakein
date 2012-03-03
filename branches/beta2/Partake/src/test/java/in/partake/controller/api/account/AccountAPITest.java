@@ -1,9 +1,9 @@
 package in.partake.controller.api.account;
 
 import in.partake.controller.api.APIControllerTest;
+import in.partake.model.daofacade.deprecated.UserService;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
-import in.partake.service.UserService;
 
 import java.util.Collections;
 import java.util.List;

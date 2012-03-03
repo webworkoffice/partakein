@@ -1,6 +1,9 @@
 package in.partake.controller;
 
+import in.partake.controller.base.AbstractPartakeController;
+import in.partake.controller.base.PartakeResultException;
 import in.partake.model.UserEx;
+import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
@@ -23,10 +26,9 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
 
 @Deprecated
-public class DeprecatedPartakeActionSupport extends ActionSupport implements SessionAware, RequestAware, ServletRequestAware {
+public class DeprecatedPartakeActionSupport extends AbstractPartakeController implements SessionAware, RequestAware, ServletRequestAware {
 	/** */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(DeprecatedPartakeActionSupport.class);
@@ -71,6 +73,11 @@ public class DeprecatedPartakeActionSupport extends ActionSupport implements Ses
     
     // ----------------------------------------------------------------------
     // 
+
+    
+    protected String doExecute() throws DAOException {
+        throw new RuntimeException();
+    }
     
     @Override
     public void setSession(Map<String, Object> session) {
@@ -388,5 +395,11 @@ public class DeprecatedPartakeActionSupport extends ActionSupport implements Ses
 
     public String getContentDisposition() {
         return this.contentDisposition;
+    }
+
+    @Override
+    protected String renderError(ServerErrorCode ec, Throwable e) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -1,12 +1,12 @@
 package in.partake.service.mock;
 
 import in.partake.model.dao.mock.MockConnectionPool;
+import in.partake.model.daofacade.deprecated.PartakeService;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.PartakeService;
 import in.partake.service.TestDatabaseService;
 
 import java.util.Calendar;

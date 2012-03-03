@@ -3,6 +3,7 @@ package in.partake.service;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.fixture.PartakeTestDataProviderSet;
 import in.partake.model.fixture.impl.CacheTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
@@ -32,7 +33,7 @@ public class TestDatabaseService {
             throw new RuntimeException(e);
         }
 
-        DatabaseService.initialize();
+        DBService.initialize();
     }
     
     public static PartakeTestDataProviderSet getTestDataProviderSet() {
@@ -50,8 +51,8 @@ public class TestDatabaseService {
      */
     public static void setDefaultFixtures() throws DAOException {
         // LOGGER.trace("TestService#setDefaultFixtures() is called, now start to create all fixtures.");
-        PartakeConnection con = DatabaseService.getPool().getConnection(); 
-        PartakeDAOFactory factory = DatabaseService.getFactory();
+        PartakeConnection con = DBService.getPool().getConnection(); 
+        PartakeDAOFactory factory = DBService.getFactory();
         try {
             con.beginTransaction();
             testDataProviderSet.createFixtures(con, factory);

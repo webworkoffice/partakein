@@ -1,8 +1,8 @@
 package in.partake.controller.interceptor;
 
 import in.partake.base.PartakeRuntimeException;
-import in.partake.controller.PartakeInvalidResultException;
-import in.partake.controller.PartakeResultException;
+import in.partake.controller.base.PartakeInvalidResultException;
+import in.partake.controller.base.PartakeResultException;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;

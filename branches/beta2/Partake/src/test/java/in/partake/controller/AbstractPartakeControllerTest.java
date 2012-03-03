@@ -2,10 +2,10 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.UserService;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.TestDatabaseService;
-import in.partake.service.UserService;
 import in.partake.session.PartakeSession;
 
 import java.util.HashMap;

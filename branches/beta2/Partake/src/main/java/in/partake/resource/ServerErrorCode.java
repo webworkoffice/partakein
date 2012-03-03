@@ -5,13 +5,20 @@ package in.partake.resource;
  * @author shinyak
  */
 public enum ServerErrorCode {
+    // TODO: sort this
+    
     UNKNOWN_ERROR("error.unknown"),
+    runUNKNOWN_RUNTIME_ERROR("error.runtime.error"),
     INTENTIONAL_ERROR("error.intentional"),
     LOGIC_ERROR("error.logic_error"), // some logic error
     
     // TODO: DB_ERROR は後で名前かえるべき直す (or id をかえる)
     DB_ERROR("in.partake.database_error"),
     DB_CONNECTION_POOL_INITIALIZATION_FAILURE("error.db.pool.initialization_error"),
+    
+    ERROR_IO("error.io"),
+    
+    FEED_CREATION("error.feed.creation"),
     
     DAO_INITIALIZATION_ERROR("error.dao.initialization_error"),
     
@@ -22,6 +29,8 @@ public enum ServerErrorCode {
     NO_CREATED_SESSION_TOKEN("error.no_created_session_token"),
     
     TWITTER_OAUTH_ERROR("error.twitter.oauth"),
+    
+    USER_PREFERENCE_NOTFOUND("error.user.preference.notfound"), 
     
     BITLY_ERROR("error.bitly"),
     

@@ -11,7 +11,8 @@ public enum UserErrorCode {
     //
     UNKNOWN_USER_ERROR("invalid.unknown"),
     INTENTIONAL_USER_ERROR("invalid.intentional"),
-
+    UNEXPECTED_REQUEST("invalid.request.unexpected"),
+    
     // BASE    
     INVALID_ARGUMENT("invalid.argument"),
     INVALID_PROHIBITED("invalid.prohibited", 403),
@@ -31,10 +32,16 @@ public enum UserErrorCode {
     // OPEN ID
     INVALID_OPENID("invalid.invalid_openid"),
     MISSING_OPENID("invalid.missing_openid"),
+    INVALID_OPENID_PURPOSE("invalid.openid.purpose"),
+    INVALID_OPENID_IDENTIFIER("invalid.openid.identifier"),
 
     // IMAGE ID
     INVALID_IMAGEID("invalid.image.id"),
     MISSING_IMAGEID("invalid.image.id.missing"),
+
+    // CALENDAR
+    INVALID_CALENDAR_ID("invalid.calendar.id"),
+    MISSING_CALENDAR_ID("invalid.calendar.id.missing"),
     
     // SESSION
     INVALID_SESSION("invalid.invalid_session"),
@@ -60,7 +67,10 @@ public enum UserErrorCode {
     MISSING_SEARCH_MAXNUM("invalid.missing_search_max_num"),
 
     // COMMENT
+    INVALID_COMMENT_ID("invalid.comment.id"),
+    MISSING_COMMENT_ID("invalid.comment.id.missing"),
     INVALID_COMMENT_TOOLONG("invalid.comment.toolong"),
+    COMMENT_REMOVAL_FORBIDDEN("invalid.comment.removal.forbidden", 403),
     
     // MESSAGE
     MISSING_MESSAGE("invalid.message.missing"),

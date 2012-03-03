@@ -69,6 +69,20 @@
 	// ----------------------------------------------------------------------
 	// Event
 	
+	Partake.prototype.event = {
+		partake: this,
+		
+		removeComment: function(commentId, eventId) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				commentId: commentId,
+				eventId: eventId,
+			};
+			
+			return $.post('/api/event/removeComment', arg);
+		}
+	};
+	
 	/**
 	 * @param {!String} userId
 	 * @param {!String} eventId

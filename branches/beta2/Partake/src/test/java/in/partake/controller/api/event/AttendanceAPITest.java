@@ -2,10 +2,10 @@ package in.partake.controller.api.event;
 
 import junit.framework.Assert;
 import in.partake.controller.api.APIControllerTest;
+import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.fixture.TestDataProvider;
-import in.partake.service.EventService;
 
 import org.junit.Test;
 

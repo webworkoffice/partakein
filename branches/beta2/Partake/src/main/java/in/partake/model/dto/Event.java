@@ -2,9 +2,9 @@ package in.partake.model.dto;
 
 import in.partake.base.Util;
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.EventService;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

@@ -1,8 +1,8 @@
 package in.partake.controller.action.mypage;
 
 import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.model.daofacade.deprecated.UserService;
 import in.partake.model.fixture.TestDataProvider;
-import in.partake.service.UserService;
 
 import org.junit.Test;
 

@@ -1,6 +1,8 @@
+<%@page import="in.partake.resource.Constants"%>
+<%@page import="in.partake.controller.action.event.EventPasscodeAction"%>
 <%@page import="in.partake.view.util.Helper"%>
+<%@page import="static in.partake.view.util.Helper.h"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@taglib prefix="s" uri="/struts-tags" %>
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -11,14 +13,22 @@
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1>イベントを表示するためにパスコードを入れてください。</h1>
+<% EventPasscodeAction action = (EventPasscodeAction) request.getAttribute(Constants.ATTR_ACTION); %>
 
-<s:form method="post" action="passcode" id="passcode-checking-form">
-	<%= Helper.tokenTags() %>
-    <s:hidden id="eventId" name="eventId" value="%{eventId}" />
-    <label for="passcode">パスコード:</label><s:textfield id="passcode-checking" name="passcode" label="Passcode" autofocus="autofocus" /><br />
-    <s:submit />
-</s:form>
+<div class="page-header">
+	<h1>イベントを表示するためにパスコードを入れてください。</h1>
+</div>
+
+<div class="row">
+	<div class="span12">
+		<form method="post" action="/events/passcode" id="passcode-checking-form">
+			<%= Helper.tokenTags() %>
+			<input type="hidden" name="eventId" value="<%= h(action.getEventId()) %>" />
+		    <label for="passcode">パスコード:</label><input id="passcode-checking" name="passcode" autofocus="autofocus" /><br />
+		    <input type="submit" />
+		</form>
+	</div>
+</div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

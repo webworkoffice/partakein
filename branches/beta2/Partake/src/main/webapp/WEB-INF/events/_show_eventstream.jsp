@@ -38,18 +38,38 @@
 				<s:hidden name="eventId" value="%{eventId}" />
 			</s:form>
 			<script>
-				function removeComment(commentId) {
-					document.removeCommentForm.commentId.value = commentId;
-					document.removeCommentForm.submit();
+				function removeComment(anchorElem, commentId) {
+					var spinner = partakeUI.spinner(anchorElem);
+					if (!spinner.is(":hidden"))
+						return;
+					
+					spinner.show();
+					if (window.confirm('メッセージを削除しようとしています。この操作は取り消せません。本当に削除しますか？')) {
+						partake.event.removeComment(commentId, '<%= h(event.getId()) %>')
+						.always(function () {
+							spinner.hide();
+						})
+						.done(function (json) {
+							$('#comment-' + commentId).remove();
+						})
+						.fail(function (xhr) {
+							try {
+								var json = $.parseJSON(xhr.responseText);
+								alert(json.reason);
+							} catch (e) {
+								alert('レスポンスが JSON 形式ではありません。');
+							}
+						});
+					}
 				}
 			</script>
 			<% for (CommentEx comment : comments) { %>
 				<% if (comment == null) { continue; } %>
-				<div class="comment">
-					<p><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>"><%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>
+				<div class="comment" id="comment-<%= h(comment.getId()) %>">
+					<p class="spinner-container"><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>"><%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>
 					: <%= Helper.readableDate(comment.getCreatedAt()) %>
 					<% if (user != null && (event.hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT) || user.getId().equals(comment.getUserId()))) { %>
-						<a href="#" title="コメントを削除" onclick="removeComment('<%= h(comment.getId()) %>')">[x]</a>
+						<a href="#" title="コメントを削除" onclick="removeComment(this, '<%= h(comment.getId()) %>')">[x]</a>
 					<% } %></p>
 					<% if (comment.isHTML()) { %>
 					    <p><%= Helper.cleanupHTML(comment.getComment()) %></p>

@@ -20,10 +20,10 @@ import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dao.mock.MockConnection;
 import in.partake.model.dao.mock.MockConnectionPool;
+import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.UserService.UserCount;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
-import in.partake.service.UserService;
-import in.partake.service.UserService.UserCount;
 
 import org.junit.Before;
 import org.junit.Test;

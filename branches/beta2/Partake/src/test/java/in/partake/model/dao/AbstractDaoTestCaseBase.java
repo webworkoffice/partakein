@@ -6,7 +6,7 @@ import java.util.Set;
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
-import in.partake.service.DatabaseService;
+import in.partake.service.DBService;
 import in.partake.service.TestDatabaseService;
 
 import org.junit.Assert;
@@ -24,12 +24,12 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     
     @Deprecated
     protected PartakeConnectionPool getPool() {
-        return DatabaseService.getPool();
+        return DBService.getPool();
     }
     
     @Deprecated
     protected PartakeDAOFactory getFactory() {
-        return DatabaseService.getFactory();
+        return DBService.getFactory();
     }
     
     // setup() should be implemented in each test case.

@@ -2,7 +2,7 @@ package in.partake.model.dao;
 
 import in.partake.base.TimeUtil;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.DatabaseService;
+import in.partake.service.DBService;
 import in.partake.service.TestDatabaseService;
 
 import org.junit.BeforeClass;
@@ -36,12 +36,12 @@ public abstract class AbstractConnectionTestCaseBase {
     
     @Deprecated
     protected PartakeConnectionPool getPool() {
-        return DatabaseService.getPool();
+        return DBService.getPool();
     }
     
     @Deprecated
     protected PartakeDAOFactory getFactory() {
-        return DatabaseService.getFactory();
+        return DBService.getFactory();
     }
 
 }

@@ -1,16 +1,17 @@
 package in.partake.controller;
 
 import in.partake.base.Util;
+import in.partake.controller.base.PartakeInvalidResultException;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
+import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.MessageService;
+import in.partake.model.daofacade.deprecated.MessageService.TooLongMessageException;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.EventService;
-import in.partake.service.MessageService;
-import in.partake.service.MessageService.TooLongMessageException;
 
 import java.util.Date;
 import java.util.List;
