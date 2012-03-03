@@ -16,7 +16,7 @@
 </div>
 
 <s:form method="post" cssClass="form-horizontal" action="commit" enctype="multipart/form-data"><%-- create じゃなくて commit なのに注意 --%>
-	<%= Helper.token() %>
+	<%= Helper.tokenTags() %>
 	<s:hidden id="eventId" name="eventId" value="%{eventId}"/><%-- new.jsp とここが違う。なんか共通化するとエラーがでる。なんで？ --%>
 	<div class="row">
 		<div class="span9">

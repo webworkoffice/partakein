@@ -135,14 +135,14 @@
 </table>
 
 <s:form method="post" id="removeAttendantForm" name="removeAttendantForm" action="removeAttendant" style="display: none;">
-	<%= Helper.token() %>
+	<%= Helper.tokenTags() %>
 	<s:hidden name="eventId" id="eventIdForRemoveAttendantForm" value="" />
 	<s:hidden name="userId"  id="userIdForRemoveAttendantForm" value="" />					
 	<s:submit value="削除する" />
 </s:form>
 
 <s:form method="post" id="makeAttendantVIPForm" name="makeAttendantVIPForm" action="makeAttendantVIP" style="display: none;">
-	<%= Helper.token() %>
+	<%= Helper.tokenTags() %>
 	<s:hidden name="eventId" id="eventIdForMakeAttendantVIPForm" value="" />
 	<s:hidden name="userId"  id="userIdForMakeAttendantVIPForm" value="" />		
 	<s:hidden name="vip"     id="vipForMakeAttendantVIPForm" value="" />			
@@ -150,7 +150,7 @@
 </s:form>
 
 <s:form method="post" id="changeAttendanceForm" name="changeAttendanceForm" action="changeAttendance" style="display: none;">
-	<%= Helper.token() %>
+	<%= Helper.tokenTags() %>
     <s:hidden name="eventId" id="eventIdForChangeAttendanceForm" value="" />
     <s:hidden name="userId"  id="userIdForChangeAttendanceForm" value="" />     
     <s:hidden name="status"  id="statusForChangeAttendanceForm" value="" />            
