@@ -1,7 +1,7 @@
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dto.User"%>
 <%@page import="java.util.Collection"%>
-<%@page import="in.partake.controller.PartakeActionSupport"%>
+<%@page import="in.partake.controller.DeprecatedPartakeActionSupport"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ page import="in.partake.resource.Constants"%>
 <%@ page import="in.partake.resource.I18n"%>
@@ -14,7 +14,7 @@
     String redirectURL = (String)request.getAttribute(Constants.ATTR_REDIRECTURL);
     if (redirectURL == null) {
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL); 
-    } 
+    }
 %>
 
 <div class="navbar navbar-fixed-top">
@@ -32,34 +32,44 @@
 				</li>
 			</ul>
 			<ul class="nav pull-right">
-			<% if (user != null) { %>
+			<%
+			    if (user != null) {
+			%>
 	            <li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= user.getScreenName() %> <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=user.getScreenName()%> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="/mypage">
-							<img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image rad sdw" alt="profile image" width="20" height="20" />
-							<%= I18n.t("page.mypage") %>
+							<img src="<%=h(user.getTwitterLinkage().getProfileImageURL())%>" class="profile-image rad sdw" alt="profile image" width="20" height="20" />
+							<%=I18n.t("page.mypage")%>
 						</a></li>
 						<li class="divider"></li>
-						<% if (user.isAdministrator()) { %>
-							<li><a href="/admin/"><%= I18n.t("page.admin") %></a></li>
+						<%
+						    if (user.isAdministrator()) {
+						%>
+							<li><a href="/admin/"><%=I18n.t("page.admin")%></a></li>
 							<li class="divider"></li>
-						<% } %>
-						<li><a href="/auth/logout"><%= I18n.t("common.logout") %></a></li>
+						<%
+						    }
+						%>
+						<li><a href="/auth/logout"><%=I18n.t("common.logout")%></a></li>
 					</ul>
 	            </li>
-			<% } else { %>
+			<%
+			    } else {
+			%>
 	            <li class="dropdown" data-dropdown>
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">ログイン <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="#" onclick="document.loginByTwitterForm.submit();">Twitter でログイン</a>
-						<form name="loginByTwitterForm" action="<%= request.getContextPath() %>/auth/loginByTwitter" style="display:none">
-							<input type="hidden" name="redirectURL" value="<%= h(redirectURL) %>" />
+						<form name="loginByTwitterForm" action="<%=request.getContextPath()%>/auth/loginByTwitter" style="display:none">
+							<input type="hidden" name="redirectURL" value="<%=h(redirectURL)%>" />
 						</form></li>
 						<li><a data-toggle="modal" href="#openid-signin-dialog">Open ID でログイン</a></li>
 					</ul>
 	            </li>
-	        <% } %>
+	        <%
+	            }
+	        %>
 			</ul>
 		</div>
 	</div>
@@ -122,34 +132,36 @@
 <div class="container">
 
 <%-- header-nomessages.jsp をけす　 --%>
-<% if (!"true".equals(request.getAttribute(Constants.ATTR_NO_HEADER_MESSAGES))) { %>
+<%
+    if (!"true".equals(request.getAttribute(Constants.ATTR_NO_HEADER_MESSAGES))) {
+%>
 <div class="message">
     <%-- action error: TODO: should be deleted. --%>
     <s:fielderror />
     <s:actionerror />
 
     <%-- warning / error --%>
-    <% 
-        PartakeActionSupport pas = (PartakeActionSupport) request.getAttribute(Constants.ATTR_ACTION);
+    <%
+        DeprecatedPartakeActionSupport pas = (DeprecatedPartakeActionSupport) request.getAttribute(Constants.ATTR_ACTION);
         if (pas != null) {
             Collection<String> errors = pas.getErrorMessages();
             if (!errors.isEmpty()) {
-                for (String message : errors) {
-                    out.print("<div class=\"alert fade in\">");
-                    out.print("<a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>");
-                    out.print(h(message));
-                    out.print("</div>");
-                }                
+        for (String message : errors) {
+            out.print("<div class=\"alert fade in\">");
+            out.print("<a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>");
+            out.print(h(message));
+            out.print("</div>");
+        }                
             }
             
             Collection<String> warnings = pas.getWarningMessages();
             if (!warnings.isEmpty()) {
-                for (String message : warnings) {
-                    out.print("<div class=\"alert alert-warning fade in\">");
-                    out.print("<a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>");
-                    out.print(h(message));
-                    out.print("</div>");
-                }
+        for (String message : warnings) {
+            out.print("<div class=\"alert alert-warning fade in\">");
+            out.print("<a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>");
+            out.print(h(message));
+            out.print("</div>");
+        }
             }
         }
     %>

@@ -22,7 +22,7 @@ import com.opensymphony.xwork2.ActionContext;
 
 
 
-public class UsersController extends PartakeActionSupport {
+public class UsersController extends DeprecatedPartakeActionSupport {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(UsersController.class);
 

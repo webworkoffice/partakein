@@ -4,6 +4,7 @@ import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dto.Comment;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
+import in.partake.service.TestDatabaseService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
     @Before
     public void setup() throws DAOException {
         super.setup(getFactory().getCommentAccess());
-        provider = getTestDataProviderSet().getCommentDataProvider();
+        provider = TestDatabaseService.getTestDataProviderSet().getCommentDataProvider();
     }
     
     @Override

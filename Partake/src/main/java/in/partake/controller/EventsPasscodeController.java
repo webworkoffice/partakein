@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import com.opensymphony.xwork2.Validateable;
 
 
-public class EventsPasscodeController extends PartakeActionSupport implements Validateable {
+public class EventsPasscodeController extends DeprecatedPartakeActionSupport implements Validateable {
 	/** */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(EventsPasscodeController.class);

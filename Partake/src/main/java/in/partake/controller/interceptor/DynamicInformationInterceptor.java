@@ -3,7 +3,7 @@ package in.partake.controller.interceptor;
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 
-import in.partake.controller.PartakeActionSupport;
+import in.partake.controller.DeprecatedPartakeActionSupport;
 import in.partake.resource.Constants;
 import in.partake.session.PartakeSession;
 
@@ -28,8 +28,8 @@ public class DynamicInformationInterceptor extends AbstractInterceptor {
 
         // TODO: ATTR_CURRENT_URL should be moved to PartakePageAttribute.
         // TODO: ATTR_CURRENT_URL should be OBSOLETE later.
-        if (action instanceof PartakeActionSupport) {
-            PartakeActionSupport pas = (PartakeActionSupport) action;
+        if (action instanceof DeprecatedPartakeActionSupport) {
+            DeprecatedPartakeActionSupport pas = (DeprecatedPartakeActionSupport) action;
             pas.setCurrentURL(currentURL);
             ServletActionContext.getRequest().setAttribute(Constants.ATTR_CURRENT_URL, currentURL);
         } else {

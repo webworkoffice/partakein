@@ -1,6 +1,7 @@
 package in.partake.controller;
 
-public class AlwaysSuccessController extends PartakeActionSupport {
+
+public class AlwaysSuccessController extends DeprecatedPartakeActionSupport {
 
     private static final long serialVersionUID = 1L;
 

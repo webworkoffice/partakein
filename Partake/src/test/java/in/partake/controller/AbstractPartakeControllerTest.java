@@ -4,19 +4,13 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.TestService;
+import in.partake.service.TestDatabaseService;
 import in.partake.service.UserService;
 import in.partake.session.PartakeSession;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameAlreadyBoundException;
-import javax.naming.NamingException;
-
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.struts2.StrutsTestCase;
 import org.junit.After;
 import org.junit.Assert;
@@ -37,42 +31,14 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     public static void setUpOnce() {
         // TODO: Should share the code with AbstractConnectionTestCaseBase.
         PartakeProperties.get().reset("unittest");
-
-        try {
-            if (PartakeProperties.get().getBoolean("in.partake.database.unittest_initialization"))
-                initializeDataSource();
-        } catch (NameAlreadyBoundException e) {
-            // Maybe already DataSource is created.
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
-
-        TestService.initialize();
-    }
-
-    private static void initializeDataSource() throws NamingException {
-        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
-
-        InitialContext ic = new InitialContext();
-        ic.createSubcontext("java:");
-        ic.createSubcontext("java:/comp");
-        ic.createSubcontext("java:/comp/env");
-        ic.createSubcontext("java:/comp/env/jdbc");
-
-        BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(PartakeProperties.get().getString("comp.env.jdbc.postgres.driver"));
-        ds.setUrl(PartakeProperties.get().getString("comp.env.jdbc.postgres.url"));
-        ds.setUsername(PartakeProperties.get().getString("comp.env.jdbc.postgres.user"));
-        ds.setPassword(PartakeProperties.get().getString("comp.env.jdbc.postgres.password"));
-
-        ic.bind("java:/comp/env/jdbc/postgres", ds);
+        TestDatabaseService.initialize();
     }
 
     // Make setUp called before each test. 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        TestService.get().setDefaultFixtures();
+        TestDatabaseService.setDefaultFixtures();
     }
 
     // Make tearDown called after each test. 

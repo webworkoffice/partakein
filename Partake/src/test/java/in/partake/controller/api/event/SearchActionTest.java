@@ -9,7 +9,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.Event;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.EventService;
-import in.partake.service.TestService;
+import in.partake.service.TestDatabaseService;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -163,7 +163,7 @@ public class SearchActionTest extends APIControllerTest {
     }
 
     private Event createEvent() {
-        Event event = TestService.get().getTestDataProviderSet().getEventProvider().create();
+        Event event = TestDatabaseService.getTestDataProviderSet().getEventProvider().create();
         event.setTitle(SEARCH_QUERY);
         event.setSummary(SEARCH_QUERY);
         event.setDescription(SEARCH_QUERY);

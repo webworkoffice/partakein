@@ -24,8 +24,6 @@ public class EventServiceTest extends MockServiceTestBase {
 
     @Before
     public void setup() throws Exception {
-        // create fixtures.
-        initialize();
         createFixtures();
     }
 

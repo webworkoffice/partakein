@@ -65,7 +65,7 @@ public final class Helper {
         CSRFPrevention prevention = session.getCSRFPrevention(); 
         assert (prevention != null);
 
-        String tokenInput  = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_TOKEN, prevention.getSessionToken());
+        String tokenInput  = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_API_SESSION_TOKEN, prevention.getSessionToken());
         return tokenInput;
     }
 

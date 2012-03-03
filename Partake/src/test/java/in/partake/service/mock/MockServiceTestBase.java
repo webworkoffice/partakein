@@ -7,7 +7,7 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.PartakeService;
-import in.partake.service.TestService;
+import in.partake.service.TestDatabaseService;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -24,7 +24,7 @@ public class MockServiceTestBase extends PartakeService {
     public static void setUpOnce() {
         // TODO: Should share the code with AbstractConnectionTestCaseBase.
         PartakeProperties.get().reset("mock");
-        TestService.initialize();
+        TestDatabaseService.initialize();
     }
     
     /**

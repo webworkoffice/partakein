@@ -1,6 +1,7 @@
 package in.partake.servlet.listener;
 
 import in.partake.daemon.TwitterDaemon;
+import in.partake.service.DatabaseService;
 import in.partake.service.PartakeService;
 import in.partake.view.util.Helper;
 
@@ -40,7 +41,7 @@ public class InitializationListener implements ServletContextListener {
 		TwitterDaemon.getInstance().schedule();
 		checkUnknownCssFiles(arg0);
 		initializeCssVersion(arg0);
-		PartakeService.initialize();
+		DatabaseService.initialize();
 		try {
 			compositeCssFiles(arg0);
 		} catch (IOException e) {

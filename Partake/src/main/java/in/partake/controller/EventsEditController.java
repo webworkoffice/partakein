@@ -40,7 +40,7 @@ import com.opensymphony.xwork2.validator.annotations.ValidatorType;
 
 // ModelDriven にして annotation を Model の方に書きたいのだが、そのように書くときちんと動いてくれないので、ModelDriven はやめる
 // implements ModelDriven<EventEmbryo>
-public class EventsEditController extends PartakeActionSupport implements Validateable {
+public class EventsEditController extends DeprecatedPartakeActionSupport implements Validateable {
 	/** */
 	private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(EventsEditController.class);

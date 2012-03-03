@@ -25,10 +25,11 @@ import org.apache.struts2.interceptor.SessionAware;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
-public class PartakeActionSupport extends ActionSupport implements SessionAware, RequestAware, ServletRequestAware {
+@Deprecated
+public class DeprecatedPartakeActionSupport extends ActionSupport implements SessionAware, RequestAware, ServletRequestAware {
 	/** */
 	private static final long serialVersionUID = 1L;
-	private static final Logger logger = Logger.getLogger(PartakeActionSupport.class);
+	private static final Logger logger = Logger.getLogger(DeprecatedPartakeActionSupport.class);
 
     // TODO: 
     //   INVALID とか見せないようにして、return renderInvalid(reason) を読んでもらうのはどうか。
@@ -264,7 +265,7 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         if (prevention == null)
             return false;
         
-        String sessionToken = getParameter(Constants.ATTR_PARTAKE_TOKEN);
+        String sessionToken = getParameter(Constants.ATTR_PARTAKE_API_SESSION_TOKEN);
 
         if (sessionToken == null)
             return false;

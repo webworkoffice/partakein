@@ -28,7 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 
-public class EventsController extends PartakeActionSupport {
+public class EventsController extends DeprecatedPartakeActionSupport {
 	/** */
 	private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(EventsController.class);
