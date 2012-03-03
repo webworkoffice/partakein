@@ -89,36 +89,6 @@ public class PartakeAPIActionSupport extends PartakeActionSupport {
      * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
      * ステータスコードは 500 を返す。
      */
-    @Deprecated
-    protected String renderError(String reason) {
-        logger.error(reason);
-        
-        JSONObject obj = new JSONObject();
-        obj.put("result", "error");
-        obj.put("reason", reason);
-        this.status = 500;
-        return renderJSON(obj);
-    }
-
-    /**
-     * @deprected Use renderError(ServerError.DB_ERROR) instead.
-     * @return
-     */
-    @Deprecated
-    protected String renderDBError() {
-        logger.error(ServerErrorCode.DB_ERROR.getReasonString());
-        
-        JSONObject obj = new JSONObject();
-        obj.put("result", "error");
-        obj.put("reason", ServerErrorCode.DB_ERROR.getReasonString());
-        this.status = 500;
-        return renderJSON(obj);
-    }
-
-    /**
-     * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
-     * ステータスコードは 500 を返す。
-     */
     protected String renderError(ServerErrorCode errorCode) {
         return renderError(errorCode, null);
     }
