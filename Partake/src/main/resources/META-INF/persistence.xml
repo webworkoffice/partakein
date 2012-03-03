@@ -19,7 +19,6 @@
     <class>in.partake.model.dto.EventReminder</class>    
     <class>in.partake.model.dto.Message</class>
     <class>in.partake.model.dto.OpenIDLinkage</class>
-    <class>in.partake.model.dto.Questionnaire</class>
     <class>in.partake.model.dto.ShortenedURLData</class>
     <class>in.partake.model.dto.TwitterLinkage</class>
     <class>in.partake.model.dto.User</class>
@@ -61,7 +60,6 @@
     <class>in.partake.model.dto.EventReminder</class>    
     <class>in.partake.model.dto.Message</class>
     <class>in.partake.model.dto.OpenIDLinkage</class>
-    <class>in.partake.model.dto.Questionnaire</class>
     <class>in.partake.model.dto.ShortenedURLData</class>
     <class>in.partake.model.dto.TwitterLinkage</class>
     <class>in.partake.model.dto.User</class>
@@ -104,7 +102,6 @@
     <class>in.partake.model.dto.EventReminder</class>    
     <class>in.partake.model.dto.Message</class>
     <class>in.partake.model.dto.OpenIDLinkage</class>
-    <class>in.partake.model.dto.Questionnaire</class>
     <class>in.partake.model.dto.ShortenedURLData</class>
     <class>in.partake.model.dto.TwitterLinkage</class>
     <class>in.partake.model.dto.User</class>

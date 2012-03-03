@@ -23,7 +23,6 @@ import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.Message;
-import in.partake.model.dto.Questionnaire;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
@@ -1185,16 +1184,6 @@ public final class EventService extends PartakeService {
         factory.getEnvelopeAccess().put(con, envelope);
 
         logger.info("bot will tweet: " + message);
-    }
-
-    public List<Questionnaire> findQuestionnairesByEventId(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            return factory.getQuestionnaireAccess().findQuestionnairesByEventId(con, eventId);
-        } finally {
-            con.invalidate();
-        }
     }
 
     public EventCount countEvents() throws DAOException {

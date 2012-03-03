@@ -151,6 +151,17 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
     // ----------------------------------------------------------------------
 
+    protected void assertLoggedOut(ActionProxy proxy) {
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();
+        assert actionContext.getSession() != null;
+
+        Assert.assertTrue(actionContext.getSession() == null || !actionContext.getSession().containsKey(Constants.ATTR_USER));        
+    }
+    
+    protected void assertRedirectedTo(String url) {
+        Assert.assertEquals(url, response.getRedirectedUrl());
+    }
+    
     protected void assertResultSuccess(ActionProxy proxy) throws Exception {
         Assert.assertEquals(200, response.getStatus());
     }
@@ -167,6 +178,12 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/auth/loginRequired"));
     }
 
+    protected void assertResultRedirect(ActionProxy proxy, String url) throws Exception {
+        Assert.assertEquals(402, response.getStatus());
+        if (url != null)
+            Assert.assertEquals(url, response.getRedirectedUrl());
+    }
+    
     protected void assertResultForbidden(ActionProxy proxy) throws Exception {
         // status code should be 403
         // Assert.assertEquals(403, response.getStatus());
