@@ -7,8 +7,8 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.mock.MockConnection;
 import in.partake.model.dao.mock.MockConnectionPool;
+import in.partake.model.daofacade.deprecated.MessageService;
 import in.partake.model.dto.Event;
-import in.partake.service.MessageService;
 
 import java.lang.reflect.Method;
 import java.util.Date;

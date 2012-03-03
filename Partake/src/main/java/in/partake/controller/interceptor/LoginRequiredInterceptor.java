@@ -1,6 +1,6 @@
 package in.partake.controller.interceptor;
 
-import in.partake.controller.DeprecatedPartakeActionSupport;
+import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.resource.Constants;
 
@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
-
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
@@ -27,14 +26,14 @@ public class LoginRequiredInterceptor extends AbstractInterceptor {
 		
 		if (user == null) {
 			Object action = invocation.getAction();
-			if (action instanceof DeprecatedPartakeActionSupport) {
-				DeprecatedPartakeActionSupport partake = (DeprecatedPartakeActionSupport)action;
+			if (action instanceof AbstractPartakeAction) {
+			    AbstractPartakeAction partake = (AbstractPartakeAction)action;
 				partake.setRedirectURL(ServletActionContext.getRequest().getRequestURL().toString());
 			} else {
 				logger.warn("action is not PartakeActionSupport. something wrong.");
 			}
 
-			return DeprecatedPartakeActionSupport.LOGIN;
+			return AbstractPartakeAction.LOGIN;
 		} else {
 			return invocation.invoke();
 		}

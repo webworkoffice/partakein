@@ -6,9 +6,9 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.dto.Event;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.EventService;
 import in.partake.service.TestDatabaseService;
 
 import java.text.DateFormat;

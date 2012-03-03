@@ -1,6 +1,7 @@
 package in.partake.controller;
 
 import in.partake.base.Util;
+import in.partake.controller.base.PartakeResultException;
 import in.partake.model.CommentEx;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EventEx;
@@ -9,6 +10,9 @@ import in.partake.model.EnrollmentEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.MessageService;
+import in.partake.model.daofacade.deprecated.UserService;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
@@ -16,9 +20,6 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.EventService;
-import in.partake.service.MessageService;
-import in.partake.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -173,36 +174,6 @@ public class EventsController extends DeprecatedPartakeActionSupport {
     		e.printStackTrace();
     		return ERROR;
     	}
-    }
-
-    /**
-     * comment を削除します。
-     * @return
-     * @throws PartakeResultException
-     */
-    public String removeComment() throws PartakeResultException, DAOException {
-    	UserEx user = ensureLogin();
-    	if (user == null) { return LOGIN; }
-
-    	String commentId = getParameter("commentId");
-    	if (commentId == null) { return ERROR; }
-
-    	this.eventId = getParameter("eventId");
-    	if (eventId == null) { return ERROR; }
-
-        // TODO: Should be transactioonal.
-		// これ Service にいれてしまわないといけないんじゃないかなー。transaction 的には。select for update というか。
-		// update conflict してもまあ問題ないのでいいか。
-		CommentEx comment = EventService.get().getCommentExById(commentId);
-
-		// should be event owner or
-		if (comment.getUser().getId().equals(user.getId()) || comment.getEvent().hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT)) {
-			EventService.get().removeComment(commentId);
-			return SUCCESS;
-		} else {
-			addWarningMessage("イベント管理者もしくはコメントした本人だけがコメントを削除することが出来ます。");
-			return PROHIBITED;
-		}
     }
 
     // ----------------------------------------------------------------------

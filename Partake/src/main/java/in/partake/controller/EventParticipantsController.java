@@ -6,17 +6,18 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
+import in.partake.controller.base.PartakeResultException;
 import in.partake.model.EventEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.UserService;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
-import in.partake.service.EventService;
-import in.partake.service.UserService;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

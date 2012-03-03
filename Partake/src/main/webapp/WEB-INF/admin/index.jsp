@@ -1,13 +1,13 @@
-<%@page import="in.partake.service.EventService"%>
-<%@page import="in.partake.service.EventService.EventCount"%>
+<%@page import="in.partake.model.daofacade.deprecated.EventService"%>
+<%@page import="in.partake.model.daofacade.deprecated.EventService.EventCount"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>
 
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="java.text.NumberFormat"%>
-<%@page import="in.partake.service.UserService"%>
-<%@page import="in.partake.service.UserService.UserCount"%>
+<%@page import="in.partake.model.daofacade.deprecated.UserService"%>
+<%@page import="in.partake.model.daofacade.deprecated.UserService.UserCount"%>
 <%@page import="static in.partake.base.Util.h"%>
 
 <html lang="ja">

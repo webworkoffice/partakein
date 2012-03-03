@@ -5,7 +5,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.*;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
-import in.partake.service.MessageService.TooLongMessageException;
+import in.partake.model.daofacade.deprecated.MessageService;
+import in.partake.model.daofacade.deprecated.MessageService.TooLongMessageException;
 
 import org.junit.Test;
 

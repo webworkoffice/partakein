@@ -2,12 +2,12 @@ package in.partake.view.util;
 
 import in.partake.base.Util;
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.UserService;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.Constants;
-import in.partake.service.EventService;
-import in.partake.service.UserService;
 import in.partake.session.CSRFPrevention;
 import in.partake.session.PartakeSession;
 import in.partake.session.SessionUtil;
@@ -54,7 +54,7 @@ public final class Helper {
     }
     
     public static String tokenTags() {
-        return sessionTokenInputTag() + onetimeTokenInputTag();
+        return sessionTokenInputTag();
     }
     
     /** CSRF 対策用の token を発行。*/
@@ -67,19 +67,6 @@ public final class Helper {
 
         String tokenInput  = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_API_SESSION_TOKEN, prevention.getSessionToken());
         return tokenInput;
-    }
-
-    /** 重複チェック用の one time token を発行 */
-    public static String onetimeTokenInputTag() {
-        PartakeSession session = (PartakeSession) ServletActionContext.getContext().getSession().get(Constants.ATTR_PARTAKE_SESSION);
-        assert session != null;
-        
-        CSRFPrevention prevention = session.getCSRFPrevention(); 
-        assert (prevention != null);
-        
-        String onetimeInput = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_ONETIME_TOKEN, prevention.issueOnetimeToken());
-
-        return onetimeInput;
     }
 
     /**

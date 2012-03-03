@@ -1,15 +1,14 @@
 package in.partake.controller.action.toppage;
 
-import in.partake.controller.DeprecatedPartakeActionSupport;
+import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.dto.Event;
-import in.partake.service.EventService;
 
 import java.util.List;
 
-
-public class ToppageAction extends DeprecatedPartakeActionSupport {
+public class ToppageAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
 	//private static final Logger logger = Logger.getLogger(ToppageAction.class);
 	
@@ -19,7 +18,7 @@ public class ToppageAction extends DeprecatedPartakeActionSupport {
 	private List<Event> ownedEvents;
 	private List<Event> enrolledEvents;
 	
-	public String execute() throws DAOException {
+	public String doExecute() throws DAOException {
 	    recentEvents = EventService.get().getRecentEvents(NUM_EVENTS_TO_DISPLAY);
 		
 		// もしログインしていれば、最近のイベントを表示する。

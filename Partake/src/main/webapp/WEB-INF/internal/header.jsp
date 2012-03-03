@@ -1,7 +1,7 @@
+<%@page import="in.partake.controller.base.AbstractPartakeController"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dto.User"%>
 <%@page import="java.util.Collection"%>
-<%@page import="in.partake.controller.DeprecatedPartakeActionSupport"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@ page import="in.partake.resource.Constants"%>
 <%@ page import="in.partake.resource.I18n"%>
@@ -142,7 +142,7 @@
 
     <%-- warning / error --%>
     <%
-        DeprecatedPartakeActionSupport pas = (DeprecatedPartakeActionSupport) request.getAttribute(Constants.ATTR_ACTION);
+    	AbstractPartakeController pas = (AbstractPartakeController) request.getAttribute(Constants.ATTR_ACTION);
         if (pas != null) {
             Collection<String> errors = pas.getErrorMessages();
             if (!errors.isEmpty()) {

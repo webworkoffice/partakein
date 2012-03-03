@@ -1,9 +1,9 @@
 package in.partake.daemon;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.MessageService;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
-import in.partake.service.MessageService;
 
 import java.util.Timer;
 import java.util.TimerTask;

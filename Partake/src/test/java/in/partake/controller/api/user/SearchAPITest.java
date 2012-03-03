@@ -1,7 +1,7 @@
 package in.partake.controller.api.user;
 
 import in.partake.controller.api.APIControllerTest;
-import in.partake.controller.api.event.SearchAction;
+import in.partake.controller.api.event.SearchAPI;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -56,7 +56,7 @@ public class SearchAPITest extends APIControllerTest {
     @Test
     public void testToSeachWithInvalidMaxNum4() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/search");
-        addParameter(proxy, "maxNum", String.valueOf(SearchAction.MAX_NUM + 1));
+        addParameter(proxy, "maxNum", String.valueOf(SearchAPI.MAX_NUM + 1));
 
         proxy.execute();
         assertResultInvalid(proxy);

@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import in.partake.model.dao.DAOException;
+import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
