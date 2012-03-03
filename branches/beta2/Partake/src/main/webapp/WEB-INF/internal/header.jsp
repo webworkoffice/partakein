@@ -27,7 +27,7 @@
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">イベントを見つける <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li><a href="/events/search">イベント検索</a></li>
-						<li><a href="/feedlist">RSS / iCal</a></li>
+						<li><a href="/feed/">RSS / iCal</a></li>
 					</ul>
 				</li>
 			</ul>

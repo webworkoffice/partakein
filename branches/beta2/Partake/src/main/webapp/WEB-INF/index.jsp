@@ -50,7 +50,7 @@
 		<h3><%=I18n.t("page.toppage.explanation.3")%></h3>
 		<ul class="top-feature">
 			<li><%=I18n.t("page.toppage.explanation.3.search")%></li>
-			<li><a href="<%=request.getContextPath()%>/feedlist"><%=I18n.t("page.toppage.explanation.3.feed")%></a></li>
+			<li><a href="<%=request.getContextPath()%>/feed/"><%=I18n.t("page.toppage.explanation.3.feed")%></a></li>
 			<li><a href="http://twitter.com/partake_bot"><%=I18n.t("page.toppage.explanation.3.bot")%></a></li>
 		</ul>
 	

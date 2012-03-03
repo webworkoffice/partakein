@@ -113,13 +113,11 @@
 		<action name="mypage" method="execute" class="in.partake.controller.action.mypage.MypageAction" />
 		<action name="" method="execute" class="in.partake.controller.action.toppage.ToppageAction" />
 
-        <action name="error" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
-            <result name="success">/WEB-INF/error.jsp</result>
-        </action>
+        <action name="error" method="execute" class="in.partake.controller.action.errorpage.StaticErrorPageAction" />
+        <action name="invalid" method="execute" class="in.partake.controller.action.errorpage.StaticInvalidPageAction" />
+        <action name="notfound" method="execute" class="in.partake.controller.action.errorpage.StaticNotFoundPageAction" />
+        <action name="prohibited" method="execute" class="in.partake.controller.action.errorpage.StaticProhibitedPageAction" />
 
-        <action name="invalid" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
-            <result name="success">/WEB-INF/invalid.jsp</result>
-        </action>
 
         <action name="contact" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/contact.jsp</result>
@@ -127,18 +125,6 @@
 
         <action name="termofuse" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
             <result name="success">/WEB-INF/termofuse.jsp</result>
-        </action>
-
-        <action name="feedlist" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
-            <result name="success">/WEB-INF/feedlist.jsp</result>
-        </action>
-
-        <action name="notfound" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
-            <result name="success">/WEB-INF/notfound.jsp</result>
-        </action>
-
-        <action name="prohibited" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
-            <result name="success">/WEB-INF/prohibited.jsp</result>
         </action>
 	</package>
 
@@ -401,6 +387,8 @@
 	</package>
 
 	<package name="feed" namespace="/feed" extends="partake-default">
+	    <action name="" method="execute" class="in.partake.controller.action.feed.FeedListPageAction" />
+	
 		<action name="all" method="feedRecentEvents" class="in.partake.controller.EventsFeedController">
 			<result name="success" type="stream">
                 <param name="contentType">${contentType}</param>
