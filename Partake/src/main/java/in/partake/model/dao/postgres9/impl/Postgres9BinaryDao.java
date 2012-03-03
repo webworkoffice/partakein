@@ -35,10 +35,11 @@ class EntityBinaryMapper extends Postgres9EntityDataMapper<BinaryData> {
     }
 }
 
+// TODO: Rename Postgres9ImageDao
 public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
-    static final String TABLE_NAME = "BinaryEntities";
+    static final String TABLE_NAME = "ImageEntities";
     static final int CURRENT_VERSION = 1;
-    static final String USER_INDEX_TABLE_NAME = "BinaryUserIndex";
+    static final String USER_INDEX_TABLE_NAME = "ImageUserIndex";
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;

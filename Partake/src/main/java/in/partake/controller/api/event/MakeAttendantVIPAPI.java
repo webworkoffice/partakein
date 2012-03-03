@@ -10,8 +10,6 @@ import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 
-import org.apache.commons.lang.StringUtils;
-
 public class MakeAttendantVIPAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
@@ -22,11 +20,7 @@ public class MakeAttendantVIPAPI extends AbstractPartakeAPI {
         if (!checkCSRFToken())
             return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
         
-        String eventId = getParameter("eventId");
-        if (StringUtils.isEmpty(eventId))
-            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
-        if (!Util.isUUID(eventId))
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+        String eventId = getValidEventIdParameter();
         EventEx event = EventService.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);

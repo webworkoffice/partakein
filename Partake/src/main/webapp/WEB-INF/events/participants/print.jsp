@@ -33,28 +33,30 @@
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
     <title><%= h(event.getTitle()) %> - 参加者リスト - [PARTAKE]</title>
 </head>
-<body id="printout">
+<body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
-<h1 id="pastel-line5ji"><img src="<%= request.getContextPath() %>/images/line-green.png" alt="">参加者リスト</h1>  
-<div id="content-adjust">
 
-<p class="output">
-<a href="#" onclick="window.print()">印刷する</a>
-<a href="<%= request.getContextPath() %>/events/participants/<%= event.getId() %>.csv">CSVで出力する(UTF-8)</a>
-</p>
-<h2><%= h(event.getTitle()) %> - 参加者リスト</h2>
+<div class="page-header">
+	<h1>参加者リスト</h1>
+</div>
 
-<table class="table0">
-    <colgroup><col width="32px" /></colgroup>
-    <colgroup><col width="85px" /></colgroup>
-    <colgroup><col width="48px" /></colgroup> 
-    <colgroup><col width="150px" /></colgroup>
-    <colgroup><col width="30px" /></colgroup>
-    <% for (EventRelationEx eventRelation : event.getEventRelations()) { %>
-        <% if (eventRelation == null) { continue; } %>
-		<colgroup><col width="60px" /></colgroup>
-	<% } %>
-    <colgroup><col width="60px" /></colgroup>
+<ul>
+	<li><a href="/events/<%= h(event.getId()) %>">イベントに戻る</a></li>
+	<li><a href="#" onclick="window.print()">印刷する</a></li>
+	<li><a href="/events/participants/<%= event.getId() %>.csv">CSVで出力する(UTF-8)</a></li>
+</ul>
+
+<h3><%= h(event.getTitle()) %> - 参加者リスト</h3>
+
+<table class="table table-striped">
+    <colgroup>
+	    <col width="32px" /><col width="85px" /><col width="58px" /><col width="150px" /><col width="30px" />
+	    <% for (EventRelationEx eventRelation : event.getEventRelations()) { %>
+	        <% if (eventRelation == null) { continue; } %>
+			<col width="60px" />
+		<% } %>
+	    <col width="60px" />
+    </colgroup>    
 <thead>
     <tr>
     	<th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th>優先度</th>
@@ -90,7 +92,7 @@
     <% } %>
 </tbody>
 </table>
-</div>    
+
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>

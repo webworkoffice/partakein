@@ -108,8 +108,8 @@
 	</package>
 
 	<package name="admin" namespace="/admin" extends="partake-default">
-		<action name="" method="execute" class="in.partake.controller.action.admin.AdminPageAction" />
-		<action name="recreateEventIndex" method="execute" class="in.partake.controller.action.admin.AdminEventIndexRecreationAction" />
+		<action name="" class="in.partake.controller.action.admin.AdminPageAction" />
+		<action name="recreateEventIndex" class="in.partake.controller.action.admin.AdminEventIndexRecreationAction" />
 	</package>
 
 	<package name="users" namespace="/users" extends="partake-default">
@@ -152,11 +152,11 @@
             <param name="eventId">{1}</param>
         </action>
 
-        <action name="showParticipants/*" method="showParticipants" class="in.partake.controller.action.event.ShowParticipantsAction">
+        <action name="showParticipants/*" class="in.partake.controller.action.event.ShowParticipantsAction">
             <param name="eventId">{1}</param>
         </action>
 
-        <action name="printParticipants/*" method="showParticipants" class="in.partake.controller.action.event.PrintParticipantsAction">
+        <action name="printParticipants/*" class="in.partake.controller.action.event.PrintParticipantsAction">
             <param name="eventId">{1}</param>
         </action>
 
@@ -215,7 +215,7 @@
 
 	<!-- Image API  -->
 	<package name="image-api" namespace="/api/image" extends="partake-api-default">
-		<action name="create" class="in.partake.controller.api.image.CreateImagesAPI" />
+		<action name="create" class="in.partake.controller.api.image.CreateImageAPI" />
 	</package>
 	
 	<!-- Event API -->
@@ -228,9 +228,14 @@
 		<action name="publish" class="in.partake.controller.api.event.PublishAPI" />
 		<action name="remove" class="in.partake.controller.api.event.RemoveAPI" />		
 		<action name="enroll" class="in.partake.controller.api.event.EnrollAPI" />
+
 		<action name="attend" class="in.partake.controller.api.event.AttendAPI" />
+		<action name="makeAttendantVIP" class="in.partake.controller.api.event.MakeAttendantVIPAPI" />
+		<action name="removeAttendant" class="in.partake.controller.api.event.RemoveAttendantAPI" />
+
 		<action name="sendMessage" class="in.partake.controller.api.event.SendMessageAPI" />
 
+		<action name="postComment" class="in.partake.controller.api.event.PostCommentAPI" /> 
 		<action name="removeComment" class="in.partake.controller.api.event.RemoveCommentAPI" />
 
 		<action name="search" class="in.partake.controller.api.event.SearchAPI" />		

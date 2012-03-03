@@ -21,7 +21,12 @@ public class CreateAPI extends AbstractEventEditAPI {
         
         Event embryo = new Event();
         embryo.setOwnerId(user.getId());
-        embryo.setPreview(true);
+        
+        Boolean draft = getBooleanParameter("draft");
+        if (draft == null || draft)
+            embryo.setPreview(true);
+        else
+            embryo.setPreview(false);
         embryo.setCreatedAt(TimeUtil.getCurrentDate());
         
         JSONObject invalidParameters = new JSONObject();

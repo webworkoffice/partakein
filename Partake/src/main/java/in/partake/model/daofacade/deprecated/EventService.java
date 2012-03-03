@@ -442,7 +442,7 @@ public final class EventService extends PartakeService {
             // factory.getMessageAccess().addNotification(con, eventId);
 
             // private でなければ Lucene にデータ挿入して検索ができるようにする
-            if (!eventEmbryo.isPrivate()) {
+            if (!eventEmbryo.isPrivate() && !eventEmbryo.isPreview()) {
                 Document doc = makeDocument(eventEmbryo.getId(), eventEmbryo);
                 LuceneDao.get().addDocument(doc);
             }

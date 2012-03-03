@@ -22,15 +22,8 @@ public class EventEditAction extends AbstractPartakeAction {
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
-        // check permission
         if (!event.hasPermission(user, UserPermission.EVENT_EDIT))
             return renderForbidden(UserErrorCode.FORBIDDEN_EVENT_EDIT);
-
-        // event から data を copy して input
-        //        copyFromEvent(event);
-        //        copyFromEventRelation(eventRelations);
-
-        // TODO: edate, ddate はなんとかきれいにしてあげたい。
 
         return render("events/edit.jsp");
     }

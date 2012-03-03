@@ -18,6 +18,7 @@ public enum UserErrorCode {
     INVALID_PARAMETERS("invalid.parameters"),
     INVALID_LOGIN_REQUIRED("invalid.login", 401),
     INVALID_PROHIBITED("invalid.prohibited", 403),
+    INVALID_NONMULTIPART_REQUEST("invalid.request.nonmultipart"),
     
     // EVENT
     INVALID_EVENT_ID("invalid.event.id"),
@@ -37,16 +38,18 @@ public enum UserErrorCode {
     INVALID_USER_ID("invalid.invalid_userid"),
     MISSING_USER_ID("invalid.missing_userid"),
 
-    // OPEN ID
+    // OPEN_ID
     INVALID_OPENID("invalid.invalid_openid"),
     MISSING_OPENID("invalid.missing_openid"),
     INVALID_OPENID_PURPOSE("invalid.openid.purpose"),
     INVALID_OPENID_IDENTIFIER("invalid.openid.identifier"),
 
-    // IMAGE ID
+    // IMAGE
     INVALID_IMAGEID("invalid.image.id"),
     MISSING_IMAGEID("invalid.image.id.missing"),
-
+    INVALID_NOIMAGE("invalid.image.noimage"),
+    INVALID_IMAGE_CONTENTTYPE("invalid.image.contenttype"),
+    
     // CALENDAR
     INVALID_CALENDAR_ID("invalid.calendar.id"),
     MISSING_CALENDAR_ID("invalid.calendar.id.missing"),

@@ -80,7 +80,7 @@ public final class Constants {
 
 	public static final String ATTR_MAX_CODE_POINTS_OF_MESSAGE = "MAX_CODE_POINTS_OF_MESSAGE";
 
-	// TODO: We'd like to use YYYY-MM-DD hh:mm instead.
+	// TODO: We'd like to use 'long' value as is.
     public static final String JSON_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
     private Constants() {
     	// prevent from instantiation.

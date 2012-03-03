@@ -1,22 +1,42 @@
+<%@page import="java.util.Date"%>
+<%@page import="in.partake.base.TimeUtil"%>
+<%@page import="in.partake.controller.action.AbstractPartakeAction"%>
+<%@page import="in.partake.resource.Constants"%>
+<%@page import="in.partake.model.EventEx"%>
+<%@page import="in.partake.controller.action.event.EventEditAction"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="static in.partake.view.util.Helper.h"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
 <%@page import="in.partake.base.KeyValuePair"%>
 
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@taglib prefix="s" uri="/struts-tags" %>
+
+<%
+	EventEx event = null;
+	if (request.getAttribute(Constants.ATTR_ACTION) instanceof EventEditAction) {
+		EventEditAction action = (EventEditAction) request.getAttribute(Constants.ATTR_ACTION);
+		event = action.getEvent();
+	}
+%>
+
+<form id="event-form" class="form-horizontal">
+
+<input type="hidden" id="draft" name="draft" value="true" />
+<% if (event != null) { %>
+	<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
+<% } %>
 
 <div id="title" class="control-group">
     <label class="control-label" for="title">タイトル <span class="label label-important">必須</span></label>
     <div class="controls">
-        <input type="text" name="title" class="span7" placeholder="タイトル" />
+        <input type="text" name="title" class="span7" placeholder="タイトル" value="<%= event != null ? h(event.getTitle()) : "" %>" />
         <p class="help-block">イベントのタイトルです。100 文字以内で記述します。</p>
     </div>
 </div>
 <div id="summary" class="control-group">
     <label class="control-label" for="summary">概要</label>
     <div class="controls">
-    	<input type="text" name="summary" class="span7" placeholder="概要" />
+    	<input type="text" name="summary" class="span7" placeholder="概要" value="<%= event != null ? h(event.getSummary()) : "" %>"/>
         <p class="help-block">イベントを一言で表す概要です。100 文字以内で記述します。</p>
     </div>
 </div>
@@ -29,40 +49,50 @@
 		<% } %>
 		</select>
 		<script>
-		$('category').val('<%= Helper.h(EventCategory.CATEGORIES.get(0).getKey()) %>'); 
+		<% if (event != null && event.getCategory() != null && EventCategory.isValidCategoryName(event.getCategory())) { %>
+			$('category').val('<%= h(event.getCategory()) %>');
+		<% } else { %>
+			$('category').val('<%= h(EventCategory.CATEGORIES.get(0).getKey()) %>');
+		<% } %>
 		</script>
 	</div>
 </div>        
 <div id="description" class="control-group">
 	<label class="control-label" for="description">説明 <span class="label label-important">必須</span></label>
 	<div class="controls">
-		<textarea name="description"></textarea>
+		<textarea name="description"><%= event != null ? Helper.cleanupHTML(event.getDescription()) : "" %></textarea>
 		<p class="help-block">イベントの説明を記述します。(HTML などを含めて50000文字まで)</p>
 	</div>
 </div>
 <div id="beginDate" class="control-group">
 	<label class="control-label">開催日時 <span class="label label-important">必須</span></label>
     <div class="controls form-inline">
-       	<input type="text" id="beginDataInput" name="beginDate" class="span2" placeholder="YYYY-MM-DD HH:MM" />
+       	<input type="text" id="beginDataInput" name="beginDate" class="span2" 
+       	       placeholder="YYYY-MM-DD HH:MM"
+       	       value="<%= event != null ? TimeUtil.formatForEvent(event.getBeginDate()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
 	</div>	
 	<script>
-	$('#beginDataInput').datetimepicker({ dateFormat: 'yy-mm-dd' });
+	$('#beginDataInput').datetimepicker({
+		dateFormat: 'yy-mm-dd'
+	});
 	</script>
 </div>
 <div id="endDate" class="control-group">
     <label class="control-label">終了日時</label>
     <div class="controls">				
 		<label class="checkbox">
-			<input type="checkbox" id="usesEndDate" name="usesEndDate" />
+			<input type="checkbox" id="usesEndDate" name="usesEndDate" <%= event != null && event.getEndDate() != null ? "checked" : "" %>/>
 			終了日時を設定する
         </label>
 	</div>
 	<div class="controls form-inline">
-       	<input type="text" id="endDataInput" name="endDate" class="span2" placeholder="YYYY-MM-DD HH:MM" />
+       	<input type="text" id="endDataInput" name="endDate" class="span2"
+			   placeholder="YYYY-MM-DD HH:MM"
+       		   value="<%= event != null && event.getEndDate() != null ? TimeUtil.formatForEvent(event.getEndDate()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
     </div>
 	<script>
 	$('#endDataInput').datetimepicker({
-		dateFormat: 'yy-mm-dd',
+		dateFormat: 'yy-mm-dd'
 	});
     function checkEndDate() {
         if ($("#usesEndDate").is(":checked")) {
@@ -79,16 +109,20 @@
     <label class="control-label">申込締切</label>
     <div class="controls">
 		<label class="checkbox">
-			<input type="checkbox" id="usesDeadline" name="usesDeadline" />
+			<input type="checkbox" id="usesDeadline" name="usesDeadline" <%= event != null && event.getDeadline() != null ? "checked" : "" %>/>
 			締め切りを設定する
        	</label>
 	</div>
 	<div class="controls form-inline">
-       	<input type="text" id="deadlineInput" name="deadline" class="span2" placeholder="YYYY-MM-DD HH:MM" />
+       	<input type="text" id="deadlineInput" name="deadline" class="span2"
+       	       placeholder="YYYY-MM-DD HH:MM"
+       		   value="<%= event != null  && event.getDeadline() != null? TimeUtil.formatForEvent(event.getDeadline()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
 		<p class="help-block"> 締め切り以後は参加／不参加が変更できなくなります。設定しない場合、開始日時が締め切りとなります。</p>
 	</div>
 	<script>
-	$('#deadlineInput').datetimepicker({ dateFormat: 'yy-mm-dd' });
+	$('#deadlineInput').datetimepicker({
+		dateFormat: 'yy-mm-dd'
+	});
     function checkDeadline() {
         if ($("#usesDeadline").is(":checked")) {
             $("#deadlineInput").removeAttr('disabled');
@@ -103,7 +137,7 @@
 <div id="capacity" class="control-group">
    	<label class="control-label">定員</label>
    	<div class="controls">
-		<input type="text" name="capacity" class="span7" />
+		<input type="text" name="capacity" class="span7" value="<%= event != null ? String.valueOf(event.getCapacity()) : "" %>"/>
 		<p class="help-block">定員を超える参加表明者は補欠者として扱われます。0 をいれると定員なしの意味になります。</p>
 	</div>
 </div>
@@ -127,13 +161,13 @@
 		<ul class="thumbnails">
 	        <li class="span2"><img src="http://placehold.it/260x180" alt=""></li>
         </ul>
-		<p>新しく画像を選択します。</p>
+		<p><a data-toggle="modal" href="#image-upload-dialog">新しく画像を選択します。</a></p>
    	</div>
 </div>
-<div class="control-group">
+<div id="backImageId" class="control-group">
    	<label class="control-label" for="backImage">背景画像</label>
 	<div class="controls form-inline">
-		<label class="checkbox"><input type="checkbox" id="backImage" name="backImage" />掲載する</label>
+		<label class="checkbox"><input type="checkbox" name="backImage" />掲載する</label>
 		<p class="help-block">画像を設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<script>
@@ -153,31 +187,31 @@
 		<p>新しく画像を選択します。</p>
    	</div>
 </div>
-<div class="control-group">
+<div id="place" class="control-group">
    	<label class="control-label">会場</label>
     <div class="controls">
-    	<input type="text" id="place" name="place" class="span7" />
+    	<input type="text" name="place" class="span7" value="<%= event != null ? h(event.getPlace()) : "" %>" />
     	<p class="help-block">会場名を設定します。</p>
     </div>
 </div>
-<div class="control-group">
+<div id="address" class="control-group">
    	<label class="control-label">住所</label>
    	<div class="controls">
-   		<input type="text" id="address" name="address" class="span7" />
+   		<input type="text" name="address" class="span7" value="<%= event != null ? h(event.getAddress()) : "" %>"/>
    		<p class="help-block">住所を正確に入力すると、google の地図を表示できます。</p>
    	</div>
 </div>
-<div class="control-group">
+<div id="url" class="control-group">
    	<label class="control-label">URL</label>
   	<div class="controls">
-   		<input type="text" id="url" name="url" class="span7" />
+   		<input type="text" name="url" class="span7" value="<%= event != null ? h(event.getUrl()) : "" %>" />
    		<p class="help-block">参考 URL を設定します。</p>
    	</div>
 </div>
-<div class="control-group">
+<div id="hashTag" class="control-group">
    	<label class="control-label">ハッシュタグ</label>
    	<div class="controls">
-   		<input type="text" id="hashTag" name="hashTag" class="span7" />
+   		<input type="text" name="hashTag" class="span7" value="<%= event != null ? h(event.getHashTag()) : "" %>" />
 		<p class="help-block">twitter で用いる公式ハッシュタグを設定できます。# から始まる英数字、日本語、アンダースコアなどを含む文字列が使用できます。</p>
    	</div>
 </div>
@@ -186,23 +220,23 @@
 
 <div class="switchDetail">
 
-<div class="control-group">
+<div id="secret" class="control-group">
 	<label for="secret" class="control-label">非公開設定</label>
 	<div class="controls">
-		<label class="checkbox"><input type="checkbox" id="secret" name="secret"/>非公開にする</label>
+		<label class="checkbox"><input type="checkbox" name="secret" <%= event != null && event.isPrivate() ? "checked" : "" %> />非公開にする</label>
 		<p class="help-block">非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</p>
 	</div>
 </div>
-<div class="control-group">
+<div id="passcode" class="control-group">
 	<label for="passcode" class="control-label">パスコード</label>
 	<div class="controls">
-		<input type="text" id="passcode" name="passcode" class="text-input" />
+		<input type="text" name="passcode" value="<%= event != null ? h(event.getPasscode()) : "" %>"/>
 	</div>
 </div>
 <script>
 function checkPasscode() {
     if ($('#secret').is(':checked')) {
-        $('#passcode').attr('disabled', null);
+        $('#passcode').removedAttr('disabled');
     } else {
         $('#passcode').attr('disabled', '');                
     }
@@ -243,15 +277,70 @@ $('#secret').change(checkPasscode);
 	</div>
 </div>
 
-<div class="control-group">
+<div id="editors" class="control-group">
 	<label for="editors" class="control-label">編集者</label>
 	<div class="controls">
-    	<input type="text" id="editors" name="editors" class="span7" />
+    	<input type="text" name="editors" class="span7" value="<%= event != null ? h(event.getManagerScreenNames()) : ""%>"/>
         <p class="help-block">自分以外にも編集者を指定できます。twitter のショートネームをコンマ区切りで列挙してください。編集者はイベント削除以外のことを行うことが出来ます。</p>
         <p class="help-block">例： user1, user2, user3</p>
 	</div>
 </div>
+</div>
 
+</form>
+
+
+<div id="image-upload-dialog" class="modal" style="display:none">
+	<div class="modal-header">
+    	<a class="close" data-dismiss="modal">&times;</a>
+    	<h3>画像を選択</h3>
+	</div>
+  	<div class="modal-body">
+  		<p>新しく画像をアップロード、もしくは過去にアップロードした画像から選択します。</p>
+  		<form enctype="multipart/form-data">
+  		<label for="fileupload"><input type="button" class="btn btn-danger" value="新しく画像をアップロード"/></label>
+  			<%= Helper.tokenTags() %>
+			<input id="fileupload" type="file" name="file" class="invisible" />
+		</form>
+		<ul class="thumbnails">
+			<li class="span2"><a href="#" class="thumbnail"><img id="fileupload-image" src="http://placehold.it/160x120" alt=""></a></li>
+			<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+			<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+			<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+			<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+    	</ul>
+    	
+  	</div>
+  	<div class="modal-footer spinner-container">
+	    <a href="#" class="btn btn-primary" data-dismiss="modal">OK</a>
+	    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
+  	</div>
+	
+	<%-- Since IE does not support XHR File upload, we use iframe trasport technique here... Too bad. --%>
+	<script>
+	$('#fileupload').change(function() {
+		
+	});
+	$('#fileupload').fileupload({
+		url: '/api/image/create',
+		files: [{name: $('#fileupload').val()}],
+        fileInput: $('#fileupload'),
+        always: function(e, data) {
+        	
+        },
+		done: function (e, data) {
+			console.log(e);
+			console.log(data);
+			var xhr = data.jqXHR;
+			try {
+				var json = $.parseJSON(xhr.responseText);
+				$('#fileupload-image').attr('src', '/images/' + json.imageId);
+			} catch (e) {
+				alert('レスポンスが JSON 形式ではありません。');
+			}
+        }
+	});
+	</script>
 </div>
 
 <script type="text/javascript" src="<%= request.getContextPath() %>/js/tiny_mce_jquery/jquery.tinymce.js"></script>

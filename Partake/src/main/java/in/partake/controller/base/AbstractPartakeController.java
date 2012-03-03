@@ -1,6 +1,7 @@
 package in.partake.controller.base;
 
 import in.partake.base.PartakeException;
+import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -11,9 +12,6 @@ import in.partake.session.CSRFPrevention;
 import in.partake.session.PartakeSession;
 
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,7 +59,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     protected Map<String, Object> session = null;
     protected Map<String, Object> attributes = null;
     protected HttpServletRequest request = null;
-
+    
     // ----------------------------------------------------------------------
     // Execute
 
@@ -74,13 +72,12 @@ public abstract class AbstractPartakeController extends ActionSupport implements
             return renderException(e);
         } catch (RuntimeException e) {
             return renderError(ServerErrorCode.UNKNOWN_ERROR, e);
+        } catch (Exception e) {
+            return renderError(ServerErrorCode.UNKNOWN_ERROR, e);
         }
     }
 
-    protected abstract String doExecute() throws DAOException, PartakeException;
-
-    // ----------------------------------------------------------------------
-    // Render
+    protected abstract String doExecute() throws Exception;
 
     // ----------------------------------------------------------------------
     // Render
@@ -199,14 +196,9 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         if (value == null)
             return null;
         
-        // TODO: Extract this procedure to TimeUtil and write tests.
-        // Try parse YYYY-MM-DD HH:MM
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try { 
-            return df.parse(value);
-        } catch (ParseException e) {
-            // Do nothing.
-        }
+        Date date = TimeUtil.parseForEvent(value);
+        if (date != null)
+            return date;
         
         // Try parse it as long.
         try {
