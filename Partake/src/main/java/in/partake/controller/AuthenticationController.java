@@ -92,6 +92,11 @@ public class AuthenticationController extends PartakeActionSupport {
         if (session == null) { return ERROR; }
         
         Twitter twitter = (Twitter)session.get("twitter");
+        if (twitter == null) {
+            System.out.println("session does not contain twitter.");
+            return ERROR;
+        }
+        
         RequestToken requestToken = (RequestToken)session.get("requestToken");
         
         String verifier = getParameter("oauth_verifier");
