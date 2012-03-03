@@ -7,6 +7,6 @@ public class StaticInvalidPageAction extends PartakeActionSupport {
     private static final long serialVersionUID = 1L;
     
     public String execute() throws DAOException {
-        return render("invalid.jsp");
+        return render("error/invalid.jsp");
     }    
 }

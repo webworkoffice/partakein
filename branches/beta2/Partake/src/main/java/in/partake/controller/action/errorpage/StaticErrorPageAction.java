@@ -7,6 +7,6 @@ public class StaticErrorPageAction extends PartakeActionSupport {
     private static final long serialVersionUID = 1L;
     
     public String execute() throws DAOException {
-        return render("error.jsp");
+        return render("error/error.jsp");
     }    
 }
