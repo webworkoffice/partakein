@@ -80,6 +80,6 @@ public class TimeUtil {
             } catch (InterruptedException e) {
                 // ignore.
             }
-        } while (now == new Date().getTime());
+        } while (now == TimeUtil.getCurrentTime());
     }
 }
