@@ -81,6 +81,10 @@
                 <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param>
 			</result>
+			
+			<result name="jsp" type="dispatcher">
+				<param name="location">/WEB-INF/${location}</param>
+			</result>
 			<result name="json" type="partake-stream">
                 <param name="contentType">text/json; charset=utf-8</param>
                 <param name="bufferSize">20K</param>
@@ -106,6 +110,8 @@
 	</package>
 
 	<package name="top" namespace="/" extends="partake-default">
+		<action name="mypage" method="execute" class="in.partake.controller.action.mypage.MypageAction" />
+		
         <action name="" method="index" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/index.jsp</result>
         </action>
@@ -137,16 +143,6 @@
         <action name="prohibited" method="alwaysSuccess" class="in.partake.controller.ToppageController">
             <result name="success">/WEB-INF/prohibited</result>
         </action>
-
-		<action name="mypage" method="show" class="in.partake.controller.MypageController">
-			<interceptor-ref name="authenticateStack" />
-			<result name="success">/WEB-INF/mypage.jsp</result>
-		</action>
-
-		<action name="preference" method="showPreference" class="in.partake.controller.UsersPreferenceController">
-			<interceptor-ref name="authenticateStack" />
-			<result name="success">/WEB-INF/preference.jsp</result>
-		</action>
 	</package>
 
 	<package name="help" namespace="/help" extends="partake-default">

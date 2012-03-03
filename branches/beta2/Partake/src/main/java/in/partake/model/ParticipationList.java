@@ -7,6 +7,7 @@ import java.util.List;
  * @author shinyak
  *
  */
+// TODO: should be renamed or deprecated.
 public class ParticipationList {
     private List<EnrollmentEx> enrolledParticipations;
     private List<EnrollmentEx> spareParticipations;

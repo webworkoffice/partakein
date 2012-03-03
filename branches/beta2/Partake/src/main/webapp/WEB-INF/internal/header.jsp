@@ -40,7 +40,6 @@
 							<img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image rad sdw" alt="profile image" width="20" height="20" />
 							<%= I18n.t("page.mypage") %>
 						</a></li>
-						<li><a href="/preference"><%= I18n.t("page.preference") %></a></li>
 						<li class="divider"></li>
 						<% if (user.isAdministrator()) { %>
 							<li><a href="/admin/"><%= I18n.t("page.admin") %></a></li>
@@ -131,7 +130,7 @@
 
     <%-- warning / error --%>
     <% 
-        PartakeActionSupport pas = (PartakeActionSupport) request.getSession().getAttribute(Constants.ATTR_ACTION);
+        PartakeActionSupport pas = (PartakeActionSupport) request.getAttribute(Constants.ATTR_ACTION);
         if (pas != null) {
             Collection<String> errors = pas.getErrorMessages();
             if (!errors.isEmpty()) {

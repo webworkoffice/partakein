@@ -292,15 +292,13 @@ public final class EventService extends PartakeService {
                     continue;
                 }
             }
-
-
             con.commit();
             return events;
         } finally {
             con.invalidate();
         }
     }
-
+    
     /**
      * userId が管理している event で開始時刻が現在より後のものを、開始時刻順に得る。
      * @param userId
