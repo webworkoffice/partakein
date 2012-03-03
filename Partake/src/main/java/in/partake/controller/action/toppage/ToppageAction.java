@@ -43,5 +43,4 @@ public class ToppageAction extends PartakeActionSupport {
 	public List<Event> getEnrolledEvents() {
 	    return this.enrolledEvents;
 	}
-
 }

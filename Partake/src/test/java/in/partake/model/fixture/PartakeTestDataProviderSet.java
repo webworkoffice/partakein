@@ -3,6 +3,7 @@ package in.partake.model.fixture;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.fixture.impl.BinaryTestDataProvider;
 import in.partake.model.fixture.impl.CacheTestDataProvider;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 public class PartakeTestDataProviderSet {
     private ArrayList<TestDataProvider<?>> providers;
     
+    private BinaryTestDataProvider binaryDataProvider;
     private CacheTestDataProvider cacheDataProvider;
     private CommentTestDataProvider commentDataprovider;
     private EnrollmentTestDataProvider enrollmentProvider;
@@ -34,6 +36,7 @@ public class PartakeTestDataProviderSet {
     public PartakeTestDataProviderSet() {
         this.providers = new ArrayList<TestDataProvider<?>>();
         
+        providers.add(binaryDataProvider = createBinaryTestDataProvider());
         providers.add(cacheDataProvider = createCacheTestDataProvider());
         providers.add(commentDataprovider = createCommentTestDataProvider());
         providers.add(enrollmentProvider = createEnrollmentTestDataProvider());
@@ -50,6 +53,10 @@ public class PartakeTestDataProviderSet {
         }
     }
 
+    public BinaryTestDataProvider getBinaryTestDataProvider() {
+        return binaryDataProvider;
+    }
+    
     public CacheTestDataProvider getCacheDataProvider() {
         return cacheDataProvider;
     }
@@ -80,6 +87,10 @@ public class PartakeTestDataProviderSet {
 
     public UserPreferenceTestDataProvider getUserPreferenceProvider() {
         return userPreferenceProvider;
+    }
+    
+    private BinaryTestDataProvider createBinaryTestDataProvider() {
+        return new BinaryTestDataProvider();
     }
     
     private CacheTestDataProvider createCacheTestDataProvider() {

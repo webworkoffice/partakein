@@ -32,6 +32,10 @@ public enum UserErrorCode {
     INVALID_OPENID("invalid.invalid_openid"),
     MISSING_OPENID("invalid.missing_openid"),
 
+    // IMAGE ID
+    INVALID_IMAGEID("invalid.image.id"),
+    MISSING_IMAGEID("invalid.image.id.missing"),
+    
     // SESSION
     INVALID_SESSION("invalid.invalid_session"),
     MISSING_SESSION("invalid.missing_session"),

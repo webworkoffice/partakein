@@ -2,7 +2,6 @@ package in.partake.controller.api;
 
 import in.partake.controller.AbstractPartakeControllerTest;
 import in.partake.resource.Constants;
-import in.partake.service.TestService;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -12,9 +11,7 @@ import java.util.Locale;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 
 import com.opensymphony.xwork2.ActionProxy;
 

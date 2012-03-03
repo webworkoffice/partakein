@@ -15,6 +15,8 @@ import java.util.UUID;
  *
  */
 public class BinaryTestDataProvider extends TestDataProvider<BinaryData> {
+    public static final byte[] BYTE1_CONTENT = new byte[] { 1, 2, 3 };  
+    
     @Override
     public BinaryData create() {
         return new BinaryData(UUID.randomUUID().toString(), "test", new byte[] { 1, 2, 3 });
@@ -41,5 +43,7 @@ public class BinaryTestDataProvider extends TestDataProvider<BinaryData> {
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
         IBinaryAccess dao = factory.getBinaryAccess();
         dao.truncate(con);
+        
+        dao.put(con, new BinaryData(IMAGE_ID1, "byte/octet-stream", BYTE1_CONTENT));
     }
 }

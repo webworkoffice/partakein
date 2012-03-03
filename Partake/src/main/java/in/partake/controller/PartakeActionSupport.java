@@ -269,7 +269,14 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
      */
     protected String renderInvalid(UserErrorCode errorCode) {
         // TODO: reason should be added.
-        return INVALID;
+        // return INVALID;
+        
+        setRedirectURL("/invalid");
+        PartakeSession session = getPartakeSession();
+        if (session != null)
+            session.setLastUserError(errorCode);
+
+        return REDIRECT;
     }
 
     /**
@@ -300,12 +307,21 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
         return redirectError(ServerErrorCode.DB_ERROR);
     }
 
+    protected String renderLoginRequired() {
+        setRedirectURL(ServletActionContext.getRequest().getRequestURL().toString());
+        // Maybe we can specify this status code. I'm not sure.
+        // ServletActionContext.getResponse().setStatus(401);
+        ServletActionContext.getResponse().setStatus(401);
+        return LOGIN;
+    }
+
     /**
-     * show the 'not found' page.
-     * @return
+     * redirect to the specified URL.
      */
-    protected String renderNotFound() {
-        return NOT_FOUND;
+    protected String renderRedirect(String url) {
+        ServletActionContext.getResponse().setStatus(402);        
+        setRedirectURL(url);
+        return REDIRECT;
     }
 
     /**
@@ -313,24 +329,19 @@ public class PartakeActionSupport extends ActionSupport implements SessionAware,
      * @return 
      */
     protected String renderForbidden() {
+        ServletActionContext.getResponse().setStatus(403);        
         return PROHIBITED;
     }
-    
+
     /**
-     * redirect to the specified URL.
+     * show the 'not found' page.
+     * @return
      */
-    protected String renderRedirect(String url) {
-        setRedirectURL(url);
-        return REDIRECT;
+    protected String renderNotFound() {
+        ServletActionContext.getResponse().setStatus(404);
+        return NOT_FOUND;
     }
-    
-    protected String renderLoginRequired() {
-        setRedirectURL(ServletActionContext.getRequest().getRequestURL().toString());
-        // Maybe we can specify this status code. I'm not sure.
-        // ServletActionContext.getResponse().setStatus(401);
-        return LOGIN;
-    }
-    
+
     protected String renderStream(InputStream stream, String contentType, String contentDisposition) {
         this.stream = stream;
         this.contentType = contentType;
