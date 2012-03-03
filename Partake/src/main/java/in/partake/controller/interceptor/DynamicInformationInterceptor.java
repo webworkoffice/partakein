@@ -5,7 +5,6 @@ import org.apache.struts2.ServletActionContext;
 
 import in.partake.controller.PartakeActionSupport;
 import in.partake.resource.Constants;
-import in.partake.servlet.PartakePageAttribute;
 import in.partake.servlet.PartakeSession;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -37,14 +36,10 @@ public class DynamicInformationInterceptor extends AbstractInterceptor {
             logger.warn("action is not extended from PartakeActionSupport");
         }
 
-        // create PartakeSession & PartakePageAttribute
+        // create PartakeSession
         if (context.getSession() != null && !context.getSession().containsKey(Constants.ATTR_PARTAKE_SESSION)) {
             PartakeSession partakeSession = PartakeSession.createInitialPartakeSession();
             context.getSession().put(Constants.ATTR_PARTAKE_SESSION, partakeSession);
-        }
-        if (ServletActionContext.getRequest().getAttribute(Constants.ATTR_PARTAKE_PAGE_ATTRIBUTE) == null) {
-            PartakePageAttribute attribute = new PartakePageAttribute();
-            ServletActionContext.getRequest().setAttribute(Constants.ATTR_PARTAKE_PAGE_ATTRIBUTE, attribute);
         }
 
         logger.info("processing... " + currentURL);
