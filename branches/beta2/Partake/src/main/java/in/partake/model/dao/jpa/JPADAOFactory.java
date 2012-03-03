@@ -14,7 +14,6 @@ import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
-import in.partake.model.dao.access.IQuestionnaireAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
@@ -85,11 +84,6 @@ public class JPADAOFactory extends PartakeDAOFactory {
     @Override
     protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
         return new JPAOpenIDLinkageDao();
-    }
-
-    @Override
-    protected IQuestionnaireAccess createQuestionnaireAccess() {
-        return new JPAQuestionnaireDao();
     }
     
     @Override

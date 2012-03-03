@@ -134,8 +134,6 @@
 </tbody>
 </table>
 
-</div>
-
 <s:form method="post" id="removeAttendantForm" name="removeAttendantForm" action="removeAttendant" style="display: none;">
 	<%= Helper.token() %>
 	<s:hidden name="eventId" id="eventIdForRemoveAttendantForm" value="" />

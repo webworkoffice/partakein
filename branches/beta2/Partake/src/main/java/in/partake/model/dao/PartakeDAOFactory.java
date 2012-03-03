@@ -14,7 +14,6 @@ import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
-import in.partake.model.dao.access.IQuestionnaireAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
@@ -38,7 +37,6 @@ public abstract class PartakeDAOFactory {
     private final IEventFeedAccess eventFeedAccess;
     private final IEventActivityAccess eventActivityAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
-    private final IQuestionnaireAccess questionnaireAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
     private final IUserPreferenceAccess userPreferenceAccess;
@@ -62,7 +60,6 @@ public abstract class PartakeDAOFactory {
         addDao(eventFeedAccess       = createEventFeedAccess());
         addDao(eventActivityAccess   = createEventActivityAccess());
         addDao(openIDLinkageAccess   = createOpenIDLinkageAccess());
-        addDao(questionnaireAccess   = createQuestionnaireAccess());
         addDao(twitterLinkageAccess  = createTwitterLinkageAccess());
         addDao(userAccess            = creataeUserAccess());
         addDao(userPreferenceAccess  = createUserPreferenceAccess());
@@ -143,10 +140,6 @@ public abstract class PartakeDAOFactory {
         return openIDLinkageAccess;
     }
     
-    public final IQuestionnaireAccess getQuestionnaireAccess() {
-        return questionnaireAccess;
-    }
-
     public final ITwitterLinkageAccess getTwitterLinkageAccess() {
         return twitterLinkageAccess;
     }
@@ -179,7 +172,6 @@ public abstract class PartakeDAOFactory {
     protected abstract IEventFeedAccess createEventFeedAccess();
     protected abstract IEventActivityAccess createEventActivityAccess();
     protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
-    protected abstract IQuestionnaireAccess createQuestionnaireAccess();
     protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();
     protected abstract IUserAccess creataeUserAccess();
     protected abstract IUserPreferenceAccess createUserPreferenceAccess();

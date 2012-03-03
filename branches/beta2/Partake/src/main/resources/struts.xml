@@ -138,16 +138,10 @@
         </action>
 
         <action name="prohibited" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
-            <result name="success">/WEB-INF/prohibited</result>
+            <result name="success">/WEB-INF/prohibited.jsp</result>
         </action>
 	</package>
 
-	<package name="help" namespace="/help" extends="partake-default">
-        <action name="partake" method="alwaysSuccess" class="in.partake.controller.AlwaysSuccessController">
-            <result name="success">/WEB-INF/help/partake.jsp</result>
-        </action>
-	</package>
-	
 	<package name="auth" namespace="/auth" extends="partake-default">
         <action name="loginByTwitter" method="loginByTwitter" class="in.partake.controller.AuthenticationController">
             <result name="success" type="redirect">${redirectURL}</result>
@@ -167,9 +161,8 @@
             <result name="success" type="redirect">/</result>
         </action>
 
-		<action name="logout" method="logout" class="in.partake.controller.AuthenticationController">
-			<result name="success" type="redirect">/</result>
-		</action>
+		<action name="logout" method="execute" class="in.partake.controller.action.auth.LogoutAction" />
+
 		<action name="loginRequired" method="loginRequired" class="in.partake.controller.AuthenticationController">
 			<result name="success">/WEB-INF/auth/loginRequired.jsp</result>
 		</action>
