@@ -1,4 +1,5 @@
 package in.partake.resource;
+//TODO: move this package into in.partake.base.resource
 
 /**
  * ServerErrorCode describes the reason why the server returned an error. 
@@ -29,6 +30,8 @@ public enum ServerErrorCode {
     NO_CREATED_SESSION_TOKEN("error.no_created_session_token"),
     
     TWITTER_OAUTH_ERROR("error.twitter.oauth"),
+    
+    PARTICIPATIONS_RETRIEVAL_ERROR("error.participations.retrieval"),
     
     USER_PREFERENCE_NOTFOUND("error.user.preference.notfound"), 
     

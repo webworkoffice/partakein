@@ -16,8 +16,6 @@ import in.partake.service.DBService;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 public abstract class PartakeService {
     @Deprecated
     protected PartakeDAOFactory getFactory() {

@@ -115,9 +115,10 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
 
     @Override
     public boolean isRemoved(PartakeConnection con, String eventId) throws DAOException {
+        // TODO: should be implemented.
         return false;
     }
-
+    
     // TODO: Why not DataIterator?
     @Override
     public List<Event> findByOwnerId(PartakeConnection con, String userId) throws DAOException {
@@ -166,6 +167,14 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
             psars.close();
         }
     }
+
+    // TODO: Why not DataIterator?
+    @Override
+    public List<Event> findDraft(PartakeConnection con, String userId) throws DAOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 
     // TODO: Why not DataIterator?
     // TODO: This is very slow!

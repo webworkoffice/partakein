@@ -12,9 +12,8 @@
 <%
     UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
     String redirectURL = (String)request.getAttribute(Constants.ATTR_REDIRECTURL);
-    if (redirectURL == null) {
+    if (redirectURL == null)
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL); 
-    }
 %>
 
 <div class="navbar navbar-fixed-top">

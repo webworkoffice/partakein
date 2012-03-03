@@ -48,7 +48,7 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
         UserEx user = UserService.get().loginByOpenID(identity);
         if (user != null) {
             session.put(Constants.ATTR_USER, user);
-            return SUCCESS;
+            return renderRedirect(getRedirectURL());
         } else {
             addWarningMessage("ログインに失敗しました。OpenID と twitter ID が結び付けられていません。 Twitter でログイン後、設定から Open ID との結び付けを行ってください。");
             return renderRedirect("/");

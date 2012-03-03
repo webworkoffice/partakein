@@ -286,8 +286,6 @@ public class UtilTest {
 
 	// TODO Test for the summer time if support other timezone.
 
-
-
 	@Test
 	public void testEncodeURIComponent() {
 //		Assert.assertEquals("", Util.encodeURIComponent(null));

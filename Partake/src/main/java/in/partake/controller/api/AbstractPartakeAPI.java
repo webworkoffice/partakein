@@ -1,6 +1,5 @@
 package in.partake.controller.api;
 
-import in.partake.base.PartakeException;
 import in.partake.controller.base.AbstractPartakeController;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
@@ -124,10 +123,28 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
      * <code>{ "result": "invalid", "reason": reason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。
      */
-    protected String renderInvalid(UserErrorCode errorCode) {
+    protected String renderInvalid(UserErrorCode ec) {
+        return renderInvalid(ec, null, null);
+    }
+
+    protected String renderInvalid(UserErrorCode ec, Throwable e) {
+        return renderInvalid(ec, null, e);
+    }
+
+    protected String renderInvalid(UserErrorCode ec, JSONObject errorParams) {
+        return renderInvalid(ec, errorParams, null);
+    }
+
+    protected String renderInvalid(UserErrorCode ec, JSONObject errorParams, Throwable e) {
+        if (e != null)
+            logger.info("renderInvalid", e);
+        
         JSONObject obj = new JSONObject();
         obj.put("result", "invalid");
-        obj.put("reason", errorCode.getReasonString());
+        obj.put("reason", ec.getReasonString());
+        if (errorParams != null)
+            obj.put("errorParameters", errorParams);
+        
         this.status = 400;
         return renderJSON(obj);
     }
@@ -161,27 +178,11 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
         return renderJSON(obj);
     }
     
-    
     protected String renderNotFound() {
         JSONObject obj = new JSONObject();
         obj.put("result", "notfound");
         obj.put("reason", "not found");
         this.status = 404;
         return renderJSON(obj);
-    }
-        
-    protected String renderException(PartakeException e) {
-        if (e.getStatusCode() == 401)
-            return renderLoginRequired();
-        if (e.getStatusCode() == 403)
-            return renderForbidden();
-        
-        if (e.getUserErrorCode() != null)
-            return renderInvalid(e.getUserErrorCode());
-        else if (e.getServerErrorCode() != null)
-            return renderError(e.getServerErrorCode());    
-        
-        assert false;
-        return renderError(ServerErrorCode.LOGIC_ERROR);
-    }
+    }        
 }

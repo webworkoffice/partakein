@@ -1,13 +1,12 @@
 package in.partake.model.dao;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
 import in.partake.service.DBService;
-import in.partake.service.TestDatabaseService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -52,26 +52,25 @@ function callRevokeCalendar() {
 
 	spinner.show();
 	button.attr('disabled', '');
-	partake.revokeCalendar().success(function (json) {
+	partake.revokeCalendar()
+	.always(function (xhr) {
+		spinner.hide();
+		button.removeAttr('disabled');
+	})
+	.done(function (json) {
 		if (json.calendarId) {
 			$('#calendarURL').val('<%= h(PartakeProperties.get().getTopPath()) %>/calendars/' + json.calendarId + '.ics');
 		} else {
 			location.reload();
 		}
 		
-		$('#revokeCalendarURLMessage').hide();
 		$('#revokeCalendarURLMessage').text("カレンダー ID を再生成しました。");
-		$('#revokeCalendarURLMessage').fadeIn("fast");
-
-		spinner.hide();
-		button.removeAttr('disabled');
-	}).error(function (json) {		
 		$('#revokeCalendarURLMessage').hide();
-		$('#revokeCalendarURLMessage').text("カレンダー ID の生成に失敗しました。 : " + json.reason);
 		$('#revokeCalendarURLMessage').fadeIn("fast");
-
-		spinner.hide();
-		button.removeAttr('disabled');
+	}).fail(function (xhr) {		
+		$('#revokeCalendarURLMessage').text("カレンダー ID の生成に失敗しました。");
+		$('#revokeCalendarURLMessage').hide();
+		$('#revokeCalendarURLMessage').fadeIn("fast");
 	});
 };
 $('#revokeCalendarURLButton').click(callRevokeCalendar);

@@ -22,6 +22,9 @@ body {
 	padding-bottom: 10px;
 }
 
+.span1-half{width:100px;}
+.span2-half{width:180px;}
+
 .well .span1{width:20px;}
 .well .span-onehalf{width:60px;}
 .well .span2{width:100px;}

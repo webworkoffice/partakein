@@ -1,8 +1,6 @@
 package in.partake.controller.interceptor;
 
 import in.partake.base.PartakeRuntimeException;
-import in.partake.controller.base.PartakeInvalidResultException;
-import in.partake.controller.base.PartakeResultException;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
@@ -47,15 +45,6 @@ public class PartakeExceptionInterceptor extends AbstractInterceptor {
             setServerErrorCode(invocation, ServerErrorCode.DB_ERROR);
             logger.error(ServerErrorCode.DB_ERROR.getReasonString(), e);
             return "error";
-        } catch (PartakeInvalidResultException e) {
-            // invalid は redirect がはいるので、session に保持しておく
-            // TODO: PartakeSession を使え
-            final ActionContext context = invocation.getInvocationContext();
-            context.getSession().put(Constants.ATTR_ERROR_DESCRIPTION, e.getDescription());
-            
-            return e.getResult();
-        } catch (PartakeResultException e) {
-            return e.getResult();
         } catch (Exception e) {
             logger.error("Error happened.", e);
             throw e;

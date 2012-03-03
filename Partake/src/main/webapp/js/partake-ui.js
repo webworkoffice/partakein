@@ -14,7 +14,7 @@
 		var parent = $(targetElement.parentNode);
 		if (!parent.hasClass('spinner-container')) {
 			if (window.console)
-				console.log('partakeUI.createSpinner: invalid argument.');
+				console.log('partakeUI.createSpinner: parent class should have spinner-container class.');
 			return null;
 		}
 		

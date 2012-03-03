@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Partake 用の時刻。Immutable Object として実装すること。
+ * Time utility functions.
  *
  * @author shinyak
  */
@@ -62,6 +62,15 @@ public class TimeUtil {
         calendar.setTimeZone(timeZone);
 
         return calendar.getTime();
+    }
+    
+    public static Calendar calendar(Date date) {
+        if (date == null)
+            return null;
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
     }
     
     /**

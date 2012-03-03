@@ -7,6 +7,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
+// TODO: Move in.partake.service package.
 public final class HatenaBookmarkCountLoader {
 	private static final URL XML_RPC_SERVER_URL;
 	private static final String METHOD_NAME_TOTAL = "bookmark.getTotalCount";

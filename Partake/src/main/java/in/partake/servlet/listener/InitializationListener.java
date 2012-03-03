@@ -1,7 +1,6 @@
 package in.partake.servlet.listener;
 
 import in.partake.daemon.TwitterDaemon;
-import in.partake.model.daofacade.deprecated.PartakeService;
 import in.partake.service.DBService;
 import in.partake.view.util.Helper;
 

@@ -42,11 +42,10 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
         entityDao.initialize((Postgres9Connection) con);
 
         Postgres9Connection pcon = (Postgres9Connection) con;
-        if (existsTable(pcon, INDEX_TABLE_NAME))
-            return;
-        
-        userIndexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL)");
-        userIndexDao.createIndex(pcon, "CREATE INDEX "+ INDEX_TABLE_NAME + "UserId ON " + INDEX_TABLE_NAME + "(userId)");
+        if (!existsTable(pcon, INDEX_TABLE_NAME)) {
+            userIndexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL)");
+            userIndexDao.createIndex(pcon, "CREATE INDEX "+ INDEX_TABLE_NAME + "UserId ON " + INDEX_TABLE_NAME + "(userId)");            
+        }
     }
 
     @Override

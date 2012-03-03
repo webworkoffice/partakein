@@ -115,8 +115,8 @@ public class EventServiceTest extends AbstractServiceTestCaseBase {
         final User owner = createUser(createRandomId());
         final Event event = createEvent("this id will be overwritten.");
         event.setOwnerId(owner.getId());
-        BinaryData foreImageEmbryo = new BinaryData("text", "foreImage".getBytes(UTF8));
-        BinaryData backImageEmbryo = new BinaryData("text", "backImage".getBytes(UTF8));
+        BinaryData foreImageEmbryo = new BinaryData("text", owner.getId(), "foreImage".getBytes(UTF8), new Date());
+        BinaryData backImageEmbryo = new BinaryData("text", owner.getId(), "backImage".getBytes(UTF8), new Date());
         String eventId = service.create(event,foreImageEmbryo, backImageEmbryo);
         event.freeze();
         {
@@ -148,8 +148,8 @@ public class EventServiceTest extends AbstractServiceTestCaseBase {
             // TODO PostgresのTimestampの精度上、equals()が成立しない可能性が高い
             Assert.assertEquals(source, storedEvent);
         }
-        final BinaryData foreImageEmbryo = new BinaryData("text", "foreImage".getBytes(UTF8));
-        final BinaryData backImageEmbryo = new BinaryData("text", "backImage".getBytes(UTF8));
+        final BinaryData foreImageEmbryo = new BinaryData("text", owner.getId(), "foreImage".getBytes(UTF8), new Date());
+        final BinaryData backImageEmbryo = new BinaryData("text", owner.getId(), "backImage".getBytes(UTF8), new Date());
         {
             String eventId = service.create(source, foreImageEmbryo, backImageEmbryo);
             Event storedEvent = service.getEventById(eventId);

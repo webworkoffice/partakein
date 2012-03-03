@@ -49,7 +49,11 @@ public final class Util {
 
 	// ----------------------------------------------------------------------
 	// Time
+	// TODO: Move to TimeUtil.
 
+    // TODO: Maybe these methods are used only in Cassandra port.
+	// We don't need these methods any more. In that case we should dispose
+	// this code.
 	public static Date dateFromTimeString(String timeString) {
 		try {
 			return new Date(Long.parseLong(timeString));
@@ -86,7 +90,7 @@ public final class Util {
 	// ----------------------------------------------------------------------
 	// Text
 
-    // Use StringUtils.isEmpty() instead.
+    // TODO: Use StringUtils.isEmpty() instead.
     @Deprecated
     public static boolean isEmpty(String str) {
         return StringUtils.isEmpty(str);
@@ -201,7 +205,6 @@ public final class Util {
             return null;
         }
     }
-
 
     // ----------------------------------------------------------------------
 	// HTML

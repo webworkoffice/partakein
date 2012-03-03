@@ -1,15 +1,15 @@
 package in.partake.model.dao.jpa;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dto.BinaryData;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 
 public class JPABinaryDao extends JPADao<BinaryData> implements IBinaryAccess {
@@ -45,6 +45,11 @@ public class JPABinaryDao extends JPADao<BinaryData> implements IBinaryAccess {
         return new JPAPartakeModelDataIterator<BinaryData>(em, list, BinaryData.class, false);
     }
 
+    @Override
+    public List<String> findIdsByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);

@@ -35,7 +35,7 @@ public class Event extends PartakeModel<Event> {
     private String summary;     // event summary
     @Column
     private String category;    // event category
-    
+
     @Column
     private Date deadline;
     @Column
@@ -64,23 +64,27 @@ public class Event extends PartakeModel<Event> {
     @Column
     private String backImageId;
 
+    // TODO: 'isPrivate' should be removed. Use passcode is null or not instead.
     @Column
     private boolean isPrivate;  // true if the event is private.
     @Column
     private String passcode;    // passcode to show (if not public)
-    
+
+    // TODO: isPreview should be renamed to 'draft'
     @Column
-    private boolean isPreview;    // true if the event is preview.
+    private boolean isPreview;    // true if the event is still in preview.
+    
+    // TODO: isRemoved should be renamed to 'removed'
     @Column
     private boolean isRemoved;
-    
+
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;     //
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;    //
     @Column
     private int revision;       // used for RSS.
-    
+
     // begin date 順に並べる comparator 
     public static Comparator<Event> getComparatorBeginDateAsc() {
         return new Comparator<Event>() {
@@ -101,36 +105,36 @@ public class Event extends PartakeModel<Event> {
 
     // ----------------------------------------------------------------------
     // ctors
-    
+
     public Event() {        
     }
-    
+
     public Event(Event event) {
-    	this.id = event.id;
-    	this.shortId = event.shortId;
-    	this.title = event.title;
-    	this.summary = event.summary;
-    	this.category = event.category;
-    	this.deadline = event.deadline == null ? null : (Date) event.deadline.clone();
-    	this.beginDate = event.beginDate == null ? null : (Date) event.beginDate.clone();
-    	this.endDate = event.endDate == null ? null : (Date) event.endDate.clone();
-    	this.capacity = event.capacity;
-    	this.url = event.url;
-    	this.place = event.place;
-    	this.address = event.address;
-    	this.description = event.description;
-    	this.hashTag = event.hashTag;
-    	this.ownerId = event.ownerId;
-    	this.managerScreenNames = event.managerScreenNames;
-    	this.foreImageId = event.foreImageId;
-    	this.backImageId = event.backImageId;
-    	this.isPrivate = event.isPrivate;
-    	this.passcode = event.passcode;
-    	this.isPreview = event.isPreview;
-    	this.isRemoved = event.isRemoved;
-    	this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
-    	this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
-    	this.revision = event.revision;
+        this.id = event.id;
+        this.shortId = event.shortId;
+        this.title = event.title;
+        this.summary = event.summary;
+        this.category = event.category;
+        this.deadline = event.deadline == null ? null : (Date) event.deadline.clone();
+        this.beginDate = event.beginDate == null ? null : (Date) event.beginDate.clone();
+        this.endDate = event.endDate == null ? null : (Date) event.endDate.clone();
+        this.capacity = event.capacity;
+        this.url = event.url;
+        this.place = event.place;
+        this.address = event.address;
+        this.description = event.description;
+        this.hashTag = event.hashTag;
+        this.ownerId = event.ownerId;
+        this.managerScreenNames = event.managerScreenNames;
+        this.foreImageId = event.foreImageId;
+        this.backImageId = event.backImageId;
+        this.isPrivate = event.isPrivate;
+        this.passcode = event.passcode;
+        this.isPreview = event.isPreview;
+        this.isRemoved = event.isRemoved;
+        this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
+        this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
+        this.revision = event.revision;
     }
 
     public Event(JSONObject json) {
@@ -157,15 +161,15 @@ public class Event extends PartakeModel<Event> {
         this.backImageId = json.optString("backImageId", null);
         this.isPrivate = json.optBoolean("isPrivate", false);
         this.passcode = json.optString("passcode", null);
-        this.isPreview = json.optBoolean("isPreview", false);
-        this.isRemoved = json.optBoolean("isRemoved", false);
+        this.isPreview = json.optBoolean("draft", false);
+        this.isRemoved = json.optBoolean("removed", false);
         if (json.containsKey("createdAt"))
             this.createdAt = new Date(json.getLong("createdAt"));
         if (json.containsKey("modifiedAt"))
             this.modifiedAt = new Date(json.getLong("modifiedAt"));
         this.revision = json.optInt("revision", 1);
     }
-    
+
     public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, Date createdAt, Date modifiedAt) {
@@ -185,21 +189,21 @@ public class Event extends PartakeModel<Event> {
         this.hashTag = hashTag;
         this.ownerId = ownerId;
         this.managerScreenNames = managerScreenNames;
-        
+
         this.foreImageId = null;
         this.backImageId = null;
-        
+
         this.isPrivate = isPrivate;
         this.passcode = passcode;
-        
+
         this.isPreview = isPreview;
         this.isRemoved = isRemoved;
-        
+
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.revision = 0;
     }
-    
+
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames, 
             String foreImageId, String backImageId,
@@ -220,20 +224,20 @@ public class Event extends PartakeModel<Event> {
         this.hashTag = hashTag;
         this.ownerId = ownerId;
         this.managerScreenNames = managerScreenNames;
-        
+
         this.foreImageId = foreImageId;
         this.backImageId = backImageId;
-        
+
         this.isPrivate = isPrivate;
         this.passcode = passcode;
         this.isPreview = isPreview;
         this.isRemoved = isRemoved;
-        
+
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.revision = revision;
     }
-    
+
     @Override
     public Object getPrimaryKey() {
         return id;
@@ -243,7 +247,7 @@ public class Event extends PartakeModel<Event> {
     public Event copy() {
         return new Event(this);
     }
-    
+
     /** JSON string for external clients. 
      * TODO: All Date should be long instead of Formatted date. However, maybe some clients uses this values... What should we do?
      * Maybe we should take a version number in request query. The version 2 format should obey the rule.
@@ -277,10 +281,10 @@ public class Event extends PartakeModel<Event> {
             obj.put("managerScreenNames", managerScreenNames);
         obj.put("foreImageId", foreImageId);
         obj.put("backImageId", backImageId);
-        obj.put("isPrivate", isPrivate);
+        //obj.put("isPrivate", isPrivate);
         obj.put("passcode", passcode);
-        obj.put("isPreview", isPreview);
-        // obj.put("isRemoved", isRemoved);
+        obj.put("draft", isPreview);
+        // obj.put("removed", isRemoved);
         if (createdAt != null) {
             obj.put("createdAt", format.format(createdAt));
         }
@@ -291,7 +295,7 @@ public class Event extends PartakeModel<Event> {
 
         return obj;
     }
-    
+
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
@@ -318,8 +322,8 @@ public class Event extends PartakeModel<Event> {
         obj.put("backImageId", backImageId);
         obj.put("isPrivate", isPrivate);
         obj.put("passcode", passcode);
-        obj.put("isPreview", isPreview);
-        obj.put("isRemoved", isRemoved);
+        obj.put("draft", isPreview);
+        obj.put("removed", isRemoved);
         if (createdAt != null)
             obj.put("createdAt", createdAt.getTime());
         if (modifiedAt != null)
@@ -328,17 +332,17 @@ public class Event extends PartakeModel<Event> {
         return obj;
     }
 
-    
+
     // ----------------------------------------------------------------------
     // equals method 
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Event)) { return false; }
-        
+
         Event lhs = this;
         Event rhs = (Event) obj;
-        
+
         if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
         if (!ObjectUtils.equals(lhs.shortId, rhs.shortId)) { return false; }
         if (!ObjectUtils.equals(lhs.title, rhs.title)) { return false; }
@@ -364,14 +368,14 @@ public class Event extends PartakeModel<Event> {
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
         if (!ObjectUtils.equals(lhs.revision, rhs.revision)) { return false; }
-        
+
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int code = 0;        
-        
+
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(shortId);
         code = code * 37 + ObjectUtils.hashCode(title);
@@ -397,27 +401,27 @@ public class Event extends PartakeModel<Event> {
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
         code = code * 37 + ObjectUtils.hashCode(revision);
-        
+
         return code;
     }
-    
+
     // ----------------------------------------------------------------------
     // 
-    
+
     public String getId() {
         return this.id;
     }
-    
+
     public void setForeImageId(String foreImageId) {
         checkToUpdateStatus();
         this.foreImageId = foreImageId;
     }
-    
+
     public void setBackImageId(String backImageId) {
         checkToUpdateStatus();
         this.backImageId = backImageId;
     }
-    
+
     public String getShortId() {
         return shortId;
     }
@@ -429,7 +433,7 @@ public class Event extends PartakeModel<Event> {
     public String getSummary() {
         return summary;
     }
-    
+
     public String getCategory() {
         return category;
     }
@@ -437,7 +441,7 @@ public class Event extends PartakeModel<Event> {
     public Date getDeadline() {
         return deadline;
     }
-    
+
     public Date getBeginDate() {
         return beginDate;
     }
@@ -461,11 +465,11 @@ public class Event extends PartakeModel<Event> {
     public String getAddress() {
         return address;
     }
-    
+
     public String getDescription() {
         return description;
     }
-    
+
     public String getHashTag() {
         return hashTag;
     }
@@ -473,19 +477,19 @@ public class Event extends PartakeModel<Event> {
     public String getOwnerId() {
         return ownerId;
     }
-    
+
     public String getManagerScreenNames() {
         return managerScreenNames;
     }
-    
+
     public String getForeImageId() {
         return foreImageId;
     }
-    
+
     public String getBackImageId() {
         return backImageId;
     }
-    
+
     public boolean isPrivate() {
         return isPrivate;
     }
@@ -493,11 +497,11 @@ public class Event extends PartakeModel<Event> {
     public String getPasscode() {
         return passcode;
     }
-    
+
     public boolean isPreview() {
         return isPreview;
     }
-    
+
     public boolean isRemoved() {
         return isRemoved;
     }
@@ -505,84 +509,84 @@ public class Event extends PartakeModel<Event> {
     public Date getCreatedAt() {
         return createdAt;
     }
-    
+
     public Date getModifiedAt() {
-    	return modifiedAt;
+        return modifiedAt;
     }
-    
+
     public int getRevision() {
         return revision;
     }
-    
+
     // ----------------------------------------------------------------------
-    
+
     public void setId(String id) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.id = id;
     }
 
     public void setShortId(String shortId) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.shortId = shortId;
     }
 
     public void setTitle(String title) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.title = title;
     }
 
     public void setSummary(String summary) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.summary = summary;
     }
 
     public void setCategory(String category) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.category = category;
     }
 
     public void setDeadline(Date deadline) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.deadline = deadline;
     }
 
     public void setBeginDate(Date beginDate) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.beginDate = beginDate;
     }
 
     public void setEndDate(Date endDate) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.endDate = endDate;
     }
 
     public void setCapacity(int capacity) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.capacity = capacity;
     }
 
     public void setUrl(String url) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.url = url;
     }
 
     public void setPlace(String place) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.place = place;
     }
 
     public void setAddress(String address) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.address = address;
     }
 
     public void setDescription(String description) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.description = description;
     }
 
     public void setHashTag(String hashTag) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.hashTag = hashTag;
     }
 
@@ -595,9 +599,9 @@ public class Event extends PartakeModel<Event> {
         checkToUpdateStatus();
         this.managerScreenNames = managerScreenNames;
     }
-    
+
     public void setPrivate(boolean isPrivate) {
-    	checkToUpdateStatus();
+        checkToUpdateStatus();
         this.isPrivate = isPrivate;
     }
 
@@ -610,7 +614,7 @@ public class Event extends PartakeModel<Event> {
         checkToUpdateStatus();
         this.isPreview = isPreview;
     }
-    
+
     public void setRemoved(boolean isRemoved) {
         checkToUpdateStatus();
         this.isRemoved = isRemoved;        
@@ -620,19 +624,19 @@ public class Event extends PartakeModel<Event> {
         checkToUpdateStatus();
         this.createdAt = createdAt;
     }
-    
+
     public void setModifiedAt(Date modifiedAt) {
-    	checkToUpdateStatus();
-    	this.modifiedAt = modifiedAt;
+        checkToUpdateStatus();
+        this.modifiedAt = modifiedAt;
     }
-    
+
     public void setRevision(int revision) {
         checkToUpdateStatus();
         this.revision = revision;
     }
-    
+
     // ----------------------------------------------------------------------
-    
+
     public String getEventURL() {
         String topPath = PartakeProperties.get().getTopPath();
         String thispageURL = topPath + "/events/" + getId();
@@ -648,10 +652,10 @@ public class Event extends PartakeModel<Event> {
         Date now = new Date();
         Date deadline = getDeadline();
         if (deadline == null) { deadline = getBeginDate(); }
-                
+
         return now.before(Util.halfDayBefore(deadline));
     }
-    
+
     /**
      * get a calculated deadline. If deadline is set, it is returned. Otherwise, beginDate is deadline.
      * @return
@@ -660,12 +664,12 @@ public class Event extends PartakeModel<Event> {
         if (getDeadline() != null) { return getDeadline(); }
         return new Date(getBeginDate().getTime());
     }
-    
+
     public Date getCalculatedReservationDeadline() {
         if (getDeadline() != null) { return getDeadline(); }
         return new Date(getBeginDate().getTime() - 1000 * 3600 * 3);
     }
-    
+
     /**
      * true if all reservations are cancelled.
      * @return
@@ -673,29 +677,29 @@ public class Event extends PartakeModel<Event> {
     public boolean isReservationTimeOver() {        
         Date now = new Date();
         Date deadline = getCalculatedReservationDeadline();
-        
+
         return deadline.before(now);
     }
-    
+
     private void checkToUpdateStatus() {
-    	checkFrozen();
-    	++revision;
+        checkFrozen();
+        ++revision;
     }
-    
+
     public boolean isManager(String name) {
         if (StringUtils.isBlank(name)) { return false; }
         if (StringUtils.isBlank(getManagerScreenNames())) { return false; }
-        
+
         String[] screenNames = getManagerScreenNames().split(",");
         for (String screenName : screenNames) {
             if (name.equals(StringUtils.trim(screenName))) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     // XXX: this methods will access database.
     // XXX: Hmm...
     @Deprecated
