@@ -415,15 +415,6 @@
 			</result>
 		</action>
 
-		<action name="user/*" method="feed" class="in.partake.controller.UserFeedController">
-			<param name="feedId">{1}</param>
-			<result name="success" type="stream">
-                <param name="contentType">${contentType}</param>
-                <param name="bufferSize">1M</param>
-                <param name="allowCaching">true</param>
-			</result>
-		</action>
-
 		<action name="upcoming/*" method="feedUpcomingEvents" class="in.partake.controller.EventsFeedController">
 			<param name="category">{1}</param>
 			<result name="success" type="stream">
