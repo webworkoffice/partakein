@@ -173,11 +173,19 @@
 	}
 	
 	function update(nthPage) {
-		partake.account.getEvents(queryType, finished, (nthPage - 1) * 10, 10).done(function (json) {			
+		partake.account.getEvents(queryType, finished, (nthPage - 1) * 10, 10)
+		.done(function (json) {
+			console.log(json.numEvents);
 			createTable(nthPage, json.participations);
 			createPagenation(nthPage, json.numEvents);
-		}).fail(function (xhr) {
-			// Hmm...
+		})
+		.fail(function (xhr) {
+			try {
+				var json = $.parseJSON(xhr.responseText);
+				alert(json.reason);
+			} catch (e) {
+				alert('レスポンスが JSON 形式ではありません。');
+			}
 		});
 	}
 	

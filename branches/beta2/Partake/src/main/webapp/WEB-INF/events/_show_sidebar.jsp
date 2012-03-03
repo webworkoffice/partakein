@@ -134,7 +134,7 @@ function sendMessage() {
 		button.removeAttr('disabled');
 	})
 	.done(function (json) {
-		location.reload();
+		$('#message-send-dialog').modal('hide');
 	})
 	.fail(function (xhr) {
 		try {
@@ -176,7 +176,7 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 					<a href="/auth/loginByTwitter?redirectURL=<%= h(redirectURL) %>"><strong>Twitterでログイン</strong>して<br />参加しよう！</a>
 				</form>
 				<input type="button" class="btn btn-danger span3" value="参加" disabled />
-				<input type="button" class="btn span3" value="辞退" disabled />
+				<input type="button" class="btn btn-info span3" value="▲仮参加" disabled />
 			</div>
 		<% } else if (ParticipationStatus.ENROLLED.equals(status)) { %>
 			<%-- なんか stamp みたいな感じで「参加登録済み」とかいうアイコンを出せないモノだろうか。 --%>
@@ -230,14 +230,12 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 			        <li>リマインダーは右上の「設定」リンクからたどれるページで受信拒否が設定できます。</li>
 				</ul>
 		
-		  		<form method="post" name="eventEnrollForm" class="form-horizontal" action="/events/enroll">
-		  			<%= Helper.tokenTags() %>
-		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
-					<textarea name="comment" class="span7">よろしくお願いします。</textarea>
+		  		<form class="form-horizontal">
+					<textarea id="event-enroll-dialog-comment" name="comment" class="span7">よろしくお願いします。</textarea>
 		  		</form>
 		  	</div>
-		  	<div class="modal-footer">
-			    <a href="#" class="btn btn-danger" onclick="document.eventEnrollForm.submit()">参加</a>
+		  	<div class="modal-footer spinner-container">
+			    <a href="#" id="event-enroll-dialog-submit" class="btn btn-danger">参加</a>
 			    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
 		  	</div>
 		</div>
@@ -256,14 +254,12 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 					<li>リマインダーは右上の「設定」リンクからたどれるページで受信拒否が設定できます。</li>
 				</ul>
 		
-		  		<form method="post" name="eventReserveForm" action="/events/reserve">
-		  			<%= Helper.tokenTags() %>
-		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
-					<textarea name="comment" class="span7">よろしくお願いします。</textarea>
+		  		<form class="form-horizontal">
+					<textarea id="event-reserve-dialog-comment" name="comment" class="span7">よろしくお願いします。</textarea>
 		  		</form>
 		  	</div>
-		  	<div class="modal-footer">
-			    <a href="#" class="btn btn-danger" onclick="document.eventReserveForm.submit()">参加</a>
+		  	<div class="modal-footer spinner-container">
+			    <a href="#" id="event-reserve-dialog-submit" class="btn btn-danger">▲仮参加</a>
 			    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
 		  	</div>
 		</div>
@@ -278,17 +274,49 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 		  		<ul>
 					<li>参加を辞退すると確保していた順番は取り消されます。</li>
 				</ul>		
-		  		<form method="post" name="eventCancelForm" action="/events/cancel">
-		  			<%= Helper.tokenTags() %>
-		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
-					<textarea name="comment" class="span7">参加できなくなりました。</textarea>
+		  		<form class="form-horizontal">
+					<textarea id="event-cancel-dialog-comment" name="comment" class="span7">よろしくお願いします。</textarea>
 		  		</form>
 		  	</div>
-		  	<div class="modal-footer">
-			    <a href="#" class="btn btn-danger" onclick="document.eventCancelForm.submit()">辞退</a>
+		  	<div class="modal-footer spinner-container">
+			    <a href="#" id="event-cancel-dialog-submit" class="btn btn-danger">辞退</a>
 			    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
 		  	</div>
 		</div>
+		
+		<script>
+		function addEventListenerToDialog(status) {
+		  	$('#event-' + status + '-dialog-submit').click(function() {
+		  		var spinner = partakeUI.spinner(document.getElementById('event-' + status + '-dialog-submit'));
+		  		var eventId = '<%= h(event.getId()) %>';
+		  		var comment = $('#event-' + status + '-dialog-comment').val();
+		  		
+		  		spinner.show();
+		  		$('#event-' + status + '-dialog-submit').attr('disabled');
+		  		
+		  		partake.event.enroll(eventId, status, comment)
+		  		.always(function (xhr) {
+			  		spinner.hide();
+			  		$('#event-' + status + '-dialog-submit').removeAttr('disabled');		  			
+		  		})
+		  		.done(function (json) {
+		  			location.reload();
+		  		})
+		  		.fail(function (xhr) {
+					try {
+						var json = $.parseJSON(xhr.responseText);
+						alert(json.reason);
+					} catch (e) {
+						alert('レスポンスが JSON 形式ではありません。');
+					}		  			
+		  		});
+		  	});
+		}
+		addEventListenerToDialog('enroll');
+		addEventListenerToDialog('reserve');
+		addEventListenerToDialog('cancel');
+		</script>
+		
 				
 		<%-- コメント変更フォーム --%>
 		<div id="change-comment-form" class="dialog-ui" title="コメント変更フォーム" style="display: none">

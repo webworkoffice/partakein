@@ -1,6 +1,6 @@
 package in.partake.controller.api.event;
 
-import in.partake.base.Util;
+import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
@@ -17,27 +17,22 @@ public class PostCommentAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected String doExecute() throws DAOException {
-        UserEx user = getLoginUser();
-        if (user == null)
-            return renderLoginRequired();
+    protected String doExecute() throws DAOException, PartakeException {
+        UserEx user = ensureLogin();
 
         if (!checkCSRFToken())
             return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
         
-        String eventId = getParameter("eventId"); 
-        if (eventId == null)
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
-        if (!Util.isUUID(eventId))
-            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
-
+        String eventId = getValidEventIdParameter();
         EventEx event = EventService.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
         String comment = getParameter("comment");
-        if (StringUtils.isEmpty(comment))
+        if (StringUtils.isBlank(comment))
             return renderInvalid(UserErrorCode.MISSING_COMMENT);
+        if (comment.length() > 10000) // TODO: Don't put magic number!
+            return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
 
         Comment embryo = new Comment(eventId, user.getId(), comment, true, new Date());
         EventService.get().addComment(embryo);

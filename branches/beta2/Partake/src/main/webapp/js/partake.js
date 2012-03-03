@@ -90,6 +90,16 @@
 			return $.post('/api/event/remove', arg);
 		},
 		
+		postComment: function(eventId, comment) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				eventId: eventId,
+				comment: comment
+			};
+			
+			return $.post('/api/event/postComment', arg);
+		},
+		
 		removeComment: function(commentId, eventId) {
 			var arg = {
 				sessionToken: partake.sessionToken,
@@ -98,30 +108,54 @@
 			};
 			
 			return $.post('/api/event/removeComment', arg);
+		},
+		
+		enroll: function(eventId, status, comment) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				eventId: eventId,
+				status: status,
+				comment: comment
+			};
+			
+			return $.post('/api/event/enroll', arg);
+		},
+		
+		makeAttendantVIP: function(userId, eventId, vip) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				userId: userId,
+				eventId: eventId,
+				vip: vip
+			};
+			
+			return $.post('/api/event/makeAttendantVIP', arg);
+		},
+			
+		removeAttendant: function(userId, eventId) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				userId: userId,
+				eventId: eventId
+			};
+			
+			return $.post('/api/event/removeAttendant', arg);
+		},
+		
+		changeAttendance: function(userId, eventId, status) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				userId: userId,
+				eventId: eventId,
+				status: status
+			};
+			
+			return $.post('/api/event/attend', arg);
 		}
 	};
-	
-	/**
-	 * @param {!String} userId
-	 * @param {!String} eventId
-	 * @param {!String} status
-	 * 
-	 * for example
-	 * $partake.changeAttendance(...).success(function(json) {...} ).error(function(json) {...});
-	 */
-	Partake.prototype.changeAttendance = function(userId, eventId, status) {
-		var arg = {
-			sessionToken: this.sessionToken,
-			userId: userId,
-			eventId: eventId,
-			status: status
-		};
-		
-		return $.post('/api/event/attend', arg);
-	};
-	
+
 	// ----------------------------------------------------------------------
-	// Event
+	// Message
 	
 	Partake.prototype.message = {
 		partake: this,
@@ -136,7 +170,8 @@
 			return $.post('/api/event/sendMessage', arg);
 		}
 	};
-	
+
+
 	// ----------------------------------------------------------------------
 
 	// expose partake client to global.

@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
@@ -15,56 +16,43 @@
 	<h1>イベントを作成します</h1>
 </div>
 
-<form id="event-create-form" method="post" class="form-horizontal" action="commit">
-	<%= Helper.tokenTags() %>
-	<div class="row">
-		<div class="span9">
-			<%@ include file="/WEB-INF/events/_edit_innerform.jsp" %>
-		</div>
-		<div class="span3">
-			<div class="fixed span3 spinner-container">
-				<input id="event-create-form-publish" type="button" class="btn btn-danger span3" value="イベントを公開する" />
-				<p class="help-block">イベントを公開して、他の人が参加できるようにします。</p>
-				<p></p>
-				<input id="event-create-form-save" type="button" class="btn btn-primary span3" value="イベントを保存する" />
-				<p class="help-block">イベントをドラフトとして保存します。保存しただけではまだ公開されません。</p>
-			</div>
+<div class="row">
+	<div class="span9">
+		<jsp:include page="/WEB-INF/events/_edit_innerform.jsp" />
+	</div>
+	<div class="span3">
+		<div class="fixed span3 spinner-container">
+			<input id="event-create-form-save" type="button" class="btn btn-primary span3" value="イベントを保存する" />
+			<p class="help-block">イベントをドラフトとして保存します。保存しただけではまだ公開されません。</p>
+			<p></p>
+			<input id="event-create-form-publish" type="button" class="btn btn-danger span3" value="イベントを公開する" />
+			<p class="help-block">イベントを公開して、他の人が参加できるようにします。</p>
 		</div>
 	</div>
-</form>
+</div>
 
 <script>
-$('#event-create-form-save').click(function() {
+function submitEvent() {
 	var spinner = partakeUI.spinner(document.getElementById('event-create-form-save'));
 	spinner.show();
 	
 	$('#event-create-form-save').attr('disabled', '');
 	$('#event-create-form-publish').attr('disabled', '');
 	
-	var argArray = $('#event-create-form').serializeArray();
+	var argArray = $('#event-form').serializeArray();
 	var arg = {};
 	for (var i = 0; i < argArray.length; ++i)
 		arg[argArray[i].name] = argArray[i].value;
 	console.log(arg);
 
-	// Creates begin date.
-	
-	// Creates end date.
-	// Creates deadline.
-	
-	partake.event.create(arg)
+	return partake.event.create(arg)
 	.always(function (xhr) {
 		spinner.hide();
 		$('#event-create-form-save').removeAttr('disabled');
 		$('#event-create-form-publish').removeAttr('disabled');
 		
 		// Remove all input classes anyway
-		$('#event-create-form input').removeClass('error');
-		$('#event-create-form textarea').removeClass('error');
-		$('#event-create-form select').removeClass('error');
-	})
-	.done(function (json) {
-		alert('OK');
+		$('#event-form div').removeClass('error');
 	})
 	.fail(function (xhr) {
 		var json = $.parseJSON(xhr.responseText);
@@ -74,12 +62,26 @@ $('#event-create-form-save').click(function() {
 		}
 		
 		for (var key in json.errorParameters) {
-			console.log(key);
-			console.log("    " + json.errorParameters[key]);
 			var e = $('#' + key);
 			e.addClass('error');
 		}
 	});
+}
+
+$('#event-create-form-save').click(function() {
+	$('#draft').val('true');
+	submitEvent()
+	.done(function (json) {
+		location.href = "/events/" + json.eventId;
+	});
+});
+
+$('#event-create-form-publish').click(function() {
+	$('#draft').val('false');
+	submitEvent()
+	.done(function (json) {
+		location.href = "/events/" + json.eventId;
+	})
 });
 </script>
 

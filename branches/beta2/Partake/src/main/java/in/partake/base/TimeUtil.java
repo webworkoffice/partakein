@@ -1,5 +1,8 @@
 package in.partake.base;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -11,6 +14,7 @@ import java.util.TimeZone;
  */
 public class TimeUtil {
     private static Date currentDate;
+    private static final DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     /**
      * Resets the current date.
@@ -73,6 +77,18 @@ public class TimeUtil {
         return calendar;
     }
     
+    public static String formatForEvent(Date date) {
+        return dateFormatForEvent.format(date);
+    }
+
+    public static Date parseForEvent(String dateStr) {
+        try {
+            return dateFormatForEvent.parse(dateStr);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+    
     /**
      * Waits for a while.
      */
@@ -90,5 +106,17 @@ public class TimeUtil {
                 // ignore.
             }
         } while (now == TimeUtil.getCurrentTime());
+    }
+    
+    public static Date oneDayBefore(Date date) {
+        return new Date(date.getTime() - 1000 * 3600 * 24);
+    }
+
+    public static Date halfDayBefore(Date date) {
+        return new Date(date.getTime() - 1000 * 3600 * 12);
+    }
+
+    public static Date oneDayAfter(Date date) {
+        return new Date(date.getTime() + 1000 * 3600 * 24);
     }
 }

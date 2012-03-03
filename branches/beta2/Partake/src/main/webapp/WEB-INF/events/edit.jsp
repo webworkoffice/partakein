@@ -1,6 +1,15 @@
+<%@page import="in.partake.model.EventEx"%>
+<%@page import="in.partake.controller.action.event.EventEditAction"%>
+<%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.view.util.Helper"%>
+<%@page import="static in.partake.view.util.Helper.h"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
+
+<%
+	EventEditAction action = (EventEditAction) request.getAttribute(Constants.ATTR_ACTION);
+	EventEx event = action.getEvent();
+%>
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -15,27 +24,25 @@
 	<h1>イベントを編集します</h1>
 </div>
 
-<form method="post" class="form-horizontal" action="commit" enctype="multipart/form-data">
-	<%= Helper.tokenTags() %>
-	<s:hidden id="eventId" name="eventId" value="%{eventId}"/><%-- new.jsp とここが違う。なんか共通化するとエラーがでる。なんで？ --%>
-	<div class="row">
-		<div class="span9">
-			<%@ include file="/WEB-INF/events/_edit_innerform.jsp" %>
-		</div>
-		<div class="span1">
-			&nbsp;
-		</div>
-		<div class="span3">
-			<div class="fixed span3">
-				<input type="submit" class="btn btn-primary" value="イベントを保存する" />
-				<p class="help-block">イベントをドラフトとして保存します。保存しただけではまだ公開されません。</p>
-				<input type="submit" class="btn btn-danger" value="イベントを公開する" />
-				<p class="help-block">イベントを公開します。</p>
-			</div>
-			&nbsp;
+<div class="row">
+	<div class="span9">
+		<jsp:include page="/WEB-INF/events/_edit_innerform.jsp" />
+	</div>
+	<div class="span3">
+		<div class="fixed span3">
+			<% if (event.isPreview()) { %>
+			<input type="button" class="btn btn-primary span3" value="イベントを保存する" />
+			<p class="help-block">イベントを保存します。保存しただけではまだ公開されません。</p>
+			<p></p>
+			<input type="button" class="btn btn-danger span3" value="イベントを公開する" />
+			<p class="help-block">イベントを公開します。</p>
+			<% } else { %>
+			<input type="button" class="btn btn-primary span3" value="イベントを更新する" />
+			<p class="help-block">イベントを更新します。</p>
+			<% } %>
 		</div>
 	</div>
-</form>
+</div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

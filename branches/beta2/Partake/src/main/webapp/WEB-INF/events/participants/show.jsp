@@ -34,29 +34,47 @@
 <head>
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
     <script type="text/javascript">
-    function removeAttendant(eventId, userId) {
-		if (!window.confirm('参加者を削除しようとしています。この操作は取り消せません。削除しますか？')) { return; }
+    function removeAttendant(userId, eventId) {
+		if (!window.confirm('参加者を削除しようとしています。この操作は取り消せません。削除しますか？'))
+			return;
         
-    	document.getElementById('eventIdForRemoveAttendantForm').value = eventId;
-    	document.getElementById('userIdForRemoveAttendantForm').value = userId;
-    	
-    	document.removeAttendantForm.submit();
+		partake.event.removeAttendant(userId, eventId)
+		.done(function (json) {
+			// TODO: Do something here.
+			location.reload();
+		})
+		.fail(function (xhr) {
+			try {
+				var json = $.parseJSON(xhr.responseText);
+				alert(json.reason);
+			} catch (e) {
+				alert('レスポンスが JSON 形式ではありません。');
+			}
+		});
     }
 
-    function makeAttendantVIP(eventId, userId, vip) {
-    	document.getElementById('eventIdForMakeAttendantVIPForm').value = eventId;
-    	document.getElementById('userIdForMakeAttendantVIPForm').value = userId;
-    	document.getElementById('vipForMakeAttendantVIPForm').value = vip;
-    	
-    	document.makeAttendantVIPForm.submit();	
+    function makeAttendantVIP(userId, eventId, vip) {
+    	partake.event.makeAttendantVIP(userId, eventId, vip)
+    	.done(function (json) {
+    		// TODO: Do something here!
+    		location.reload();
+    	})
+    	.fail(function (xhr) {
+			try {
+				var json = $.parseJSON(xhr.responseText);
+				alert(json.reason);
+			} catch (e) {
+				alert('レスポンスが JSON 形式ではありません。');
+			}    		
+    	});
     }    
 
     function changeAttendance(userId, eventId, status) {
-        $partake.changeAttendance(userId, eventId, status)
-        .success(function(json) {
+        partake.event.changeAttendance(userId, eventId, status)
+        .done(function(json) {
             $("#attendance-status-" + userId).html("保存しました");
         })
-		.error(function(json) {
+		.fail(function(xhr) {
         	$("#attendance-status-" + userId).html("保存時にエラーが発生しました");    	    	
         })
     }
@@ -72,6 +90,10 @@
 	<h1>参加者のステータスを編集</h1>
 	<p>特定の参加者を優遇したり、参加を拒否したりすることができます。</p>  
 </div>
+
+<ul>
+	<li><a href="/events/<%= h(event.getId()) %>">イベントに戻る</a></li>
+</ul>
 
 <div>
 	<h3>優先度マーク</h3>
@@ -115,13 +137,16 @@
         </td>
         <td class="print-del">
 	        <ul class="status-control">
-		        <li><a href="#" onclick="removeAttendant('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>')">削除する</a></li>
+		        <li><a href="#" onclick="removeAttendant('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>')">削除する</a></li>
 		        <% if (p.isVIP()) { %>
-		        	<li><a href="#" onclick="makeAttendantVIP('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>', 'false')">VIP 指定解除</a></li>
+		        	<li id="vip-<%= h(p.getUserId()) %>"><a href="#" onclick="makeAttendantVIP('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'false')">VIP 指定解除</a></li>
 		        <% } else { %>
-		        	<li><a href="#" onclick="makeAttendantVIP('<%= h(p.getEventId()) %>', '<%= h(p.getUserId()) %>', 'true')">VIP 指定</a></li>
+		        	<li id="nonvip-<%= h(p.getUserId()) %>"><a href="#" onclick="makeAttendantVIP('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'true')">VIP 指定</a></li>
 		        <% } %>
 	        </ul>
+	        <script>
+	        
+	        </script>
         </td>
         <td class="print-del">
 	        <input type="radio" onchange="changeAttendance('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'unknown')" name="present-<%= h(p.getUserId()) %>" value="unknown" <%= AttendanceStatus.UNKNOWN.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 未選択<br />
@@ -133,29 +158,6 @@
     <% } %>
 </tbody>
 </table>
-
-<s:form method="post" id="removeAttendantForm" name="removeAttendantForm" action="removeAttendant" style="display: none;">
-	<%= Helper.tokenTags() %>
-	<s:hidden name="eventId" id="eventIdForRemoveAttendantForm" value="" />
-	<s:hidden name="userId"  id="userIdForRemoveAttendantForm" value="" />					
-	<s:submit value="削除する" />
-</s:form>
-
-<s:form method="post" id="makeAttendantVIPForm" name="makeAttendantVIPForm" action="makeAttendantVIP" style="display: none;">
-	<%= Helper.tokenTags() %>
-	<s:hidden name="eventId" id="eventIdForMakeAttendantVIPForm" value="" />
-	<s:hidden name="userId"  id="userIdForMakeAttendantVIPForm" value="" />		
-	<s:hidden name="vip"     id="vipForMakeAttendantVIPForm" value="" />			
-	<s:submit value="VIP にする" />
-</s:form>
-
-<s:form method="post" id="changeAttendanceForm" name="changeAttendanceForm" action="changeAttendance" style="display: none;">
-	<%= Helper.tokenTags() %>
-    <s:hidden name="eventId" id="eventIdForChangeAttendanceForm" value="" />
-    <s:hidden name="userId"  id="userIdForChangeAttendanceForm" value="" />     
-    <s:hidden name="status"  id="statusForChangeAttendanceForm" value="" />            
-    <s:submit value="出席を変更" />
-</s:form>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

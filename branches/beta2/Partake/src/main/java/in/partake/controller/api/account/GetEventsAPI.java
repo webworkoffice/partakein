@@ -39,6 +39,8 @@ public class GetEventsAPI extends AbstractPartakeAPI {
         //    manager/all
         //    participants/false
         //    participants/finished
+        
+        // TODO: We should not read all events here.
 
         String queryType = getParameter("queryType");
         String finished = getParameter("finished");
@@ -82,6 +84,7 @@ public class GetEventsAPI extends AbstractPartakeAPI {
 
         Collections.sort(events, Event.getComparatorBeginDateAsc());
 
+        int numEvents = events.size();
         if (offset >= events.size())
             events = Collections.emptyList();
         else
@@ -96,7 +99,7 @@ public class GetEventsAPI extends AbstractPartakeAPI {
             participations.add(new EventParticipation(event, numUsers, status));
         }
 
-        EventParticipationList list = new EventParticipationList(participations, events.size());
+        EventParticipationList list = new EventParticipationList(participations, numEvents);
         return renderOK(list.toSafeJSON());
     }
 }

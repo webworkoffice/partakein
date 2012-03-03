@@ -25,11 +25,18 @@ public class EnrollAPI extends AbstractEventAPI {
 
     @Override
     protected String doExecute() throws PartakeException, DAOException {
-        ParticipationStatus status = ParticipationStatus.valueOf(getParameter("status"));
-        return changeParticipationStatus(status, false);
+        String status = getParameter("status");
+        if ("enroll".equalsIgnoreCase(status))
+            return changeParticipationStatus(ParticipationStatus.ENROLLED);
+        else if ("reserve".equalsIgnoreCase(status))
+            return changeParticipationStatus(ParticipationStatus.RESERVED);
+        else if ("cancel".equals(status))
+            return changeParticipationStatus(ParticipationStatus.CANCELLED);
+        else
+            return renderInvalid(UserErrorCode.INVALID_ENROLL_STATUS);
     }
     
-    private String changeParticipationStatus(ParticipationStatus status, boolean changesOnlyComment) throws PartakeException, DAOException {
+    private String changeParticipationStatus(ParticipationStatus status) throws PartakeException, DAOException {
         UserEx user = ensureLogin();
 
         String eventId = getValidEventIdParameter();
@@ -59,11 +66,11 @@ public class EnrollAPI extends AbstractEventAPI {
                 return renderInvalid(UserErrorCode.INVALID_ENROLL_REQUIRED);
         }
 
-        EventService.get().enroll(user.getId(), event.getId(), status, comment, changesOnlyComment, event.isReservationTimeOver());
+        EventService.get().enroll(user.getId(), event.getId(), status, comment, false, event.isReservationTimeOver());
 
         JSONObject obj = new JSONObject();
         // Twitter で参加をつぶやく
-        if (!changesOnlyComment) { tweetEnrollment(obj, user, event, status); }
+        tweetEnrollment(obj, user, event, status);
 
         return renderOK(obj);
     }

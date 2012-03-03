@@ -43,6 +43,7 @@ import org.apache.lucene.util.Version;
  * TODO: LuceneDao っておかしいよなー。あとで直す。
  * @author shinyak
  *
+ * TODO: Move LuceneDao to Service layer.
  */
 public class LuceneDao {
 	private static volatile LuceneDao instance;

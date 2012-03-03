@@ -80,13 +80,43 @@
 			<% } %>
 			<div class="comment-form">
 		        <% if (user != null) { %>
-			        <s:form action="comment">
+			        <form class="spinner-container">
 						<%= Helper.tokenTags() %>
-				        <s:hidden name="eventId" value="%{eventId}" /><br /><strong>Your comment:</strong><br />
-				        <textarea id="commentForm-commentEdit" name="comment"></textarea><br />
-				        <%-- <s:checkbox name="alsoCommentsToTwitter" />コメントを twitter にも同時投稿する (まだ動きません)<br /> --%>
-				        <s:submit cssClass="btn btn-primary" value="コメントを投稿"  />
-				    </s:form>           	
+				        <strong>コメント</strong><br />
+				        <textarea id="commentForm-commentEdit" name="comment" class="span9"></textarea><br />
+				        <input id="comment-form-submit" type="button" class="btn btn-primary" value="コメントを投稿"  />
+				    </form>
+<script>
+function postComment() {
+	var spinner = partakeUI.spinner(document.getElementById('comment-form-submit'));
+	var eventId = '<%= h(event.getId()) %>';
+	var comment = $('#commentForm-commentEdit').val();
+
+	spinner.show();
+	$('#commentForm-commentEdit').attr('disabled', '');
+	$('#comment-form-submit').attr('disabled', '');
+	
+	partake.event.postComment(eventId, comment)
+	.always(function (xhr) {
+		spinner.hide();
+		$('#commentForm-commentEdit').removeAttr('disabled');
+		$('#comment-form-submit').removeAttr('disabled');
+	})
+	.done(function (json) {
+		// TODO: Recreating comment board is better. 
+		location.reload();
+	})
+	.fail(function (xhr) {
+		try {
+			var json = $.parseJSON(xhr.responseText);
+			alert(json.reason);
+		} catch (e) {
+			alert('レスポンスが JSON 形式ではありません。');
+		}
+	});
+}
+$('#comment-form-submit').click(postComment);
+</script>
 				<% } else { %>
 		            <p>コメントを投稿するにはログインしてください。</p>
 				<% } %>

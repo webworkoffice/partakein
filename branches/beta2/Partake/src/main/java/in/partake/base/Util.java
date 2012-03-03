@@ -79,10 +79,12 @@ public final class Util {
         return new Formatter().format("%020d", Long.MAX_VALUE - time).toString();
     }
 
+    // TODO: Use TimeUtil instead.
     public static Date oneDayBefore(Date date) {
         return new Date(date.getTime() - 1000 * 3600 * 24);
     }
 
+    // TODO: Use TimeUtil instead.
     public static Date halfDayBefore(Date date) {
         return new Date(date.getTime() - 1000 * 3600 * 12);
     }

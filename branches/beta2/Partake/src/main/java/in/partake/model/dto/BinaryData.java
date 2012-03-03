@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
+// TODO: Rename this to ImageData.
 @Entity(name = "BinaryData")
 @Cacheable(false)
 public class BinaryData extends PartakeModel<BinaryData> {

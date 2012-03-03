@@ -6,7 +6,7 @@ import in.partake.model.dto.BinaryData;
 
 import java.util.List;
 
-
+// TODO: Rename this to IImageAccess.
 public interface IBinaryAccess extends IAccess<BinaryData, String> {
     public String getFreshId(PartakeConnection con) throws DAOException;
     
