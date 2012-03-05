@@ -22,6 +22,10 @@ public abstract class TestDataProvider<T> {
     public static final String TWITTER_ID3 = "3";
     public static final String TWITTER_SCREENNAME3 = "testUser3";
 
+    public static final String USER_ADMIN_ID = new UUID(1, 4).toString();
+    public static final String TWITTER_ADMIN_ID = "4";
+    public static final String TWITTER_ADMIN_SCREENNAME = "partakein";    
+
     public static final String INVALID_EVENT_ID = new UUID(2, -1).toString();
     public static final String EVENT_ID1 = new UUID(2, 1).toString();
     public static final String EVENT_ID2 = new UUID(2, 2).toString();
