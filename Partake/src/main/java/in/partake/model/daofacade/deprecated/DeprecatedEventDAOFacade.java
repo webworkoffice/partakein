@@ -10,7 +10,6 @@ import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.LuceneDao;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IBinaryAccess;
@@ -33,6 +32,7 @@ import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.PartakeProperties;
+import in.partake.service.LuceneService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -197,11 +197,11 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            TopDocs docs = LuceneDao.get().search(term, category, sortOrder, beforeDeadlineOnly, maxDocument);
+            TopDocs docs = LuceneService.get().search(term, category, sortOrder, beforeDeadlineOnly, maxDocument);
             List<Event> events = new ArrayList<Event>();
 
             for (ScoreDoc doc : docs.scoreDocs) {
-                Document document = LuceneDao.get().getDocument(doc.doc);
+                Document document = LuceneService.get().getDocument(doc.doc);
                 String id = document.get("ID");
                 if (id == null) {
                     logger.warn("document.get(ID) returned null. should not happen.");
@@ -228,7 +228,7 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
      * @throws DAOException
      */
     public List<Event> getRecentEvents(int num) throws DAOException {
-        TopDocs docs = LuceneDao.get().getRecentDocuments(num);
+        TopDocs docs = LuceneService.get().getRecentDocuments(num);
         return convertToEventList(docs);
     }
 
@@ -245,7 +245,7 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
     }
 
     public List<Event> getRecentCategoryEvents(String category, int maxDocument) throws DAOException {
-        TopDocs docs = LuceneDao.get().getRecentCategoryDocuments(category, maxDocument);
+        TopDocs docs = LuceneService.get().getRecentCategoryDocuments(category, maxDocument);
         return convertToEventList(docs);
     }
 
@@ -444,7 +444,7 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
             // private でなければ Lucene にデータ挿入して検索ができるようにする
             if (!eventEmbryo.isPrivate() && !eventEmbryo.isPreview()) {
                 Document doc = makeDocument(eventEmbryo.getId(), eventEmbryo);
-                LuceneDao.get().addDocument(doc);
+                LuceneService.get().addDocument(doc);
             }
 
             // Feed Dao にも挿入。
@@ -533,10 +533,10 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
 
             // private でなければ Lucene にデータ挿入
             if (eventEmbryo.isPrivate() || eventEmbryo.isPreview()) {
-                LuceneDao.get().removeDocument(event.getId());
+                LuceneService.get().removeDocument(event.getId());
             } else {
                 Document doc = makeDocument(event.getId(), eventEmbryo);
-                LuceneDao.get().updateDocument(doc);
+                LuceneService.get().updateDocument(doc);
             }
             con.commit();
         } finally {
@@ -552,7 +552,7 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
             factory.getEventAccess().remove(con, eventId);
 
             // Lucandra のデータを抜く
-            LuceneDao.get().removeDocument(eventId);
+            LuceneService.get().removeDocument(eventId);
 
             con.commit();
         } finally {
@@ -595,10 +595,10 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
 
             // private でなければ Lucene にデータ挿入
             if (event.isPrivate()) {
-                LuceneDao.get().removeDocument(event.getId());
+                LuceneService.get().removeDocument(event.getId());
             } else {
                 Document doc = makeDocument(event.getId(), event);
-                LuceneDao.get().updateDocument(doc);
+                LuceneService.get().updateDocument(doc);
             }
             con.commit();
         } finally {
@@ -612,20 +612,20 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
-            LuceneDao.get().truncate();
+            LuceneService.get().truncate();
             DataIterator<Event> it = factory.getEventAccess().getIterator(con);
             try {
                 while (it.hasNext()) {
                     Event event = it.next();
                     if (event == null) { continue; }
                     if (event.isPrivate()) {
-                        LuceneDao.get().removeDocument(event.getId());
-                    } else if (LuceneDao.get().hasDocument(event.getId())) {
+                        LuceneService.get().removeDocument(event.getId());
+                    } else if (LuceneService.get().hasDocument(event.getId())) {
                         Document doc = makeDocument(event.getId(), event);
-                        LuceneDao.get().updateDocument(doc);
+                        LuceneService.get().updateDocument(doc);
                     } else {
                         Document doc = makeDocument(event.getId(), event);
-                        LuceneDao.get().addDocument(doc);
+                        LuceneService.get().addDocument(doc);
                     }
                 }
             } finally {
@@ -1190,7 +1190,7 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         try {
             List<Event> events = new ArrayList<Event>();
             for (ScoreDoc doc : docs.scoreDocs) {
-                Document document = LuceneDao.get().getDocument(doc.doc);
+                Document document = LuceneService.get().getDocument(doc.doc);
                 String id = document.get("ID");
                 if (id == null) { continue; }
 
