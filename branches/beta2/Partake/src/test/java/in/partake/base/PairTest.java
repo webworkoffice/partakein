@@ -1,5 +1,7 @@
 package in.partake.base;
 
+import java.util.HashMap;
+
 import in.partake.base.ComparablePair;
 
 import static org.hamcrest.Matchers.*;
@@ -45,5 +47,20 @@ public class PairTest {
     @Test(expected = NullPointerException.class)
     public void testCompareToNull() {
     	new ComparablePair<Integer, Integer>(1, 2).compareTo(null);
+    }
+    
+    @Test
+    public void testForHashMap() {
+        HashMap<Pair<String, String>, String> map = new HashMap<Pair<String,String>, String>();
+        
+        map.put(new Pair<String, String>("s1", "t1"), "v1");
+        map.put(new Pair<String, String>("s1", "t2"), "v2");
+        map.put(new Pair<String, String>("s2", "t1"), "v3");
+        map.put(new Pair<String, String>("s2", "t2"), "v4");
+
+        Assert.assertThat(map.get(new Pair<String, String>("s1", "t1")), is("v1"));
+        Assert.assertThat(map.get(new Pair<String, String>("s1", "t2")), is("v2"));
+        Assert.assertThat(map.get(new Pair<String, String>("s2", "t1")), is("v3"));
+        Assert.assertThat(map.get(new Pair<String, String>("s2", "t2")), is("v4"));
     }
 }

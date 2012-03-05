@@ -1,31 +1,15 @@
 package in.partake.base;
 
-public class KeyValuePair {
-	public String key;
-	public String value;
-	
-	public KeyValuePair() {
-		
-	}
-	
+public class KeyValuePair extends Pair<String, String> {	
 	public KeyValuePair(String key, String value) {
-		this.key = key;
-		this.value = value;
+	    super(key, value);
 	}
 		
 	public String getKey() {
-		return key;
+	    return getFirst();
 	}
 	
 	public String getValue() {
-		return value;
-	}
-	
-	public void setKey(String key) {
-		this.key = key;
-	}
-	
-	public void setValue(String value) {
-		this.value = value;
-	}
+		return getSecond();
+	}	
 }
