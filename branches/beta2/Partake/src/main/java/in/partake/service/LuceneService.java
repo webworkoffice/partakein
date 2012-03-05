@@ -1,7 +1,7 @@
 package in.partake.service;
 
 import in.partake.base.PartakeRuntimeException;
-import in.partake.base.Util;
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
@@ -147,7 +147,7 @@ public class LuceneService {
 	public TopDocs getRecentDocuments(int n) throws DAOException {
 		try {
 			long current = new Date().getTime();
-			Query query = new TermRangeQuery("DEADLINE-TIME", Util.getTimeString(current), Util.getTimeString(Long.MAX_VALUE), true, true);
+			Query query = new TermRangeQuery("DEADLINE-TIME", TimeUtil.getTimeString(current), TimeUtil.getTimeString(Long.MAX_VALUE), true, true);
 
 			Sort sort = new Sort(new SortField("CREATED-AT", SortField.STRING, true));
 
@@ -186,7 +186,7 @@ public class LuceneService {
 			if (beforeDeadlineOnly) {
 				long current = new Date().getTime();
 				if (EventCategory.getAllEventCategory().equals(category) || "".equals(category)) {
-					Query filterQuery = new TermRangeQuery("DEADLINE-TIME", Util.getTimeString(current), Util.getTimeString(Long.MAX_VALUE), true, true);
+					Query filterQuery = new TermRangeQuery("DEADLINE-TIME", TimeUtil.getTimeString(current), TimeUtil.getTimeString(Long.MAX_VALUE), true, true);
 					filter = new QueryWrapperFilter(filterQuery);
 				} else {
 					if (!EventCategory.isValidCategoryName(category)) {
@@ -194,7 +194,7 @@ public class LuceneService {
 					}
 					BooleanQuery filterQuery = new BooleanQuery();
 					filterQuery.add(new BooleanClause(new TermQuery(new Term("CATEGORY", category)), Occur.MUST));
-					filterQuery.add(new BooleanClause(new TermRangeQuery("DEADLINE-TIME", Util.getTimeString(current), Util.getTimeString(Long.MAX_VALUE), true, true), Occur.MUST));
+					filterQuery.add(new BooleanClause(new TermRangeQuery("DEADLINE-TIME", TimeUtil.getTimeString(current), TimeUtil.getTimeString(Long.MAX_VALUE), true, true), Occur.MUST));
 					filter = new QueryWrapperFilter(filterQuery);
 				}
 			} else {

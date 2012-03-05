@@ -10,10 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.Formatter;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -46,35 +43,6 @@ public final class Util {
 	        return false;
 	    }
 	}
-
-	// ----------------------------------------------------------------------
-	// Time
-	// TODO: Move to TimeUtil.
-
-	public static Date dateFromTimeString(String timeString) {
-		try {
-			return new Date(Long.parseLong(timeString));
-		} catch (NumberFormatException e) {
-		    logger.error("dateFromTimeString failed.", e);
-			return null;
-		}
-	}
-
-    public static String getTimeString(Date date) {
-        return getTimeString(date.getTime());
-    }
-
-    public static String getTimeString(long time) {
-        return new Formatter().format("%020d", time).toString();
-    }
-
-    public static String getReversedTimeString(Date date) {
-        return getReversedTimeString(date.getTime());
-    }
-
-    public static String getReversedTimeString(long time) {
-        return new Formatter().format("%020d", Long.MAX_VALUE - time).toString();
-    }
 
 	// ----------------------------------------------------------------------
 	// Text

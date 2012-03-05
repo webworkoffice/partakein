@@ -1,6 +1,7 @@
 package in.partake.model.daofacade.deprecated;
 
 import in.partake.base.Function;
+import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.model.CommentEx;
 import in.partake.model.EnrollmentEx;
@@ -1175,9 +1176,9 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         Document doc = new Document();
         doc.add(new Field("ID", eventId, Store.YES, Index.NOT_ANALYZED));
         doc.add(new Field("CATEGORY", eventEmbryo.getCategory(), Store.NO, Index.NOT_ANALYZED, TermVector.WITH_POSITIONS));
-        doc.add(new Field("CREATED-AT", Util.getTimeString(eventEmbryo.getCreatedAt().getTime()), Store.NO, Index.NOT_ANALYZED));
-        doc.add(new Field("BEGIN-TIME", Util.getTimeString(beginTime), Store.NO, Index.NOT_ANALYZED));
-        doc.add(new Field("DEADLINE-TIME", Util.getTimeString(deadlineTime), Store.NO, Index.NOT_ANALYZED));
+        doc.add(new Field("CREATED-AT", TimeUtil.getTimeString(eventEmbryo.getCreatedAt().getTime()), Store.NO, Index.NOT_ANALYZED));
+        doc.add(new Field("BEGIN-TIME", TimeUtil.getTimeString(beginTime), Store.NO, Index.NOT_ANALYZED));
+        doc.add(new Field("DEADLINE-TIME", TimeUtil.getTimeString(deadlineTime), Store.NO, Index.NOT_ANALYZED));
         doc.add(new Field("TITLE", eventEmbryo.getTitle(), Store.NO, Index.ANALYZED, TermVector.WITH_POSITIONS));
         doc.add(new Field("CONTENT", builder.toString(), Store.NO, Index.ANALYZED, TermVector.WITH_POSITIONS));
 
