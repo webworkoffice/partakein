@@ -9,7 +9,7 @@ import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
 import net.sf.json.JSONObject;
 
-public class RemoveCalendarAPI extends AbstractPartakeAPI {
+public class RevokeCalendarAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
