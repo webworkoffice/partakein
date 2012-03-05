@@ -22,12 +22,7 @@ public class RemoveAttendantAPI extends AbstractPartakeAPI {
         if (!checkCSRFToken())
             return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
         
-        String eventId = getParameter("eventId");
-        if (StringUtils.isEmpty(eventId))
-            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
-        if (!Util.isUUID(eventId))
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
-
+        String eventId = getValidEventIdParameter();
         String userId = getValidUserIdParameter();
             
         EventEx event = EventService.get().getEventExById(eventId);

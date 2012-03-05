@@ -1,5 +1,6 @@
 package in.partake.controller.api.event;
 
+import in.partake.base.PartakeException;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
@@ -16,12 +17,8 @@ public class GetAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected String doExecute() throws DAOException {
-        String eventId = getParameter("eventId");
-        if (StringUtils.isBlank(eventId))
-            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);        
-        if (!Util.isUUID(eventId))
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+    protected String doExecute() throws DAOException, PartakeException {
+        String eventId = getValidEventIdParameter();
         
         EventEx event = EventService.get().getEventExById(eventId);
         if (event == null) { return renderInvalid(UserErrorCode.INVALID_EVENT_ID); } 
