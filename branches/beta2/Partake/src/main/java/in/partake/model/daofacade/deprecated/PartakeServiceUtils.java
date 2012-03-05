@@ -11,14 +11,11 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.ShortenedURLData;
-import in.partake.model.dto.TwitterLinkage;
-import in.partake.model.dto.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
