@@ -4,11 +4,11 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.service.DBService;
 
 public abstract class Transaction<S, T> {
-    public final T transaction(S data) throws Exception {
+    public final T transaction(S param) throws Exception {
         PartakeConnection con = DBService.getPool().getConnection();
         try {
             con.beginTransaction();
-            T result = doTransaction(con, data);
+            T result = doTransaction(con, param);
             con.commit();
             
             return result;

@@ -17,9 +17,9 @@ public class User extends PartakeModel<User> {
     @Column
     private String  twitterId;
     @Column
-    private Date    lastLoginAt; //
+    private Date    lastLoginAt;
     @Column
-    private String  calendarId; // TODO: なんでここに calendarId がいるんだっけ...
+    private String  calendarId;
     
     public User() {
         // do nothing
