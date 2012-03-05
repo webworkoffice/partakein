@@ -1,6 +1,6 @@
 package in.partake.model.dto;
 
-import in.partake.base.Util;
+import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.resource.Constants;
@@ -653,7 +653,7 @@ public class Event extends PartakeModel<Event> {
         Date deadline = getDeadline();
         if (deadline == null) { deadline = getBeginDate(); }
 
-        return now.before(Util.halfDayBefore(deadline));
+        return now.before(TimeUtil.halfDayBefore(deadline));
     }
 
     /**

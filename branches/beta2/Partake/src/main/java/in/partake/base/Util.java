@@ -51,9 +51,6 @@ public final class Util {
 	// Time
 	// TODO: Move to TimeUtil.
 
-    // TODO: Maybe these methods are used only in Cassandra port.
-	// We don't need these methods any more. In that case we should dispose
-	// this code.
 	public static Date dateFromTimeString(String timeString) {
 		try {
 			return new Date(Long.parseLong(timeString));
@@ -77,16 +74,6 @@ public final class Util {
 
     public static String getReversedTimeString(long time) {
         return new Formatter().format("%020d", Long.MAX_VALUE - time).toString();
-    }
-
-    // TODO: Use TimeUtil instead.
-    public static Date oneDayBefore(Date date) {
-        return new Date(date.getTime() - 1000 * 3600 * 24);
-    }
-
-    // TODO: Use TimeUtil instead.
-    public static Date halfDayBefore(Date date) {
-        return new Date(date.getTime() - 1000 * 3600 * 12);
     }
 
 	// ----------------------------------------------------------------------

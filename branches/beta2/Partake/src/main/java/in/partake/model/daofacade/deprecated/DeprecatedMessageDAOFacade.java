@@ -213,7 +213,7 @@ public final class DeprecatedMessageDAOFacade extends DeprecatedPartakeDAOFacade
         //    2.1. まだメッセージが送られていない
         //    2.2. 前回送った時刻が締め切り２４時間以上前で、かつ送った時刻より１時間以上経過している。
 
-        if (needsToSend(now, Util.oneDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineOneday())) {
+        if (needsToSend(now, TimeUtil.oneDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineOneday())) {
             String message = "[PARTAKE] 締め切り１日前です。参加・不参加を確定してください。 " + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
             sendNotificationOnlyForReservedParticipants(con, event, message);
@@ -223,7 +223,7 @@ public final class DeprecatedMessageDAOFacade extends DeprecatedPartakeDAOFacade
         }
 
         // 締め切り１２時間前になっても RESERVED な人がいればメッセージを送付する。
-        if (needsToSend(now, Util.halfDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineHalfday())) {
+        if (needsToSend(now, TimeUtil.halfDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineHalfday())) {
             String message = "[PARTAKE] 締め切り１２時間前です。参加・不参加を確定してください。 ３時間前までに確定されない場合、キャンセル扱いとなります。" + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
             sendNotificationOnlyForReservedParticipants(con, event, message);
@@ -234,7 +234,7 @@ public final class DeprecatedMessageDAOFacade extends DeprecatedPartakeDAOFacade
 
         // イベント１日前で、参加が確定している人にはメッセージを送付する。
         // 参加が確定していない人には、RESERVED なメッセージが送られている。
-        if (needsToSend(now, Util.oneDayBefore(beginDate), reminderStatus.getSentDateOfBeforeTheDay())) {
+        if (needsToSend(now, TimeUtil.oneDayBefore(beginDate), reminderStatus.getSentDateOfBeforeTheDay())) {
             String message = "[PARTAKE] イベントの１日前です。あなたの参加は確定しています。 " + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
             sendNotificationOnlyForParticipants(con, event, message);
