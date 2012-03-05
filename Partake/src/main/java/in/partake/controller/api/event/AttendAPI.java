@@ -22,10 +22,7 @@ public class AttendAPI extends AbstractPartakeAPI {
             return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
 
         String userId = getValidUserIdParameter();
-
-        String eventId = getParameter("eventId");
-        if (eventId == null)
-            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
+        String eventId = getValidEventIdParameter();
         
         String status = getParameter("status");
         if (status == null || !AttendanceStatus.isValueOf(status))

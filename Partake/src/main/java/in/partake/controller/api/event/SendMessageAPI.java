@@ -14,18 +14,14 @@ public class SendMessageAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected String doExecute() throws DAOException {
+    protected String doExecute() throws DAOException, PartakeException {
         UserEx user = getLoginUser();
         if (user == null)
             return renderLoginRequired();
         if (!checkCSRFToken())
             return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
 
-        String eventId = getParameter("eventId");
-        if (eventId == null)
-            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
-        if (!Util.isUUID(eventId))
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+        String eventId = getValidEventIdParameter();
 
         String message = getParameter("message");
         if (StringUtils.isBlank(message))

@@ -1,5 +1,6 @@
 package in.partake.controller.api.event;
 
+import in.partake.base.PartakeException;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.CommentEx;
@@ -13,7 +14,7 @@ public class RemoveCommentAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected String doExecute() throws DAOException {
+    protected String doExecute() throws DAOException, PartakeException {
         UserEx user = getLoginUser();
         if (user == null)
             return renderLoginRequired();
@@ -27,11 +28,7 @@ public class RemoveCommentAPI extends AbstractPartakeAPI {
         if (!Util.isUUID(commentId))
             return renderInvalid(UserErrorCode.INVALID_COMMENT_ID);
 
-        String eventId = getParameter("eventId");
-        if (eventId == null)
-            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
-        if (!Util.isUUID(eventId))
-            return renderInvalid(UserErrorCode.INVALID_COMMENT_ID);
+        String eventId = getValidEventIdParameter();
 
         // TODO: These code should be in transaction.
         CommentEx comment = EventService.get().getCommentExById(commentId);

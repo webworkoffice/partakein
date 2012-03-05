@@ -1,5 +1,6 @@
 package in.partake.controller.action.event;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.EventService;
@@ -14,11 +15,8 @@ public class EventPasscodeAction extends AbstractPartakeAction {
 	
 	private String eventId;
 	
-	// /events/passcode
-	public String doExecute() throws DAOException {
-        eventId = getParameter("eventId");
-        if (eventId == null)
-            return renderInvalid(UserErrorCode.MISSING_EVENT_ID);
+	public String doExecute() throws DAOException, PartakeException {
+        eventId = getValidEventIdParameter();
 
 	    String passcode = getParameter("passcode");
 	    
