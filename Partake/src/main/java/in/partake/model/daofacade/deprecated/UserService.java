@@ -62,21 +62,6 @@ public final class UserService extends PartakeService {
         }
     }
 
-    @Deprecated
-    public UserEx getUserExByUser(User user) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            TwitterLinkage linkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(user.getTwitterId()));
-            con.commit();
-
-            return new UserEx(user, linkage);
-        } finally {
-            con.invalidate();
-        }
-    }
-
     // ----------------------------------------------------------------------
     // Authentication
 
