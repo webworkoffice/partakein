@@ -1,10 +1,12 @@
 package in.partake.model.dao.base;
 
+import in.partake.base.PartakeException;
+import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.service.DBService;
 
 public abstract class Transaction<T> {
-    public final T transaction() throws Exception {
+    public final T transaction() throws DAOException, PartakeException {
         PartakeConnection con = DBService.getPool().getConnection();
         try {
             con.beginTransaction();
@@ -17,5 +19,5 @@ public abstract class Transaction<T> {
         }
     }
     
-    protected abstract T doTransaction(PartakeConnection con) throws Exception;
+    protected abstract T doTransaction(PartakeConnection con) throws DAOException, PartakeException;
 }
