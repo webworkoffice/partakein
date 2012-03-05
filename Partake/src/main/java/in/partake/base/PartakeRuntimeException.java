@@ -50,4 +50,11 @@ public class PartakeRuntimeException extends RuntimeException {
     public UserErrorCode getUserErrorCode() {
         return userErrorCode;
     }
+    
+    public int getStatusCode() {
+        if (serverErrorCode != null)
+            return serverErrorCode.getStatusCode();
+        else
+            return userErrorCode.getStatusCode();
+    }
 }
