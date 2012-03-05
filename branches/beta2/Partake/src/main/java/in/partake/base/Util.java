@@ -1,6 +1,5 @@
 package in.partake.base;
 
-import in.partake.resource.PartakeProperties;
 import in.partake.view.util.Helper;
 
 import java.io.BufferedInputStream;
@@ -18,15 +17,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.rosaloves.bitlyj.Bitly;
-import com.rosaloves.bitlyj.Bitly.Provider;
-import com.rosaloves.bitlyj.BitlyException;
-import com.rosaloves.bitlyj.ShortenedUrl;
 import com.twitter.Regex;
 
 
 public final class Util {
-	private static final Logger logger = Logger.getLogger(Util.class);
+    private static final Logger logger = Logger.getLogger(Util.class);
 	private static final Random random = new Random();
 
 	private static final Pattern REMOVETAG_PATTERN = Pattern.compile("(<!--.+?-->)|(<.+?>)", Pattern.DOTALL | Pattern.MULTILINE);
@@ -233,26 +228,5 @@ public final class Util {
             logger.warn("safely returns empty string.", e);
             return "";
         }
-    }
-
-    /**
-     * URL を bitly で短縮する。
-     * TODO: これがここにいるのはよくないんじゃないかなー。URLService 的なものを作った方がよいような気がする。
-     *
-     * @param sourceURL
-     * @return
-     */
-    public static String callBitlyShortenURL(String sourceURL) throws BitlyException {
-    	if (sourceURL.startsWith("http://localhost") || sourceURL.startsWith("http://127.0.0.1")) {  
-    		// bitly API may throw Exception if its argument means localhost
-    		logger.debug(String.format("avoid shortening URL(%s)", sourceURL));
-    		return sourceURL;
-    	}
-        final String bitlyUserName = PartakeProperties.get().getBitlyUserName();
-        final String bitlyAPIKey = PartakeProperties.get().getBitlyAPIKey();
-        final Provider bitly = Bitly.as(bitlyUserName, bitlyAPIKey);
-
-        ShortenedUrl bUrl = bitly.call(Bitly.shorten(sourceURL));
-        return bUrl.getShortUrl().toString();
     }
 }

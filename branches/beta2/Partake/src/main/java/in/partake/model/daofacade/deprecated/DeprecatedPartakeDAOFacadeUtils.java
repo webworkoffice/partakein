@@ -1,6 +1,5 @@
 package in.partake.model.daofacade.deprecated;
 
-import in.partake.base.Util;
 import in.partake.model.CommentEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
@@ -16,6 +15,7 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.ShortenedURLData;
+import in.partake.service.BitlyService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,12 +80,13 @@ class DeprecatedPartakeDAOFacadeUtils {
     }
 
     public static String getShortenedURL(PartakeConnection con, PartakeDAOFactory factory, Event event) throws DAOException {
+        // TODO: Connection 掴んだまま BitlyService 呼び出すとか狂気の沙汰すぎる。
         ShortenedURLData shortenedURLData = factory.getURLShortenerAccess().findByURL(con, event.getEventURL());
         if (shortenedURLData == null) {
             Date now = new Date();
             try {
                 if (bitlyRateLimitExceededTime == null || now.before(new Date(bitlyRateLimitExceededTime.getTime() + 1000 * 1800))) { // rate limit が出ていたら 30 分待つ。
-                    String bitlyShortenedURL = Util.callBitlyShortenURL(event.getEventURL());
+                    String bitlyShortenedURL = BitlyService.callBitlyShortenURL(event.getEventURL());
                     shortenedURLData = new ShortenedURLData(event.getEventURL(), "bitly", bitlyShortenedURL); 
                     factory.getURLShortenerAccess().put(con, shortenedURLData);
                 }
