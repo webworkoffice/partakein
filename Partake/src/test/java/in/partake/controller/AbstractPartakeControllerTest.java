@@ -153,7 +153,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     protected void assertResultForbidden(ActionProxy proxy) throws Exception {
         // status code should be 403
         // Assert.assertEquals(403, response.getStatus());
-        Assert.assertTrue(response.getRedirectedUrl().startsWith("/forbidden"));
+        Assert.assertTrue(response.getRedirectedUrl().startsWith("/prohibited"));
     }
 
     protected void assertResultNotFound(ActionProxy proxy) throws Exception {
