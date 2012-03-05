@@ -28,25 +28,19 @@
 			};
 			
 			return $.post('/api/account/events', arg);
+		},
+		
+		removeOpenID: function(identifier) {
+			var arg = {
+				sessionToken: this.sessionToken, 
+				identifier: identifier
+			};
+			
+			return $.post('/api/account/removeOpenID', arg);
 		}
 	};
 	
 	// TODO: All methods should be moved to the account object.
-	
-	/**
-	 * Removes OpenID.
-	 * Usage: 
-	 *   partake.removeOpenID(...).success(function(json) { ... }).error(function(json) { ... });
-	 */
-	Partake.prototype.removeOpenID = function(identifier) {
-		var arg = {
-			sessionToken: this.sessionToken, 
-			identifier: identifier
-		};
-		
-		return $.post('/api/account/removeOpenID', arg);
-	};
-
 	Partake.prototype.setPreference = function(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically) {
 		var arg = {
 			sessionToken: this.sessionToken,

@@ -46,13 +46,22 @@
               		
               		spinner.show();
               		$('#setPreferenceButton').attr('disabled', '');
-              		partake.setPreference(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically).success(function(json) {
+              		partake.setPreference(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically)
+              		.success(function(json) {
               			$('#setPreferenceMessage').hide();
               			$('#setPreferenceMessage').text("設定を保存しました。");
               			$('#setPreferenceMessage').fadeIn("fast");
               			$('#setPreferenceButton').removeAttr("disabled");
             			spinner.hide();
-            		}).error(function(xhr) {
+            		})
+            		.error(function(xhr) {
+            			var json = null;
+						try {
+							json = $.parseJSON(xhr.responseText);
+						} catch (e) {
+							alert('レスポンスが JSON 形式ではありません。');
+						}
+
               			$('#setPreferenceMessage').hide();
               			$('#setPreferenceMessage').text("設定の保存に失敗しました。: " + json.reason);
               			$('#setPreferenceMessage').fadeIn("fast");
