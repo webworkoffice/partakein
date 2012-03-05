@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.TimeZone;
 
 /**
@@ -118,5 +119,29 @@ public class TimeUtil {
 
     public static Date oneDayAfter(Date date) {
         return new Date(date.getTime() + 1000 * 3600 * 24);
+    }
+    
+    public static Date dateFromTimeString(String timeString) {
+        try {
+            return new Date(Long.parseLong(timeString));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static String getTimeString(Date date) {
+        return getTimeString(date.getTime());
+    }
+
+    public static String getTimeString(long time) {
+        return new Formatter().format("%020d", time).toString();
+    }
+
+    public static String getReversedTimeString(Date date) {
+        return getReversedTimeString(date.getTime());
+    }
+
+    public static String getReversedTimeString(long time) {
+        return new Formatter().format("%020d", Long.MAX_VALUE - time).toString();
     }
 }
