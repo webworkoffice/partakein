@@ -73,6 +73,6 @@ public abstract class PartakeConnection {
     public abstract void beginTransaction() throws DAOException;
     public abstract void commit() throws DAOException;
     public abstract void rollback() throws DAOException;
-
+    public abstract boolean isInTransaction() throws DAOException;
 }
 

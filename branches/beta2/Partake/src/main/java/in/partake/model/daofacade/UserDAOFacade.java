@@ -22,7 +22,6 @@ public class UserDAOFacade extends AbstractPartakeDAOFacade {
 
         // TODO: そのうち、user.getCalendarId() を廃止する予定。
         // とりあえずそれまでは user に書いてある calendarId より、こちらに書いてある calendarId を優先しておく。
-        // -> むしろ廃止するのは CalendarAccess の方。User があれば不要。
         {
             CalendarLinkage linkage = calendarDAO.findByUserId(con, userId);
             if (linkage != null) {
