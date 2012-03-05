@@ -5,7 +5,6 @@ import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.dto.Event;
-import in.partake.resource.UserErrorCode;
 
 import org.apache.commons.lang.StringUtils;
 

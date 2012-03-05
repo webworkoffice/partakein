@@ -1,7 +1,6 @@
 package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
-import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
@@ -9,8 +8,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
-
-import org.apache.commons.lang.StringUtils;
 
 public class RemoveAttendantAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;

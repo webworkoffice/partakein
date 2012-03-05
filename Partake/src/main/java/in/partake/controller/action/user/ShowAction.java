@@ -10,7 +10,6 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
-import in.partake.resource.UserErrorCode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +18,6 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
 
 import com.opensymphony.xwork2.ActionContext;
 

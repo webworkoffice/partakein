@@ -3,27 +3,21 @@ package in.partake.service.mock;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.doThrow;
+import in.partake.base.TimeUtil;
+import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
+import in.partake.model.dao.access.IUserAccess;
+import in.partake.model.dao.mock.MockConnection;
+import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.UserService.UserCount;
+import in.partake.model.dto.User;
 
 import java.util.Date;
 
 import junit.framework.Assert;
-import in.partake.base.TimeUtil;
-import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
-import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IUserAccess;
-import in.partake.model.dao.access.IUserPreferenceAccess;
-import in.partake.model.dao.mock.MockConnection;
-import in.partake.model.dao.mock.MockConnectionPool;
-import in.partake.model.daofacade.deprecated.UserService;
-import in.partake.model.daofacade.deprecated.UserService.UserCount;
-import in.partake.model.dto.User;
-import in.partake.model.dto.UserPreference;
 
 import org.junit.Before;
 import org.junit.Test;

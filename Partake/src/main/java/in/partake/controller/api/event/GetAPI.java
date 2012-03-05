@@ -1,7 +1,6 @@
 package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
-import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
