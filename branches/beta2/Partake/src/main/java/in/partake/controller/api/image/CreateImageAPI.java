@@ -44,20 +44,37 @@ public class CreateImageAPI extends AbstractPartakeAPI {
         if (!Util.isImageContentType(contentType))
             return renderInvalid(UserErrorCode.INVALID_IMAGE_CONTENTTYPE);
         
-        String imageId = new Transaction<UserEx, String>() {
-            @Override
-            protected String doTransaction(PartakeConnection con, UserEx user) throws Exception {
-                return CreateImageAPI.this.doTransaction(con, user);
-            }
-        }.transaction(user);
+        String imageId = new CreateImageAPITransaction(user, file, contentType).transaction();
 
         JSONObject obj = new JSONObject();
         obj.put("imageId", imageId);
         return renderOK(obj);
     }
+        
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public void setFileContentType(String contentType) {
+        this.contentType = contentType;
+    }
+}
+
+class CreateImageAPITransaction extends Transaction<String> {
+    private UserEx user;
+    private File file;
+    private String contentType;
+
     
-    private String doTransaction(PartakeConnection con, UserEx user) throws DAOException, IOException {
-        // TODO: We should not load image in memory.
+    CreateImageAPITransaction(UserEx user, File file, String contentType) {
+        this.user = user;
+        this.file = file;
+        this.contentType = contentType;
+    }
+    
+    // TODO: We should not load image in memory here. However, sending image from DB directly will cause
+    // another problem, e.g. DDOS.
+    public String doTransaction(PartakeConnection con) throws DAOException, IOException {
         IBinaryAccess dao = DBService.getFactory().getBinaryAccess();
 
         byte[] foreImageByteArray = Util.getContentOfFile(file);
@@ -67,13 +84,5 @@ public class CreateImageAPI extends AbstractPartakeAPI {
         dao.put(con, imageEmbryo);
         
         return imageId;
-    }
-    
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public void setFileContentType(String contentType) {
-        this.contentType = contentType;
     }
 }
