@@ -38,7 +38,6 @@ public final class Constants {
     public static final String ATTR_ERROR_DESCRIPTION = "ERROR_DESCRIPTION";
 
     // TODO: Remove these.
-    public static final String ATTR_EVENTSET = "eventset";
     public static final String ATTR_EVENT = "event";
     public static final String ATTR_RECENT_EVENTS = "recent_events";
 
@@ -73,8 +72,6 @@ public final class Constants {
     public static final String ATTR_EVENT_RELATIONS = "ATTR_EVENT_RELATIONS";
 
     public static final String ATTR_NO_HEADER_MESSAGES = "NO_HEADER_MESSAGES";
-
-    public static final String ATTR_QUESTIONNAIRES = "QUESTIONNAIRES";
 
     public static final String ATTR_BOOKMARK_COUNT = "BOOKMARK_COUNT";
 
