@@ -1,5 +1,6 @@
 package in.partake.controller.api.event;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
@@ -13,17 +14,15 @@ public class AttendAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected String doExecute() throws DAOException {
+    protected String doExecute() throws DAOException, PartakeException {
         UserEx user = getLoginUser();
         if (user == null)
             return renderLoginRequired();
         if (!checkCSRFToken())
             return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
 
-        String userId = getParameter("userId");
-        if (userId == null)
-            return renderInvalid(UserErrorCode.MISSING_USER_ID);
-            
+        String userId = getValidUserIdParameter();
+
         String eventId = getParameter("eventId");
         if (eventId == null)
             return renderInvalid(UserErrorCode.MISSING_EVENT_ID);

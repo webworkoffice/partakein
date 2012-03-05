@@ -25,11 +25,7 @@ public class MakeAttendantVIPAPI extends AbstractPartakeAPI {
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
-        String userId = getParameter("userId");
-        if (userId == null)
-            return renderInvalid(UserErrorCode.MISSING_USER_ID);
-        if (!Util.isUUID(userId))
-            return renderInvalid(UserErrorCode.INVALID_USER_ID);
+        String userId = getValidUserIdParameter();
 
         boolean vip = "true".equalsIgnoreCase(getParameter("vip"));
 

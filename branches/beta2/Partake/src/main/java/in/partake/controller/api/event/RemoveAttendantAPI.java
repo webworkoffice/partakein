@@ -28,11 +28,7 @@ public class RemoveAttendantAPI extends AbstractPartakeAPI {
         if (!Util.isUUID(eventId))
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
-        String userId = getParameter("userId");
-        if (userId == null)
-            return renderInvalid(UserErrorCode.MISSING_USER_ID);
-        if (!Util.isUUID(userId))
-            return renderInvalid(UserErrorCode.INVALID_USER_ID);
+        String userId = getValidUserIdParameter();
             
         EventEx event = EventService.get().getEventExById(eventId);
         if (event == null)

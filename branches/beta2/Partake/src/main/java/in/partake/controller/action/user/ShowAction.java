@@ -1,5 +1,6 @@
 package in.partake.controller.action.user;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -27,11 +28,9 @@ public class ShowAction extends AbstractPartakeAction {
 
     // ----------------------------------------------------------------------
 
-    public String doExecute() throws DAOException {
+    public String doExecute() throws DAOException, PartakeException {
         // TODO MypageController#show() のコードをほぼ流用できる
-        String userId = getParameter("userId");
-        if (StringUtils.isEmpty(userId))
-            return renderInvalid(UserErrorCode.MISSING_USER_ID);
+        String userId = getValidUserIdParameter();
 
         UserEx user = UserService.get().getUserExById(userId);
         if (user == null)
