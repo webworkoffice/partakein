@@ -1,26 +1,26 @@
-package in.partake.mashup.hatena;
+package in.partake.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import in.partake.mashup.hatena.HatenaBookmarkCountLoader;
+import in.partake.service.HatenaBookmarkService;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 
-public class HatenaBookmarkCountLoaderTest {
+public class HatenaBookmarkServiceTest {
 
     @Test
     @Ignore("Too Slow!")
     public void testTwitterIsBookmarkedOver10000() {
-        HatenaBookmarkCountLoader loader = new HatenaBookmarkCountLoader();
+        HatenaBookmarkService loader = new HatenaBookmarkService();
         int bookmarkCount = loader.loadCountOfAllPages("http://twitter.com/");
         assertTrue(bookmarkCount > 10000);
     }
 
     @Test
     public void testUnknownServerIsNotBookmarked() {
-    	HatenaBookmarkCountLoader loader = new HatenaBookmarkCountLoader();
+    	HatenaBookmarkService loader = new HatenaBookmarkService();
             int bookmarkCount = loader.loadCountOfAllPages("http://unknown.partake.in/");
             assertEquals(0, bookmarkCount);
     }
