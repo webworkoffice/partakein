@@ -1,7 +1,9 @@
 package in.partake.controller.api.account;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
+import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.base.Transaction;
@@ -13,7 +15,7 @@ public class SetPreferenceAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public String doExecute() throws Exception {
+    public String doExecute() throws DAOException, PartakeException {
         UserEx user = getLoginUser();
         if (user == null)
             return renderLoginRequired();
@@ -47,7 +49,7 @@ class SetPreferenceAPITransaction extends Transaction<Void> {
     /**
      * Updates UserPreference. Null arguments won't be updated.
      */
-    public Void doTransaction(PartakeConnection con) throws Exception {
+    public Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
         PartakeDAOFactory factory = DBService.getFactory();
         
         final UserPreference pref = factory.getUserPreferenceAccess().find(con, user.getId());

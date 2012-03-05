@@ -77,7 +77,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         }
     }
 
-    protected abstract String doExecute() throws Exception;
+    protected abstract String doExecute() throws PartakeException, DAOException;
 
     // ----------------------------------------------------------------------
     // Render
@@ -233,6 +233,11 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         return getValidIdParameter("imageId", UserErrorCode.MISSING_IMAGEID, UserErrorCode.INVALID_IMAGEID);
     }
 
+    protected void ensureValidSessionToken() throws PartakeException {
+        if (!checkCSRFToken())
+            throw new PartakeException(UserErrorCode.INVALID_SECURITY_CSRF);
+    }
+    
     /**
      * take multiple parameters. If there is a single parameter, a new array will be created to return.
      * @param key
@@ -337,6 +342,14 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         UserEx user = getLoginUser();
         if (user == null)
             throw new PartakeException(UserErrorCode.INVALID_LOGIN_REQUIRED);
+        
+        return user;
+    }
+    
+    protected UserEx ensureAdmin() throws PartakeException {
+        UserEx user = ensureLogin();
+        if (!user.isAdministrator())
+            throw new PartakeException(UserErrorCode.INVALID_PROHIBITED);
         
         return user;
     }
