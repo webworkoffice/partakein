@@ -202,7 +202,7 @@
 		<action name="images" class="in.partake.controller.api.account.GetImagesAPI" />
 		
 		<action name="removeOpenID" class="in.partake.controller.api.account.RemoveOpenIDAPI" />
-		<action name="revokeCalendar" class="in.partake.controller.api.account.RemoveCalendarAPI" />
+		<action name="revokeCalendar" class="in.partake.controller.api.account.RevokeCalendarAPI" />
 		<action name="setPreference" class="in.partake.controller.api.account.SetPreferenceAPI" />
 		<action name="sessionToken" class="in.partake.controller.api.account.SessionTokenAPI" />
 	</package>
