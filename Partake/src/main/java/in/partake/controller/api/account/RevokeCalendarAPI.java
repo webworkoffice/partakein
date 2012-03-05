@@ -10,6 +10,9 @@ import in.partake.model.dto.CalendarLinkage;
 import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
+
+import java.util.Map;
+
 import net.sf.json.JSONObject;
 
 public class RevokeCalendarAPI extends AbstractPartakeAPI {
@@ -24,19 +27,24 @@ public class RevokeCalendarAPI extends AbstractPartakeAPI {
         if (!checkCSRFToken())
             return renderInvalid(UserErrorCode.INVALID_SESSION);
 
-        String newCalendarId = new Transaction<UserEx, String>() {
-            @Override
-            protected String doTransaction(PartakeConnection con, UserEx user) throws Exception {
-                return RevokeCalendarAPI.this.doTransaction(con, user);
-            }
-        }.transaction(user);
+        String newCalendarId = new RevokeCalendarAPITransaction(user, session).transaction();
         
         JSONObject obj = new JSONObject();
         obj.put("calendarId", newCalendarId);
         return renderOK(obj);
     }
+}
+
+class RevokeCalendarAPITransaction extends Transaction<String> {
+    private UserEx user;
+    private Map<String, Object> session; // TODO: This is bad.
     
-    protected String doTransaction(PartakeConnection con, UserEx user) throws Exception {
+    public RevokeCalendarAPITransaction(UserEx user, Map<String, Object> session) {
+        this.user = user;
+        this.session = session;
+    }
+    
+    protected String doTransaction(PartakeConnection con) throws Exception {
         PartakeDAOFactory factory = DBService.getFactory();
                 
         String calendarId = user.getCalendarId();
@@ -55,4 +63,5 @@ public class RevokeCalendarAPI extends AbstractPartakeAPI {
 
         return calendarId;
     }
+
 }

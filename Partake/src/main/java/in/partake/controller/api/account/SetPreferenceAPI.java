@@ -9,23 +9,6 @@ import in.partake.model.dto.UserPreference;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
 
-class SetPreferenceParams {
-    UserEx user;
-    Boolean profilePublic;
-    Boolean receivingTwitterMessage;
-    Boolean tweetingAttendanceAutomatically;
-    
-    public SetPreferenceParams(UserEx user, 
-            Boolean profilePublic, 
-            Boolean receivingTwitterMessage,
-            Boolean tweetingAttendanceAutomatically) {
-        this.user = user;
-        this.profilePublic = profilePublic;
-        this.receivingTwitterMessage = receivingTwitterMessage;
-        this.tweetingAttendanceAutomatically = tweetingAttendanceAutomatically;
-    }
-}
-
 public class SetPreferenceAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
@@ -37,38 +20,50 @@ public class SetPreferenceAPI extends AbstractPartakeAPI {
         if (!checkCSRFToken())
             return renderInvalid(UserErrorCode.INVALID_SESSION);
 
-        SetPreferenceParams param = new SetPreferenceParams(
+        new SetPreferenceAPITransaction(
                 user,
                 getBooleanParameter("profilePublic"),
                 getBooleanParameter("receivingTwitterMessage"),
-                getBooleanParameter("tweetingAttendanceAutomatically"));
-        
-        new Transaction<SetPreferenceParams, Void>() {
-            protected Void doTransaction(PartakeConnection con, SetPreferenceParams param) throws Exception {
-                SetPreferenceAPI.this.doTransaction(con, param);
-                return null;
-            }
-        }.transaction(param);
-        
+                getBooleanParameter("tweetingAttendanceAutomatically")
+        ).transaction();
+
         return renderOK();
     }
+}
 
+class SetPreferenceAPITransaction extends Transaction<Void> {
+    UserEx user;
+    Boolean profilePublic;
+    Boolean receivingTwitterMessage;
+    Boolean tweetingAttendanceAutomatically;
+    
+    public SetPreferenceAPITransaction(UserEx user, Boolean profilePublic, Boolean receivingTwitterMessage, Boolean tweetingAttendanceAutomatically) {  
+        this.user = user;
+        this.profilePublic = profilePublic;
+        this.receivingTwitterMessage = receivingTwitterMessage;
+        this.tweetingAttendanceAutomatically = tweetingAttendanceAutomatically;
+    }
+    
     /**
      * Updates UserPreference. Null arguments won't be updated.
      */
-    public void doTransaction(PartakeConnection con, SetPreferenceParams param) throws Exception {
+    public Void doTransaction(PartakeConnection con) throws Exception {
         PartakeDAOFactory factory = DBService.getFactory();
         
-        final UserPreference pref = factory.getUserPreferenceAccess().find(con, param.user.getId());
-        UserPreference newPref = new UserPreference(pref != null ? pref : UserPreference.getDefaultPreference(param.user.getId()));
+        final UserPreference pref = factory.getUserPreferenceAccess().find(con, user.getId());
+        UserPreference newPref = new UserPreference(pref != null ? pref : UserPreference.getDefaultPreference(user.getId()));
         
-        if (param.profilePublic != null)
-            newPref.setProfilePublic(param.profilePublic);
-        if (param.receivingTwitterMessage != null)
-            newPref.setReceivingTwitterMessage(param.receivingTwitterMessage);
-        if (param.tweetingAttendanceAutomatically != null)
-            newPref.setTweetingAttendanceAutomatically(param.tweetingAttendanceAutomatically);
+        if (profilePublic != null)
+            newPref.setProfilePublic(profilePublic);
+        if (receivingTwitterMessage != null)
+            newPref.setReceivingTwitterMessage(receivingTwitterMessage);
+        if (tweetingAttendanceAutomatically != null)
+            newPref.setTweetingAttendanceAutomatically(tweetingAttendanceAutomatically);
         
         factory.getUserPreferenceAccess().put(con, newPref);
+        return null;
     }
+
 }
+
+
