@@ -302,18 +302,6 @@ public final class UserService extends PartakeService {
             con.invalidate();
         }
     }
-
-    public void setUserPreference(UserPreference embryo) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            factory.getUserPreferenceAccess().put(con,  embryo);
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-    }
     
     // ----------------------------------------------------------------------
 
@@ -323,7 +311,7 @@ public final class UserService extends PartakeService {
      * @return count of users
      * @throws DAOException
      */
-    // TODO: UserDAO should have this functionality.
+    // 
     public UserCount countUsers() throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
