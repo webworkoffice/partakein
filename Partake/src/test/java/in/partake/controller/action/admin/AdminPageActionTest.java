@@ -3,6 +3,7 @@ package in.partake.controller.action.admin;
 import in.partake.controller.AbstractPartakeControllerTest;
 import in.partake.model.fixture.TestDataProvider;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -16,6 +17,9 @@ public class AdminPageActionTest extends AbstractPartakeControllerTest {
 
         proxy.execute();
         assertResultSuccess(proxy);
+        
+        AdminPageAction action = (AdminPageAction) proxy.getAction();
+        Assert.assertEquals("admin/index.jsp", action.getLocation());
     }
 
     @Test
@@ -32,6 +36,6 @@ public class AdminPageActionTest extends AbstractPartakeControllerTest {
         ActionProxy proxy = getActionProxy("/admin/");
 
         proxy.execute();
-        assertResultLoginRequired(proxy);
+        assertResultLoginRequired(proxy);        
     }
 }

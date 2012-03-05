@@ -94,13 +94,11 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         if (e.getStatusCode() == 403)
             return renderForbidden();
         
-        if (e.getUserErrorCode() != null)
+        if (e.isUserError())
             return renderInvalid(e.getUserErrorCode(), e.getCause());
-        else if (e.getServerErrorCode() != null)
-            return renderError(e.getServerErrorCode(), e.getCause());    
         
-        assert false;
-        return renderError(ServerErrorCode.LOGIC_ERROR, e.getCause());
+        assert e.isServerError();
+        return renderError(e.getServerErrorCode(), e.getCause());    
     }
 
     // ----------------------------------------------------------------------

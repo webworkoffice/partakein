@@ -1,5 +1,6 @@
 package in.partake.controller;
 
+import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
@@ -7,6 +8,7 @@ import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.TestDatabaseService;
 import in.partake.session.PartakeSession;
+import in.partake.session.SessionUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -129,7 +131,14 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     }
     
     protected void assertResultSuccess(ActionProxy proxy) throws Exception {
+        Assert.assertTrue(proxy.getAction() instanceof AbstractPartakeAction);
+        
+        PartakeSession session = SessionUtil.getSession(); 
+        Assert.assertFalse(session.hasServerErrorCode());
+        Assert.assertFalse(session.hasUserErrorCode());
+        
         Assert.assertEquals(200, response.getStatus());
+        
     }
 
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {

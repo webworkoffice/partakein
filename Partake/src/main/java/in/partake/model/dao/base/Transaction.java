@@ -11,7 +11,9 @@ public abstract class Transaction<T> {
         try {
             con.beginTransaction();
             T result = doTransaction(con);
-            con.commit();
+            
+            if (con.isInTransaction())
+                con.commit();
             
             return result;
         } finally {

@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
 
+import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 
 public class JPAConnection extends PartakeConnection { 
@@ -27,6 +28,11 @@ public class JPAConnection extends PartakeConnection {
     @Override
     public void rollback() throws IllegalStateException, PersistenceException {
         entityManager.getTransaction().rollback();
+    }
+    
+    @Override
+    public boolean isInTransaction() throws DAOException {
+        return entityManager.getTransaction().isActive();
     }
 
     @Override
