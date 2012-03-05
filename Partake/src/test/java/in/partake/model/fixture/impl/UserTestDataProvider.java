@@ -39,9 +39,10 @@ public class UserTestDataProvider extends TestDataProvider<User> {
         dao.truncate(con);
         
         // testUser という id の user がいることを保証する。
-        dao.put(con, new User(USER_ID1, 1, new Date(), null)); 
-        dao.put(con, new User(USER_ID2, 2, new Date(), null)); 
-        dao.put(con, new User(USER_ID3, 3, new Date(), null)); 
+        dao.put(con, new User(USER_ID1, TWITTER_ID1, new Date(), null)); 
+        dao.put(con, new User(USER_ID2, TWITTER_ID2, new Date(), null)); 
+        dao.put(con, new User(USER_ID3, TWITTER_ID3, new Date(), null)); 
+        dao.put(con, new User(USER_ADMIN_ID, TWITTER_ADMIN_ID, new Date(), null)); 
 
         // TODO 上記3ユーザと何が違うのか、UserID命名の意図をコメント
         dao.put(con, new User(EVENT_REMOVE_ID0, 1000, new Date(), null));
