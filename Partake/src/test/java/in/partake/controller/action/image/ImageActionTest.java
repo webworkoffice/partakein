@@ -1,13 +1,11 @@
 package in.partake.controller.action.image;
 
-import in.partake.base.Util;
 import in.partake.controller.AbstractPartakeControllerTest;
 import in.partake.model.fixture.impl.BinaryTestDataProvider;
 
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -15,17 +13,13 @@ import com.opensymphony.xwork2.ActionProxy;
 public class ImageActionTest extends AbstractPartakeControllerTest {
 
     @Test
-    @Ignore("EventTestDataProvider should provide images.")
     public void testToGetImage() throws Exception {
-        ActionProxy proxy = getActionProxy("/events/images/" + BinaryTestDataProvider.IMAGE_ID1);
+        ActionProxy proxy = getActionProxy("/images/" + BinaryTestDataProvider.IMAGE_ID1);
 
         proxy.execute();
         assertResultSuccess(proxy);
 
-        ImageAction action = (ImageAction) proxy.getAction();
-        
-        byte[] data = Util.getContentOfInputStream(action.getInputStream());
-        Assert.assertArrayEquals(BinaryTestDataProvider.BYTE1_CONTENT, data);
+        Assert.assertArrayEquals(BinaryTestDataProvider.BYTE1_CONTENT, response.getContentAsByteArray());
    }
 
     @Test
