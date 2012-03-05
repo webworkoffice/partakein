@@ -1,7 +1,8 @@
-package in.partake.model.dao;
+package in.partake.service;
 
 import in.partake.base.PartakeRuntimeException;
 import in.partake.base.Util;
+import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
@@ -40,13 +41,10 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 /**
- * TODO: LuceneDao っておかしいよなー。あとで直す。
  * @author shinyak
- *
- * TODO: Move LuceneDao to Service layer.
  */
-public class LuceneDao {
-	private static volatile LuceneDao instance;
+public class LuceneService {
+	private static volatile LuceneService instance;
 
 	private IndexWriter indexWriter;
 	private IndexReader indexReader;
@@ -57,21 +55,20 @@ public class LuceneDao {
 	    // Lucene の設定は誤っていることが多く、その場合は RuntimeException が飛ぶことが多い。
 	    // Lucene の設定が誤っているせいであることを示すために、get() したときに Exception が飛ぶようにする。
 	    try { 
-	        instance = new LuceneDao();
+	        instance = new LuceneService();
 	    } catch (RuntimeException e) {
 	        instance = null;
 	    }
 	}
 
-	public static LuceneDao get() {
-	    if (instance == null) {
+	public static LuceneService get() {
+	    if (instance == null)
 	        throw new PartakeRuntimeException(ServerErrorCode.LUCENE_INITIALIZATION_FAILURE);
-	    }
 	    
 	    return instance;
 	}
 
-	private LuceneDao() {
+	private LuceneService() {
 		try {
 		    File indexDirFile = new File(PartakeProperties.get().getLuceneIndexDirectory());
 	        Directory indexDir = FSDirectory.open(indexDirFile);
