@@ -46,15 +46,15 @@ import twitter4j.auth.AccessToken;
  *
  * @author shinyak
  */
-public final class MessageService extends PartakeService {
-    private static final Logger logger = Logger.getLogger(MessageService.class);
-    private static MessageService instance = new MessageService();
+public final class DeprecatedMessageDAOFacade extends DeprecatedPartakeDAOFacade {
+    private static final Logger logger = Logger.getLogger(DeprecatedMessageDAOFacade.class);
+    private static DeprecatedMessageDAOFacade instance = new DeprecatedMessageDAOFacade();
 
-    private MessageService() {
+    private DeprecatedMessageDAOFacade() {
         // do nothing for now.
     }
 
-    public static MessageService get() {
+    public static DeprecatedMessageDAOFacade get() {
         return instance;
     }
 
@@ -109,11 +109,11 @@ public final class MessageService extends PartakeService {
         } catch (TooLongMessageException e) {
             throw new PartakeException(UserErrorCode.INVALID_MESSAGE_TOOLONG);
         }
-        assert (Util.codePointCount(msg) <= MessageService.MESSAGE_MAX_CODEPOINTS);
+        assert (Util.codePointCount(msg) <= DeprecatedMessageDAOFacade.MESSAGE_MAX_CODEPOINTS);
 
         String messageId = addMessage(con, senderUser.getId(), msg,event.getId(), true);
 
-        List<Enrollment> participations = EventService.get().getParticipation(event.getId());
+        List<Enrollment> participations = DeprecatedEventDAOFacade.get().getParticipation(event.getId());
         for (Enrollment participation : participations) {
             boolean sendsMessage = false;
             switch (participation.getStatus()) {

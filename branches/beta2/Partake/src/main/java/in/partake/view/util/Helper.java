@@ -2,8 +2,8 @@ package in.partake.view.util;
 
 import in.partake.base.Util;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
@@ -187,11 +187,11 @@ public final class Helper {
     // TODO: Don't call Service from here!
     public static String enrollmentStatus(User user, Event event) {
         try {
-            ParticipationStatus status = UserService.get().getParticipationStatus(user.getId(), event.getId());
+            ParticipationStatus status = DeprecatedUserDAOFacade.get().getParticipationStatus(user.getId(), event.getId());
 
             switch (status) {
             case ENROLLED: {
-                int order = EventService.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
+                int order = DeprecatedEventDAOFacade.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
                 if (order <= event.getCapacity() || event.getCapacity() == 0) {
                     return "参加";
                 } else {
@@ -199,7 +199,7 @@ public final class Helper {
                 }
             }
             case RESERVED: {
-                int order = EventService.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
+                int order = DeprecatedEventDAOFacade.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
                 if (order <= event.getCapacity() || event.getCapacity() == 0) {
                     return "仮参加";
                 } else {

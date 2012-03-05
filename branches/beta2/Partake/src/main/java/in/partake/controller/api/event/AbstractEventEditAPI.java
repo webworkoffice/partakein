@@ -4,7 +4,7 @@ import in.partake.base.TimeUtil;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
@@ -175,7 +175,7 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
             if (foreImageId != null) {
                 // Checks foreImageId is one of your images.
                 // TODO: We can do this in light-weight way. 
-                BinaryData data = EventService.get().getBinaryData("foreImageId");
+                BinaryData data = DeprecatedEventDAOFacade.get().getBinaryData("foreImageId");
                 if (data == null)
                     invalidParameters.put("foreImageId", "画像IDが不正です。");
                 else if (StringUtils.equals(foreImageId, event.getForeImageId()))
@@ -194,7 +194,7 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
             if (backImageId != null) {
                 // Checks foreImageId is one of your images.
                 // TODO: We can do this in light-weight way. 
-                BinaryData data = EventService.get().getBinaryData("backImageId");
+                BinaryData data = DeprecatedEventDAOFacade.get().getBinaryData("backImageId");
                 if (data == null)
                     invalidParameters.put("backImageId", "画像IDが不正です。");
                 else if (StringUtils.equals(backImageId, event.getForeImageId()))

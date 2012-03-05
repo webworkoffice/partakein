@@ -5,7 +5,7 @@ import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 
@@ -22,14 +22,14 @@ public class RemoveAPI extends AbstractPartakeAPI {
         
         String eventId = getValidEventIdParameter();
 
-        EventEx event = EventService.get().getEventExById(eventId);
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderNotFound();
         
         if (!event.hasPermission(user, UserPermission.EVENT_REMOVE))
             return renderForbidden();
 
-        EventService.get().remove(eventId);
+        DeprecatedEventDAOFacade.get().remove(eventId);
         return renderOK();
     }
 }

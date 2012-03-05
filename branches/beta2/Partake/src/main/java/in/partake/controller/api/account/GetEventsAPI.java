@@ -5,8 +5,8 @@ import in.partake.model.EventParticipation;
 import in.partake.model.EventParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.UserErrorCode;
@@ -56,13 +56,13 @@ public class GetEventsAPI extends AbstractPartakeAPI {
         List<Event> events = new ArrayList<Event>();
 
         if ("draft".equalsIgnoreCase(queryType) && "all".equalsIgnoreCase(finished)) {
-            events.addAll(EventService.get().getDraftEvents(user.getId()));
+            events.addAll(DeprecatedEventDAOFacade.get().getDraftEvents(user.getId()));
         } else if ("manager".equalsIgnoreCase(queryType) && "all".equalsIgnoreCase(finished)) {
             // FIXME: 自分自身が manager に含まれていたら２つでる
-            events.addAll(EventService.get().getEventsOwnedBy(user));
-            events.addAll(EventService.get().getEventsManagedBy(user));
+            events.addAll(DeprecatedEventDAOFacade.get().getEventsOwnedBy(user));
+            events.addAll(DeprecatedEventDAOFacade.get().getEventsManagedBy(user));
         } else if ("participants".equalsIgnoreCase(queryType) && "false".equalsIgnoreCase(finished)) {
-            List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user.getId());
+            List<Event> enrolledEvents = DeprecatedUserDAOFacade.get().getEnrolledEvents(user.getId());
             Date now = new Date();
             for (Event e : enrolledEvents) {
                 if (e == null) { continue; }
@@ -71,7 +71,7 @@ public class GetEventsAPI extends AbstractPartakeAPI {
             }
 
         } else if ("participants".equalsIgnoreCase(queryType) && "true".equalsIgnoreCase(finished)) {
-            List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user.getId());
+            List<Event> enrolledEvents = DeprecatedUserDAOFacade.get().getEnrolledEvents(user.getId());
             Date now = new Date();
             for (Event e : enrolledEvents) {
                 if (e == null) { continue; }
@@ -94,8 +94,8 @@ public class GetEventsAPI extends AbstractPartakeAPI {
         for (Event event : events) {
             if (event == null)
                 continue;
-            int numUsers = EventService.get().getNumOfEnrolledUsers(event.getId());
-            ParticipationStatus status = UserService.get().getParticipationStatus(user.getId(), event.getId());
+            int numUsers = DeprecatedEventDAOFacade.get().getNumOfEnrolledUsers(event.getId());
+            ParticipationStatus status = DeprecatedUserDAOFacade.get().getParticipationStatus(user.getId(), event.getId());
             participations.add(new EventParticipation(event, numUsers, status));
         }
 

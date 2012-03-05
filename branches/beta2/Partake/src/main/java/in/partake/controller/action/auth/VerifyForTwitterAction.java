@@ -3,7 +3,7 @@ package in.partake.controller.action.auth;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
@@ -37,7 +37,7 @@ public class VerifyForTwitterAction extends AbstractPartakeAction {
             session.remove("requestToken");
             session.remove("redirectURL");
 
-            UserEx user = UserService.get().loginUserByTwitter(twitter, accessToken);
+            UserEx user = DeprecatedUserDAOFacade.get().loginUserByTwitter(twitter, accessToken);
             session.put(Constants.ATTR_USER, user);
 
             addActionMessage("ログインしました");

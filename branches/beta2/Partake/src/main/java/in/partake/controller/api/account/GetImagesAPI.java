@@ -4,7 +4,7 @@ import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class GetImagesAPI extends AbstractPartakeAPI {
         if (100 < limit)
             limit = 100;
         
-        List<String> imageIds = EventService.get().getImageIds(user.getId(), offset, limit);
+        List<String> imageIds = DeprecatedEventDAOFacade.get().getImageIds(user.getId(), offset, limit);
         JSONArray array = new JSONArray();
         for (String imageId : imageIds)
             array.add(imageId);

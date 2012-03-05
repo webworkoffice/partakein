@@ -1,7 +1,7 @@
 package in.partake.daemon;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.MessageService;
+import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
 
@@ -34,21 +34,21 @@ class TwitterDaemonTask extends TimerTask {
     
     private void runTwitterReminderTask() throws DAOException {
         logger.info("TwitterReminderTask START");
-        MessageService.get().sendReminders();
+        DeprecatedMessageDAOFacade.get().sendReminders();
         logger.info("TwitterReminderTask END");
     }
     
     private void runStatusChangeTask() throws DAOException {
         logger.info("ParticipationStatusChangeTask START.");
 
-        MessageService.get().sendParticipationStatusChangeNotifications();
+        DeprecatedMessageDAOFacade.get().sendParticipationStatusChangeNotifications();
         logger.info("ParticipationStatusChangeTask END.");
     }
     
     
     private void runTwitterMessageSendingTask() throws DAOException {
         logger.info("DirectMessageSendingTask START");
-        MessageService.get().sendEnvelopes();
+        DeprecatedMessageDAOFacade.get().sendEnvelopes();
         logger.info("DirectMessageSendingTask END");
     }
 }

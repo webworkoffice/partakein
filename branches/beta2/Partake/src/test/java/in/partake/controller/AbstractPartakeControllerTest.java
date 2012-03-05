@@ -2,7 +2,7 @@ package in.partake.controller;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.TestDatabaseService;
@@ -80,7 +80,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         assert actionContext.getSession() != null;
 
-        UserEx user = UserService.get().getUserExById(userId);
+        UserEx user = DeprecatedUserDAOFacade.get().getUserExById(userId);
         if (user == null) {
             throw new RuntimeException("No such user.");
         }

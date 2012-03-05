@@ -11,8 +11,8 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.mock.MockConnection;
-import in.partake.model.daofacade.deprecated.UserService;
-import in.partake.model.daofacade.deprecated.UserService.UserCount;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade.UserCount;
 import in.partake.model.dto.User;
 
 import java.util.Date;
@@ -41,26 +41,26 @@ public class UserServiceTest extends MockServiceTestBase {
 
     @Test(expected = NullPointerException.class)
     public void getUserByNullExId() throws DAOException {
-        UserService.get().getUserExById(null);
+        DeprecatedUserDAOFacade.get().getUserExById(null);
     }
 
     @Test(expected = NullPointerException.class)
     public void loginByOpenIDByNullId() throws DAOException {
-        UserService.get().loginByOpenID(null);
+        DeprecatedUserDAOFacade.get().loginByOpenID(null);
     }
 
     @Test
     public void getUserByExId() throws DAOException {
     	final String userExId = "userExId";
         when(userAccess.find(any(MockConnection.class), eq(userExId))).thenReturn(createUser(userExId));
-        User user = UserService.get().getUserExById(userExId);
+        User user = DeprecatedUserDAOFacade.get().getUserExById(userExId);
         verify(userAccess, times(1)).find(any(MockConnection.class), eq(userExId));
         Assert.assertEquals(userExId, user.getId());
     }
 
 	@Test
     public void countUserEmpty() throws DAOException {
-        UserService service = UserService.get();
+        DeprecatedUserDAOFacade service = DeprecatedUserDAOFacade.get();
         UserCount count = service.countUsers();
         Assert.assertEquals(0, count.activeUser);
         Assert.assertEquals(0, count.user);
@@ -73,7 +73,7 @@ public class UserServiceTest extends MockServiceTestBase {
         when(mockIter.hasNext()).thenReturn(true, false);
         when(mockIter.next()).thenReturn(user);
 
-        UserService service = UserService.get();
+        DeprecatedUserDAOFacade service = DeprecatedUserDAOFacade.get();
         UserCount count = service.countUsers();
         verify(mockIter, times(2)).hasNext();
         verify(mockIter, times(1)).next();
@@ -88,7 +88,7 @@ public class UserServiceTest extends MockServiceTestBase {
         when(mockIter.hasNext()).thenReturn(true, false);
         when(mockIter.next()).thenReturn(user);
 
-        UserService service = UserService.get();
+        DeprecatedUserDAOFacade service = DeprecatedUserDAOFacade.get();
         UserCount count = service.countUsers();
         verify(mockIter, times(2)).hasNext();
         verify(mockIter, times(1)).next();
@@ -103,7 +103,7 @@ public class UserServiceTest extends MockServiceTestBase {
         when(mockIter.hasNext()).thenReturn(true, false);
         when(mockIter.next()).thenReturn(user);
 
-        UserService service = UserService.get();
+        DeprecatedUserDAOFacade service = DeprecatedUserDAOFacade.get();
         UserCount count = service.countUsers();
         verify(mockIter, times(2)).hasNext();
         verify(mockIter, times(1)).next();
@@ -118,7 +118,7 @@ public class UserServiceTest extends MockServiceTestBase {
         when(mockIter.hasNext()).thenReturn(true, false);
         when(mockIter.next()).thenReturn(user);
 
-        UserService service = UserService.get();
+        DeprecatedUserDAOFacade service = DeprecatedUserDAOFacade.get();
         UserCount count = service.countUsers();
         verify(mockIter, times(2)).hasNext();
         verify(mockIter, times(1)).next();

@@ -10,7 +10,7 @@
 <%@page import="in.partake.model.dao.DataIterator"%>
 <%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
 <%@page import="in.partake.model.dto.Enrollment"%>
-<%@page import="in.partake.model.daofacade.deprecated.UserService"%>
+<%@page import="in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
 <%@page import="in.partake.model.dto.Comment"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>

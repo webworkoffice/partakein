@@ -33,8 +33,8 @@ import com.rosaloves.bitlyj.BitlyException;
  * @author shinyak
  *
  */
-class PartakeServiceUtils {
-    private static final Logger logger = Logger.getLogger(PartakeServiceUtils.class);
+class DeprecatedPartakeDAOFacadeUtils {
+    private static final Logger logger = Logger.getLogger(DeprecatedPartakeDAOFacadeUtils.class);
     private static volatile Date bitlyRateLimitExceededTime;
     
     public static <T> List<T> convertToList(DataIterator<T> it) throws DAOException {

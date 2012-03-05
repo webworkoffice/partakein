@@ -4,7 +4,7 @@ import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventRelationEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
@@ -27,7 +27,7 @@ public abstract class AbstractEventAPI extends AbstractPartakeAPI {
             if (!relation.isRequired()) { continue; }
             if (relation.getEvent() == null) { continue; }
             if (user != null) {
-                ParticipationStatus status = UserService.get().getParticipationStatus(user.getId(), relation.getEvent().getId());
+                ParticipationStatus status = DeprecatedUserDAOFacade.get().getParticipationStatus(user.getId(), relation.getEvent().getId());
                 if (status.isEnrolled()) { continue; }
             }
             requiredEvents.add(relation.getEvent());

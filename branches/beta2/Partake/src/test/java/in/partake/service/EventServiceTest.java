@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
@@ -26,7 +26,7 @@ import com.opensymphony.xwork2.interceptor.annotations.Before;
 
 public class EventServiceTest extends AbstractServiceTestCaseBase {
     private static final Charset UTF8 = Charset.forName("utf-8");
-    private final EventService service = EventService.get();
+    private final DeprecatedEventDAOFacade service = DeprecatedEventDAOFacade.get();
 
     @Before
     public void setUp() throws DAOException {

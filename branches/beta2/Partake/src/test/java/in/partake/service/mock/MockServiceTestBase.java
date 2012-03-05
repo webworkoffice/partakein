@@ -1,7 +1,7 @@
 package in.partake.service.mock;
 
 import in.partake.model.dao.mock.MockConnectionPool;
-import in.partake.model.daofacade.deprecated.PartakeService;
+import in.partake.model.daofacade.deprecated.DeprecatedPartakeDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
@@ -18,7 +18,7 @@ import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 
-public class MockServiceTestBase extends PartakeService {
+public class MockServiceTestBase extends DeprecatedPartakeDAOFacade {
     
     @BeforeClass
     public static void setUpOnce() {

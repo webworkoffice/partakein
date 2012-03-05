@@ -2,7 +2,7 @@ package in.partake.model.dto;
 
 import in.partake.base.Util;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 
@@ -706,7 +706,7 @@ public class Event extends PartakeModel<Event> {
     public int fetchNumOfEnrolledUsers() {
         try {
             // TODO: something wrong... 
-            return EventService.get().getNumOfEnrolledUsers(getId());
+            return DeprecatedEventDAOFacade.get().getNumOfEnrolledUsers(getId());
         } catch (DAOException e) {
             e.printStackTrace();
             return -1;

@@ -3,7 +3,7 @@ package in.partake.controller.action.event;
 import in.partake.base.KeyValuePair;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.Constants;
@@ -64,14 +64,14 @@ public class EventSearchAction extends AbstractPartakeAction {
 
 		// If no query is specified, the recent registered events are shown.
 		if (searchTerm == null || category == null || sortOrder == null) {
-			List<Event> events = EventService.get().getRecentEvents(5); // TODO: MAGIC NUMBER! 5
+			List<Event> events = DeprecatedEventDAOFacade.get().getRecentEvents(5); // TODO: MAGIC NUMBER! 5
 			attributes.put(Constants.ATTR_RECENT_EVENTS, events);
 			return render("events/search.jsp");
 		}
 
 		try {
 			// TODO: MAGIC NUMBER! 50
-			List<Event> events = EventService.get().search(searchTerm.trim(), category, sortOrder, beforeDeadlineOnly, 50);
+			List<Event> events = DeprecatedEventDAOFacade.get().search(searchTerm.trim(), category, sortOrder, beforeDeadlineOnly, 50);
 			attributes.put(Constants.ATTR_SEARCH_RESULT, events);
 
 			return render("events/search.jsp");

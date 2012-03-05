@@ -1,7 +1,7 @@
 package in.partake.controller.action.calendar;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.resource.ServerErrorCode;
@@ -27,14 +27,14 @@ public class ShowCalendarAction extends AbstractCalendarAction {
 
         // TODO: これは CalendarService.get().getEnrolledEventsByCalendarId 的ななにかにしなければならない。
         try {
-            User user = UserService.get().getUserFromCalendarId(calendarId);
+            User user = DeprecatedUserDAOFacade.get().getUserFromCalendarId(calendarId);
             if (user == null)
                 return renderNotFound();
 
             Calendar calendar = createCalendarSkeleton();
 
             // for all events the user will participate ...
-            List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user.getId());
+            List<Event> enrolledEvents = DeprecatedUserDAOFacade.get().getEnrolledEvents(user.getId());
             for (Event event : enrolledEvents) {
                 if (event == null)
                     continue;

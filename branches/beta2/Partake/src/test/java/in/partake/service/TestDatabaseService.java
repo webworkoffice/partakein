@@ -3,7 +3,7 @@ package in.partake.service;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.fixture.PartakeTestDataProviderSet;
 import in.partake.model.fixture.impl.CacheTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
@@ -62,7 +62,7 @@ public class TestDatabaseService {
         }
         
         // create lucene search index
-        EventService.get().recreateEventIndex();
+        DeprecatedEventDAOFacade.get().recreateEventIndex();
     }
 
     private static void initializeDataSource() throws NamingException {

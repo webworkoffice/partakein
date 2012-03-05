@@ -32,15 +32,15 @@ import twitter4j.auth.AccessToken;
  * @author shinyak
  *
  */
-public final class UserService extends PartakeService {
-    private static UserService instance = new UserService();
+public final class DeprecatedUserDAOFacade extends DeprecatedPartakeDAOFacade {
+    private static DeprecatedUserDAOFacade instance = new DeprecatedUserDAOFacade();
     // private static Logger logger = Logger.getLogger(UserService.class);
 
-    public static UserService get() {
+    public static DeprecatedUserDAOFacade get() {
         return instance;
     }
 
-    private UserService() {
+    private DeprecatedUserDAOFacade() {
         // do nothing for now.
     }
 

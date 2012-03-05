@@ -2,7 +2,7 @@ package in.partake.controller.api.event;
 
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.UserErrorCode;
@@ -52,7 +52,7 @@ public class SearchAPI extends AbstractPartakeAPI {
         }
 
         try {
-            List<Event> events = EventService.get().search(query, category, sortOrder, Boolean.parseBoolean(beforeDeadlineOnly), maxNum);
+            List<Event> events = DeprecatedEventDAOFacade.get().search(query, category, sortOrder, Boolean.parseBoolean(beforeDeadlineOnly), maxNum);
 
             JSONArray jsonEventsArray = new JSONArray();
             for (Event event : events) {

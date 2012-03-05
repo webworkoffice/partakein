@@ -4,8 +4,8 @@ import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.Constants;
@@ -30,11 +30,11 @@ public class ShowAction extends AbstractPartakeAction {
         // TODO MypageController#show() のコードをほぼ流用できる
         String userId = getValidUserIdParameter();
 
-        UserEx user = UserService.get().getUserExById(userId);
+        UserEx user = DeprecatedUserDAOFacade.get().getUserExById(userId);
         if (user == null)
             return renderNotFound();
 
-        UserPreference pref = UserService.get().getUserPreference(userId);
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(userId);
         if (pref == null)
             return renderError(ServerErrorCode.USER_PREFERENCE_NOTFOUND);
 
@@ -42,8 +42,8 @@ public class ShowAction extends AbstractPartakeAction {
             return render("users/private.jsp");
 
         attributes.put(Constants.ATTR_SHOWING_USER, user);
-        List<Event> owned = EventService.get().getEventsOwnedBy(user); 
-        List<Event> enrolledEvents = UserService.get().getEnrolledEvents(user.getId());
+        List<Event> owned = DeprecatedEventDAOFacade.get().getEventsOwnedBy(user); 
+        List<Event> enrolledEvents = DeprecatedUserDAOFacade.get().getEnrolledEvents(user.getId());
 
         List<Event> enrolled = new ArrayList<Event>();
         List<Event> finished = new ArrayList<Event>();

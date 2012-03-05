@@ -6,9 +6,9 @@ import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
-import in.partake.model.daofacade.deprecated.MessageService;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
@@ -47,7 +47,7 @@ public class EnrollAPI extends AbstractEventAPI {
         if (comment.length() > 1024)
             return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
 
-        EventEx event = EventService.get().getEventExById(eventId);
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
@@ -58,15 +58,15 @@ public class EnrollAPI extends AbstractEventAPI {
             return renderInvalid(UserErrorCode.INVALID_ENROLL_TIMEOVER);
 
         // 現在の状況が登録されていない場合、
-        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
-        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user.getId(), event.getId());
+        List<EventRelationEx> relations = DeprecatedEventDAOFacade.get().getEventRelationsEx(eventId);
+        ParticipationStatus currentStatus = DeprecatedUserDAOFacade.get().getParticipationStatus(user.getId(), event.getId());
         if (!currentStatus.isEnrolled()) {
             List<Event> requiredEvents = getRequiredEventsNotEnrolled(user, relations);
             if (requiredEvents != null && !requiredEvents.isEmpty())
                 return renderInvalid(UserErrorCode.INVALID_ENROLL_REQUIRED);
         }
 
-        EventService.get().enroll(user.getId(), event.getId(), status, comment, false, event.isReservationTimeOver());
+        DeprecatedEventDAOFacade.get().enroll(user.getId(), event.getId(), status, comment, false, event.isReservationTimeOver());
 
         JSONObject obj = new JSONObject();
         // Twitter で参加をつぶやく
@@ -76,7 +76,7 @@ public class EnrollAPI extends AbstractEventAPI {
     }
     
     private void tweetEnrollment(JSONObject obj, UserEx user, EventEx event, ParticipationStatus status) throws DAOException {
-        UserPreference pref = UserService.get().getUserPreference(user.getId());
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(user.getId());
         if (pref == null || !pref.tweetsAttendanceAutomatically()) { return; }
 
         String left = "[PARTAKE] ";
@@ -103,6 +103,6 @@ public class EnrollAPI extends AbstractEventAPI {
         }
 
         String message = left + Util.shorten(event.getTitle(), 140 - Util.codePointCount(left) - Util.codePointCount(right)) + right;
-        MessageService.get().tweetMessage(user, message);
+        DeprecatedMessageDAOFacade.get().tweetMessage(user, message);
     }
 }

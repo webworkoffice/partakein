@@ -1,7 +1,7 @@
 package in.partake.controller.api.account;
 
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
 
@@ -62,14 +62,14 @@ public class AccountAPITest extends APIControllerTest {
         // TODO: Checks Twitter?
         
         // Checks UserPreference.
-        UserPreference pref = UserService.get().getUserPreference(TestDataProvider.USER_ID1);
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
         JSONObject prefObj = obj.getJSONObject("preference");
         Assert.assertEquals(pref.isProfilePublic(), prefObj.getBoolean("profilePublic"));
         Assert.assertEquals(pref.isReceivingTwitterMessage(), prefObj.getBoolean("receivingTwitterMessage"));
         Assert.assertEquals(pref.tweetsAttendanceAutomatically(), prefObj.getBoolean("tweetingAttendanceAutomatically"));
 
         // Checks OpenIds
-        List<String> openIds = UserService.get().getOpenIDIdentifiers(userId);
+        List<String> openIds = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(userId);
         Collections.sort(openIds);
         
         JSONArray array = obj.getJSONArray("openId");
@@ -90,7 +90,7 @@ public class AccountAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        UserPreference pref = UserService.get().getUserPreference(TestDataProvider.USER_ID1);
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
@@ -105,7 +105,7 @@ public class AccountAPITest extends APIControllerTest {
         
         assertResultOK(proxy);
         
-        pref = UserService.get().getUserPreference(TestDataProvider.USER_ID1);
+        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
         Assert.assertEquals(false, pref.isProfilePublic());
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
@@ -115,7 +115,7 @@ public class AccountAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLoginWithoutArgument() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        UserPreference pref = UserService.get().getUserPreference(TestDataProvider.USER_ID1);
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
@@ -126,7 +126,7 @@ public class AccountAPITest extends APIControllerTest {
         
         assertResultOK(proxy);
         
-        pref = UserService.get().getUserPreference(TestDataProvider.USER_ID1);
+        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
@@ -163,7 +163,7 @@ public class AccountAPITest extends APIControllerTest {
         assertResultOK(proxy);
         
         // Check the OpenID has been really removed.
-        List<String> identifiers = UserService.get().getOpenIDIdentifiers(TestDataProvider.EVENT_REMOVE_ID0);
+        List<String> identifiers = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(TestDataProvider.EVENT_REMOVE_ID0);
         Assert.assertNotNull(identifiers);
         Assert.assertFalse(identifiers.contains("http://www.example.com/openid-remove-0"));
     }
