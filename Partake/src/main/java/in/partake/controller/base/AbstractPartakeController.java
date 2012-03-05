@@ -211,24 +211,26 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         return null;
     }
 
-    protected String getValidUserIdParameter() throws PartakeException {
-        String userId = getParameter("userId");
-        if (userId == null)
-            throw new PartakeException(UserErrorCode.MISSING_USER_ID);
-        if (!Util.isUUID(userId))
-            throw new PartakeException(UserErrorCode.INVALID_USER_ID);
+    protected String getValidIdParameter(String key, UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
+        String id = getParameter(key);
+        if (id == null)
+            throw new PartakeException(missing);
+        if (!Util.isUUID(id))
+            throw new PartakeException(invalid);
         
-        return userId;
+        return id;        
+    }
+    
+    protected String getValidUserIdParameter() throws PartakeException {
+        return getValidIdParameter("userId", UserErrorCode.MISSING_USER_ID, UserErrorCode.INVALID_USER_ID);
     }
     
     protected String getValidEventIdParameter() throws PartakeException {
-        String eventId = getParameter("eventId");
-        if (eventId == null)
-            throw new PartakeException(UserErrorCode.MISSING_EVENT_ID);
-        if (!Util.isUUID(eventId))
-            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
-        
-        return eventId;        
+        return getValidIdParameter("eventId", UserErrorCode.MISSING_EVENT_ID, UserErrorCode.INVALID_EVENT_ID);
+    }
+    
+    protected String getValidImageIdParameter() throws PartakeException {
+        return getValidIdParameter("imageId", UserErrorCode.MISSING_IMAGEID, UserErrorCode.INVALID_IMAGEID);
     }
 
     /**

@@ -1,26 +1,19 @@
 package in.partake.controller.action.image;
 
-import in.partake.base.Util;
+import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.EventService;
 import in.partake.model.dto.BinaryData;
-import in.partake.resource.UserErrorCode;
 
 import java.io.ByteArrayInputStream;
 
 public class ImageAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
-    // private static final Logger logger = Logger.getLogger(ImageAction.class);
     static final String IMAGE_ID_PARAM_NAME = "imageId";
 
-    public String doExecute() throws DAOException {
-        String imageId = getParameter(IMAGE_ID_PARAM_NAME);
-
-        if (imageId == null)
-            return renderInvalid(UserErrorCode.MISSING_IMAGEID); 
-        if (!Util.isUUID(imageId))
-            return renderInvalid(UserErrorCode.INVALID_IMAGEID);
+    public String doExecute() throws DAOException, PartakeException {
+        String imageId = getValidImageIdParameter();
         
         BinaryData data = EventService.get().getBinaryData(imageId);
         if (data == null)
