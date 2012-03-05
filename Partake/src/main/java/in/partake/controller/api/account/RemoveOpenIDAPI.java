@@ -3,7 +3,7 @@ package in.partake.controller.api.account;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.resource.UserErrorCode;
 
 public class RemoveOpenIDAPI extends AbstractPartakeAPI {
@@ -24,7 +24,7 @@ public class RemoveOpenIDAPI extends AbstractPartakeAPI {
             return renderInvalid(UserErrorCode.MISSING_OPENID);
 
         // identifier が user と結び付けられているか検査して消去
-        if (UserService.get().removeOpenIDLinkage(user.getId(), identifier))
+        if (DeprecatedUserDAOFacade.get().removeOpenIDLinkage(user.getId(), identifier))
             return renderOK();
         else
             return renderInvalid(UserErrorCode.INVALID_OPENID);

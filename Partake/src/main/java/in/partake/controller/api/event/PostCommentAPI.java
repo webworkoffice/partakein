@@ -5,7 +5,7 @@ import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Comment;
 import in.partake.resource.UserErrorCode;
 
@@ -24,7 +24,7 @@ public class PostCommentAPI extends AbstractPartakeAPI {
             return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
         
         String eventId = getValidEventIdParameter();
-        EventEx event = EventService.get().getEventExById(eventId);
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
@@ -35,7 +35,7 @@ public class PostCommentAPI extends AbstractPartakeAPI {
             return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
 
         Comment embryo = new Comment(eventId, user.getId(), comment, true, new Date());
-        EventService.get().addComment(embryo);
+        DeprecatedEventDAOFacade.get().addComment(embryo);
 
         return renderOK();
     }

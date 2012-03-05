@@ -5,15 +5,15 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.*;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
-import in.partake.model.daofacade.deprecated.MessageService;
-import in.partake.model.daofacade.deprecated.MessageService.TooLongMessageException;
+import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade.TooLongMessageException;
 
 import org.junit.Test;
 
 public class MessageServiceTest extends AbstractServiceTestCaseBase {
 	@Test
 	public void testBuildMessage() throws NullPointerException, TooLongMessageException {
-		MessageService service = MessageService.get();
+		DeprecatedMessageDAOFacade service = DeprecatedMessageDAOFacade.get();
 		String title = "title";
 		String shortenedURL = "http://shorten.ed/url";
 
@@ -31,7 +31,7 @@ public class MessageServiceTest extends AbstractServiceTestCaseBase {
 
 	@Test
 	public void testBuildMessageLongWhenEventHasLongTitle() throws NullPointerException, TooLongMessageException {
-		MessageService service = MessageService.get();
+		DeprecatedMessageDAOFacade service = DeprecatedMessageDAOFacade.get();
 		UserEx sender = mock(UserEx.class);
 		doReturn("admin").when(sender).getScreenName();
 		String message = service.buildMessage(sender, "http://shorten.ed/url", "loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong", "Happy new year!");
@@ -40,7 +40,7 @@ public class MessageServiceTest extends AbstractServiceTestCaseBase {
 
 	@Test
 	public void testBuildMessageLongWhenEventHasLongMessage() throws NullPointerException, TooLongMessageException {
-		MessageService service = MessageService.get();
+		DeprecatedMessageDAOFacade service = DeprecatedMessageDAOFacade.get();
 		UserEx sender = mock(UserEx.class);
 		doReturn("admin").when(sender).getScreenName();
 		String message = service.buildMessage(sender, "http://shorten.ed/url", "title of event", "loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong");
@@ -49,7 +49,7 @@ public class MessageServiceTest extends AbstractServiceTestCaseBase {
 
 	@Test(expected=TooLongMessageException.class)
 	public void testBuildMessageLongWhenEventHasTooLongMessage() throws NullPointerException, TooLongMessageException {
-		MessageService service = MessageService.get();
+		DeprecatedMessageDAOFacade service = DeprecatedMessageDAOFacade.get();
 		UserEx sender = mock(UserEx.class);
 		doReturn("admin").when(sender).getScreenName();
 		service.buildMessage(sender, "http://shorten.ed/url", "title of event", "looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong");

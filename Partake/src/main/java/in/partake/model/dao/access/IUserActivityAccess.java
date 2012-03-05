@@ -6,6 +6,7 @@ import java.util.List;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.UserActivity;
 
+// TODO: Who uses this?
 public interface IUserActivityAccess extends IAccess<UserActivity, String> {
 
     /**

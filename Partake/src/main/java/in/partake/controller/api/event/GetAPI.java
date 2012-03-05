@@ -5,7 +5,7 @@ import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 import net.sf.json.JSONObject;
@@ -19,7 +19,7 @@ public class GetAPI extends AbstractPartakeAPI {
     protected String doExecute() throws DAOException, PartakeException {
         String eventId = getValidEventIdParameter();
         
-        EventEx event = EventService.get().getEventExById(eventId);
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null) { return renderInvalid(UserErrorCode.INVALID_EVENT_ID); } 
             
         if (event.isPrivate()) {

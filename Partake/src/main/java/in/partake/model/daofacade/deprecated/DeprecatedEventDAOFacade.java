@@ -56,18 +56,18 @@ import org.apache.lucene.search.TopDocs;
  *
  * thread-safe である。
  */
-public final class EventService extends PartakeService {
-    private static final Logger logger = Logger.getLogger(EventService.class);
+public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
+    private static final Logger logger = Logger.getLogger(DeprecatedEventDAOFacade.class);
 
-    private static EventService instance = new EventService();
+    private static DeprecatedEventDAOFacade instance = new DeprecatedEventDAOFacade();
     // TODO: Use Constant DEMO_ID instead.
     private static final String DEMO_EVENT_ID = "demo";
 
-    public static EventService get() {
+    public static DeprecatedEventDAOFacade get() {
         return instance;
     }
 
-    private EventService() {
+    private DeprecatedEventDAOFacade() {
         // do nothing for now.
     }
 
@@ -237,7 +237,7 @@ public final class EventService extends PartakeService {
         if (num <= 0 || category == null) { throw new IllegalArgumentException(); }
 
         try {
-            return EventService.get().search("", category, "beginDate", true, num);
+            return DeprecatedEventDAOFacade.get().search("", category, "beginDate", true, num);
         } catch (ParseException e) {
             // 実装ミス
             throw new RuntimeException(e);

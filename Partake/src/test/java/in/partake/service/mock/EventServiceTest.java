@@ -10,7 +10,7 @@ import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.mock.MockConnection;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.pk.EventRelationPK;
@@ -40,7 +40,7 @@ public class EventServiceTest extends MockServiceTestBase {
 
     @Test
     public void testToGetEventById() throws Exception {
-        Event event = EventService.get().getEventById("event1");
+        Event event = DeprecatedEventDAOFacade.get().getEventById("event1");
         Assert.assertEquals("event1", event.getId());
 
         assureAllConnectionsAreReleased();
@@ -48,7 +48,7 @@ public class EventServiceTest extends MockServiceTestBase {
 
     @Test
     public void testToGetEventExById() throws Exception {
-        EventEx event = EventService.get().getEventExById("event1");
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById("event1");
         Assert.assertEquals("event1", event.getId());
         Assert.assertNotNull(event.getOwner());
         Assert.assertEquals("ownerId", event.getOwner().getId());
@@ -67,7 +67,7 @@ public class EventServiceTest extends MockServiceTestBase {
         relations.add(new EventRelation("eventId", "dstEventId2", true, true));
         relations.add(new EventRelation("eventId", "dstEventId3", true, true));
 
-        EventService.get().setEventRelations(eventId, relations);
+        DeprecatedEventDAOFacade.get().setEventRelations(eventId, relations);
 
         verify(dao, times(1)).put(any(MockConnection.class), eq(new EventRelation("eventId", "dstEventId1", true, true)));
         verify(dao, times(1)).put(any(MockConnection.class), eq(new EventRelation("eventId", "dstEventId2", true, true)));
@@ -91,7 +91,7 @@ public class EventServiceTest extends MockServiceTestBase {
             relations.add(new EventRelation("eventId", "dstEventId2", true, true));
             relations.add(new EventRelation("eventId", "dstEventId3", true, true));
 
-            EventService.get().setEventRelations(eventId, relations);
+            DeprecatedEventDAOFacade.get().setEventRelations(eventId, relations);
         }
 
         verify(dao, times(1)).remove(any(MockConnection.class), eq(new EventRelationPK("eventId", "dstEventId0")));

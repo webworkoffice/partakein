@@ -4,7 +4,7 @@ import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.MessageService;
+import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
 import in.partake.resource.UserErrorCode;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,7 +27,7 @@ public class SendMessageAPI extends AbstractPartakeAPI {
             return renderInvalid(UserErrorCode.MISSING_MESSAGE);
 
         try {
-            MessageService.get().sendMessage(user, eventId, message);
+            DeprecatedMessageDAOFacade.get().sendMessage(user, eventId, message);
             return renderOK();
         } catch (PartakeException e) {
             return renderException(e);

@@ -9,9 +9,9 @@ import in.partake.model.EventRelationEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
-import in.partake.model.daofacade.deprecated.MessageService;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
@@ -35,9 +35,9 @@ public class EventShowAction extends AbstractEventAction {
         // NOTE: login はしてないかもしれない。
         UserEx user = getLoginUser();
 
-        event = EventService.get().getEventExById(eventId);        
+        event = DeprecatedEventDAOFacade.get().getEventExById(eventId);        
         if (event == null) {
-            if (EventService.get().isRemoved(eventId))
+            if (DeprecatedEventDAOFacade.get().isRemoved(eventId))
                 return render("events/removed.jsp");
             return renderNotFound();
         }
@@ -55,7 +55,7 @@ public class EventShowAction extends AbstractEventAction {
             }
         }
 
-        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
+        List<EventRelationEx> relations = DeprecatedEventDAOFacade.get().getEventRelationsEx(eventId);
         attributes.put(Constants.ATTR_EVENT_RELATIONS, relations);
 
         // ----- 登録している、していないの条件を満たしているかどうかのチェック
@@ -63,7 +63,7 @@ public class EventShowAction extends AbstractEventAction {
         attributes.put(Constants.ATTR_REQUIRED_EVENTS, requiredEvents);
 
         // ----- participants を反映
-        List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(event.getId());
+        List<EnrollmentEx> participations = DeprecatedEventDAOFacade.get().getEnrollmentEx(event.getId());
         if (participations == null)
             return renderError(ServerErrorCode.PARTICIPATIONS_RETRIEVAL_ERROR);
 
@@ -75,8 +75,8 @@ public class EventShowAction extends AbstractEventAction {
         boolean deadlineOver = deadline.before(new Date());
 
 
-        List<CommentEx> comments = EventService.get().getCommentsExByEvent(eventId);
-        List<DirectMessageEx> messages = MessageService.get().getUserMessagesByEventId(eventId);
+        List<CommentEx> comments = DeprecatedEventDAOFacade.get().getCommentsExByEvent(eventId);
+        List<DirectMessageEx> messages = DeprecatedMessageDAOFacade.get().getUserMessagesByEventId(eventId);
 
 
 
@@ -84,17 +84,17 @@ public class EventShowAction extends AbstractEventAction {
         attributes.put(Constants.ATTR_PARTICIPATIONLIST, participationList);
 
         if (user != null) {
-            attributes.put(Constants.ATTR_PARTICIPATION_STATUS, UserService.get().getParticipationStatus(user.getId(), event.getId()));
+            attributes.put(Constants.ATTR_PARTICIPATION_STATUS, DeprecatedUserDAOFacade.get().getParticipationStatus(user.getId(), event.getId()));
         } else {
             attributes.put(Constants.ATTR_PARTICIPATION_STATUS, ParticipationStatus.NOT_ENROLLED);
         }
         attributes.put(Constants.ATTR_DEADLINE_OVER, Boolean.valueOf(deadlineOver));
         attributes.put(Constants.ATTR_COMMENTSET, comments);
         attributes.put(Constants.ATTR_MESSAGESET, messages);
-        attributes.put(Constants.ATTR_REMINDER_STATUS, MessageService.get().getReminderStatus(eventId));
+        attributes.put(Constants.ATTR_REMINDER_STATUS, DeprecatedMessageDAOFacade.get().getReminderStatus(eventId));
 
         if (event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE)) {
-            Integer restCodePoints = MessageService.get().calcRestCodePoints(user, event);
+            Integer restCodePoints = DeprecatedMessageDAOFacade.get().calcRestCodePoints(user, event);
             attributes.put(Constants.ATTR_MAX_CODE_POINTS_OF_MESSAGE, restCodePoints);
         } else {
             attributes.put(Constants.ATTR_MAX_CODE_POINTS_OF_MESSAGE, 0);

@@ -5,7 +5,7 @@ import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 
@@ -18,7 +18,7 @@ public class EventEditAction extends AbstractPartakeAction {
         UserEx user = ensureLogin();
 
         String eventId = getValidEventIdParameter();
-        event = EventService.get().getEventExById(eventId);
+        event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 

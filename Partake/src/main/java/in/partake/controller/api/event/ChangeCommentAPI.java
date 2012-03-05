@@ -5,8 +5,8 @@ import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.UserErrorCode;
@@ -34,7 +34,7 @@ public class ChangeCommentAPI extends AbstractEventAPI {
         if (comment.length() > 1024)
             return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
 
-        EventEx event = EventService.get().getEventExById(eventId);
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
@@ -45,8 +45,8 @@ public class ChangeCommentAPI extends AbstractEventAPI {
             return renderInvalid(UserErrorCode.INVALID_ENROLL_TIMEOVER);
 
         // 現在の状況が登録されていない場合、
-        List<EventRelationEx> relations = EventService.get().getEventRelationsEx(eventId);
-        ParticipationStatus currentStatus = UserService.get().getParticipationStatus(user.getId(), event.getId());
+        List<EventRelationEx> relations = DeprecatedEventDAOFacade.get().getEventRelationsEx(eventId);
+        ParticipationStatus currentStatus = DeprecatedUserDAOFacade.get().getParticipationStatus(user.getId(), event.getId());
         if (!currentStatus.isEnrolled()) {
             List<Event> requiredEvents = getRequiredEventsNotEnrolled(user, relations);
             if (requiredEvents != null && !requiredEvents.isEmpty())
@@ -55,7 +55,7 @@ public class ChangeCommentAPI extends AbstractEventAPI {
 
         // TODO: EventService should have a function to change comment.
         // We should not use 'enroll' here.
-        EventService.get().enroll(user.getId(), event.getId(), status, comment, true, event.isReservationTimeOver());
+        DeprecatedEventDAOFacade.get().enroll(user.getId(), event.getId(), status, comment, true, event.isReservationTimeOver());
 
         return renderOK();
     }

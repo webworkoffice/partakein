@@ -1,13 +1,13 @@
-<%@page import="in.partake.model.daofacade.deprecated.EventService"%>
-<%@page import="in.partake.model.daofacade.deprecated.EventService.EventCount"%>
+<%@page import="in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade"%>
+<%@page import="in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade.EventCount"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>
 
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="java.text.NumberFormat"%>
-<%@page import="in.partake.model.daofacade.deprecated.UserService"%>
-<%@page import="in.partake.model.daofacade.deprecated.UserService.UserCount"%>
+<%@page import="in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade"%>
+<%@page import="in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade.UserCount"%>
 <%@page import="static in.partake.base.Util.h"%>
 
 <html lang="ja">
@@ -23,8 +23,8 @@
 </div>
 
 <%
-	UserCount userCount = UserService.get().countUsers();
-	EventCount eventCount = EventService.get().countEvents();
+    UserCount userCount = DeprecatedUserDAOFacade.get().countUsers();
+	EventCount eventCount = DeprecatedEventDAOFacade.get().countEvents();
 	NumberFormat format = NumberFormat.getInstance();
 	// Integer hatenaBookmarkCount = (Integer) request.getAttribute(Constants.ATTR_BOOKMARK_COUNT);
 %>

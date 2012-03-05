@@ -16,7 +16,7 @@ import in.partake.service.DBService;
 
 import java.util.List;
 
-public abstract class PartakeService {
+public abstract class DeprecatedPartakeDAOFacade {
     @Deprecated
     protected PartakeDAOFactory getFactory() {
         return DBService.getFactory();
@@ -31,30 +31,30 @@ public abstract class PartakeService {
     // Utility functions
 
     protected static <T> List<T> convertToList(DataIterator<T> it) throws DAOException {
-        return PartakeServiceUtils.convertToList(it);
+        return DeprecatedPartakeDAOFacadeUtils.convertToList(it);
     }
 
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
-        return PartakeServiceUtils.getUserEx(con, getFactory(), userId);
+        return DeprecatedPartakeDAOFacadeUtils.getUserEx(con, getFactory(), userId);
     }
 
     protected EventEx getEventEx(PartakeConnection con, String eventId) throws DAOException {
-        return PartakeServiceUtils.getEventEx(con, getFactory(), eventId);
+        return DeprecatedPartakeDAOFacadeUtils.getEventEx(con, getFactory(), eventId);
     }
 
     protected String getShortenedURL(PartakeConnection con, Event event) throws DAOException {
-        return PartakeServiceUtils.getShortenedURL(con, getFactory(), event);
+        return DeprecatedPartakeDAOFacadeUtils.getShortenedURL(con, getFactory(), event);
     }
 
     protected CommentEx getCommentEx(PartakeConnection con, String commentId) throws DAOException {
-        return PartakeServiceUtils.getCommentEx(con, getFactory(), commentId);
+        return DeprecatedPartakeDAOFacadeUtils.getCommentEx(con, getFactory(), commentId);
     }
 
     protected EventRelationEx getEventRelationEx(PartakeConnection con, EventRelation relation) throws DAOException {
-        return PartakeServiceUtils.getEventRelationEx(con, getFactory(), relation);
+        return DeprecatedPartakeDAOFacadeUtils.getEventRelationEx(con, getFactory(), relation);
     }
 
     protected List<EnrollmentEx> getEnrollmentExs(PartakeConnection con, String eventId) throws DAOException {
-        return PartakeServiceUtils.getEnrollmentExs(con, getFactory(), eventId);
+        return DeprecatedPartakeDAOFacadeUtils.getEnrollmentExs(con, getFactory(), eventId);
     }
 }

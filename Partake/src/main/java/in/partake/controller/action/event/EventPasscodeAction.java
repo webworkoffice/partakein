@@ -3,7 +3,7 @@ package in.partake.controller.action.event;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,7 +22,7 @@ public class EventPasscodeAction extends AbstractPartakeAction {
 	    if (passcode == null)
 	        return render("events/passcode.jsp");
 
-	    Event event = EventService.get().getEventById(eventId);
+	    Event event = DeprecatedEventDAOFacade.get().getEventById(eventId);
 	    if (event == null)
 	        return renderNotFound();
 

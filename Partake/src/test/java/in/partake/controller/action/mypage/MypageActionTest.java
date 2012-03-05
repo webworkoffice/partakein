@@ -1,7 +1,7 @@
 package in.partake.controller.action.mypage;
 
 import in.partake.controller.AbstractPartakeControllerTest;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.fixture.TestDataProvider;
 
 import org.junit.Test;
@@ -19,8 +19,8 @@ public class MypageActionTest extends AbstractPartakeControllerTest {
         
         MypageAction action = (MypageAction) proxy.getAction();
 
-        assertEquals(UserService.get().getUserPreference(TestDataProvider.USER_ID1), action.getPreference());
-        assertEquals(UserService.get().getOpenIDIdentifiers(TestDataProvider.USER_ID1), action.getOpenIds());
+        assertEquals(DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1), action.getPreference());
+        assertEquals(DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(TestDataProvider.USER_ID1), action.getOpenIds());
     }
 
     @Test

@@ -5,7 +5,7 @@ import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 
@@ -20,7 +20,7 @@ public class MakeAttendantVIPAPI extends AbstractPartakeAPI {
             return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
         
         String eventId = getValidEventIdParameter();
-        EventEx event = EventService.get().getEventExById(eventId);
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
@@ -32,7 +32,7 @@ public class MakeAttendantVIPAPI extends AbstractPartakeAPI {
         if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS))
             return renderInvalid(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        if (EventService.get().makeAttendantVIP(eventId, userId, vip))
+        if (DeprecatedEventDAOFacade.get().makeAttendantVIP(eventId, userId, vip))
             return renderOK();
 
         return renderInvalid(UserErrorCode.INVALID_ATTENDANT_EDIT);

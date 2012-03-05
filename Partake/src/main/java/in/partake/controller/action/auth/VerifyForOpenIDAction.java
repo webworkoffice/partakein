@@ -2,7 +2,7 @@ package in.partake.controller.action.auth;
 
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
@@ -45,7 +45,7 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
         }
 
         // TODO: UserEx が identifier から取れるべき
-        UserEx user = UserService.get().loginByOpenID(identity);
+        UserEx user = DeprecatedUserDAOFacade.get().loginByOpenID(identity);
         if (user != null) {
             session.put(Constants.ATTR_USER, user);
             return renderRedirect(getRedirectURL());
@@ -64,7 +64,7 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
         if (identity == null)
             return renderInvalid(UserErrorCode.INVALID_OPENID_IDENTIFIER);
 
-        UserService.get().addOpenIDLinkage(user.getId(), identity);
+        DeprecatedUserDAOFacade.get().addOpenIDLinkage(user.getId(), identity);
         addActionMessage("OpenID との結びつけが成功しました");
         return renderRedirect("/mypage#account");
     }

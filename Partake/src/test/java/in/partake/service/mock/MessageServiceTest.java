@@ -7,7 +7,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.mock.MockConnection;
 import in.partake.model.dao.mock.MockConnectionPool;
-import in.partake.model.daofacade.deprecated.MessageService;
+import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
 import in.partake.model.dto.Event;
 
 import java.lang.reflect.Method;
@@ -68,10 +68,10 @@ public class MessageServiceTest extends MockServiceTestBase {
 
 
     private boolean needsToSend(Date now, Date targetDate, Date lastSent) throws Exception {
-        Method method = MessageService.class.getDeclaredMethod("needsToSend", Date.class, Date.class, Date.class);
+        Method method = DeprecatedMessageDAOFacade.class.getDeclaredMethod("needsToSend", Date.class, Date.class, Date.class);
         method.setAccessible(true);
         Object args[] = { now, targetDate, lastSent };
-        Boolean result = (Boolean)method.invoke(MessageService.class, args);
+        Boolean result = (Boolean)method.invoke(DeprecatedMessageDAOFacade.class, args);
         return result;
     }
 
@@ -82,7 +82,7 @@ public class MessageServiceTest extends MockServiceTestBase {
         MockConnection mockCon = mock(MockConnection.class);
         pool.prepareConnection(mockCon);
 
-        MessageService service = MessageService.get();
+        DeprecatedMessageDAOFacade service = DeprecatedMessageDAOFacade.get();
         IEventAccess eventAccess = getFactory().getEventAccess();
 
         @SuppressWarnings("unchecked")
@@ -111,7 +111,7 @@ public class MessageServiceTest extends MockServiceTestBase {
         MockConnection mockCon = mock(MockConnection.class);
         pool.prepareConnection((MockConnection) mockCon);
 
-        MessageService service = MessageService.get();
+        DeprecatedMessageDAOFacade service = DeprecatedMessageDAOFacade.get();
         DAOException injectedException = new DAOException();
         doThrow(injectedException).when(getFactory().getEventAccess()).getIterator(any(PartakeConnection.class));
         doThrow(new DAOException()).when(mockCon).rollback();

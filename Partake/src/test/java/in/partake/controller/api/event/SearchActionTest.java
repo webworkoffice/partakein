@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.TestDatabaseService;
@@ -177,7 +177,7 @@ public class SearchActionTest extends APIControllerTest {
     private Event storeEventAfterDeadline() throws DAOException {
         Event event = createEvent();
         event.setDeadline(new Date(0L));
-        EventService.get().create(event, null, null);
+        DeprecatedEventDAOFacade.get().create(event, null, null);
         return event;
     }
 
@@ -185,7 +185,7 @@ public class SearchActionTest extends APIControllerTest {
         Event event = createEvent();
         Date tomorrow = new Date(System.currentTimeMillis() + 24L * 60L * 60L * 1000L);
         event.setDeadline(tomorrow);
-        EventService.get().create(event, null, null);
+        DeprecatedEventDAOFacade.get().create(event, null, null);
         return event;
     }
 

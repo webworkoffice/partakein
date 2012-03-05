@@ -3,7 +3,7 @@ package in.partake.controller.action.feed;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.EventEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.view.util.Helper;
@@ -48,7 +48,7 @@ public abstract class AbstractFeedPageAction extends AbstractPartakeAction{
             entry.setPublishedDate(event.getCreatedAt());
             try {
                 // TODO use cache or other ways for performance.
-                EventEx ex = EventService.get().getEventExById(event.getId());
+                EventEx ex = DeprecatedEventDAOFacade.get().getEventExById(event.getId());
                 entry.setAuthor(ex.getOwner().getScreenName());
             } catch (DAOException e) {
                 LOGGER.warn("Fail to get Author name.", e);
@@ -71,7 +71,7 @@ public abstract class AbstractFeedPageAction extends AbstractPartakeAction{
         //     2. コメント
         //     3. 参加変更
 
-        List<EventActivity> activities = EventService.get().getEventActivities(eventId, 100);
+        List<EventActivity> activities = DeprecatedEventDAOFacade.get().getEventActivities(eventId, 100);
         if (activities != null) {
             for (EventActivity activity : activities) {
                 SyndContent content = new SyndContentImpl();

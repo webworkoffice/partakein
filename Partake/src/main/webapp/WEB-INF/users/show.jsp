@@ -1,5 +1,5 @@
 <%@page import="in.partake.model.UserEx"%>
-<%@page import="in.partake.model.daofacade.deprecated.EventService"%>
+<%@page import="in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@page import="in.partake.model.dto.User"%>
 <%@page import="in.partake.view.util.Helper"%>

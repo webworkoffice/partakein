@@ -3,7 +3,7 @@ package in.partake.controller.action.mypage;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.UserPreference;
 
 import java.util.List;
@@ -20,8 +20,8 @@ public class MypageAction extends AbstractPartakeAction {
         if (user == null)
             return renderLoginRequired();
 
-        preference = UserService.get().getUserPreference(user.getId());
-        openIds = UserService.get().getOpenIDIdentifiers(user.getId());
+        preference = DeprecatedUserDAOFacade.get().getUserPreference(user.getId());
+        openIds = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(user.getId());
         
         return render("mypage/show.jsp");
     }

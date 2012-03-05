@@ -7,8 +7,8 @@ import in.partake.model.EventEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.UserPermission;
@@ -34,7 +34,7 @@ public class ShowParticipantsCSVAction extends AbstractPartakeAction {
         CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos));
 
         for (Enrollment participation : list.getEnrolledParticipations()) {
-            UserEx user = UserService.get().getUserExById(participation.getUserId());
+            UserEx user = DeprecatedUserDAOFacade.get().getUserExById(participation.getUserId());
 
             String[] lst = new String[4];
             lst[0] = user.getTwitterLinkage().getScreenName();
@@ -51,7 +51,7 @@ public class ShowParticipantsCSVAction extends AbstractPartakeAction {
         }
 
         for (Enrollment participation : list.getSpareParticipations()) {
-            UserEx user = UserService.get().getUserExById(participation.getUserId());
+            UserEx user = DeprecatedUserDAOFacade.get().getUserExById(participation.getUserId());
 
             String[] lst = new String[4];
             lst[0] = user.getTwitterLinkage().getScreenName();
@@ -87,7 +87,7 @@ public class ShowParticipantsCSVAction extends AbstractPartakeAction {
 
         String eventId = getValidEventIdParameter();
 
-        EventEx event = EventService.get().getEventExById(eventId);
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
 
@@ -95,7 +95,7 @@ public class ShowParticipantsCSVAction extends AbstractPartakeAction {
         if (!event.hasPermission(user, UserPermission.EVENT_PARTICIPATION_LIST))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(eventId);
+        List<EnrollmentEx> participations = DeprecatedEventDAOFacade.get().getEnrollmentEx(eventId);
         return event.calculateParticipationList(participations);
     }
 }

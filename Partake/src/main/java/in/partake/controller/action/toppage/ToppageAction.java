@@ -3,7 +3,7 @@ package in.partake.controller.action.toppage;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 
 import java.util.List;
@@ -19,13 +19,13 @@ public class ToppageAction extends AbstractPartakeAction {
 	private List<Event> enrolledEvents;
 	
 	public String doExecute() throws DAOException {
-	    recentEvents = EventService.get().getRecentEvents(NUM_EVENTS_TO_DISPLAY);
+	    recentEvents = DeprecatedEventDAOFacade.get().getRecentEvents(NUM_EVENTS_TO_DISPLAY);
 		
 		// もしログインしていれば、最近のイベントを表示する。
 		UserEx user = getLoginUser();
 		if (user != null) {
-		    ownedEvents = EventService.get().getUnfinishedEventsOwnedBy(user.getId());
-	        enrolledEvents = EventService.get().getUnfinishedEnrolledEvents(user.getId());
+		    ownedEvents = DeprecatedEventDAOFacade.get().getUnfinishedEventsOwnedBy(user.getId());
+	        enrolledEvents = DeprecatedEventDAOFacade.get().getUnfinishedEnrolledEvents(user.getId());
 		}
 
 		return render("index.jsp");

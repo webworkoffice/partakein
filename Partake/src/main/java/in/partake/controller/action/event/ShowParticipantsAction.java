@@ -9,7 +9,7 @@ import in.partake.model.EventEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
@@ -22,7 +22,7 @@ public class ShowParticipantsAction extends AbstractPartakeAction {
         UserEx user = ensureLogin();
         String eventId = getValidEventIdParameter();
 
-        EventEx event = EventService.get().getEventExById(eventId);
+        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
@@ -30,7 +30,7 @@ public class ShowParticipantsAction extends AbstractPartakeAction {
         if (!event.hasPermission(user, UserPermission.EVENT_PARTICIPATION_LIST))
             return renderInvalid(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        List<EnrollmentEx> participations = EventService.get().getEnrollmentEx(eventId);
+        List<EnrollmentEx> participations = DeprecatedEventDAOFacade.get().getEnrollmentEx(eventId);
         ParticipationList list = event.calculateParticipationList(participations);
 
         attributes.put(Constants.ATTR_EVENT, event);

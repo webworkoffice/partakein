@@ -1,7 +1,7 @@
 package in.partake.controller.action.feed;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
@@ -37,7 +37,7 @@ public class FeedCategoryAction extends AbstractFeedPageAction {
         feed.setDescription("最近登録されたイベントを(最大100)フィードします。");
 
         try {
-            List<Event> events = EventService.get().getRecentCategoryEvents(category, 100);
+            List<Event> events = DeprecatedEventDAOFacade.get().getRecentCategoryEvents(category, 100);
             InputStream is = createFeed(feed, events);
 
             return renderInlineStream(is, "application/rss+xml");

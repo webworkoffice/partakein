@@ -4,7 +4,7 @@ import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import net.sf.json.JSONObject;
 
 public class GetAPI extends AbstractPartakeAPI {
@@ -14,7 +14,7 @@ public class GetAPI extends AbstractPartakeAPI {
     protected String doExecute() throws DAOException, PartakeException {
         String userId = getValidUserIdParameter();
 
-        UserEx user = UserService.get().getUserExById(userId);
+        UserEx user = DeprecatedUserDAOFacade.get().getUserExById(userId);
         if (user == null)
             return renderNotFound();
         

@@ -4,7 +4,7 @@ import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.resource.UserErrorCode;
 import net.sf.json.JSONObject;
@@ -33,7 +33,7 @@ public class CreateAPI extends AbstractEventEditAPI {
         if (!updateEventFromParameter(user, embryo, invalidParameters))
             return renderInvalid(UserErrorCode.INVALID_PARAMETERS, invalidParameters);
         
-        String eventId = EventService.get().create(embryo, null, null);
+        String eventId = DeprecatedEventDAOFacade.get().create(embryo, null, null);
         
         JSONObject obj = new JSONObject();
         obj.put("eventId", eventId);

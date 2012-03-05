@@ -1,7 +1,7 @@
 package in.partake.controller.action.feed;
 
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.resource.ServerErrorCode;
 
@@ -21,7 +21,7 @@ public class FeedEventAction extends AbstractFeedPageAction {
         if (feedId == null) { return NOT_FOUND; }
 
         try {
-            Event event = EventService.get().getEventByFeedId(feedId);
+            Event event = DeprecatedEventDAOFacade.get().getEventByFeedId(feedId);
             if (event == null) { return NOT_FOUND; }
 
             SyndFeed feed = new SyndFeedImpl();

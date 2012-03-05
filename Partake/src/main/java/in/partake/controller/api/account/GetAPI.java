@@ -3,7 +3,7 @@ package in.partake.controller.api.account;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.UserService;
+import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.UserPreference;
 
 import java.util.List;
@@ -21,11 +21,11 @@ public class GetAPI extends AbstractPartakeAPI {
 
         JSONObject obj = user.toSafeJSON();
 
-        UserPreference pref = UserService.get().getUserPreference(user.getId());
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(user.getId());
         if (pref != null)
             obj.put("preference", pref.toSafeJSON());
 
-        List<String> openIds = UserService.get().getOpenIDIdentifiers(user.getId());
+        List<String> openIds = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(user.getId());
         if (openIds != null)
             obj.put("openId", openIds);
 

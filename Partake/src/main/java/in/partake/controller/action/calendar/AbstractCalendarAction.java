@@ -3,7 +3,7 @@ package in.partake.controller.action.calendar;
 import in.partake.base.Function;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.EventService;
+import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.ServerErrorCode;
@@ -69,7 +69,7 @@ public abstract class AbstractCalendarAction extends AbstractPartakeAction {
             }
 
             // TODO: This should die!
-            EventService.get().applyForAllEvents(new F(categoryName, calendar));
+            DeprecatedEventDAOFacade.get().applyForAllEvents(new F(categoryName, calendar));
 
             InputStream is = outputCalendar(calendar);
             return renderInlineStream(is, "text/calendar; charset=utf-8");
