@@ -148,7 +148,7 @@ public class UtilTest {
 				Date now = calendar.getTime();
 				calendar.set(Calendar.DAY_OF_MONTH, day - 1);
 				Date yesterday = calendar.getTime();
-				Assert.assertEquals(yesterday, Util.oneDayBefore(now));
+				Assert.assertEquals(yesterday, TimeUtil.oneDayBefore(now));
 			}
 		}
 	}
@@ -167,7 +167,7 @@ public class UtilTest {
 			calendar.set(Calendar.DAY_OF_MONTH, 31);
 			Date yesterday = calendar.getTime();
 
-			Assert.assertEquals(yesterday, Util.oneDayBefore(now));
+			Assert.assertEquals(yesterday, TimeUtil.oneDayBefore(now));
 		}
 	}
 
@@ -184,7 +184,7 @@ public class UtilTest {
 			calendar.set(Calendar.DAY_OF_MONTH, 28);
 			Date yesterday = calendar.getTime();
 
-			Assert.assertEquals(yesterday, Util.oneDayBefore(now));
+			Assert.assertEquals(yesterday, TimeUtil.oneDayBefore(now));
 		}
 	}
 
@@ -201,7 +201,7 @@ public class UtilTest {
 			calendar.set(Calendar.DAY_OF_MONTH, 29);
 			Date yesterday = calendar.getTime();
 
-			Assert.assertEquals(yesterday, Util.oneDayBefore(now));
+			Assert.assertEquals(yesterday, TimeUtil.oneDayBefore(now));
 		}
 	}
 
@@ -221,7 +221,7 @@ public class UtilTest {
 				calendar.set(Calendar.HOUR_OF_DAY, 12);
 				Date yesterday = calendar.getTime();
 
-				Assert.assertEquals(yesterday, Util.halfDayBefore(now));
+				Assert.assertEquals(yesterday, TimeUtil.halfDayBefore(now));
 			}
 		}
 	}
@@ -242,7 +242,7 @@ public class UtilTest {
 			calendar.set(Calendar.HOUR_OF_DAY, 12);
 			Date yesterday = calendar.getTime();
 
-			Assert.assertEquals(yesterday, Util.halfDayBefore(now));
+			Assert.assertEquals(yesterday, TimeUtil.halfDayBefore(now));
 		}
 	}
 
@@ -261,7 +261,7 @@ public class UtilTest {
 			calendar.set(Calendar.HOUR_OF_DAY, 12);
 			Date yesterday = calendar.getTime();
 
-			Assert.assertEquals(yesterday, Util.halfDayBefore(now));
+			Assert.assertEquals(yesterday, TimeUtil.halfDayBefore(now));
 		}
 	}
 
@@ -280,7 +280,7 @@ public class UtilTest {
 			calendar.set(Calendar.HOUR_OF_DAY, 12);
 			Date yesterday = calendar.getTime();
 
-			Assert.assertEquals(yesterday, Util.halfDayBefore(now));
+			Assert.assertEquals(yesterday, TimeUtil.halfDayBefore(now));
 		}
 	}
 
