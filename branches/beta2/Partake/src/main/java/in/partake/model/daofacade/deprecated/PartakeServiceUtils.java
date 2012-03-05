@@ -10,6 +10,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Enrollment;
@@ -54,24 +55,9 @@ class PartakeServiceUtils {
         }
     }
     
+    @Deprecated
     public static UserEx getUserEx(PartakeConnection con, PartakeDAOFactory factory, String userId) throws DAOException {
-        User user = factory.getUserAccess().find(con, userId);
-        if (user == null) { return null; }
-        
-        // TODO: そのうち、user.getCalendarId() を廃止する予定。
-        // とりあえずそれまでは user に書いてある calendarId より、こちらに書いてある calendarId を優先しておく。
-        {
-            CalendarLinkage linkage = factory.getCalendarAccess().findByUserId(con, userId);
-            if (linkage != null) {
-                User newUser = new User(user);
-                newUser.setCalendarId(linkage.getId());
-                newUser.freeze();
-                user = newUser;
-            }
-        }
-        
-        TwitterLinkage linkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(user.getTwitterId()));
-        return new UserEx(user, linkage); 
+        return UserDAOFacade.getUserEx(con, userId);
     }
     
     public static EventEx getEventEx(PartakeConnection con, PartakeDAOFactory factory, String eventId) throws DAOException {
