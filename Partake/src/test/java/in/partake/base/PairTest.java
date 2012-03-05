@@ -2,6 +2,7 @@ package in.partake.base;
 
 import in.partake.base.ComparablePair;
 
+import static org.hamcrest.Matchers.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,10 +36,10 @@ public class PairTest {
         ComparablePair<Integer, Integer> pair4 = new ComparablePair<Integer, Integer>(2, 2);
         ComparablePair<Integer, Integer> pair5 = new ComparablePair<Integer, Integer>(0, 2);
         
-        Assert.assertTrue(pair1.compareTo(pair2) == 0);
-        Assert.assertTrue(pair1.compareTo(pair3) < 0);
-        Assert.assertTrue(pair1.compareTo(pair4) < 0);
-        Assert.assertTrue(pair1.compareTo(pair5) > 0);
+        Assert.assertThat(pair1.compareTo(pair2), is(0));
+        Assert.assertThat(pair1.compareTo(pair3), is(lessThan(0)));
+        Assert.assertThat(pair1.compareTo(pair4), is(lessThan(0)));
+        Assert.assertThat(pair1.compareTo(pair5), is(greaterThan(0)));
     }
 
     @Test(expected = NullPointerException.class)
