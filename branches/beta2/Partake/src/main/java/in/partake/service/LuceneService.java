@@ -43,6 +43,7 @@ import org.apache.lucene.util.Version;
 /**
  * @author shinyak
  */
+// TODO: Do not use LuceneService directly. Basically use EventSearchService.
 public class LuceneService {
 	private static volatile LuceneService instance;
 
