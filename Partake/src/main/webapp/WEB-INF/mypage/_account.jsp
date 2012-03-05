@@ -46,11 +46,18 @@
 	function removeOpenID(ident) {
 		if (!window.confirm(ident + ' の結びつけが解除されます。よろしいですか？'))
 			return;
-		$partake.removeOpenID(ident).success(function(json) {
+		
+		partake.account.removeOpenID(ident)
+		.done(function(json) {
 			location.reload();
-			
-		}).error(function(json) {
-			alert('OpenID の結びつけの解除に失敗しました。' + json.reason);			
+		})
+		.fail(function(xhr) {
+			try {
+				var json = $.parseJSON(xhr.responseText);
+				alert(json.reason);
+			} catch (e) {
+				alert('レスポンスが JSON 形式ではありません。');
+			}
 		});
 	}
 </script>
