@@ -43,7 +43,5 @@ public class BinaryTestDataProvider extends TestDataProvider<BinaryData> {
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
         IBinaryAccess dao = factory.getBinaryAccess();
         dao.truncate(con);
-        
-        dao.put(con, new BinaryData(IMAGE_ID1, "byte/octet-stream", BYTE1_CONTENT));
     }
 }

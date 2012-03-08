@@ -99,8 +99,6 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
     protected void addParameter(ActionProxy proxy, String key, Object obj) throws DAOException {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();        
-        assert actionContext.getSession() != null;
-
         actionContext.getParameters().put(key, obj);
     }
 

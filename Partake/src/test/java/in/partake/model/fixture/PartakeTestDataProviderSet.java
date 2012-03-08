@@ -1,5 +1,6 @@
 package in.partake.model.fixture;
 
+import in.partake.controller.api.image.CreateImageAPI;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
@@ -8,6 +9,7 @@ import in.partake.model.fixture.impl.CacheTestDataProvider;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
+import in.partake.model.fixture.impl.ImageTestDataProvider;
 import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
 import in.partake.model.fixture.impl.TwitterLinkageTestDataProvider;
 import in.partake.model.fixture.impl.UserPreferenceTestDataProvider;
@@ -28,6 +30,7 @@ public class PartakeTestDataProviderSet {
     private CommentTestDataProvider commentDataprovider;
     private EnrollmentTestDataProvider enrollmentProvider;
     private EventTestDataProvider eventProvider;
+    private ImageTestDataProvider imageProvider;
     private OpenIDLinkageTestDataProvider openIDLinkageProvider;
     private TwitterLinkageTestDataProvider twitterLinkageProvider;
     private UserTestDataProvider userProvider;
@@ -41,6 +44,7 @@ public class PartakeTestDataProviderSet {
         providers.add(commentDataprovider = createCommentTestDataProvider());
         providers.add(enrollmentProvider = createEnrollmentTestDataProvider());
         providers.add(eventProvider = createEventTestDataProvider());
+        providers.add(imageProvider = createImageTestDataProvider());
         providers.add(openIDLinkageProvider = createOpenIDLinkageTestDataProvider());
         providers.add(twitterLinkageProvider = createTwitterLinkageTestDataProvider());
         providers.add(userProvider = createUserTestDataProvider());
@@ -71,6 +75,10 @@ public class PartakeTestDataProviderSet {
 
     public EventTestDataProvider getEventProvider() {
         return eventProvider;
+    }
+
+    public ImageTestDataProvider getImageProvider() {
+        return imageProvider;
     }
 
     public OpenIDLinkageTestDataProvider getOpenIDLinkageProvider() {
@@ -107,6 +115,10 @@ public class PartakeTestDataProviderSet {
 
     private EventTestDataProvider createEventTestDataProvider() {
         return new EventTestDataProvider();
+    }
+
+    private ImageTestDataProvider createImageTestDataProvider() {
+        return new ImageTestDataProvider();
     }
 
     private OpenIDLinkageTestDataProvider createOpenIDLinkageTestDataProvider() {

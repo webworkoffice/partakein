@@ -29,10 +29,15 @@ public class GetImagesAPI extends AbstractPartakeAPI {
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
 
-        int offset = getIntegerParameter("offset");
+        Integer offset = getIntegerParameter("offset");
+        if (offset == null)
+            offset = 0;
         if (offset < 0)
             offset = 0;
-        int limit = getIntegerParameter("limit");
+        
+        Integer limit = getIntegerParameter("limit");
+        if (limit == null)
+            limit = 0;
         if (limit < 0)
             limit = 0;
         if (100 < limit)
