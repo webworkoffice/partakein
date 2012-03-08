@@ -47,4 +47,9 @@ public class JPAEventReminderDao extends JPADao<EventReminder> implements IEvent
         q.executeUpdate();
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "EventReminders");
+    }
+
 }

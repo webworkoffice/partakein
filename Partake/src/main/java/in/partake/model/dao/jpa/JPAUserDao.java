@@ -42,4 +42,10 @@ class JPAUserDao extends JPADao<User> implements IUserAccess {
         Query q = em.createQuery("DELETE FROM Users");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "Users");
+    }
+
 }

@@ -75,4 +75,9 @@ class JPAEventRelationDao extends JPADao<EventRelation> implements IEventRelatio
         return eventRelations;
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "EventRelations");
+    }
+
 }

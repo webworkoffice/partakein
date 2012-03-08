@@ -168,4 +168,8 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
         }
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

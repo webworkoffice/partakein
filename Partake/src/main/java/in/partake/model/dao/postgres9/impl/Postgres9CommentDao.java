@@ -98,4 +98,9 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
         Postgres9IdMapper<Comment> idMapper = new Postgres9IdMapper<Comment>((Postgres9Connection) con, mapper, entityDao);
         return new Postgres9DataIterator<Comment>(idMapper, psars);
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

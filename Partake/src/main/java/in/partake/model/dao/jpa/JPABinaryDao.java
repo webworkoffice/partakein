@@ -56,4 +56,9 @@ public class JPABinaryDao extends JPADao<BinaryData> implements IBinaryAccess {
         Query q = em.createQuery("DELETE FROM BinaryData");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "BinaryData");
+    }
 }

@@ -63,4 +63,10 @@ class JPACommentDao extends JPADao<Comment> implements ICommentAccess {
         Query q = em.createQuery("DELETE FROM Comments");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "Comments");
+    }
+
 }

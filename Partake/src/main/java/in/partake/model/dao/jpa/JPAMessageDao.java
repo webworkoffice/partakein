@@ -69,4 +69,9 @@ public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
         return new JPAPartakeModelDataIterator<Message>(em, result, Message.class, false);
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "Messages");
+    }
+
 }

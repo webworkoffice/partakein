@@ -45,4 +45,10 @@ class JPATwitterLinkageDao extends JPADao<TwitterLinkage> implements ITwitterLin
         Query q = em.createQuery("DELETE FROM TwitterLinkages");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "TwitterLinkages");
+    }
+
 }

@@ -72,4 +72,9 @@ public class Postgres9CacheDao extends Postgres9Dao implements ICacheAccess {
     public DataIterator<CacheData> getIterator(PartakeConnection con) throws DAOException {
         return new MapperDataIterator<Postgres9Entity, CacheData>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

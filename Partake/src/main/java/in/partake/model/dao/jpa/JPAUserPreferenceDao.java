@@ -45,4 +45,10 @@ class JPAUserPreferenceDao extends JPADao<UserPreference> implements IUserPrefer
         Query q = em.createQuery("DELETE FROM UserPreferences");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "UserPreferences");
+    }
+
 }

@@ -93,4 +93,8 @@ public class Postgres9EventFeedDao extends Postgres9Dao implements IEventFeedAcc
         return indexDao.find((Postgres9Connection) con, "id", "eventId", eventId);
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

@@ -159,4 +159,9 @@ public class Postgres9EventRelationDao extends Postgres9Dao implements IEventRel
             it.close();
         }
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

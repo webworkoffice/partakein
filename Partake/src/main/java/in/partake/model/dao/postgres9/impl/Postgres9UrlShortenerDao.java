@@ -126,4 +126,9 @@ public class Postgres9UrlShortenerDao extends Postgres9Dao implements IURLShorte
 
         removeById(pcon, id);
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

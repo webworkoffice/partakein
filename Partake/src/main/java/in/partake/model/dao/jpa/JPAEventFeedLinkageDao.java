@@ -62,4 +62,10 @@ class JPAEventFeedLinkageDao extends JPADao<EventFeedLinkage> implements IEventF
         Query q = em.createQuery("DELETE FROM EventFeedLinkages");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "EventFeedLinkages");
+    }
+
 }
