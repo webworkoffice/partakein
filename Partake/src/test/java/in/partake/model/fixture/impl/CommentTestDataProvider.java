@@ -6,6 +6,7 @@ import java.util.UUID;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dto.Comment;
 import in.partake.model.fixture.TestDataProvider;
 
@@ -29,6 +30,11 @@ public class CommentTestDataProvider extends TestDataProvider<Comment> {
 
     @Override
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
+        ICommentAccess dao = factory.getCommentAccess();
+        dao.truncate(con);
+        
+        dao.put(con, new Comment(COMMENT_ID1, EVENT_ID1, USER_ID1, "comment", false, new Date()));
+        dao.put(con, new Comment(COMMENT_ID2, EVENT_ID2, USER_ID3, "comment", false, new Date()));
     }
 
 }

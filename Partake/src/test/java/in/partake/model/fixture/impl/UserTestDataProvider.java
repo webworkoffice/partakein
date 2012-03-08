@@ -42,6 +42,7 @@ public class UserTestDataProvider extends TestDataProvider<User> {
         dao.put(con, new User(USER_ID1, TWITTER_ID1, new Date(), null)); 
         dao.put(con, new User(USER_ID2, TWITTER_ID2, new Date(), null)); 
         dao.put(con, new User(USER_ID3, TWITTER_ID3, new Date(), null)); 
+        dao.put(con, new User(USER_ID4, TWITTER_ID4, new Date(), null)); 
         dao.put(con, new User(USER_ADMIN_ID, TWITTER_ADMIN_ID, new Date(), null)); 
 
         // TODO 上記3ユーザと何が違うのか、UserID命名の意図をコメント
