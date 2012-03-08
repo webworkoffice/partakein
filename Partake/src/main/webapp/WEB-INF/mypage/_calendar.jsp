@@ -51,8 +51,8 @@ function callRevokeCalendar() {
 
 	spinner.show();
 	button.attr('disabled', '');
-	partake.revokeCalendar()
-	.always(function (xhr) {
+	partake.account.revokeCalendar()
+	.always(function () {
 		spinner.hide();
 		button.removeAttr('disabled');
 	})
@@ -66,7 +66,8 @@ function callRevokeCalendar() {
 		$('#revokeCalendarURLMessage').text("カレンダー ID を再生成しました。");
 		$('#revokeCalendarURLMessage').hide();
 		$('#revokeCalendarURLMessage').fadeIn("fast");
-	}).fail(function (xhr) {		
+	})
+	.fail(function (xhr) {		
 		$('#revokeCalendarURLMessage').text("カレンダー ID の生成に失敗しました。");
 		$('#revokeCalendarURLMessage').hide();
 		$('#revokeCalendarURLMessage').fadeIn("fast");
