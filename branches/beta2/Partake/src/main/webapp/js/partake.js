@@ -32,6 +32,17 @@
 			return $.post('/api/account/events', arg);
 		},
 		
+		setPreference: function(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				receivingTwitterMessage: receivingTwitterMessage,
+				profilePublic: profilePublic,
+				tweetingAttendanceAutomatically: tweetingAttendanceAutomatically
+			};
+			
+			return $.post('/api/account/setPreference', arg);
+		},
+		
 		removeOpenID: function(identifier) {
 			var arg = {
 				sessionToken: partake.sessionToken, 
@@ -39,27 +50,15 @@
 			};
 			
 			return $.post('/api/account/removeOpenID', arg);
+		},
+		
+		revokeCalendar: function() {
+			var arg = {
+				sessionToken: partake.sessionToken			
+			};
+			
+			return $.post('/api/account/revokeCalendar', arg);
 		}
-	};
-	
-	// TODO: All methods should be moved to the account object.
-	Partake.prototype.setPreference = function(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically) {
-		var arg = {
-			sessionToken: this.sessionToken,
-			receivingTwitterMessage: receivingTwitterMessage,
-			profilePublic: profilePublic,
-			tweetingAttendanceAutomatically: tweetingAttendanceAutomatically
-		};
-		
-		return $.post('/api/account/setPreference', arg);
-	};
-	
-	Partake.prototype.revokeCalendar = function() {
-		var arg = {
-			sessionToken: this.sessionToken			
-		};
-		
-		return $.post('/api/account/revokeCalendar', arg);
 	};
 	
 	// ----------------------------------------------------------------------
