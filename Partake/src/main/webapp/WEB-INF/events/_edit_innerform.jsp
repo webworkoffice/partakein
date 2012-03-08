@@ -145,6 +145,7 @@
 	<label class="control-label" for="foreImage">掲載画像</label>
 	<div class="controls form-inline">
 		<label class="checkbox"><input type="checkbox" name="foreImage" />掲載する</label>
+		<input type="hidden" id="fore-image-id-input" name="foreImageId" />
 		<p class="help-block">画像を設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<script>
@@ -159,9 +160,15 @@
 	<div id="fore-image-chooser" class="controls" style="display:none">
 		<p>現在次の画像が選択されています。</p>
 		<ul class="thumbnails">
-	        <li class="span2"><img src="http://placehold.it/260x180" alt=""></li>
+	        <li class="span2"><img id="selected-fore-image" src="http://placehold.it/260x180" alt=""></li>
         </ul>
-		<p><a data-toggle="modal" href="#image-upload-dialog">新しく画像を選択します。</a></p>
+        <p><input id="select-new-foreground-image" type="button" class="btn" value="新しく画像を選択します" /></p>
+		<script>
+			$('#select-new-foreground-image').click(function() {
+				$('#image-upload-dialog').attr('purpose', 'foreground');
+				$('#image-upload-dialog').modal('show');
+			});
+		</script>
    	</div>
 </div>
 <div id="backImageId" class="control-group">
@@ -290,37 +297,73 @@ $('#secret').change(checkPasscode);
 </form>
 
 
-<div id="image-upload-dialog" class="modal" style="display:none">
+<div id="image-upload-dialog" class="modal modal-wider" style="display:none">
 	<div class="modal-header">
     	<a class="close" data-dismiss="modal">&times;</a>
     	<h3>画像を選択</h3>
 	</div>
   	<div class="modal-body">
-  		<p>新しく画像をアップロード、もしくは過去にアップロードした画像から選択します。</p>
-  		<form enctype="multipart/form-data">
-  		<label for="fileupload"><input type="button" class="btn btn-danger" value="新しく画像をアップロード"/></label>
-  			<%= Helper.tokenTags() %>
-			<input id="fileupload" type="file" name="file" class="invisible" />
-		</form>
-		<ul class="thumbnails">
-			<li class="span2"><a href="#" class="thumbnail"><img id="fileupload-image" src="http://placehold.it/160x120" alt=""></a></li>
-			<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-			<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-			<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-			<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-    	</ul>
+		<div class="row">
+			<div class="span3">
+				<p>新しく画像をアップロード、もしくは過去にアップロードした画像から選択します。</p>
+				<p>選択された画像</p>
+				<ul class="thumbnails">
+					<li class="span3"><img id="selected-image" src="http://placehold.it/260x180" alt=""></li>
+				</ul>
+				<form enctype="multipart/form-data">
+			  		<label for="fileupload"><input type="button" class="btn btn-danger" value="新しく画像をアップロード"/></label>
+		  			<%= Helper.tokenTags() %>
+					<input id="fileupload" type="file" name="file" class="invisible" />
+				</form>
+			</div>
+			<div class="span6">
+				<ul id="thumbnails" class="thumbnails">
+					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+		    	</ul>
+		    	<div id="image-pagination" class="pagination pagination-centered"></div>			
+			</div>
+		</div>
     	
   	</div>
   	<div class="modal-footer spinner-container">
-	    <a href="#" class="btn btn-primary" data-dismiss="modal">OK</a>
+	    <a href="#" id="image-upload-dialog-ok" class="btn btn-primary">OK</a>
 	    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
   	</div>
 	
 	<%-- Since IE does not support XHR File upload, we use iframe trasport technique here... Too bad. --%>
 	<script>
-	$('#fileupload').change(function() {
-		
+	var links = partakeUI.pagination($('#image-pagination'), 1, 100, 6);
+	
+	$('#image-upload-dialog-ok').click(function() {
+		var dialog = $('#image-upload-dialog');
+		dialog.modal('hide');
+		var imageId = $('#selected-image').attr('imageId');
+		if (dialog.attr('purpose') == "foreground" && imageId) {
+			$('#fore-image-id-input').val(imageId);
+			$('#selected-fore-image').attr('src', '/images/' + imageId);
+		} else if (dialog.attr('purpose') == "background" && imageId) {
+			$('#back-image-id-input').val(imageId);
+			$('#selected-back-image').attr('src', '/images/' + imageId);
+		}		
 	});
+	
+	function selectImage(imageId) {
+		$('#selected-image').attr('imageId', imageId);
+		$('#selected-image').attr('src', '/images/' + imageId);
+	}
+	
+	function deleteImagesIfTooMany() {
+		var lis = $('#thumbnails li');
+		console.log(lis.length);
+		for (var i = 6; i < lis.length; ++i) {
+			$(lis.get(i)).remove();	
+		}
+	}
+	
 	$('#fileupload').fileupload({
 		url: '/api/image/create',
 		files: [{name: $('#fileupload').val()}],
@@ -329,12 +372,15 @@ $('#secret').change(checkPasscode);
         	
         },
 		done: function (e, data) {
-			console.log(e);
-			console.log(data);
 			var xhr = data.jqXHR;
 			try {
 				var json = $.parseJSON(xhr.responseText);
-				$('#fileupload-image').attr('src', '/images/' + json.imageId);
+				var img = $('<img alt=""/>').attr('src', '/images/' + json.imageId);
+				var a = $('<a class="thumbnail"></a>').append(img);
+				a.click(function() { selectImage(json.imageId); });
+				var li = $('<li class="span2"></li>').append(a);
+				$('#thumbnails').prepend(li);
+				deleteImagesIfTooMany();
 			} catch (e) {
 				alert('レスポンスが JSON 形式ではありません。');
 			}
