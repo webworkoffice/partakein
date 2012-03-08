@@ -95,11 +95,10 @@
 			return $.post('/api/event/postComment', arg);
 		},
 		
-		removeComment: function(commentId, eventId) {
+		removeComment: function(commentId) {
 			var arg = {
 				sessionToken: partake.sessionToken,
 				commentId: commentId,
-				eventId: eventId,
 			};
 			
 			return $.post('/api/event/removeComment', arg);

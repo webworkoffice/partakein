@@ -225,6 +225,10 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     protected String getValidImageIdParameter() throws PartakeException {
         return getValidIdParameter("imageId", UserErrorCode.MISSING_IMAGEID, UserErrorCode.INVALID_IMAGEID);
     }
+    
+    protected String getValidCommentIdParameter() throws PartakeException {
+        return getValidIdParameter("commentId", UserErrorCode.MISSING_COMMENT_ID, UserErrorCode.INVALID_COMMENT_ID);
+    }
 
     protected void ensureValidSessionToken() throws PartakeException {
         if (!checkCSRFToken())
