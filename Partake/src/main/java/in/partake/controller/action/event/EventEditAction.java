@@ -16,8 +16,8 @@ public class EventEditAction extends AbstractPartakeAction {
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
-
         String eventId = getValidEventIdParameter();
+        
         event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
