@@ -174,7 +174,7 @@
    	<label class="control-label" for="backImage">背景画像</label>
 	<div class="controls form-inline">
 		<label class="checkbox"><input type="checkbox" name="backImage" />掲載する</label>
-		<input type="hidden" id="fore-image-id-input" name="backImageId" value="<%= event != null ? event.getForeImageId() : "" %>" />
+		<input type="hidden" id="back-image-id-input" name="backImageId" value="<%= event != null ? event.getBackImageId() : "" %>" />
 		<p class="help-block">画像を設定できます。画像は上部に背景にされます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<script>
