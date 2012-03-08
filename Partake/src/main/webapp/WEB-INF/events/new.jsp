@@ -91,7 +91,7 @@ $('#event-create-form-publish').click(function() {
 	submitEvent()
 	.done(function (json) {
 		location.href = "/events/" + json.eventId;
-	})
+	});
 });
 </script>
 

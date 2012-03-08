@@ -146,7 +146,7 @@
 	<label class="control-label" for="foreImage">掲載画像</label>
 	<div class="controls form-inline">
 		<label class="checkbox"><input id="fore-image-checkbox" type="checkbox" name="foreImage" <%= event != null && event.getForeImageId() != null ? "checked" : "" %>/>掲載する</label>
-		<input type="hidden" id="fore-image-id-input" name="foreImageId" value="<%= event != null ? event.getForeImageId() : "" %>" />
+		<input type="hidden" id="fore-image-id-input" name="foreImageId" value="<%= event != null && event.getForeImageId() != null ? event.getForeImageId() : "" %>" />
 		<p class="help-block">画像を設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<div id="fore-image-chooser" class="controls" style="display:none">
@@ -189,7 +189,7 @@
    	<label class="control-label" for="backImage">背景画像</label>
 	<div class="controls form-inline">
 		<label class="checkbox"><input id="back-image-checkbox" type="checkbox" name="backImage" <%= event != null && event.getBackImageId() != null ? "checked" : "" %>/>掲載する</label>
-		<input type="hidden" id="back-image-id-input" name="backImageId" value="<%= event != null ? event.getBackImageId() : "" %>" />
+		<input type="hidden" id="back-image-id-input" name="backImageId" value="<%= event != null && event.getBackImageId() != null ? event.getBackImageId() : "" %>" />
 		<p class="help-block">画像を設定できます。画像は上部に背景にされます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<div id="back-image-chooser" class="controls" style="display:none">

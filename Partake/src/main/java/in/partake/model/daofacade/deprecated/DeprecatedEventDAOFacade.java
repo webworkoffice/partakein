@@ -477,6 +477,42 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
             con.invalidate();
         }
     }
+    
+    public void update(Event eventEmbryo) throws DAOException {
+        assert eventEmbryo != null;
+        assert eventEmbryo.getId() != null;
+        
+        PartakeDAOFactory factory = getFactory();
+        PartakeConnection con = getPool().getConnection();
+        
+        try {
+            con.beginTransaction();
+
+            // master を update
+            factory.getEventAccess().put(con, eventEmbryo);
+
+            // Event Activity にも挿入
+            {
+                IEventActivityAccess eaa = factory.getEventActivityAccess();
+                EventActivity activity = new EventActivity(eaa.getFreshId(con), eventEmbryo.getId(), "イベントが更新されました : " + eventEmbryo.getTitle(), eventEmbryo.getDescription(), eventEmbryo.getCreatedAt());
+                eaa.put(con, activity);
+            }
+
+            // private でなければ Lucene にデータ挿入
+            if (eventEmbryo.isPrivate() || eventEmbryo.isPreview()) {
+                LuceneService.get().removeDocument(eventEmbryo.getId());
+            } else {
+                Document doc = makeDocument(eventEmbryo.getId(), eventEmbryo);
+                LuceneService.get().updateDocument(doc);
+            }
+            
+            con.commit();
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    
 
     public void update(Event event, Event eventEmbryo,
             boolean updatesForeImage, BinaryData foreImageEmbryo,

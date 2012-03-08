@@ -84,7 +84,17 @@
 				arg[s] = eventArgs[s];
 			return $.post('/api/event/create', arg);
 		},
-		
+
+		modify: function(eventId, eventArgs) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				eventId: eventId
+			};
+			for (var s in eventArgs)
+				arg[s] = eventArgs[s];
+			return $.post('/api/event/modify', arg);
+		},
+
 		remove: function(eventId) {
 			var arg = {
 				sessionToken: partake.sessionToken,
