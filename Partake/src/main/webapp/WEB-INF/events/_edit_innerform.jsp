@@ -174,7 +174,8 @@
    	<label class="control-label" for="backImage">背景画像</label>
 	<div class="controls form-inline">
 		<label class="checkbox"><input type="checkbox" name="backImage" />掲載する</label>
-		<p class="help-block">画像を設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</p>
+		<input type="hidden" id="fore-image-id-input" name="backImageId" value="<%= event != null ? event.getForeImageId() : "" %>" />
+		<p class="help-block">画像を設定できます。画像は上部に背景にされます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<script>
 	$('input[name="backImage"]').change(function() {
@@ -186,11 +187,17 @@
 	});
 	</script>
 	<div id="back-image-chooser" class="controls" style="display:none">
-		<p>現在次の画像が選択されています。</p>
 		<ul class="thumbnails">
-	        <li class="span2"><img src="http://placehold.it/260x180" alt=""></li>
+	        <li class="span2"><img id="selected-back-image" src="http://placehold.it/260x180" alt=""></li>
         </ul>
-		<p>新しく画像を選択します。</p>
+        <p><input id="select-new-background-image" type="button" class="btn" value="新しく画像を選択します" /></p>
+		<script>
+			$('#select-new-background-image').click(function() {
+				$('#image-upload-dialog').attr('purpose', 'background');
+				$('#image-upload-dialog').modal('show');
+			});
+		</script>
+		
    	</div>
 </div>
 <div id="place" class="control-group">
