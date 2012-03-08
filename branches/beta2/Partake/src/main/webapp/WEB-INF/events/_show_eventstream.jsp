@@ -45,7 +45,7 @@
 					
 					spinner.show();
 					if (window.confirm('メッセージを削除しようとしています。この操作は取り消せません。本当に削除しますか？')) {
-						partake.event.removeComment(commentId, '<%= h(event.getId()) %>')
+						partake.event.removeComment(commentId)
 						.always(function () {
 							spinner.hide();
 						})
