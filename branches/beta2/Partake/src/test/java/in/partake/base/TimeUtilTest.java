@@ -1,13 +1,11 @@
 package in.partake.base;
 
-import in.partake.base.TimeUtil;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertThat;
 
-import java.util.Calendar;
 import java.util.Date;
 
-import static org.hamcrest.Matchers.*;
-
-import static org.junit.Assert.assertThat;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

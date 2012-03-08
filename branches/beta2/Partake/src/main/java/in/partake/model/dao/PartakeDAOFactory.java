@@ -12,6 +12,7 @@ import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dao.access.IEventReminderAccess;
+import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
@@ -36,6 +37,7 @@ public abstract class PartakeDAOFactory {
     private final IEventReminderAccess eventReminderAccess;
     private final IEventFeedAccess eventFeedAccess;
     private final IEventActivityAccess eventActivityAccess;
+    private final IImageAccess imageAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
@@ -59,6 +61,7 @@ public abstract class PartakeDAOFactory {
         addDao(eventReminderAccess   = createEventReminderAccess());
         addDao(eventFeedAccess       = createEventFeedAccess());
         addDao(eventActivityAccess   = createEventActivityAccess());
+        addDao(imageAccess           = createImageAccess());
         addDao(openIDLinkageAccess   = createOpenIDLinkageAccess());
         addDao(twitterLinkageAccess  = createTwitterLinkageAccess());
         addDao(userAccess            = creataeUserAccess());
@@ -136,6 +139,10 @@ public abstract class PartakeDAOFactory {
         return eventActivityAccess;
     }
 
+    public final IImageAccess getImageAccess() {
+        return imageAccess;
+    }
+    
     public final IOpenIDLinkageAccess getOpenIDLinkageAccess() {
         return openIDLinkageAccess;
     }
@@ -172,6 +179,7 @@ public abstract class PartakeDAOFactory {
     protected abstract IEventFeedAccess createEventFeedAccess();
     protected abstract IEventActivityAccess createEventActivityAccess();
     protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
+    protected abstract IImageAccess createImageAccess();
     protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();
     protected abstract IUserAccess creataeUserAccess();
     protected abstract IUserPreferenceAccess createUserPreferenceAccess();

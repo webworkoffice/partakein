@@ -16,6 +16,7 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventRelationAccess;
+import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Enrollment;
@@ -24,6 +25,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
 import in.partake.model.dto.EventRelation;
+import in.partake.model.dto.ImageData;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
@@ -963,6 +965,20 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         }
     }
 
+    public ImageData getImageData(String imageId) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        IImageAccess imageAccess = factory.getImageAccess();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            con.beginTransaction();
+            ImageData data = imageAccess.find(con, imageId);
+            con.commit();
+            return data;
+        } finally {
+            con.invalidate();
+        }
+    }
+
     /**
      * event の参加予定人数を返します。
      * @param eventId
@@ -1125,16 +1141,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         } finally {
             con.invalidate();
         }
-    }
-
-    public List<String> getImageIds(String userId, int offset, int limit) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            return factory.getBinaryAccess().findIdsByUserId(con, userId, offset, limit);
-        } finally {
-            con.invalidate();
-        }        
     }
     
     // ----------------------------------------------------------------------

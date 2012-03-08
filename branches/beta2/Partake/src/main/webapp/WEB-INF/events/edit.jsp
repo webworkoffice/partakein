@@ -29,15 +29,21 @@
 		<jsp:include page="/WEB-INF/events/_edit_innerform.jsp" />
 	</div>
 	<div class="span3">
-		<div class="fixed span3">
+		<div class="span3 well fixed">
 			<% if (event.isPreview()) { %>
-			<input type="button" class="btn btn-primary span3" value="イベントを保存する" />
+			<div class="spinner-container">
+				<input type="button" class="btn btn-primary span3" value="イベントを保存する" />
+			</div>
 			<p class="help-block">イベントを保存します。保存しただけではまだ公開されません。</p>
 			<p></p>
-			<input type="button" class="btn btn-danger span3" value="イベントを公開する" />
+			<div class="spinner-container">
+				<input type="button" class="btn btn-danger span3" value="イベントを公開する" />
+			</div>
 			<p class="help-block">イベントを公開します。</p>
 			<% } else { %>
-			<input type="button" class="btn btn-primary span3" value="イベントを更新する" />
+			<div class="spinner-container">
+				<input type="button" class="btn btn-primary span3" value="イベントを更新する" />
+			</div>
 			<p class="help-block">イベントを更新します。</p>
 			<% } %>
 		</div>

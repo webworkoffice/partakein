@@ -7,9 +7,9 @@ import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IBinaryAccess;
+import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.base.Transaction;
-import in.partake.model.dto.BinaryData;
+import in.partake.model.dto.ImageData;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
@@ -77,7 +77,7 @@ class CreateImageAPITransaction extends Transaction<String> {
     // TODO: We should not load image in memory here. However, sending image from DB directly will cause
     // another problem, e.g. DDOS.
     public String doTransaction(PartakeConnection con) throws DAOException, PartakeException {
-        IBinaryAccess dao = DBService.getFactory().getBinaryAccess();
+        IImageAccess dao = DBService.getFactory().getImageAccess();
 
         byte[] foreImageByteArray;
         try {
@@ -87,7 +87,7 @@ class CreateImageAPITransaction extends Transaction<String> {
         }
 
         String imageId = dao.getFreshId(con); 
-        BinaryData imageEmbryo = new BinaryData(imageId, user.getId(), contentType, foreImageByteArray, TimeUtil.getCurrentDate());
+        ImageData imageEmbryo = new ImageData(imageId, user.getId(), contentType, foreImageByteArray, TimeUtil.getCurrentDate());
         dao.put(con, imageEmbryo);
 
         return imageId;

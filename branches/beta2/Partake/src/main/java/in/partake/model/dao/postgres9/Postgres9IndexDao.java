@@ -47,6 +47,14 @@ public class Postgres9IndexDao extends Postgres9Dao {
         }
     }
     
+    public int count(Postgres9Connection con, String columnForSearch, String value) throws DAOException {
+        try {
+            return count(con.getConnection(), columnForSearch, value);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+    
     public Postgres9StatementAndResultSet select(Postgres9Connection con, String sql, Object[] values) throws DAOException {
         try {
             return select(con.getConnection(), sql, values);
@@ -128,6 +136,25 @@ public class Postgres9IndexDao extends Postgres9Dao {
         }
     }
 
+    private int count(Connection con, String columnForSearch, String value) throws SQLException {
+        String sql = "SELECT count(1) FROM " + indexTableName + " WHERE " + columnForSearch + " = ?";
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, value);
+            rs = ps.executeQuery();
+            
+            if (rs.next())
+                return rs.getInt(1);
+            else
+                return 0;
+        } finally {
+            close(rs);
+            close(ps);
+        }
+    }
     
     private Postgres9StatementAndResultSet select(Connection con, String sql, Object[] values) throws SQLException {
         boolean shouldClose = true;

@@ -4,7 +4,10 @@ import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.base.Transaction;
+import in.partake.service.DBService;
 
 import java.util.List;
 
@@ -34,14 +37,49 @@ public class GetImagesAPI extends AbstractPartakeAPI {
             limit = 0;
         if (100 < limit)
             limit = 100;
+
+        GetImagesTransaction transaction = new GetImagesTransaction(user, offset, limit);
+        transaction.transaction();
         
-        List<String> imageIds = DeprecatedEventDAOFacade.get().getImageIds(user.getId(), offset, limit);
-        JSONArray array = new JSONArray();
-        for (String imageId : imageIds)
-            array.add(imageId);
+        JSONArray imageIds = new JSONArray();
+        for (String imageId : transaction.getImageIds())
+            imageIds.add(imageId);
 
         JSONObject obj = new JSONObject();
-        obj.put("imageIds", array);
+        obj.put("imageIds", imageIds);
+        obj.put("count", transaction.getCountImages());
         return renderOK(obj);
     }    
+}
+
+class GetImagesTransaction extends Transaction<Void> {
+    private UserEx user;
+    private int offset;
+    private int limit; 
+
+    private List<String> imageIds;
+    private int countImages;
+    
+    public GetImagesTransaction(UserEx user, int offset, int limit) {
+        this.user = user;
+        this.offset = offset;
+        this.limit = limit;
+    }
+
+    @Override
+    protected Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+        PartakeDAOFactory factory = DBService.getFactory();
+        
+        this.imageIds = factory.getImageAccess().findIdsByUserId(con, user.getId(), offset, limit);
+        this.countImages = factory.getImageAccess().countByUserId(con, user.getId());
+        return null;
+    }
+    
+    public List<String> getImageIds() {
+        return this.imageIds;
+    }
+    
+    public int getCountImages() {
+        return this.countImages;
+    }
 }
