@@ -145,7 +145,7 @@
 	<label class="control-label" for="foreImage">掲載画像</label>
 	<div class="controls form-inline">
 		<label class="checkbox"><input type="checkbox" name="foreImage" />掲載する</label>
-		<input type="hidden" id="fore-image-id-input" name="foreImageId" />
+		<input type="hidden" id="fore-image-id-input" name="foreImageId" value="<%= event != null ? event.getForeImageId() : "" %>" />
 		<p class="help-block">画像を設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<script>
@@ -158,7 +158,6 @@
 	});
 	</script>
 	<div id="fore-image-chooser" class="controls" style="display:none">
-		<p>現在次の画像が選択されています。</p>
 		<ul class="thumbnails">
 	        <li class="span2"><img id="selected-fore-image" src="http://placehold.it/260x180" alt=""></li>
         </ul>

@@ -469,6 +469,50 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
             con.invalidate();
         }
     }
+    
+    /**
+     * event をデータベースに保持します。
+     * @return event id
+     */
+    private String create(Event eventEmbryo) throws DAOException {
+        PartakeDAOFactory factory = getFactory();
+        IBinaryAccess binaryAccess = factory.getBinaryAccess();
+        PartakeConnection con = getPool().getConnection();
+        try {
+            con.beginTransaction();
+            
+            String eventId = factory.getEventAccess().getFreshId(con);
+            eventEmbryo.setId(eventId);
+            factory.getEventAccess().put(con, eventEmbryo);
+
+            // private でなければ Lucene にデータ挿入して検索ができるようにする
+            if (!eventEmbryo.isPrivate() && !eventEmbryo.isPreview()) {
+                Document doc = makeDocument(eventEmbryo.getId(), eventEmbryo);
+                LuceneService.get().addDocument(doc);
+            }
+
+            // Feed Dao にも挿入。
+            appendFeedIfAbsent(factory, con, eventEmbryo.getId());
+
+            // Event Activity にも挿入
+            {
+                IEventActivityAccess eaa = factory.getEventActivityAccess();
+                EventActivity activity = new EventActivity(eaa.getFreshId(con), eventEmbryo.getId(), "イベントが登録されました : " + eventEmbryo.getTitle(), eventEmbryo.getDescription(), eventEmbryo.getCreatedAt());
+                eaa.put(con, activity);
+            }
+
+            // TODO: これはここでやるべきじゃないと思う。
+            // さらに、twitter bot がつぶやく (private の場合はつぶやかない)
+            if (!eventEmbryo.isPrivate() && !eventEmbryo.isPreview()) {
+                tweetNewEventArrival(factory, con, eventEmbryo);
+            }
+
+            con.commit();
+            return eventEmbryo.getId();
+        } finally {
+            con.invalidate();
+        }
+    }
 
     public void update(Event event, Event eventEmbryo,
             boolean updatesForeImage, BinaryData foreImageEmbryo,

@@ -1,6 +1,7 @@
 package in.partake.controller.api.event;
 
 import in.partake.base.TimeUtil;
+import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -172,10 +173,10 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
         
         {
             String foreImageId = getParameter("foreImageId");
-            if (foreImageId != null) {
+            if (foreImageId != null && Util.isUUID(foreImageId)) {
                 // Checks foreImageId is one of your images.
                 // TODO: We can do this in light-weight way. 
-                BinaryData data = DeprecatedEventDAOFacade.get().getBinaryData("foreImageId");
+                BinaryData data = DeprecatedEventDAOFacade.get().getBinaryData(foreImageId);
                 if (data == null)
                     invalidParameters.put("foreImageId", "画像IDが不正です。");
                 else if (StringUtils.equals(foreImageId, event.getForeImageId()))
@@ -184,6 +185,8 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                     invalidParameters.put("foreImageId", "画像IDが不正です。");
                 else
                     event.setForeImageId(foreImageId);
+            } else if (foreImageId != null) {
+                invalidParameters.put("foreImageId", "画像IDが不正です。");
             } else {
                 event.setForeImageId(null);
             }
@@ -191,10 +194,10 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
         
         {
             String backImageId = getParameter("backImageId");
-            if (backImageId != null) {
+            if (backImageId != null && Util.isUUID(backImageId)) {
                 // Checks foreImageId is one of your images.
                 // TODO: We can do this in light-weight way. 
-                BinaryData data = DeprecatedEventDAOFacade.get().getBinaryData("backImageId");
+                BinaryData data = DeprecatedEventDAOFacade.get().getBinaryData(backImageId);
                 if (data == null)
                     invalidParameters.put("backImageId", "画像IDが不正です。");
                 else if (StringUtils.equals(backImageId, event.getForeImageId()))
@@ -203,8 +206,10 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                     invalidParameters.put("backImageId", "画像IDが不正です。");
                 else
                     event.setForeImageId(backImageId);
+            } else if (backImageId != null) {
+                invalidParameters.put("backImageId", "画像IDが不正です。");
             } else {
-                event.setForeImageId(null);
+                event.setBackImageId(null);
             }
         }
 

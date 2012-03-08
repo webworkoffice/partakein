@@ -121,7 +121,7 @@ body {
 <div class="span9">
 	<% if (event.getForeImageId() != null) { %>
 	<div class="event-image">
-		<img id="event-image-image" src="<%= request.getContextPath()%>/events/images/<%= event.getForeImageId() %>" />
+		<img id="event-image-image" src="/images/<%= event.getForeImageId() %>" />
 	</div>
 	<% } %>
 
