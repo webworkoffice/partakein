@@ -18,6 +18,8 @@
 	// Account
 	
 	Partake.prototype.account = {
+		partake: this,
+		
 		// Gets events of account. 
 		getEvents: function(queryType, finished, offset, limit) {
 			var arg = {
@@ -32,7 +34,7 @@
 		
 		removeOpenID: function(identifier) {
 			var arg = {
-				sessionToken: this.sessionToken, 
+				sessionToken: partake.sessionToken, 
 				identifier: identifier
 			};
 			
