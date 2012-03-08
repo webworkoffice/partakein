@@ -383,20 +383,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
     }
 
     /**
-     * create an event as a demo event.
-     * @param eventEmbryo
-     * @param foreImageEmbryo
-     * @param backImageEmbryo
-     * @return
-     * @throws DAOException
-     */
-    public String createAsDemo(Event eventEmbryo,
-            BinaryData foreImageEmbryo,
-            BinaryData backImageEmbryo) throws DAOException {
-        return create(eventEmbryo, foreImageEmbryo, backImageEmbryo, true);
-    }
-
-    /**
      * event をデータベースに保持します。
      * @return event id
      */

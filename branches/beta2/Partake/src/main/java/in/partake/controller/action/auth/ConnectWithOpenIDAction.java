@@ -15,5 +15,4 @@ public class ConnectWithOpenIDAction extends AbstractOpenIDAction {
         this.session.put(Constants.ATTR_OPENID_PURPOSE, "connect");
         return loginByOpenID(callbackURL);        
     }
-
 }

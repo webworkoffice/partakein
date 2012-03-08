@@ -9,6 +9,7 @@ import java.util.List;
 public interface IImageAccess extends IAccess<ImageData, String> {
     public String getFreshId(PartakeConnection con) throws DAOException;
     
+    // Should return ids ORDER BY createdAt DESC
     public List<String> findIdsByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException;
     public int countByUserId(PartakeConnection con, String userId) throws DAOException;
 }

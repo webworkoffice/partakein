@@ -8,6 +8,7 @@ import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dto.ImageData;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -46,5 +47,7 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
         dao.truncate(con);
         
         dao.put(con, new ImageData(IMAGE_ID1, USER_ID1, "byte/octet-stream", BYTE1_CONTENT, TimeUtil.getCurrentDate()));
+        for (int i = 0; i < IMAGE_ID_OWNED_BY_USER2.length; ++i)
+            dao.put(con, new ImageData(IMAGE_ID_OWNED_BY_USER2[i], USER_ID2, "byte/octet-stream", BYTE1_CONTENT, new Date(IMAGE_ID_OWNED_BY_USER2.length - i)));
     }
 }

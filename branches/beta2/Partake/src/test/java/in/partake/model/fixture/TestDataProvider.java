@@ -7,6 +7,10 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 
 public abstract class TestDataProvider<T> {
+    
+    
+    
+    
     // TODO: Name should be more descriptive.
     public static final String INVALID_USER_ID = new UUID(1, -1).toString();
     
@@ -49,6 +53,10 @@ public abstract class TestDataProvider<T> {
     public static final String EVENT_REMOVE_ID3 = new UUID(2, 33).toString();
     
     public static final String IMAGE_ID1 = new UUID(3, 1).toString();
+    public static final String[] IMAGE_ID_OWNED_BY_USER2 = new String[] {
+        new UUID(3, 2).toString(), new UUID(3, 3).toString(), new UUID(3, 4).toString(), new UUID(3, 5).toString(), new UUID(3, 6).toString(),
+        new UUID(3, 7).toString(), new UUID(3, 8).toString(), new UUID(3, 9).toString(), new UUID(3, 10).toString(), new UUID(3, 11).toString(),
+    };
 
     public static final String COMMENT_INVALID_ID = new UUID(4, 0).toString();
     public static final String COMMENT_ID1 = new UUID(4, 1).toString();

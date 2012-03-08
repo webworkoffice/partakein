@@ -32,6 +32,15 @@
 			return $.post('/api/account/events', arg);
 		},
 		
+		getImages: function(offset, limit) {
+			var arg = {
+				offset: offset,
+				limit: limit
+			};
+			
+			return $.post('/api/account/images', arg);
+		},
+		
 		setPreference: function(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically) {
 			var arg = {
 				sessionToken: partake.sessionToken,
