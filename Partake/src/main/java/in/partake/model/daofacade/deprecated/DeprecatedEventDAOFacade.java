@@ -162,30 +162,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
     }
 
     /**
-     * feed id がついてない event に feed id をつける。
-     * @throws DAOException
-     */
-    public void addFeedIdToAllEvents() throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            DataIterator<Event> it = factory.getEventAccess().getIterator(con);
-            try {
-                while (it.hasNext()) {
-                    Event event = it.next();
-                    appendFeedIfAbsent(factory, con, event.getId());
-                }
-            } finally {
-                it.close();
-            }
-            con.commit();
-	    } finally {
-	        con.invalidate();
-	    }
-	}
-
-    /**
      * search events.
      * @param term
      * @param category
