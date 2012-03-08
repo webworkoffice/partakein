@@ -29,7 +29,7 @@ public class RevokeCalendarAPI extends AbstractPartakeAPI {
         if (!checkCSRFToken())
             return renderInvalid(UserErrorCode.INVALID_SESSION);
 
-        String newCalendarId = new RevokeCalendarAPITransaction(user, session).transaction();
+        String newCalendarId = new RevokeCalendarAPITransaction(user, session).execute();
         
         JSONObject obj = new JSONObject();
         obj.put("calendarId", newCalendarId);
@@ -46,7 +46,7 @@ class RevokeCalendarAPITransaction extends Transaction<String> {
         this.session = session;
     }
     
-    protected String doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+    protected String doExecute(PartakeConnection con) throws DAOException, PartakeException {
         PartakeDAOFactory factory = DBService.getFactory();
                 
         String calendarId = user.getCalendarId();

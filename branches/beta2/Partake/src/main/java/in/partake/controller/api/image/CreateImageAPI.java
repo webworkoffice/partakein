@@ -46,7 +46,7 @@ public class CreateImageAPI extends AbstractPartakeAPI {
         if (!Util.isImageContentType(contentType))
             return renderInvalid(UserErrorCode.INVALID_IMAGE_CONTENTTYPE);
 
-        String imageId = new CreateImageAPITransaction(user, file, contentType).transaction();
+        String imageId = new CreateImageAPITransaction(user, file, contentType).execute();
 
         JSONObject obj = new JSONObject();
         obj.put("imageId", imageId);
@@ -76,7 +76,7 @@ class CreateImageAPITransaction extends Transaction<String> {
 
     // TODO: We should not load image in memory here. However, sending image from DB directly will cause
     // another problem, e.g. DDOS.
-    public String doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+    public String doExecute(PartakeConnection con) throws DAOException, PartakeException {
         IImageAccess dao = DBService.getFactory().getImageAccess();
 
         byte[] foreImageByteArray;

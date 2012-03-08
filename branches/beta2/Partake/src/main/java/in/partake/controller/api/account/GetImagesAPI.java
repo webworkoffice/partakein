@@ -39,7 +39,7 @@ public class GetImagesAPI extends AbstractPartakeAPI {
             limit = 100;
 
         GetImagesTransaction transaction = new GetImagesTransaction(user, offset, limit);
-        transaction.transaction();
+        transaction.execute();
         
         JSONArray imageIds = new JSONArray();
         for (String imageId : transaction.getImageIds())
@@ -67,7 +67,7 @@ class GetImagesTransaction extends Transaction<Void> {
     }
 
     @Override
-    protected Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
         PartakeDAOFactory factory = DBService.getFactory();
         
         this.imageIds = factory.getImageAccess().findIdsByUserId(con, user.getId(), offset, limit);
