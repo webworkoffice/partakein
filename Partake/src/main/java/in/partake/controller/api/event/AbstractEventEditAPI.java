@@ -8,12 +8,16 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.auxiliary.EventCategory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import net.sf.json.JSONObject;
 
@@ -22,7 +26,7 @@ import org.apache.commons.lang.StringUtils;
 public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
-    protected boolean updateEventFromParameter(UserEx user, Event event, JSONObject invalidParameters) throws DAOException {        
+    protected void updateEventFromParameter(UserEx user, Event event, JSONObject invalidParameters) throws DAOException {        
         // Title
         String title = getParameter("title");
         if (StringUtils.isBlank(title) || title.length() > 100)
@@ -139,10 +143,14 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
 
         {
             String hashTag = getParameter("hashTag");
-            if (hashTag != null && 100 < hashTag.length())
+            if (StringUtils.isBlank(hashTag))
+                event.setHashTag(null);
+            else if (100 < hashTag.length())
                 invalidParameters.put("hashTag", "ハッシュタグは１００文字以内で記述してください。");
+            else if (!Util.isValidHashtag(hashTag))
+                invalidParameters.put("hashTag", "ハッシュタグは # から始まる英数字や日本語が指定できます。記号は使えません。");
             else
-                event.setHashTag(hashTag);
+                event.setHashTag(hashTag);            
         }
 
         {
@@ -173,7 +181,11 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
         
         {
             String foreImageId = getParameter("foreImageId");
-            if (foreImageId != null && Util.isUUID(foreImageId)) {
+            if (StringUtils.isBlank(foreImageId)) {
+                event.setForeImageId(null);
+            } else if (!Util.isUUID(foreImageId)) {
+                invalidParameters.put("foreImageId", "画像IDが不正です。");
+            } else {
                 // Checks foreImageId is one of your images.
                 // TODO: We can do this in light-weight way. 
                 BinaryData data = DeprecatedEventDAOFacade.get().getBinaryData(foreImageId);
@@ -185,69 +197,67 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                     invalidParameters.put("foreImageId", "画像IDが不正です。");
                 else
                     event.setForeImageId(foreImageId);
-            } else if (foreImageId != null) {
-                invalidParameters.put("foreImageId", "画像IDが不正です。");
-            } else {
-                event.setForeImageId(null);
             }
         }
         
         {
             String backImageId = getParameter("backImageId");
-            if (backImageId != null && Util.isUUID(backImageId)) {
-                // Checks foreImageId is one of your images.
+            if (StringUtils.isBlank(backImageId)) {
+                event.setBackImageId(null);
+            } else if (!Util.isUUID(backImageId)) {
+                invalidParameters.put("backImageId", "画像IDが不正です。");
+            } else {
                 // TODO: We can do this in light-weight way. 
                 BinaryData data = DeprecatedEventDAOFacade.get().getBinaryData(backImageId);
                 if (data == null)
                     invalidParameters.put("backImageId", "画像IDが不正です。");
-                else if (StringUtils.equals(backImageId, event.getForeImageId()))
-                    event.setForeImageId(backImageId);
+                else if (StringUtils.equals(backImageId, event.getBackImageId()))
+                    event.setBackImageId(backImageId);
                 else if (!StringUtils.equals(user.getId(), data.getUserId()))
                     invalidParameters.put("backImageId", "画像IDが不正です。");
                 else
-                    event.setForeImageId(backImageId);
-            } else if (backImageId != null) {
-                invalidParameters.put("backImageId", "画像IDが不正です。");
-            } else {
-                event.setBackImageId(null);
+                    event.setBackImageId(backImageId);
             }
         }
+    }
+    
+    protected void updateEventRelationFromParameter(UserEx user, List<EventRelation> relations, JSONObject invalidParameters) throws DAOException {
+        String[] relatedEventIDs = getParameters("relatedEventID[]");
+        if (relatedEventIDs == null)
+            return;
+        
+        int size = relatedEventIDs.length;
 
-//        // hashtag は # から始まり、 a-zA-Z0-9_- のいずれかで構成されているべき
-//        if (!StringUtils.isEmpty(hashTag) && !Util.isValidHashtag(hashTag)) {
-//            addFieldError("hashtag", "ハッシュタグは # から始まる英数字や日本語が指定できます。記号は使えません。");
-//        }
-//
-//        // EventRelation は、同じ eventId が複数でてはならない
-//        {
-//            Set<String> set = new HashSet<String>();
-//            String[] relatedEventIDs = new String[] { relatedEventID1, relatedEventID2, relatedEventID3 };
-//            for (int i = 0; i < relatedEventIDs.length; ++i){
-//                if (!StringUtils.isEmpty(relatedEventIDs[i])) {
-//                    if (set.contains(relatedEventIDs[i])) {
-//                        addFieldError("relatedEventID" + (i + 1), "ID が重複しています。");
-//                    } else {
-//                        set.add(relatedEventIDs[i]);
-//                    }
-//                }
-//            }
-//        }
+        String[] relatedEventRequired = getParameters("relatedEventRequired[]");
+        if (relatedEventRequired == null || relatedEventRequired.length != size)
+            invalidParameters.put("relatedEvents", "関連イベントのパラメータに誤りがあります。");
         
-//        
-//
-//        public void setRelatedEventID1(String id) { relatedEventID1 = id; }
-//        public void setRelatedEventID2(String id) { relatedEventID2 = id; }
-//        public void setRelatedEventID3(String id) { relatedEventID3 = id; }
-//
-//        public void setRelatedEventRequired1(boolean b) { relatedEventRequired1 = b; }
-//        public void setRelatedEventRequired2(boolean b) { relatedEventRequired2 = b; }
-//        public void setRelatedEventRequired3(boolean b) { relatedEventRequired3 = b; }
-//
-//        public void setRelatedEventPriority1(boolean b) { relatedEventPriority1 = b; }
-//        public void setRelatedEventPriority2(boolean b) { relatedEventPriority2 = b; }
-//        public void setRelatedEventPriority3(boolean b) { relatedEventPriority3 = b; }
-        
-        
-        return invalidParameters.isEmpty();
+        String[] relatedEventPriority = getParameters("relatedEventPriority[]");
+        if (relatedEventPriority == null || relatedEventPriority.length != size)
+            invalidParameters.put("relatedEvents", "関連イベントのパラメータに誤りがあります。");
+
+        Set<String> visitedEventIds = new HashSet<String>();
+        for (int i = 0; i < size; ++i) {
+            if (StringUtils.isBlank(relatedEventIDs[i]))
+                continue;
+            
+            if (!Util.isUUID(relatedEventIDs[i])) {
+                invalidParameters.put("relatedEvents", "関連イベントのパラメータに誤りがあります。");
+                break;
+            }
+            
+            String dstEventId = relatedEventIDs[i];
+            boolean required = Util.parseBooleanParameter(relatedEventRequired[i]);
+            boolean priority = Util.parseBooleanParameter(relatedEventPriority[i]); 
+            
+            if (visitedEventIds.contains(dstEventId)) {
+                invalidParameters.put("relatedEvents", "関連イベントが重複しています。");
+                break;
+            }
+            
+            EventRelation relation = new EventRelation(null, dstEventId, required, priority);
+            relations.add(relation);
+            visitedEventIds.add(dstEventId);
+        }
     }
 }

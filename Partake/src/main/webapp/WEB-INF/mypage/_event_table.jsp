@@ -19,7 +19,7 @@
 <table class="table table-striped">
     <colgroup>
     	<col class="span1" /><col class="span6" /><col class="span3" /><col class="span2" />
-	    </colgroup>
+	</colgroup>
 	<thead>
 		<tr><th>&nbsp;</th><th>イベントタイトル</th><th>開催日</th><th>参加人数/定員</th></tr>
 	</thead>

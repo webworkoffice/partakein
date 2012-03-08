@@ -157,12 +157,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         if (value == null)
             return null;
 
-        if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value))
-            return true;
-        if ("false".equalsIgnoreCase(value) || "off".equalsIgnoreCase(value))
-            return false;
-
-        return null; 
+        return Util.parseBooleanParameter(value);
     }
 
     protected Integer getIntegerParameter(String key) {

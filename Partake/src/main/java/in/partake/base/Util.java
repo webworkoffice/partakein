@@ -42,6 +42,23 @@ public final class Util {
 	// ----------------------------------------------------------------------
 	// Text
 
+	public static Boolean parseBooleanParameter(String value) {
+        if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value))
+            return true;
+        if ("false".equalsIgnoreCase(value) || "off".equalsIgnoreCase(value))
+            return false;
+        
+        return null;
+	}
+
+	public static boolean parseBooleanParameter(String value, boolean defaultValue) {
+	    Boolean result = parseBooleanParameter(value);
+	    if (result != null)
+	        return result;
+	    else
+	        return defaultValue;
+    }
+
     // TODO: Use StringUtils.isEmpty() instead.
     @Deprecated
     public static boolean isEmpty(String str) {
