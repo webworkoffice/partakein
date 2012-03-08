@@ -9,6 +9,11 @@ body {
 	left: -9999px;
 }
 
+.modal-wider {
+	width: 800px;
+	margin-left: -400px;
+}
+
 .thin-padding {
 	padding-bottom: 5px;
 }
