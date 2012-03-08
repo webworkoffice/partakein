@@ -1,5 +1,6 @@
 package in.partake.controller.base.permission;
 
+// TODO: Move these.
 public enum UserPermission {
     /** can edit the event */
     EVENT_EDIT,
@@ -15,9 +16,6 @@ public enum UserPermission {
     
     /** can send message to participants */
     EVENT_SEND_MESSAGE,
-    
-    /** remove comment */
-    EVENT_REMOVE_COMMENT,
     
     /** edit participants */
     EVENT_EDIT_PARTICIPANTS,
