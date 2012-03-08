@@ -172,6 +172,13 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         }
     }
     
+    protected int optIntegerParameter(String key, int defaultValue) {
+        Integer value = getIntegerParameter(key);
+        if (value != null)
+            return value;
+        return defaultValue;
+    }
+    
     protected Long getLongParameter(String key) {
         String value = getParameter(key);
         if (value == null)
@@ -354,7 +361,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     // ----------------------------------------------------------------------
     // CSRF
 
-    public boolean checkCSRFToken() {
+    private boolean checkCSRFToken() {
         PartakeSession session = getPartakeSession();
         if (session == null)
             return false;
