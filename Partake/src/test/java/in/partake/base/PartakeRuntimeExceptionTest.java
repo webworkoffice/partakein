@@ -20,6 +20,13 @@ public class PartakeRuntimeExceptionTest {
     }
     
     @Test
+    public void testServerErrorCodeWithCause() {
+        Throwable t = new RuntimeException();
+        PartakeRuntimeException e = new PartakeRuntimeException(ServerErrorCode.INTENTIONAL_ERROR, t);
+        assertThat(e.getCause(), is(t));
+    }
+
+    @Test
     public void testUserErrorCode() {
         PartakeRuntimeException e = new PartakeRuntimeException(UserErrorCode.INTENTIONAL_USER_ERROR);
         assertThat(e.isServerError(), is(false));
@@ -29,4 +36,10 @@ public class PartakeRuntimeExceptionTest {
         assertThat(e.getStatusCode(), is(400));
     }
 
+    @Test
+    public void testUserErrorCodeWithCause() {
+        Throwable t = new RuntimeException();
+        PartakeRuntimeException e = new PartakeRuntimeException(UserErrorCode.INTENTIONAL_USER_ERROR, t);
+        assertThat(e.getCause(), is(t));
+    }
 }
