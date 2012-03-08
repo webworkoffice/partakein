@@ -3,6 +3,7 @@ package in.partake.model.daofacade.deprecated;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
+import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
@@ -24,7 +25,6 @@ import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.UserErrorCode;
 

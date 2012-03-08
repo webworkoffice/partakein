@@ -1,6 +1,7 @@
 package in.partake.controller.action.event;
 
 import in.partake.base.PartakeException;
+import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.CommentEx;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EnrollmentEx;
@@ -14,7 +15,6 @@ import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
 import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 

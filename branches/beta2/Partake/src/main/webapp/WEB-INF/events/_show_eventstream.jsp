@@ -1,6 +1,6 @@
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.base.Util"%>
-<%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
+<%@page import="in.partake.controller.base.permission.UserPermission"%>
 <%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="java.util.List"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>

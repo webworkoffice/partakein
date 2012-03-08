@@ -5,7 +5,7 @@
 <%@page import="in.partake.model.dto.Event"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
-<%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
+<%@page import="in.partake.controller.base.permission.UserPermission"%>
 <%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="in.partake.model.CommentEx"%>
 <%@page import="java.util.List"%>
