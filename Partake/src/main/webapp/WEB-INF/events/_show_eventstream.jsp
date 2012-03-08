@@ -1,3 +1,4 @@
+<%@page import="in.partake.controller.base.permission.RemoveCommentPermission"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.base.Util"%>
 <%@page import="in.partake.controller.base.permission.UserPermission"%>
@@ -68,7 +69,7 @@
 				<div class="comment" id="comment-<%= h(comment.getId()) %>">
 					<p class="spinner-container"><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>"><%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>
 					: <%= Helper.readableDate(comment.getCreatedAt()) %>
-					<% if (user != null && (event.hasPermission(user, UserPermission.EVENT_REMOVE_COMMENT) || user.getId().equals(comment.getUserId()))) { %>
+					<% if (RemoveCommentPermission.check(comment, event, user)) { %>
 						<a href="#" title="コメントを削除" onclick="removeComment(this, '<%= h(comment.getId()) %>')">[x]</a>
 					<% } %></p>
 					<% if (comment.isHTML()) { %>
