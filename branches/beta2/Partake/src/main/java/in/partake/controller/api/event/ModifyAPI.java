@@ -16,8 +16,8 @@ public class ModifyAPI extends AbstractPartakeAPI {
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
         checkCSRFToken();
-
         String eventId = getValidEventIdParameter();
+        
         EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);

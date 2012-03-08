@@ -15,12 +15,8 @@ public class AttendAPI extends AbstractPartakeAPI {
 
     @Override
     protected String doExecute() throws DAOException, PartakeException {
-        UserEx user = getLoginUser();
-        if (user == null)
-            return renderLoginRequired();
-        if (!checkCSRFToken())
-            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
-
+        UserEx user = ensureLogin();
+        ensureValidSessionToken();
         String userId = getValidUserIdParameter();
         String eventId = getValidEventIdParameter();
         
