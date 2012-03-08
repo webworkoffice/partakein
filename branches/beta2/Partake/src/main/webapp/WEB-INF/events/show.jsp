@@ -57,7 +57,7 @@
 <% if (event.getBackImageId() != null) { %>
 	<style>
 body {
-	background-image: url("<%= request.getContextPath()%>/events/images/<%= event.getBackImageId() %>");
+	background-image: url("/images/<%= event.getBackImageId() %>");
 	background-repeat: repeat;
 }
 	</style>
