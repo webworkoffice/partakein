@@ -106,13 +106,23 @@
 		
 		enroll: function(eventId, status, comment) {
 			var arg = {
+					sessionToken: partake.sessionToken,
+					eventId: eventId,
+					status: status,
+					comment: comment
+				};
+				
+				return $.post('/api/event/enroll', arg);
+		},
+		
+		changeEnrollmentComment: function(eventId, comment) {
+			var arg = {
 				sessionToken: partake.sessionToken,
 				eventId: eventId,
-				status: status,
 				comment: comment
 			};
 			
-			return $.post('/api/event/enroll', arg);
+			return $.post('/api/event/enroll/changeComment', arg);
 		},
 		
 		makeAttendantVIP: function(userId, eventId, vip) {

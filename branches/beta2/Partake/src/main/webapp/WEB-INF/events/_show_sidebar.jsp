@@ -189,7 +189,7 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
                 <p>締切間際には仮参加登録は行えません。</p>
             <% } %>
 			<ul>
-			    <li><a href="#comment-change-form" data-toggle="modal" >参加コメントを編集する</a></li>
+			    <li><a href="#comment-change-dialog" data-toggle="modal" >参加コメントを編集する</a></li>
 			</ul>
 		<% } else if (ParticipationStatus.RESERVED.equals(status) && !event.isReservationTimeOver()) { %>
 			<p><strong>仮参加登録中です。</strong></p>
@@ -231,7 +231,7 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 				</ul>
 		
 		  		<form class="form-horizontal">
-					<textarea id="event-enroll-dialog-comment" name="comment" class="span7">よろしくお願いします。</textarea>
+					<textarea id="event-enroll-dialog-comment" name="comment" class="span7" rows="4">よろしくお願いします。</textarea>
 		  		</form>
 		  	</div>
 		  	<div class="modal-footer spinner-container">
@@ -255,7 +255,7 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 				</ul>
 		
 		  		<form class="form-horizontal">
-					<textarea id="event-reserve-dialog-comment" name="comment" class="span7">よろしくお願いします。</textarea>
+					<textarea id="event-reserve-dialog-comment" name="comment" class="span7" rows="4">よろしくお願いします。</textarea>
 		  		</form>
 		  	</div>
 		  	<div class="modal-footer spinner-container">
@@ -275,7 +275,7 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 					<li>参加を辞退すると確保していた順番は取り消されます。</li>
 				</ul>		
 		  		<form class="form-horizontal">
-					<textarea id="event-cancel-dialog-comment" name="comment" class="span7">よろしくお願いします。</textarea>
+					<textarea id="event-cancel-dialog-comment" name="comment" class="span7" rows="4">参加できなくなりました。</textarea>
 		  		</form>
 		  	</div>
 		  	<div class="modal-footer spinner-container">
@@ -316,20 +316,8 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 		addEventListenerToDialog('reserve');
 		addEventListenerToDialog('cancel');
 		</script>
-		
-				
+						
 		<%-- コメント変更フォーム --%>
-		<div id="change-comment-form" class="dialog-ui" title="コメント変更フォーム" style="display: none">
-            <s:form method="post" action="changeComment">
-                <%= Helper.tokenTags() %>
-                <s:hidden name="eventId" value="%{eventId}" />
-                <p>コメントを変更します</p>
-                <s:label for="comment" value="COMMENT" />:<br />
-                <s:textarea name="comment" id="comment" /><br />
-                <s:submit value="コメント変更"  />
-            </s:form>
-		</div>
-		
 		<div id="comment-change-dialog" class="modal" style="display:none">
 			<div class="modal-header">
 		    	<a class="close" data-dismiss="modal">&times;</a>
@@ -337,16 +325,43 @@ $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChang
 			</div>
 		  	<div class="modal-body">
 		  		<form method="post" name="commentChangeForm" action="/events/cancel">
-		  			<%= Helper.tokenTags() %>
-		  			<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
 		  			<%-- TODO: 元のコメントが入ってない --%>
-                	<textarea name="comment" id="comment"></textarea>
+                	<textarea name="comment" id="enrollment-comment" class="span7" rows="4"></textarea>
 		  		</form>
 		  	</div>
-		  	<div class="modal-footer">
-			    <a href="#" class="btn btn-primary" onclick="document.commentChangeForm.submit()">変更</a>
+		  	<div class="modal-footer spinner-container">
+			    <a href="#" id="comment-change-dialog-submit" class="btn btn-primary">変更</a>
 			    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
 		  	</div>
+		  	<script>
+		  	$('#comment-change-dialog-submit').click(function() {
+		  		var eventId = '<%= h(event.getId()) %>';
+		  		var comment = $('#enrollment-comment').val();
+		  		
+		  		var spinner = partakeUI.spinner(document.getElementById('comment-change-dialog-submit'));
+				var button = $('#comment-change-dialog-submit');
+
+				spinner.show();
+				button.attr('disabled', '');
+
+		  		partake.event.changeEnrollmentComment(eventId, comment)
+		  		.always(function () {
+					spinner.hide();
+					button.removeAttr('disabled');		  			
+		  		})
+		  		.done(function (json) {
+					location.reload();
+		  		})
+		  		.fail(function (xhr) {
+					try {
+						var json = $.parseJSON(xhr.responseText);
+						alert(json.reason);
+					} catch (e) {
+						alert('レスポンスが JSON 形式ではありません。');
+					}		  			
+		  		});
+		  	});
+		  	</script>
 		</div>
 	<% } %>
 	</div>
