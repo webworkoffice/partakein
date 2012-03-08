@@ -23,6 +23,7 @@
         "/js/jquery-ui-timepicker-addon.js",
         "/js/jquery-ui-timepicker-ja.js",
         "/js/scrolltopcontrol.js",
+        "/js/jquery.fixup.js",
         "/js/bootstrap.min.js"
         ) %>
         

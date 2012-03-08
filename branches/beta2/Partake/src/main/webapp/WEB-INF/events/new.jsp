@@ -39,7 +39,7 @@ function submitEvent() {
 	$('#event-create-form-save').attr('disabled', '');
 	$('#event-create-form-publish').attr('disabled', '');
 	
-	var argArray = $('#event-form').serializeArray();
+	var argArray = $('#event-form').serializeArray({ checkboxesAsBools: true });
 	var arg = {};
 	for (var i = 0; i < argArray.length; ++i)
 		arg[argArray[i].name] = argArray[i].value;

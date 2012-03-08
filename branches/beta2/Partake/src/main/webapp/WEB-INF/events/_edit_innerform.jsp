@@ -258,34 +258,57 @@ checkPasscode();
 $('#secret').change(checkPasscode);
 </script>
 
-<div class="control-group">
-	<label for="secret" class="control-label">関連イベント</label>
+<div id="reletedEvents" class="control-group">
+	<label class="control-label">関連イベント</label>
 	<div class="controls">
 		<table class="table">
+			<colgroup>
+    			<col class="span1" /><col class="span4" /><col class="span1" /><col class="span1" />
+			</colgroup>
 			<thead>
-				<tr><th>イベント ID</th><th>登録必須</th><th>優先参加</th></tr>
+				<tr><th></th><th>イベント ID</th><th>必須</th><th>優先</th></tr>
 			</thead>
-			<tbody>
+			<tbody id="related-event-tbody">
 				<tr>
-					<td><input type="text"     id="relatedEventID1"       name="relatedEventID1" /></td>
-					<td><input type="checkbox" id="relatedEventRequired1" name="relatedEventRequired1" /></td>
-					<td><input type="checkbox" id="relatedEventPriority1" name="relatedEventPriority1" /></td>
-				</tr>
-				<tr>
-					<td><input type="text"     id="relatedEventID2"       name="relatedEventID2" /></td>
-					<td><input type="checkbox" id="relatedEventRequired2" name="relatedEventRequired2" /></td>
-					<td><input type="checkbox" id="relatedEventPriority2" name="relatedEventPriority2" /></td>
-				</tr>
-				<tr>
-					<td><input type="text"     id="relatedEventID3"       name="relatedEventID3" /></td>
-					<td><input type="checkbox" id="relatedEventRequired3" name="relatedEventRequired3" /></td>
-					<td><input type="checkbox" id="relatedEventPriority3" name="relatedEventPriority3" /></td>
+					<td><i class="icon-plus-sign vertical-middle"></i> <i class="icon-minus-sign vertical-middle"></i></td>
+					<td><input type="text"     name="relatedEventID[]" class="span4" /></td>
+					<td><input type="checkbox" name="relatedEventRequired[]" /></td>
+					<td><input type="checkbox" name="relatedEventPriority[]" /></td>
 				</tr>
 			</tbody>
 		</table>
+		<script>
+		function updateRelatedEvent() {
+			$('#related-event-tbody .icon-plus-sign').unbind('click');
+			$('#related-event-tbody .icon-minus-sign').unbind('click');
+			$('#related-event-tbody .icon-plus-sign').click(onClickPlusSign);
+			$('#related-event-tbody .icon-minus-sign').click(onClickMinusSign);
+			if ($('#related-event-tbody tr').size() > 1)
+				$('#related-event-tbody .icon-minus-sign').show();
+			else
+				$('#related-event-tbody .icon-minus-sign').hide();
+		}
+		updateRelatedEvent();
+		function onClickPlusSign(e) {
+			var newTr = $('<tr></tr>');
+			newTr.html('<td><i class="icon-plus-sign vertical-middle"></i> <i class="icon-minus-sign vertical-middle"></i></td>' +
+					'<td><input type="text"     name="relatedEventID[]" class="span4" /></td>' +
+					'<td><input type="checkbox" name="relatedEventRequired[]" /></td>' +
+					'<td><input type="checkbox" name="relatedEventPriority[]" /></td>');
+			var tr = e.srcElement.parentNode.parentNode;
+			console.log(tr);
+			$(tr).after(newTr);
+			updateRelatedEvent();
+		}
+		function onClickMinusSign(e) {
+			var tr = e.srcElement.parentNode.parentNode;
+			$(tr).remove();
+			updateRelatedEvent();
+		}
+		</script>
 		<p class="help-block">関連イベントを設定できます。</p>
-		<p class="help-block">登録必須にチェックすると、そのイベントに登録されていなければこのイベントに登録することは出来ません。</p>
-		<p class="help-block">優先参加にチェックすると、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。</p>
+		<p class="help-block">「必須」にチェックすると、そのイベントに登録されていなければこのイベントに登録することは出来ません。</p>
+		<p class="help-block">「優先」にチェックすると、そのイベントに登録している方は優先的にこのイベントに参加することが出来ます。</p>
 		<p class="help-block">イベント ID とは、 http://partake.in/events/{ID} の {ID} の部分の文字列です。<%-- TODO use in.partake.toppath from properties file --%></p>
 	</div>
 </div>
