@@ -1,6 +1,7 @@
 package in.partake.controller.api.account;
 
 import in.partake.base.PartakeException;
+import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -29,19 +30,11 @@ public class GetImagesAPI extends AbstractPartakeAPI {
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
 
-        Integer offset = getIntegerParameter("offset");
-        if (offset == null)
-            offset = 0;
-        if (offset < 0)
-            offset = 0;
-        
-        Integer limit = getIntegerParameter("limit");
-        if (limit == null)
-            limit = 0;
-        if (limit < 0)
-            limit = 0;
-        if (100 < limit)
-            limit = 100;
+        int offset = optIntegerParameter("offset", 0);
+        offset = Util.ensureRange(offset, 0, Integer.MAX_VALUE);
+
+        int limit = optIntegerParameter("limit", 10);
+        limit = Util.ensureRange(limit, 1, 100);
 
         GetImagesTransaction transaction = new GetImagesTransaction(user, offset, limit);
         transaction.execute();

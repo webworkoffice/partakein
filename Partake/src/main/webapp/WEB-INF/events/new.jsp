@@ -65,10 +65,16 @@ function submitEvent() {
 			return;
 		}
 		
+		var focusKey = null;
 		for (var key in json.errorParameters) {
+			if (!focusKey)
+				focusKey = key;
 			var e = $('#' + key);
 			e.addClass('error');
 		}
+		
+		if (focusKey)
+			location.hash = focusKey;
 	});
 }
 

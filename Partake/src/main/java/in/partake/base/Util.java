@@ -39,8 +39,20 @@ public final class Util {
 	    }
 	}
 
-	// ----------------------------------------------------------------------
-	// Text
+    // ----------------------------------------------------------------------
+    // Numeric
+	
+	public static int ensureRange(int value, int min, int max) {
+	    assert min <= max;
+	    if (value < min)
+	        return min;
+	    if (max < value)
+	        return max;
+	    return value;
+	}
+
+    // ----------------------------------------------------------------------
+    // Text
 
 	public static Boolean parseBooleanParameter(String value) {
         if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value))

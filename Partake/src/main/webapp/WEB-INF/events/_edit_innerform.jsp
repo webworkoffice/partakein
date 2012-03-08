@@ -368,7 +368,6 @@ $('#secret').change(checkPasscode);
 				</ul>
 				<form enctype="multipart/form-data">
 			  		<label for="fileupload"><input type="button" class="btn btn-danger" value="新しく画像をアップロード"/></label>
-		  			<%= Helper.tokenTags() %>
 					<input id="fileupload" type="file" name="file" class="invisible" />
 				</form>
 			</div>
@@ -393,56 +392,52 @@ $('#secret').change(checkPasscode);
 	<%-- Since IE does not support XHR File upload, we use iframe trasport technique here... Too bad. --%>
 	<script>
 	var cachedTotalImageCount = 0;
-	var cachedImageIds = [];
 	
+	function onSelectImage(imageId) {
+		$('#selected-image').attr('imageId', imageId);
+		$('#selected-image').attr('src', '/images/' + imageId);
+	}
+
 	function createImageHTML(imageId) {
 		console.log(imageId);
 		var img = $('<img alt=""/>').attr('src', '/images/' + imageId);
 		var a = $('<a class="thumbnail"></a>').append(img);
-		a.click(function() { selectImage(imageId); });
+		a.click(function() { onSelectImage(imageId); });
 		var li = $('<li class="span2"></li>').append(a);
 		
 		return li;
 	}
 	
-	function showImages(pageNum) {
-		console.log('showImages : ' + pageNum);
-		var offset = (pageNum - 1) * 6;
-		var limit = 6;
+	function updatePagination(currentPageNum, totalImageCount) {
+		var pagination = $('#image-pagination');
+		pagination.empty();
 		
-		partake.account.getImages(offset, limit)
-		.always(function() {
-			
-		})
-		.done(function(json) {
-			var thumbnails = $('#image-upload-dialog-thumbnails');
-			var pagination = $('#image-pagination');
-			
-			thumbnails.empty();
-			pagination.empty();
+		var pages = partakeUI.pagination(pagination, currentPageNum, totalImageCount, 6);
+		for (var i = 0; i < pages.length; ++i) {
+			pages[i].anchor.click((function(pageNum) {
+				return function() {
+					showImages(pageNum);
+				};
+			})(pages[i].pageNum));
+		}
+	}
+	
+	function updateImageList(imageIds) {
+		var thumbnails = $('#image-upload-dialog-thumbnails');			
+		thumbnails.empty();
 
-			var count = json.count;
-			var ids = json.imageIds;
-			
-			for (var i = 0; i < ids.length; ++i) {
-				var li = createImageHTML(ids[i]);
-				$('#image-upload-dialog-thumbnails').append(li);
-			}
-			
-			var pages = partakeUI.pagination(pagination, pageNum, count, 6);
-			for (var i = 0; i < pages.length; ++i) {
-				var anchor = pages[i].anchor;
-				var pageNum = pages[i].pageNum;
-				
-				anchor.click((function(pageNum) {
-					return function() {
-						showImages(pageNum);
-					};
-				})(pageNum));
-			}
-		})
-		.fail(function(json) {
-			
+		for (var i = 0; i < imageIds.length; ++i) {
+			var li = createImageHTML(imageIds[i]);
+			$('#image-upload-dialog-thumbnails').append(li);
+		}
+	}
+	
+	function showImages(pageNum) {
+		partake.account.getImages((pageNum - 1) * 6, 6)
+		.done(function(json) {
+			cachedTotalImageCount = json.count;
+			updateImageList(json.imageIds);
+			updatePagination(pageNum, json.count);
 		});
 	}
 	
@@ -463,22 +458,18 @@ $('#secret').change(checkPasscode);
 		}		
 	});
 	
-	function selectImage(imageId) {
-		$('#selected-image').attr('imageId', imageId);
-		$('#selected-image').attr('src', '/images/' + imageId);
-	}
-	
-	function deleteImagesIfTooMany() {
-		var lis = $('#image-upload-dialog-thumbnails li');
-		for (var i = 6; i < lis.length; ++i) {
-			$(lis.get(i)).remove();	
-		}
-	}
-	
 	$('#fileupload').fileupload({
 		url: '/api/image/create',
 		files: [{name: $('#fileupload').val()}],
         fileInput: $('#fileupload'),
+        
+       	formData: function (form) {
+       		var result = form.serializeArray();
+       		result.push({ name: 'sessionToken', value: '<%= Helper.getSessionToken() %>' });
+       		result.push({ name: 'limit', value: '6' });
+            return result;
+        },
+        
         always: function(e, data) {
         	
         },
@@ -486,11 +477,11 @@ $('#secret').change(checkPasscode);
 			var xhr = data.jqXHR;
 			try {
 				var json = $.parseJSON(xhr.responseText);
-				
-				var li = createImageHTML(json.imageId);
-				$('#image-upload-dialog-thumbnails').prepend(li);
-				deleteImagesIfTooMany();
+				cachedTotalImageCount += 1;
+				updateImageList(json.imageIds);
+				updatePagination(1, cachedTotalImageCount);
 			} catch (e) {
+				console.log(e);
 				alert('レスポンスが JSON 形式ではありません。');
 			}
         }
