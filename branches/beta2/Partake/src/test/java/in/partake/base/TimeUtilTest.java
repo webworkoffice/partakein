@@ -2,6 +2,7 @@ package in.partake.base;
 
 import in.partake.base.TimeUtil;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.*;
@@ -58,4 +59,29 @@ public class TimeUtilTest {
         Date date2 = TimeUtil.dateFromTimeString(TimeUtil.getTimeString(date1));
         Assert.assertEquals(date1, date2);
     }
+    
+    @Test
+    public void testOneDayBefore() {
+        Date date = new Date();
+        Date before = TimeUtil.oneDayBefore(date);
+        
+        assertThat(before.getTime(), is(date.getTime() - 3600 * 24 * 1000));        
+    }
+    
+    @Test
+    public void testHalfDayBefore() {
+        Date date = new Date();
+        Date before = TimeUtil.halfDayBefore(date);
+        
+        assertThat(before.getTime(), is(date.getTime() - 3600 * 12 * 1000));        
+    }
+
+    @Test
+    public void testOneDayAfter() {
+        Date date = new Date();
+        Date after = TimeUtil.oneDayAfter(date);
+        
+        assertThat(after.getTime(), is(date.getTime() + 3600 * 24 * 1000));        
+    }
+
 }

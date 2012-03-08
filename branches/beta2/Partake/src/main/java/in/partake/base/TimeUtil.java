@@ -57,6 +57,25 @@ public final class TimeUtil {
     public static void setCurrentTime(long time) {
         currentDate = new Date(time);
     }
+    
+    /**
+     * Waits for a while.
+     */
+    public static void waitForTick() {
+        if (currentDate != null) {
+            setCurrentTime(currentDate.getTime() + 20);
+            return;
+        }
+        
+        long now = new Date().getTime();
+        do {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // ignore.
+            }
+        } while (now == TimeUtil.getCurrentTime());
+    }
 
     public static Date create(int year, int month, int date, int hour, int min, int sec, TimeZone timeZone) {
         Calendar calendar = Calendar.getInstance();
@@ -90,25 +109,6 @@ public final class TimeUtil {
         } catch (ParseException e) {
             return null;
         }
-    }
-    
-    /**
-     * Waits for a while.
-     */
-    public static void waitForTick() {
-        if (currentDate != null) {
-            setCurrentTime(currentDate.getTime() + 20);
-            return;
-        }
-        
-        long now = new Date().getTime();
-        do {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                // ignore.
-            }
-        } while (now == TimeUtil.getCurrentTime());
     }
     
     public static Date oneDayBefore(Date date) {
