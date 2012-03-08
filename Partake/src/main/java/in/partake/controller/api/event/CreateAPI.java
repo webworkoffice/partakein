@@ -19,9 +19,7 @@ public class CreateAPI extends AbstractEventEditAPI {
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
-                
-        if (!checkCSRFToken())
-            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
+        ensureValidSessionToken();
         
         Event embryo = new Event();
         embryo.setOwnerId(user.getId());

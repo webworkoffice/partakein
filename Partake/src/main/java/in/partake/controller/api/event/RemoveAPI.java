@@ -7,19 +7,14 @@ import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
-import in.partake.resource.UserErrorCode;
 
 public class RemoveAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
     protected String doExecute() throws DAOException, PartakeException {
-        UserEx user = getLoginUser();
-        if (user == null)
-            return renderLoginRequired();
-        if (!checkCSRFToken())
-            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
-        
+        UserEx user = ensureLogin();
+        ensureValidSessionToken();        
         String eventId = getValidEventIdParameter();
 
         EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);

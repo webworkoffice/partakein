@@ -15,16 +15,13 @@ public class MakeAttendantVIPAPI extends AbstractPartakeAPI {
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
-
-        if (!checkCSRFToken())
-            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
-        
+        ensureValidSessionToken();
         String eventId = getValidEventIdParameter();
+        String userId = getValidUserIdParameter();
+
         EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
-
-        String userId = getValidUserIdParameter();
 
         boolean vip = "true".equalsIgnoreCase(getParameter("vip"));
 
