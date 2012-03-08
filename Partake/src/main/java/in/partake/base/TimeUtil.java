@@ -13,10 +13,12 @@ import java.util.TimeZone;
  *
  * @author shinyak
  */
-public class TimeUtil {
+public final class TimeUtil {
     private static Date currentDate;
     private static final DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
+    private TimeUtil() {}
+    
     /**
      * Resets the current date.
      */
@@ -135,13 +137,5 @@ public class TimeUtil {
 
     public static String getTimeString(long time) {
         return new Formatter().format("%020d", time).toString();
-    }
-
-    public static String getReversedTimeString(Date date) {
-        return getReversedTimeString(date.getTime());
-    }
-
-    public static String getReversedTimeString(long time) {
-        return new Formatter().format("%020d", Long.MAX_VALUE - time).toString();
     }
 }
