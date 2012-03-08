@@ -22,7 +22,7 @@ public class RemoveCommentAPI extends AbstractPartakeAPI {
         ensureValidSessionToken();
         String commentId = getValidCommentIdParameter();
 
-        new RemoveCommentTransaction(user, commentId).transaction();        
+        new RemoveCommentTransaction(user, commentId).execute();        
         return renderOK();
     }
 }
@@ -37,7 +37,7 @@ class RemoveCommentTransaction extends Transaction<Void> {
     }
     
     @Override
-    protected Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
         PartakeDAOFactory factory = DBService.getFactory();
         
         Comment comment = factory.getCommentAccess().find(con, commentId); 

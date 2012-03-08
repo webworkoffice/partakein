@@ -22,50 +22,50 @@ public class TransactionTest {
     public void testWithDoingNothing() throws Exception {
         new Transaction<Void>() {
             @Override
-            protected Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
                 return null;
             }
-        }.transaction();
+        }.execute();
     }
     
     @Test
     public void testWithCommit() throws Exception {
         new Transaction<Void>() {
             @Override
-            protected Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
                 con.commit();
                 return null;
             }
-        }.transaction();
+        }.execute();
     }
     
     @Test
     public void testWithRollback() throws Exception {
         new Transaction<Void>() {
             @Override
-            protected Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
                 con.rollback();
                 return null;
             }
-        }.transaction();
+        }.execute();
     }
 
     @Test
     public void testWithBeginTransaction() throws Exception {
         new Transaction<Void>() {
             @Override
-            protected Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
                 con.beginTransaction();
                 return null;
             }
-        }.transaction();
+        }.execute();
     }
 
     @Test
     public void testWithException() throws Exception {
         Transaction<Void> transaction = new Transaction<Void>() {
             @Override
-            protected Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
                 Assert.assertEquals(1, DBService.getPool().getCurrentNumberOfConnectionForThisThread());
                 throw new RuntimeException();
             }
@@ -73,7 +73,7 @@ public class TransactionTest {
         
         Assert.assertEquals(0, DBService.getPool().getCurrentNumberOfConnectionForThisThread());
         try {
-            transaction.transaction();
+            transaction.execute();
         } catch (Exception e) {
         }
         

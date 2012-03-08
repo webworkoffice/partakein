@@ -27,7 +27,7 @@ public class SetPreferenceAPI extends AbstractPartakeAPI {
                 getBooleanParameter("profilePublic"),
                 getBooleanParameter("receivingTwitterMessage"),
                 getBooleanParameter("tweetingAttendanceAutomatically")
-        ).transaction();
+        ).execute();
 
         return renderOK();
     }
@@ -49,7 +49,7 @@ class SetPreferenceAPITransaction extends Transaction<Void> {
     /**
      * Updates UserPreference. Null arguments won't be updated.
      */
-    public Void doTransaction(PartakeConnection con) throws DAOException, PartakeException {
+    public Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
         PartakeDAOFactory factory = DBService.getFactory();
         
         final UserPreference pref = factory.getUserPreferenceAccess().find(con, user.getId());
