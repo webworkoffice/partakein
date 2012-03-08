@@ -226,8 +226,10 @@
 		<action name="create" class="in.partake.controller.api.event.CreateAPI" />
 		<action name="modify" class="in.partake.controller.api.event.ModifyAPI" />
 		<action name="publish" class="in.partake.controller.api.event.PublishAPI" />
-		<action name="remove" class="in.partake.controller.api.event.RemoveAPI" />		
+		<action name="remove" class="in.partake.controller.api.event.RemoveAPI" />
+		
 		<action name="enroll" class="in.partake.controller.api.event.EnrollAPI" />
+		<action name="enroll/changeComment" class="in.partake.controller.api.event.ChangeEnrollmentCommentAPI" />
 
 		<action name="attend" class="in.partake.controller.api.event.AttendAPI" />
 		<action name="makeAttendantVIP" class="in.partake.controller.api.event.MakeAttendantVIPAPI" />

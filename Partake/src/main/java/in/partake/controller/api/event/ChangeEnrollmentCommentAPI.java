@@ -14,7 +14,7 @@ import in.partake.resource.UserErrorCode;
 import java.util.Date;
 import java.util.List;
 
-public class ChangeCommentAPI extends AbstractEventAPI {
+public class ChangeEnrollmentCommentAPI extends AbstractEventAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
