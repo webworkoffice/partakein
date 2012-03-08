@@ -81,4 +81,10 @@ class JPAEnrollmentDao extends JPADao<Enrollment> implements IEnrollmentAccess {
         Query q = em.createQuery("DELETE FROM Enrollments");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "Enrollments");
+    }
+
 }

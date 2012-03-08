@@ -12,6 +12,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 /**
  * Dao のテストケースのベース。
  * 
@@ -309,5 +312,23 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         }
     }
     
-
+    @Test
+    public final void testToCount() throws Exception {
+        PartakeConnection con = getPool().getConnection();
+        try {
+            Set<T> created = new HashSet<T>();
+            for (int i = 0; i < 10; ++i) {
+                T t = create(System.currentTimeMillis(), String.valueOf(i), i);
+                created.add(t);
+                
+                con.beginTransaction();
+                dao.put(con, t);
+                con.commit();
+            }
+            
+            assertThat(dao.count(con), is(10L));
+        } finally {
+            con.invalidate();
+        }
+    }
 }

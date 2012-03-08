@@ -136,4 +136,8 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
 
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

@@ -63,4 +63,9 @@ class JPAEventActivityDao extends JPADao<EventActivity> implements IEventActivit
         return q.getResultList();        
     }
     
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "EventActivities");
+    }
+
 }

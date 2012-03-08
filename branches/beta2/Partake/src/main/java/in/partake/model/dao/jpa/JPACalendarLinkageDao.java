@@ -61,4 +61,10 @@ class JPACalendarLinkageDao extends JPADao<CalendarLinkage> implements ICalendar
         Query q = em.createQuery("DELETE FROM CalendarLinkages");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "CalendarLinkages");
+    }
+
 }

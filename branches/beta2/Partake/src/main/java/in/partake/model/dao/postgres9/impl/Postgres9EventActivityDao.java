@@ -121,4 +121,8 @@ public class Postgres9EventActivityDao extends Postgres9Dao implements IEventAct
         return activities;
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

@@ -68,4 +68,8 @@ public class Postgres9EventReminderDao extends Postgres9Dao implements IEventRem
         return new MapperDataIterator<Postgres9Entity, EventReminder>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

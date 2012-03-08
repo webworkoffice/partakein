@@ -104,4 +104,8 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
         return new Postgres9DataIterator<Message>(idMapper, psars);
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

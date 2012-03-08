@@ -79,4 +79,9 @@ public class Postgres9EnvelopeDao extends Postgres9Dao implements IEnvelopeAcces
     public String getFreshId(PartakeConnection con) throws DAOException {
         return entityDao.getFreshId((Postgres9Connection) con);
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

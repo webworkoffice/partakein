@@ -63,4 +63,10 @@ class JPAOpenIDLinkageDao extends JPADao<OpenIDLinkage> implements IOpenIDLinkag
         Query q = em.createQuery("DELETE FROM OpenIDLinkages");
         q.executeUpdate();   
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "OpenIDLinkages");
+    }
+
 }

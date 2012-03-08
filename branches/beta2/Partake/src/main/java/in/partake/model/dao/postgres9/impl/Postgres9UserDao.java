@@ -74,4 +74,8 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
         return entityDao.getFreshId((Postgres9Connection) con);
     }
 
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

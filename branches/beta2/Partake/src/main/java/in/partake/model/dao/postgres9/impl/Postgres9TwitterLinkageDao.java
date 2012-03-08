@@ -118,4 +118,9 @@ public class Postgres9TwitterLinkageDao extends Postgres9Dao implements ITwitter
         DataIterator<Postgres9Entity> iterator = entityDao.getIterator((Postgres9Connection) con); 
         return new MapperDataIterator<Postgres9Entity, TwitterLinkage>(mapper, iterator);
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

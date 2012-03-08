@@ -97,4 +97,9 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
 
         return mapper.map(entityDao.find(pcon, id));
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

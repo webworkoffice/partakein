@@ -69,4 +69,9 @@ public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPre
     public DataIterator<UserPreference> getIterator(PartakeConnection con) throws DAOException {
         return new MapperDataIterator<Postgres9Entity, UserPreference>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

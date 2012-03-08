@@ -45,4 +45,10 @@ class JPACacheDao extends JPADao<CacheData> implements ICacheAccess {
         Query q = em.createQuery("DELETE FROM CacheData");
         q.executeUpdate();
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "CacheData");
+    }
+
 }

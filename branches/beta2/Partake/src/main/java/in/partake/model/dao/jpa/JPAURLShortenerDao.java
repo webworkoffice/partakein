@@ -75,4 +75,10 @@ class JPAURLShortenerDao extends JPADao<ShortenedURLData> implements IURLShorten
             em.remove(data);
         }
     }
+    
+    @Override
+    public long count(PartakeConnection con) throws DAOException {
+        return countImpl(con, "ShortenedURLData");
+    }
+
 }
