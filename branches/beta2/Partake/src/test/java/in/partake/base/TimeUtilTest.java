@@ -4,8 +4,10 @@ import in.partake.base.TimeUtil;
 
 import java.util.Date;
 
-import junit.framework.Assert;
+import static org.hamcrest.Matchers.*;
 
+import static org.junit.Assert.assertThat;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,8 +33,29 @@ public class TimeUtilTest {
         long d3 = TimeUtil.getCurrentTime();
         long d4 = new Date().getTime();
         
-        Assert.assertTrue(d1 <= d2);
-        Assert.assertTrue(d2 <= d3);
-        Assert.assertTrue(d3 <= d4);
+        assertThat(d1, lessThanOrEqualTo(d2));
+        assertThat(d2, lessThanOrEqualTo(d3));
+        assertThat(d3, lessThanOrEqualTo(d4));
+    }
+    
+    @Test
+    public void dateConverterTest() {
+        Date date1 = new Date();
+        Date date2 = TimeUtil.dateFromTimeString(TimeUtil.getTimeString(date1));
+        Assert.assertEquals(date1, date2);
+    }
+
+    @Test
+    public void dateConverterCornerTest1() {
+        Date date1 = new Date(Long.MAX_VALUE);
+        Date date2 = TimeUtil.dateFromTimeString(TimeUtil.getTimeString(date1));
+        Assert.assertEquals(date1, date2);
+    }
+
+    @Test
+    public void dateConverterCornerTest2() {
+        Date date1 = new Date(0);
+        Date date2 = TimeUtil.dateFromTimeString(TimeUtil.getTimeString(date1));
+        Assert.assertEquals(date1, date2);
     }
 }
