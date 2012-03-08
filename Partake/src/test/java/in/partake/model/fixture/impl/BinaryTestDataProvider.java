@@ -7,7 +7,6 @@ import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.fixture.TestDataProvider;
 
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -20,7 +19,7 @@ public class BinaryTestDataProvider extends TestDataProvider<BinaryData> {
     
     @Override
     public BinaryData create() {
-        return new BinaryData(UUID.randomUUID().toString(), USER_ID1, "test", new byte[] { 1, 2, 3 }, new Date(0));
+        return new BinaryData(UUID.randomUUID().toString(), "test", new byte[] { 1, 2, 3 });
     }
     
     @Override
@@ -34,9 +33,9 @@ public class BinaryTestDataProvider extends TestDataProvider<BinaryData> {
                 data[i] = (byte)(i % N);
             }
             
-            return new BinaryData(uuid.toString(), USER_ID1, "data/octet-stream", data, new Date(0));
+            return new BinaryData(uuid.toString(), "data/octet-stream", data);
         } else {
-            return new BinaryData(uuid.toString(), USER_ID1, "data/octet-stream", new byte[] { 1, 2, (byte) objNumber }, new Date(0));
+            return new BinaryData(uuid.toString(), "data/octet-stream", new byte[] { 1, 2, (byte) objNumber });
         }
     }
     
@@ -45,6 +44,6 @@ public class BinaryTestDataProvider extends TestDataProvider<BinaryData> {
         IBinaryAccess dao = factory.getBinaryAccess();
         dao.truncate(con);
         
-        dao.put(con, new BinaryData(IMAGE_ID1, USER_ID1, "byte/octet-stream", BYTE1_CONTENT, new Date(0)));
+        dao.put(con, new BinaryData(IMAGE_ID1, "byte/octet-stream", BYTE1_CONTENT));
     }
 }

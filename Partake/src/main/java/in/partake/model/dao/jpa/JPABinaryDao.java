@@ -46,11 +46,6 @@ public class JPABinaryDao extends JPADao<BinaryData> implements IBinaryAccess {
     }
 
     @Override
-    public List<String> findIdsByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
-        throw new RuntimeException("Not implemented yet");
-    }
-    
-    @Override
     public void truncate(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("DELETE FROM BinaryData");

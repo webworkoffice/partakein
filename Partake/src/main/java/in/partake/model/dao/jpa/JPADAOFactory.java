@@ -12,6 +12,7 @@ import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dao.access.IEventReminderAccess;
+import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
@@ -106,5 +107,8 @@ public class JPADAOFactory extends PartakeDAOFactory {
         return new JPAURLShortenerDao();
     }
 
-    
+    @Override
+    protected IImageAccess createImageAccess() {
+        return new JPAImageDao();
+    }
 }

@@ -1,63 +1,80 @@
 package in.partake.model.dto;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity(name = "BinaryData")
+@Entity(name = "ImageData")
 @Cacheable(false)
-public class BinaryData extends PartakeModel<BinaryData> {
+public class ImageData extends PartakeModel<ImageData> {
     @Id
     private String id;
+    @Column
+    private String userId;
     @Column(length=10000)
     private String type;
     @Column @Lob
     private byte[] data;
+    @Column @Temporal(TemporalType.TIMESTAMP)
+    private Date   createdAt;
 
-    public BinaryData() {
-        this(null, null, null);
+    public ImageData() {
+        this(null, null, null, null, null);
     }
 
-    public BinaryData(String type, byte[] data) {
+    public ImageData(String userId, String type, byte[] data, Date createdAt) {
+        this.userId = userId;
         this.type = type;
         this.data = data;
+        this.createdAt = createdAt;
     }
 
-    public BinaryData(String id, String type, byte[] data) {
+    public ImageData(String id, String userId, String type, byte[] data, Date createdAt) {
         this.id = id;
+        this.userId = userId;
         this.type = type;
         this.data = data;
+        this.createdAt = createdAt;
     }
 
-    public BinaryData(BinaryData src) {
+    public ImageData(ImageData src) {
         this.id = src.id;
+        this.userId = src.userId;
         this.type = src.type;
         this.data = src.data;
+        this.createdAt = src.createdAt;
     }
 
-    public BinaryData(JSONObject obj) {
+    public ImageData(JSONObject obj) {
         this.id = obj.getString("id");
+        this.userId = obj.optString("userId");
         this.type = obj.getString("type");
+        if (obj.containsKey("createdAt"))
+            this.createdAt = new Date(obj.getLong("createdAt"));
 
         // We don't create data from JSONObject.
     }
 
-    public BinaryData(BinaryData src, boolean deepCopy) {
+    public ImageData(ImageData src, boolean deepCopy) {
         this.id = src.id;
         this.type = src.type;
-        if (deepCopy) {
+        this.userId = src.userId;
+        if (deepCopy)
             this.data = src.data != null ? Arrays.copyOf(src.data, src.data.length) : null;
-        } else {
+        else
             this.data = src.data;
-        }
+        this.createdAt = src.createdAt;
     }
 
     @Override
@@ -66,8 +83,8 @@ public class BinaryData extends PartakeModel<BinaryData> {
     }
 
     @Override
-    public BinaryData copy() {
-        return new BinaryData(this);
+    public ImageData copy() {
+        return new ImageData(this);
     }
 
     // ----------------------------------------------------------------------
@@ -75,14 +92,16 @@ public class BinaryData extends PartakeModel<BinaryData> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof BinaryData)) { return false; }
+        if (!(obj instanceof ImageData)) { return false; }
 
-        BinaryData lhs = this;
-        BinaryData rhs = (BinaryData) obj;
+        ImageData lhs = this;
+        ImageData rhs = (ImageData) obj;
 
         if (!ObjectUtils.equals(lhs.id, rhs.id))         { return false; }
+        if (!ObjectUtils.equals(lhs.userId, rhs.userId)) { return false; }
         if (!ObjectUtils.equals(lhs.type, rhs.type))     { return false; }
         if (!Arrays.equals(lhs.data, rhs.data))          { return false; }
+        if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
 
         return true;
     }
@@ -98,7 +117,11 @@ public class BinaryData extends PartakeModel<BinaryData> {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
+        obj.put("userId", userId);
         obj.put("type", type);
+        if (createdAt != null)
+            obj.put("createdAt", createdAt.getTime());
+
         return obj;
     }
 
@@ -109,6 +132,10 @@ public class BinaryData extends PartakeModel<BinaryData> {
         return id;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public String getType() {
         return type;
     }
@@ -117,9 +144,18 @@ public class BinaryData extends PartakeModel<BinaryData> {
         return data;
     }
     
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
     public void setId(String id) {
         checkFrozen();
         this.id = id;
+    }
+
+    public void setUserId(String userId) {
+        checkFrozen();
+        this.userId = userId;
     }
 
     public void setType(String type) {
@@ -130,5 +166,10 @@ public class BinaryData extends PartakeModel<BinaryData> {
     public void setData(byte[] data) {
         checkFrozen();
         this.data = data;
-    }    
+    }
+    
+    public void setCreatedAt(Date createdAt) {
+        checkFrozen();
+        this.createdAt = createdAt;
+    }
 }

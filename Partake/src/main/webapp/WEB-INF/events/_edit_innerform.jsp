@@ -141,65 +141,92 @@
 		<p class="help-block">定員を超える参加表明者は補欠者として扱われます。0 をいれると定員なしの意味になります。</p>
 	</div>
 </div>
+
 <div id="foreImageId" class="control-group">
 	<label class="control-label" for="foreImage">掲載画像</label>
 	<div class="controls form-inline">
-		<label class="checkbox"><input type="checkbox" name="foreImage" />掲載する</label>
+		<label class="checkbox"><input id="fore-image-checkbox" type="checkbox" name="foreImage" <%= event != null && event.getForeImageId() != null ? "checked" : "" %>/>掲載する</label>
 		<input type="hidden" id="fore-image-id-input" name="foreImageId" value="<%= event != null ? event.getForeImageId() : "" %>" />
 		<p class="help-block">画像を設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
-	<script>
-	$('input[name="foreImage"]').change(function() {
-		var v = $(this).is(':checked');
-		if (v)
-			$('#fore-image-chooser').fadeIn("fast");
-		else
-			$('#fore-image-chooser').fadeOut("fast");
-	});
-	</script>
 	<div id="fore-image-chooser" class="controls" style="display:none">
-		<ul class="thumbnails">
-	        <li class="span2"><img id="selected-fore-image" src="http://placehold.it/260x180" alt=""></li>
-        </ul>
+		<ul class="thumbnails"><li class="span2">
+		    <img id="selected-fore-image"
+	        	 src="<%= event != null && event.getForeImageId() != null ? "/images/" + event.getForeImageId() : "/images/no-image.png" %>"
+	             alt="">
+        </li></ul>
         <p><input id="select-new-foreground-image" type="button" class="btn" value="新しく画像を選択します" /></p>
 		<script>
 			$('#select-new-foreground-image').click(function() {
 				$('#image-upload-dialog').attr('purpose', 'foreground');
+				var imageId = $('#fore-image-id-input').val();
+				if (!imageId || imageId == "") {
+					$('#selected-image').attr('src', '/images/no-image.png');
+					$('#selected-image').removeAttr('imageId');
+				} else {
+					$('#selected-image').attr('src', '/images/' + imageId);
+					$('#selected-image').attr('imageId', imageId);
+				}
 				$('#image-upload-dialog').modal('show');
 			});
 		</script>
    	</div>
+   	<script>
+   	function updateForeImageChooser() {
+		var v = $('#fore-image-checkbox').is(':checked');
+		if (v)
+			$('#fore-image-chooser').fadeIn("fast");
+		else
+			$('#fore-image-chooser').fadeOut("fast");   	
+   	}
+	$('input[name="foreImage"]').change(updateForeImageChooser);
+	updateForeImageChooser();
+	</script>
+   	
 </div>
+
 <div id="backImageId" class="control-group">
    	<label class="control-label" for="backImage">背景画像</label>
 	<div class="controls form-inline">
-		<label class="checkbox"><input type="checkbox" name="backImage" />掲載する</label>
+		<label class="checkbox"><input id="back-image-checkbox" type="checkbox" name="backImage" <%= event != null && event.getBackImageId() != null ? "checked" : "" %>/>掲載する</label>
 		<input type="hidden" id="back-image-id-input" name="backImageId" value="<%= event != null ? event.getBackImageId() : "" %>" />
 		<p class="help-block">画像を設定できます。画像は上部に背景にされます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
-	<script>
-	$('input[name="backImage"]').change(function() {
-		var v = $(this).is(':checked');
-		if (v)
-			$('#back-image-chooser').fadeIn("fast");
-		else
-			$('#back-image-chooser').fadeOut("fast");
-	});
-	</script>
 	<div id="back-image-chooser" class="controls" style="display:none">
-		<ul class="thumbnails">
-	        <li class="span2"><img id="selected-back-image" src="http://placehold.it/260x180" alt=""></li>
-        </ul>
+		<ul class="thumbnails"><li class="span2">
+	        <img id="selected-back-image"
+	        	 src="<%= event != null && event.getBackImageId() != null ? "/images/" + event.getBackImageId() : "/images/no-image.png" %>"
+	             alt="">
+        </li></ul>
         <p><input id="select-new-background-image" type="button" class="btn" value="新しく画像を選択します" /></p>
 		<script>
 			$('#select-new-background-image').click(function() {
 				$('#image-upload-dialog').attr('purpose', 'background');
+				var imageId = $('#back-image-id-input').val();
+				if (!imageId || imageId == "") {
+					$('#selected-image').attr('src', '/images/no-image.png');
+					$('#selected-image').removeAttr('imageId');
+				} else {
+					$('#selected-image').attr('src', '/images/' + imageId);
+					$('#selected-image').attr('imageId', imageId);
+				}
 				$('#image-upload-dialog').modal('show');
 			});
 		</script>
-		
    	</div>
+   	<script>
+   	function updateBackImageChooser() {
+		var v = $('#back-image-checkbox').is(':checked');
+		if (v)
+			$('#back-image-chooser').fadeIn("fast");
+		else
+			$('#back-image-chooser').fadeOut("fast");   		
+   	}
+   	$('input[name="backImage"]').change(updateBackImageChooser);
+   	updateBackImageChooser();
+	</script>
 </div>
+
 <div id="place" class="control-group">
    	<label class="control-label">会場</label>
     <div class="controls">
@@ -337,7 +364,7 @@ $('#secret').change(checkPasscode);
 				<p>新しく画像をアップロード、もしくは過去にアップロードした画像から選択します。</p>
 				<p>選択された画像</p>
 				<ul class="thumbnails">
-					<li class="span3"><img id="selected-image" src="http://placehold.it/260x180" alt=""></li>
+					<li class="span3"><img id="selected-image" src="/images/no-image.png" alt=""></li>
 				</ul>
 				<form enctype="multipart/form-data">
 			  		<label for="fileupload"><input type="button" class="btn btn-danger" value="新しく画像をアップロード"/></label>
@@ -366,6 +393,10 @@ $('#secret').change(checkPasscode);
 	<%-- Since IE does not support XHR File upload, we use iframe trasport technique here... Too bad. --%>
 	<script>
 	var links = partakeUI.pagination($('#image-pagination'), 1, 100, 6);
+	
+	$('#image-upload-dialog').on('shown', function() {
+		console.log('hogehoge');
+	});
 	
 	$('#image-upload-dialog-ok').click(function() {
 		var dialog = $('#image-upload-dialog');

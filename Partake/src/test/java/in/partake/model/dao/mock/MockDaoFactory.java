@@ -14,6 +14,7 @@ import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dao.access.IEventReminderAccess;
+import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
@@ -109,5 +110,10 @@ public class MockDaoFactory extends PartakeDAOFactory {
     @Override
     protected IEventReminderAccess createEventReminderAccess() {
         return Mockito.mock(IEventReminderAccess.class);
+    }
+    
+    @Override
+    protected IImageAccess createImageAccess() {
+        return Mockito.mock(IImageAccess.class);
     }
 }
