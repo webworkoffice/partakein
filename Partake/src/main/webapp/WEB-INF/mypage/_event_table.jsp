@@ -88,6 +88,7 @@
 		}
 	}
 	
+	// TODO: Replace with partakeUI.pagination.
 	function addPagenation(text, nthPage, ul, active) {
 		if (nthPage < 0 || !nthPage) {
 			if (active)
@@ -175,7 +176,6 @@
 	function update(nthPage) {
 		partake.account.getEvents(queryType, finished, (nthPage - 1) * 10, 10)
 		.done(function (json) {
-			console.log(json.numEvents);
 			createTable(nthPage, json.participations);
 			createPagenation(nthPage, json.numEvents);
 		})

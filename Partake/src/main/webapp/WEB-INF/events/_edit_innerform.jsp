@@ -373,7 +373,7 @@ $('#secret').change(checkPasscode);
 				</form>
 			</div>
 			<div class="span6">
-				<ul id="thumbnails" class="thumbnails">
+				<ul id="image-upload-dialog-thumbnails" class="thumbnails">
 					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
 					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
 					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
@@ -392,10 +392,62 @@ $('#secret').change(checkPasscode);
 	
 	<%-- Since IE does not support XHR File upload, we use iframe trasport technique here... Too bad. --%>
 	<script>
-	var links = partakeUI.pagination($('#image-pagination'), 1, 100, 6);
+	var cachedTotalImageCount = 0;
+	var cachedImageIds = [];
+	
+	function createImageHTML(imageId) {
+		console.log(imageId);
+		var img = $('<img alt=""/>').attr('src', '/images/' + imageId);
+		var a = $('<a class="thumbnail"></a>').append(img);
+		a.click(function() { selectImage(imageId); });
+		var li = $('<li class="span2"></li>').append(a);
+		
+		return li;
+	}
+	
+	function showImages(pageNum) {
+		console.log('showImages : ' + pageNum);
+		var offset = (pageNum - 1) * 6;
+		var limit = 6;
+		
+		partake.account.getImages(offset, limit)
+		.always(function() {
+			
+		})
+		.done(function(json) {
+			var thumbnails = $('#image-upload-dialog-thumbnails');
+			var pagination = $('#image-pagination');
+			
+			thumbnails.empty();
+			pagination.empty();
+
+			var count = json.count;
+			var ids = json.imageIds;
+			
+			for (var i = 0; i < ids.length; ++i) {
+				var li = createImageHTML(ids[i]);
+				$('#image-upload-dialog-thumbnails').append(li);
+			}
+			
+			var pages = partakeUI.pagination(pagination, pageNum, count, 6);
+			for (var i = 0; i < pages.length; ++i) {
+				var anchor = pages[i].anchor;
+				var pageNum = pages[i].pageNum;
+				
+				anchor.click((function(pageNum) {
+					return function() {
+						showImages(pageNum);
+					};
+				})(pageNum));
+			}
+		})
+		.fail(function(json) {
+			
+		});
+	}
 	
 	$('#image-upload-dialog').on('shown', function() {
-		console.log('hogehoge');
+		showImages(1);
 	});
 	
 	$('#image-upload-dialog-ok').click(function() {
@@ -417,8 +469,7 @@ $('#secret').change(checkPasscode);
 	}
 	
 	function deleteImagesIfTooMany() {
-		var lis = $('#thumbnails li');
-		console.log(lis.length);
+		var lis = $('#image-upload-dialog-thumbnails li');
 		for (var i = 6; i < lis.length; ++i) {
 			$(lis.get(i)).remove();	
 		}
@@ -435,11 +486,9 @@ $('#secret').change(checkPasscode);
 			var xhr = data.jqXHR;
 			try {
 				var json = $.parseJSON(xhr.responseText);
-				var img = $('<img alt=""/>').attr('src', '/images/' + json.imageId);
-				var a = $('<a class="thumbnail"></a>').append(img);
-				a.click(function() { selectImage(json.imageId); });
-				var li = $('<li class="span2"></li>').append(a);
-				$('#thumbnails').prepend(li);
+				
+				var li = createImageHTML(json.imageId);
+				$('#image-upload-dialog-thumbnails').prepend(li);
 				deleteImagesIfTooMany();
 			} catch (e) {
 				alert('レスポンスが JSON 形式ではありません。');
