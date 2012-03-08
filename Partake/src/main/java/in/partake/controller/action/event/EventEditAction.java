@@ -2,11 +2,11 @@ package in.partake.controller.action.event;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
-import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 
 public class EventEditAction extends AbstractPartakeAction {

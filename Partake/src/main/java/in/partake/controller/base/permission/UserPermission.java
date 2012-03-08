@@ -1,4 +1,4 @@
-package in.partake.model.dto.auxiliary;
+package in.partake.controller.base.permission;
 
 public enum UserPermission {
     /** can edit the event */

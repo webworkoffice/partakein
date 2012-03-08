@@ -2,11 +2,11 @@ package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.CommentEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
-import in.partake.model.dto.auxiliary.UserPermission;
 import in.partake.resource.UserErrorCode;
 
 public class RemoveCommentAPI extends AbstractPartakeAPI {

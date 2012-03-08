@@ -8,7 +8,7 @@
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dao.DataIterator"%>
-<%@page import="in.partake.model.dto.auxiliary.UserPermission"%>
+<%@page import="in.partake.controller.base.permission.UserPermission"%>
 <%@page import="in.partake.model.dto.Enrollment"%>
 <%@page import="in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
