@@ -892,31 +892,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
     // ----------------------------------------------------------------------
     // Comments
 
-    public Comment getCommentById(String commentId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            Comment comment = factory.getCommentAccess().find(con, commentId);
-            con.commit();
-            return comment;
-        } finally {
-            con.invalidate();
-        }
-    }
-
-    public CommentEx getCommentExById(String commentId) throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            CommentEx comment = getCommentEx(con, commentId);
-            con.commit();
-            return comment;
-        } finally {
-            con.invalidate();
-        }
-    }
-
     public void addComment(Comment embryo) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
@@ -936,46 +911,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
             }
 
             con.commit();
-        } finally {
-            con.invalidate();
-        }
-    }
-
-    // TODO: うーん、comment が消される前に event が消されて、その後 comment を消そうとしたら落ちるんじゃないの？
-    //
-    public void removeComment(String commentId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            factory.getCommentAccess().remove(con, commentId);
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-    }
-
-    public List<Comment> getCommentsByEvent(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            List<Comment> result = new ArrayList<Comment>();
-
-            DataIterator<Comment> it = factory.getCommentAccess().getCommentsByEvent(con, eventId);
-            try {
-                if (it == null) { return result; }
-    
-                while (it.hasNext()) {
-                    Comment comment = it.next();
-                    if (comment == null) { continue; }
-                    result.add(comment);
-                }
-            } finally {
-                it.close();
-            }
-            con.commit();
-            return result;
         } finally {
             con.invalidate();
         }
