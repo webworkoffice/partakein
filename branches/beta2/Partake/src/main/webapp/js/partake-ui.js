@@ -56,7 +56,10 @@
 				a.appendTo(li);
 				li.appendTo(ul);
 				
-				links.push([a, currentPage]);
+				links.push({
+					anchor: a,
+					pageNum: currentPage
+				});
 			}
 			
 			pagination.empty();
