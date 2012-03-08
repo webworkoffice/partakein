@@ -159,6 +159,13 @@ public abstract class AbstractPartakeController extends ActionSupport implements
 
         return Util.parseBooleanParameter(value);
     }
+    
+    protected boolean optBooleanParameter(String key, boolean defaultValue) {
+        Boolean value = getBooleanParameter(key);
+        if (value != null)
+            return value;
+        return defaultValue;
+    }
 
     protected Integer getIntegerParameter(String key) {
         String value = getParameter(key);
