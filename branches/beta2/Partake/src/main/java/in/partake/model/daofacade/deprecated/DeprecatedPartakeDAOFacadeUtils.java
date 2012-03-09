@@ -10,6 +10,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.daofacade.UserDAOFacade;
+import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
@@ -36,20 +37,10 @@ import com.rosaloves.bitlyj.BitlyException;
 class DeprecatedPartakeDAOFacadeUtils {
     private static final Logger logger = Logger.getLogger(DeprecatedPartakeDAOFacadeUtils.class);
     private static volatile Date bitlyRateLimitExceededTime;
-    
+
+    @Deprecated
     public static <T> List<T> convertToList(DataIterator<T> it) throws DAOException {
-        try {
-            List<T> result = new ArrayList<T>();
-            while (it.hasNext()) {
-                T t = it.next();
-                if (t == null) { continue; }
-                result.add(t);
-            }
-            
-            return result;
-        } finally {
-            it.close();
-        }
+        return DAOUtil.convertToList(it);
     }
     
     @Deprecated
