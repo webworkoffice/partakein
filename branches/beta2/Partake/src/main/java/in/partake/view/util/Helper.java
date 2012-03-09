@@ -10,7 +10,6 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.Constants;
 import in.partake.session.CSRFPrevention;
 import in.partake.session.PartakeSession;
-import in.partake.session.SessionUtil;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -19,6 +18,8 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.owasp.validator.html.AntiSamy;
@@ -48,9 +49,15 @@ public final class Helper {
     }
 
     public static String getSessionToken() {
-        PartakeSession session = SessionUtil.getSession();
-        if (session == null) { return null; }
-        return session.getCSRFPrevention().getSessionToken();
+        Map<String, Object> session = ServletActionContext.getContext().getSession();
+        if (session == null)
+            return null;
+        
+        PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
+        if (partakeSession == null)
+            return null;
+        
+        return partakeSession.getCSRFPrevention().getSessionToken();
     }
     
     public static String tokenTags() {

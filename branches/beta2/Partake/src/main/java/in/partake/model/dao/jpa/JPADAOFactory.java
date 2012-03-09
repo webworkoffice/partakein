@@ -2,7 +2,6 @@ package in.partake.model.dao.jpa;
 
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IBinaryAccess;
-import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dao.access.ICalendarLinkageAccess;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dao.access.IEnrollmentAccess;
@@ -21,11 +20,6 @@ import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 
 public class JPADAOFactory extends PartakeDAOFactory {
-
-    @Override
-    protected ICacheAccess createCacheAccess() {
-        return new JPACacheDao();
-    }
 
     @Override
     protected ICalendarLinkageAccess createCalendarLinkageAccess() {

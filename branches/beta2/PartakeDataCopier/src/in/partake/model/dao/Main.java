@@ -71,7 +71,6 @@ public class Main {
     
     private static void performCopy() throws Exception {
         copy(srcFactory.getBinaryAccess(),          dstFactory.getBinaryAccess());
-        copy(srcFactory.getCacheAccess(),           dstFactory.getCacheAccess());
         copy(srcFactory.getCalendarAccess(),        dstFactory.getCalendarAccess());
         copy(srcFactory.getCommentAccess(),         dstFactory.getCommentAccess());
         copy(srcFactory.getEnrollmentAccess(),      dstFactory.getEnrollmentAccess());

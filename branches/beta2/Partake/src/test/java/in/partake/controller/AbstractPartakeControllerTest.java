@@ -8,11 +8,11 @@ import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.TestDatabaseService;
 import in.partake.session.PartakeSession;
-import in.partake.session.SessionUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsTestCase;
 import org.junit.After;
 import org.junit.Assert;
@@ -131,12 +131,14 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     protected void assertResultSuccess(ActionProxy proxy) throws Exception {
         Assert.assertTrue(proxy.getAction() instanceof AbstractPartakeAction);
         
-        PartakeSession session = SessionUtil.getSession(); 
-        Assert.assertFalse(session.hasServerErrorCode());
-        Assert.assertFalse(session.hasUserErrorCode());
+        Map<String, Object> session = ServletActionContext.getContext().getSession();
+        if (session != null) {
+            PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION); 
+            Assert.assertFalse(partakeSession.hasServerErrorCode());
+            Assert.assertFalse(partakeSession.hasUserErrorCode());            
+        }
         
-        Assert.assertEquals(200, response.getStatus());
-        
+        Assert.assertEquals(200, response.getStatus());        
     }
 
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {
