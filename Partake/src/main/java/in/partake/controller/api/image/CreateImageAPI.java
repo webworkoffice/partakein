@@ -35,8 +35,7 @@ public class CreateImageAPI extends AbstractPartakeAPI {
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
-        if (!checkCSRFToken())
-            return renderInvalid(UserErrorCode.INVALID_SECURITY_CSRF);
+        ensureValidSessionToken();
 
         if (file == null || contentType == null)
             return renderInvalid(UserErrorCode.INVALID_NOIMAGE);

@@ -1,6 +1,5 @@
 package in.partake.model.fixture;
 
-import in.partake.controller.api.image.CreateImageAPI;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;

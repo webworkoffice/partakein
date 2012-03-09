@@ -8,7 +8,6 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.UserPreference;
-import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
 
 public class SetPreferenceAPI extends AbstractPartakeAPI {
@@ -16,11 +15,8 @@ public class SetPreferenceAPI extends AbstractPartakeAPI {
 
     @Override
     public String doExecute() throws DAOException, PartakeException {
-        UserEx user = getLoginUser();
-        if (user == null)
-            return renderLoginRequired();
-        if (!checkCSRFToken())
-            return renderInvalid(UserErrorCode.INVALID_SESSION);
+        UserEx user = ensureLogin();
+        ensureValidSessionToken();
 
         new SetPreferenceAPITransaction(
                 user,

@@ -1,5 +1,6 @@
 package in.partake.controller.api.account;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -10,13 +11,9 @@ public class RemoveOpenIDAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public String doExecute() throws DAOException {
-        UserEx user = getLoginUser();
-        if (user == null)
-            return renderLoginRequired();
-
-        if (!checkCSRFToken())
-            return renderInvalid(UserErrorCode.INVALID_SESSION);
+    public String doExecute() throws DAOException, PartakeException {
+        UserEx user = ensureLogin();
+        ensureValidSessionToken();
 
         // check arguments
         String identifier = getParameter("identifier");

@@ -10,7 +10,6 @@ import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.resource.Constants;
-import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
 
 import java.util.Map;
@@ -22,12 +21,8 @@ public class RevokeCalendarAPI extends AbstractPartakeAPI {
 
     @Override
     protected String doExecute() throws DAOException, PartakeException {
-        UserEx user = getLoginUser();
-        if (user == null)
-            return renderLoginRequired();
-
-        if (!checkCSRFToken())
-            return renderInvalid(UserErrorCode.INVALID_SESSION);
+        UserEx user = ensureLogin();
+        ensureValidSessionToken();
 
         String newCalendarId = new RevokeCalendarAPITransaction(user, session).execute();
         
