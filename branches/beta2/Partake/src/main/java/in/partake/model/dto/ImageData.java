@@ -66,17 +66,6 @@ public class ImageData extends PartakeModel<ImageData> {
         // We don't create data from JSONObject.
     }
 
-    public ImageData(ImageData src, boolean deepCopy) {
-        this.id = src.id;
-        this.type = src.type;
-        this.userId = src.userId;
-        if (deepCopy)
-            this.data = src.data != null ? Arrays.copyOf(src.data, src.data.length) : null;
-        else
-            this.data = src.data;
-        this.createdAt = src.createdAt;
-    }
-
     @Override
     public Object getPrimaryKey() {
         return id;
