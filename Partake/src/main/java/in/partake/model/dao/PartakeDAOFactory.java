@@ -2,7 +2,6 @@ package in.partake.model.dao;
 
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dao.access.IBinaryAccess;
-import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dao.access.ICalendarLinkageAccess;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dao.access.IEnrollmentAccess;
@@ -25,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class PartakeDAOFactory {
-    private final ICacheAccess cacheAccess;
     private final ICalendarLinkageAccess calendarLinkageAccess;    
     private final IBinaryAccess binaryAccess;
     private final ICommentAccess commentAccess;
@@ -49,7 +47,6 @@ public abstract class PartakeDAOFactory {
     protected PartakeDAOFactory() {
         daos = new ArrayList<IAccess<?, ?>>();
         
-        addDao(cacheAccess           = createCacheAccess());
         addDao(calendarLinkageAccess = createCalendarLinkageAccess());
         addDao(binaryAccess          = createBinaryAccess());
         addDao(commentAccess         = createCommentAccess());
@@ -90,10 +87,6 @@ public abstract class PartakeDAOFactory {
     
     // ----------------------------------------------------------------------
     // accessors
-    
-    public final ICacheAccess getCacheAccess() {
-        return cacheAccess;
-    }
     
     public final ICalendarLinkageAccess getCalendarAccess() {
         return calendarLinkageAccess;
@@ -166,7 +159,6 @@ public abstract class PartakeDAOFactory {
     // ----------------------------------------------------------------------
     // abstract factory
     
-    protected abstract ICacheAccess createCacheAccess();
     protected abstract ICalendarLinkageAccess createCalendarLinkageAccess();
     protected abstract IBinaryAccess createBinaryAccess();
     protected abstract ICommentAccess createCommentAccess();

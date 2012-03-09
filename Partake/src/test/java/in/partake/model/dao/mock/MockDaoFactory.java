@@ -1,10 +1,7 @@
 package in.partake.model.dao.mock;
 
-import org.mockito.Mockito;
-
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IBinaryAccess;
-import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dao.access.ICalendarLinkageAccess;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dao.access.IEnrollmentAccess;
@@ -22,16 +19,13 @@ import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 
+import org.mockito.Mockito;
+
 public class MockDaoFactory extends PartakeDAOFactory {
 
     public MockDaoFactory() {
     }
     
-    @Override
-    protected ICacheAccess createCacheAccess() {
-        return Mockito.mock(ICacheAccess.class);
-    }
-
     @Override
     protected ICalendarLinkageAccess createCalendarLinkageAccess() {
         return Mockito.mock(ICalendarLinkageAccess.class);

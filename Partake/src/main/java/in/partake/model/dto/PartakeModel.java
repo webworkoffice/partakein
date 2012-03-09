@@ -32,10 +32,8 @@ public abstract class PartakeModel<T extends PartakeModel<?>> {
      */
     public abstract T copy();
     
-    /** @return a json object. FIXME: This method should be abstract. */
-    public JSONObject toJSON() {
-        throw new UnsupportedOperationException();
-    }
+    /** @return a json object. */
+    public abstract JSONObject toJSON();
     
     // ----------------------------------------------------------------------
     // frozen

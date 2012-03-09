@@ -4,7 +4,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IBinaryAccess;
-import in.partake.model.dao.access.ICacheAccess;
 import in.partake.model.dao.access.ICalendarLinkageAccess;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dao.access.IEnrollmentAccess;
@@ -22,7 +21,6 @@ import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dao.postgres9.impl.Postgres9BinaryDao;
-import in.partake.model.dao.postgres9.impl.Postgres9CacheDao;
 import in.partake.model.dao.postgres9.impl.Postgres9CalendarLinkageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9CommentDao;
 import in.partake.model.dao.postgres9.impl.Postgres9DirectMessageDao;
@@ -50,11 +48,6 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
         super.initialize(con);
     }
     
-    @Override
-    protected ICacheAccess createCacheAccess() {
-        return new Postgres9CacheDao();
-    }
-
     @Override
     protected ICalendarLinkageAccess createCalendarLinkageAccess() {
         return new Postgres9CalendarLinkageDao();

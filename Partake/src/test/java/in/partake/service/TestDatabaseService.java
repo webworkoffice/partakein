@@ -5,7 +5,6 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.fixture.PartakeTestDataProviderSet;
-import in.partake.model.fixture.impl.CacheTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
