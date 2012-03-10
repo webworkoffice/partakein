@@ -1,6 +1,7 @@
 package in.partake.controller;
 
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.controller.base.AbstractPartakeController;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
@@ -74,6 +75,10 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
             actionContext.setParameters(parameters);
         }
 
+        // Request has key named "request". 
+        if (actionContext.get("request") == null)
+            actionContext.put("request", new HashMap<String, Object>());
+
         return proxy;
     }
 
@@ -123,21 +128,21 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
         Assert.assertTrue(actionContext.getSession() == null || !actionContext.getSession().containsKey(Constants.ATTR_USER));        
     }
-    
+
     protected void assertRedirectedTo(String url) {
         Assert.assertEquals(url, response.getRedirectedUrl());
     }
-    
+
     protected void assertResultSuccess(ActionProxy proxy) throws Exception {
         Assert.assertTrue(proxy.getAction() instanceof AbstractPartakeAction);
-        
+
         Map<String, Object> session = ServletActionContext.getContext().getSession();
         if (session != null) {
             PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION); 
             Assert.assertFalse(partakeSession.hasServerErrorCode());
             Assert.assertFalse(partakeSession.hasUserErrorCode());            
         }
-        
+
         Assert.assertEquals(200, response.getStatus());        
     }
 
@@ -158,7 +163,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         if (url != null)
             Assert.assertEquals(url, response.getRedirectedUrl());
     }
-    
+
     protected void assertResultForbidden(ActionProxy proxy) throws Exception {
         // status code should be 403
         // Assert.assertEquals(403, response.getStatus());
@@ -168,7 +173,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     protected void assertResultNotFound(ActionProxy proxy) throws Exception {
         Assert.assertEquals(404, response.getStatus());
     }
-    
+
     protected void assertResultError(ActionProxy proxy) throws Exception {
         // Assert.assertEquals(500, response.getStatus());
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/error"));
