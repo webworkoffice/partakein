@@ -18,6 +18,7 @@ public enum UserErrorCode {
     INVALID_PARAMETERS("invalid.parameters"),
     INVALID_LOGIN_REQUIRED("invalid.login", 401),
     INVALID_PROHIBITED("invalid.prohibited", 403),
+    INVALID_NOTFOUND("invalid.notfound", 404),
     INVALID_NONMULTIPART_REQUEST("invalid.request.nonmultipart"),
     
     // EVENT

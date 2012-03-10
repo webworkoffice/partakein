@@ -59,7 +59,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     protected Map<String, Object> session = null;
     protected Map<String, Object> attributes = null;
     protected HttpServletRequest request = null;
-    
+
     // ----------------------------------------------------------------------
     // Execute
 
@@ -85,18 +85,21 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     protected abstract String renderInvalid(UserErrorCode ec, Throwable e);
     protected abstract String renderLoginRequired();
     protected abstract String renderForbidden();
+    protected abstract String renderNotFound();
 
     protected abstract String renderError(ServerErrorCode ec, Throwable e);
-    
+
     protected String renderException(PartakeException e) {
         if (e.getStatusCode() == 401)
             return renderLoginRequired();
         if (e.getStatusCode() == 403)
             return renderForbidden();
-        
+        if (e.getStatusCode() == 404)
+            return renderNotFound();
+
         if (e.isUserError())
             return renderInvalid(e.getUserErrorCode(), e.getCause());
-        
+
         assert e.isServerError();
         return renderError(e.getServerErrorCode(), e.getCause());    
     }
@@ -122,7 +125,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     public void setServletRequest(HttpServletRequest request) {
         this.request = request;
     }
-    
+
     // ----------------------------------------------------------------------
     // Parameter
 
@@ -159,7 +162,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
 
         return Util.parseBooleanParameter(value);
     }
-    
+
     protected boolean optBooleanParameter(String key, boolean defaultValue) {
         Boolean value = getBooleanParameter(key);
         if (value != null)
@@ -178,14 +181,14 @@ public abstract class AbstractPartakeController extends ActionSupport implements
             return null;
         }
     }
-    
+
     protected int optIntegerParameter(String key, int defaultValue) {
         Integer value = getIntegerParameter(key);
         if (value != null)
             return value;
         return defaultValue;
     }
-    
+
     protected Long getLongParameter(String key) {
         String value = getParameter(key);
         if (value == null)
@@ -197,16 +200,16 @@ public abstract class AbstractPartakeController extends ActionSupport implements
             return null;
         }
     }
-    
+
     protected Date getDateParameter(String key) {
         String value = getParameter(key);
         if (value == null)
             return null;
-        
+
         Date date = TimeUtil.parseForEvent(value);
         if (date != null)
             return date;
-        
+
         // Try parse it as long.
         try {
             long time = Long.valueOf(value);
@@ -224,22 +227,26 @@ public abstract class AbstractPartakeController extends ActionSupport implements
             throw new PartakeException(missing);
         if (!Util.isUUID(id))
             throw new PartakeException(invalid);
-        
+
         return id;        
     }
-    
+
     protected String getValidUserIdParameter() throws PartakeException {
         return getValidIdParameter("userId", UserErrorCode.MISSING_USER_ID, UserErrorCode.INVALID_USER_ID);
     }
-    
+
     protected String getValidEventIdParameter() throws PartakeException {
         return getValidIdParameter("eventId", UserErrorCode.MISSING_EVENT_ID, UserErrorCode.INVALID_EVENT_ID);
+    }
+    
+    protected String getValidEventIdParameter(UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
+        return getValidIdParameter("eventId", missing, invalid);
     }
     
     protected String getValidImageIdParameter() throws PartakeException {
         return getValidIdParameter("imageId", UserErrorCode.MISSING_IMAGEID, UserErrorCode.INVALID_IMAGEID);
     }
-    
+
     protected String getValidCommentIdParameter() throws PartakeException {
         return getValidIdParameter("commentId", UserErrorCode.MISSING_COMMENT_ID, UserErrorCode.INVALID_COMMENT_ID);
     }
@@ -248,7 +255,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         if (!checkCSRFToken())
             throw new PartakeException(UserErrorCode.INVALID_SECURITY_CSRF);
     }
-    
+
     /**
      * take multiple parameters. If there is a single parameter, a new array will be created to return.
      * @param key
@@ -348,20 +355,20 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         if (session == null) { return null; }
         return (UserEx) session.get(Constants.ATTR_USER);
     }
-    
+
     protected UserEx ensureLogin() throws PartakeException {
         UserEx user = getLoginUser();
         if (user == null)
             throw new PartakeException(UserErrorCode.INVALID_LOGIN_REQUIRED);
-        
+
         return user;
     }
-    
+
     protected UserEx ensureAdmin() throws PartakeException {
         UserEx user = ensureLogin();
         if (!user.isAdministrator())
             throw new PartakeException(UserErrorCode.INVALID_PROHIBITED);
-        
+
         return user;
     }
 

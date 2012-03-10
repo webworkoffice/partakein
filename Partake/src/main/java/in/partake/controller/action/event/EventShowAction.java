@@ -17,6 +17,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
+import in.partake.resource.UserErrorCode;
 
 import java.util.Date;
 import java.util.List;
@@ -30,7 +31,7 @@ public class EventShowAction extends AbstractEventAction {
     
     @Override
     protected String doExecute() throws DAOException, PartakeException {
-        String eventId = getValidEventIdParameter();
+        String eventId = getValidEventIdParameter(UserErrorCode.INVALID_NOTFOUND, UserErrorCode.INVALID_NOTFOUND);
 
         // NOTE: login はしてないかもしれない。
         UserEx user = getLoginUser();
@@ -51,6 +52,8 @@ public class EventShowAction extends AbstractEventAction {
                 // OK. The same passcode.
             } else {
                 // public でなければ、passcode を入れなければ見ることが出来ない
+                // We make this.event null for foolproof.
+                this.event = null;
                 return renderRedirect("/events/passcode?eventId=" + eventId);
             }
         }
