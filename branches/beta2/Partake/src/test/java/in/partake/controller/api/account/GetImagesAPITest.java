@@ -16,7 +16,7 @@ public class GetImagesAPITest extends APIControllerTest {
     @Test
     public void testToGetImages() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/images");
-        loginAs(proxy, TestDataProvider.USER_ID2);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         
@@ -27,13 +27,13 @@ public class GetImagesAPITest extends APIControllerTest {
         assertThat(obj.getInt("count"), is(10));
         JSONArray ids = obj.getJSONArray("imageIds");
         for (int i = 0; i < ids.size(); ++i)
-            assertThat(ids.getString(i), is(TestDataProvider.IMAGE_ID_OWNED_BY_USER2[i]));
+            assertThat(ids.getString(i), is(TestDataProvider.IMAGE_OWNED_BY_DEFAULT_USER_ID[i]));
     }
     
     @Test
     public void testToGetImagesWithOffsetAndLimit() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/images");
-        loginAs(proxy, TestDataProvider.USER_ID2);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         addParameter(proxy, "offset", "0");
         addParameter(proxy, "limit", "10");
@@ -46,13 +46,13 @@ public class GetImagesAPITest extends APIControllerTest {
         assertThat(obj.getInt("count"), is(10));
         JSONArray ids = obj.getJSONArray("imageIds");
         for (int i = 0; i < ids.size(); ++i)
-            assertThat(ids.getString(i), is(TestDataProvider.IMAGE_ID_OWNED_BY_USER2[i]));
+            assertThat(ids.getString(i), is(TestDataProvider.IMAGE_OWNED_BY_DEFAULT_USER_ID[i]));
     }
     
     @Test
     public void testToGetImagesWithOffsetAndLimit2() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/images");
-        loginAs(proxy, TestDataProvider.USER_ID2);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         addParameter(proxy, "offset", "0");
         addParameter(proxy, "limit", "5");
@@ -65,13 +65,13 @@ public class GetImagesAPITest extends APIControllerTest {
         assertThat(obj.getInt("count"), is(10));
         JSONArray ids = obj.getJSONArray("imageIds");
         for (int i = 0; i < ids.size(); ++i)
-            assertThat(ids.getString(i), is(TestDataProvider.IMAGE_ID_OWNED_BY_USER2[i]));
+            assertThat(ids.getString(i), is(TestDataProvider.IMAGE_OWNED_BY_DEFAULT_USER_ID[i]));
     }
 
     @Test
     public void testToGetImagesWithOffsetAndLimit3() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/images");
-        loginAs(proxy, TestDataProvider.USER_ID2);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         addParameter(proxy, "offset", "3");
         addParameter(proxy, "limit", "5");
@@ -84,6 +84,6 @@ public class GetImagesAPITest extends APIControllerTest {
         assertThat(obj.getInt("count"), is(10));
         JSONArray ids = obj.getJSONArray("imageIds");
         for (int i = 0; i < ids.size(); ++i)
-            assertThat(ids.getString(i), is(TestDataProvider.IMAGE_ID_OWNED_BY_USER2[i + 3]));
+            assertThat(ids.getString(i), is(TestDataProvider.IMAGE_OWNED_BY_DEFAULT_USER_ID[i + 3]));
     }
 }

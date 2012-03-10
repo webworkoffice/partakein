@@ -13,27 +13,30 @@ public class TwitterLinkageTestDataProvider extends TestDataProvider<TwitterLink
     public TwitterLinkage create() {
         return create(0, "", 0);
     }
-    
+
     @Override
     public TwitterLinkage create(long pkNumber, String pkSalt, int objNumber) {
         return new TwitterLinkage("twitterId" + pkNumber + pkSalt, "screenName", "name", "accessToken",
                 "accessTokenSecret", "profileImageURL", "userId" + objNumber);
     }
-    
+
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
         ITwitterLinkageAccess dao = factory.getTwitterLinkageAccess();        
         dao.truncate(con);
-        
-        // testUser という id の user がいることを保証する。
-        dao.put(con, new TwitterLinkage(TWITTER_ID1, TWITTER_SCREENNAME1, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", USER_ID1));
-        dao.put(con, new TwitterLinkage(TWITTER_ID2, TWITTER_SCREENNAME2, "testUser 2", "accessToken", "accessTokenSecret", "http://www.example.com/", USER_ID2));
-        dao.put(con, new TwitterLinkage(TWITTER_ID3, TWITTER_SCREENNAME3, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/", USER_ID3));
-        dao.put(con, new TwitterLinkage(TWITTER_ID4, TWITTER_SCREENNAME4, "testUser 4", "accessToken", "accessTokenSecret", "http://www.example.com/", USER_ID4));
-        dao.put(con, new TwitterLinkage(TWITTER_ADMIN_ID, TWITTER_ADMIN_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/", USER_ADMIN_ID));
 
-        dao.put(con, new TwitterLinkage(1000, "openid-remove-0", "openid-remove-0", "accessToken", "accessTokenSecret", "http://www.example.com/", "openid-remove-0"));
-        dao.put(con, new TwitterLinkage(1001, "openid-remove-1", "openid-remove-1", "accessToken", "accessTokenSecret", "http://www.example.com/", "openid-remove-1"));
-        dao.put(con, new TwitterLinkage(1002, "openid-remove-2", "openid-remove-2", "accessToken", "accessTokenSecret", "http://www.example.com/", "openid-remove-2"));
+        dao.put(con, new TwitterLinkage(DEFAULT_TWITTER_ID, DEFAULT_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", DEFAULT_USER_ID));
+        dao.put(con, new TwitterLinkage(DEFAULT_ANOTHER_TWITTER_ID, DEFAULT_ANOTHER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", DEFAULT_ANOTHER_USER_ID));
+        dao.put(con, new TwitterLinkage(ADMIN_USER_TWITTER_ID, ADMIN_USER_SCREENNAME, "testUser 2", "accessToken", "accessTokenSecret", "http://www.example.com/", ADMIN_USER_ID));
+        dao.put(con, new TwitterLinkage(EVENT_OWNER_TWITTER_ID, EVENT_OWNER_TWITTER_SCREENNAME, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_OWNER_ID));
+        dao.put(con, new TwitterLinkage(EVENT_EDITOR_TWITTER_ID, EVENT_EDITOR_TWITTER_SCREENNAME, "testUser 4", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_EDITOR_ID));
+        dao.put(con, new TwitterLinkage(EVENT_COMMENTOR_TWITTER_ID, EVENT_COMMENTOR_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_COMMENTOR_ID));
+        dao.put(con, new TwitterLinkage(EVENT_ENROLLED_USER_TWITTER_ID, EVENT_ENROLLED_USER_TWITTER_SCREENNAME, "testUser 4", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_ENROLLED_USER_ID));
+        dao.put(con, new TwitterLinkage(EVENT_RESERVED_USER_TWITTER_ID, EVENT_RESERVED_USER_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_RESERVED_USER_ID));
+        dao.put(con, new TwitterLinkage(EVENT_CANCELLED_USER_TWITTER_ID, EVENT_CANCELLED_USER_TWITTER_SCREENNAME, "testUser 4", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_CANCELLED_USER_ID));
+        dao.put(con, new TwitterLinkage(EVENT_UNRELATED_USER_TWITTER_ID, EVENT_UNRELATED_USER_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_UNRELATED_USER_ID));
+        dao.put(con, new TwitterLinkage(ATTENDANCE_PRESENT_USER_TWITTER_ID, ATTENDANCE_PRESENT_USER_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/", ATTENDANCE_PRESENT_USER_ID));
+        dao.put(con, new TwitterLinkage(ATTENDANCE_ABSENT_USER_TWITTER_ID, ATTENDANCE_ABSENT_USER_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/", ATTENDANCE_ABSENT_USER_ID));
+        dao.put(con, new TwitterLinkage(ATTENDANCE_UNKNOWN_USER_TWITTER_ID, ATTENDANCE_UNKNOWN_USER_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/", ATTENDANCE_UNKNOWN_USER_ID));
     }
 
 }

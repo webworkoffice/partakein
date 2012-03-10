@@ -12,7 +12,7 @@ public class StaticContactPageActionTest extends AbstractPartakeControllerTest {
     @Test
     public void testToExecute() throws Exception {
         ActionProxy proxy = getActionProxy("/contact");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
 
         proxy.execute();
         assertResultSuccess(proxy);

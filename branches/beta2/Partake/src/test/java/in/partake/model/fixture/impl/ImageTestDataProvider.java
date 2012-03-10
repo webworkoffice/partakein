@@ -21,7 +21,7 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
     
     @Override
     public ImageData create() {
-        return new ImageData(UUID.randomUUID().toString(), USER_ID1, "test", new byte[] { 1, 2, 3 }, TimeUtil.getCurrentDate());
+        return new ImageData(UUID.randomUUID().toString(), DEFAULT_USER_ID, "test", new byte[] { 1, 2, 3 }, TimeUtil.getCurrentDate());
     }
     
     @Override
@@ -35,9 +35,9 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
                 data[i] = (byte)(i % N);
             }
             
-            return new ImageData(uuid.toString(), USER_ID1, "data/octet-stream", data, TimeUtil.getCurrentDate());
+            return new ImageData(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", data, TimeUtil.getCurrentDate());
         } else {
-            return new ImageData(uuid.toString(), USER_ID1, "data/octet-stream", new byte[] { 1, 2, (byte) objNumber }, TimeUtil.getCurrentDate());
+            return new ImageData(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", new byte[] { 1, 2, (byte) objNumber }, TimeUtil.getCurrentDate());
         }
     }
     
@@ -46,8 +46,10 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
         IImageAccess dao = factory.getImageAccess();
         dao.truncate(con);
         
-        dao.put(con, new ImageData(IMAGE_ID1, USER_ID1, "byte/octet-stream", BYTE1_CONTENT, TimeUtil.getCurrentDate()));
-        for (int i = 0; i < IMAGE_ID_OWNED_BY_USER2.length; ++i)
-            dao.put(con, new ImageData(IMAGE_ID_OWNED_BY_USER2[i], USER_ID2, "byte/octet-stream", BYTE1_CONTENT, new Date(IMAGE_ID_OWNED_BY_USER2.length - i)));
+        // IMAGE_OWNED_BY_DEFAULT_USER_ID contains DEFAULT_IMAGE_ID.
+        dao.put(con, new ImageData(EVENT_FOREIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", BYTE1_CONTENT, TimeUtil.getCurrentDate()));
+        dao.put(con, new ImageData(EVENT_BACKIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", BYTE1_CONTENT, TimeUtil.getCurrentDate()));
+        for (int i = 0; i < IMAGE_OWNED_BY_DEFAULT_USER_ID.length; ++i)
+            dao.put(con, new ImageData(IMAGE_OWNED_BY_DEFAULT_USER_ID[i], DEFAULT_USER_ID, "byte/octet-stream", BYTE1_CONTENT, new Date(IMAGE_OWNED_BY_DEFAULT_USER_ID.length - i)));
     }
 }

@@ -14,7 +14,7 @@ public class EventAPITest extends APIControllerTest {
     @Test
     public void testGetEvent() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/");
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         
         proxy.execute();
         assertResultOK(proxy);
@@ -39,12 +39,12 @@ public class EventAPITest extends APIControllerTest {
     }
     
     @Test
-    public void testGetPrivateEvent() throws Exception {
+    public void testGetPrivateEventByOwner() throws Exception {
         // If a private event is requested without login,
         // 'forbidden' should be returned.
         ActionProxy proxy = getActionProxy("/api/event/");
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_PRIVATE_ID1);
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
         proxy.execute();
         assertResultOK(proxy);
@@ -55,7 +55,7 @@ public class EventAPITest extends APIControllerTest {
         // If a private event is requested without login,
         // 'forbidden' should be returned.
         ActionProxy proxy = getActionProxy("/api/event/");
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_PRIVATE_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
         
         proxy.execute();
         assertResultForbidden(proxy);
@@ -66,8 +66,8 @@ public class EventAPITest extends APIControllerTest {
         // If a private event is requested with invalid user,
         // 'forbidden' should be returned.
         ActionProxy proxy = getActionProxy("/api/event/");
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_PRIVATE_ID1);
-        loginAs(proxy, TestDataProvider.USER_ID3);
+        addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
+        loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
         
         proxy.execute();
         assertResultForbidden(proxy);
@@ -79,7 +79,7 @@ public class EventAPITest extends APIControllerTest {
         // 'get' API should succeed. 
         
         ActionProxy proxy = getActionProxy("/api/event/");
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_PRIVATE_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
         addParameter(proxy, "passcode", "passcode");
         
         proxy.execute();
@@ -90,7 +90,7 @@ public class EventAPITest extends APIControllerTest {
     public void testGetPrivateEventwithInvalidPasscode() throws Exception {
         // When invalid passcode is provided, 'forbidden' should be returned.
         ActionProxy proxy = getActionProxy("/api/event/");
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_PRIVATE_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
         addParameter(proxy, "passcode", "invalid-passcode");
         
         proxy.execute();
@@ -266,8 +266,8 @@ public class EventAPITest extends APIControllerTest {
     public void testToSendMessageForOwnedEvent() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/sendMessage");
 
-        loginAs(proxy, TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "message", "hogehogehoge");
         addValidSessionTokenToParameter(proxy);
         
@@ -283,8 +283,8 @@ public class EventAPITest extends APIControllerTest {
 
         ActionProxy proxy = getActionProxy("/api/event/sendMessage");
 
-        loginAs(proxy, TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "message", longMessage);
         addValidSessionTokenToParameter(proxy);
         
@@ -302,9 +302,8 @@ public class EventAPITest extends APIControllerTest {
     public void testToSendMessageForManagedEvent() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/sendMessage");
 
-        // User2 is an editor of Event2. 
-        loginAs(proxy, TestDataProvider.USER_ID2);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID2);
+        loginAs(proxy, TestDataProvider.EVENT_EDITOR_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "message", "hogehogehoge");
         addValidSessionTokenToParameter(proxy);
         
@@ -316,8 +315,8 @@ public class EventAPITest extends APIControllerTest {
     public void testToSendMessageForNotOwnedEvent() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/sendMessage");
         
-        loginAs(proxy, TestDataProvider.USER_ID2);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "message", "hogehogehoge");
         addValidSessionTokenToParameter(proxy);
         
@@ -329,7 +328,7 @@ public class EventAPITest extends APIControllerTest {
     public void testToSendMessageWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/sendMessage");
 
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "message", "hogehogehoge");
         
         proxy.execute();

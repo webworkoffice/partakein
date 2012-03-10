@@ -43,7 +43,7 @@ public class DebugAPITest extends APIControllerTest {
     @Test
     public void testSuccessIfLoginWhenLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/successIfLogin");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertResultOK(proxy);

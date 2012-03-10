@@ -12,10 +12,10 @@ public class RemoveCommentAPITest extends APIControllerTest {
     @Test
     public void testToRemoveOwnComment() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
-        addParameter(proxy, "commentId", TestDataProvider.COMMENT_ID1);
+        addParameter(proxy, "commentId", TestDataProvider.COMMENTOR_COMMENT_ID);
         addValidSessionTokenToParameter(proxy);
 
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_COMMENTOR_ID);
 
         proxy.execute();
         assertResultOK(proxy);        
@@ -24,9 +24,9 @@ public class RemoveCommentAPITest extends APIControllerTest {
     @Test
     public void testToRemoveInvalidComment() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
-        addParameter(proxy, "commentId", TestDataProvider.COMMENT_INVALID_ID);
+        addParameter(proxy, "commentId", TestDataProvider.INVALID_COMMENT_ID);
         
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_COMMENTOR_ID);
 
         proxy.execute();
         assertResultInvalid(proxy);
@@ -36,10 +36,10 @@ public class RemoveCommentAPITest extends APIControllerTest {
     @Test
     public void testToRemoveCommentByEventOwner() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
-        addParameter(proxy, "commentId", TestDataProvider.COMMENT_ID2);
+        addParameter(proxy, "commentId", TestDataProvider.COMMENTOR_COMMENT_ID);
         addValidSessionTokenToParameter(proxy);
 
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         proxy.execute();
         assertResultOK(proxy);
@@ -48,10 +48,10 @@ public class RemoveCommentAPITest extends APIControllerTest {
     @Test
     public void testToRemoveCommentByEventEditor() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
-        addParameter(proxy, "commentId", TestDataProvider.COMMENT_ID2);
+        addParameter(proxy, "commentId", TestDataProvider.COMMENTOR_COMMENT_ID);
         addValidSessionTokenToParameter(proxy);
 
-        loginAs(proxy, TestDataProvider.USER_ID2);
+        loginAs(proxy, TestDataProvider.EVENT_EDITOR_ID);
 
         proxy.execute();
         assertResultOK(proxy);        
@@ -60,10 +60,10 @@ public class RemoveCommentAPITest extends APIControllerTest {
     @Test
     public void testToRemoveCommentByOtherOne() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
-        addParameter(proxy, "commentId", TestDataProvider.COMMENT_ID2);
+        addParameter(proxy, "commentId", TestDataProvider.COMMENTOR_COMMENT_ID);
         addValidSessionTokenToParameter(proxy);
 
-        loginAs(proxy, TestDataProvider.USER_ID4);
+        loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
 
         proxy.execute();
         assertResultForbidden(proxy);
@@ -72,7 +72,7 @@ public class RemoveCommentAPITest extends APIControllerTest {
     @Test
     public void testToRemoveCommentWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
-        addParameter(proxy, "commentId", TestDataProvider.COMMENT_ID2);
+        addParameter(proxy, "commentId", TestDataProvider.COMMENTOR_COMMENT_ID);
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
@@ -82,12 +82,11 @@ public class RemoveCommentAPITest extends APIControllerTest {
     @Test
     public void testToRemoveCommentWithoutValidSessionToken() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
-        addParameter(proxy, "commentId", TestDataProvider.COMMENT_ID2);
+        addParameter(proxy, "commentId", TestDataProvider.COMMENTOR_COMMENT_ID);
         
-        loginAs(proxy, TestDataProvider.USER_ID2);
+        loginAs(proxy, TestDataProvider.EVENT_COMMENTOR_ID);
 
         proxy.execute();
         assertResultInvalid(proxy);
     }
-
 }

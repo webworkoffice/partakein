@@ -43,17 +43,17 @@ public class ImageAccessTest extends AbstractDaoTestCaseBase<IImageAccess, Image
             con.commit();
 
             // Do test
-            List<String> result = dao.findIdsByUserId(con, TestDataProvider.USER_ID1, 0, 10);
+            List<String> result = dao.findIdsByUserId(con, TestDataProvider.DEFAULT_USER_ID, 0, 10);
             Assert.assertEquals(10, result.size());
             for (int i = 0; i < 10; ++i)
                 Assert.assertEquals(data[i].getId(), result.get(i));
             
-            result = dao.findIdsByUserId(con, TestDataProvider.USER_ID1, 0, 5);
+            result = dao.findIdsByUserId(con, TestDataProvider.DEFAULT_USER_ID, 0, 5);
             Assert.assertEquals(5, result.size());
             for (int i = 0; i < 5; ++i)
                 Assert.assertEquals(data[i].getId(), result.get(i));
             
-            result = dao.findIdsByUserId(con, TestDataProvider.USER_ID1, 5, 10);
+            result = dao.findIdsByUserId(con, TestDataProvider.DEFAULT_USER_ID, 5, 10);
             Assert.assertEquals(5, result.size());
             for (int i = 0; i < 5; ++i)
                 Assert.assertEquals(data[i + 5].getId(), result.get(i));

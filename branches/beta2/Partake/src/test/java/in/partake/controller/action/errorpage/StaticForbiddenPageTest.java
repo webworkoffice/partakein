@@ -11,7 +11,7 @@ public class StaticForbiddenPageTest extends AbstractPartakeControllerTest {
     @Test
     public void testAccessWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/prohibited");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertResultSuccess(proxy);

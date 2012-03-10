@@ -17,15 +17,15 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToPresence() throws Exception {
         // 
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.EVENT_ID2, TestDataProvider.USER_ID1);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus()); 
         }
         
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID2);
+        addParameter(proxy, "userId", TestDataProvider.EVENT_ENROLLED_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
         
@@ -34,7 +34,7 @@ public class AttendanceAPITest extends APIControllerTest {
         
         // Check status is changed.
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.EVENT_ID2, TestDataProvider.USER_ID1);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
     }
@@ -43,15 +43,15 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToAbsence() throws Exception {
         // 
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.EVENT_ID3, TestDataProvider.USER_ID1);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus()); 
         }
         
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID3);
+        addParameter(proxy, "userId", TestDataProvider.EVENT_ENROLLED_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "absent");
         addValidSessionTokenToParameter(proxy);
         
@@ -60,7 +60,7 @@ public class AttendanceAPITest extends APIControllerTest {
         
         // Check status is changed.
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.EVENT_ID3, TestDataProvider.USER_ID1);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }        
     }
@@ -69,15 +69,15 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToUnknown() throws Exception {
         // 
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.EVENT_ID1, TestDataProvider.USER_ID1);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus()); 
         }
         
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "userId", TestDataProvider.EVENT_ENROLLED_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "unknown");
         addValidSessionTokenToParameter(proxy);
         
@@ -86,7 +86,7 @@ public class AttendanceAPITest extends APIControllerTest {
         
         // Check status is changed.
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.EVENT_ID1, TestDataProvider.USER_ID1);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
         }        
 
@@ -96,8 +96,8 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testLoginRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
         
@@ -108,10 +108,10 @@ public class AttendanceAPITest extends APIControllerTest {
     @Test
     public void testUserIdRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        // addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        // addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
         
@@ -122,10 +122,10 @@ public class AttendanceAPITest extends APIControllerTest {
     @Test
     public void testEventIdRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        // addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
+        // addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
         
@@ -136,10 +136,10 @@ public class AttendanceAPITest extends APIControllerTest {
     @Test
     public void testStatusRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         // addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
         
@@ -150,10 +150,10 @@ public class AttendanceAPITest extends APIControllerTest {
     @Test
     public void testInvalidOwner() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID3); // not USER_ID1
+        loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
         
@@ -164,10 +164,10 @@ public class AttendanceAPITest extends APIControllerTest {
     @Test
     public void testInvalidArgument() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "hogehoge");
         addValidSessionTokenToParameter(proxy);
         
@@ -179,10 +179,10 @@ public class AttendanceAPITest extends APIControllerTest {
     @Test
     public void testInvalidSessionToken() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
-        addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addInvalidSessionTokenToParameter(proxy);
         

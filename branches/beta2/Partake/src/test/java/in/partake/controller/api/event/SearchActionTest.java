@@ -8,6 +8,7 @@ import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.TestDatabaseService;
 
@@ -43,7 +44,7 @@ public class SearchActionTest extends APIControllerTest {
     public void testSearchJapaneseQuery() throws Exception {
         // http://code.google.com/p/partakein/issues/detail?id=233
         ActionProxy proxy = getActionProxy("/api/event/search");
-        addQueryParameter(proxy, "昇竜拳");
+        addQueryParameter(proxy, EventTestDataProvider.JAPANESE_IDENTIFIER);
 
         assertThat(proxy.execute(), equalTo("json"));
 
@@ -56,7 +57,7 @@ public class SearchActionTest extends APIControllerTest {
     @Test
     public void testSearchJapaneseQueryWithBeforeDeadlineOnly() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/search");
-        addQueryParameter(proxy, "昇竜拳", "all", "false", "score", "10");
+        addQueryParameter(proxy, EventTestDataProvider.JAPANESE_IDENTIFIER, "all", "false", "score", "10");
         
         assertThat(proxy.execute(), equalTo("json"));
 

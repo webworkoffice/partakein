@@ -266,8 +266,8 @@ public class EventServiceTest extends AbstractServiceTestCaseBase {
 
 	@Test
 	public void testToFindCanceledEvent() throws DAOException {
-		String userId = UserTestDataProvider.USER_ID1;
-		String eventId = TestDataProvider.EVENT_ID1;
+		String userId = UserTestDataProvider.DEFAULT_USER_ID;
+		String eventId = TestDataProvider.DEFAULT_EVENT_ID;
 		assertThat(service.getEventById(eventId), is(not(nullValue())));
 
 		service.enroll(userId, eventId, ParticipationStatus.ENROLLED, "", false, false);

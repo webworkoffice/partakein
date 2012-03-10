@@ -36,7 +36,7 @@ public class AccountAPITest extends APIControllerTest {
         // If logged in, the token session should be available also.
         ActionProxy proxy = getActionProxy(SESSION_TOKEN_URL);
 
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertResultOK(proxy);
@@ -49,7 +49,7 @@ public class AccountAPITest extends APIControllerTest {
     public void testToGetWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/");
 
-        final String userId = TestDataProvider.USER_ID1;
+        final String userId = TestDataProvider.DEFAULT_USER_ID;
         
         loginAs(proxy, userId);
         
@@ -62,7 +62,7 @@ public class AccountAPITest extends APIControllerTest {
         // TODO: Checks Twitter?
         
         // Checks UserPreference.
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         JSONObject prefObj = obj.getJSONObject("preference");
         Assert.assertEquals(pref.isProfilePublic(), prefObj.getBoolean("profilePublic"));
         Assert.assertEquals(pref.isReceivingTwitterMessage(), prefObj.getBoolean("receivingTwitterMessage"));
@@ -90,12 +90,12 @@ public class AccountAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
         
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         addValidSessionTokenToParameter(proxy);
         addParameter(proxy, "profilePublic", "false");
@@ -105,7 +105,7 @@ public class AccountAPITest extends APIControllerTest {
         
         assertResultOK(proxy);
         
-        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
+        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(false, pref.isProfilePublic());
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
@@ -115,18 +115,18 @@ public class AccountAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLoginWithoutArgument() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
         
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addValidSessionTokenToParameter(proxy);
         proxy.execute();
         
         assertResultOK(proxy);
         
-        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_ID1);
+        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
@@ -136,7 +136,7 @@ public class AccountAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLoginWithInvalidSessionToken() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addInvalidSessionTokenToParameter(proxy);
         
         proxy.execute();
@@ -155,17 +155,17 @@ public class AccountAPITest extends APIControllerTest {
     public void testToRemoveOpenID() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
-        loginAs(proxy, TestDataProvider.EVENT_REMOVE_ID0);
-        addParameter(proxy, "identifier", "http://www.example.com/openid-remove-0");
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
+        addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
         assertResultOK(proxy);
         
         // Check the OpenID has been really removed.
-        List<String> identifiers = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(TestDataProvider.EVENT_REMOVE_ID0);
+        List<String> identifiers = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertNotNull(identifiers);
-        Assert.assertFalse(identifiers.contains("http://www.example.com/openid-remove-0"));
+        Assert.assertFalse(identifiers.contains(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
     }
 
     @Test
@@ -173,7 +173,7 @@ public class AccountAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
         // When not login, should fail.
-        addParameter(proxy, "identifier", "http://www.example.com/openid-remove-1");
+        addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
@@ -185,9 +185,9 @@ public class AccountAPITest extends APIControllerTest {
         // openid-remove-0 user does not have openid-remove-2 identifier.
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
-        loginAs(proxy, TestDataProvider.EVENT_REMOVE_ID0);
+        loginAs(proxy, TestDataProvider.DEFAULT_ANOTHER_USER_ID);
         
-        addParameter(proxy, "identifier", "http://www.example.com/openid-remove-2");
+        addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
@@ -199,9 +199,9 @@ public class AccountAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
         // Check CSRF prevention works.
-        loginAs(proxy, TestDataProvider.EVENT_REMOVE_ID3);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
-        addParameter(proxy, "identifier", "http://www.example.com/openid-remove-3");
+        addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addInvalidSessionTokenToParameter(proxy);
         
         proxy.execute();
