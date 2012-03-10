@@ -16,6 +16,8 @@ import in.partake.model.fixture.TestDataProvider;
  *
  */
 public class EventTestDataProvider extends TestDataProvider<Event> {
+    public static final String UNIQUE_IDENTIFIER = "dlasjfjdlkhvfiaxh";
+    public static final String JAPANESE_IDENTIFIER = "音無小鳥";
     
     @Override
     public Event create() {
@@ -54,61 +56,28 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
         Date now = new Date();
         Date late = new Date(now.getTime() + 1000 * 3600);
         
-        dao.put(con, new Event(EVENT_ID1, "short-id1", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
+        dao.put(con, new Event(DEFAULT_EVENT_ID, "short-id", "title", "summary", "category", 
+                late, late, late, 0, "url", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, null, false, false,
+                now, now, -1));
 
-        // USER2 is a editor of this event.
-        dao.put(con, new Event(EVENT_ID2, "short-id2", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, TWITTER_SCREENNAME2,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
+        dao.put(con, new Event(PRIVATE_EVENT_ID, "short-id", "title", "summary", "category", 
+                late, late, late, 0, "url", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, true, "passcode", false, false,
+                now, now, -1));
 
-        dao.put(con, new Event(EVENT_ID3, "short-id3", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
+        dao.put(con, new Event(JAPANESE_EVENT_ID, "short-id", "title", "summary", "category", 
+                late, late, late, 0, "url", "place",
+                "address", "unique identifier -- " + JAPANESE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,
+                now, now, -1));
 
-        dao.put(con, new Event(EVENT_PRIVATE_ID1, "short-private-id1", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", true, "passcode", false, false,
-                               now, now, -1));
-
-        dao.put(con, new Event(EVENT_PRIVATE_ID2, "short-private-id2", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", true, "passcode", false, false,
-                               now, now, -1));
-
-        dao.put(con, new Event(EVENT_PRIVATE_ID3, "short-private-id3", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", true, "passcode", false, false,
-                               now, now, -1));
-
-
-        dao.put(con, new Event(EVENT_SEARCH_ID1, "event-search-1", "title title title", "summary", "computer", 
-                               late, late, late, 0, "url", "place",
-                               "address", "unique identifier -- djlkajsd", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
-
-        dao.put(con, new Event(EVENT_SEARCH_ID2, "event-search-2", "title title title", "summary", "computer", 
-                               late, late, late, 0, "url", "place",
-                               "address", "unique identifier -- xgnasdgb", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
-
-        dao.put(con, new Event(EVENT_SEARCH_ID3, "event-search-3", "title title title", "summary", "computer", 
-                               late, late, late, 0, "url", "place",
-                               "address", "unique identifier -- 昇竜拳", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
-                
+        dao.put(con, new Event(UNIQUEIDENTIFIER_EVENT_ID, "short-id", "title", "summary", "category", 
+                late, late, late, 0, "url", "place",
+                "address", "unique identifier -- " + UNIQUE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,
+                now, now, -1));
     }
 }

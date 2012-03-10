@@ -14,7 +14,7 @@ public class ImageActionTest extends AbstractPartakeControllerTest {
 
     @Test
     public void testToGetImage() throws Exception {
-        ActionProxy proxy = getActionProxy("/images/" + BinaryTestDataProvider.IMAGE_ID1);
+        ActionProxy proxy = getActionProxy("/images/" + BinaryTestDataProvider.DEFAULT_IMAGE_ID);
 
         proxy.execute();
         assertResultSuccess(proxy);

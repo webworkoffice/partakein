@@ -12,7 +12,7 @@ public class LogoutActionTest extends AbstractPartakeControllerTest {
     @Test
     public void testWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/auth/logout");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertLoggedOut(proxy);

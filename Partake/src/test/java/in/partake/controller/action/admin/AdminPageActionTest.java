@@ -13,7 +13,7 @@ public class AdminPageActionTest extends AbstractPartakeControllerTest {
     @Test
     public void testWithAdminLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/admin/");
-        loginAs(proxy, TestDataProvider.USER_ADMIN_ID);
+        loginAs(proxy, TestDataProvider.ADMIN_USER_ID);
 
         proxy.execute();
         assertResultSuccess(proxy);
@@ -25,7 +25,7 @@ public class AdminPageActionTest extends AbstractPartakeControllerTest {
     @Test
     public void testWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/admin/");
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
 
         proxy.execute();
         assertResultForbidden(proxy);

@@ -23,14 +23,14 @@ public class UserAPITest extends APIControllerTest {
     @Ignore("Not implemented yet.")
     public void testGetUserWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/");
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
+        addParameter(proxy, "userId", TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertResultOK(proxy);
 
         // User.java から取得できるもの
         JSONObject obj = getJSON(proxy);
-        Assert.assertEquals(TestDataProvider.USER_ID1, obj.get("id"));
+        Assert.assertEquals(TestDataProvider.DEFAULT_USER_ID, obj.get("id"));
         Assert.assertEquals("1", obj.get("twitterId"));
         Assert.assertNull(obj.get("lastLoginAt")); // 取得できない
         Assert.assertNull(obj.get("calendarId"));  // calendar Id も取得できない。
@@ -53,17 +53,17 @@ public class UserAPITest extends APIControllerTest {
     @Ignore("Not implemented yet.")
     public void testGetUserWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/");
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
+        addParameter(proxy, "userId", TestDataProvider.DEFAULT_USER_ID);
         
         // User 1 としてログイン
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertResultOK(proxy);
 
         // User.java から取得できるもの
         JSONObject obj = getJSON(proxy);
-        Assert.assertEquals(TestDataProvider.USER_ID1, obj.get("id"));
+        Assert.assertEquals(TestDataProvider.DEFAULT_USER_ID, obj.get("id"));
         Assert.assertEquals("1", obj.get("twitterId"));
         Assert.assertNotNull(obj.get("lastLoginAt")); // 取得でき*る*
         Assert.assertNotNull(obj.get("calendarId"));  // calendar Id も取得でき*る*
@@ -94,18 +94,18 @@ public class UserAPITest extends APIControllerTest {
     @Ignore("Not implemented yet.")
     public void testGetUserWithLoginAsAnotherUser() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/");
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1); 
+        addParameter(proxy, "userId", TestDataProvider.DEFAULT_USER_ID); 
 
         // USER 1 ではなく、USER 2 としてログイン。
         // この場合、login してない場合と同じ情報が得られなければならない。
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
 
         proxy.execute();
         assertResultOK(proxy);
 
         // User.java から取得できるもの
         JSONObject obj = getJSON(proxy);
-        Assert.assertEquals(TestDataProvider.USER_ID1, obj.get("id"));
+        Assert.assertEquals(TestDataProvider.DEFAULT_USER_ID, obj.get("id"));
         Assert.assertEquals("1", obj.get("twitterId"));
         Assert.assertNull(obj.get("lastLoginAt")); // 取得できない
         Assert.assertNull(obj.get("calendarId"));  // calendar Id も取得できない。
@@ -128,9 +128,9 @@ public class UserAPITest extends APIControllerTest {
     @Ignore("Not implemented yet")
     public void testToGetEventsWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/events");
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
+        addParameter(proxy, "userId", TestDataProvider.DEFAULT_USER_ID);
         
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertResultOK(proxy);
@@ -142,9 +142,9 @@ public class UserAPITest extends APIControllerTest {
     @Ignore("Not implemented yet")
     public void testToGetEventsWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/events");
-        addParameter(proxy, "userId", TestDataProvider.USER_ID1);
+        addParameter(proxy, "userId", TestDataProvider.DEFAULT_USER_ID);
 
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
 
         proxy.execute();
         assertResultOK(proxy);

@@ -23,13 +23,7 @@ public class OpenIDLinkageTestDataProvider extends TestDataProvider<OpenIDLinkag
         IOpenIDLinkageAccess dao = factory.getOpenIDLinkageAccess();
         dao.truncate(con);
         
-        // testUser
-        dao.put(con, new OpenIDLinkage("http://www.example.com/testuser", USER_ID1));
-        dao.put(con, new OpenIDLinkage("http://www.example.com/testuser-alternative", USER_ID1));
-        
-        dao.put(con, new OpenIDLinkage("http://www.example.com/openid-remove-0", EVENT_REMOVE_ID0));
-        dao.put(con, new OpenIDLinkage("http://www.example.com/openid-remove-1", EVENT_REMOVE_ID1));
-        dao.put(con, new OpenIDLinkage("http://www.example.com/openid-remove-2", EVENT_REMOVE_ID2));
-        dao.put(con, new OpenIDLinkage("http://www.example.com/openid-remove-3", EVENT_REMOVE_ID3));       
+        dao.put(con, new OpenIDLinkage(DEFAULT_USER_OPENID_IDENTIFIER, DEFAULT_USER_ID));
+        dao.put(con, new OpenIDLinkage(DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER, DEFAULT_USER_ID));        
     }
 }
