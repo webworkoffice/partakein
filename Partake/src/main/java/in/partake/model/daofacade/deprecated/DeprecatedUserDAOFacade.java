@@ -9,7 +9,6 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.OpenIDLinkage;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
@@ -130,37 +129,6 @@ public final class DeprecatedUserDAOFacade extends DeprecatedPartakeDAOFacade {
     // ----------------------------------------------------------------------
     // OpenID Authentication
 
-    public UserEx loginByOpenID(String identifier) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        if (identifier == null) {
-            throw new NullPointerException();
-        }
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            OpenIDLinkage linkage = factory.getOpenIDLinkageAccess().find(con, identifier);
-            if (linkage == null) { return null; }
-
-            UserEx user = getUserEx(con, linkage.getUserId());
-            con.commit();
-            return user;
-        } finally {
-            con.invalidate();
-        }
-    }
-
-    public void addOpenIDLinkage(String userId, String identifier) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            factory.getOpenIDLinkageAccess().put(con, new OpenIDLinkage(identifier, userId));
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-    }
-
     public List<String> getOpenIDIdentifiers(String userId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
@@ -175,33 +143,6 @@ public final class DeprecatedUserDAOFacade extends DeprecatedPartakeDAOFacade {
         }
     }
 
-    /**
-     * OpenID をデータベースから消去します。
-     * @param identifier
-     * @throws DAOException
-     */
-    public boolean removeOpenIDLinkage(String userId, String identifier) throws DAOException {
-        if (userId == null || identifier == null) { return false; }
-
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-
-            OpenIDLinkage linkage = factory.getOpenIDLinkageAccess().find(con, identifier);
-            if (linkage == null) { return false; }
-
-            if (userId.equals(linkage.getUserId())) {
-                factory.getOpenIDLinkageAccess().remove(con, identifier);
-                con.commit();
-                return true;
-            } else {
-                return false;
-            }
-        } finally {
-            con.invalidate();
-        }
-    }
 
     // ----------------------------------------------------------------------
     // Event Participation
