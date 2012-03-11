@@ -10,7 +10,9 @@ import in.partake.resource.UserErrorCode;
  */
 public class PartakeSession {
     private CSRFPrevention csrfPrevention;
+    
     private OpenIDLoginInformation openIDLoginInfomation;
+    private TwitterLoginInformation twitterLoginInformation;
     
     private ServerErrorCode lastServerError;
     private UserErrorCode lastUserError;
@@ -32,6 +34,16 @@ public class PartakeSession {
             openIDLoginInfomation = new OpenIDLoginInformation();
         
         return openIDLoginInfomation;
+    }
+    
+    public synchronized void setTwitterLoginInformation(TwitterLoginInformation information) {
+        twitterLoginInformation = information;
+    }
+    
+    public synchronized TwitterLoginInformation takeTwitterLoginInformation() {
+        TwitterLoginInformation result = twitterLoginInformation;
+        twitterLoginInformation = null;
+        return result;
     }
     
     public void setLastServerError(ServerErrorCode ec) {
