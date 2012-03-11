@@ -27,8 +27,17 @@
 				offset: offset,
 				limit: limit
 			};
-			
+				
 			return $.post('/api/account/events', arg);
+		},
+		
+		getEnrollments: function(offset, limit) {
+			var arg = {
+				offset: offset,
+				limit: limit
+			};
+
+			return $.post('/api/account/enrollments', arg);			
 		},
 		
 		getImages: function(offset, limit) {
