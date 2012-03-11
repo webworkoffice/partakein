@@ -1,0 +1,102 @@
+package in.partake.controller.api.account;
+
+import in.partake.base.Pair;
+import in.partake.base.PartakeException;
+import in.partake.base.Util;
+import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.model.UserEx;
+import in.partake.model.dao.DAOException;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IEnrollmentAccess;
+import in.partake.model.dao.base.Transaction;
+import in.partake.model.daofacade.EnrollmentDAOFacade;
+import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.Event;
+import in.partake.model.dto.auxiliary.CalculatedEnrollmentStatus;
+import in.partake.service.DBService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+public class GetParticipationsAPI extends AbstractPartakeAPI {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public String doExecute() throws DAOException, PartakeException {
+        UserEx user = ensureLogin();
+
+        int offset = optIntegerParameter("offset", 0);
+        offset = Util.ensureRange(offset, 0, Integer.MAX_VALUE);
+
+        int limit = optIntegerParameter("limit", 10);
+        limit = Util.ensureRange(limit, 0, 100);
+
+        // TODO: Helper.enrollmentStatus が異常なことやりすぎ
+
+        GetParticipationsTransaction transaction = new GetParticipationsTransaction(user.getId(), offset, limit);
+        transaction.execute(); 
+
+        JSONArray statuses = new JSONArray();
+        for (Pair<Event, CalculatedEnrollmentStatus> eventStatus : transaction.getStatuses()) {
+            JSONObject obj = new JSONObject();
+            obj.put("event", eventStatus.getFirst().toSafeJSON()); 
+            obj.put("status", eventStatus.getSecond().toSafeJSON());
+            statuses.add(obj);
+        }
+
+        JSONObject obj = new JSONObject();
+        obj.put("numEvents", transaction.getNumTotalEvents());
+        obj.put("statuses", statuses);
+
+        return renderOK(obj);
+    }
+}
+
+class GetParticipationsTransaction extends Transaction<Void> {
+    private String userId;
+    private int offset;
+    private int limit;
+
+    private int numTotalEvents;
+    private List<Pair<Event, CalculatedEnrollmentStatus>> statuses;
+
+    public GetParticipationsTransaction(String userId, int offset, int limit) {
+        this.userId = userId;
+        this.offset = offset;
+        this.limit = limit;
+    }
+
+    @Override
+    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
+        IEnrollmentAccess enrollmentAccess = DBService.getFactory().getEnrollmentAccess();
+        List<Enrollment> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
+        
+        this.numTotalEvents = enrollmentAccess.countEventsByUserId(con, userId); 
+        this.statuses = new ArrayList<Pair<Event, CalculatedEnrollmentStatus>>();
+
+        for (Enrollment enrollment : enrollments) {
+            if (enrollment == null)
+                continue;
+
+            Event event = DBService.getFactory().getEventAccess().find(con, enrollment.getEventId());
+            if (event == null)
+                continue;
+
+            CalculatedEnrollmentStatus calculatedEnrollmentStatus = EnrollmentDAOFacade.calculateEnrollmentStatus(con, userId, event); 
+            statuses.add(new Pair<Event, CalculatedEnrollmentStatus>(event, calculatedEnrollmentStatus));
+        }
+
+        return null;
+    }
+
+    public int getNumTotalEvents() { 
+        return numTotalEvents;
+    }
+
+    public List<Pair<Event, CalculatedEnrollmentStatus>> getStatuses() {
+        return this.statuses;
+    }
+}

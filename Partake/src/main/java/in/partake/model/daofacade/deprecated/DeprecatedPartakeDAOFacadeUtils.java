@@ -34,7 +34,7 @@ import com.rosaloves.bitlyj.BitlyException;
  * @author shinyak
  *
  */
-class DeprecatedPartakeDAOFacadeUtils {
+public class DeprecatedPartakeDAOFacadeUtils {
     private static final Logger logger = Logger.getLogger(DeprecatedPartakeDAOFacadeUtils.class);
     private static volatile Date bitlyRateLimitExceededTime;
 

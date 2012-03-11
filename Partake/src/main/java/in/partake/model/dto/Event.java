@@ -86,6 +86,7 @@ public class Event extends PartakeModel<Event> {
     private int revision;       // used for RSS.
 
     // begin date 順に並べる comparator 
+    // TODO: Should be purged! This should be done in DB.
     public static Comparator<Event> getComparatorBeginDateAsc() {
         return new Comparator<Event>() {
             @Override

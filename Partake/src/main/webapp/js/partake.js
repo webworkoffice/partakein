@@ -21,10 +21,9 @@
 		partake: this,
 		
 		// Gets events of account. 
-		getEvents: function(queryType, finished, offset, limit) {
+		getEvents: function(queryType, offset, limit) {
 			var arg = {
 				queryType: queryType,
-				finished: finished,
 				offset: offset,
 				limit: limit
 			};

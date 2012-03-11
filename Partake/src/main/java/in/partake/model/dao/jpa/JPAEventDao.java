@@ -71,23 +71,6 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 	}
 	
 	@Override
-	public List<Event> findDraft(PartakeConnection con, String userId) throws DAOException {
-        EntityManager em = getEntityManager(con);
-        Query q = em.createQuery("SELECT event FROM Events event WHERE event.isPreview = true");
-        q.setParameter("userId", userId);
-
-        List<Event> events = new ArrayList<Event>();
-        @SuppressWarnings("unchecked")
-        List<Event> storedList = (List<Event>) q.getResultList();
-        for (Event source : storedList) {
-            Event event = decode(source);
-            events.add(event == null ? null : event.freeze());
-        }
-
-        return events;
-	}
-
-	@Override
 	public void truncate(PartakeConnection con) throws DAOException {
 		EntityManager em = getEntityManager(con);
 		Query q = em.createQuery("DELETE FROM Events");
@@ -212,5 +195,24 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
     public long count(PartakeConnection con) throws DAOException {
         return countImpl(con, "Events");
     }
-
+    
+    @Override
+    public int countEventsByScreenName(PartakeConnection con, String screenName, EventFindCriteria criteria) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public List<Event> findByOwnerId(PartakeConnection con, String userId, EventFindCriteria criteria, int offset, int limit) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public List<Event> findByScreenName(PartakeConnection con, String screenName, EventFindCriteria criteria, int offset, int limit) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public int countEventsByOwnerId(PartakeConnection con, String userId, EventFindCriteria criteria) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
 }

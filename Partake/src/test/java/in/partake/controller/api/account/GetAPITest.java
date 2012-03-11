@@ -9,7 +9,6 @@ import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.sf.json.JSONArray;

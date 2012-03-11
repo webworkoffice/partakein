@@ -26,11 +26,13 @@
 <div class="row tabbable">
 	<div class="span3"><div class="well" style="padding: 8px 0;">
 		<ul class="nav nav-list tabs">
-			<li class="nav-header">イベント</li>
-			<li class="active"><a href="#event-owner" data-toggle="tab">管理イベント</a></li>
-			<li><a href="#event-participant" data-toggle="tab">参加予定イベント</a></li>
-			<li><a href="#event-finished" data-toggle="tab">終了イベント</a></li>
-			<li class="nav-header">ユーザー</li>
+			<li class="nav-header">管理イベント</li>
+			<li class="active"><a href="#event-owner" data-toggle="tab">主催イベント</a></li>
+			<li><a href="#event-draft" data-toggle="tab">下書き中のイベント</a></li>
+			<li><a href="#event-editor" data-toggle="tab">編集権のあるイベント</a></li>
+			<!-- <li class="nav-header">参加イベント</li>
+			<li><a href="#event-enrolled" data-toggle="tab">登録イベント</a></li> -->
+			<li class="nav-header">ユーザー設定</li>
 			<li><a id="account-link" href="#account" data-toggle="tab">アカウントリンク</a></li>
 			<li><a href="#calendar" data-toggle="tab">カレンダー</a></li>
 			<li><a href="#preference" data-toggle="tab">設定</a></li>
@@ -39,25 +41,30 @@
 	<div class="span9 tab-content">
 		<div class="tab-pane active" id="event-owner">
 			<jsp:include page="/WEB-INF/mypage/_event_table.jsp" flush="true">
-				<jsp:param name="ident" value="manager" />
-				<jsp:param name="queryType" value="manager" />
-				<jsp:param name="finished" value="all" />
+				<jsp:param name="ident" value="owner" />
+				<jsp:param name="queryType" value="owner" />
 			</jsp:include>
 		</div>
-		<div class="tab-pane" id="event-participant">
+		<div class="tab-pane" id="event-draft">
 			<jsp:include page="/WEB-INF/mypage/_event_table.jsp" flush="true">
-				<jsp:param name="ident" value="participants" />
-				<jsp:param name="queryType" value="participants" />
-				<jsp:param name="finished" value="false" />
+				<jsp:param name="ident" value="draft" />
+				<jsp:param name="queryType" value="draft" />
 			</jsp:include>
 		</div>
-		<div class="tab-pane" id="event-finished">
+		<div class="tab-pane" id="event-editor">
 			<jsp:include page="/WEB-INF/mypage/_event_table.jsp" flush="true">
-				<jsp:param name="ident" value="finished" />
-				<jsp:param name="queryType" value="participants" />
-				<jsp:param name="finished" value="true" />
+				<jsp:param name="ident" value="editor" />
+				<jsp:param name="queryType" value="editor" />
 			</jsp:include>
 		</div>
+		
+<%-- 		<div class="tab-pane" id="event-participant">
+			<jsp:include page="/WEB-INF/mypage/_event_table.jsp" flush="true">
+				<jsp:param name="ident" value="enrolled" />
+				<jsp:param name="queryType" value="enrolled" />
+			</jsp:include>
+		</div> --%>
+		
 		<div class="tab-pane" id="account">
 			<jsp:include page="/WEB-INF/mypage/_account.jsp" flush="true" />
 		</div>
