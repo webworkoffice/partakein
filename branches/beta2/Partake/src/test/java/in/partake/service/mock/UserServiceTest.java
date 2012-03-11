@@ -44,11 +44,6 @@ public class UserServiceTest extends MockServiceTestBase {
         DeprecatedUserDAOFacade.get().getUserExById(null);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void loginByOpenIDByNullId() throws DAOException {
-        DeprecatedUserDAOFacade.get().loginByOpenID(null);
-    }
-
     @Test
     public void getUserByExId() throws DAOException {
     	final String userExId = "userExId";
