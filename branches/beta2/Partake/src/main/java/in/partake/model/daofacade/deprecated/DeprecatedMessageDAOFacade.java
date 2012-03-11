@@ -437,20 +437,6 @@ public final class DeprecatedMessageDAOFacade extends DeprecatedPartakeDAOFacade
         getFactory().getEnrollmentAccess().put(con, newEnrollment);
     }
 
-    public Message getMessageById(String messageId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            Message message = factory.getDirectMessageAccess().find(con, messageId);
-            con.commit();
-
-            return message;
-        } finally {
-            con.invalidate();
-        }
-    }
-
     /**
      * message を DB に格納する。
      * DB に格納するだけで送られない。
@@ -577,28 +563,6 @@ public final class DeprecatedMessageDAOFacade extends DeprecatedPartakeDAOFacade
         factory.getEnvelopeAccess().put(con, envelope);
     }
     
-    /**
-     * message を、実際に送信する (ための queue に挿入する)。
-     *
-     * @param messageId
-     * @param senderId
-     * @param receiverId
-     * @param deadline
-     * @param postingType
-     * @throws DAOException
-     */
-    public void sendEnvelope(String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType) throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-
-        try {
-            con.beginTransaction();
-            sendEnvelope(con, messageId, senderId, receiverId, deadline, postingType);                    
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-    }
-
     private void sendEnvelope(PartakeConnection con, String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType) throws DAOException {
         PartakeDAOFactory factory = getFactory();
 

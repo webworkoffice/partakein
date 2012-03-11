@@ -1,7 +1,10 @@
 package in.partake.controller.action.mypage;
 
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import in.partake.controller.AbstractPartakeControllerTest;
-import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
+import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
 
 import org.junit.Test;
@@ -19,8 +22,9 @@ public class MypageActionTest extends AbstractPartakeControllerTest {
         
         MypageAction action = (MypageAction) proxy.getAction();
 
-        assertEquals(DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID), action.getPreference());
-        assertEquals(DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID), action.getOpenIds());
+        assertThat(action.getPreference(), is(UserPreference.getDefaultPreference(TestDataProvider.DEFAULT_USER_ID)));
+        assertThat(action.getOpenIds(), hasItem(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
+        assertThat(action.getOpenIds(), hasItem(TestDataProvider.DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER));
     }
 
     @Test

@@ -10,6 +10,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeConnectionPool;
 import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.service.DBService;
@@ -31,7 +32,7 @@ public abstract class DeprecatedPartakeDAOFacade {
     // Utility functions
 
     protected static <T> List<T> convertToList(DataIterator<T> it) throws DAOException {
-        return DeprecatedPartakeDAOFacadeUtils.convertToList(it);
+        return DAOUtil.convertToList(it);
     }
 
     protected UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {

@@ -7,6 +7,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
+import in.partake.model.dto.UserPreference;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.DBService;
@@ -186,7 +187,17 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     // ----------------------------------------------------------------------
     // DB Accessors
     
-    public List<String> loadOpenIDIdentifiers(String userId) throws DAOException {
+    protected UserPreference loadUserPreference(String userId) throws DAOException {
+        PartakeDAOFactory factory = DBService.getFactory();
+        PartakeConnection con = DBService.getPool().getConnection();
+        try {
+            return factory.getUserPreferenceAccess().find(con, userId);
+        } finally {
+            con.invalidate();
+        }        
+    }
+    
+    protected List<String> loadOpenIDIdentifiers(String userId) throws DAOException {
         PartakeDAOFactory factory = DBService.getFactory();
         PartakeConnection con = DBService.getPool().getConnection();
         try {
