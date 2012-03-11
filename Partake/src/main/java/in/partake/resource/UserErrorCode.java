@@ -88,7 +88,10 @@ public enum UserErrorCode {
     // MESSAGE
     MISSING_MESSAGE("invalid.message.missing"),
     INVALID_MESSAGE_TOOMUCH("invalid.message.toomuch"),
-    INVALID_MESSAGE_TOOLONG("invalid.message.toolong");
+    INVALID_MESSAGE_TOOLONG("invalid.message.toolong"),
+    
+    // OAUTH
+    INVALID_OAUTH_VERIFIER("invalid.oauth.verifier");
     
     // ----------------------------------------------------------------------
     private final String errorDescriptionId;
