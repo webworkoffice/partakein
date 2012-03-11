@@ -199,7 +199,7 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
     public List<Enrollment> findByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE userId = ? ORDER BY enrolledAt DESC OFFSET ? LIMIT ?",
-                new Object[] { userId });
+                new Object[] { userId, offset, limit });
 
         Postgres9IdMapper<Enrollment> idMapper = new Postgres9IdMapper<Enrollment>((Postgres9Connection) con, mapper, entityDao);
         

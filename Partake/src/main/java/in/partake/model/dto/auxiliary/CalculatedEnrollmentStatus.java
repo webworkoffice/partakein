@@ -16,8 +16,9 @@ public enum CalculatedEnrollmentStatus {
 	    this.jsonString = jsonString;
 	}
 	
-	public JSONObject toSafeJSON() {
-	    return JSONObject.fromObject(jsonString);
+	@Override
+	public String toString() {
+	    return jsonString;
 	}
 }
 

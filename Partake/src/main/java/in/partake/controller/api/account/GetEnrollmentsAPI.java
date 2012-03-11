@@ -21,7 +21,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-public class GetParticipationsAPI extends AbstractPartakeAPI {
+public class GetEnrollmentsAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -34,28 +34,26 @@ public class GetParticipationsAPI extends AbstractPartakeAPI {
         int limit = optIntegerParameter("limit", 10);
         limit = Util.ensureRange(limit, 0, 100);
 
-        // TODO: Helper.enrollmentStatus が異常なことやりすぎ
-
-        GetParticipationsTransaction transaction = new GetParticipationsTransaction(user.getId(), offset, limit);
+        GetEnrollmentsTransaction transaction = new GetEnrollmentsTransaction(user.getId(), offset, limit);
         transaction.execute(); 
 
         JSONArray statuses = new JSONArray();
         for (Pair<Event, CalculatedEnrollmentStatus> eventStatus : transaction.getStatuses()) {
             JSONObject obj = new JSONObject();
             obj.put("event", eventStatus.getFirst().toSafeJSON()); 
-            obj.put("status", eventStatus.getSecond().toSafeJSON());
+            obj.put("status", eventStatus.getSecond().toString());
             statuses.add(obj);
         }
 
         JSONObject obj = new JSONObject();
-        obj.put("numEvents", transaction.getNumTotalEvents());
-        obj.put("statuses", statuses);
+        obj.put("numTotalEvents", transaction.getNumTotalEvents());
+        obj.put("eventStatuses", statuses);
 
         return renderOK(obj);
     }
 }
 
-class GetParticipationsTransaction extends Transaction<Void> {
+class GetEnrollmentsTransaction extends Transaction<Void> {
     private String userId;
     private int offset;
     private int limit;
@@ -63,7 +61,7 @@ class GetParticipationsTransaction extends Transaction<Void> {
     private int numTotalEvents;
     private List<Pair<Event, CalculatedEnrollmentStatus>> statuses;
 
-    public GetParticipationsTransaction(String userId, int offset, int limit) {
+    public GetEnrollmentsTransaction(String userId, int offset, int limit) {
         this.userId = userId;
         this.offset = offset;
         this.limit = limit;

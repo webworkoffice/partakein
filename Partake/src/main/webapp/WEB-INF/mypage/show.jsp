@@ -30,8 +30,8 @@
 			<li class="active"><a href="#event-owner" data-toggle="tab">主催イベント</a></li>
 			<li><a href="#event-draft" data-toggle="tab">下書き中のイベント</a></li>
 			<li><a href="#event-editor" data-toggle="tab">編集権のあるイベント</a></li>
-			<!-- <li class="nav-header">参加イベント</li>
-			<li><a href="#event-enrolled" data-toggle="tab">登録イベント</a></li> -->
+			<li class="nav-header">参加イベント</li>
+			<li><a href="#event-enrolled" data-toggle="tab">登録イベント</a></li>
 			<li class="nav-header">ユーザー設定</li>
 			<li><a id="account-link" href="#account" data-toggle="tab">アカウントリンク</a></li>
 			<li><a href="#calendar" data-toggle="tab">カレンダー</a></li>
@@ -58,12 +58,11 @@
 			</jsp:include>
 		</div>
 		
-<%-- 		<div class="tab-pane" id="event-participant">
-			<jsp:include page="/WEB-INF/mypage/_event_table.jsp" flush="true">
-				<jsp:param name="ident" value="enrolled" />
-				<jsp:param name="queryType" value="enrolled" />
+ 		<div class="tab-pane" id="event-participant">
+			<jsp:include page="/WEB-INF/mypage/_enrollment_table.jsp" flush="true">
+				<jsp:param name="ident" value="enrollment" />
 			</jsp:include>
-		</div> --%>
+		</div>
 		
 		<div class="tab-pane" id="account">
 			<jsp:include page="/WEB-INF/mypage/_account.jsp" flush="true" />
