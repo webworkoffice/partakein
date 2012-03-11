@@ -592,7 +592,7 @@ public final class DeprecatedMessageDAOFacade extends DeprecatedPartakeDAOFacade
 
         try {
             con.beginTransaction();
-            sendEnvelope(messageId, senderId, receiverId, deadline, postingType);                    
+            sendEnvelope(con, messageId, senderId, receiverId, deadline, postingType);                    
             con.commit();
         } finally {
             con.invalidate();
