@@ -4,6 +4,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.fixture.impl.BinaryTestDataProvider;
+import in.partake.model.fixture.impl.CalendarLinkageTestDataProvider;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
@@ -24,6 +25,7 @@ public class PartakeTestDataProviderSet {
     private ArrayList<TestDataProvider<?>> providers;
     
     private BinaryTestDataProvider binaryDataProvider;
+    private CalendarLinkageTestDataProvider calendarDataProvider;
     private CommentTestDataProvider commentDataprovider;
     private EnrollmentTestDataProvider enrollmentProvider;
     private EventTestDataProvider eventProvider;
@@ -37,6 +39,7 @@ public class PartakeTestDataProviderSet {
         this.providers = new ArrayList<TestDataProvider<?>>();
         
         providers.add(binaryDataProvider = createBinaryTestDataProvider());
+        providers.add(calendarDataProvider = createCalendarLinkageTestDataProvider());
         providers.add(commentDataprovider = createCommentTestDataProvider());
         providers.add(enrollmentProvider = createEnrollmentTestDataProvider());
         providers.add(eventProvider = createEventTestDataProvider());
@@ -55,6 +58,10 @@ public class PartakeTestDataProviderSet {
 
     public BinaryTestDataProvider getBinaryTestDataProvider() {
         return binaryDataProvider;
+    }
+    
+    public CalendarLinkageTestDataProvider getCalendarTestDataProvider() {
+        return calendarDataProvider;
     }
     
     public CommentTestDataProvider getCommentDataProvider() {
@@ -92,7 +99,11 @@ public class PartakeTestDataProviderSet {
     private BinaryTestDataProvider createBinaryTestDataProvider() {
         return new BinaryTestDataProvider();
     }
-    
+
+    private CalendarLinkageTestDataProvider createCalendarLinkageTestDataProvider() {
+        return new CalendarLinkageTestDataProvider();
+    }
+
     private CommentTestDataProvider createCommentTestDataProvider() {
         return new CommentTestDataProvider();
     }

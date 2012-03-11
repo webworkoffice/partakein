@@ -1,7 +1,10 @@
 package in.partake.controller.api;
 
 import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.base.AbstractPartakeController;
 import in.partake.resource.Constants;
+import in.partake.resource.UserErrorCode;
+import in.partake.session.PartakeSession;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -11,7 +14,9 @@ import java.util.Locale;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
+import static org.hamcrest.Matchers.*;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 
 import com.opensymphony.xwork2.ActionProxy;
 
@@ -41,7 +46,6 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
      */
     protected JSONObject getJSON(ActionProxy proxy) throws Exception {
         String str = getJSONString(proxy);
-        System.out.println(str);
         return JSONObject.fromObject(str);
     }
 
@@ -60,6 +64,16 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("invalid", obj.get("result"));
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
+    }
+    
+    protected void assertResultInvalid(ActionProxy proxy, UserErrorCode ec) throws Exception {
+        assertResultInvalid(proxy);
+        
+        AbstractPartakeController apc = (AbstractPartakeController) proxy.getAction();
+        PartakeSession session = apc.getPartakeSession();
+        
+        assertThat(session, is(not(nullValue())));
+        assertThat(session.getLastUserErrorCode(), is(ec));
     }
     
     protected void assertResultLoginRequired(ActionProxy proxy) throws Exception {

@@ -35,6 +35,25 @@ public class SetPreferenceAPITest extends APIControllerTest {
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
     }
+    
+    @Test
+    public void testToSetPreferenceWithLoginWithoutPreference() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/account/setPreference");
+        loginAs(proxy, TestDataProvider.USER_WITHOUT_PREF_ID);
+
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "profilePublic", "false");
+        addParameter(proxy, "receivingTwitterMessage", "false");
+        addParameter(proxy, "tweetingAttendanceAutomatically", "false");        
+        proxy.execute();
+
+        assertResultOK(proxy);
+
+        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_WITHOUT_PREF_ID);
+        Assert.assertEquals(false, pref.isProfilePublic());
+        Assert.assertEquals(false, pref.isReceivingTwitterMessage());
+        Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
+    }
 
     @Test
     public void testToSetPreferenceWithLoginWithoutArgument() throws Exception {

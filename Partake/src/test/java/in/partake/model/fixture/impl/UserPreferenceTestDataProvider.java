@@ -30,5 +30,7 @@ public class UserPreferenceTestDataProvider extends TestDataProvider<UserPrefere
     public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
         IUserPreferenceAccess dao = factory.getUserPreferenceAccess();
         dao.truncate(con);
+        
+        dao.put(con, new UserPreference(DEFAULT_USER_ID, true, true, false));
     }
 }

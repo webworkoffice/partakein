@@ -19,6 +19,10 @@ public abstract class TestDataProvider<T> {
     public static final String DEFAULT_ANOTHER_USER_ID = new UUID(1, 1).toString();
     public static final String DEFAULT_ANOTHER_TWITTER_ID = "1";
     public static final String DEFAULT_ANOTHER_TWITTER_SCREENNAME = "testUser2";
+    
+    public static final String USER_WITHOUT_PREF_ID = new UUID(1, 2).toString();
+    public static final String USER_WITHOUT_PREF_TWITTER_ID = "2";
+    public static final String USER_WITHOUT_PREF_SCREENNAME = "testUser3";
 
     public static final String ADMIN_USER_ID = new UUID(1, 8).toString();
     public static final String ADMIN_USER_TWITTER_ID = "8";
@@ -89,6 +93,9 @@ public abstract class TestDataProvider<T> {
     // IMAGE_OWNED_BY_DEFAULT_USER_ID contains DEFAULT_IMAGE_ID.
     public static final String DEFAULT_IMAGE_ID = IMAGE_OWNED_BY_DEFAULT_USER_ID[0];
 
+    // Calendar Id
+    public static final String DEFAULT_CALENDAR_ID = new UUID(5, 1).toString();
+    
     // TODO: Name should be more descriptive.
     public abstract T create();
     public abstract T create(long pkNumber, String pkSalt, int objNumber);
