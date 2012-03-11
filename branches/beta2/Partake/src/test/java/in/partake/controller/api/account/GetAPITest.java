@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class AccountAPITest extends APIControllerTest {
+public class GetAPITest extends APIControllerTest {
     private final String SESSION_TOKEN_URL = "/api/account/sessionToken";
     
     @Test
