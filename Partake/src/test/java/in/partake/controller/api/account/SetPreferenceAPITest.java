@@ -18,7 +18,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
         UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
-        Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
+        Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
 
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
 
@@ -43,7 +43,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
         UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
-        Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
+        Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
 
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addValidSessionTokenToParameter(proxy);

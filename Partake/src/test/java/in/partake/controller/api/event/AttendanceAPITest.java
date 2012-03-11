@@ -17,7 +17,7 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToPresence() throws Exception {
         // 
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.ATTENDANCE_ABSENT_USER_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus()); 
         }
         
@@ -34,7 +34,7 @@ public class AttendanceAPITest extends APIControllerTest {
         
         // Check status is changed.
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
     }
@@ -43,7 +43,7 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToAbsence() throws Exception {
         // 
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
+            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus()); 
         }
         
