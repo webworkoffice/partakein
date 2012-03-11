@@ -11,6 +11,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 
 class JPAEnrollmentDao extends JPADao<Enrollment> implements IEnrollmentAccess {
@@ -87,4 +88,28 @@ class JPAEnrollmentDao extends JPADao<Enrollment> implements IEnrollmentAccess {
         return countImpl(con, "Enrollments");
     }
 
+    @Override
+    public int countEventsByUserId(PartakeConnection con, String userId) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public int countEventsByUserId(PartakeConnection con, String userId, ParticipationStatus status) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public int countParticipants(PartakeConnection con, String eventId, ParticipationStatus status) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public List<Enrollment> findByEventId(PartakeConnection con, String eventId, int offset, int limit) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public List<Enrollment> findByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
 }

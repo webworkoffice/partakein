@@ -55,6 +55,14 @@ public class Postgres9IndexDao extends Postgres9Dao {
         }
     }
     
+    public int count(Postgres9Connection con, String[] columnsForSearch, Object[] values) throws DAOException {
+        try {
+            return count(con.getConnection(), columnsForSearch, values);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }        
+    }
+    
     public Postgres9StatementAndResultSet select(Postgres9Connection con, String sql, Object[] values) throws DAOException {
         try {
             return select(con.getConnection(), sql, values);
@@ -144,6 +152,31 @@ public class Postgres9IndexDao extends Postgres9Dao {
         try {
             ps = con.prepareStatement(sql);
             ps.setString(1, value);
+            rs = ps.executeQuery();
+            
+            if (rs.next())
+                return rs.getInt(1);
+            else
+                return 0;
+        } finally {
+            close(rs);
+            close(ps);
+        }
+    }
+    
+    private int count(Connection con, String[] columnsForSearch, Object[] values) throws SQLException {
+        String[] questions = new String[columnsForSearch.length];
+        for (int i = 0; i < columnsForSearch.length; ++i)
+            questions[i] = columnsForSearch[i] + " = ?";
+        
+        String sql = "SELECT count(*) FROM " + indexTableName + " WHERE " + StringUtils.join(questions, " AND ");
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement(sql);
+            for (int i = 0; i < values.length; ++i)
+                setObject(ps, i + 1, values[i]);
             rs = ps.executeQuery();
             
             if (rs.next())
@@ -263,6 +296,8 @@ public class Postgres9IndexDao extends Postgres9Dao {
             ps.setTimestamp(nth, new Timestamp(((Date) obj).getTime())); 
         else if (obj instanceof Integer)
             ps.setInt(nth, (Integer) obj);
+        else if (obj instanceof Boolean)
+            ps.setBoolean(nth, (Boolean) obj);
         else
             throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
     }

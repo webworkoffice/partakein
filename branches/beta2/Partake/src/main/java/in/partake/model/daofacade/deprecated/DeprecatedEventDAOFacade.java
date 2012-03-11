@@ -7,7 +7,6 @@ import in.partake.model.CommentEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
-import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -228,19 +227,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         return convertToEventList(docs);
     }
 
-    public List<Event> getDraftEvents(String userId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            List<Event> events = factory.getEventAccess().findDraft(con, userId);
-            con.commit();
-            return events;
-        } finally {
-            con.invalidate();
-        }        
-    }
-    
     /**
      * get events owned by the specified user.
      * TODO: user じゃなくて user id をとるようにする
@@ -986,35 +972,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         }
     }
 
-    /**
-     * event の参加順位(何番目に参加したか)を返します。
-     */
-    public int getOrderOfEnrolledEvent(String eventId, String userId) throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            List<EnrollmentEx> enrollments = getEnrollmentExs(con, eventId);
-            EventEx event = getEventEx(con, eventId);
-            ParticipationList list = event.calculateParticipationList(enrollments);
-
-            int result = 0;
-            for (Enrollment e : list.getEnrolledParticipations()) {
-                ++result;
-                if (userId.equals(e.getUserId())) { return result; }
-            }
-            for (Enrollment e : list.getSpareParticipations()) {
-                ++result;
-                if (userId.equals(e.getUserId())) { return result; }
-            }
-            con.commit();
-
-            // could not found.
-            logger.warn("user is not enrolled to the event.");
-            return -1;
-        } finally {
-            con.invalidate();
-        }
-    }
 
     public void enroll(String userId, String eventId, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
         PartakeConnection con = getPool().getConnection();

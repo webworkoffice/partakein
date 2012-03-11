@@ -36,6 +36,8 @@ public class Enrollment extends PartakeModel<Enrollment> {
     private ModificationStatus modificationStatus;
     @Column
     private AttendanceStatus attendanceStatus;
+
+    // TODO: should be renamed to enrolledAt.
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;
     

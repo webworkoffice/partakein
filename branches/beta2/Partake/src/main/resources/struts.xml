@@ -199,6 +199,7 @@
 	<package name="account-api" namespace="/api/account" extends="partake-api-default">
 		<action name="" class="in.partake.controller.api.account.GetAPI" />
 		<action name="events" class="in.partake.controller.api.account.GetEventsAPI" />
+		<action name="participations" class="in.partake.controller.api.account.GetParticipationsAPI" />
 		<action name="images" class="in.partake.controller.api.account.GetImagesAPI" />
 		
 		<action name="removeOpenID" class="in.partake.controller.api.account.RemoveOpenIDAPI" />

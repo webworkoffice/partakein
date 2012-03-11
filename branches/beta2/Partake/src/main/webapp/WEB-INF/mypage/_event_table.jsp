@@ -12,7 +12,6 @@
 	
 	String ident = (String) request.getParameter("ident");
 	String queryType = (String) request.getParameter("queryType");
-	String finished = (String) request.getParameter("finished");
 %>
 
 <div id="<%= ident %>-whole">
@@ -37,11 +36,10 @@
 <script>
 (function() {
 	var queryType = '<%= queryType %>';
-	var finished = '<%= finished %>';
 	var ident = '<%= ident %>';
 	
-	function createTable(nthPage, participations) {
-		if (!participations || !participations.length) {
+	function createTable(nthPage, eventStatuses) {
+		if (!eventStatuses || !eventStatuses.length) {
 			$('#' + ident + '-none').show();
 			return;
 		}
@@ -50,9 +48,9 @@
 		var tbody = $('#' + ident + '-tbody');
 		tbody.empty();
 		
-		for (var i = 0; i < participations.length; ++i) {
-			var participation = participations[i];
-			var event = participation.event;
+		for (var i = 0; i < eventStatuses.length; ++i) {
+			var eventStatus = eventStatuses[i];
+			var event = eventStatus.event;
 			var tr = $('<tr></tr>');
 		    
 			if (event.isPrivate)
@@ -79,7 +77,12 @@
 	    	
 	       	{
 	       		var td = $('<td></td>');
-	       		var str = participation.numEnrolledUsers + "/" + event.capacity;
+	       		var numParticipants = eventStatus.numEnrolledUsers;
+	       		if (eventStatus.isBeforeDeadline)
+	       			numParticipants += eventStatus.numReservedUsers;
+	       		
+	       		var str = numParticipants + "/" + event.capacity;
+	       		
 	       		td.text(str);
 	       		td.appendTo(tr);
 	       	}
@@ -174,10 +177,10 @@
 	}
 	
 	function update(nthPage) {
-		partake.account.getEvents(queryType, finished, (nthPage - 1) * 10, 10)
+		partake.account.getEvents(queryType, (nthPage - 1) * 10, 10)
 		.done(function (json) {
-			createTable(nthPage, json.participations);
-			createPagenation(nthPage, json.numEvents);
+			createTable(nthPage, json.eventStatuses);
+			createPagenation(nthPage, json.numTotalEvents);
 		})
 		.fail(function (xhr) {
 			try {

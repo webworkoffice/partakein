@@ -1,12 +1,6 @@
 package in.partake.view.util;
 
 import in.partake.base.Util;
-import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
-import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
-import in.partake.model.dto.Event;
-import in.partake.model.dto.User;
-import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.Constants;
 import in.partake.session.CSRFPrevention;
 import in.partake.session.PartakeSession;
@@ -190,41 +184,6 @@ public final class Helper {
         "日", "月", "火", "水", "木", "金", "土"
     };
 
-    /** 参加ステータスを表示します */
-    // TODO: Don't call Service from here!
-    public static String enrollmentStatus(User user, Event event) {
-        try {
-            ParticipationStatus status = DeprecatedUserDAOFacade.get().getParticipationStatus(user.getId(), event.getId());
-
-            switch (status) {
-            case ENROLLED: {
-                int order = DeprecatedEventDAOFacade.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
-                if (order <= event.getCapacity() || event.getCapacity() == 0) {
-                    return "参加";
-                } else {
-                    return "補欠 (参加予定)";
-                }
-            }
-            case RESERVED: {
-                int order = DeprecatedEventDAOFacade.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
-                if (order <= event.getCapacity() || event.getCapacity() == 0) {
-                    return "仮参加";
-                } else {
-                    return "補欠 (仮参加予定)";
-                }
-            }
-            case NOT_ENROLLED:
-                return "未参加";
-            case CANCELLED:
-                return "キャンセル";
-            default:
-                return "エラー";
-            }
-        } catch (DAOException e) {
-            e.printStackTrace();
-            return "データベースエラー";
-        }
-    }   
 
     /** 日時を読みやすい形で表示します */
     public static String readableDate(Date d) {
