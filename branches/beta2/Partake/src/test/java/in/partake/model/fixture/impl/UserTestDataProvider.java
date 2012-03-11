@@ -44,7 +44,8 @@ public class UserTestDataProvider extends TestDataProvider<User> {
         dao.put(con, new User(DEFAULT_USER_ID, DEFAULT_TWITTER_ID, now, null));
         dao.put(con, new User(DEFAULT_ANOTHER_USER_ID, DEFAULT_ANOTHER_TWITTER_ID, now, null)); 
         dao.put(con, new User(ADMIN_USER_ID, ADMIN_USER_TWITTER_ID, now, null));
-
+        dao.put(con, new User(USER_WITHOUT_PREF_ID, USER_WITHOUT_PREF_TWITTER_ID, now, null));
+        
         dao.put(con, new User(EVENT_OWNER_ID, EVENT_OWNER_TWITTER_ID, now, null)); 
         dao.put(con, new User(EVENT_EDITOR_ID, EVENT_EDITOR_TWITTER_ID, now, null)); 
         dao.put(con, new User(EVENT_COMMENTOR_ID, EVENT_COMMENTOR_TWITTER_ID, now, null)); 

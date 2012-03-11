@@ -3,13 +3,18 @@ package in.partake.controller;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
+import in.partake.model.dto.CalendarLinkage;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
+import in.partake.service.DBService;
 import in.partake.service.TestDatabaseService;
 import in.partake.session.PartakeSession;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
@@ -176,5 +181,30 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     protected void assertResultError(ActionProxy proxy) throws Exception {
         // Assert.assertEquals(500, response.getStatus());
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/error"));
+    }
+    
+    // ----------------------------------------------------------------------
+    // DB Accessors
+    
+    public List<String> loadOpenIDIdentifiers(String userId) throws DAOException {
+        PartakeDAOFactory factory = DBService.getFactory();
+        PartakeConnection con = DBService.getPool().getConnection();
+        try {
+            return factory.getOpenIDLinkageAccess().findByUserId(con, userId);
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    protected String loadCalendarIdFromUser(String userId) throws DAOException {
+        PartakeConnection con = DBService.getPool().getConnection();
+        try {
+            CalendarLinkage linkage = DBService.getFactory().getCalendarAccess().findByUserId(con, userId);
+            if (linkage == null)
+                return null;
+            return linkage.getId();
+        } finally {
+            con.invalidate();
+        }
     }
 }

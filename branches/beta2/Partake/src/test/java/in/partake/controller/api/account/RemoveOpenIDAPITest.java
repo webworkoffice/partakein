@@ -1,7 +1,6 @@
 package in.partake.controller.api.account;
 
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.List;
@@ -25,11 +24,22 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
         assertResultOK(proxy);
         
         // Check the OpenID has been really removed.
-        List<String> identifiers = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID);
+        List<String> identifiers = loadOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertNotNull(identifiers);
         Assert.assertFalse(identifiers.contains(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
     }
 
+    @Test
+    public void testToRemoveOpenIDWithoutIdentifier() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
+
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
+        addValidSessionTokenToParameter(proxy);
+        
+        proxy.execute();
+        assertResultInvalid(proxy);
+    }
+    
     @Test
     public void testToRemoveOpenIDWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");

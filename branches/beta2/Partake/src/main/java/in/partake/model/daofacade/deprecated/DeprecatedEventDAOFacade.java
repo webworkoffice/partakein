@@ -892,30 +892,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
     // ----------------------------------------------------------------------
     // Comments
 
-    public void addComment(Comment embryo) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-
-            embryo.setId(factory.getCommentAccess().getFreshId(con));
-            factory.getCommentAccess().put(con, embryo);
-
-            // TODO: コメント消したときにこれも消したいか？　まずいコメントが feed され続けるのは問題となりうるか？
-            {
-                IEventActivityAccess eaa = factory.getEventActivityAccess();
-                UserEx user = getUserEx(con, embryo.getUserId());
-                String title = user.getScreenName() + " さんがコメントを投稿しました";
-                String content = embryo.getComment();
-                eaa.put(con, new EventActivity(eaa.getFreshId(con), embryo.getEventId(), title, content, embryo.getCreatedAt()));
-            }
-
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-    }
-
     public List<CommentEx> getCommentsExByEvent(String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
