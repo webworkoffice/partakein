@@ -1,17 +1,21 @@
 package in.partake.controller.api.account;
 
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -48,34 +52,32 @@ public class GetAPITest extends APIControllerTest {
     @Test
     public void testToGetWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/");
-
-        final String userId = TestDataProvider.DEFAULT_USER_ID;
-        
-        loginAs(proxy, userId);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertResultOK(proxy);
 
+        // Check JSON
+        
         JSONObject obj = getJSON(proxy);
-        Assert.assertEquals(userId, obj.get("id"));
-
+        assertThat((String) obj.get("id"), is(TestDataProvider.DEFAULT_USER_ID));
+        
         // TODO: Checks Twitter?
         
         // Checks UserPreference.
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         JSONObject prefObj = obj.getJSONObject("preference");
+        UserPreference pref = UserPreference.getDefaultPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(pref.isProfilePublic(), prefObj.getBoolean("profilePublic"));
         Assert.assertEquals(pref.isReceivingTwitterMessage(), prefObj.getBoolean("receivingTwitterMessage"));
         Assert.assertEquals(pref.tweetsAttendanceAutomatically(), prefObj.getBoolean("tweetingAttendanceAutomatically"));
 
         // Checks OpenIds
-        List<String> openIds = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(userId);
-        Collections.sort(openIds);
-        
         JSONArray array = obj.getJSONArray("openId");
-        Assert.assertEquals(openIds.size(), array.size());
-        for (int i = 0; i < openIds.size(); ++i)
-            Assert.assertEquals(openIds.get(i), array.getString(i)); 
+        List<String> openIds = new ArrayList<String>();
+        for (int i = 0; i < array.size(); ++i)
+            openIds.add(array.getString(i));
+        assertThat(openIds, hasItem(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
+        assertThat(openIds, hasItem(TestDataProvider.DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER));
     }
     
     @Test
@@ -93,14 +95,14 @@ public class GetAPITest extends APIControllerTest {
         UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
-        Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
+        Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
         
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         addValidSessionTokenToParameter(proxy);
         addParameter(proxy, "profilePublic", "false");
         addParameter(proxy, "receivingTwitterMessage", "false");
-        addParameter(proxy, "tweetingAttendanceAutomatically", "false");        
+        addParameter(proxy, "tweetingAttendanceAutomatically", "true");        
         proxy.execute();
         
         assertResultOK(proxy);
@@ -108,7 +110,7 @@ public class GetAPITest extends APIControllerTest {
         pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(false, pref.isProfilePublic());
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
-        Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
+        Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
     }
     
     @Test
@@ -118,7 +120,7 @@ public class GetAPITest extends APIControllerTest {
         UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
-        Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
+        Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
         
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addValidSessionTokenToParameter(proxy);
@@ -129,7 +131,7 @@ public class GetAPITest extends APIControllerTest {
         pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
-        Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
+        Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
     }
     
     @Test
@@ -163,7 +165,7 @@ public class GetAPITest extends APIControllerTest {
         assertResultOK(proxy);
         
         // Check the OpenID has been really removed.
-        List<String> identifiers = DeprecatedUserDAOFacade.get().getOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID);
+        List<String> identifiers = loadOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID); 
         Assert.assertNotNull(identifiers);
         Assert.assertFalse(identifiers.contains(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
     }

@@ -127,24 +127,6 @@ public final class DeprecatedUserDAOFacade extends DeprecatedPartakeDAOFacade {
     }
 
     // ----------------------------------------------------------------------
-    // OpenID Authentication
-
-    public List<String> getOpenIDIdentifiers(String userId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            List<String> result = factory.getOpenIDLinkageAccess().findByUserId(con, userId);
-            con.commit();
-
-            return result;
-        } finally {
-            con.invalidate();
-        }
-    }
-
-
-    // ----------------------------------------------------------------------
     // Event Participation
 
     // TODO: should this be in UserService or EventService? Hmmm... I think this is suitable to EventService.

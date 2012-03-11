@@ -73,7 +73,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
         pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
-        Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
+        Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
     }
 
     @Test
