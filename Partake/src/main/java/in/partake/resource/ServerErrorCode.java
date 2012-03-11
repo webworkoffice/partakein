@@ -37,6 +37,8 @@ public enum ServerErrorCode {
     
     BITLY_ERROR("error.bitly"),
     
+    OPENID_ERROR("error.opneid"),
+    
     LUCENE_INITIALIZATION_FAILURE("error.lucene.initialization_failure");
     
     // ----------------------------------------------------------------------

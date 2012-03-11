@@ -62,9 +62,6 @@ public final class Constants {
 
     public static final String ATTR_CURRENT_URL = "CURRENT_URL";
     
-    public static final String ATTR_OPENID_DISCOVERY_INFORMATION = "OPENID_DISC";
-    public static final String ATTR_OPENID_PURPOSE = "OPENID_PURPOSE";
-
     public static final String ATTR_WARNING_MESSAGE = "WARNING_MESSAGE";
     public static final String ATTR_ERROR_MESSAGE = "ERROR_MESSAGE";
 

@@ -1,7 +1,6 @@
 package in.partake.controller;
 
 import in.partake.controller.action.AbstractPartakeAction;
-import in.partake.controller.base.AbstractPartakeController;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;

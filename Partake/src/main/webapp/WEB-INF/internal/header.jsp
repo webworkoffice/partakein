@@ -86,25 +86,25 @@
   		
   		<p>次の ID を使ってログイン</p>
   		<form method="post" action="/auth/loginByOpenID" class="inline-block">
-  			<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
+  			<input type="hidden" name="openidIdentifier" value="https://www.google.com/accounts/o8/id" />
 			<input type="submit" value="Google" />
   		</form>
   		<form method="post" action="/auth/loginByOpenID" class="inline-block">
-  			<input type="hidden" name="openid_identifier" value="https://mixi.jp" />
+  			<input type="hidden" name="openidIdentifier" value="https://mixi.jp" />
 			<input type="submit" value="Mixi" />
   		</form>
   		<form method="post" action="/auth/loginByOpenID" class="inline-block">
-  			<input type="hidden" name="openid_identifier" value="http://yahoo.co.jp" />
+  			<input type="hidden" name="openidIdentifier" value="http://yahoo.co.jp" />
 			<input type="submit" value="Yahoo Japan" />
   		</form>
   		<form method="post" action="/auth/loginByOpenID" class="inline-block">
-  			<input type="hidden" name="openid_identifier" value="http://livedoor.com/" />
+  			<input type="hidden" name="openidIdentifier" value="http://livedoor.com/" />
 			<input type="submit" value="Livedoor" />
   		</form>
 
 		<p>はてな ID でログイン</p>
   		<form name="loginByHatenaForm" method="post" action="/auth/loginByOpenID" style="display:none">
-  			<input type="hidden" id="login-hatena-openid-identifier" name="openid_identifier" value="http://www.hatena.ne.jp/" />
+  			<input type="hidden" id="login-hatena-openid-identifier" name="openidIdentifier" value="http://www.hatena.ne.jp/" />
 			<input type="submit" value="はてなでログイン" />
   		</form>
   		<div>
@@ -122,7 +122,7 @@
 
 		<p>URL を使ってログイン</p>
   		<form method="post" action="/auth/loginByOpenID">
-  			<input type="text" name="openid_identifier" value="" placeholder="http:// Open ID URL を入力" />
+  			<input type="text" name="openidIdentifier" value="" placeholder="http:// Open ID URL を入力" />
 			<input type="submit" value="OpenID でログイン" />
   		</form>  		
   	</div>

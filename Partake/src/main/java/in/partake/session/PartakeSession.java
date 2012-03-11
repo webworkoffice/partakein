@@ -10,6 +10,8 @@ import in.partake.resource.UserErrorCode;
  */
 public class PartakeSession {
     private CSRFPrevention csrfPrevention;
+    private OpenIDLoginInformation openIDLoginInfomation;
+    
     private ServerErrorCode lastServerError;
     private UserErrorCode lastUserError;
     
@@ -23,6 +25,13 @@ public class PartakeSession {
     
     public CSRFPrevention getCSRFPrevention() {
         return this.csrfPrevention;
+    }
+    
+    public synchronized OpenIDLoginInformation ensureOpenIDLoginInformation() {
+        if (openIDLoginInfomation == null)
+            openIDLoginInfomation = new OpenIDLoginInformation();
+        
+        return openIDLoginInfomation;
     }
     
     public void setLastServerError(ServerErrorCode ec) {
