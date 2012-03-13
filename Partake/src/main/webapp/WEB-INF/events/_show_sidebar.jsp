@@ -36,6 +36,7 @@
 		<h3><img src="<%= request.getContextPath() %>/images/gear.png"/>イベント管理</h3>
 		<ul>
 			<li><a href="/events/edit/<%= h(event.getId()) %>">イベントを編集</a></li>
+			<li><a href="/events/new?eventId=<%= h(event.getId()) %>">このイベントをコピー</a></li>
 			<% if (event.hasPermission(user, UserPermission.EVENT_REMOVE)) { %>
 			    <li><a data-toggle="modal" href="#event-delete-dialog">イベントを削除</a></li>
 			<% } %>
