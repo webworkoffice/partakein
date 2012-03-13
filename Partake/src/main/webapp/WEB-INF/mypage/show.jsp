@@ -35,7 +35,7 @@
 			<li class="nav-header">ユーザー設定</li>
 			<li><a id="account-link" href="#account" data-toggle="tab">アカウントリンク</a></li>
 			<li><a href="#calendar" data-toggle="tab">カレンダー</a></li>
-			<li><a href="#preference" data-toggle="tab">設定</a></li>
+			<li><a href="#preference" data-toggle="tab">各種設定</a></li>
 		</ul>
 	</div></div>
 	<div class="span9 tab-content">

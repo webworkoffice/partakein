@@ -1,3 +1,4 @@
+<%@page import="in.partake.controller.action.event.AbstractEventEditAction"%>
 <%@page import="java.util.Date"%>
 <%@page import="in.partake.base.TimeUtil"%>
 <%@page import="in.partake.controller.action.AbstractPartakeAction"%>
@@ -12,31 +13,29 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <%
-	EventEx event = null;
-	if (request.getAttribute(Constants.ATTR_ACTION) instanceof EventEditAction) {
-		EventEditAction action = (EventEditAction) request.getAttribute(Constants.ATTR_ACTION);
-		event = action.getEvent();
-	}
+	AbstractEventEditAction action = (AbstractEventEditAction) request.getAttribute(Constants.ATTR_ACTION);
+	EventEx event = action.getEvent(); 
+	assert event != null;
 %>
 
 <form id="event-form" class="form-horizontal">
 
 <input type="hidden" id="draft" name="draft" value="true" />
-<% if (event != null) { %>
+<% if (event.getId() != null) { %>
 	<input type="hidden" name="eventId" value="<%= h(event.getId()) %>" />
 <% } %>
 
 <div id="title" class="control-group">
     <label class="control-label" for="title">タイトル <span class="label label-important">必須</span></label>
     <div class="controls">
-        <input type="text" name="title" class="span7" placeholder="タイトル" value="<%= event != null ? h(event.getTitle()) : "" %>" />
+        <input type="text" name="title" class="span7" placeholder="タイトル" value="<%= h(event.getTitle())  %>" />
         <p class="help-block">イベントのタイトルです。100 文字以内で記述します。</p>
     </div>
 </div>
 <div id="summary" class="control-group">
     <label class="control-label" for="summary">概要</label>
     <div class="controls">
-    	<input type="text" name="summary" class="span7" placeholder="概要" value="<%= event != null ? h(event.getSummary()) : "" %>"/>
+    	<input type="text" name="summary" class="span7" placeholder="概要" value="<%= h(event.getSummary()) %>"/>
         <p class="help-block">イベントを一言で表す概要です。100 文字以内で記述します。</p>
     </div>
 </div>
@@ -49,7 +48,7 @@
 		<% } %>
 		</select>
 		<script>
-		<% if (event != null && event.getCategory() != null && EventCategory.isValidCategoryName(event.getCategory())) { %>
+		<% if (event.getCategory() != null && EventCategory.isValidCategoryName(event.getCategory())) { %>
 			$('category').val('<%= h(event.getCategory()) %>');
 		<% } else { %>
 			$('category').val('<%= h(EventCategory.CATEGORIES.get(0).getKey()) %>');
@@ -60,7 +59,7 @@
 <div id="description" class="control-group">
 	<label class="control-label" for="description">説明 <span class="label label-important">必須</span></label>
 	<div class="controls">
-		<textarea name="description"><%= event != null ? Helper.cleanupHTML(event.getDescription()) : "" %></textarea>
+		<textarea name="description"><%= Helper.cleanupHTML(event.getDescription()) %></textarea>
 		<p class="help-block">イベントの説明を記述します。(HTML などを含めて50000文字まで)</p>
 	</div>
 </div>
@@ -69,7 +68,7 @@
     <div class="controls form-inline">
        	<input type="text" id="beginDataInput" name="beginDate" class="span2" 
        	       placeholder="YYYY-MM-DD HH:MM"
-       	       value="<%= event != null ? TimeUtil.formatForEvent(event.getBeginDate()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
+       	       value="<%= TimeUtil.formatForEvent(event.getBeginDate()) %>" />
 	</div>	
 	<script>
 	$('#beginDataInput').datetimepicker({
@@ -81,14 +80,14 @@
     <label class="control-label">終了日時</label>
     <div class="controls">				
 		<label class="checkbox">
-			<input type="checkbox" id="usesEndDate" name="usesEndDate" <%= event != null && event.getEndDate() != null ? "checked" : "" %>/>
+			<input type="checkbox" id="usesEndDate" name="usesEndDate" <%= event.getEndDate() != null ? "checked" : "" %>/>
 			終了日時を設定する
         </label>
 	</div>
 	<div class="controls form-inline">
        	<input type="text" id="endDataInput" name="endDate" class="span2"
 			   placeholder="YYYY-MM-DD HH:MM"
-       		   value="<%= event != null && event.getEndDate() != null ? TimeUtil.formatForEvent(event.getEndDate()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
+       		   value="<%= event.getEndDate() != null ? TimeUtil.formatForEvent(event.getEndDate()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
     </div>
 	<script>
 	$('#endDataInput').datetimepicker({
@@ -109,14 +108,14 @@
     <label class="control-label">申込締切</label>
     <div class="controls">
 		<label class="checkbox">
-			<input type="checkbox" id="usesDeadline" name="usesDeadline" <%= event != null && event.getDeadline() != null ? "checked" : "" %>/>
+			<input type="checkbox" id="usesDeadline" name="usesDeadline" <%= event.getDeadline() != null ? "checked" : "" %>/>
 			締め切りを設定する
        	</label>
 	</div>
 	<div class="controls form-inline">
        	<input type="text" id="deadlineInput" name="deadline" class="span2"
        	       placeholder="YYYY-MM-DD HH:MM"
-       		   value="<%= event != null  && event.getDeadline() != null? TimeUtil.formatForEvent(event.getDeadline()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
+       		   value="<%= event.getDeadline() != null? TimeUtil.formatForEvent(event.getDeadline()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
 		<p class="help-block"> 締め切り以後は参加／不参加が変更できなくなります。設定しない場合、開始日時が締め切りとなります。</p>
 	</div>
 	<script>
@@ -137,7 +136,7 @@
 <div id="capacity" class="control-group">
    	<label class="control-label">定員</label>
    	<div class="controls">
-		<input type="text" name="capacity" class="span7" value="<%= event != null ? String.valueOf(event.getCapacity()) : "" %>"/>
+		<input type="text" name="capacity" class="span7" value="<%= String.valueOf(event.getCapacity()) %>"/>
 		<p class="help-block">定員を超える参加表明者は補欠者として扱われます。0 をいれると定員なしの意味になります。</p>
 	</div>
 </div>
@@ -145,14 +144,14 @@
 <div id="foreImageId" class="control-group">
 	<label class="control-label" for="foreImage">掲載画像</label>
 	<div class="controls form-inline">
-		<label class="checkbox"><input id="fore-image-checkbox" type="checkbox" name="foreImage" <%= event != null && event.getForeImageId() != null ? "checked" : "" %>/>掲載する</label>
-		<input type="hidden" id="fore-image-id-input" name="foreImageId" value="<%= event != null && event.getForeImageId() != null ? event.getForeImageId() : "" %>" />
+		<label class="checkbox"><input id="fore-image-checkbox" type="checkbox" name="foreImage" <%= event.getForeImageId() != null ? "checked" : "" %>/>掲載する</label>
+		<input type="hidden" id="fore-image-id-input" name="foreImageId" value="<%= event.getForeImageId() != null ? event.getForeImageId() : "" %>" />
 		<p class="help-block">画像を設定できます。画像は上部に掲載されます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<div id="fore-image-chooser" class="controls" style="display:none">
 		<ul class="thumbnails"><li class="span2">
 		    <img id="selected-fore-image"
-	        	 src="<%= event != null && event.getForeImageId() != null ? "/images/" + event.getForeImageId() : "/images/no-image.png" %>"
+	        	 src="<%= event.getForeImageId() != null ? "/images/" + event.getForeImageId() : "/images/no-image.png" %>"
 	             alt="">
         </li></ul>
         <p><input id="select-new-foreground-image" type="button" class="btn" value="新しく画像を選択します" /></p>
@@ -188,14 +187,14 @@
 <div id="backImageId" class="control-group">
    	<label class="control-label" for="backImage">背景画像</label>
 	<div class="controls form-inline">
-		<label class="checkbox"><input id="back-image-checkbox" type="checkbox" name="backImage" <%= event != null && event.getBackImageId() != null ? "checked" : "" %>/>掲載する</label>
-		<input type="hidden" id="back-image-id-input" name="backImageId" value="<%= event != null && event.getBackImageId() != null ? event.getBackImageId() : "" %>" />
+		<label class="checkbox"><input id="back-image-checkbox" type="checkbox" name="backImage" <%= event.getBackImageId() != null ? "checked" : "" %>/>掲載する</label>
+		<input type="hidden" id="back-image-id-input" name="backImageId" value="<%= event.getBackImageId() != null ? event.getBackImageId() : "" %>" />
 		<p class="help-block">画像を設定できます。画像は上部に背景にされます。(png, gif, jpeg 画像のみが送信できます)</p>
 	</div>
 	<div id="back-image-chooser" class="controls" style="display:none">
 		<ul class="thumbnails"><li class="span2">
 	        <img id="selected-back-image"
-	        	 src="<%= event != null && event.getBackImageId() != null ? "/images/" + event.getBackImageId() : "/images/no-image.png" %>"
+	        	 src="<%= event.getBackImageId() != null ? "/images/" + event.getBackImageId() : "/images/no-image.png" %>"
 	             alt="">
         </li></ul>
         <p><input id="select-new-background-image" type="button" class="btn" value="新しく画像を選択します" /></p>
@@ -230,28 +229,28 @@
 <div id="place" class="control-group">
    	<label class="control-label">会場</label>
     <div class="controls">
-    	<input type="text" name="place" class="span7" value="<%= event != null ? h(event.getPlace()) : "" %>" />
+    	<input type="text" name="place" class="span7" value="<%= h(event.getPlace()) %>" />
     	<p class="help-block">会場名を設定します。</p>
     </div>
 </div>
 <div id="address" class="control-group">
    	<label class="control-label">住所</label>
    	<div class="controls">
-   		<input type="text" name="address" class="span7" value="<%= event != null ? h(event.getAddress()) : "" %>"/>
+   		<input type="text" name="address" class="span7" value="<%= h(event.getAddress()) %>"/>
    		<p class="help-block">住所を正確に入力すると、google の地図を表示できます。</p>
    	</div>
 </div>
 <div id="url" class="control-group">
    	<label class="control-label">URL</label>
   	<div class="controls">
-   		<input type="text" name="url" class="span7" value="<%= event != null ? h(event.getUrl()) : "" %>" />
+   		<input type="text" name="url" class="span7" value="<%= h(event.getUrl()) %>" />
    		<p class="help-block">参考 URL を設定します。</p>
    	</div>
 </div>
 <div id="hashTag" class="control-group">
    	<label class="control-label">ハッシュタグ</label>
    	<div class="controls">
-   		<input type="text" name="hashTag" class="span7" value="<%= event != null ? h(event.getHashTag()) : "" %>" />
+   		<input type="text" name="hashTag" class="span7" value="<%= h(event.getHashTag()) %>" />
 		<p class="help-block">twitter で用いる公式ハッシュタグを設定できます。# から始まる英数字、日本語、アンダースコアなどを含む文字列が使用できます。</p>
    	</div>
 </div>
@@ -263,14 +262,14 @@
 <div id="secret" class="control-group">
 	<label for="secret" class="control-label">非公開設定</label>
 	<div class="controls">
-		<label class="checkbox"><input type="checkbox" name="secret" <%= event != null && event.isPrivate() ? "checked" : "" %> />非公開にする</label>
+		<label class="checkbox"><input type="checkbox" name="secret" <%= event.isPrivate() ? "checked" : "" %> />非公開にする</label>
 		<p class="help-block">非公開設定にすると、管理者以外の方はイベントの閲覧にパスコードが必要になります。</p>
 	</div>
 </div>
 <div id="passcode" class="control-group">
 	<label for="passcode" class="control-label">パスコード</label>
 	<div class="controls">
-		<input type="text" name="passcode" value="<%= event != null ? h(event.getPasscode()) : "" %>"/>
+		<input type="text" name="passcode" value="<%= h(event.getPasscode()) %>"/>
 	</div>
 </div>
 <script>
@@ -343,7 +342,7 @@ $('#secret').change(checkPasscode);
 <div id="editors" class="control-group">
 	<label for="editors" class="control-label">編集者</label>
 	<div class="controls">
-    	<input type="text" name="editors" class="span7" value="<%= event != null ? h(event.getManagerScreenNames()) : ""%>"/>
+    	<input type="text" name="editors" class="span7" value="<%= h(event.getManagerScreenNames()) %>"/>
         <p class="help-block">自分以外にも編集者を指定できます。twitter のショートネームをコンマ区切りで列挙してください。編集者はイベント削除以外のことを行うことが出来ます。</p>
         <p class="help-block">例： user1, user2, user3</p>
 	</div>

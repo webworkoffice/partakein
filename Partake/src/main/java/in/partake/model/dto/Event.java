@@ -3,6 +3,7 @@ package in.partake.model.dto;
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 
@@ -107,7 +108,32 @@ public class Event extends PartakeModel<Event> {
     // ----------------------------------------------------------------------
     // ctors
 
-    public Event() {        
+    public Event() {
+        this.id = null;
+        this.shortId = null;
+        this.title = "";
+        this.summary = "";
+        this.category = EventCategory.CATEGORIES.get(0).getKey();
+        this.deadline = null;
+        this.beginDate = TimeUtil.oneDayAfter(TimeUtil.getCurrentDate());
+        this.endDate = null;
+        this.capacity = 0;
+        this.url = "";
+        this.place = "";
+        this.address = "";
+        this.description = "";
+        this.hashTag = "";
+        this.ownerId = "";
+        this.managerScreenNames = "";
+        this.foreImageId = null;
+        this.backImageId = null;
+        this.isPrivate = false;
+        this.passcode = null;
+        this.isPreview = true;
+        this.isRemoved = false;
+        this.createdAt = TimeUtil.getCurrentDate();
+        this.modifiedAt = null;
+        this.revision = 1;
     }
 
     public Event(Event event) {
