@@ -90,6 +90,9 @@ public enum UserErrorCode {
     INVALID_MESSAGE_TOOMUCH("invalid.message.toomuch"),
     INVALID_MESSAGE_TOOLONG("invalid.message.toolong"),
     
+    // ENROLLMENT
+    INVALID_MISSING_VIP("invalid.enrollment.vip.missing"),
+    
     // OAUTH
     INVALID_OAUTH_VERIFIER("invalid.oauth.verifier");
     

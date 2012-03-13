@@ -788,30 +788,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         }
     }
 
-    /**
-     * eventId に参加する userId を VIP 待遇にする。
-     * @param eventId
-     * @param userId
-     * @return
-     * @throws DAOException
-     */
-    public boolean makeAttendantVIP(String eventId, String userId, boolean vip) throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
-        try {
-            con.beginTransaction();
-            Enrollment enrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
-            if (enrollment == null) { return false; }
-            Enrollment newEnrollment = new Enrollment(enrollment);
-            newEnrollment.setVIP(vip);
-            factory.getEnrollmentAccess().put(con, newEnrollment);
-            con.commit();
-            return true;
-        } finally {
-            con.invalidate();
-        }
-    }
-
     public Enrollment findEnrollment(String eventId, String userId) throws DAOException {
         PartakeConnection con = getPool().getConnection();
         PartakeDAOFactory factory = getFactory();

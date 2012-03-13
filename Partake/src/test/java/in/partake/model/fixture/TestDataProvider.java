@@ -44,6 +44,10 @@ public abstract class TestDataProvider<T> {
     public static final String EVENT_ENROLLED_USER_TWITTER_ID = "40";
     public static final String EVENT_ENROLLED_USER_TWITTER_SCREENNAME = "eventEnrolledUser";
 
+    public static final String EVENT_VIP_ENROLLED_USER_ID = new UUID(1, 41).toString();
+    public static final String EVENT_VIP_ENROLLED_USER_TWITTER_ID = "41";
+    public static final String EVENT_VIP_ENROLLED_USER_TWITTER_SCREENNAME = "eventVipEnrolledUser";
+    
     public static final String EVENT_RESERVED_USER_ID = new UUID(1, 50).toString();
     public static final String EVENT_RESERVED_USER_TWITTER_ID = "50";
     public static final String EVENT_RESERVED_USER_TWITTER_SCREENNAME = "eventReservedUser";

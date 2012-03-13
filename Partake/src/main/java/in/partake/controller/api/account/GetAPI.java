@@ -24,12 +24,8 @@ public class GetAPI extends AbstractPartakeAPI {
         transaction.execute();
         
         JSONObject obj = user.toSafeJSON();
-        
-        if (transaction.getPreference() != null)
-            obj.put("preference", transaction.getPreference().toSafeJSON());
-        if (transaction.getOpenIds() != null)
-            obj.put("openId", transaction.getOpenIds());
-
+        obj.put("preference", transaction.getPreference().toSafeJSON());
+        obj.put("openId", transaction.getOpenIds());
         return renderOK(obj);
     }
 }
