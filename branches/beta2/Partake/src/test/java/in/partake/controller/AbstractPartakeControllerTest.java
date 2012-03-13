@@ -7,7 +7,9 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.UserPreference;
+import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.DBService;
@@ -214,6 +216,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
             if (linkage == null)
                 return null;
             return linkage.getId();
+        } finally {
+            con.invalidate();
+        }
+    }
+    
+    protected Enrollment loadEnrollment(String userId, String eventId) throws DAOException {
+        PartakeConnection con = DBService.getPool().getConnection();
+        try {
+            return DBService.getFactory().getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
         } finally {
             con.invalidate();
         }

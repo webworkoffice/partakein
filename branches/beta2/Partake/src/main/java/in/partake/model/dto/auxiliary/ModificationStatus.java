@@ -2,6 +2,10 @@ package in.partake.model.dto.auxiliary;
 
 /**
  * 最後に行われたParticipationStatusの変更内容を表す
+ * 
+ * TODO: ENROLLED, NOT_ENROLLED という名前はよくない。別の名前を考えよう。
+ * ELIGIBLE, NOT_ELIGIBLE あたりか？
+ * それにともない、ModificationStatus という名前も変更する必要がある。
  */
 public enum ModificationStatus {
 	/**　前回までは正式な参加者であると system はみなしていた　*/ 

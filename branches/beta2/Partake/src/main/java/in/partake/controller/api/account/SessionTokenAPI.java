@@ -2,7 +2,6 @@ package in.partake.controller.api.account;
 
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.dao.DAOException;
-import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.session.PartakeSession;
 import net.sf.json.JSONObject;
@@ -16,11 +15,8 @@ public class SessionTokenAPI extends AbstractPartakeAPI {
         if (session == null)
             return renderInvalid(UserErrorCode.MISSING_SESSION);
 
-        if (session.getCSRFPrevention() == null)
-            return renderError(ServerErrorCode.NO_CSRF_PREVENTION);
-
-        if (session.getCSRFPrevention().getSessionToken() == null)
-            return renderError(ServerErrorCode.NO_CREATED_SESSION_TOKEN);
+        assert session.getCSRFPrevention() != null;
+        assert session.getCSRFPrevention().getSessionToken() != null;
 
         JSONObject obj = new JSONObject();
         obj.put("token", session.getCSRFPrevention().getSessionToken());

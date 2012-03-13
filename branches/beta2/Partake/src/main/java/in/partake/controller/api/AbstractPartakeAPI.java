@@ -136,8 +136,13 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
     }
 
     protected String renderInvalid(UserErrorCode ec, JSONObject errorParams, Throwable e) {
+        assert ec != null;
+        
         if (e != null)
             logger.info("renderInvalid", e);
+        
+        if (getPartakeSession() != null)
+            getPartakeSession().setLastUserError(ec);
         
         JSONObject obj = new JSONObject();
         obj.put("result", "invalid");
