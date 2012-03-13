@@ -39,6 +39,9 @@ body {
 .span1-half{width:100px;}
 .span2-half{width:180px;}
 
+input.span1-half,textarea.span1-half,.uneditable-input.span1-half{width:90px;}
+input.span2-half,textarea.span2-half,.uneditable-input.span2-half{width:170px;}
+
 .well .span1{width:20px;}
 .well .span-onehalf{width:60px;}
 .well .span2{width:100px;}

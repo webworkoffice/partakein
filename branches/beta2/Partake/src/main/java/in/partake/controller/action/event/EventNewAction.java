@@ -1,15 +1,21 @@
 package in.partake.controller.action.event;
 
 import in.partake.base.PartakeException;
-import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.model.EventEx;
+import in.partake.model.EventRelationEx;
+import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dto.Event;
 
-public class EventNewAction extends AbstractPartakeAction {
+import java.util.ArrayList;
+
+public class EventNewAction extends AbstractEventEditAction {
     private static final long serialVersionUID = 1L;
     
     @Override
     protected String doExecute() throws DAOException, PartakeException {
-        ensureLogin();
+        UserEx user = ensureLogin();        
+        event = new EventEx(new Event(), user, null, null, new ArrayList<EventRelationEx>());
         return render("events/new.jsp");
     }
 }

@@ -38,7 +38,7 @@ import com.opensymphony.xwork2.ActionProxy;
 public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
     @BeforeClass
-    public static void setUpOnce() {
+    public static void setUpOnce() throws Exception {
         // TODO: Should share the code with AbstractConnectionTestCaseBase.
         PartakeProperties.get().reset("unittest");
         TestDatabaseService.initialize();

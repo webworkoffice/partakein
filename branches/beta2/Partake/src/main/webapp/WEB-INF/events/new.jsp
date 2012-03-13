@@ -13,25 +13,28 @@
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <div class="page-header">
+	<div class="spinner-container pull-right">
+		<input id="event-create-form-save" type="button" class="btn btn-primary span1-half" value="保存" />
+		<input id="event-create-form-publish" type="button" class="btn btn-danger span1-half" value="公開" />
+	</div>
 	<h1>イベントを作成します</h1>
+	<script>
+	$('#event-create-form-save').popover({
+		placement: 'bottom',
+		title: 'イベントを保存します',
+		content: 'イベントをドラフトとして保存します。保存しただけではまだ公開されません。'
+	});
+	$('#event-create-form-publish').popover({
+		placement: 'bottom',
+		title: 'イベントを公開します',
+		content: 'イベントを公開して、他の人が参加できるようにします。'
+	});
+	</script>
 </div>
 
 <div class="row">
 	<div class="span9">
 		<jsp:include page="/WEB-INF/events/_edit_innerform.jsp" />
-	</div>
-	<div class="span3">
-		<div class="span3 fixed well">
-			<div class="spinner-container">
-				<input id="event-create-form-save" type="button" class="btn btn-primary span3" value="イベントを保存する" />
-			</div>
-			<p class="help-block">イベントをドラフトとして保存します。保存しただけではまだ公開されません。</p>
-			<p></p>
-			<div class="spinner-container">
-				<input id="event-create-form-publish" type="button" class="btn btn-danger span3" value="イベントを公開する" />
-			</div>				
-			<p class="help-block">イベントを公開して、他の人が参加できるようにします。</p>
-		</div>
 	</div>
 </div>
 
