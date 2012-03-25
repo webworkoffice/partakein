@@ -1,5 +1,6 @@
 package in.partake.resource;
 
+
 /**
  * UserErrorCode describes why the user request is invalid.
  * @author shinyak
@@ -7,20 +8,20 @@ package in.partake.resource;
  */
 public enum UserErrorCode {
     // TODO: 表記を揃える。invalid.<type>.<reason> に固定すること。
-    
+
     //
     UNKNOWN_USER_ERROR("invalid.unknown"),
     INTENTIONAL_USER_ERROR("invalid.intentional"),
     UNEXPECTED_REQUEST("invalid.request.unexpected"),
-    
-    // BASE    
+
+    // BASE
     INVALID_ARGUMENT("invalid.argument"),
     INVALID_PARAMETERS("invalid.parameters"),
     INVALID_LOGIN_REQUIRED("invalid.login", 401),
     INVALID_PROHIBITED("invalid.prohibited", 403),
     INVALID_NOTFOUND("invalid.notfound", 404),
     INVALID_NONMULTIPART_REQUEST("invalid.request.nonmultipart"),
-    
+
     // EVENT
     INVALID_EVENT_ID("invalid.event.id"),
     MISSING_EVENT_ID("invalid.event.id.missing"),
@@ -32,10 +33,10 @@ public enum UserErrorCode {
     INVALID_ENROLL_TIMEOVER("invalid.event.enroll.timeover"),
     INVALID_ENROLL_STATUS("invalid.event.enroll.status"),
     INVALID_ENROLL_REQUIRED("invalid.event.enroll.required"),
-    
+
     INVALID_ATTENDANT_EDIT("invalid.attendant.edit"),
     EVENT_ALREADY_PUBLISHED("invalid.event.publish.already"),
-    
+
     // USER
     INVALID_USER_ID("invalid.invalid_userid"),
     MISSING_USER_ID("invalid.missing_userid"),
@@ -53,22 +54,22 @@ public enum UserErrorCode {
     INVALID_NOIMAGE("invalid.image.noimage"),
     INVALID_IMAGE_CONTENTTYPE("invalid.image.contenttype"),
     INVALID_IMAGE_OWNER("invalid.image.owner"),
-    
+
     // CALENDAR
     INVALID_CALENDAR_ID("invalid.calendar.id"),
     MISSING_CALENDAR_ID("invalid.calendar.id.missing"),
-    
+
     // SESSION
     INVALID_SESSION("invalid.invalid_session"),
     MISSING_SESSION("invalid.missing_session"),
 
     // SECURITY
     INVALID_SECURITY_CSRF("invalid.security.csrf"),
-    
+
     // ATTENDANCE
     INVALID_ATTENDANCE_STATUS("invalid.invalid_attendance_status"),
     MISSING_ATTENDANCE_STATUS("invalid.missing_attendance_status"),
-    
+
     // SEARCH
     INVALID_SEARCH_QUERY("invalid.invalid_search_query"),
     MISSING_SEARCH_QUERY("invalid.missing_search_query"),
@@ -87,18 +88,38 @@ public enum UserErrorCode {
     MISSING_COMMENT("invalid.comment.missing"),
     INVALID_COMMENT_TOOLONG("invalid.comment.toolong"),
     COMMENT_REMOVAL_FORBIDDEN("invalid.comment.removal.forbidden", 403),
-    
+
     // MESSAGE
     MISSING_MESSAGE("invalid.message.missing"),
     INVALID_MESSAGE_TOOMUCH("invalid.message.toomuch"),
     INVALID_MESSAGE_TOOLONG("invalid.message.toolong"),
-    
+
     // ENROLLMENT
     INVALID_MISSING_VIP("invalid.enrollment.vip.missing"),
-    
+
     // OAUTH
     INVALID_OAUTH_VERIFIER("invalid.oauth.verifier");
-    
+
+    // ----------------------------------------------------------------------
+
+    public static UserErrorCode safeValueOf(String id) {
+        if (id == null)
+            return null;
+
+        UserErrorCode errorCode = UserErrorCode.valueOf(id);
+        if (errorCode != null)
+            return errorCode;
+
+        for (UserErrorCode ec : UserErrorCode.values()) {
+            if (ec.errorDescriptionId.equalsIgnoreCase(id))
+                return ec;
+            if (ec.toString().equalsIgnoreCase(id))
+                return ec;
+        }
+
+        return null;
+    }
+
     // ----------------------------------------------------------------------
     private final String errorDescriptionId;
     private final int statusCode;
@@ -111,11 +132,15 @@ public enum UserErrorCode {
         this.errorDescriptionId = errorReason;
         this.statusCode = statusCode;
     }
-    
+
+    public String getErrorCode() {
+        return errorDescriptionId;
+    }
+
     public int getStatusCode() {
         return statusCode;
     }
-    
+
     public String getReasonString() {
         return I18n.t(errorDescriptionId);
     }

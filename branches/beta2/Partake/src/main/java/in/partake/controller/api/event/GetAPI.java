@@ -2,6 +2,7 @@ package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.controller.base.permission.PrivateEventShowPermission;
 import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.EventEx;
 import in.partake.model.IPartakeDAOs;
@@ -53,7 +54,7 @@ class GetTransaction extends DBAccess<EventEx> {
 
         if (event.isPrivate()) {
             // owner および manager は見ることが出来る。
-            if (user != null && event.hasPermission(user, UserPermission.EVENT_PRIVATE_EVENT)) {
+            if (user != null && PrivateEventShowPermission.check(event, user)) {
                 // OK. You have the right to show this event.
             } else if (StringUtils.equals(event.getPasscode(), passcode)) {
                 // OK. The same passcode.

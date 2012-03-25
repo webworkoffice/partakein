@@ -1,7 +1,7 @@
 package in.partake.session;
 
-import in.partake.resource.ServerErrorCode;
-import in.partake.resource.UserErrorCode;
+import in.partake.resource.MessageCode;
+
 
 /**
  * PartakeSession is a type safe session object.
@@ -10,63 +10,48 @@ import in.partake.resource.UserErrorCode;
  */
 public class PartakeSession {
     private CSRFPrevention csrfPrevention;
-    
+
     private OpenIDLoginInformation openIDLoginInfomation;
     private TwitterLoginInformation twitterLoginInformation;
-    
-    private ServerErrorCode lastServerError;
-    private UserErrorCode lastUserError;
-    
+
+    private MessageCode messageCode;
+
     private PartakeSession(CSRFPrevention prevention) {
         this.csrfPrevention = prevention;
     }
-    
+
     public static PartakeSession createInitialPartakeSession() {
         return new PartakeSession(new CSRFPrevention());
     }
-    
+
     public CSRFPrevention getCSRFPrevention() {
         return this.csrfPrevention;
     }
-    
+
     public synchronized OpenIDLoginInformation ensureOpenIDLoginInformation() {
         if (openIDLoginInfomation == null)
             openIDLoginInfomation = new OpenIDLoginInformation();
-        
+
         return openIDLoginInfomation;
     }
-    
+
     public synchronized void setTwitterLoginInformation(TwitterLoginInformation information) {
         twitterLoginInformation = information;
     }
-    
+
     public synchronized TwitterLoginInformation takeTwitterLoginInformation() {
         TwitterLoginInformation result = twitterLoginInformation;
         twitterLoginInformation = null;
         return result;
     }
-    
-    public void setLastServerError(ServerErrorCode ec) {
-        this.lastServerError = ec;
+
+    public synchronized void setMessageCode(MessageCode messageCode) {
+        this.messageCode = messageCode;
     }
-    
-    public void setLastUserError(UserErrorCode ec) {
-        this.lastUserError = ec;
-    }
-    
-    public boolean hasServerErrorCode() {
-        return this.lastServerError != null;
-    }
-    
-    public boolean hasUserErrorCode() {
-        return this.lastUserError != null;
-    }
-    
-    public ServerErrorCode getLastServerError() {
-        return this.lastServerError;        
-    }
-    
-    public UserErrorCode getLastUserErrorCode() {
-        return this.lastUserError;
+
+    public synchronized MessageCode takeMessageCode() {
+        MessageCode code = this.messageCode;
+        this.messageCode = null;
+        return code;
     }
 }

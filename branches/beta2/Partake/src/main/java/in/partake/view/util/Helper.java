@@ -24,7 +24,7 @@ import org.owasp.validator.html.ScanException;
 
 /**
  * View に関する定型処理をまとめたもの。
- * 
+ *
  * @author shinyak
  */
 public final class Helper {
@@ -46,27 +46,27 @@ public final class Helper {
         Map<String, Object> session = ServletActionContext.getContext().getSession();
         if (session == null)
             return null;
-        
+
         PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
         if (partakeSession == null)
             return null;
-        
+
         return partakeSession.getCSRFPrevention().getSessionToken();
     }
-    
+
     public static String tokenTags() {
         return sessionTokenInputTag();
     }
-    
+
     /** CSRF 対策用の token を発行。*/
     public static String sessionTokenInputTag() {
         PartakeSession session = (PartakeSession) ServletActionContext.getContext().getSession().get(Constants.ATTR_PARTAKE_SESSION);
         assert session != null;
-        
-        CSRFPrevention prevention = session.getCSRFPrevention(); 
+
+        CSRFPrevention prevention = session.getCSRFPrevention();
         assert (prevention != null);
 
-        String tokenInput  = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_API_SESSION_TOKEN, prevention.getSessionToken());
+        String tokenInput  = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_SESSION, prevention.getSessionToken());
         return tokenInput;
     }
 
@@ -95,7 +95,7 @@ public final class Helper {
             case '>': builder.append("&gt;"); break;
             case '"': builder.append("&quot;"); break;
             case '\'': builder.append("&apos;"); break;
-            default:  
+            default:
                 if (Character.isIdentifierIgnorable(s.codePointAt(i))) {
                     // ignore.
                 } else {
@@ -142,7 +142,7 @@ public final class Helper {
             case '"': builder.append("&quot;"); break;
             case '\'': builder.append("&apos;"); break;
             case '\n': builder.append("<br />"); break;
-            default:                
+            default:
                 if (Character.isIdentifierIgnorable(s.codePointAt(i))) {
                     // ignore.
                 } else {
@@ -223,7 +223,7 @@ public final class Helper {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(endDate);
 
-            return readableDate(beginDate) + 
+            return readableDate(beginDate) +
             String.format(" - %02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
         } else {
             return readableDate(beginDate) + " - " + readableDate(endDate);
@@ -250,7 +250,7 @@ public final class Helper {
 
     public static String readableCapacity(int enrolled, int capacity) {
         if (capacity == 0) { return String.format("%d 人 / -", enrolled); }
-        else { return String.format("%d 人 / %d 人", enrolled, capacity); }       
+        else { return String.format("%d 人 / %d 人", enrolled, capacity); }
     }
 
     public static String readableReminder(Date date) {
@@ -271,7 +271,7 @@ public final class Helper {
     public static String javascript(String... relativePaths) {
         // TODO: すべてつなげて minify したものを作成し、それを常によむようにすると高速化されるので、そうしたい。
         StringBuilder builder = new StringBuilder();
-        
+
         String contextPath = ServletActionContext.getRequest().getContextPath();
         for (String relativePath : relativePaths) {
             String filePath = ServletActionContext.getServletContext().getRealPath(relativePath);
@@ -281,11 +281,11 @@ public final class Helper {
                 continue;
             }
             long time = file.lastModified();
-            
+
             String absolutePath = String.format("%s%s", contextPath, relativePath);
             builder.append(String.format("<script type=\"text/javascript\" src=\"%s?%d\"></script>\n", h(absolutePath), time));
         }
-        
+
         return builder.toString();
     }
 }

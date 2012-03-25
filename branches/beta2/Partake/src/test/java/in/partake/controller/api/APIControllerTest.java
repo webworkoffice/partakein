@@ -1,10 +1,11 @@
 package in.partake.controller.api;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import in.partake.controller.AbstractPartakeControllerTest;
 import in.partake.controller.base.AbstractPartakeController;
 import in.partake.resource.Constants;
 import in.partake.resource.UserErrorCode;
-import in.partake.session.PartakeSession;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -14,9 +15,7 @@ import java.util.Locale;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import static org.hamcrest.Matchers.*;
 import org.junit.Assert;
-import static org.junit.Assert.assertThat;
 
 import com.opensymphony.xwork2.ActionProxy;
 
@@ -50,41 +49,38 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
     }
 
     // ----------------------------------------------------------------------
-    
+
     protected void assertResultOK(ActionProxy proxy) throws Exception {
         Assert.assertEquals(200, response.getStatus());
-        
+
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("ok", obj.get("result"));
     }
 
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {
-        Assert.assertEquals(400, response.getStatus());        
+        Assert.assertEquals(400, response.getStatus());
 
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("invalid", obj.get("result"));
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
     }
-    
+
     protected void assertResultInvalid(ActionProxy proxy, UserErrorCode ec) throws Exception {
         assertResultInvalid(proxy);
-        
-        AbstractPartakeController apc = (AbstractPartakeController) proxy.getAction();
-        PartakeSession session = apc.getPartakeSession();
-        
-        assertThat(session, is(not(nullValue())));
-        assertThat(session.getLastUserErrorCode(), is(ec));
+
+        AbstractPartakeController action = (AbstractPartakeController) proxy.getAction();
+        assertThat(action.getRedirectURL(), is("/invalid?errorCode=" + ec.getErrorCode()));
     }
-    
+
     protected void assertResultLoginRequired(ActionProxy proxy) throws Exception {
         // status code should be 401.
         Assert.assertEquals(401, response.getStatus());
-        
+
         // header should contain WWW-authenticate.
         String authenticate = (String) response.getHeader("WWW-Authenticate");
         Assert.assertNotNull(authenticate);
         Assert.assertTrue(authenticate.contains("OAuth"));
-        
+
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("auth", obj.get("result"));
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
@@ -93,7 +89,7 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
     protected void assertResultForbidden(ActionProxy proxy) throws Exception {
         // status code should be 403
         Assert.assertEquals(403, response.getStatus());
-        
+
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("forbidden", obj.get("result"));
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
@@ -101,7 +97,7 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
 
     protected void assertResultError(ActionProxy proxy) throws Exception {
         Assert.assertEquals(500, response.getStatus());
-        
+
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("error", obj.get("result"));
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));

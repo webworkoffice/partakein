@@ -12,6 +12,7 @@ import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.OpenIDLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
+import in.partake.resource.MessageCode;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.session.OpenIDLoginInformation;
@@ -53,8 +54,7 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
     private String verifyOpenIDForLogin(String receivingURL, Map<String, Object> params, DiscoveryInformation discoveryInformation) throws DAOException, OpenIDException, PartakeException {
         String identity = PartakeApp.getOpenIDService().getIdentifier(receivingURL, params, discoveryInformation);
         if (identity == null) {
-            addWarningMessage("OpenID でのログインに失敗しました。");
-            return renderRedirect("/");
+            return renderRedirect("/", MessageCode.MESSAGE_OPENID_LOGIN_FAILURE);
         }
 
         // TODO: UserEx が identifier から取れるべき
@@ -66,8 +66,7 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
             else
                 return renderRedirect(getRedirectURL());
         } else {
-            addWarningMessage("ログインに失敗しました。OpenID と twitter ID が結び付けられていません。 Twitter でログイン後、設定から Open ID との結び付けを行ってください。");
-            return renderRedirect("/");
+            return renderRedirect("/", MessageCode.MESSAGE_OPENID_LOGIN_NOLINKAGE);
         }
     }
 
@@ -82,8 +81,7 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
 
         new AddOpenIDTransaction(user.getId(), identity).execute();
 
-        addActionMessage("OpenID との結びつけが成功しました");
-        return renderRedirect("/mypage#account");
+        return renderRedirect("/mypage#account", MessageCode.MESSAGE_OPENID_CONNECTION_SUCCESS);
     }
 
     private String getReceivingURL() {

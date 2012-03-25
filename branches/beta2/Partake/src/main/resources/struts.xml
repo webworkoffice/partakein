@@ -5,87 +5,74 @@
         "http://struts.apache.org/dtds/struts-2.1.dtd">
 
 <struts>
-	<!-- For Debugging. These setting should be removed when releasing. -->
-	<!-- constant name="struts.devMode" value="true" -->
-	<!-- Use partake theme -->
-	<constant name="struts.ui.theme" value="partake" />
+    <!-- For Debugging. These setting should be removed when releasing. -->
+    <!-- constant name="struts.devMode" value="true" -->
+    <!-- Use partake theme -->
+    <constant name="struts.ui.theme" value="partake" />
 
-	<constant name="struts.enable.SlashesInActionNames" value="true" />
-	<constant name="struts.mapper.alwaysSelectFullNamespace" value="false" />
-	<constant name="struts.action.extension" value=",action,ics,csv" />
+    <constant name="struts.enable.SlashesInActionNames" value="true" />
+    <constant name="struts.mapper.alwaysSelectFullNamespace" value="false" />
+    <constant name="struts.action.extension" value=",action,ics,csv" />
 
-	<package name="partake-default" extends="struts-default">
-		<result-types>
-			<result-type name="partake-stream" class="in.partake.controller.base.PartakeStreamResult" />
-		</result-types>
+    <package name="partake-default" extends="struts-default">
+        <result-types>
+            <result-type name="partake-stream" class="in.partake.controller.base.PartakeStreamResult" />
+        </result-types>
 
-		<interceptors>
-			<interceptor name="utf8encoding"     class="in.partake.controller.interceptor.UTF8EncodingInterceptor" />
-	    	<interceptor name="authenticate"     class="in.partake.controller.interceptor.LoginRequiredInterceptor" />
-	    	<interceptor name="dynamicInfo"      class="in.partake.controller.interceptor.DynamicInformationInterceptor" />
-	    	<interceptor name="exceptionHandler" class="in.partake.controller.interceptor.PartakeExceptionInterceptor" />
+        <interceptors>
+            <interceptor name="utf8encoding"     class="in.partake.controller.interceptor.UTF8EncodingInterceptor" />
+            <interceptor name="dynamicInfo"      class="in.partake.controller.interceptor.DynamicInformationInterceptor" />
 
-	    	<interceptor-stack name="partakeBaseStack">
-	    		<interceptor-ref name="utf8encoding" />
-	    		<interceptor-ref name="store">
+            <interceptor-stack name="partakeStack">
+                <interceptor-ref name="utf8encoding" />
+                <interceptor-ref name="store">
                     <param name="operationMode">AUTOMATIC</param>
-	    		</interceptor-ref>
-	    		<interceptor-ref name="dynamicInfo" />
-	    		<interceptor-ref name="defaultStack" />
-	    	</interceptor-stack>
-
-	    	<interceptor-stack name="partakeStack">
-                <interceptor-ref name="partakeBaseStack"/>
-	    		<interceptor-ref name="exceptionHandler"/>
-	    	</interceptor-stack>
-
-	    	<interceptor-stack name="authenticateStack">
-                <interceptor-ref name="partakeBaseStack"/>
-                <interceptor-ref name="authenticate"/>
-                <interceptor-ref name="exceptionHandler"/>
+                </interceptor-ref>
+                <interceptor-ref name="dynamicInfo" />
+                <interceptor-ref name="defaultStack" />
             </interceptor-stack>
- 	    </interceptors>
+        </interceptors>
 
-		<default-interceptor-ref name="partakeStack"/>
+        <default-interceptor-ref name="partakeStack"/>
 
-		<global-results>
-			<result name="login" type="redirectAction">
-				<param name="namespace">/</param>
-				<param name="actionName">loginRequired</param>
-				<param name="redirectURL">${redirectURL}</param>
-			</result>
-			<result name="redirect" type="redirect">${redirectURL}</result>
-			<result name="error" type="redirect">/error</result>
-			<result name="invalid" type="redirect">/invalid</result>
-			<result name="notfound" type="redirect">/notfound</result>
-			<result name="prohibited" type="redirect">/prohibited</result>
-			<result name="returntop" type="redirect">/</result>
-			<result name="stream" type="stream">
+        <global-results>
+            <result name="login" type="redirectAction">
+                <param name="namespace">/</param>
+                <param name="actionName">loginRequired</param>
+                <param name="redirectURL">${redirectURL}</param>
+            </result>
+            <result name="redirect" type="redirect">${redirectURL}</result>
+            <result name="error" type="redirect">/error</result>
+            <result name="invalid" type="redirect">/invalid</result>
+            <result name="notfound" type="redirect">/notfound</result>
+            <result name="prohibited" type="redirect">/prohibited</result>
+
+            <result name="stream" type="stream">
                 <param name="contentType">${contentType}</param>
                 <param name="contentDisposition">${contentDisposition}</param>
                 <param name="bufferSize">1M</param>
                 <param name="allowCaching">true</param>
-			</result>
-			
-			<result name="jsp" type="dispatcher">
-				<param name="location">/WEB-INF/${location}</param>
-			</result>
-			<result name="json" type="partake-stream">
+            </result>
+
+            <result name="jsp" type="dispatcher">
+                <param name="location">/WEB-INF/${location}</param>
+            </result>
+            <result name="json" type="partake-stream">
                 <param name="contentType">text/json; charset=utf-8</param>
                 <param name="bufferSize">20K</param>
                 <param name="allowCaching">false</param>
                 <param name="status">${status}</param>
                 <param name="headers">${headers}</param>
             </result>
-		</global-results>
-	</package>
+        </global-results>
+    </package>
 
-	<package name="partake-api-default" extends="partake-default">
-	</package>
+    <package name="partake-api-default" extends="partake-default">
+    </package>
 
-	<package name="top" namespace="/" extends="partake-default">
-		<action name="mypage" class="in.partake.controller.action.mypage.MypageAction" />
-		<action name="" class="in.partake.controller.action.toppage.ToppageAction" />
+    <package name="top" namespace="/" extends="partake-default">
+        <action name="mypage" class="in.partake.controller.action.mypage.MypageAction" />
+        <action name="" class="in.partake.controller.action.toppage.ToppageAction" />
 
         <action name="error" class="in.partake.controller.action.errorpage.StaticErrorPageAction" />
         <action name="invalid" class="in.partake.controller.action.errorpage.StaticInvalidPageAction" />
@@ -95,60 +82,60 @@
 
         <action name="contact" class="in.partake.controller.action.toppage.StaticContactPageAction" />
         <action name="termofuse" class="in.partake.controller.action.toppage.StaticTermOfUsePageAction" />
-	</package>
+    </package>
 
-	<package name="auth" namespace="/auth" extends="partake-default">
+    <package name="auth" namespace="/auth" extends="partake-default">
         <action name="loginByTwitter" class="in.partake.controller.action.auth.LoginByTwitterAction"/>
         <action name="verifyForTwitter" class="in.partake.controller.action.auth.VerifyForTwitterAction" />
         <action name="loginByOpenID" class="in.partake.controller.action.auth.LoginByOpenIDAction" />
         <action name="connectWithOpenID" class="in.partake.controller.action.auth.ConnectWithOpenIDAction" />
         <action name="verifyOpenID" class="in.partake.controller.action.auth.VerifyForOpenIDAction" />
 
-		<action name="logout" class="in.partake.controller.action.auth.LogoutAction" />
-	</package>
+        <action name="logout" class="in.partake.controller.action.auth.LogoutAction" />
+    </package>
 
-	<package name="admin" namespace="/admin" extends="partake-default">
-		<action name="" class="in.partake.controller.action.admin.AdminPageAction" />
-		<action name="recreateEventIndex" class="in.partake.controller.action.admin.AdminEventIndexRecreationAction" />
-	</package>
+    <package name="admin" namespace="/admin" extends="partake-default">
+        <action name="" class="in.partake.controller.action.admin.AdminPageAction" />
+        <action name="recreateEventIndex" class="in.partake.controller.action.admin.AdminEventIndexRecreationAction" />
+    </package>
 
-	<package name="users" namespace="/users" extends="partake-default">
-		<action name="*" class="in.partake.controller.action.user.ShowAction">
-	        <param name="userId">{1}</param>
-	    </action>
-	</package>
+    <package name="users" namespace="/users" extends="partake-default">
+        <action name="*" class="in.partake.controller.action.user.ShowAction">
+            <param name="userId">{1}</param>
+        </action>
+    </package>
 
-	<package name="calendars" namespace="/calendars" extends="partake-default">
+    <package name="calendars" namespace="/calendars" extends="partake-default">
         <action name="all" class="in.partake.controller.action.calendar.AllCalendarAction" />
         <action name="category/*" class="in.partake.controller.action.calendar.CategoryCalendarAction">
             <param name="category">{1}</param>
         </action>
-		<action name="*" class="in.partake.controller.action.calendar.ShowCalendarAction">
-			<param name="calendarId">{1}</param>
-		</action>
-	</package>
+        <action name="*" class="in.partake.controller.action.calendar.ShowCalendarAction">
+            <param name="calendarId">{1}</param>
+        </action>
+    </package>
 
-	<package name="images" namespace="/images" extends="partake-default">
-		<action name="*" class="in.partake.controller.action.image.ImageAction">
-			<param name="imageId">{1}</param>
-		</action>	
-	</package>
+    <package name="images" namespace="/images" extends="partake-default">
+        <action name="*" class="in.partake.controller.action.image.ImageAction">
+            <param name="imageId">{1}</param>
+        </action>
+    </package>
 
-	<package name="events" namespace="/events" extends="partake-default">
-		<!-- Event Editing -->
-		<action name="new" class="in.partake.controller.action.event.EventNewAction" />
- 		<action name="edit/*" class="in.partake.controller.action.event.EventEditAction">
+    <package name="events" namespace="/events" extends="partake-default">
+        <!-- Event Editing -->
+        <action name="new" class="in.partake.controller.action.event.EventNewAction" />
+        <action name="edit/*" class="in.partake.controller.action.event.EventEditAction">
             <param name="eventId">{1}</param>
-		</action>
+        </action>
 
-		<action name="search" class="in.partake.controller.action.event.EventSearchAction" />
+        <action name="search" class="in.partake.controller.action.event.EventSearchAction" />
 
-		<!-- Event Viewing -->
-		<action name="passcode" class="in.partake.controller.action.event.EventPasscodeAction" />
+        <!-- Event Viewing -->
+        <action name="passcode" class="in.partake.controller.action.event.EventPasscodeAction" />
 
-		<!-- Event Participants -->
-		<!-- URL はきれいにしたいな... -->
-		<action name="participants/*" class="in.partake.controller.action.event.ShowParticipantsCSVAction">
+        <!-- Event Participants -->
+        <!-- URL はきれいにしたいな... -->
+        <action name="participants/*" class="in.partake.controller.action.event.ShowParticipantsCSVAction">
             <param name="eventId">{1}</param>
         </action>
 
@@ -160,88 +147,88 @@
             <param name="eventId">{1}</param>
         </action>
 
-		<!-- Event Show -->
-		<action name="*" class="in.partake.controller.action.event.EventShowAction">
-	        <param name="eventId">{1}</param>
-		</action>
-	</package>
+        <!-- Event Show -->
+        <action name="*" class="in.partake.controller.action.event.EventShowAction">
+            <param name="eventId">{1}</param>
+        </action>
+    </package>
 
-	<package name="feed" namespace="/feed" extends="partake-default">
-	    <action name="" class="in.partake.controller.action.feed.FeedListPageAction" />
-		<action name="all" class="in.partake.controller.action.feed.FeedRecentEventsAction" />
-		<action name="category/*" class="in.partake.controller.action.feed.FeedCategoryAction">
-			<param name="category">{1}</param>
-		</action>
-		<action name="event/*" class="in.partake.controller.action.feed.FeedEventAction">
-			<param name="feedId">{1}</param>
-		</action>
-		<action name="upcoming/*" class="in.partake.controller.action.feed.FeedUpcomingEventsAction">
-			<param name="category">{1}</param>
-		</action>
-	</package>
+    <package name="feed" namespace="/feed" extends="partake-default">
+        <action name="" class="in.partake.controller.action.feed.FeedListPageAction" />
+        <action name="all" class="in.partake.controller.action.feed.FeedRecentEventsAction" />
+        <action name="category/*" class="in.partake.controller.action.feed.FeedCategoryAction">
+            <param name="category">{1}</param>
+        </action>
+        <action name="event/*" class="in.partake.controller.action.feed.FeedEventAction">
+            <param name="feedId">{1}</param>
+        </action>
+        <action name="upcoming/*" class="in.partake.controller.action.feed.FeedUpcomingEventsAction">
+            <param name="category">{1}</param>
+        </action>
+    </package>
 
-	<!-- ここから下は Web API 実装 -->
-	<package name="api" namespace="/api" extends="partake-api-default">
-	</package>
+    <!-- ここから下は Web API 実装 -->
+    <package name="api" namespace="/api" extends="partake-api-default">
+    </package>
 
-	<package name="debug-api" namespace="/api/debug" extends="partake-api-default">
-		<action name="success" class="in.partake.controller.api.debug.SuccessAPI" />
-		<action name="echo" class="in.partake.controller.api.debug.EchoAPI" />
-		<action name="successIfLogin" class="in.partake.controller.api.debug.SuccessIfLoginAPI" />
-		<action name="invalid" class="in.partake.controller.api.debug.InvalidAPI" />
-		<action name="error" class="in.partake.controller.api.debug.ErrorAPI" />
-		<action name="errorException" class="in.partake.controller.api.debug.ErrorExceptionAPI" />
-		<action name="errorDB" class="in.partake.controller.api.debug.ErrorDBAPI" />
-		<action name="errorDBException" class="in.partake.controller.api.debug.ErrorDBExceptionAPI" />
-	</package>
+    <package name="debug-api" namespace="/api/debug" extends="partake-api-default">
+        <action name="success" class="in.partake.controller.api.debug.SuccessAPI" />
+        <action name="echo" class="in.partake.controller.api.debug.EchoAPI" />
+        <action name="successIfLogin" class="in.partake.controller.api.debug.SuccessIfLoginAPI" />
+        <action name="invalid" class="in.partake.controller.api.debug.InvalidAPI" />
+        <action name="error" class="in.partake.controller.api.debug.ErrorAPI" />
+        <action name="errorException" class="in.partake.controller.api.debug.ErrorExceptionAPI" />
+        <action name="errorDB" class="in.partake.controller.api.debug.ErrorDBAPI" />
+        <action name="errorDBException" class="in.partake.controller.api.debug.ErrorDBExceptionAPI" />
+    </package>
 
-	<!-- Account API -->
-	<package name="account-api" namespace="/api/account" extends="partake-api-default">
-		<action name="" class="in.partake.controller.api.account.GetAPI" />
-		<action name="events" class="in.partake.controller.api.account.GetEventsAPI" />
-		<action name="enrollments" class="in.partake.controller.api.account.GetEnrollmentsAPI" />
-		<action name="images" class="in.partake.controller.api.account.GetImagesAPI" />
-		
-		<action name="removeOpenID" class="in.partake.controller.api.account.RemoveOpenIDAPI" />
-		<action name="revokeCalendar" class="in.partake.controller.api.account.RevokeCalendarAPI" />
-		<action name="setPreference" class="in.partake.controller.api.account.SetPreferenceAPI" />
-		<action name="sessionToken" class="in.partake.controller.api.account.SessionTokenAPI" />
-	</package>
+    <!-- Account API -->
+    <package name="account-api" namespace="/api/account" extends="partake-api-default">
+        <action name="" class="in.partake.controller.api.account.GetAPI" />
+        <action name="events" class="in.partake.controller.api.account.GetEventsAPI" />
+        <action name="enrollments" class="in.partake.controller.api.account.GetEnrollmentsAPI" />
+        <action name="images" class="in.partake.controller.api.account.GetImagesAPI" />
 
-	<!-- User API -->
-	<package name="user-api" namespace="/api/user" extends="partake-api-default">
-		<action name="" class="in.partake.controller.api.user.GetAPI" />
-		<action name="events" class="in.partake.controller.api.user.GetEventsAPI" />
-		<action name="enrollments" class="in.partake.controller.api.user.GetEnrollmentsAPI" />
-	</package>
+        <action name="removeOpenID" class="in.partake.controller.api.account.RemoveOpenIDAPI" />
+        <action name="revokeCalendar" class="in.partake.controller.api.account.RevokeCalendarAPI" />
+        <action name="setPreference" class="in.partake.controller.api.account.SetPreferenceAPI" />
+        <action name="sessionToken" class="in.partake.controller.api.account.SessionTokenAPI" />
+    </package>
 
-	<!-- Image API  -->
-	<package name="image-api" namespace="/api/image" extends="partake-api-default">
-		<action name="create" class="in.partake.controller.api.image.CreateImageAPI" />
-	</package>
-	
-	<!-- Event API -->
-	<package name="event-api" namespace="/api/event" extends="partake-api-default">
-		<action name="" class="in.partake.controller.api.event.GetAPI" />
-		<action name="get" class="in.partake.controller.api.event.GetAPI" /> <!-- DEPRECATED -->
+    <!-- User API -->
+    <package name="user-api" namespace="/api/user" extends="partake-api-default">
+        <action name="" class="in.partake.controller.api.user.GetAPI" />
+        <action name="events" class="in.partake.controller.api.user.GetEventsAPI" />
+        <action name="enrollments" class="in.partake.controller.api.user.GetEnrollmentsAPI" />
+    </package>
 
-		<action name="create" class="in.partake.controller.api.event.CreateAPI" />
-		<action name="modify" class="in.partake.controller.api.event.ModifyAPI" />
-		<action name="publish" class="in.partake.controller.api.event.PublishAPI" />
-		<action name="remove" class="in.partake.controller.api.event.RemoveAPI" />
-		
-		<action name="enroll" class="in.partake.controller.api.event.EnrollAPI" />
-		<action name="enroll/changeComment" class="in.partake.controller.api.event.ChangeEnrollmentCommentAPI" />
+    <!-- Image API  -->
+    <package name="image-api" namespace="/api/image" extends="partake-api-default">
+        <action name="create" class="in.partake.controller.api.image.CreateImageAPI" />
+    </package>
 
-		<action name="attend" class="in.partake.controller.api.event.AttendAPI" />
-		<action name="makeAttendantVIP" class="in.partake.controller.api.event.MakeAttendantVIPAPI" />
-		<action name="removeAttendant" class="in.partake.controller.api.event.RemoveAttendantAPI" />
+    <!-- Event API -->
+    <package name="event-api" namespace="/api/event" extends="partake-api-default">
+        <action name="" class="in.partake.controller.api.event.GetAPI" />
+        <action name="get" class="in.partake.controller.api.event.GetAPI" /> <!-- DEPRECATED -->
 
-		<action name="sendMessage" class="in.partake.controller.api.event.SendMessageAPI" />
+        <action name="create" class="in.partake.controller.api.event.CreateAPI" />
+        <action name="modify" class="in.partake.controller.api.event.ModifyAPI" />
+        <action name="publish" class="in.partake.controller.api.event.PublishAPI" />
+        <action name="remove" class="in.partake.controller.api.event.RemoveAPI" />
 
-		<action name="postComment" class="in.partake.controller.api.event.PostCommentAPI" /> 
-		<action name="removeComment" class="in.partake.controller.api.event.RemoveCommentAPI" />
+        <action name="enroll" class="in.partake.controller.api.event.EnrollAPI" />
+        <action name="enroll/changeComment" class="in.partake.controller.api.event.ChangeEnrollmentCommentAPI" />
 
-		<action name="search" class="in.partake.controller.api.event.SearchAPI" />		
- 	</package>
+        <action name="attend" class="in.partake.controller.api.event.AttendAPI" />
+        <action name="makeAttendantVIP" class="in.partake.controller.api.event.MakeAttendantVIPAPI" />
+        <action name="removeAttendant" class="in.partake.controller.api.event.RemoveAttendantAPI" />
+
+        <action name="sendMessage" class="in.partake.controller.api.event.SendMessageAPI" />
+
+        <action name="postComment" class="in.partake.controller.api.event.PostCommentAPI" />
+        <action name="removeComment" class="in.partake.controller.api.event.RemoveCommentAPI" />
+
+        <action name="search" class="in.partake.controller.api.event.SearchAPI" />
+    </package>
 </struts>

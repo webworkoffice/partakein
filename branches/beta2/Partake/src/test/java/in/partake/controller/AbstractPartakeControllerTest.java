@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsTestCase;
 import org.junit.After;
 import org.junit.Assert;
@@ -139,14 +138,6 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
     protected void assertResultSuccess(ActionProxy proxy) throws Exception {
         Assert.assertTrue(proxy.getAction() instanceof AbstractPartakeAction);
-
-        Map<String, Object> session = ServletActionContext.getContext().getSession();
-        if (session != null) {
-            PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
-            Assert.assertFalse(partakeSession.hasServerErrorCode());
-            Assert.assertFalse(partakeSession.hasUserErrorCode());
-        }
-
         Assert.assertEquals(200, response.getStatus());
     }
 
