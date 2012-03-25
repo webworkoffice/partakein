@@ -1,3 +1,4 @@
+<%@page import="in.partake.controller.action.admin.AdminPageAction"%>
 <%@page import="in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade"%>
 <%@page import="in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade.EventCount"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -6,8 +7,6 @@
 
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="java.text.NumberFormat"%>
-<%@page import="in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade"%>
-<%@page import="in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade.UserCount"%>
 <%@page import="static in.partake.base.Util.h"%>
 
 <html lang="ja">
@@ -23,25 +22,24 @@
 </div>
 
 <%
-    UserCount userCount = DeprecatedUserDAOFacade.get().countUsers();
-	EventCount eventCount = DeprecatedEventDAOFacade.get().countEvents();
-	NumberFormat format = NumberFormat.getInstance();
-	// Integer hatenaBookmarkCount = (Integer) request.getAttribute(Constants.ATTR_BOOKMARK_COUNT);
+	AdminPageAction action = (AdminPageAction) request.getAttribute(Constants.ATTR_ACTION);
 %>
 
 <div class="row">
 	<div class="span6">
 		<h2>Count of users</h2>
 		<dl>
-			<dt>User</dt><dd><%= format.format(userCount.user) %></dd>
-			<dt>Active User (who sign in the last 30 days)</dt><dd><%= format.format(userCount.activeUser) %></dd>
+			<dt>User</dt><dd><%= action.getCountUser() %></dd>
+			<dt>Active User (who sign in the last 30 days)</dt><dd><%= action.getCountActiveUser() %></dd>
 		</dl>
 	
 		<h2>Count of events</h2>
 		<dl>
-			<dt>event</dt><dd><%= format.format(eventCount.numEvent) %></dd>
-			<dt>public event</dt><dd><%= format.format(eventCount.numPublicEvent) %></dd>
-			<dt>private event</dt><dd><%= format.format(eventCount.numPrivateEvent) %></dd>
+			<dt>event</dt><dd><%= action.getCountEvent() %></dd>
+			<dt>public event</dt><dd><%= action.getCountPublicEvent() %></dd>
+			<dt>private event</dt><dd><%= action.getCountPrivateEvent() %></dd>
+			<dt>published event</dt><dd><%= action.getCountPublishedEvent() %></dd>
+			<dt>draft event</dt><dd><%= action.getCountDraftEvent() %></dd>
 		</dl>
 	
 <%-- 		<h2>Count of Hatena bookmarks</h2>

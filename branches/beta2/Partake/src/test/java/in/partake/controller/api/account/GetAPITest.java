@@ -4,7 +4,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
 

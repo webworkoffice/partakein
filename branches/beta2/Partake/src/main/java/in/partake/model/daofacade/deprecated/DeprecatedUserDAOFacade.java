@@ -1,6 +1,5 @@
 package in.partake.model.daofacade.deprecated;
 
-import in.partake.base.TimeUtil;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
@@ -13,7 +12,6 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -137,41 +135,5 @@ public final class DeprecatedUserDAOFacade extends DeprecatedPartakeDAOFacade {
         } finally {
             con.invalidate();
         }
-    }
-    
-    // ----------------------------------------------------------------------
-
-    /**
-     * 
-     * @author skypencil (@eller86)
-     * @return count of users
-     * @throws DAOException
-     */
-    // 
-    public UserCount countUsers() throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        Date oneMonthAgo = new Date(TimeUtil.getCurrentTime() - 30L * 24 * 60 * 60 * 1000);
-        UserCount count = new UserCount();
-
-        try {
-            con.beginTransaction();
-            
-            count.user = factory.getUserAccess().count(con);
-            count.activeUser = factory.getUserAccess().countActiveUsers(con, oneMonthAgo);
-            
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-
-        return count;
-    }
-
-    public static final class UserCount {
-        /** count of all users. */
-        public int user;
-        /** count of users who sign in the last 30 days. */
-        public int activeUser;
     }
 }
