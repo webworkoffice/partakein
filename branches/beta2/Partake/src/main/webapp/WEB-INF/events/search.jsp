@@ -1,3 +1,5 @@
+<%@page import="in.partake.base.KeyValuePair"%>
+<%@page import="in.partake.controller.action.event.EventSearchAction"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.resource.Constants"%>
@@ -5,7 +7,9 @@
 <%@ page import="static in.partake.view.util.Helper.h"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
-<%@taglib prefix="s" uri="/struts-tags" %>
+<%
+    EventSearchAction action = (EventSearchAction) request.getAttribute(Constants.ATTR_ACTION);
+%>
 
 <!DOCTYPE html>
 
@@ -29,7 +33,7 @@
             <div class="control-group">
                 <label class="control-label">検索語句</label>
                 <div class="controls">
-                    <input type="text" id="searchBox" name="searchTerm" />
+                    <input type="text" id="search-term" name="searchTerm" />
                     <input id="search-form-button" type="button" class="btn btn-primary" alt="Search" value="Search" />
                 </div>
             </div>
@@ -37,15 +41,23 @@
                 <label class="control-label">オプション</label>
                 <div class="controls">
                     <div class="form-inline">
-                        <span class="event-search-inline">カテゴリ</span><select id="category" name="category" list="categories" listKey="key" listValue="value"></select>
-                        <span class="event-search-inline">並べ替え</span><select id="sortOrder" name="sortOrder" list="sortOrders" listKey="key" listValue="value"></select>
+                        <span class="event-search-inline">カテゴリ</span><select id="category" name="category">
+                        <% for (KeyValuePair kv : action.getCategories()) { %>
+                            <option value="<%= h(kv.getKey()) %>"><%= h(kv.getValue()) %></option>
+                        <% } %>
+                        </select>
+                        <span class="event-search-inline">並べ替え</span><select id="sort-order" name="sortOrder">
+                        <% for (KeyValuePair kv : action.getSortOrders()) { %>
+                            <option value="<%= h(kv.getKey()) %>"><%= h(kv.getValue()) %></option>
+                        <% } %>
+                        </select>
                     </div>
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
                     <div class="form-inline">
-                        <label class="checkbox"><input type="checkbox" id="beforeDeadlineOnly" name="beforeDeadlineOnly" />締め切り前のイベントのみを検索する</label>
+                        <label class="checkbox"><input type="checkbox" id="before-deadline-only" name="beforeDeadlineOnly" checked />締め切り前のイベントのみを検索する</label>
                     </div>
                 </div>
             </div>
@@ -83,11 +95,11 @@
         return row;
     }
 
-    $('#search-form-button').click(function() {
-        var query = $('#searchBox').val();
+    function doSearch() {
+        var query = $('#search-term').val();
         var category = $('#category option:selected').val();
-        var sortOrder = $('#sortOrder option:selected').val();
-        var beforeDeadlineOnly = $('#beforeDeadlineOnly').is(':checked');
+        var sortOrder = $('#sort-order option:selected').val();
+        var beforeDeadlineOnly = $('#before-deadline-only').is(':checked');
 
         partake.event.search(query, category, sortOrder, beforeDeadlineOnly, 100)
         .done(function(json) {
@@ -108,7 +120,16 @@
 
         })
         .fail(partake.defaultFailHandler);
+    }
+
+    $('#search-term').keypress(function(e) {
+        if (e.which == 13) { // If enterkey is pressed.
+            doSearch();
+            return false;
+        }
     });
+
+    $('#search-form-button').click(doSearch);
     </script>
 </div>
 

@@ -106,7 +106,12 @@ public enum UserErrorCode {
         if (id == null)
             return null;
 
-        UserErrorCode errorCode = UserErrorCode.valueOf(id);
+        UserErrorCode errorCode = null;
+        try {
+            errorCode = UserErrorCode.valueOf(id);
+        } catch (IllegalArgumentException ignore) {
+        }
+
         if (errorCode != null)
             return errorCode;
 

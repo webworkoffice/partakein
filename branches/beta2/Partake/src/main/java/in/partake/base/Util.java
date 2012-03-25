@@ -3,11 +3,14 @@ package in.partake.base;
 import in.partake.view.util.Helper;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Random;
@@ -22,53 +25,53 @@ import com.twitter.Regex;
 
 public final class Util {
     private static final Logger logger = Logger.getLogger(Util.class);
-	private static final Random random = new Random();
+    private static final Random random = new Random();
 
-	private static final Pattern REMOVETAG_PATTERN = Pattern.compile("(<!--.+?-->)|(<.+?>)", Pattern.DOTALL | Pattern.MULTILINE);
-	private static final String ALNUM = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final Pattern REMOVETAG_PATTERN = Pattern.compile("(<!--.+?-->)|(<.+?>)", Pattern.DOTALL | Pattern.MULTILINE);
+    private static final String ALNUM = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     // ----------------------------------------------------------------------
     // UUID
-	
-	public static boolean isUUID(String str) {
-	    try {
-	        UUID.fromString(str);
-	        return true;
-	    } catch (IllegalArgumentException e) {
-	        return false;
-	    }
-	}
+
+    public static boolean isUUID(String str) {
+        try {
+            UUID.fromString(str);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 
     // ----------------------------------------------------------------------
     // Numeric
-	
-	public static int ensureRange(int value, int min, int max) {
-	    assert min <= max;
-	    if (value < min)
-	        return min;
-	    if (max < value)
-	        return max;
-	    return value;
-	}
+
+    public static int ensureRange(int value, int min, int max) {
+        assert min <= max;
+        if (value < min)
+            return min;
+        if (max < value)
+            return max;
+        return value;
+    }
 
     // ----------------------------------------------------------------------
     // Text
 
-	public static Boolean parseBooleanParameter(String value) {
+    public static Boolean parseBooleanParameter(String value) {
         if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value))
             return true;
         if ("false".equalsIgnoreCase(value) || "off".equalsIgnoreCase(value))
             return false;
-        
-        return null;
-	}
 
-	public static boolean parseBooleanParameter(String value, boolean defaultValue) {
-	    Boolean result = parseBooleanParameter(value);
-	    if (result != null)
-	        return result;
-	    else
-	        return defaultValue;
+        return null;
+    }
+
+    public static boolean parseBooleanParameter(String value, boolean defaultValue) {
+        Boolean result = parseBooleanParameter(value);
+        if (result != null)
+            return result;
+        else
+            return defaultValue;
     }
 
     // TODO: Use StringUtils.isEmpty() instead.
@@ -90,7 +93,7 @@ public final class Util {
     }
 
     public static int codePointCount(String s) {
-    	return s.codePointCount(0, s.length());
+        return s.codePointCount(0, s.length());
     }
 
     public static String substring(String source, int startCodePoints) {
@@ -127,35 +130,53 @@ public final class Util {
         return removeURLFragment(str);
     }
 
+    public static void writeFromFile(BufferedWriter writer, File inFile, String encode) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), encode));
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("@charset") || line.isEmpty()) continue;
+                writer.write(line);
+                writer.newLine();
+            }
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ignore) {
+                logger.warn("Reader#close throw IOException, but it's ignored.", ignore);
+            }
+        }
+    }
+
     // ----------------------------------------------------------------------
-	// Image
+    // Image
 
     public static boolean isImageContentType(String s) {
-    	if (s == null) { return false; }
+        if (s == null) { return false; }
 
-    	if ("image/jpeg".equals(s)) { return true; }
-    	if ("image/png".equals(s)) { return true; }
-    	if ("image/gif".equals(s)) { return true; }
-    	if ("image/pjpeg".equals(s)){ return true; }
+        if ("image/jpeg".equals(s)) { return true; }
+        if ("image/png".equals(s)) { return true; }
+        if ("image/gif".equals(s)) { return true; }
+        if ("image/pjpeg".equals(s)){ return true; }
 
-    	return false;
+        return false;
     }
 
     /**
      * file の内容を byte array に変換する
      */
     public static byte[] getContentOfFile(File file) throws IOException {
-    	if (file == null)
-    	    return new byte[0];
+        if (file == null)
+            return new byte[0];
 
-    	InputStream is = new BufferedInputStream(new FileInputStream(file));
-    	return getContentOfInputStream(is);
+        InputStream is = new BufferedInputStream(new FileInputStream(file));
+        return getContentOfInputStream(is);
     }
-    
+
     public static byte[] getContentOfInputStream(InputStream is) throws IOException {
         if (is == null)
             return null;
-        
+
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final int SIZE = 1024 * 1024;
@@ -188,7 +209,7 @@ public final class Util {
     }
 
     // ----------------------------------------------------------------------
-	// HTML
+    // HTML
 
     // TODO: These functions are should be moved to Helper.
     // HTML escape
@@ -219,7 +240,7 @@ public final class Util {
     }
 
     // ----------------------------------------------------------------------
-	// URI
+    // URI
 
     // escapeURI の代わりに encodeURI を使うこと。encodeURIComponent
     @Deprecated

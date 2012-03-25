@@ -4,8 +4,8 @@ import in.partake.base.MessageUtil;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.DraftEventEditPermission;
+import in.partake.controller.base.permission.EventSendMessagePermission;
 import in.partake.controller.base.permission.PrivateEventShowPermission;
-import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.CommentEx;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EnrollmentEx;
@@ -202,7 +202,7 @@ class EventShowTransaction extends DBAccess<Void> {
         if (eventReminder == null)
             eventReminder = new EventReminder(eventId);
 
-        if (event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE))
+        if (EventSendMessagePermission.check(event, user))
             restCodePoints = MessageUtil.calcRestCodePoints(user, event);
         else
             restCodePoints = 0;

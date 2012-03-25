@@ -71,7 +71,11 @@ public class TransactionTest {
         };
 
         Assert.assertEquals(0, PartakeApp.getDBService().getPool().getCurrentNumberOfConnectionForThisThread());
-        transaction.execute();
+        try {
+            transaction.execute();
+        } catch (Exception e) {
+            // ignored.
+        }
         Assert.assertEquals(0, PartakeApp.getDBService().getPool().getCurrentNumberOfConnectionForThisThread());
     }
 }

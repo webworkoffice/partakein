@@ -49,7 +49,11 @@ public enum ServerErrorCode {
         if (id == null)
             return null;
 
-        ServerErrorCode errorCode = ServerErrorCode.valueOf(id);
+        ServerErrorCode errorCode = null;
+        try {
+            errorCode = ServerErrorCode.valueOf(id);
+        } catch (IllegalArgumentException ignore) {
+        }
         if (errorCode != null)
             return errorCode;
 

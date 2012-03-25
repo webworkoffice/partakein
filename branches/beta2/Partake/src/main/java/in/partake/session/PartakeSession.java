@@ -46,7 +46,8 @@ public class PartakeSession {
     }
 
     public synchronized void setMessageCode(MessageCode messageCode) {
-        this.messageCode = messageCode;
+        if (messageCode != null)
+            this.messageCode = messageCode;
     }
 
     public synchronized MessageCode takeMessageCode() {
