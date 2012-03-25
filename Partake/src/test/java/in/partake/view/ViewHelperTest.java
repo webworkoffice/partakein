@@ -46,7 +46,6 @@ public class ViewHelperTest {
         String dirty = "<script>alert('hoge')</script>";
         String sanity = Helper.cleanupHTML(dirty);
         
-        System.out.println(sanity);
         Assert.assertTrue(!sanity.contains("script"));
     }
 

@@ -1,6 +1,7 @@
-package in.partake.service;
+package in.partake.service.impl;
 
 import in.partake.resource.PartakeProperties;
+import in.partake.service.IBitlyService;
 
 import org.apache.log4j.Logger;
 
@@ -9,7 +10,8 @@ import com.rosaloves.bitlyj.Bitly.Provider;
 import com.rosaloves.bitlyj.BitlyException;
 import com.rosaloves.bitlyj.ShortenedUrl;
 
-public class BitlyService {
+// TODO: should be non-public class.
+public class BitlyService implements IBitlyService {
     private static final Logger logger = Logger.getLogger(BitlyService.class);
     
     /**

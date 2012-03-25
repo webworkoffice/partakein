@@ -18,7 +18,7 @@ public class ToppageAction extends AbstractPartakeAction {
 	private List<Event> ownedEvents;
 	private List<Event> enrolledEvents;
 	
-	public String doExecute() throws DAOException {
+	protected String doExecute() throws DAOException {
 	    recentEvents = DeprecatedEventDAOFacade.get().getRecentEvents(NUM_EVENTS_TO_DISPLAY);
 		
 		// もしログインしていれば、最近のイベントを表示する。

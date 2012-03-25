@@ -14,7 +14,7 @@ import in.partake.model.dto.EventActivity;
 public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActivityAccess, EventActivity, String> {
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getEventActivityAccess());
+        super.setup(factory.getEventActivityAccess());
     }
     
     @Override
@@ -25,7 +25,7 @@ public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActiv
     
     @Test
     public void testToIterator1() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
         String eventId = "eventId-findByEventId-0-" + System.currentTimeMillis();
         
         try {

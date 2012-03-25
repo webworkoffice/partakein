@@ -17,7 +17,7 @@ public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, M
 
 	@Before
 	public void setup() throws DAOException {
-	    super.setup(getFactory().getDirectMessageAccess());
+	    super.setup(factory.getDirectMessageAccess());
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, M
 	
 	@Test
 	public void testIterateFromMostRecentToLeastRecent() throws DAOException {
-		IMessageAccess access = getFactory().getDirectMessageAccess();
+		IMessageAccess access = factory.getDirectMessageAccess();
 		PartakeConnection con = getPool().getConnection();
 		String eventId = "eventId" + System.currentTimeMillis();
 		try {

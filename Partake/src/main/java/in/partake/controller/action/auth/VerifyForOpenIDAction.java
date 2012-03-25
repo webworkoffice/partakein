@@ -12,7 +12,7 @@ import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
-import in.partake.service.OpenIDService;
+import in.partake.service.impl.OpenIDService;
 import in.partake.session.OpenIDLoginInformation;
 
 import java.util.Map;

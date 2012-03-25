@@ -8,7 +8,7 @@ import org.junit.Before;
 public class OpenIDLinkageAccessTest extends AbstractDaoTestCaseBase<IOpenIDLinkageAccess, OpenIDLinkage, String> {
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getOpenIDLinkageAccess());
+        super.setup(factory.getOpenIDLinkageAccess());
     }
     
     @Override

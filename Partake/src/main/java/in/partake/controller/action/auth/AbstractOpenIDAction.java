@@ -2,7 +2,7 @@ package in.partake.controller.action.auth;
 
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.OpenIDService;
+import in.partake.service.impl.OpenIDService;
 import in.partake.session.OpenIDLoginInformation;
 
 import org.openid4java.OpenIDException;

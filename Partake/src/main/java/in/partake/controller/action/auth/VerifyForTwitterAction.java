@@ -15,7 +15,7 @@ import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
-import in.partake.service.TwitterService;
+import in.partake.service.impl.TwitterService;
 import in.partake.session.TwitterLoginInformation;
 
 import java.util.Date;

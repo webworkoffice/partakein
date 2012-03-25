@@ -10,7 +10,7 @@ import org.junit.Before;
 public class EventFeedAccessTest extends AbstractDaoTestCaseBase<IEventFeedAccess, EventFeedLinkage, String> {    
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getEventFeedAccess());
+        super.setup(factory.getEventFeedAccess());
     }
     
     @Override

@@ -17,7 +17,7 @@ public class ImageAccessTest extends AbstractDaoTestCaseBase<IImageAccess, Image
 
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getImageAccess());
+        super.setup(factory.getImageAccess());
     }
 
     @Override

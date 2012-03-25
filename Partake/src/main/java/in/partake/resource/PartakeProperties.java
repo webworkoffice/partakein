@@ -96,6 +96,14 @@ public class PartakeProperties {
             return str;
         }
     }
+    
+    public String getPartakeServiceFactoryClassName() {
+        String str = properties.getProperty("in.partake.service.factory");
+        if (str == null)
+            return "in.partake.service.impl.PartakeServiceImpl";
+        
+        return str;
+    }
 
     public String getBitlyAPIKey() {
         return properties.getProperty("in.partake.bitly.apikey");
