@@ -23,7 +23,7 @@
 <ul>
     <li><a href="<%= request.getContextPath() %>/feed/all">全て</a></li>
     <li><a href="<%= request.getContextPath() %>/feed/upcoming/all">近日開催</a></li><%-- TODO 「新着イベント」と「近日開催されるイベント」は分けて配置すべき？ --%>
-    <% for (KeyValuePair kv : EventCategory.CATEGORIES) { %>
+    <% for (KeyValuePair kv : EventCategory.getCategories()) { %>
     <li><a href="<%= request.getContextPath() %>/feed/category/<%= kv.getKey() %>"><%= kv.getValue() %></a></li>
     <% } %>
 </ul>
@@ -34,9 +34,9 @@
 
 <ul>
     <li><a href="<%= request.getContextPath() %>/calendars/all">全て</a></li>
-    <% for (KeyValuePair kv : EventCategory.CATEGORIES) { %>
+    <% for (KeyValuePair kv : EventCategory.getCategories()) { %>
     <li><a href="<%= request.getContextPath() %>/calendars/category/<%= kv.getKey() %>"><%= kv.getValue() %></a></li>
-    <% } %>    
+    <% } %>
 </ul>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
