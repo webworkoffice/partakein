@@ -50,24 +50,9 @@ public class BinaryData extends PartakeModel<BinaryData> {
         // We don't create data from JSONObject.
     }
 
-    public BinaryData(BinaryData src, boolean deepCopy) {
-        this.id = src.id;
-        this.type = src.type;
-        if (deepCopy) {
-            this.data = src.data != null ? Arrays.copyOf(src.data, src.data.length) : null;
-        } else {
-            this.data = src.data;
-        }
-    }
-
     @Override
     public Object getPrimaryKey() {
         return id;
-    }
-
-    @Override
-    public BinaryData copy() {
-        return new BinaryData(this);
     }
 
     // ----------------------------------------------------------------------
@@ -116,7 +101,7 @@ public class BinaryData extends PartakeModel<BinaryData> {
     public byte[] getData() {
         return data;
     }
-    
+
     public void setId(String id) {
         checkFrozen();
         this.id = id;
@@ -130,5 +115,5 @@ public class BinaryData extends PartakeModel<BinaryData> {
     public void setData(byte[] data) {
         checkFrozen();
         this.data = data;
-    }    
+    }
 }

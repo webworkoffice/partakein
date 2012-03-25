@@ -42,7 +42,7 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     public TwitterLinkage(long twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
         this(String.valueOf(twitterId), screenName, name, accessToken, accessTokenSecret, profileImageURL, userId);
     }
-    
+
     public TwitterLinkage(TwitterLinkage linkage) {
         this.twitterId = linkage.twitterId;
         this.screenName = linkage.screenName;
@@ -52,7 +52,7 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
         this.profileImageURL = linkage.profileImageURL;
         this.userId = linkage.userId;
     }
-    
+
     public TwitterLinkage(JSONObject obj) {
         this.twitterId = obj.getString("twitterId");
         this.screenName = obj.getString("screenName");
@@ -67,11 +67,6 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     @Override
     public Object getPrimaryKey() {
         return twitterId;
-    }
-
-    @Override
-    public TwitterLinkage copy() {
-        return new TwitterLinkage(this);
     }
 
     public JSONObject toSafeJSON() {

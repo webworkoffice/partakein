@@ -71,11 +71,6 @@ public class ImageData extends PartakeModel<ImageData> {
         return id;
     }
 
-    @Override
-    public ImageData copy() {
-        return new ImageData(this);
-    }
-
     // ----------------------------------------------------------------------
     // equals / hashCode
 
@@ -132,7 +127,7 @@ public class ImageData extends PartakeModel<ImageData> {
     public byte[] getData() {
         return data;
     }
-    
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -156,7 +151,7 @@ public class ImageData extends PartakeModel<ImageData> {
         checkFrozen();
         this.data = data;
     }
-    
+
     public void setCreatedAt(Date createdAt) {
         checkFrozen();
         this.createdAt = createdAt;

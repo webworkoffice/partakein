@@ -27,11 +27,11 @@ public class Comment extends PartakeModel<Comment> {
     private boolean isHTML;     // true if HTML.
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date   createdAt;   // when
-    
+
     public Comment() {
         this(null, null, null, null, false, null);
     }
-    
+
     public Comment(String eventId, String userId, String comment, boolean isHTML, Date createdAt) {
         this(null, eventId, userId, comment, isHTML, createdAt);
     }
@@ -44,16 +44,16 @@ public class Comment extends PartakeModel<Comment> {
         this.isHTML = isHTML;
         this.createdAt = createdAt == null ? null : (Date) createdAt.clone();
     }
-    
+
     public Comment(Comment comment) {
-    	this.id = comment.id;
-    	this.eventId = comment.eventId;
-    	this.userId = comment.userId;
-    	this.comment = comment.comment;
-    	this.isHTML = comment.isHTML;
-    	this.createdAt = comment.createdAt == null ? null : (Date) comment.createdAt.clone();
+        this.id = comment.id;
+        this.eventId = comment.eventId;
+        this.userId = comment.userId;
+        this.comment = comment.comment;
+        this.isHTML = comment.isHTML;
+        this.createdAt = comment.createdAt == null ? null : (Date) comment.createdAt.clone();
     }
-    
+
     public Comment(JSONObject obj) {
         this.id = obj.getString("id");
         this.eventId = obj.getString("eventId");
@@ -62,17 +62,12 @@ public class Comment extends PartakeModel<Comment> {
         this.isHTML = obj.getBoolean("isHTML");
         this.createdAt = new Date(obj.getLong("createdAt"));
     }
-    
+
     @Override
     public Object getPrimaryKey() {
         return id;
     }
-    
-    @Override
-    public Comment copy() {
-        return new Comment(this);
-    }
-    
+
     @Override
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
@@ -84,10 +79,10 @@ public class Comment extends PartakeModel<Comment> {
         json.put("isHTML", isHTML);
         if (createdAt != null)
             json.put("createdAt", createdAt.getTime());
-        
+
         return json;
     }
-    
+
     public static Comment fromJSON(JSONObject json) {
         if (!json.containsKey("id"))
             return null;
@@ -95,7 +90,7 @@ public class Comment extends PartakeModel<Comment> {
             return null;
         if (!json.containsKey("userId"))
             return null;
-        
+
         Comment comment = new Comment();
         comment.id = json.getString("id");
         comment.eventId = json.getString("eventId");
@@ -111,17 +106,17 @@ public class Comment extends PartakeModel<Comment> {
             comment.createdAt = null;
         return comment;
     }
-    
+
     // ----------------------------------------------------------------------
     // equals method
 
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Comment)) { return false; }
-        
+
         Comment lhs = this;
         Comment rhs = (Comment) obj;
-        
+
         if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
         if (!ObjectUtils.equals(lhs.eventId, rhs.eventId)) { return false; }
         if (!ObjectUtils.equals(lhs.userId, rhs.userId)) { return false; }
@@ -131,58 +126,58 @@ public class Comment extends PartakeModel<Comment> {
 
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int code = 0;
-        
+
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(eventId);
         code = code * 37 + ObjectUtils.hashCode(userId);
         code = code * 37 + ObjectUtils.hashCode(comment);
         code = code * 37 + ObjectUtils.hashCode(isHTML);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
-        
+
         return code;
     }
-    
-    
+
+
     // ----------------------------------------------------------------------
     // accessors
 
-	public String getId() {
-	    return id;
-	}
-	
-	public String getEventId() {
-	    return eventId;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getUserId() {
-	    return userId;
-	}
-	
-	public String getComment() {
-	    return comment;
-	}
-	
-	public boolean isHTML() {
-	    return isHTML;
-	}
-	
-	public Date getCreatedAt() {
-	    return createdAt;
-	}
-	
-	public void setId(String id) {
-	    checkFrozen();
-	    this.id = id;
-	}
-	
-	public void setEventId(String eventId) {
-	    checkFrozen();
-	    this.eventId = eventId;
-	}
+    public String getEventId() {
+        return eventId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public boolean isHTML() {
+        return isHTML;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setId(String id) {
+        checkFrozen();
+        this.id = id;
+    }
+
+    public void setEventId(String eventId) {
+        checkFrozen();
+        this.eventId = eventId;
+    }
 
     public void setUserId(String userId) {
         checkFrozen();
@@ -198,7 +193,7 @@ public class Comment extends PartakeModel<Comment> {
         checkFrozen();
         this.isHTML = isHTML;
     }
-    
+
     public void setCreatedAt(Date createdAt) {
         checkFrozen();
         this.createdAt = createdAt;

@@ -268,11 +268,6 @@ public class Event extends PartakeModel<Event> {
         return id;
     }
 
-    @Override
-    public Event copy() {
-        return new Event(this);
-    }
-
     /** JSON string for external clients.
      * TODO: All Date should be long instead of Formatted date. However, maybe some clients uses this values... What should we do?
      * Maybe we should take a version number in request query. The version 2 format should obey the rule.
