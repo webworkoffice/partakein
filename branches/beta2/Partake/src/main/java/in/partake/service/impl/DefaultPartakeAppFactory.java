@@ -1,13 +1,15 @@
 package in.partake.service.impl;
 
 import in.partake.app.PartakeAppFactory;
+import in.partake.daemon.impl.DaemonInitializer;
 import in.partake.service.IBitlyService;
 import in.partake.service.IDBService;
+import in.partake.service.IDaemonInitializer;
 import in.partake.service.IEventSearchService;
 import in.partake.service.IOpenIDService;
 import in.partake.service.ITestService;
 import in.partake.service.ITwitterService;
-import in.partake.view.IViewInitializer;
+import in.partake.service.IViewInitializer;
 import in.partake.view.impl.ViewInitializerImpl;
 
 public class DefaultPartakeAppFactory implements PartakeAppFactory {
@@ -45,5 +47,10 @@ public class DefaultPartakeAppFactory implements PartakeAppFactory {
     @Override
     public IViewInitializer createViewInitializer() throws Exception {
         return new ViewInitializerImpl();
+    }
+
+    @Override
+    public IDaemonInitializer createDaemonInitializer() throws Exception {
+        return new DaemonInitializer();
     }
 }

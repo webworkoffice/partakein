@@ -1,7 +1,8 @@
-package in.partake.daemon;
+package in.partake.daemon.impl;
 
 import in.partake.base.PartakeException;
 import in.partake.base.Util;
+import in.partake.daemon.IPartakeDaemonTask;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
 import in.partake.model.IPartakeDAOs;
@@ -22,7 +23,12 @@ import in.partake.model.dto.auxiliary.ModificationStatus;
 import java.util.Date;
 import java.util.List;
 
-public class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> {
+class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> implements IPartakeDaemonTask {
+
+    @Override
+    public void run() throws Exception {
+        this.execute();
+    }
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {

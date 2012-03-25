@@ -1,6 +1,7 @@
-package in.partake.daemon;
+package in.partake.daemon.impl;
 
 import in.partake.base.PartakeException;
+import in.partake.daemon.IPartakeDaemonTask;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
@@ -25,8 +26,13 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
-public class SendEnvelopeTask extends Transaction<Void> {
+class SendEnvelopeTask extends Transaction<Void> implements IPartakeDaemonTask {
     private static final Logger logger = Logger.getLogger(SendEnvelopeTask.class);
+
+    @Override
+    public void run() throws Exception {
+        this.execute();
+    }
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {

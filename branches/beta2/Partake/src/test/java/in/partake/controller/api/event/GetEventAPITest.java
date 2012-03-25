@@ -6,6 +6,7 @@ import com.opensymphony.xwork2.ActionProxy;
 
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.resource.UserErrorCode;
 
 public class GetEventAPITest extends APIControllerTest {
     @Test
@@ -23,17 +24,18 @@ public class GetEventAPITest extends APIControllerTest {
         // addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.MISSING_EVENT_ID);
     }
 
     @Test
     public void testGetEventWithInvalidId() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/");
-        addParameter(proxy, "eventId", "invalid-event-id");
+        addParameter(proxy, "eventId", TestDataProvider.INVALID_EVENT_ID);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_EVENT_ID);
     }
+
 
     @Test
     public void testGetPrivateEventByOwner() throws Exception {

@@ -14,6 +14,7 @@ import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.pk.EnrollmentPK;
+import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.session.PartakeSession;
@@ -38,7 +39,7 @@ import com.opensymphony.xwork2.ActionProxy;
 // When a test class extends TestCase class, such a test class seems to run on JUnit3.
 // To avoid it, @RunWith(JUnit4.class) is set.
 @RunWith(JUnit4.class)
-public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
+public abstract class AbstractPartakeControllerTest extends StrutsTestCase implements TestDataProviderConstants {
 
     @BeforeClass
     public static void setUpOnce() throws Exception {

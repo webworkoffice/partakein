@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.resource.UserErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import com.opensymphony.xwork2.ActionProxy;
 
 public class GetAPITest extends APIControllerTest {
     private final String SESSION_TOKEN_URL = "/api/account/sessionToken";
-    
+
     @Test
     public void testToGetSessionTokenWithoutLogin() throws Exception {
         // Even if not logged in, the token session should be available.
@@ -28,7 +29,7 @@ public class GetAPITest extends APIControllerTest {
 
         proxy.execute();
         assertResultOK(proxy);
-        
+
         JSONObject obj = getJSON(proxy);
         Assert.assertNotNull(obj.get("token"));
     }
@@ -39,10 +40,10 @@ public class GetAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy(SESSION_TOKEN_URL);
 
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
-        
+
         proxy.execute();
         assertResultOK(proxy);
-        
+
         JSONObject obj = getJSON(proxy);
         Assert.assertNotNull(obj.get("token"));
     }
@@ -51,17 +52,17 @@ public class GetAPITest extends APIControllerTest {
     public void testToGetWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/");
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
-        
+
         proxy.execute();
         assertResultOK(proxy);
 
         // Check JSON
-        
+
         JSONObject obj = getJSON(proxy);
         assertThat((String) obj.get("id"), is(TestDataProvider.DEFAULT_USER_ID));
-        
+
         // TODO: Checks Twitter?
-        
+
         // Checks UserPreference.
         JSONObject prefObj = obj.getJSONObject("preference");
         UserPreference pref = UserPreference.getDefaultPreference(TestDataProvider.DEFAULT_USER_ID);
@@ -77,14 +78,14 @@ public class GetAPITest extends APIControllerTest {
         assertThat(openIds, hasItem(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
         assertThat(openIds, hasItem(TestDataProvider.DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER));
     }
-    
+
     @Test
     public void testToGetWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/");
 
         proxy.execute();
         assertResultLoginRequired(proxy);
-    }    
+    }
 
     @Test
     public void testToSetPreferenceWithLogin() throws Exception {
@@ -94,23 +95,23 @@ public class GetAPITest extends APIControllerTest {
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
-        
+
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
-        
+
         addValidSessionTokenToParameter(proxy);
         addParameter(proxy, "profilePublic", "false");
         addParameter(proxy, "receivingTwitterMessage", "false");
-        addParameter(proxy, "tweetingAttendanceAutomatically", "true");        
+        addParameter(proxy, "tweetingAttendanceAutomatically", "true");
         proxy.execute();
-        
+
         assertResultOK(proxy);
-        
+
         pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(false, pref.isProfilePublic());
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
     }
-    
+
     @Test
     public void testToSetPreferenceWithLoginWithoutArgument() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
@@ -119,30 +120,30 @@ public class GetAPITest extends APIControllerTest {
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
-        
+
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addValidSessionTokenToParameter(proxy);
         proxy.execute();
-        
+
         assertResultOK(proxy);
-        
+
         pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
     }
-    
+
     @Test
     public void testToSetPreferenceWithLoginWithInvalidSessionToken() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addInvalidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_SECURITY_CSRF);
     }
-    
+
     @Test
     public void testToSetPreferenceWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
@@ -150,7 +151,7 @@ public class GetAPITest extends APIControllerTest {
         proxy.execute();
         assertResultLoginRequired(proxy);
     }
-    
+
     @Test
     public void testToRemoveOpenID() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
@@ -158,12 +159,12 @@ public class GetAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultOK(proxy);
-        
+
         // Check the OpenID has been really removed.
-        List<String> identifiers = loadOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID); 
+        List<String> identifiers = loadOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertNotNull(identifiers);
         Assert.assertFalse(identifiers.contains(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
     }
@@ -175,7 +176,7 @@ public class GetAPITest extends APIControllerTest {
         // When not login, should fail.
         addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultLoginRequired(proxy);
     }
@@ -186,10 +187,10 @@ public class GetAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
         loginAs(proxy, TestDataProvider.DEFAULT_ANOTHER_USER_ID);
-        
+
         addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -200,11 +201,11 @@ public class GetAPITest extends APIControllerTest {
 
         // Check CSRF prevention works.
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
-        
+
         addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addInvalidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
-    }    
+    }
 }

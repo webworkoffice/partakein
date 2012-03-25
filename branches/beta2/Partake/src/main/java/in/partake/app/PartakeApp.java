@@ -5,9 +5,10 @@ import in.partake.service.IBitlyService;
 import in.partake.service.IDBService;
 import in.partake.service.IEventSearchService;
 import in.partake.service.IOpenIDService;
+import in.partake.service.IDaemonInitializer;
 import in.partake.service.ITestService;
 import in.partake.service.ITwitterService;
-import in.partake.view.IViewInitializer;
+import in.partake.service.IViewInitializer;
 
 import org.apache.log4j.Logger;
 
@@ -20,7 +21,10 @@ public class PartakeApp {
     private static ITwitterService twitterService;
     private static ITestService testService;
     private static IOpenIDService openIDService;
+
+    // Initializers
     private static IViewInitializer viewInitializer;
+    private static IDaemonInitializer daemonInitializer;
 
     public static void initialize() throws Exception {
         PartakeProperties.get().reset();
@@ -61,9 +65,12 @@ public class PartakeApp {
         twitterService = factory.createTwitterService();
         openIDService = factory.createOpenIDService();
         viewInitializer = factory.createViewInitializer();
+        daemonInitializer = factory.createDaemonInitializer();
 
         if (dbService != null)
             dbService.initialize();
+        if (daemonInitializer != null)
+            daemonInitializer.initialize();
     }
 
     public static IDBService getDBService() {
@@ -92,5 +99,9 @@ public class PartakeApp {
 
     public static IViewInitializer getViewInitializer() {
         return viewInitializer;
+    }
+
+    public static IDaemonInitializer getDaemonInitializer() {
+        return daemonInitializer;
     }
 }

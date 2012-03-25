@@ -5,8 +5,8 @@ import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.service.ITestService;
 import in.partake.service.ITwitterService;
+import in.partake.service.IViewInitializer;
 import in.partake.session.TwitterLoginInformation;
-import in.partake.view.IViewInitializer;
 
 import org.mockito.Mockito;
 
