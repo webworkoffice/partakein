@@ -55,7 +55,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME +
-                    "(id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, editorNames TEXT NOT NULL, draft BOOL NOT NULL, isPrivate BOOL NOT NULL, beginDate TIMESTAMP NOT NULL)");
+                    "(id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, editorNames TEXT, draft BOOL NOT NULL, isPrivate BOOL NOT NULL, beginDate TIMESTAMP NOT NULL)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "OwnerId"     + " ON " + INDEX_TABLE_NAME + "(ownerId, draft, beginDate)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EditorNames" + " ON " + INDEX_TABLE_NAME + "(editorNames, draft, beginDate)");            
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "Draft"       + " ON " + INDEX_TABLE_NAME + "(draft)");

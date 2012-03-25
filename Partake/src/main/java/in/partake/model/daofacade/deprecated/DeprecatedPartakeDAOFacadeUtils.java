@@ -106,9 +106,7 @@ public class DeprecatedPartakeDAOFacadeUtils {
         if (comment == null) { return null; }
         UserEx user = getUserEx(con, factory, comment.getUserId());
         if (user == null) { return null; }
-        EventEx event = getEventEx(con, factory, comment.getEventId());
-        if (event == null) { return null; }
-        return new CommentEx(comment, event, user);
+        return new CommentEx(comment, user);
     }
     
     public static EventRelationEx getEventRelationEx(PartakeConnection con, PartakeDAOFactory factory, EventRelation relation) throws DAOException {

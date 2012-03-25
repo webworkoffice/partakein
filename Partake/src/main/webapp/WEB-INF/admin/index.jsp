@@ -1,6 +1,5 @@
 <%@page import="in.partake.controller.action.admin.AdminPageAction"%>
 <%@page import="in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade"%>
-<%@page import="in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade.EventCount"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <!DOCTYPE html>
