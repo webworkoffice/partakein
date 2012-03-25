@@ -2,6 +2,7 @@ package in.partake.model.dto.auxiliary;
 
 
 public enum CalculatedEnrollmentStatus {
+    UNKNOWN("unknown"),
 	ENROLLED("enrolled"),
 	ENROLLED_ON_WAITING_LIST("enrolledOnWaitingList"),
 	RESERVED("reserved"),

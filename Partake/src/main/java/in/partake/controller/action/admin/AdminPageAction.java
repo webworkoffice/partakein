@@ -9,6 +9,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IUserAccess;
+import in.partake.model.dao.aux.EventFilterCondition;
 import in.partake.model.dao.base.Transaction;
 import in.partake.service.DBService;
 
@@ -89,10 +90,10 @@ class CountTransaction extends Transaction<Void> {
 
         IEventAccess eventAccess = DBService.getFactory().getEventAccess();
         countEvent = eventAccess.count(con);
-        countPublicEvent = eventAccess.count(con, IEventAccess.EventFilterCondition.PUBLIC_EVENT_ONLY);
-        countPrivateEvent = eventAccess.count(con, IEventAccess.EventFilterCondition.PRIVATE_EVENT_ONLY);
-        countDraftEvent = eventAccess.count(con, IEventAccess.EventFilterCondition.DRAFT_EVENT_ONLY);
-        countPublishedEvent = eventAccess.count(con, IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY);
+        countPublicEvent = eventAccess.count(con, EventFilterCondition.PUBLIC_EVENT_ONLY);
+        countPrivateEvent = eventAccess.count(con, EventFilterCondition.PRIVATE_EVENT_ONLY);
+        countDraftEvent = eventAccess.count(con, EventFilterCondition.DRAFT_EVENT_ONLY);
+        countPublishedEvent = eventAccess.count(con, EventFilterCondition.PUBLISHED_EVENT_ONLY);
         return null;
     }
     

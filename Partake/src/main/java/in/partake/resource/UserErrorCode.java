@@ -35,9 +35,10 @@ public enum UserErrorCode {
     INVALID_ATTENDANT_EDIT("invalid.attendant.edit"),
     EVENT_ALREADY_PUBLISHED("invalid.event.publish.already"),
     
-    // USER ID
+    // USER
     INVALID_USER_ID("invalid.invalid_userid"),
     MISSING_USER_ID("invalid.missing_userid"),
+    INVALID_USER_PRIVATE("invalid.user.profile.private", 403),
 
     // OPEN_ID
     INVALID_OPENID("invalid.invalid_openid"),
