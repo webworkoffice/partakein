@@ -240,7 +240,11 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         
         return id;
     }
-    
+
+    protected String getValidUserIdParameter(UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
+        return getValidIdParameter("userId", missing, invalid);
+    }
+
     protected String getValidUserIdParameter() throws PartakeException {
         return getValidIdParameter("userId", UserErrorCode.MISSING_USER_ID, UserErrorCode.INVALID_USER_ID);
     }

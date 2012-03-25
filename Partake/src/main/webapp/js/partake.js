@@ -186,6 +186,36 @@
 	};
 
 	// ----------------------------------------------------------------------
+	// User
+	
+	Partake.prototype.user = {
+		partake: this,
+		
+		getEvents: function(userId, queryType, offset, limit) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				userId: userId,
+				queryType: queryType,
+				offset: offset,
+				limit: limit
+			};
+
+			return $.post('/api/user/events', arg);
+		},
+		
+		getEnrollments: function(userId, offset, limit) {
+			var arg = {
+				sessionToken: partake.sessionToken,
+				userId: userId,
+				offset: offset,
+				limit: limit
+			};
+
+			return $.post('/api/user/enrollments', arg);
+		}
+	};
+
+	// ----------------------------------------------------------------------
 	// Message
 	
 	Partake.prototype.message = {
@@ -202,6 +232,14 @@
 		}
 	};
 
+	Partake.prototype.defaultFailHandler = function (xhr) {
+		try {
+			var json = $.parseJSON(xhr.responseText);
+			alert(json.reason);
+		} catch (e) {
+			alert('レスポンスが JSON 形式ではありません。');
+		}
+	};
 
 	// ----------------------------------------------------------------------
 

@@ -14,10 +14,16 @@
 
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<h1><img src="<%= request.getContextPath() %>/images/private.png" alt="" />このユーザーはプライベートモードに設定されています</h1>
+<div class="page-header">
+    <h1>このユーザーはプライベートモードに設定されています</h1>
+</div>
 
-<p>このユーザーのマイページは「非公開」に設定されているため、表示することが出来ません。</p>
-<img class="musangas" src="<%= request.getContextPath() %>/images/sorry.png" alt="" />
+<div class="row">
+    <div class="span12">
+		<p>このユーザーのマイページは「非公開」に設定されているため、表示することが出来ません。</p>
+		<img class="musangas" src="<%= request.getContextPath() %>/images/sorry.png" alt="" />
+	</div>
+</div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

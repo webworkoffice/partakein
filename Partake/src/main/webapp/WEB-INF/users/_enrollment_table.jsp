@@ -1,15 +1,16 @@
+<%@page import="in.partake.controller.action.user.ShowAction"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.controller.action.mypage.MypageAction"%>
 <%@page import="in.partake.model.UserEx"%>
-<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="static in.partake.view.util.Helper.h" %>
 
 <%
-	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
-	MypageAction action = (MypageAction) request.getAttribute(Constants.ATTR_ACTION);
-	
+	ShowAction action = (ShowAction) request.getAttribute(Constants.ATTR_ACTION);
+    UserEx user = action.getUser();
+
 	String ident = (String) request.getParameter("ident");
 %>
 
@@ -35,6 +36,7 @@
 <script>
 (function() {
 	var ident = '<%= h(ident) %>';
+	var userId = '<%= h(user.getId()) %>';
 	
 	function createTable(nthPage, eventStatuses) {
 		if (!eventStatuses || !eventStatuses.length) {
@@ -95,9 +97,9 @@
 	}
 	
 	function update(nthPage) {
-		partake.account.getEnrollments((nthPage - 1) * 10, 10)
+		partake.user.getEnrollments(userId, (nthPage - 1) * 10, 10)
 		.done(function (json) {
-			createTable(nthPage, json.eventStatuses);
+		    createTable(nthPage, json.eventStatuses);
 			var lst = partakeUI.pagination($('#' + ident + '-pagination'), nthPage, json.numTotalEvents, 10);
 			for (var i = 0; i < lst.length; ++i) {
 				lst[i].anchor.click((function(i) {
