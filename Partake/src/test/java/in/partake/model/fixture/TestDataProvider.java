@@ -1,8 +1,8 @@
 package in.partake.model.fixture;
 
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
 
 import java.util.UUID;
 
@@ -19,14 +19,14 @@ public abstract class TestDataProvider<T> {
     public static final String DEFAULT_ANOTHER_USER_ID = new UUID(1, 1).toString();
     public static final String DEFAULT_ANOTHER_TWITTER_ID = "1";
     public static final String DEFAULT_ANOTHER_TWITTER_SCREENNAME = "testUser2";
-    
+
     public static final String USER_WITHOUT_PREF_ID = new UUID(1, 2).toString();
     public static final String USER_WITHOUT_PREF_TWITTER_ID = "2";
     public static final String USER_WITHOUT_PREF_SCREENNAME = "testUser3";
 
     public static final String ADMIN_USER_ID = new UUID(1, 8).toString();
     public static final String ADMIN_USER_TWITTER_ID = "8";
-    public static final String ADMIN_USER_SCREENNAME = "partakein";    
+    public static final String ADMIN_USER_SCREENNAME = "partakein";
 
     public static final String EVENT_OWNER_ID = new UUID(1, 10).toString();
     public static final String EVENT_OWNER_TWITTER_ID = "10";
@@ -47,7 +47,7 @@ public abstract class TestDataProvider<T> {
     public static final String EVENT_VIP_ENROLLED_USER_ID = new UUID(1, 41).toString();
     public static final String EVENT_VIP_ENROLLED_USER_TWITTER_ID = "41";
     public static final String EVENT_VIP_ENROLLED_USER_TWITTER_SCREENNAME = "eventVipEnrolledUser";
-    
+
     public static final String EVENT_RESERVED_USER_ID = new UUID(1, 50).toString();
     public static final String EVENT_RESERVED_USER_TWITTER_ID = "50";
     public static final String EVENT_RESERVED_USER_TWITTER_SCREENNAME = "eventReservedUser";
@@ -99,9 +99,9 @@ public abstract class TestDataProvider<T> {
 
     // Calendar Id
     public static final String DEFAULT_CALENDAR_ID = new UUID(5, 1).toString();
-    
+
     // TODO: Name should be more descriptive.
     public abstract T create();
     public abstract T create(long pkNumber, String pkSalt, int objNumber);
-    public abstract void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException;
+    public abstract void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException;
 }

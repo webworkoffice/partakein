@@ -18,7 +18,7 @@ public class EventEx extends Event {
     private String feedId;
     private String cachedShortenedURL;
     private List<EventRelationEx> eventRelations;
-    
+
     public EventEx(Event event, UserEx owner, String feedId, String cachedShortenedURL, List<EventRelationEx> eventRelations) {
         super(event);
         this.owner = owner;
@@ -26,49 +26,49 @@ public class EventEx extends Event {
         this.cachedShortenedURL = cachedShortenedURL;
         this.eventRelations = eventRelations;
     }
-    
+
     public UserEx getOwner() {
         return owner;
     }
-    
+
     public String getFeedId() {
         return feedId;
     }
-    
+
     public String getCachedShortenedURL() {
         return cachedShortenedURL;
     }
-    
+
     public String getShortenedURL() {
         if (cachedShortenedURL != null) { return cachedShortenedURL; }
         return getEventURL();
     }
-    
+
     public List<EventRelationEx> getEventRelations() {
         return Collections.unmodifiableList(eventRelations);
     }
-    
+
     // ----------------------------------------------------------------------
-    
+
     public boolean hasEndDate() {
         return getEndDate() != null;
     }
-    
+
     public String getDefaultTwitterPromotionMessage() {
-        String shortenedURL = getShortenedURL(); 
-        
+        String shortenedURL = getShortenedURL();
+
         StringBuilder builder = new StringBuilder();
         builder.append(getTitle());
         builder.append(" ").append(shortenedURL).append(" ");
         if (getHashTag() != null && !"".equals(getHashTag())) {
             builder.append(" ").append(getHashTag());
         }
-        
-        return builder.toString(); 
+
+        return builder.toString();
     }
-    
+
     /**
-     * From participations, distribute participation to enrolled, spare, or cancelled. 
+     * From participations, distribute participation to enrolled, spare, or cancelled.
      * @param participations
      * @return
      */
@@ -77,7 +77,7 @@ public class EventEx extends Event {
         List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>();
         List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>();
         boolean timeover = isReservationTimeOver();
-        
+
         int reservedEnrolled = 0;
         int reservedSpare = 0;
 
@@ -96,7 +96,7 @@ public class EventEx extends Event {
             case RESERVED:
                 if (timeover) {
                     cancelledParticipations.add(participation);
-                } else if (getCapacity() == 0 || enrolledParticipations.size() < getCapacity()) {                   
+                } else if (getCapacity() == 0 || enrolledParticipations.size() < getCapacity()) {
                     enrolledParticipations.add(participation);
                     ++reservedEnrolled;
                 } else {
@@ -106,16 +106,16 @@ public class EventEx extends Event {
                 break;
             case NOT_ENROLLED: // TODO: shouldn't happen.
                 cancelledParticipations.add(participation);
-                break; 
+                break;
             }
         }
-        
+
         return new ParticipationList(enrolledParticipations, spareParticipations, cancelledParticipations, reservedEnrolled, reservedSpare);
     }
 
     public boolean hasPermission(UserEx user, UserPermission permission) {
         if (user == null || permission == null) { return false; }
-        
+
         // TODO: Hmm... UserPermission should have a check method. This should be polymorphic.
         switch (permission) {
         case EVENT_EDIT:
@@ -131,17 +131,17 @@ public class EventEx extends Event {
         case EVENT_EDIT_PARTICIPANTS:
             return isOwner(user) || isManager(user);
         }
-        
+
         throw new RuntimeException("Unknown permission is being required... This must be a bug.");
     }
-    
+
     /** return true if [user] is the owner of the event. */
     private boolean isOwner(User user) {
         if (user == null || user.getId() == null) { return false; }
         if (getOwnerId() == null) { return false; }
         return getOwnerId().equals(user.getId());
     }
-    
+
     private boolean isManager(UserEx user) {
         if (user == null || user.getTwitterLinkage() == null) { return false; }
         return isManager(user.getTwitterLinkage().getScreenName());

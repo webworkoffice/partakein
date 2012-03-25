@@ -1,9 +1,9 @@
 package in.partake.model.fixture.impl;
 
 import in.partake.base.TimeUtil;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.User;
 import in.partake.model.fixture.TestDataProvider;
@@ -35,27 +35,27 @@ public class UserTestDataProvider extends TestDataProvider<User> {
      * @throws DAOException
      */
     @Override
-    public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
-        IUserAccess dao = factory.getUserAccess();
+    public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
+        IUserAccess dao = daos.getUserAccess();
         dao.truncate(con);
 
         Date now = TimeUtil.getCurrentDate();
 
         dao.put(con, new User(DEFAULT_USER_ID, DEFAULT_TWITTER_ID, now, null));
-        dao.put(con, new User(DEFAULT_ANOTHER_USER_ID, DEFAULT_ANOTHER_TWITTER_ID, now, null)); 
+        dao.put(con, new User(DEFAULT_ANOTHER_USER_ID, DEFAULT_ANOTHER_TWITTER_ID, now, null));
         dao.put(con, new User(ADMIN_USER_ID, ADMIN_USER_TWITTER_ID, now, null));
         dao.put(con, new User(USER_WITHOUT_PREF_ID, USER_WITHOUT_PREF_TWITTER_ID, now, null));
-        
-        dao.put(con, new User(EVENT_OWNER_ID, EVENT_OWNER_TWITTER_ID, now, null)); 
-        dao.put(con, new User(EVENT_EDITOR_ID, EVENT_EDITOR_TWITTER_ID, now, null)); 
-        dao.put(con, new User(EVENT_COMMENTOR_ID, EVENT_COMMENTOR_TWITTER_ID, now, null)); 
+
+        dao.put(con, new User(EVENT_OWNER_ID, EVENT_OWNER_TWITTER_ID, now, null));
+        dao.put(con, new User(EVENT_EDITOR_ID, EVENT_EDITOR_TWITTER_ID, now, null));
+        dao.put(con, new User(EVENT_COMMENTOR_ID, EVENT_COMMENTOR_TWITTER_ID, now, null));
         dao.put(con, new User(EVENT_ENROLLED_USER_ID, EVENT_ENROLLED_USER_TWITTER_ID, now, null));
         dao.put(con, new User(EVENT_VIP_ENROLLED_USER_ID, EVENT_VIP_ENROLLED_USER_TWITTER_ID, now, null));
-        
-        dao.put(con, new User(EVENT_RESERVED_USER_ID, EVENT_RESERVED_USER_TWITTER_ID, now, null)); 
-        dao.put(con, new User(EVENT_CANCELLED_USER_ID, EVENT_CANCELLED_USER_TWITTER_ID, now, null)); 
+
+        dao.put(con, new User(EVENT_RESERVED_USER_ID, EVENT_RESERVED_USER_TWITTER_ID, now, null));
+        dao.put(con, new User(EVENT_CANCELLED_USER_ID, EVENT_CANCELLED_USER_TWITTER_ID, now, null));
         dao.put(con, new User(EVENT_UNRELATED_USER_ID, EVENT_UNRELATED_USER_TWITTER_ID, now, null));
-        
+
         dao.put(con, new User(ATTENDANCE_PRESENT_USER_ID, ATTENDANCE_PRESENT_USER_TWITTER_ID, now, null));
         dao.put(con, new User(ATTENDANCE_ABSENT_USER_ID, ATTENDANCE_ABSENT_USER_TWITTER_ID, now, null));
         dao.put(con, new User(ATTENDANCE_UNKNOWN_USER_ID, ATTENDANCE_UNKNOWN_USER_TWITTER_ID, now, null));

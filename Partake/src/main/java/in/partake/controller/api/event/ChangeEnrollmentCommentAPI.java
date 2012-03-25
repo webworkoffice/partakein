@@ -5,10 +5,11 @@ import in.partake.base.TimeUtil;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
@@ -55,8 +56,8 @@ class ChangeEnrollmentCommentTransaction extends Transaction<Void> {
     }
 
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        EventEx event = EventDAOFacade.getEventEx(con, eventId);
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
 
@@ -67,17 +68,17 @@ class ChangeEnrollmentCommentTransaction extends Transaction<Void> {
             throw new PartakeException(UserErrorCode.INVALID_ENROLL_TIMEOVER);
 
         // 現在の状況が登録されていない場合、
-        List<EventRelationEx> relations = EventDAOFacade.getEventRelationsEx(con, event);
-        ParticipationStatus currentStatus = EnrollmentDAOFacade.getParticipationStatus(con, user.getId(), eventId); 
+        List<EventRelationEx> relations = EventDAOFacade.getEventRelationsEx(con, daos, event);
+        ParticipationStatus currentStatus = EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), eventId);
         if (!currentStatus.isEnrolled()) {
-            List<Event> requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, user, relations); 
+            List<Event> requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, daos, user, relations);
             if (requiredEvents != null && !requiredEvents.isEmpty())
                 throw new PartakeException(UserErrorCode.INVALID_ENROLL_REQUIRED);
         }
 
         // TODO: EventService should have a function to change comment.
         // We should not use 'enroll' here.
-        EnrollmentDAOFacade.enrollImpl(con, user, event, currentStatus, comment, true, event.isReservationTimeOver());
+        EnrollmentDAOFacade.enrollImpl(con, daos, user, event, currentStatus, comment, true, event.isReservationTimeOver());
         return null;
     }
 }

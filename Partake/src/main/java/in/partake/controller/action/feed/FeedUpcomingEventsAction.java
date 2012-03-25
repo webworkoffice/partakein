@@ -1,12 +1,12 @@
 package in.partake.controller.action.feed;
 
+import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.model.EventEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.ServerErrorCode;
 import in.partake.service.IEventSearchService;
-import in.partake.service.PartakeService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,12 +40,12 @@ public class FeedUpcomingEventsAction extends AbstractFeedPageAction {
         feed.setDescription("近日開催されるイベントを(最大100)フィードします。");
 
         try {
-            IEventSearchService searchService = PartakeService.get().getEventSearchService();
+            IEventSearchService searchService = PartakeApp.getEventSearchService();
             List<String> eventIds = searchService.getUpcomingByCategory(category, 100);
-            
-            List<EventEx> events = new GetEventsTransaction(eventIds).execute();            
+
+            List<EventEx> events = new GetEventsTransaction(eventIds).execute();
             InputStream is = createFeed(feed, events);
-            
+
             return renderInlineStream(is, "application/rss+xml");
         } catch (IOException e) {
             return renderError(ServerErrorCode.ERROR_IO, e);

@@ -5,11 +5,11 @@ import in.partake.model.CommentEx;
 import in.partake.model.DirectMessageEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dto.Comment;
@@ -26,7 +26,6 @@ import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.DBService;
 import in.partake.service.EventSearchServiceException;
 import in.partake.service.IEventSearchService;
 
@@ -36,62 +35,61 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class EventDAOFacade {    
+public class EventDAOFacade {
     private static final Logger logger = Logger.getLogger(EventDAOFacade.class);
 
-    public static EventEx getEventEx(PartakeConnection con, String eventId) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-        Event event = factory.getEventAccess().find(con, eventId);
+    public static EventEx getEventEx(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
+        Event event = daos.getEventAccess().find(con, eventId);
         if (event == null) { return null; }
-        UserEx user = UserDAOFacade.getUserEx(con, event.getOwnerId());
+        UserEx user = UserDAOFacade.getUserEx(con, daos, event.getOwnerId());
         if (user == null) { return null; }
-        
-        String feedId = factory.getEventFeedAccess().findByEventId(con, eventId);
-        String shortenedURL = getShortenedURL(con, factory, event);
-        
-        List<EventRelation> relations = factory.getEventRelationAccess().findByEventId(con, eventId);
+
+        String feedId = daos.getEventFeedAccess().findByEventId(con, eventId);
+        String shortenedURL = getShortenedURL(con, daos, event);
+
+        List<EventRelation> relations = daos.getEventRelationAccess().findByEventId(con, eventId);
         List<EventRelationEx> relationExs = new ArrayList<EventRelationEx>();
         if (relations != null) {
             for (EventRelation relation : relations) {
-                EventRelationEx relationEx = getEventRelationEx(con, factory, relation);
+                EventRelationEx relationEx = getEventRelationEx(con, daos, relation);
                 if (relationEx == null) { continue; }
                 relationExs.add(relationEx);
             }
         }
-        
+
         return new EventEx(event, user, feedId, shortenedURL, relationExs);
     }
 
-    public static EventRelationEx getEventRelationEx(PartakeConnection con, PartakeDAOFactory factory, EventRelation relation) throws DAOException {
-        Event event = factory.getEventAccess().find(con, relation.getDstEventId());
+    public static EventRelationEx getEventRelationEx(PartakeConnection con, IPartakeDAOs daos, EventRelation relation) throws DAOException {
+        Event event = daos.getEventAccess().find(con, relation.getDstEventId());
         if (event == null) { return null; }
         return new EventRelationEx(relation, event);
     }
 
-    public static String getShortenedURL(PartakeConnection con, PartakeDAOFactory factory, Event event) throws DAOException {
+    public static String getShortenedURL(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
         // TODO: Connection 掴んだまま BitlyService 呼び出すとか狂気の沙汰すぎる。
-        ShortenedURLData shortenedURLData = factory.getURLShortenerAccess().findByURL(con, event.getEventURL());
+        ShortenedURLData shortenedURLData = daos.getURLShortenerAccess().findByURL(con, event.getEventURL());
 //        if (shortenedURLData == null) {
 //            Date now = new Date();
 //            try {
 //                if (bitlyRateLimitExceededTime == null || now.before(new Date(bitlyRateLimitExceededTime.getTime() + 1000 * 1800))) { // rate limit が出ていたら 30 分待つ。
 //                    String bitlyShortenedURL = BitlyService.callBitlyShortenURL(event.getEventURL());
-//                    shortenedURLData = new ShortenedURLData(event.getEventURL(), "bitly", bitlyShortenedURL); 
+//                    shortenedURLData = new ShortenedURLData(event.getEventURL(), "bitly", bitlyShortenedURL);
 //                    factory.getURLShortenerAccess().put(con, shortenedURLData);
 //                }
 //            } catch (BitlyException e) {
 //                // TODO: debugging...
 //                logger.info(bitlyRateLimitExceededTime != null ? bitlyRateLimitExceededTime : "bitlyRateLimitExceededTime is NULL now.");
 //                logger.info("now = " + now.toString());
-//                
+//
 //                logger.error("failed to shorten URL " + now.toString(), e);
-//                
+//
 //                //if (e.getMessage().contains("RATE_LIMIT_EXCEEDED")) {
 //                    bitlyRateLimitExceededTime = now;
 //                //}
 //            }
 //        }
-        
+
         if (shortenedURLData != null) {
             return shortenedURLData.getShortenedURL();
         } else {
@@ -104,59 +102,53 @@ public class EventDAOFacade {
      * event をデータベースに保持します。
      * @return event id
      */
-    public static String create(PartakeConnection con, Event eventEmbryo) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory(); 
-
-        String eventId = factory.getEventAccess().getFreshId(con);
+    public static String create(PartakeConnection con, IPartakeDAOs daos, Event eventEmbryo) throws DAOException {
+        String eventId = daos.getEventAccess().getFreshId(con);
         eventEmbryo.setId(eventId);
-        factory.getEventAccess().put(con, eventEmbryo);
+        daos.getEventAccess().put(con, eventEmbryo);
 
         // Feed Dao にも挿入。
-        String feedId = factory.getEventFeedAccess().findByEventId(con, eventId);
+        String feedId = daos.getEventFeedAccess().findByEventId(con, eventId);
         if (feedId == null) {
-            feedId = factory.getEventFeedAccess().getFreshId(con);
-            factory.getEventFeedAccess().put(con, new EventFeedLinkage(feedId, eventId));
+            feedId = daos.getEventFeedAccess().getFreshId(con);
+            daos.getEventFeedAccess().put(con, new EventFeedLinkage(feedId, eventId));
         }
 
         // Event Activity にも挿入
         {
-            IEventActivityAccess eaa = factory.getEventActivityAccess();
+            IEventActivityAccess eaa = daos.getEventActivityAccess();
             EventActivity activity = new EventActivity(eaa.getFreshId(con), eventEmbryo.getId(), "イベントが登録されました : " + eventEmbryo.getTitle(), eventEmbryo.getDescription(), eventEmbryo.getCreatedAt());
             eaa.put(con, activity);
         }
 
         // さらに、twitter bot がつぶやく (private の場合はつぶやかない)
         if (!eventEmbryo.isPrivate() && !eventEmbryo.isPreview()) {
-            tweetNewEventArrival(con, eventEmbryo);
+            tweetNewEventArrival(con, daos, eventEmbryo);
         }
 
         return eventEmbryo.getId();
     }
 
-    public static void modify(PartakeConnection con, Event eventEmbryo) throws DAOException { 
+    public static void modify(PartakeConnection con, IPartakeDAOs daos, Event eventEmbryo) throws DAOException {
         assert eventEmbryo != null;
         assert eventEmbryo.getId() != null;
 
-        PartakeDAOFactory factory = DBService.getFactory();
-
         // master を update
-        factory.getEventAccess().put(con, eventEmbryo);
+        daos.getEventAccess().put(con, eventEmbryo);
 
         // Event Activity にも挿入
         {
-            IEventActivityAccess eaa = factory.getEventActivityAccess();
+            IEventActivityAccess eaa = daos.getEventActivityAccess();
             EventActivity activity = new EventActivity(eaa.getFreshId(con), eventEmbryo.getId(), "イベントが更新されました : " + eventEmbryo.getTitle(), eventEmbryo.getDescription(), eventEmbryo.getCreatedAt());
             eaa.put(con, activity);
         }
-        
+
         // TODO: twitter bot が更新をつぶやいてもいいような気がする。
     }
 
-    public static List<EventRelationEx> getEventRelationsEx(PartakeConnection con, Event event) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-
+    public static List<EventRelationEx> getEventRelationsEx(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
         List<EventRelationEx> relations = new ArrayList<EventRelationEx>();
-        for (EventRelation relation : factory.getEventRelationAccess().findByEventId(con, event.getId())) {
+        for (EventRelation relation : daos.getEventRelationAccess().findByEventId(con, event.getId())) {
             if (relation == null)
                 continue;
 
@@ -169,9 +161,8 @@ public class EventDAOFacade {
 
     }
 
-    public static void setEventRelations(PartakeConnection con, String eventId, List<EventRelation> relations) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-        IEventRelationAccess dao = factory.getEventRelationAccess();
+    public static void setEventRelations(PartakeConnection con, IPartakeDAOs daos, String eventId, List<EventRelation> relations) throws DAOException {
+        IEventRelationAccess dao = daos.getEventRelationAccess();
 
         // NOTE: こういうふうにやると、Cassandra の場合 remove が優先されてしまう。
         //            con.beginTransaction();
@@ -210,9 +201,9 @@ public class EventDAOFacade {
     }
 
 
-    public static void recreateEventIndex(PartakeConnection con, IEventSearchService searchService) throws DAOException, EventSearchServiceException {
+    public static void recreateEventIndex(PartakeConnection con, IPartakeDAOs daos, IEventSearchService searchService) throws DAOException, EventSearchServiceException {
         searchService.truncate();
-        DataIterator<Event> it = DBService.getFactory().getEventAccess().getIterator(con);
+        DataIterator<Event> it = daos.getEventAccess().getIterator(con);
         try {
             while (it.hasNext()) {
                 Event event = it.next();
@@ -230,9 +221,7 @@ public class EventDAOFacade {
     }
 
     /** user が event に登録するために、登録が必要な event たちを列挙する。 */
-    public static List<Event> getRequiredEventsNotEnrolled(PartakeConnection con, UserEx user, List<EventRelationEx> relations) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-
+    public static List<Event> getRequiredEventsNotEnrolled(PartakeConnection con, IPartakeDAOs daos, UserEx user, List<EventRelationEx> relations) throws DAOException {
         List<Event> requiredEvents = new ArrayList<Event>();
         for (EventRelationEx relation : relations) {
             if (!relation.isRequired())
@@ -247,7 +236,7 @@ public class EventDAOFacade {
                 continue;
             }
 
-            Enrollment enrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(user.getId(), relation.getEvent().getId()));
+            Enrollment enrollment = daos.getEnrollmentAccess().find(con, new EnrollmentPK(user.getId(), relation.getEvent().getId()));
             ParticipationStatus status = enrollment != null ? enrollment.getStatus() : ParticipationStatus.NOT_ENROLLED;
 
             if (status.isEnrolled())
@@ -262,23 +251,19 @@ public class EventDAOFacade {
     // ----------------------------------------------------------------------
     // Comments
 
-    public static CommentEx getCommentEx(PartakeConnection con, String commentId) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-        
-        Comment comment = factory.getCommentAccess().find(con, commentId);
+    public static CommentEx getCommentEx(PartakeConnection con, IPartakeDAOs daos, String commentId) throws DAOException {
+        Comment comment = daos.getCommentAccess().find(con, commentId);
         if (comment == null) { return null; }
-        UserEx user = UserDAOFacade.getUserEx(con, comment.getUserId());
+        UserEx user = UserDAOFacade.getUserEx(con, daos, comment.getUserId());
         if (user == null) { return null; }
         return new CommentEx(comment, user);
     }
 
-    public static List<CommentEx> getCommentsExByEvent(PartakeConnection con, String eventId) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-
+    public static List<CommentEx> getCommentsExByEvent(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
         List<CommentEx> result = new ArrayList<CommentEx>();
 
         con.beginTransaction();
-        DataIterator<Comment> iterator = factory.getCommentAccess().getCommentsByEvent(con, eventId);
+        DataIterator<Comment> iterator = daos.getCommentAccess().getCommentsByEvent(con, eventId);
         try {
             if (iterator == null) { return result; }
 
@@ -287,7 +272,7 @@ public class EventDAOFacade {
                 if (comment == null) { continue; }
                 String commentId = comment.getId();
                 if (commentId == null) { continue; }
-                CommentEx commentEx = getCommentEx(con, commentId);
+                CommentEx commentEx = getCommentEx(con, daos, commentId);
                 if (commentEx == null) { continue; }
                 result.add(commentEx);
             }
@@ -304,15 +289,13 @@ public class EventDAOFacade {
      * @return
      * @throws DAOException
      */
-    public static List<DirectMessageEx> getUserMessagesByEventId(PartakeConnection con, String eventId) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-
+    public static List<DirectMessageEx> getUserMessagesByEventId(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
         List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
-        DataIterator<Message> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
+        DataIterator<Message> it = daos.getDirectMessageAccess().findByEventId(con, eventId);
         try {
             while (it.hasNext()) {
                 Message message = it.next();
-                messages.add(new DirectMessageEx(message, UserDAOFacade.getUserEx(con, message.getUserId())));
+                messages.add(new DirectMessageEx(message, UserDAOFacade.getUserEx(con, daos, message.getUserId())));
             }
         } finally {
             it.close();
@@ -321,11 +304,9 @@ public class EventDAOFacade {
         return messages;
     }
 
-    private static void tweetNewEventArrival(PartakeConnection con, Event event) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-
+    private static void tweetNewEventArrival(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
         String shortenedURL = null;
-        ShortenedURLData shortenedURLData = factory.getURLShortenerAccess().findByURL(con, event.getEventURL());
+        ShortenedURLData shortenedURLData = daos.getURLShortenerAccess().findByURL(con, event.getEventURL());
         if (shortenedURLData != null)
             shortenedURL = shortenedURLData.getServiceType();
         else
@@ -342,7 +323,7 @@ public class EventDAOFacade {
             logger.info("No bot id.");
             return;
         }
-        TwitterLinkage linkage = factory.getTwitterLinkageAccess().find(con, String.valueOf(twitterId));
+        TwitterLinkage linkage = daos.getTwitterLinkageAccess().find(con, String.valueOf(twitterId));
         if (linkage == null) {
             logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
             return;
@@ -353,12 +334,12 @@ public class EventDAOFacade {
             return;
         }
 
-        String messageId = factory.getDirectMessageAccess().getFreshId(con);
+        String messageId = daos.getDirectMessageAccess().getFreshId(con);
         Message embryo = new Message(messageId, userId, message, null, new Date());
-        factory.getDirectMessageAccess().put(con, embryo);
-        String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
+        daos.getDirectMessageAccess().put(con, embryo);
+        String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
         Envelope envelope = new Envelope(envelopeId, userId, null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
-        factory.getEnvelopeAccess().put(con, envelope);
+        daos.getEnvelopeAccess().put(con, envelope);
 
         logger.info("bot will tweet: " + message);
     }

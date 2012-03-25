@@ -2,18 +2,17 @@ package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IEventActivityAccess;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 
 import java.util.Date;
 
@@ -22,11 +21,11 @@ import org.apache.commons.lang.StringUtils;
 public class PostCommentAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
     public static final int MAX_COMMENT_LENGTH = 10000;
-    
+
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
-        ensureValidSessionToken();        
+        ensureValidSessionToken();
         String eventId = getValidEventIdParameter();
 
         String comment = getParameter("comment");
@@ -44,29 +43,27 @@ public class PostCommentAPI extends AbstractPartakeAPI {
 
 class PostCommentTransaction extends Transaction<Void> {
     private Comment commentEmbryo;
-    
+
     public PostCommentTransaction(Comment embryo) {
         this.commentEmbryo = embryo;
     }
-    
-    @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        PartakeDAOFactory factory = DBService.getFactory();
 
-        Event event = factory.getEventAccess().find(con, commentEmbryo.getEventId());
+    @Override
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        Event event = daos.getEventAccess().find(con, commentEmbryo.getEventId());
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
-        
-        commentEmbryo.setId(factory.getCommentAccess().getFreshId(con));
-        factory.getCommentAccess().put(con, commentEmbryo);
+
+        commentEmbryo.setId(daos.getCommentAccess().getFreshId(con));
+        daos.getCommentAccess().put(con, commentEmbryo);
 
         // TODO: コメント消したときにこれも消したいか？　まずいコメントが feed され続けるのは問題となりうるか？
-        IEventActivityAccess eaa = factory.getEventActivityAccess();
-        UserEx user = UserDAOFacade.getUserEx(con, commentEmbryo.getUserId());
+        IEventActivityAccess eaa = daos.getEventActivityAccess();
+        UserEx user = UserDAOFacade.getUserEx(con, daos, commentEmbryo.getUserId());
         String title = user.getScreenName() + " さんがコメントを投稿しました";
         String content = commentEmbryo.getComment();
         eaa.put(con, new EventActivity(eaa.getFreshId(con), commentEmbryo.getEventId(), title, content, commentEmbryo.getCreatedAt()));
-        
+
         return null;
-    }    
+    }
 }

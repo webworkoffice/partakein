@@ -7,19 +7,18 @@ import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.EventEx;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,34 +52,34 @@ class SendMessageTransaction extends Transaction<Void> {
     private UserEx user;
     private String eventId;
     private String message;
-    
+
     public SendMessageTransaction(UserEx user, String eventId, String message) {
         this.user = user;
         this.eventId = eventId;
         this.message = message;
     }
-    
+
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        sendMessage(con, user, eventId, message);
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        sendMessage(con, daos, user, eventId, message);
         return null;
     }
-    
-    private void sendMessage(PartakeConnection con, UserEx senderUser, String eventId, String message) throws PartakeException, DAOException {
+
+    private void sendMessage(PartakeConnection con, IPartakeDAOs daos, UserEx senderUser, String eventId, String message) throws PartakeException, DAOException {
         assert senderUser != null;
         assert eventId != null;
         assert message != null;
-        
-        EventEx event = EventDAOFacade.getEventEx(con, eventId); 
+
+        EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
-    
+
         if (!event.hasPermission(senderUser, UserPermission.EVENT_SEND_MESSAGE))
             throw new PartakeException(UserErrorCode.INVALID_PROHIBITED);
 
         // ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。
-        List<Message> messages = getRecentUserMessage(con, eventId, 5);
-        
+        List<Message> messages = getRecentUserMessage(con, daos, eventId, 5);
+
         Date currentTime = new Date();
 
         if (messages.size() >= 3) {
@@ -90,7 +89,7 @@ class SendMessageTransaction extends Transaction<Void> {
             if (currentTime.before(thresholdDate)) // NG
                 throw new PartakeException(UserErrorCode.INVALID_MESSAGE_TOOMUCH);
         }
-        
+
         if (messages.size() >= 5) {
             Message msg = messages.get(4);
             Date msgDate = msg.getCreatedAt();
@@ -109,10 +108,10 @@ class SendMessageTransaction extends Transaction<Void> {
         }
         assert (Util.codePointCount(msg) <= MessageUtil.MESSAGE_MAX_CODEPOINTS);
 
-        String messageId = addMessage(con, senderUser.getId(), msg,event.getId(), true);
+        String messageId = addMessage(con, daos, senderUser.getId(), msg,event.getId(), true);
 
-        List<Enrollment> participations = DBService.getFactory().getEnrollmentAccess().findByEventId(con, eventId);
-                
+        List<Enrollment> participations = daos.getEnrollmentAccess().findByEventId(con, eventId);
+
         for (Enrollment participation : participations) {
             boolean sendsMessage = false;
             switch (participation.getStatus()) {
@@ -125,34 +124,28 @@ class SendMessageTransaction extends Transaction<Void> {
             }
 
             if (sendsMessage) {
-                sendEnvelope(con, messageId, participation.getUserId(), participation.getUserId(), null, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
+                sendEnvelope(con, daos, messageId, participation.getUserId(), participation.getUserId(), null, DirectMessagePostingType.POSTING_TWITTER_DIRECT);
             }
         }
     }
-    
-    private void sendEnvelope(PartakeConnection con, String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
 
-        String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
+    private void sendEnvelope(PartakeConnection con, IPartakeDAOs daos, String messageId, String senderId, String receiverId, Date deadline, DirectMessagePostingType postingType) throws DAOException {
+        String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
         Envelope envelope = new Envelope(envelopeId, senderId, receiverId, messageId, deadline, 0, null, null, postingType, new Date());
-        factory.getEnvelopeAccess().put(con, envelope);
+        daos.getEnvelopeAccess().put(con, envelope);
     }
-    
-    private String addMessage(PartakeConnection con, String userId, String message, String eventId, boolean isUserMessage) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
 
-        String id = factory.getDirectMessageAccess().getFreshId(con);
+    private String addMessage(PartakeConnection con, IPartakeDAOs daos, String userId, String message, String eventId, boolean isUserMessage) throws DAOException {
+        String id = daos.getDirectMessageAccess().getFreshId(con);
         Message embryo = new Message(id, userId, message, isUserMessage ? eventId : null, new Date());
-        factory.getDirectMessageAccess().put(con, embryo);
+        daos.getDirectMessageAccess().put(con, embryo);
 
         return id;
     }
 
-    private List<Message> getRecentUserMessage(PartakeConnection con, String eventId, int maxMessage) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-
+    private List<Message> getRecentUserMessage(PartakeConnection con, IPartakeDAOs daos, String eventId, int maxMessage) throws DAOException {
         List<Message> messages = new ArrayList<Message>();
-        DataIterator<Message> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
+        DataIterator<Message> it = daos.getDirectMessageAccess().findByEventId(con, eventId);
         try {
             for (int i = 0; i < maxMessage; ++i) {
                 if (!it.hasNext()) { break; }
@@ -161,7 +154,7 @@ class SendMessageTransaction extends Transaction<Void> {
         } finally {
             it.close();
         }
-        
+
         return messages;
     }
 }

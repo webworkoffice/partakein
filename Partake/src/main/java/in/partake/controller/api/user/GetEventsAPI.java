@@ -3,20 +3,20 @@ package in.partake.controller.api.user;
 import in.partake.base.PartakeException;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.aux.EventFilterCondition;
 import in.partake.model.dao.aux.EventStatus;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class GetEventsAPI extends AbstractPartakeAPI {
 
         GetEventsTransaction transaction = new GetEventsTransaction(userId, queryType, offset, limit);
         transaction.execute();
-        
+
         JSONArray statuses = new JSONArray();
         for (EventStatus status : transaction.getEventStatuses())
             statuses.add(status.toSafeJSON());
@@ -55,9 +55,9 @@ public class GetEventsAPI extends AbstractPartakeAPI {
 }
 
 //TODO: We should not read all events here.
-class GetEventsTransaction extends Transaction<Void> {
+class GetEventsTransaction extends DBAccess<Void> {
     // TODO: Since we use 'screenname' to check editor's privileges, we have to have UserEx here.
-    // We should have only userId here. 
+    // We should have only userId here.
     private String userId;
     private UserEx user;
     private String queryType;
@@ -66,7 +66,7 @@ class GetEventsTransaction extends Transaction<Void> {
 
     private List<Event> eventsRetrieved;
 
-    private int numTotalEvents;    
+    private int numTotalEvents;
     private List<EventStatus> eventStatuses;
 
     public GetEventsTransaction(String userId, String queryType, int offset, int limit) {
@@ -77,19 +77,19 @@ class GetEventsTransaction extends Transaction<Void> {
     }
 
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         // If |user| does not publish their events, return immediately.
-        UserPreference pref = DBService.getFactory().getUserPreferenceAccess().find(con, userId);
+        UserPreference pref = daos.getUserPreferenceAccess().find(con, userId);
         if (pref == null)
             pref = UserPreference.getDefaultPreference(userId);
         if (!pref.isProfilePublic())
             throw new PartakeException(UserErrorCode.INVALID_USER_PRIVATE);
-        
-        user = UserDAOFacade.getUserEx(con, userId);
-        
-        getEventsFromDB(con);
 
-        IEnrollmentAccess enrollmentAccess = DBService.getFactory().getEnrollmentAccess();
+        user = UserDAOFacade.getUserEx(con, daos, userId);
+
+        getEventsFromDB(con, daos);
+
+        IEnrollmentAccess enrollmentAccess = daos.getEnrollmentAccess();
         this.eventStatuses = new ArrayList<EventStatus>();
         for (Event event : eventsRetrieved) {
             if (event == null)
@@ -104,8 +104,8 @@ class GetEventsTransaction extends Transaction<Void> {
         return null;
     }
 
-    private void getEventsFromDB(PartakeConnection con) throws DAOException, PartakeException {
-        IEventAccess eventDao = DBService.getFactory().getEventAccess();
+    private void getEventsFromDB(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        IEventAccess eventDao = daos.getEventAccess();
 
         if ("owner".equalsIgnoreCase(queryType)) {
             this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), EventFilterCondition.PUBLISHED_PUBLIC_EVENT_ONLY);
@@ -116,9 +116,9 @@ class GetEventsTransaction extends Transaction<Void> {
         } else {
             throw new PartakeException(UserErrorCode.INVALID_ARGUMENT);
         }
-    }   
+    }
 
-    public int getNumTotalEvents() { 
+    public int getNumTotalEvents() {
         return numTotalEvents;
     }
 

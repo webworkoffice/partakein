@@ -1,8 +1,11 @@
-package in.partake.service;
+package in.partake.service.impl;
 
+import in.partake.app.PartakeApp;
+import in.partake.base.PartakeException;
+import in.partake.model.IPartakeDAOs;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.fixture.PartakeTestDataProviderSet;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
@@ -11,6 +14,8 @@ import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
 import in.partake.model.fixture.impl.TwitterLinkageTestDataProvider;
 import in.partake.model.fixture.impl.UserTestDataProvider;
 import in.partake.resource.PartakeProperties;
+import in.partake.service.IEventSearchService;
+import in.partake.service.ITestService;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -19,10 +24,10 @@ import javax.naming.NamingException;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
-public class TestDatabaseService {
-    private static final PartakeTestDataProviderSet testDataProviderSet = new PartakeTestDataProviderSet();    
+class TestService implements ITestService {
+    private static final PartakeTestDataProviderSet testDataProviderSet = new PartakeTestDataProviderSet();
 
-    public static void initialize() {
+    public void initialize() {
         try {
             if (PartakeProperties.get().getBoolean("in.partake.database.unittest_initialization"))
                 initializeDataSource();
@@ -31,16 +36,15 @@ public class TestDatabaseService {
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }
-
-        DBService.initialize();
     }
-    
-    public static PartakeTestDataProviderSet getTestDataProviderSet() {
+
+    public PartakeTestDataProviderSet getTestDataProviderSet() {
         return testDataProviderSet;
     }
 
     /**
      * <p>test用のデータがDatastoreに存在することを保証する。作成されるデータは各Fixtureを参照。
+     * @throws PartakeException
      * @see CacheTestDataProvider
      * @see UserTestDataProvider
      * @see TwitterLinkageTestDataProvider
@@ -48,19 +52,16 @@ public class TestDatabaseService {
      * @see EventTestDataProvider
      * @see EnrollmentTestDataProvider
      */
-    public static void setDefaultFixtures() throws DAOException, EventSearchServiceException {
-        // LOGGER.trace("TestService#setDefaultFixtures() is called, now start to create all fixtures.");
-        PartakeConnection con = DBService.getPool().getConnection(); 
-        PartakeDAOFactory factory = DBService.getFactory();
-        IEventSearchService searchService = PartakeService.get().createEventSearchService();
-        try {
-            con.beginTransaction();
-            testDataProviderSet.createFixtures(con, factory);
-            EventDAOFacade.recreateEventIndex(con, searchService);
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
+    public void setDefaultFixtures() throws DAOException, PartakeException {
+        new Transaction<Void>() {
+            @Override
+            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                IEventSearchService searchService = PartakeApp.getEventSearchService();
+                testDataProviderSet.createFixtures(con, daos);
+                EventDAOFacade.recreateEventIndex(con, daos, searchService);
+                return null;
+            }
+        }.execute();
     }
 
     private static void initializeDataSource() throws NamingException {

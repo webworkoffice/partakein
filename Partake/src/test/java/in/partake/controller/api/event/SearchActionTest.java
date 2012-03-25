@@ -4,17 +4,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.controller.api.APIControllerTest;
+import in.partake.model.IPartakeDAOs;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.PartakeService;
-import in.partake.service.TestDatabaseService;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -168,7 +168,7 @@ public class SearchActionTest extends APIControllerTest {
     }
 
     private Event createEvent() {
-        Event event = TestDatabaseService.getTestDataProviderSet().getEventProvider().create();
+        Event event = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider().create();
         event.setTitle(SEARCH_QUERY);
         event.setSummary(SEARCH_QUERY);
         event.setDescription(SEARCH_QUERY);
@@ -185,13 +185,13 @@ public class SearchActionTest extends APIControllerTest {
 
         new Transaction<Void>() {
             @Override
-            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-                EventDAOFacade.create(con, event);
+            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                EventDAOFacade.create(con, daos, event);
                 return null;
             }
         }.execute();
 
-        PartakeService.get().getEventSearchService().create(event);
+        PartakeApp.getEventSearchService().create(event);
         return event;
     }
 
@@ -202,13 +202,13 @@ public class SearchActionTest extends APIControllerTest {
 
         new Transaction<Void>() {
             @Override
-            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-                EventDAOFacade.create(con, event);
+            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                EventDAOFacade.create(con, daos, event);
                 return null;
             }
         }.execute();
 
-        PartakeService.get().getEventSearchService().create(event);
+        PartakeApp.getEventSearchService().create(event);
         return event;
     }
 
@@ -305,7 +305,7 @@ public class SearchActionTest extends APIControllerTest {
         addParameter(proxy, "category", "all");
         addParameter(proxy, "beforeDeadlineOnly", "true");
         addParameter(proxy, "sortOrder", "score");
-        addParameter(proxy, "maxNum", "10");        
+        addParameter(proxy, "maxNum", "10");
     }
 
     private void addQueryParameter(ActionProxy proxy, String queryString, String category, String beforeDeadlineOnly, String sortOrder, String maxNum) throws DAOException {

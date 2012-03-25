@@ -1,8 +1,9 @@
 package in.partake.controller.action.auth;
 
+import in.partake.app.PartakeApp;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.impl.OpenIDService;
+import in.partake.service.IOpenIDService;
 import in.partake.session.OpenIDLoginInformation;
 
 import org.openid4java.OpenIDException;
@@ -14,11 +15,13 @@ public abstract class AbstractOpenIDAction extends AbstractPartakeAction {
 
     protected String doAuthenticate(String purpose) throws OpenIDException {
         OpenIDLoginInformation loginInfo = getPartakeSession().ensureOpenIDLoginInformation();
-        
         String identifier = getParameter("openidIdentifier");
-        DiscoveryInformation discoveryInformation = OpenIDService.discover(identifier);
+
+        IOpenIDService service = PartakeApp.getOpenIDService();
+
+        DiscoveryInformation discoveryInformation = service.discover(identifier);
         loginInfo.setLoginPurpose(purpose);
-        
-        return renderRedirect(OpenIDService.getURLToAuthenticate(discoveryInformation, CALLBACK_URL));
+
+        return renderRedirect(service.getURLToAuthenticate(discoveryInformation, CALLBACK_URL));
     }
 }

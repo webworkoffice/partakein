@@ -1,18 +1,19 @@
 package in.partake.controller.action.auth;
 
+import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.OpenIDLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
-import in.partake.service.impl.OpenIDService;
 import in.partake.session.OpenIDLoginInformation;
 
 import java.util.Map;
@@ -36,13 +37,13 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
         String receivingURL = getReceivingURL();
         Map<String, Object> params = ActionContext.getContext().getParameters();
         DiscoveryInformation discoveryInformation = loginInformation.getDiscoveryInformation();
-        
+
         try {
             if ("login".equals(purpose))
                 return verifyOpenIDForLogin(receivingURL, params, discoveryInformation);
             if ("connect".equals(purpose))
                 return verifyOpenIDForConnection(receivingURL, params, discoveryInformation);
-    
+
             return renderInvalid(UserErrorCode.INVALID_OPENID_PURPOSE);
         } catch (OpenIDException e) {
             return renderError(ServerErrorCode.OPENID_ERROR, e);
@@ -50,7 +51,7 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
     }
 
     private String verifyOpenIDForLogin(String receivingURL, Map<String, Object> params, DiscoveryInformation discoveryInformation) throws DAOException, OpenIDException, PartakeException {
-        String identity = OpenIDService.getIdentifier(receivingURL, params, discoveryInformation);
+        String identity = PartakeApp.getOpenIDService().getIdentifier(receivingURL, params, discoveryInformation);
         if (identity == null) {
             addWarningMessage("OpenID でのログインに失敗しました。");
             return renderRedirect("/");
@@ -67,7 +68,7 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
         } else {
             addWarningMessage("ログインに失敗しました。OpenID と twitter ID が結び付けられていません。 Twitter でログイン後、設定から Open ID との結び付けを行ってください。");
             return renderRedirect("/");
-        }        
+        }
     }
 
     private String verifyOpenIDForConnection(String receivingURL, Map<String, Object> params, DiscoveryInformation discoveryInformation) throws DAOException, PartakeException, OpenIDException {
@@ -75,16 +76,16 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
         if (user == null)
             return renderLoginRequired();
 
-        String identity = OpenIDService.getIdentifier(receivingURL, params, discoveryInformation);
+        String identity = PartakeApp.getOpenIDService().getIdentifier(receivingURL, params, discoveryInformation);
         if (identity == null)
             return renderInvalid(UserErrorCode.INVALID_OPENID_IDENTIFIER);
 
         new AddOpenIDTransaction(user.getId(), identity).execute();
-        
+
         addActionMessage("OpenID との結びつけが成功しました");
         return renderRedirect("/mypage#account");
     }
-    
+
     private String getReceivingURL() {
         // extract the receiving URL from the HTTP request
         // TODO: HttpServletRequest should be removed.
@@ -93,25 +94,25 @@ public class VerifyForOpenIDAction extends AbstractOpenIDAction {
         String queryString = httpReq.getQueryString();
         if (queryString != null && queryString.length() > 0)
             receivingURL.append("?").append(httpReq.getQueryString());
-        
+
         return receivingURL.toString();
     }
 }
 
-class GetUserFromOpenIDIdentifierTransaction extends Transaction<UserEx> {
+class GetUserFromOpenIDIdentifierTransaction extends DBAccess<UserEx> {
     private String identifier;
-    
+
     GetUserFromOpenIDIdentifierTransaction(String identifier) {
         this.identifier = identifier;
     }
-    
+
     @Override
-    protected UserEx doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        OpenIDLinkage linkage = DBService.getFactory().getOpenIDLinkageAccess().find(con, identifier);
+    protected UserEx doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        OpenIDLinkage linkage = daos.getOpenIDLinkageAccess().find(con, identifier);
         if (linkage == null)
             return null;
 
-        return UserDAOFacade.getUserEx(con, linkage.getUserId()); 
+        return UserDAOFacade.getUserEx(con, daos, linkage.getUserId());
     }
 }
 
@@ -123,10 +124,10 @@ class AddOpenIDTransaction extends Transaction<Void> {
         this.userId = userId;
         this.identifier = identifier;
     }
-    
+
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        DBService.getFactory().getOpenIDLinkageAccess().put(con, new OpenIDLinkage(identifier, userId));
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        daos.getOpenIDLinkageAccess().put(con, new OpenIDLinkage(identifier, userId));
         return null;
     }
 }

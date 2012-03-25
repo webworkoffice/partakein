@@ -2,10 +2,11 @@ package in.partake.controller.api.user;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.resource.UserErrorCode;
 
@@ -24,7 +25,7 @@ public class GetAPI extends AbstractPartakeAPI {
     }
 }
 
-class GetAPITransaction extends Transaction<UserEx> {
+class GetAPITransaction extends DBAccess<UserEx> {
     private String userId;
 
     public GetAPITransaction(String userId) {
@@ -32,7 +33,7 @@ class GetAPITransaction extends Transaction<UserEx> {
     }
 
     @Override
-    protected UserEx doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        return UserDAOFacade.getUserEx(con, userId); 
+    protected UserEx doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        return UserDAOFacade.getUserEx(con, daos, userId);
     }
 }

@@ -3,15 +3,14 @@ package in.partake.controller.api.event;
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.controller.base.permission.RemoveCommentPermission;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 
 public class RemoveCommentAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
@@ -22,7 +21,7 @@ public class RemoveCommentAPI extends AbstractPartakeAPI {
         ensureValidSessionToken();
         String commentId = getValidCommentIdParameter();
 
-        new RemoveCommentTransaction(user, commentId).execute();        
+        new RemoveCommentTransaction(user, commentId).execute();
         return renderOK();
     }
 }
@@ -30,28 +29,26 @@ public class RemoveCommentAPI extends AbstractPartakeAPI {
 class RemoveCommentTransaction extends Transaction<Void> {
     private String commentId;
     private UserEx user;
-    
+
     public RemoveCommentTransaction(UserEx user, String commentId) {
         this.user = user;
         this.commentId = commentId;
     }
-    
+
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        PartakeDAOFactory factory = DBService.getFactory();
-        
-        Comment comment = factory.getCommentAccess().find(con, commentId); 
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        Comment comment = daos.getCommentAccess().find(con, commentId);
         if (comment == null)
             throw new PartakeException(UserErrorCode.INVALID_COMMENT_ID);
 
-        Event event = factory.getEventAccess().find(con, comment.getEventId());
+        Event event = daos.getEventAccess().find(con, comment.getEventId());
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_COMMENT_ID);
-        
+
         if (!RemoveCommentPermission.check(comment, event, user))
             throw new PartakeException(UserErrorCode.COMMENT_REMOVAL_FORBIDDEN);
-        
-        factory.getCommentAccess().remove(con, commentId);
+
+        daos.getCommentAccess().remove(con, commentId);
         return null;
     }
 }
