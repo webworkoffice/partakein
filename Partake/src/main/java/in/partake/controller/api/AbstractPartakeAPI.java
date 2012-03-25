@@ -28,12 +28,12 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
     }
 
     // ----------------------------------------------------------------------
-    // 
-    
+    //
+
     protected void addHeader(String key, String value) {
         headers.put(key, value);
     }
-    
+
     /** return input stream. */
     public InputStream getInputStream() {
         return stream;
@@ -53,7 +53,7 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
 
     // ----------------------------------------------------------------------
     // Rendering
-    
+
     /**
      * JSON object をレスポンスとして返す。
      * @param obj
@@ -107,8 +107,8 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
      */
     protected String renderError(ServerErrorCode errorCode, Throwable e) {
         assert errorCode != null;
-        
-        final String reasonString = errorCode.toString() + ":" + errorCode.getReasonString(); 
+
+        final String reasonString = errorCode.toString() + ":" + errorCode.getReasonString();
         if (e != null) { logger.error(reasonString, e); }
         else { logger.error(reasonString); }
 
@@ -116,9 +116,9 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
         obj.put("result", "error");
         obj.put("reason", errorCode.getReasonString());
         this.status = 500;
-        return renderJSON(obj);        
+        return renderJSON(obj);
     }
-    
+
     /**
      * <code>{ "result": "invalid", "reason": reason }</code> をレスポンスとして返す。
      * ステータスコードは 400 を返す。
@@ -137,23 +137,20 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
 
     protected String renderInvalid(UserErrorCode ec, JSONObject errorParams, Throwable e) {
         assert ec != null;
-        
+
         if (e != null)
             logger.info("renderInvalid", e);
-        
-        if (getPartakeSession() != null)
-            getPartakeSession().setLastUserError(ec);
-        
+
         JSONObject obj = new JSONObject();
         obj.put("result", "invalid");
         obj.put("reason", ec.getReasonString());
         if (errorParams != null)
             obj.put("errorParameters", errorParams);
-        
+
         this.status = 400;
         return renderJSON(obj);
     }
-    
+
     protected String renderLoginRequired() {
         JSONObject obj = new JSONObject();
         obj.put("result", "auth");
@@ -172,7 +169,7 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
         this.status = 403;
         return renderJSON(obj);
     }
-    
+
     protected String renderForbidden(UserErrorCode ec) {
         JSONObject obj = new JSONObject();
         obj.put("result", "forbidden");
@@ -182,12 +179,12 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
         this.status = 403;
         return renderJSON(obj);
     }
-    
+
     protected String renderNotFound() {
         JSONObject obj = new JSONObject();
         obj.put("result", "notfound");
         obj.put("reason", "not found");
         this.status = 404;
         return renderJSON(obj);
-    }        
+    }
 }

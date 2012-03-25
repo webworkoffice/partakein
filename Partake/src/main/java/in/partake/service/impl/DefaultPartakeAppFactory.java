@@ -8,7 +8,7 @@ import in.partake.service.IOpenIDService;
 import in.partake.service.ITestService;
 import in.partake.service.ITwitterService;
 
-class DefaultPartakeAppFactory implements PartakeAppFactory {
+public class DefaultPartakeAppFactory implements PartakeAppFactory {
 
     @Override
     public IDBService createDBService() {

@@ -12,11 +12,8 @@ import in.partake.session.CSRFPrevention;
 import in.partake.session.PartakeSession;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,9 +24,9 @@ import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.SessionAware;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
 
-public abstract class AbstractPartakeController extends ActionSupport implements SessionAware, RequestAware, ServletRequestAware {
+// TODO: We don't need to extends ActionSupport now.
+public abstract class AbstractPartakeController implements SessionAware, RequestAware, ServletRequestAware, Serializable {
     /** */
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(AbstractPartakeController.class);
@@ -44,7 +41,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     protected static final String PROHIBITED = "prohibited"; //$NON-NLS-1$
 
     // 様々なところで使うので、redirectURL を定義しておく。
-    // あんまりよろしくないが、loginRequired でこれを使って、かつ login が必要なところは色色あるのでベースとして定義する	
+    // あんまりよろしくないが、loginRequired でこれを使って、かつ login が必要なところは色色あるのでベースとして定義する
     protected String redirectURL;
     protected String currentURL;
 
@@ -83,11 +80,10 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     // Render
 
     protected abstract String renderInvalid(UserErrorCode ec, Throwable e);
+    protected abstract String renderError(ServerErrorCode ec, Throwable e);
     protected abstract String renderLoginRequired();
     protected abstract String renderForbidden();
     protected abstract String renderNotFound();
-
-    protected abstract String renderError(ServerErrorCode ec, Throwable e);
 
     protected String renderException(PartakeException e) {
         if (e.getStatusCode() == 401)
@@ -101,7 +97,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
             return renderInvalid(e.getUserErrorCode(), e.getCause());
 
         assert e.isServerError();
-        return renderError(e.getServerErrorCode(), e.getCause());    
+        return renderError(e.getServerErrorCode(), e.getCause());
     }
 
     // ----------------------------------------------------------------------
@@ -109,7 +105,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
 
     @Override
     public void setSession(Map<String, Object> session) {
-        this.session = session;        
+        this.session = session;
     }
 
     @Override
@@ -228,7 +224,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         if (!Util.isUUID(id))
             throw new PartakeException(invalid);
 
-        return id;        
+        return id;
     }
 
     protected String optValidIdParameter(String key, UserErrorCode invalid, String defaultValue) throws PartakeException {
@@ -237,7 +233,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
             return defaultValue;
         if (!Util.isUUID(id))
             throw new PartakeException(invalid);
-        
+
         return id;
     }
 
@@ -252,11 +248,11 @@ public abstract class AbstractPartakeController extends ActionSupport implements
     protected String getValidEventIdParameter() throws PartakeException {
         return getValidIdParameter("eventId", UserErrorCode.MISSING_EVENT_ID, UserErrorCode.INVALID_EVENT_ID);
     }
-    
+
     protected String getValidEventIdParameter(UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
         return getValidIdParameter("eventId", missing, invalid);
     }
-    
+
     protected String getValidImageIdParameter() throws PartakeException {
         return getValidIdParameter("imageId", UserErrorCode.MISSING_IMAGEID, UserErrorCode.INVALID_IMAGEID);
     }
@@ -317,42 +313,6 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         return this.currentURL;
     }
 
-    // TODO: Maybe we should use some enum instead of String. 
-    public void addWarningMessage(String str) {
-        addMessage(Constants.ATTR_WARNING_MESSAGE, str);
-    }
-
-    public Collection<String> getWarningMessages() {
-        return getMessages(Constants.ATTR_WARNING_MESSAGE);
-    }
-
-    // TODO: Maybe we should use some ENUM instead of String.
-    public void addErrorMessage(String str) {
-        addMessage(Constants.ATTR_ERROR_MESSAGE, str);
-    }
-
-    public Collection<String> getErrorMessages() {
-        return getMessages(Constants.ATTR_ERROR_MESSAGE);
-    }
-
-    private void addMessage(String key, String message) {
-        @SuppressWarnings("unchecked")
-        List<String> warningMessage = (List<String>) this.session.get(key);
-        if (warningMessage == null) { warningMessage = new ArrayList<String>(); }
-
-        warningMessage.add(message);
-        this.session.put(key, warningMessage);
-    }
-
-    private Collection<String> getMessages(String key) {
-        @SuppressWarnings("unchecked")
-        List<String> warningMessage = (List<String>) this.session.get(key);
-        if (warningMessage == null) { return new ArrayList<String>(); }
-
-        this.session.put(key, null);
-        return Collections.unmodifiableCollection(warningMessage);
-    }
-
     public PartakeSession getPartakeSession() {
         if (session == null) { return null; }
         return (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
@@ -363,7 +323,7 @@ public abstract class AbstractPartakeController extends ActionSupport implements
 
     /**
      * get logged in user. If a user is not logged in, null is returned.
-     * @return the logged in user. null if a user is not logged in.  
+     * @return the logged in user. null if a user is not logged in.
      */
     protected UserEx getLoginUser() {
         if (session == null) { return null; }
@@ -394,11 +354,11 @@ public abstract class AbstractPartakeController extends ActionSupport implements
         if (session == null)
             return false;
 
-        CSRFPrevention prevention = session.getCSRFPrevention(); 
+        CSRFPrevention prevention = session.getCSRFPrevention();
         if (prevention == null)
             return false;
 
-        String sessionToken = getParameter(Constants.ATTR_PARTAKE_API_SESSION_TOKEN);
+        String sessionToken = getParameter(Constants.ATTR_PARTAKE_SESSION);
         if (sessionToken == null)
             return false;
 

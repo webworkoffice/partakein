@@ -8,6 +8,7 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
+import in.partake.resource.MessageCode;
 import in.partake.service.IEventSearchService;
 
 public class AdminEventIndexRecreationAction extends AbstractPartakeAction {
@@ -18,9 +19,7 @@ public class AdminEventIndexRecreationAction extends AbstractPartakeAction {
         ensureValidSessionToken();
 
         new EventIndexRecreationTransaction().execute();
-
-        addActionMessage("Event Index has been recreated.");
-        return renderRedirect("/admin");
+        return renderRedirect("/admin", MessageCode.MESSAGE_EVENT_INDEX_RECREATED);
     }
 }
 

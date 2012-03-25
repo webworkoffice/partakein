@@ -7,6 +7,7 @@ import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Event;
+import in.partake.resource.MessageCode;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -30,10 +31,8 @@ public class EventPasscodeAction extends AbstractPartakeAction {
 
         String pass = StringUtils.trim(passcode);
 
-        if (!pass.equals(event.getPasscode())) {
-            addWarningMessage("passcode が一致しませんでした。");
-            return render("events/passcode.jsp");
-        }
+        if (!pass.equals(event.getPasscode()))
+            return render("events/passcode.jsp", MessageCode.MESSAGE_PASSCODE_INVALID);
 
         // TODO: Reconsider Session.
         session.put("event:" + eventId, passcode);

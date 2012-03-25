@@ -13,6 +13,7 @@ import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
+import in.partake.resource.MessageCode;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
@@ -37,6 +38,7 @@ public class VerifyForTwitterAction extends AbstractPartakeAction {
         if (loginInformation == null)
             return renderInvalid(UserErrorCode.UNEXPECTED_REQUEST);
 
+        MessageCode messageCode = null;
         try {
             ITwitterService twitterService = PartakeApp.getTwitterService();
             TwitterLinkage linkage = twitterService.createTwitterLinkageFromLoginInformation(loginInformation, verifier);
@@ -44,20 +46,20 @@ public class VerifyForTwitterAction extends AbstractPartakeAction {
             UserEx user = new VerifyForTwitterActionTransaction(linkage).execute();
             session.put(Constants.ATTR_USER, user);
 
-            addActionMessage("ログインしました");
+            messageCode = MessageCode.MESSAGE_AUTH_LOGIN;
         } catch (TwitterException e) {
             return renderError(ServerErrorCode.TWITTER_OAUTH_ERROR);
         }
 
         if (StringUtils.isEmpty(redirectURL))
-            return renderRedirect("/");
+            return renderRedirect("/", messageCode);
 
         // If the redirect page is the error page, we do not want to show it. Showing the top page is better.
         String errorPageURL = PartakeProperties.get().getTopPath() + "/error";
         if (errorPageURL.equals(redirectURL))
-            return renderRedirect("/");
+            return renderRedirect("/", messageCode);
 
-        return renderRedirect(redirectURL);
+        return renderRedirect(redirectURL, messageCode);
     }
 }
 
