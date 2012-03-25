@@ -6,6 +6,7 @@ import java.util.UUID;
 import in.partake.model.dao.access.IEnvelopeAccess;
 import in.partake.model.dto.Envelope;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
+import in.partake.service.DBService;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,7 +19,7 @@ public class EnvelopeAccessTest extends AbstractDaoTestCaseBase<IEnvelopeAccess,
 
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getEnvelopeAccess());
+        super.setup(DBService.getFactory().getEnvelopeAccess());
     }
     
     @Override

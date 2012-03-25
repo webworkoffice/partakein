@@ -47,7 +47,7 @@ class JPATwitterLinkageDao extends JPADao<TwitterLinkage> implements ITwitterLin
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "TwitterLinkages");
     }
 

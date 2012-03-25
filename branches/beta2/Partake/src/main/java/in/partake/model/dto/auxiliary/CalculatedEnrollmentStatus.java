@@ -1,6 +1,5 @@
 package in.partake.model.dto.auxiliary;
 
-import net.sf.json.JSONObject;
 
 public enum CalculatedEnrollmentStatus {
 	ENROLLED("enrolled"),

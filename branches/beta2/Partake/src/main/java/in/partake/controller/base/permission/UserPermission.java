@@ -20,9 +20,6 @@ public enum UserPermission {
     /** edit participants */
     EVENT_EDIT_PARTICIPANTS,
     
-    /** edit questionnaire */
-    EVENT_EDIT_QUESTIONNAIRE,
-    
     ;
     
 }

@@ -53,7 +53,7 @@ public class JPAImageDao extends JPADao<ImageData> implements IImageAccess {
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "ImageData");
     }
     

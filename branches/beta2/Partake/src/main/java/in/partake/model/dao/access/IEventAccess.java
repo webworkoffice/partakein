@@ -41,6 +41,4 @@ public interface IEventAccess extends IAccess<Event, String> {
     public abstract List<Event> findByScreenName(PartakeConnection con, String screenName) throws DAOException;
     public abstract List<Event> findByScreenName(PartakeConnection con, String screenName, EventFindCriteria criteria,int offset, int limit) throws DAOException;
     public abstract int countEventsByScreenName(PartakeConnection con, String screenName, EventFindCriteria criteria) throws DAOException;
-
-    // TODO: counting interface is necessary.
 }

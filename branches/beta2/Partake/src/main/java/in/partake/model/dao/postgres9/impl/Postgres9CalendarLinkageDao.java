@@ -99,7 +99,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
     }
 }

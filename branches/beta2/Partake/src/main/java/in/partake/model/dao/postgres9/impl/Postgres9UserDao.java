@@ -1,5 +1,7 @@
 package in.partake.model.dao.postgres9.impl;
 
+import java.util.Date;
+
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -11,6 +13,7 @@ import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
+import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.User;
 import net.sf.json.JSONObject;
 
@@ -22,24 +25,34 @@ class EntityUserMapper extends Postgres9EntityDataMapper<User> {
 
 public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     static final String TABLE_NAME = "UserEntities";
+    static final String LOGIN_INDEX_TABLE_NAME = "UserLoginIndex";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
+    private final Postgres9IndexDao loginIndexDao;
     private final EntityUserMapper mapper;
 
     public Postgres9UserDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.loginIndexDao = new Postgres9IndexDao(LOGIN_INDEX_TABLE_NAME);
         this.mapper = new EntityUserMapper();
     }
 
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
-        entityDao.initialize((Postgres9Connection) con);
+        Postgres9Connection pcon = (Postgres9Connection) con;
+        entityDao.initialize(pcon);
+        
+        if (!existsTable(pcon, LOGIN_INDEX_TABLE_NAME)) {
+            loginIndexDao.createIndexTable(pcon, "CREATE TABLE " + LOGIN_INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, lastLoginAt TIMESTAMP)");
+            loginIndexDao.createIndex(pcon, "CREATE INDEX " + LOGIN_INDEX_TABLE_NAME + "Login" + " ON " + LOGIN_INDEX_TABLE_NAME + "(lastLoginAt)");
+        }
     }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         entityDao.truncate((Postgres9Connection) con);
+        loginIndexDao.truncate((Postgres9Connection) con);
     }
 
     @Override
@@ -52,6 +65,10 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
             entityDao.update(pcon, entity);            
         else
             entityDao.insert(pcon, entity);
+        
+        loginIndexDao.put(pcon,
+                new String[] { "id", "lastLoginAt" },
+                new Object[] { user.getId(), user.getLastLoginAt() });
     }
 
     @Override
@@ -62,6 +79,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     @Override
     public void remove(PartakeConnection con, String id) throws DAOException {
         entityDao.remove((Postgres9Connection) con, id);
+        loginIndexDao.remove((Postgres9Connection) con, "id", id);
     }
 
     @Override
@@ -75,7 +93,12 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     }
 
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
+    }
+    
+    @Override
+    public int countActiveUsers(PartakeConnection con, Date loggedinAfter) throws DAOException {
+        return loginIndexDao.count((Postgres9Connection) con, "loginAfter >= ?", new Object[] { loggedinAfter });
     }
 }

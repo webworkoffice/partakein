@@ -91,7 +91,7 @@ public class GetAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        UserPreference pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
@@ -106,7 +106,7 @@ public class GetAPITest extends APIControllerTest {
         
         assertResultOK(proxy);
         
-        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(false, pref.isProfilePublic());
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(true, pref.tweetsAttendanceAutomatically());
@@ -116,7 +116,7 @@ public class GetAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLoginWithoutArgument() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        UserPreference pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
@@ -127,7 +127,7 @@ public class GetAPITest extends APIControllerTest {
         
         assertResultOK(proxy);
         
-        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());

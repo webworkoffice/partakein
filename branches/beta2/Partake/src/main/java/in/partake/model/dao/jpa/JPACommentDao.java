@@ -65,7 +65,7 @@ class JPACommentDao extends JPADao<Comment> implements ICommentAccess {
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "Comments");
     }
 

@@ -81,7 +81,7 @@ public class Postgres9EnvelopeDao extends Postgres9Dao implements IEnvelopeAcces
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
     }
 }

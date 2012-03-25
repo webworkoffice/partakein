@@ -717,19 +717,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         }
     }
 
-    public List<EventRelation> getEventRelations(String eventId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            List<EventRelation> relations = factory.getEventRelationAccess().findByEventId(con, eventId);
-            con.commit();
-
-            return relations;
-        } finally {
-            con.invalidate();
-        }
-    }
 
     public List<EventRelationEx> getEventRelationsEx(String eventId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
@@ -751,8 +738,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
             con.invalidate();
         }
     }
-
-
 
     // ----------------------------------------------------------------------
     // enrollments
@@ -793,38 +778,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
         PartakeDAOFactory factory = getFactory();
         try {
             return factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
-        } finally {
-            con.invalidate();
-        }
-    }
-
-    /**
-     * eventId に参加する userId を参加していないことにする。
-     * @param eventId
-     * @param userId
-     * @return
-     * @throws DAOException
-     */
-    public boolean removeEnrollment(String eventId, String userId) throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
-        try {
-            con.beginTransaction();
-            factory.getEnrollmentAccess().remove(con, new EnrollmentPK(userId, eventId));
-            con.commit();
-            return true;
-        } finally {
-            con.invalidate();
-        }
-    }
-
-    public void udpateEnrollment(Enrollment enrollment) throws DAOException {
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
-        try {
-            con.beginTransaction();
-            factory.getEnrollmentAccess().put(con, enrollment);
-            con.commit();
         } finally {
             con.invalidate();
         }
@@ -886,20 +839,6 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
 
     // ----------------------------------------------------------------------
     // binary data
-
-    public BinaryData getBinaryData(String imageId) throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        IBinaryAccess binaryAccess = factory.getBinaryAccess();
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            BinaryData data = binaryAccess.find(con, imageId);
-            con.commit();
-            return data;
-        } finally {
-            con.invalidate();
-        }
-    }
 
     public ImageData getImageData(String imageId) throws DAOException {
         PartakeDAOFactory factory = getFactory();

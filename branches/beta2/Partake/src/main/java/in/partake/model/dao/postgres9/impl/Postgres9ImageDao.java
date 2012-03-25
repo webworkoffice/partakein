@@ -130,7 +130,7 @@ public class Postgres9ImageDao extends Postgres9Dao implements IImageAccess {
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
     }
 }

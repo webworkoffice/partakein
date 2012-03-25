@@ -236,7 +236,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
         return new Postgres9DataIterator<Postgres9Entity>(mapper, sars);
     }
     
-    public long count(Postgres9Connection pcon) throws DAOException {
+    public int count(Postgres9Connection pcon) throws DAOException {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -244,7 +244,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
             ps = con.prepareStatement("SELECT count(*) FROM " + tableName);
             rs = ps.executeQuery();
             if (rs.next())
-                return rs.getLong(1);
+                return rs.getInt(1);
             else
                 return 0;
         } catch (SQLException e) {

@@ -168,7 +168,7 @@
 								    if (event.getForeImageId() != null) {
 								%>
 									<a href="<%=request.getContextPath()%>/events/<%=event.getId()%>">
-									<img class="rad sdw cler" src="/events/images/<%=event.getForeImageId()%>" alt="" /></a>
+									<img class="rad sdw cler" src="/images/<%=event.getForeImageId()%>" alt="" /></a>
 								<%
 								    } else {
 								%>

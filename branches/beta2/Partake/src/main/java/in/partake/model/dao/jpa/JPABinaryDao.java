@@ -53,7 +53,7 @@ public class JPABinaryDao extends JPADao<BinaryData> implements IBinaryAccess {
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "BinaryData");
     }
 }

@@ -47,7 +47,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             return;
         
         // truncate all data.
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
         try {
             con.beginTransaction();
             dao.truncate(con);
@@ -90,7 +90,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutFind() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
 
         try {
             con.beginTransaction();
@@ -117,7 +117,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutFindInTransaction() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
 
         try {
             con.beginTransaction();
@@ -142,7 +142,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutPutFind() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
 
         try {
             long time = System.currentTimeMillis();
@@ -178,7 +178,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutRemoveFind() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
 
         try {
             TimeUtil.waitForTick();
@@ -207,7 +207,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutRemovePutFind() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
 
         try {
             con.beginTransaction();
@@ -242,7 +242,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     @Test
     @SuppressWarnings("unchecked")        
     public final void testToRemoveInvalidObject() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
 
         try {
             T t1 = create(System.currentTimeMillis(), "removeinvalid", 0);
@@ -262,7 +262,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     @Test
     @SuppressWarnings("unchecked")    
     public final void testToFindWithInvalidId() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
 
         try {
             T t1 = create(System.currentTimeMillis(), "findInvalid", 0);
@@ -282,7 +282,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
 
     @Test
     public final void testToIterate() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
         try {
             Set<T> created = new HashSet<T>();
             for (int i = 0; i < 3; ++i) {
@@ -314,7 +314,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     
     @Test
     public final void testToCount() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = DBService.getPool().getConnection();
         try {
             Set<T> created = new HashSet<T>();
             for (int i = 0; i < 10; ++i) {
@@ -326,7 +326,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
                 con.commit();
             }
             
-            assertThat(dao.count(con), is(10L));
+            assertThat(dao.count(con), is(10));
         } finally {
             con.invalidate();
         }

@@ -111,33 +111,6 @@ public class EventServiceTest extends AbstractServiceTestCaseBase {
     }
 
     @Test
-    public void testToStoreAndDeleteImages() throws DAOException {
-        final User owner = createUser(createRandomId());
-        final Event event = createEvent("this id will be overwritten.");
-        event.setOwnerId(owner.getId());
-        BinaryData foreImageEmbryo = new BinaryData("text", "foreImage".getBytes(UTF8));
-        BinaryData backImageEmbryo = new BinaryData("text", "backImage".getBytes(UTF8));
-        String eventId = service.create(event,foreImageEmbryo, backImageEmbryo);
-        event.freeze();
-        {
-            Event storedEvent = service.getEventById(eventId);
-            String foreImageId = storedEvent.getForeImageId();
-            Assert.assertNotNull(foreImageId);
-            Assert.assertEquals("foreImage", new String(service.getBinaryData(foreImageId).getData()));
-            String backImageId = storedEvent.getBackImageId();
-            Assert.assertNotNull(backImageId);
-            Assert.assertEquals("backImage", new String(service.getBinaryData(backImageId).getData()));
-        }
-
-        service.update(event, event.copy(), true, null, true, null);
-        {
-            Event storedEvent = service.getEventById(eventId);
-            Assert.assertNull(storedEvent.getForeImageId());
-            Assert.assertNull(storedEvent.getBackImageId());
-        }
-    }
-
-    @Test
     public void testStoredEventEqualsSourceEvent() throws DAOException {
         final User owner = createUser(createRandomId());
         final Event source = createEvent("this id will be overwritten.");

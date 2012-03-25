@@ -2,12 +2,16 @@ package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
-import in.partake.controller.base.permission.UserPermission;
-import in.partake.model.EventEx;
+import in.partake.controller.base.permission.EventEditParticipantsPermission;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IEventAccess;
+import in.partake.model.dao.base.Transaction;
+import in.partake.model.dto.Event;
+import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.UserErrorCode;
+import in.partake.service.DBService;
 
 public class RemoveAttendantAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
@@ -19,17 +23,34 @@ public class RemoveAttendantAPI extends AbstractPartakeAPI {
         String eventId = getValidEventIdParameter();
         String userId = getValidUserIdParameter();
             
-        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
-        if (event == null)
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+        new RemoveAttendantTransaction(user, eventId, userId).execute();
+        return renderOK();        
+    }
+}
 
-        // Only owner can retrieve the participants list.
-        if (!event.hasPermission(user, UserPermission.EVENT_EDIT_PARTICIPANTS))
-            return renderInvalid(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
+class RemoveAttendantTransaction extends Transaction<Void>
+{
+    private UserEx user;
+    private String eventId;
+    private String userId;
+    
+    public RemoveAttendantTransaction(UserEx user, String eventId, String userId) {
+        this.user = user;
+        this.eventId = eventId;
+        this.userId = userId;
+    }
+    
+    @Override
+    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
+        IEventAccess eventDao = DBService.getFactory().getEventAccess(); 
+        Event event = eventDao.find(con, eventId);
+        if (event == null)
+            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
+
+        if (!EventEditParticipantsPermission.check(event, user))
+            throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
             
-        if (DeprecatedEventDAOFacade.get().removeEnrollment(eventId, userId))
-            return renderOK();
-        
-        return renderInvalid(UserErrorCode.INVALID_ATTENDANT_EDIT);
+        DBService.getFactory().getEnrollmentAccess().remove(con, new EnrollmentPK(userId, eventId));
+        return null;
     }
 }

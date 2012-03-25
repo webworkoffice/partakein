@@ -4,12 +4,14 @@ import java.util.UUID;
 
 import in.partake.model.dao.access.ICalendarLinkageAccess;
 import in.partake.model.dto.CalendarLinkage;
+import in.partake.service.DBService;
+
 import org.junit.Before;
 
 public class CalendarLinkageAccessTest extends AbstractDaoTestCaseBase<ICalendarLinkageAccess, CalendarLinkage, String> {
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getCalendarAccess());
+        super.setup(DBService.getFactory().getCalendarAccess());
     }
     
     @Override

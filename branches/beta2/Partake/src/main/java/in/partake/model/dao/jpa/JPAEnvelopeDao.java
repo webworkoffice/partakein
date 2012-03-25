@@ -44,7 +44,7 @@ public class JPAEnvelopeDao extends JPADao<Envelope> implements IEnvelopeAccess 
     }
 
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "Envelopes");
     }
 
