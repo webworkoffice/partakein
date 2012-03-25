@@ -1,4 +1,6 @@
-package in.partake.service;
+package in.partake.service.impl;
+
+import in.partake.service.IHatenaBookmarkService;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -7,7 +9,8 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
-public final class HatenaBookmarkService {
+//TODO: should be non-public class.
+public final class HatenaBookmarkService implements IHatenaBookmarkService {
 	private static final URL XML_RPC_SERVER_URL;
 	private static final String METHOD_NAME_TOTAL = "bookmark.getTotalCount";
 

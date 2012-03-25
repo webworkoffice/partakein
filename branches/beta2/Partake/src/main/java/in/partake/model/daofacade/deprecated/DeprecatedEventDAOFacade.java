@@ -34,7 +34,7 @@ import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.LuceneService;
+import in.partake.service.impl.LuceneService;
 
 import java.util.ArrayList;
 import java.util.Collections;

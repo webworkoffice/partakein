@@ -1,4 +1,6 @@
-package in.partake.service;
+package in.partake.service.impl;
+
+import in.partake.service.IOpenIDService;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +14,8 @@ import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
 import org.openid4java.message.ParameterList;
 
-public class OpenIDService {
+//TODO: should be non-public class.
+public class OpenIDService implements IOpenIDService {
     protected static ConsumerManager consumerManager = null;
     
     static {

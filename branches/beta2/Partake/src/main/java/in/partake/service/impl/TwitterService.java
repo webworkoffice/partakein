@@ -1,7 +1,8 @@
-package in.partake.service;
+package in.partake.service.impl;
 
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.resource.PartakeProperties;
+import in.partake.service.ITwitterService;
 import in.partake.session.TwitterLoginInformation;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -9,7 +10,8 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-public class TwitterService {
+//TODO: should be non-public class.
+public class TwitterService implements ITwitterService {
 
     public static TwitterLoginInformation createLoginInformation(String redirectURL) throws TwitterException {
         Twitter twitter = new TwitterFactory().getInstance();

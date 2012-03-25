@@ -23,15 +23,17 @@ import static org.hamcrest.Matchers.*;
  */
 public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T extends PartakeModel<T>, PK> extends AbstractConnectionTestCaseBase {
     protected DAO dao;
+    protected PartakeConnectionPool pool;
+    protected PartakeDAOFactory factory;
     
     @Deprecated
     protected PartakeConnectionPool getPool() {
-        return DBService.getPool();
+        return pool;
     }
     
     @Deprecated
     protected PartakeDAOFactory getFactory() {
-        return DBService.getFactory();
+        return factory;
     }
     
     // setup() should be implemented in each test case.
@@ -41,6 +43,9 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
     protected void setup(DAO dao) throws DAOException {
         // remove the current data
         TimeUtil.resetCurrentDate();
+
+        this.pool = DBService.getPool();
+        this.factory = DBService.getFactory();        
         this.dao = dao;
         
         if (dao == null)

@@ -16,7 +16,7 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.ShortenedURLData;
-import in.partake.service.BitlyService;
+import in.partake.service.impl.BitlyService;
 
 import java.util.ArrayList;
 import java.util.Collections;

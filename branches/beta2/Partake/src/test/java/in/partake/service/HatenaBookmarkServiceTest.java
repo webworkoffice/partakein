@@ -2,7 +2,7 @@ package in.partake.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import in.partake.service.HatenaBookmarkService;
+import in.partake.service.impl.HatenaBookmarkService;
 
 import org.junit.Ignore;
 import org.junit.Test;

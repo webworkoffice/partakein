@@ -23,7 +23,7 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
     
 	@Before
 	public void setup() throws DAOException {
-	    super.setup(getFactory().getEventAccess());
+	    super.setup(factory.getEventAccess());
         provider = TestDatabaseService.getTestDataProviderSet().getEventProvider();
 	}
 

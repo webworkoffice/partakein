@@ -11,7 +11,7 @@ import org.junit.Before;
 public class EventReminderAccessTest extends AbstractDaoTestCaseBase<IEventReminderAccess, EventReminder, String> {
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getEventReminderAccess());
+        super.setup(factory.getEventReminderAccess());
     }
     
     @Override

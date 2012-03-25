@@ -2,14 +2,13 @@ package in.partake.model.dao;
 
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.IEnrollmentAccess;
-import in.partake.model.dto.Event;
 import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.Event;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
-import in.partake.service.DBService;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +26,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 
 	@Before
 	public void setup() throws DAOException {
-	    super.setup(DBService.getFactory().getEnrollmentAccess());
+	    super.setup(factory.getEnrollmentAccess());
 	}
 	
 	@Override
@@ -68,8 +67,8 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 		try {
 		    con.beginTransaction();
 		    event.setId(eventId);
-			getFactory().getEventAccess().put(con, event);
-			getFactory().getUserAccess().put(con, new User(userId, 0, new Date(), null)); 
+			factory.getEventAccess().put(con, event);
+			factory.getUserAccess().put(con, new User(userId, 0, new Date(), null)); 
 
 			dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
 			
@@ -101,8 +100,8 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
             {
                 con.beginTransaction();
                 event.setId(eventId);
-                getFactory().getEventAccess().put(con, event);
-                getFactory().getUserAccess().put(con, new User(userId, 0, new Date(), null));     
+                factory.getEventAccess().put(con, event);
+                factory.getUserAccess().put(con, new User(userId, 0, new Date(), null));     
                 dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
                 con.commit();
             }

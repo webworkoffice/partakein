@@ -1,4 +1,4 @@
-package in.partake.service;
+package in.partake.service.impl;
 
 import in.partake.base.PartakeRuntimeException;
 import in.partake.base.TimeUtil;
@@ -44,6 +44,7 @@ import org.apache.lucene.util.Version;
  * @author shinyak
  */
 // TODO: Do not use LuceneService directly. Basically use EventSearchService.
+//TODO: should be non-public class.
 public class LuceneService {
 	private static volatile LuceneService instance;
 

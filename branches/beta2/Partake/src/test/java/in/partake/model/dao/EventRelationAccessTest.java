@@ -16,7 +16,7 @@ import org.junit.Test;
 public class EventRelationAccessTest extends AbstractDaoTestCaseBase<IEventRelationAccess, EventRelation, EventRelationPK> {
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getEventRelationAccess());
+        super.setup(factory.getEventRelationAccess());
     }
 
     @Override
