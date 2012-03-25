@@ -14,7 +14,7 @@
 
 <%
 	AbstractEventEditAction action = (AbstractEventEditAction) request.getAttribute(Constants.ATTR_ACTION);
-	EventEx event = action.getEvent(); 
+	EventEx event = action.getEvent();
 	assert event != null;
 %>
 
@@ -43,7 +43,7 @@
 	<label class="control-label">カテゴリ</label>
 	<div class="controls">
 		<select name="category">
-		<% for (KeyValuePair kv : EventCategory.CATEGORIES) { %>
+		<% for (KeyValuePair kv : EventCategory.getCategories()) { %>
 			<option value="<%= h(kv.getKey()) %>"><%= kv.getValue() %></option>
 		<% } %>
 		</select>
@@ -51,11 +51,11 @@
 		<% if (event.getCategory() != null && EventCategory.isValidCategoryName(event.getCategory())) { %>
 			$('category').val('<%= h(event.getCategory()) %>');
 		<% } else { %>
-			$('category').val('<%= h(EventCategory.CATEGORIES.get(0).getKey()) %>');
+			$('category').val('<%= h(EventCategory.getCategories().get(0).getKey()) %>');
 		<% } %>
 		</script>
 	</div>
-</div>        
+</div>
 <div id="description" class="control-group">
 	<label class="control-label" for="description">説明 <span class="label label-important">必須</span></label>
 	<div class="controls">
@@ -66,10 +66,10 @@
 <div id="beginDate" class="control-group">
 	<label class="control-label">開催日時 <span class="label label-important">必須</span></label>
     <div class="controls form-inline">
-       	<input type="text" id="beginDataInput" name="beginDate" class="span2" 
+       	<input type="text" id="beginDataInput" name="beginDate" class="span2"
        	       placeholder="YYYY-MM-DD HH:MM"
        	       value="<%= TimeUtil.formatForEvent(event.getBeginDate()) %>" />
-	</div>	
+	</div>
 	<script>
 	$('#beginDataInput').datetimepicker({
 		dateFormat: 'yy-mm-dd'
@@ -78,7 +78,7 @@
 </div>
 <div id="endDate" class="control-group">
     <label class="control-label">終了日時</label>
-    <div class="controls">				
+    <div class="controls">
 		<label class="checkbox">
 			<input type="checkbox" id="usesEndDate" name="usesEndDate" <%= event.getEndDate() != null ? "checked" : "" %>/>
 			終了日時を設定する
@@ -131,7 +131,7 @@
     }
     checkDeadline();
     $("#usesDeadline").change(checkDeadline);
-	</script>    
+	</script>
 </div>
 <div id="capacity" class="control-group">
    	<label class="control-label">定員</label>
@@ -176,12 +176,12 @@
 		if (v)
 			$('#fore-image-chooser').fadeIn("fast");
 		else
-			$('#fore-image-chooser').fadeOut("fast");   	
+			$('#fore-image-chooser').fadeOut("fast");
    	}
 	$('input[name="foreImage"]').change(updateForeImageChooser);
 	updateForeImageChooser();
 	</script>
-   	
+
 </div>
 
 <div id="backImageId" class="control-group">
@@ -219,7 +219,7 @@
 		if (v)
 			$('#back-image-chooser').fadeIn("fast");
 		else
-			$('#back-image-chooser').fadeOut("fast");   		
+			$('#back-image-chooser').fadeOut("fast");
    	}
    	$('input[name="backImage"]').change(updateBackImageChooser);
    	updateBackImageChooser();
@@ -277,7 +277,7 @@ function checkPasscode() {
     if ($('#secret').is(':checked')) {
         $('#passcode').removedAttr('disabled');
     } else {
-        $('#passcode').attr('disabled', '');                
+        $('#passcode').attr('disabled', '');
     }
 }
 checkPasscode();
@@ -378,20 +378,20 @@ $('#secret').change(checkPasscode);
 					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
 					<li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
 		    	</ul>
-		    	<div id="image-pagination" class="pagination pagination-centered"></div>			
+		    	<div id="image-pagination" class="pagination pagination-centered"></div>
 			</div>
 		</div>
-    	
+
   	</div>
   	<div class="modal-footer spinner-container">
 	    <a href="#" id="image-upload-dialog-ok" class="btn btn-primary">OK</a>
 	    <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
   	</div>
-	
+
 	<%-- Since IE does not support XHR File upload, we use iframe trasport technique here... Too bad. --%>
 	<script>
 	var cachedTotalImageCount = 0;
-	
+
 	function onSelectImage(imageId) {
 		$('#selected-image').attr('imageId', imageId);
 		$('#selected-image').attr('src', '/images/' + imageId);
@@ -403,14 +403,14 @@ $('#secret').change(checkPasscode);
 		var a = $('<a class="thumbnail"></a>').append(img);
 		a.click(function() { onSelectImage(imageId); });
 		var li = $('<li class="span2"></li>').append(a);
-		
+
 		return li;
 	}
-	
+
 	function updatePagination(currentPageNum, totalImageCount) {
 		var pagination = $('#image-pagination');
 		pagination.empty();
-		
+
 		var pages = partakeUI.pagination(pagination, currentPageNum, totalImageCount, 6);
 		for (var i = 0; i < pages.length; ++i) {
 			pages[i].anchor.click((function(pageNum) {
@@ -420,9 +420,9 @@ $('#secret').change(checkPasscode);
 			})(pages[i].pageNum));
 		}
 	}
-	
+
 	function updateImageList(imageIds) {
-		var thumbnails = $('#image-upload-dialog-thumbnails');			
+		var thumbnails = $('#image-upload-dialog-thumbnails');
 		thumbnails.empty();
 
 		for (var i = 0; i < imageIds.length; ++i) {
@@ -430,7 +430,7 @@ $('#secret').change(checkPasscode);
 			$('#image-upload-dialog-thumbnails').append(li);
 		}
 	}
-	
+
 	function showImages(pageNum) {
 		partake.account.getImages((pageNum - 1) * 6, 6)
 		.done(function(json) {
@@ -439,11 +439,11 @@ $('#secret').change(checkPasscode);
 			updatePagination(pageNum, json.count);
 		});
 	}
-	
+
 	$('#image-upload-dialog').on('shown', function() {
 		showImages(1);
 	});
-	
+
 	$('#image-upload-dialog-ok').click(function() {
 		var dialog = $('#image-upload-dialog');
 		dialog.modal('hide');
@@ -454,23 +454,23 @@ $('#secret').change(checkPasscode);
 		} else if (dialog.attr('purpose') == "background" && imageId) {
 			$('#back-image-id-input').val(imageId);
 			$('#selected-back-image').attr('src', '/images/' + imageId);
-		}		
+		}
 	});
-	
+
 	$('#fileupload').fileupload({
 		url: '/api/image/create',
 		files: [{name: $('#fileupload').val()}],
         fileInput: $('#fileupload'),
-        
+
        	formData: function (form) {
        		var result = form.serializeArray();
        		result.push({ name: 'sessionToken', value: '<%= Helper.getSessionToken() %>' });
        		result.push({ name: 'limit', value: '6' });
             return result;
         },
-        
+
         always: function(e, data) {
-        	
+
         },
 		done: function (e, data) {
 			var xhr = data.jqXHR;
