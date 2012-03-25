@@ -1,5 +1,6 @@
 package in.partake.daemon.impl;
 
+import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.daemon.IPartakeDaemonTask;
 import in.partake.model.IPartakeDAOs;
@@ -21,10 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
 
 class SendEnvelopeTask extends Transaction<Void> implements IPartakeDaemonTask {
     private static final Logger logger = Logger.getLogger(SendEnvelopeTask.class);
@@ -100,14 +98,11 @@ class SendEnvelopeTask extends Transaction<Void> implements IPartakeDaemonTask {
             return true;
         }
 
-        AccessToken accessToken = new AccessToken(twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret());
-        Twitter twitter = new TwitterFactory().getInstance(accessToken);
-        if (twitter == null) { return true; }
-
         try {
             Message message = daos.getDirectMessageAccess().find(con, envelope.getMessageId());
-            int twitterId = Integer.parseInt(user.getTwitterId());
-            twitter.sendDirectMessage(twitterId, message.getMessage());
+            long twitterId = Long.parseLong(twitterLinkage.getTwitterId());
+            PartakeApp.getTwitterService().sendDirectMesage(
+                    twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret(), twitterId, message.getMessage());
 
             logger.info("sendDirectMessage : direct message has been sent to " + twitterLinkage.getScreenName());
             return true;
@@ -157,12 +152,10 @@ class SendEnvelopeTask extends Transaction<Void> implements IPartakeDaemonTask {
             logger.warn("sendDirectMessage : envelope id " + envelope.getEnvelopeId() + " could not be sent : No access token");
             return true;
         }
-        AccessToken accessToken = new AccessToken(twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret());
-        Twitter twitter = new TwitterFactory().getInstance(accessToken);
 
         try {
             Message message = daos.getDirectMessageAccess().find(con, envelope.getMessageId());
-            twitter.updateStatus(message.getMessage());
+            PartakeApp.getTwitterService().updateStatus(twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret(), message.getMessage());
             return true;
         } catch (TwitterException e) {
             if (e.isCausedByNetworkIssue()) {
