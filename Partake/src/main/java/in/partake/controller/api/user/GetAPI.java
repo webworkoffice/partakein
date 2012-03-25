@@ -21,7 +21,7 @@ public class GetAPI extends AbstractPartakeAPI {
         if (user == null)
             return renderInvalid(UserErrorCode.INVALID_USER_ID);
 
-        return renderOK(user.toSafeJSON());
+        return renderOK(user.toSafeJSON(true));
     }
 }
 

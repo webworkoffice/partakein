@@ -3,8 +3,8 @@ package in.partake.controller.api;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.AbstractPartakeControllerTest;
-import in.partake.controller.base.AbstractPartakeController;
 import in.partake.resource.Constants;
+import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import com.opensymphony.xwork2.ActionProxy;
 
 public abstract class APIControllerTest extends AbstractPartakeControllerTest {
     /**
-     * proxy から JSON を取得する。取得できなかった場合は null を返す。
+     * Returns JSON from <code>proxy</code>. If not available, null will be returned.
      * @param proxy
      * @return
      * @throws IOException
@@ -57,6 +57,7 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
         Assert.assertEquals("ok", obj.get("result"));
     }
 
+    @Deprecated
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {
         Assert.assertEquals(400, response.getStatus());
 
@@ -66,10 +67,11 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
     }
 
     protected void assertResultInvalid(ActionProxy proxy, UserErrorCode ec) throws Exception {
-        assertResultInvalid(proxy);
+        Assert.assertEquals(400, response.getStatus());
 
-        AbstractPartakeController action = (AbstractPartakeController) proxy.getAction();
-        assertThat(action.getRedirectURL(), is("/invalid?errorCode=" + ec.getErrorCode()));
+        JSONObject obj = getJSON(proxy);
+        assertThat(obj.getString("result"), is("invalid"));
+        assertThat(obj.getString("reason"), is(ec.getReasonString()));
     }
 
     protected void assertResultLoginRequired(ActionProxy proxy) throws Exception {
@@ -95,12 +97,21 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
     }
 
+    @Deprecated
     protected void assertResultError(ActionProxy proxy) throws Exception {
         Assert.assertEquals(500, response.getStatus());
 
         JSONObject obj = getJSON(proxy);
         Assert.assertEquals("error", obj.get("result"));
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
+    }
+
+    protected void assertResultError(ActionProxy proxy, ServerErrorCode ec) throws Exception {
+        Assert.assertEquals(500, response.getStatus());
+
+        JSONObject obj = getJSON(proxy);
+        assertThat(obj.getString("result"), is("error"));
+        assertThat(obj.getString("reason"), is(ec.getReasonString()));
     }
 
     /**

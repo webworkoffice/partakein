@@ -1,13 +1,14 @@
 package in.partake.controller.api.user;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.resource.UserErrorCode;
 import net.sf.json.JSONObject;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -22,30 +23,29 @@ public class GetUserAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        // User.java から取得できるもの
         JSONObject obj = getJSON(proxy);
         assertThat(obj.getString("id"), is(TestDataProvider.DEFAULT_USER_ID));
-        Assert.assertEquals("1", obj.get("twitterId"));
-        Assert.assertNull(obj.get("lastLoginAt")); // 取得できない
-        Assert.assertNull(obj.get("calendarId"));  // calendar Id も取得できない。
+        // These values should not be public.
+        assertThat(obj.get("twitterId"), is(nullValue()));
+        assertThat(obj.get("lastLoginAt"), is(nullValue()));
+        assertThat(obj.get("calendarId"), is(nullValue()));
 
-        // Twitter Linkage を用いて取得できるもの
         JSONObject twitter = obj.getJSONObject("twitterLinkage");
-        Assert.assertNotNull(twitter);
-        Assert.assertEquals("testUser", twitter.get("screenName"));
-        Assert.assertEquals("testUser", twitter.get("name"));
-        Assert.assertNull(twitter.get("accessToken")); // 取得できない
-        Assert.assertNull(twitter.get("accessTokenSecret")); // 取得できない
-        Assert.assertEquals("http://www.example.com/", twitter.get("profileImageURL"));
+        assertThat(twitter, is(notNullValue()));
+        assertThat(twitter.getString("screenName"), is(TestDataProvider.DEFAULT_TWITTER_SCREENNAME));
+        assertThat(twitter.getString("profileImageURL"), is("http://www.example.com/"));
+        // These values should not be public.
+        assertThat(twitter.get("accessToken"), is(nullValue()));
+        assertThat(twitter.get("accessTokenSecret"), is(nullValue()));
 
-        // OpenID Linkage は取得できない
-        JSONObject openIDLinkage = obj.getJSONObject("openIDLinkage");
-        Assert.assertNull(openIDLinkage);
+        // We don't expose OpenID Linkage.
+        assertThat(obj.get("openIDLinakge"), is(nullValue()));
     }
 
     @Test
     public void testGetUserWithInvalidUserId() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/" + TestDataProvider.INVALID_USER_ID);
+        ActionProxy proxy = getActionProxy("/api/user/");
+        addParameter(proxy, "userId", TestDataProvider.INVALID_USER_ID);
         proxy.execute();
 
         assertResultInvalid(proxy, UserErrorCode.INVALID_USER_ID);

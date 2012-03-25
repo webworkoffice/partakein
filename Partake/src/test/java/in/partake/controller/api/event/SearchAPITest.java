@@ -149,6 +149,7 @@ public class SearchAPITest extends APIControllerTest {
         JSONObject json = getJSON(proxy);
         assertOnlyBeforeDeadlineAreFound(json);
     }
+
     /**
      * beforeDeadlineOnlyにtrueでもfalseでもない値が渡されたら引数が異常としてエラー
      */

@@ -2,13 +2,15 @@ package in.partake.view;
 
 import static in.partake.view.util.Helper.escapeTwitterResponse;
 import static in.partake.view.util.Helper.h;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import in.partake.view.util.Helper;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class ViewHelperTest {
-    
+
     @Test
     public void testToEscapeHTML() {
         Assert.assertEquals("", h(""));
@@ -40,13 +42,13 @@ public class ViewHelperTest {
         Assert.assertEquals("&lt;script&gt;&lt;/script&gt;", h("<script></script>"));
     }
 
-    
+
     @Test
     public void testToCleanupHTML() throws Exception {
         String dirty = "<script>alert('hoge')</script>";
         String sanity = Helper.cleanupHTML(dirty);
-        
-        Assert.assertTrue(!sanity.contains("script"));
+
+        assertThat(sanity.contains("script"), is(false));
     }
 
     @Test
