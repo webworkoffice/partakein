@@ -1,6 +1,8 @@
 package in.partake.base;
 
 
+import static org.hamcrest.Matchers.is;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -12,6 +14,18 @@ import org.junit.Test;
 
 public class UtilTest {
 	@Test
+	public void testEnsureRange() {
+		Assert.assertThat(Util.ensureRange(10, 0, 100), is(10));
+		Assert.assertThat(Util.ensureRange(-10, 0, 100), is(0));
+		Assert.assertThat(Util.ensureRange(110, 0, 100), is(100));
+		Assert.assertThat(Util.ensureRange(0, 0, 100), is(0));
+		Assert.assertThat(Util.ensureRange(1000, 0, 100), is(100));
+		Assert.assertThat(Util.ensureRange(Integer.MIN_VALUE, 0, Integer.MAX_VALUE), is(0));
+		Assert.assertThat(Util.ensureRange(Integer.MAX_VALUE, 0, Integer.MAX_VALUE), is(Integer.MAX_VALUE));
+		Assert.assertThat(Util.ensureRange(0, 1, 100), is(1));
+	}
+
+	@Test
 	public void hashtagValidatorTest() {
 	    Assert.assertTrue(Util.isValidHashtag("#hashtag"));
 	    Assert.assertTrue(Util.isValidHashtag("#hash_tag"));
@@ -22,7 +36,7 @@ public class UtilTest {
 	    Assert.assertTrue(Util.isValidHashtag("#ﾊｯｼｭﾀｸﾞ"));
 	    Assert.assertTrue(Util.isValidHashtag("#À"));
 	    Assert.assertTrue(Util.isValidHashtag("#012"));
-	    
+
 	    Assert.assertFalse(Util.isValidHashtag("#hash\\tag"));
 	    Assert.assertFalse(Util.isValidHashtag("#hash-tag"));
 	    Assert.assertFalse(Util.isValidHashtag("#らき☆すた"));
