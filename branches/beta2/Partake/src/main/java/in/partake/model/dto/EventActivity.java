@@ -41,7 +41,7 @@ public class EventActivity extends PartakeModel<EventActivity> {
     public EventActivity(EventActivity eventActivity) {
         this(eventActivity.id, eventActivity.eventId, eventActivity.title, eventActivity.content, eventActivity.createdAt);
     }
-    
+
     public EventActivity(JSONObject obj) {
         this.id = obj.getString("id");
         this.eventId = obj.getString("eventId");
@@ -52,15 +52,10 @@ public class EventActivity extends PartakeModel<EventActivity> {
     }
 
     @Override
-    public EventActivity copy() {
-        return new EventActivity(this);
-    }
-
-    @Override
     public Object getPrimaryKey() {
         return id;
     }
-    
+
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();

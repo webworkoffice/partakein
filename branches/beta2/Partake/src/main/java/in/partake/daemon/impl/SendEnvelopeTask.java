@@ -178,7 +178,7 @@ class SendEnvelopeTask extends Transaction<Void> implements IPartakeDaemonTask {
 
     private void markAsUnauthorizedUser(PartakeConnection con, IPartakeDAOs daos, UserEx user) {
         ITwitterLinkageAccess access = daos.getTwitterLinkageAccess();
-        TwitterLinkage linkage = user.getTwitterLinkage().copy();
+        TwitterLinkage linkage = new TwitterLinkage(user.getTwitterLinkage());
         linkage.markAsUnauthorized();
 
         try {

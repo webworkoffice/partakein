@@ -21,23 +21,23 @@ public class EventReminder extends PartakeModel<EventReminder> {
     private Date sentDateOfBeforeDeadlineHalfday;
     @Column
     private Date sentDateOfBeforeTheDay;
-    
+
     public EventReminder() {
         this(null, null, null, null);
     }
-    
+
     public EventReminder(String eventId) {
         this(eventId, null, null, null);
     }
-    
-    public EventReminder(String eventId, 
+
+    public EventReminder(String eventId,
                     Date sentDateOfBeforeDeadlineOneday, Date sentDateOfBeforeDeadlineHalfday, Date sentDateOfBeforeTheDay) {
         this.eventId = eventId;
         this.sentDateOfBeforeDeadlineOneday = sentDateOfBeforeDeadlineOneday == null ? null : new Date(sentDateOfBeforeDeadlineOneday.getTime());
         this.sentDateOfBeforeDeadlineHalfday = sentDateOfBeforeDeadlineHalfday == null ? null : new Date(sentDateOfBeforeDeadlineHalfday.getTime());
         this.sentDateOfBeforeTheDay = sentDateOfBeforeTheDay == null ? null : new Date(sentDateOfBeforeTheDay.getTime());
     }
-    
+
     public EventReminder(JSONObject obj) {
         this.eventId = obj.getString("id");
         if (obj.containsKey("sentDateOfBeforeDeadlineOneday"))
@@ -47,7 +47,7 @@ public class EventReminder extends PartakeModel<EventReminder> {
         if (obj.containsKey("sentDateOfBeforeTheDay"))
             sentDateOfBeforeTheDay = new Date(obj.getLong("sentDateOfBeforeTheDay"));
     }
-    
+
     public EventReminder(EventReminder status) {
         this(status.eventId, status.sentDateOfBeforeDeadlineOneday, status.sentDateOfBeforeDeadlineHalfday, status.sentDateOfBeforeTheDay);
     }
@@ -56,12 +56,7 @@ public class EventReminder extends PartakeModel<EventReminder> {
     public Object getPrimaryKey() {
         return eventId;
     }
-    
-    @Override
-    public EventReminder copy() {
-        return new EventReminder(this);
-    }
-    
+
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
@@ -74,44 +69,44 @@ public class EventReminder extends PartakeModel<EventReminder> {
             obj.put("sentDateOfBeforeTheDay", sentDateOfBeforeTheDay.getTime());
         return obj;
     }
-    
+
     // ----------------------------------------------------------------------
-    // 
+    //
 
     // TODO: equals should be implemented.
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof EventReminder)) { return false; }
-        
+
         EventReminder lhs = this;
         EventReminder rhs = (EventReminder) obj;
-        
+
         if (!ObjectUtils.equals(lhs.eventId, rhs.eventId)) { return false; }
         if (!ObjectUtils.equals(lhs.sentDateOfBeforeDeadlineOneday, rhs.sentDateOfBeforeDeadlineOneday)) { return false; }
         if (!ObjectUtils.equals(lhs.sentDateOfBeforeDeadlineHalfday, rhs.sentDateOfBeforeDeadlineHalfday)) { return false; }
         if (!ObjectUtils.equals(lhs.sentDateOfBeforeTheDay, rhs.sentDateOfBeforeTheDay)) { return false; }
-        
+
         return true;
     }
-    
-    
+
+
     @Override
     public int hashCode() {
         int code = 0;
-        
+
         code += code * 37 + ObjectUtils.hashCode(this.eventId);
         code += code * 37 + ObjectUtils.hashCode(this.sentDateOfBeforeDeadlineOneday);
         code += code * 37 + ObjectUtils.hashCode(this.sentDateOfBeforeDeadlineHalfday);
         code += code * 37 + ObjectUtils.hashCode(this.sentDateOfBeforeTheDay);
-        
+
         return code;
     }
-    
-    
+
+
     // ----------------------------------------------------------------------
-    // 
-    
+    //
+
     public String getEventId() {
         return eventId;
     }

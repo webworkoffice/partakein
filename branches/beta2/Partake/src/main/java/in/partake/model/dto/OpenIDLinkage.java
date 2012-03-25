@@ -14,68 +14,63 @@ public class OpenIDLinkage extends PartakeModel<OpenIDLinkage> {
     private String id;
     @Column
     private String userId;
-    
+
     public OpenIDLinkage() {
-        
+
     }
-    
+
     public OpenIDLinkage(String id, String userId) {
         this.id = id;
         this.userId = userId;
     }
-    
+
     public OpenIDLinkage(OpenIDLinkage linkage) {
         this.id = linkage.id;
         this.userId = linkage.userId;
     }
-    
+
     public OpenIDLinkage(JSONObject obj) {
         this.id = obj.getString("id");
         this.userId = obj.getString("userId");
     }
-    
+
     @Override
     public Object getPrimaryKey() {
         return id;
     }
-    
-    @Override
-    public OpenIDLinkage copy() {
-        return new OpenIDLinkage(this);
-    }
-    
+
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
         obj.put("userId", userId);
-        
+
         return obj;
     }
-    
+
     // -----------------------------------------------------------------------------
     //
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof OpenIDLinkage)) { return false; }
-        
+
         OpenIDLinkage lhs = this;
         OpenIDLinkage rhs = (OpenIDLinkage) obj;
-        
+
         if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
         if (!ObjectUtils.equals(lhs.userId, rhs.userId)) { return false; }
-        
+
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int code = 0;
 
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(userId);
-        
+
         return code;
     }
 

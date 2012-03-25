@@ -25,7 +25,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     private String userId;
     @Id
     private String eventId;
-    
+
     @Column(length = 65535)
     private String comment;
     @Column
@@ -40,14 +40,14 @@ public class Enrollment extends PartakeModel<Enrollment> {
     // TODO: should be renamed to enrolledAt.
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;
-    
+
     // ----------------------------------------------------------------------
     // constructors
-    
+
     public Enrollment() {
         this.vip = false;
     }
-    
+
     public Enrollment(String userId, String eventId, String comment,
                     ParticipationStatus status, boolean vip, ModificationStatus modificationStatus,
                     AttendanceStatus attendanceStatus, Date modifiedAt) {
@@ -60,7 +60,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.attendanceStatus = attendanceStatus;
         this.modifiedAt = modifiedAt;
     }
-    
+
     public Enrollment(Enrollment p) {
         this.userId = p.userId;
         this.eventId = p.eventId;
@@ -71,7 +71,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.attendanceStatus = p.attendanceStatus;
         this.modifiedAt = p.modifiedAt == null ? null : (Date) p.modifiedAt.clone();
     }
-    
+
     public Enrollment(JSONObject obj) {
         this.userId = obj.getString("userId");
         this.eventId = obj.getString("eventId");
@@ -88,12 +88,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     public Object getPrimaryKey() {
         return new EnrollmentPK(userId, eventId);
     }
-    
-    @Override
-    public Enrollment copy() {
-        return new Enrollment(this);
-    }
-    
+
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
@@ -104,20 +99,20 @@ public class Enrollment extends PartakeModel<Enrollment> {
         obj.put("status", status.toString());
         obj.put("modificationStatus", modificationStatus.toString());
         obj.put("attendanceStatus", attendanceStatus.toString());
-        if (modifiedAt != null) 
+        if (modifiedAt != null)
             obj.put("modifiedAt", modifiedAt.getTime());
         return obj;
     }
-    
+
     // ----------------------------------------------------------------------
-    // equals method     
-    
+    // equals method
+
     public boolean equals(Object obj) {
         if (!(obj instanceof Enrollment)) { return false; }
-        
+
         Enrollment lhs = this;
         Enrollment rhs = (Enrollment) obj;
-        
+
         if (!ObjectUtils.equals(lhs.userId,             rhs.userId))             { return false; }
         if (!ObjectUtils.equals(lhs.eventId,            rhs.eventId))            { return false; }
         if (!ObjectUtils.equals(lhs.comment,            rhs.comment))            { return false; }
@@ -126,13 +121,13 @@ public class Enrollment extends PartakeModel<Enrollment> {
         if (!ObjectUtils.equals(lhs.modificationStatus, rhs.modificationStatus)) { return false; }
         if (!ObjectUtils.equals(lhs.attendanceStatus,   rhs.attendanceStatus))   { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt,         rhs.modifiedAt))         { return false; }
-        
+
         return true;
     }
-    
+
     public int hashCode() {
         int hashCode = 0;
-        
+
         hashCode = hashCode * 37 + ObjectUtils.hashCode(userId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(eventId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(comment);
@@ -141,17 +136,17 @@ public class Enrollment extends PartakeModel<Enrollment> {
         hashCode = hashCode * 37 + ObjectUtils.hashCode(modificationStatus);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(attendanceStatus);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(modifiedAt);
-        
+
         return hashCode;
     }
-    
+
     // ----------------------------------------------------------------------
-    // 
-    
+    //
+
     public String getUserId() {
         return userId;
     }
-    
+
     public String getEventId() {
         return eventId;
     }
@@ -159,7 +154,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     public String getComment() {
         return comment;
     }
-    
+
     public ParticipationStatus getStatus() {
         return status;
     }
@@ -177,47 +172,47 @@ public class Enrollment extends PartakeModel<Enrollment> {
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
     }
-    
+
     public boolean isVIP() {
         return vip;
     }
-    
+
     public Date getModifiedAt() {
         return modifiedAt;
     }
 
-	public void setUserId(String userId) {
-		checkFrozen();
-		this.userId = userId;
-	}
+    public void setUserId(String userId) {
+        checkFrozen();
+        this.userId = userId;
+    }
 
-	public void setComment(String comment) {
-		checkFrozen();
-		this.comment = comment;
-	}
+    public void setComment(String comment) {
+        checkFrozen();
+        this.comment = comment;
+    }
 
-	public void setVIP(boolean vip) {
-		checkFrozen();
-		this.vip = vip;
-	}
+    public void setVIP(boolean vip) {
+        checkFrozen();
+        this.vip = vip;
+    }
 
-	public void setStatus(ParticipationStatus status) {
-		checkFrozen();
-		this.status = status;
-	}
+    public void setStatus(ParticipationStatus status) {
+        checkFrozen();
+        this.status = status;
+    }
 
-	public void setModificationStatus(ModificationStatus lastStatus) {
-		checkFrozen();
-		this.modificationStatus = lastStatus;
-	}
-	
-	public void setAttendanceStatus(AttendanceStatus attendanceStatus) {
-	    checkFrozen();
-	    this.attendanceStatus = attendanceStatus;
-	}
+    public void setModificationStatus(ModificationStatus lastStatus) {
+        checkFrozen();
+        this.modificationStatus = lastStatus;
+    }
 
-	public void setModifiedAt(Date modifiedAt) {
-		checkFrozen();
-		this.modifiedAt = modifiedAt;
-	}
+    public void setAttendanceStatus(AttendanceStatus attendanceStatus) {
+        checkFrozen();
+        this.attendanceStatus = attendanceStatus;
+    }
+
+    public void setModifiedAt(Date modifiedAt) {
+        checkFrozen();
+        this.modifiedAt = modifiedAt;
+    }
 }

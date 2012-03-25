@@ -20,11 +20,11 @@ public class User extends PartakeModel<User> {
     private Date    lastLoginAt;
     @Column
     private String  calendarId;
-    
+
     public User() {
         // do nothing
     }
-    
+
     public User(String id, String twitterId, Date lastLoginAt, String calendarId) {
         this.id = id;
         this.twitterId = String.valueOf(twitterId);
@@ -42,46 +42,41 @@ public class User extends PartakeModel<User> {
         this.lastLoginAt = user.lastLoginAt;
         this.calendarId = user.calendarId;
     }
-    
+
     public User(JSONObject obj) {
         this.id = obj.getString("id");
         this.twitterId = obj.getString("twitterId");
         if (obj.containsKey("lastLoginAt"))
             this.lastLoginAt = new Date(obj.getLong("lastLoginAt"));
         if (obj.containsKey("calendarId"))
-            this.calendarId = obj.getString("calendarId");        
+            this.calendarId = obj.getString("calendarId");
     }
 
     @Override
     public Object getPrimaryKey() {
         return id;
     }
-    
-    @Override
-    public User copy() {
-        return new User(this);
-    }
-    
+
     /**
      * sensitive な情報を含まないような user を取得します。
-     * 
+     *
      * @return
      */
     public JSONObject toSafeJSON() {
-    	JSONObject obj = new JSONObject();
-    	obj.put("id", id);
-    	
-    	return obj;
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+
+        return obj;
     }
-    
+
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
         obj.put("twitterId", twitterId);
-        
+
         if (lastLoginAt != null)
             obj.put("lastLoginAt", lastLoginAt.getTime());
-        
+
         if (calendarId != null)
             obj.put("calendarId", calendarId);
 
@@ -90,26 +85,26 @@ public class User extends PartakeModel<User> {
 
     // ----------------------------------------------------------------------
     // equal methods
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof User)) { return false; }
-        
+
         User lhs = this;
         User rhs = (User) obj;
-        
+
         if (!ObjectUtils.equals(lhs.id,          rhs.id))          { return false; }
         if (!ObjectUtils.equals(lhs.lastLoginAt, rhs.lastLoginAt)) { return false; }
         if (!ObjectUtils.equals(lhs.twitterId,   rhs.twitterId))   { return false; }
         if (!ObjectUtils.equals(lhs.calendarId,  rhs.calendarId))  { return false; }
-        return true;       
+        return true;
     }
-    
+
     @Override
     public int hashCode() {
         return ObjectUtils.hashCode(id);
     }
-    
+
     // ----------------------------------------------------------------------
     // accessors
 

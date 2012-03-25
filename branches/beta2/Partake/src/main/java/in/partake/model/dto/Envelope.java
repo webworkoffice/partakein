@@ -16,7 +16,7 @@ import org.apache.commons.lang.ObjectUtils;
 
 /**
  * Message を、「他に人に送る」ことを表現するクラス。
- * 
+ *
  * @author shinyak
  *
  */
@@ -42,11 +42,11 @@ public class Envelope extends PartakeModel<Envelope> {
     private DirectMessagePostingType postingType;
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    
+
     public Envelope() {
         // do nothing
     }
-    
+
     public Envelope(String id, String senderId, String receiverId, String messageId, Date deadline, int numTried, Date lastTriedAt, Date tryAfter, DirectMessagePostingType postingType, Date createdAt) {
         this.envelopeId = id;
         this.senderId = senderId;
@@ -59,7 +59,7 @@ public class Envelope extends PartakeModel<Envelope> {
         this.postingType = postingType;
         this.createdAt = createdAt != null ? (Date) createdAt.clone() : null;
     }
-    
+
     public Envelope(Envelope envelope) {
         this.envelopeId = envelope.envelopeId;
         this.senderId = envelope.senderId;
@@ -72,13 +72,13 @@ public class Envelope extends PartakeModel<Envelope> {
         this.postingType = envelope.postingType;
         this.createdAt = envelope.createdAt != null ? (Date) envelope.createdAt.clone() : null;
     }
-    
+
     public Envelope(JSONObject json) {
         this.envelopeId = json.getString("id");
         if (json.containsKey("senderId"))
-            this.senderId = json.getString("senderId"); 
+            this.senderId = json.getString("senderId");
         if (json.containsKey("receiverId"))
-            this.receiverId = json.getString("receiverId"); 
+            this.receiverId = json.getString("receiverId");
         this.messageId = json.getString("messageId");
         if (json.containsKey("deadline"))
             this.deadline = new Date(json.getLong("deadline"));
@@ -91,17 +91,12 @@ public class Envelope extends PartakeModel<Envelope> {
         if (json.containsKey("createdAt"))
             this.createdAt = new Date(json.getLong("createdAt"));
     }
-    
+
     @Override
     public Object getPrimaryKey() {
         return envelopeId;
     }
-    
-    @Override
-    public Envelope copy() {
-        return new Envelope(this);
-    }
-    
+
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
@@ -125,17 +120,17 @@ public class Envelope extends PartakeModel<Envelope> {
 
         return obj;
     }
-    
+
     // ----------------------------------------------------------------------
     // equals method
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Envelope)) { return false; }
-        
+
         Envelope lhs = this;
         Envelope rhs = (Envelope) obj;
-        
+
         if (!ObjectUtils.equals(lhs.envelopeId,  rhs.envelopeId))  { return false; }
         if (!ObjectUtils.equals(lhs.senderId,    rhs.senderId))    { return false; }
         if (!ObjectUtils.equals(lhs.receiverId,  rhs.receiverId))  { return false; }
@@ -148,11 +143,11 @@ public class Envelope extends PartakeModel<Envelope> {
         if (!ObjectUtils.equals(lhs.createdAt,   rhs.createdAt))   { return false; }
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int code = 0;
-        
+
         code = code * 37 + ObjectUtils.hashCode(envelopeId);
         code = code * 37 + ObjectUtils.hashCode(senderId);
         code = code * 37 + ObjectUtils.hashCode(receiverId);
@@ -163,14 +158,14 @@ public class Envelope extends PartakeModel<Envelope> {
         code = code * 37 + ObjectUtils.hashCode(tryAfter);
         code = code * 37 + ObjectUtils.hashCode(postingType);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
-        
+
         return code;
     }
 
-    
+
     // ----------------------------------------------------------------------
     // accessors
-    
+
     public String getEnvelopeId() { return envelopeId; }
     public String getSenderId()   { return senderId; }
     public String getReceiverId() { return receiverId; }
@@ -181,7 +176,7 @@ public class Envelope extends PartakeModel<Envelope> {
     public Date getTryAfter() { return tryAfter; }
     public DirectMessagePostingType getPostingType() { return postingType; }
     public Date getCreatedAt() { return createdAt; }
-    
+
     public void setEnvelopeId(String envelopeId) {
         checkFrozen();
         this.envelopeId = envelopeId;
@@ -222,11 +217,11 @@ public class Envelope extends PartakeModel<Envelope> {
         checkFrozen();
         this.createdAt = createdAt != null ? (Date) createdAt.clone() : null;
     }
-    
+
     public void updateForSendingFailure() {
         checkFrozen();
         this.numTried += 1;
         this.lastTriedAt = new Date();
     }
-    
+
 }

@@ -31,7 +31,7 @@ public class Message extends PartakeModel<Message> {
     }
 
     public Message(Message message) {
-    	this(message.id, message.userId, message.message, message.eventId, message.createdAt);
+        this(message.id, message.userId, message.message, message.eventId, message.createdAt);
     }
 
     /** eventId が null -> system からのメッセージ、null でない -> user からのメッセージ。
@@ -53,24 +53,19 @@ public class Message extends PartakeModel<Message> {
         if (obj.containsKey("createdAt"))
             this.createdAt = new Date(obj.getLong("createdAt"));
     }
-    
+
     @Override
     public Object getPrimaryKey() {
         return id;
     }
 
     @Override
-    public Message copy() {
-        return new Message(this);
-    }
-    
-    @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
         obj.put("senderId", userId);
         obj.put("message", message);
-        obj.put("eventId", eventId);        
+        obj.put("eventId", eventId);
         obj.put("createdAt", createdAt.getTime());
         return obj;
     }
@@ -81,10 +76,10 @@ public class Message extends PartakeModel<Message> {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Message)) { return false; }
-        
+
         Message lhs = this;
         Message rhs = (Message) obj;
-        
+
         if (!(ObjectUtils.equals(lhs.id,        rhs.id)))        { return false; }
         if (!(ObjectUtils.equals(lhs.userId,    rhs.userId)))    { return false; }
         if (!(ObjectUtils.equals(lhs.message,   rhs.message)))   { return false; }
@@ -96,13 +91,13 @@ public class Message extends PartakeModel<Message> {
     @Override
     public int hashCode() {
         int code = 0;
-        
+
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(userId);
         code = code * 37 + ObjectUtils.hashCode(message);
         code = code * 37 + ObjectUtils.hashCode(eventId);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
-        
+
         return code;
     }
 
