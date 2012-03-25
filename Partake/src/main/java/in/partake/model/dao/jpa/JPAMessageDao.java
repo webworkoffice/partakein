@@ -70,7 +70,7 @@ public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
     }
 
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "Messages");
     }
 

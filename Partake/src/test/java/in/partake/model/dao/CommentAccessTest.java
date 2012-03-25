@@ -4,6 +4,7 @@ import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dto.Comment;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
+import in.partake.service.DBService;
 import in.partake.service.TestDatabaseService;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
     
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getCommentAccess());
+        super.setup(DBService.getFactory().getCommentAccess());
         provider = TestDatabaseService.getTestDataProviderSet().getCommentDataProvider();
     }
     
@@ -32,7 +33,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
     // TODO tell about order of the DataIterator's value.
     public void testToFindByEventId() throws Exception {
         PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
+        PartakeDAOFactory factory = DBService.getFactory();
         TimeUtil.setCurrentDate(TimeUtil.getCurrentDate());
         
         try {
@@ -79,7 +80,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
     @Test(expected = UnsupportedOperationException.class)
     public void testToUpdateByIterator() throws Exception {
         PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = getFactory();
+        PartakeDAOFactory factory = DBService.getFactory();
         
         try {
             con.beginTransaction();

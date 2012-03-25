@@ -3,6 +3,7 @@ package in.partake.model.dao;
 import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dto.BinaryData;
 import in.partake.model.fixture.impl.BinaryTestDataProvider;
+import in.partake.service.DBService;
 
 import org.junit.Before;
 
@@ -11,7 +12,7 @@ public class BinaryAccessTest extends AbstractDaoTestCaseBase<IBinaryAccess, Bin
 
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getBinaryAccess());
+        super.setup(DBService.getFactory().getBinaryAccess());
     }
 
     @Override

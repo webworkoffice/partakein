@@ -1,7 +1,6 @@
 package in.partake.controller.api.account;
 
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
 import junit.framework.Assert;
@@ -15,7 +14,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        UserPreference pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
@@ -30,7 +29,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
 
         assertResultOK(proxy);
 
-        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(false, pref.isProfilePublic());
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
@@ -49,7 +48,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
 
         assertResultOK(proxy);
 
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.USER_WITHOUT_PREF_ID);
+        UserPreference pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(false, pref.isProfilePublic());
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
@@ -59,7 +58,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
     public void testToSetPreferenceWithLoginWithoutArgument() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
 
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        UserPreference pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
@@ -70,7 +69,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
 
         assertResultOK(proxy);
 
-        pref = DeprecatedUserDAOFacade.get().getUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertEquals(true, pref.isProfilePublic());
         Assert.assertEquals(true, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());

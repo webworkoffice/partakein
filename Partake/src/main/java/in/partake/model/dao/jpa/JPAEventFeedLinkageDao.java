@@ -64,7 +64,7 @@ class JPAEventFeedLinkageDao extends JPADao<EventFeedLinkage> implements IEventF
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "EventFeedLinkages");
     }
 

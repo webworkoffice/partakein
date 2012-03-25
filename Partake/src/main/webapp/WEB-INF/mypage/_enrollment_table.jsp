@@ -73,7 +73,16 @@
 	    	
 	       	{
 	       		var td = $('<td></td>');
-	       		td.text(eventStatus.status);
+	       		switch (eventStatus.status) {
+	       		case 'enrolled':
+	       			td.text('参加'); break;
+	       		case 'reserved':
+	       			td.text('仮参加'); break;
+	       		case 'cancelled':
+	       			td.text('キャンセル'); break;
+	       		default:
+	       			td.text('不明'); break;
+	       		}
 	       		td.appendTo(tr);
 	       	}
 	       	
@@ -84,8 +93,8 @@
 	function update(nthPage) {
 		partake.account.getEnrollments((nthPage - 1) * 10, 10)
 		.done(function (json) {
+			console.log(json.eventStatuses);
 			createTable(nthPage, json.eventStatuses);
-			<%= ident %>-pagenation
 			var lst = partakeUI.pagination($('#' + ident + '-pagination'), nthPage, json.numTotalEvents, 10);
 			for (var i = 0; i < lst.length; ++i) {
 				lst[i].anchor.click((function(i) {

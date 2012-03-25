@@ -84,7 +84,7 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
     }
 }

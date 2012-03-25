@@ -120,7 +120,7 @@ public class Postgres9TwitterLinkageDao extends Postgres9Dao implements ITwitter
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
     }
 }

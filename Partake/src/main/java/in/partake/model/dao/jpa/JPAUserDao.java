@@ -1,5 +1,7 @@
 package in.partake.model.dao.jpa;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -44,8 +46,12 @@ class JPAUserDao extends JPADao<User> implements IUserAccess {
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "Users");
     }
 
+    @Override
+    public int countActiveUsers(PartakeConnection con, Date loggedinAfter) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
 }

@@ -120,10 +120,10 @@ abstract class JPADao<T extends PartakeModel<T>> {
         q.executeUpdate();   
     }
     
-    protected long countImpl(PartakeConnection con, String tableName) {
+    protected int countImpl(PartakeConnection con, String tableName) {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT count(t) FROM " + tableName + " t");
         
-        return (Long) q.getSingleResult();
+        return (Integer) q.getSingleResult();
     }
 }

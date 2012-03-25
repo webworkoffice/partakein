@@ -1,6 +1,8 @@
 package in.partake.controller.api.account;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dao.PartakeConnection;
@@ -20,7 +22,6 @@ import net.sf.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.beans.NullValueInNestedPathException;
 
 import com.opensymphony.xwork2.ActionProxy;
 

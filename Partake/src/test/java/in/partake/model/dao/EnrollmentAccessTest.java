@@ -9,6 +9,7 @@ import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
+import in.partake.service.DBService;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 
 	@Before
 	public void setup() throws DAOException {
-	    super.setup(getFactory().getEnrollmentAccess());
+	    super.setup(DBService.getFactory().getEnrollmentAccess());
 	}
 	
 	@Override

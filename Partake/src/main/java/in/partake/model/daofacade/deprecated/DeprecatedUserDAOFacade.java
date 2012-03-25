@@ -3,13 +3,11 @@ package in.partake.model.daofacade.deprecated;
 import in.partake.base.TimeUtil;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
@@ -158,18 +156,10 @@ public final class DeprecatedUserDAOFacade extends DeprecatedPartakeDAOFacade {
 
         try {
             con.beginTransaction();
-            // TODO use MapReduce for speed-up
-            DataIterator<User> iter = factory.getUserAccess().getIterator(con);
-            try {
-                while (iter.hasNext()) {
-                    User user = iter.next();
-                    if (user == null) { continue; }
-                    count.user++;
-                    if (user.getLastLoginAt().after(oneMonthAgo)) { count.activeUser++; }
-                }
-            } finally {
-                iter.close();
-            }
+            
+            count.user = factory.getUserAccess().count(con);
+            count.activeUser = factory.getUserAccess().countActiveUsers(con, oneMonthAgo);
+            
             con.commit();
         } finally {
             con.invalidate();

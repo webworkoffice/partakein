@@ -65,7 +65,7 @@ class JPAOpenIDLinkageDao extends JPADao<OpenIDLinkage> implements IOpenIDLinkag
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "OpenIDLinkages");
     }
 

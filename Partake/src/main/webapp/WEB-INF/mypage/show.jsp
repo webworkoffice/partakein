@@ -58,7 +58,7 @@
 			</jsp:include>
 		</div>
 		
- 		<div class="tab-pane" id="event-participant">
+ 		<div class="tab-pane" id="event-enrolled">
 			<jsp:include page="/WEB-INF/mypage/_enrollment_table.jsp" flush="true">
 				<jsp:param name="ident" value="enrollment" />
 			</jsp:include>

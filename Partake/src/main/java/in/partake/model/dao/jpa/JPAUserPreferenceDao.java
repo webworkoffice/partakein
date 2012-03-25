@@ -47,7 +47,7 @@ class JPAUserPreferenceDao extends JPADao<UserPreference> implements IUserPrefer
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "UserPreferences");
     }
 

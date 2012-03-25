@@ -84,7 +84,7 @@ class JPAEnrollmentDao extends JPADao<Enrollment> implements IEnrollmentAccess {
     }
     
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "Enrollments");
     }
 

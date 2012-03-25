@@ -192,7 +192,7 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
 	}
 	
     @Override
-    public long count(PartakeConnection con) throws DAOException {
+    public int count(PartakeConnection con) throws DAOException {
         return countImpl(con, "Events");
     }
     

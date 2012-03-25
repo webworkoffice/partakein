@@ -40,5 +40,5 @@ public interface IAccess<T extends PartakeModel<T>, PK> {
     public abstract void remove(PartakeConnection con, PK key) throws DAOException;
     public abstract DataIterator<T> getIterator(PartakeConnection con) throws DAOException;
     
-    public abstract long count(PartakeConnection con) throws DAOException;
+    public abstract int count(PartakeConnection con) throws DAOException;
 }
