@@ -19,16 +19,29 @@ class TwitterService implements ITwitterService {
 
         return new TwitterLoginInformation(twitter, requestToken, redirectURL);
     }
-    
+
     public TwitterLinkage createTwitterLinkageFromLoginInformation(TwitterLoginInformation information, String verifier) throws TwitterException {
         Twitter twitter = information.getTwitter();
-        RequestToken requestToken = information.getRequestToken();         
+        RequestToken requestToken = information.getRequestToken();
         AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
 
         twitter4j.User twitterUser = twitter.showUser(twitter.getId());
         return new TwitterLinkage(
                 twitter.getId(), twitter.getScreenName(), twitterUser.getName(), accessToken.getToken(), accessToken.getTokenSecret(),
-                twitter.showUser(twitter.getId()).getProfileImageURL().toString(), null
-        );
+                twitter.showUser(twitter.getId()).getProfileImageURL().toString(), null);
+    }
+
+    @Override
+    public void sendDirectMesage(String token, String tokenSecret, long twitterId, String message) throws TwitterException {
+        AccessToken accessToken = new AccessToken(token, tokenSecret);
+        Twitter twitter = new TwitterFactory().getInstance(accessToken);
+        twitter.sendDirectMessage(twitterId, message);
+    }
+
+    @Override
+    public void updateStatus(String token, String tokenSecret, String message) throws TwitterException {
+        AccessToken accessToken = new AccessToken(token, tokenSecret);
+        Twitter twitter = new TwitterFactory().getInstance(accessToken);
+        twitter.updateStatus(message);
     }
 }
