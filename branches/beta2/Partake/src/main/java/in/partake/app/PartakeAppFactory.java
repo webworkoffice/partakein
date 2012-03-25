@@ -9,11 +9,11 @@ import in.partake.service.ITwitterService;
 import in.partake.view.IViewInitializer;
 
 public interface PartakeAppFactory {
-    public abstract IDBService createDBService();
-    public abstract IBitlyService createBitlyService();
-    public abstract IEventSearchService createEventSearchService();
-    public abstract ITwitterService createTwitterService();
-    public abstract ITestService createTestService();
-    public abstract IOpenIDService createOpenIDService();
-    public abstract IViewInitializer createViewInitializer();
+    public abstract IDBService createDBService() throws Exception;
+    public abstract IBitlyService createBitlyService() throws Exception;
+    public abstract IEventSearchService createEventSearchService() throws Exception;
+    public abstract ITwitterService createTwitterService() throws Exception;
+    public abstract ITestService createTestService() throws Exception;
+    public abstract IOpenIDService createOpenIDService() throws Exception;
+    public abstract IViewInitializer createViewInitializer() throws Exception;
 }

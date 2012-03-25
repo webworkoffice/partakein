@@ -2,7 +2,6 @@ package in.partake.controller.action.calendar;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.AbstractPartakeControllerTest;
 import in.partake.model.fixture.TestDataProvider;

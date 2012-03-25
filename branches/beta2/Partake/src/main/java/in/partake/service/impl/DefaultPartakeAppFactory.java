@@ -13,37 +13,37 @@ import in.partake.view.impl.ViewInitializerImpl;
 public class DefaultPartakeAppFactory implements PartakeAppFactory {
 
     @Override
-    public IDBService createDBService() {
+    public IDBService createDBService() throws Exception{
         return new Postgres9DBService();
     }
 
     @Override
-    public IBitlyService createBitlyService() {
+    public IBitlyService createBitlyService() throws Exception{
         return new BitlyService();
     }
 
     @Override
-    public IEventSearchService createEventSearchService() {
+    public IEventSearchService createEventSearchService() throws Exception {
         return new EventSearchService();
     }
 
     @Override
-    public ITwitterService createTwitterService() {
+    public ITwitterService createTwitterService() throws Exception{
         return new TwitterService();
     }
 
     @Override
-    public ITestService createTestService() {
+    public ITestService createTestService() throws Exception {
         return null;
     }
 
     @Override
-    public IOpenIDService createOpenIDService() {
+    public IOpenIDService createOpenIDService() throws Exception {
         return new OpenIDService();
     }
 
     @Override
-    public IViewInitializer createViewInitializer() {
+    public IViewInitializer createViewInitializer() throws Exception {
         return new ViewInitializerImpl();
     }
 }

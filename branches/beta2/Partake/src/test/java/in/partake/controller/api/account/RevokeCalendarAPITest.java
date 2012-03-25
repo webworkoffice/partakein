@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.opensymphony.xwork2.ActionProxy;
 
 public class RevokeCalendarAPITest extends APIControllerTest {
-    
+
     @Test
     public void testToRevokeCalendar() throws Exception {
         String currentCalendarId = loadCalendarIdFromUser(TestDataProvider.DEFAULT_USER_ID);
@@ -20,12 +20,12 @@ public class RevokeCalendarAPITest extends APIControllerTest {
 
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultOK(proxy);
 
         JSONObject obj = getJSON(proxy);
-        
+
         assertThat(obj.getString("calendarId"), is(not(currentCalendarId)));
         assertThat(obj.getString("calendarId"), is(loadCalendarIdFromUser(TestDataProvider.DEFAULT_USER_ID)));
     }

@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class RemoveOpenIDAPITest extends APIControllerTest {    
+public class RemoveOpenIDAPITest extends APIControllerTest {
     @Test
     public void testToRemoveOpenID() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
@@ -19,10 +19,10 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultOK(proxy);
-        
+
         // Check the OpenID has been really removed.
         List<String> identifiers = loadOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID);
         Assert.assertNotNull(identifiers);
@@ -35,11 +35,11 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
 
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
     }
-    
+
     @Test
     public void testToRemoveOpenIDWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
@@ -47,7 +47,7 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
         // When not login, should fail.
         addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultLoginRequired(proxy);
     }
@@ -58,10 +58,10 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
         loginAs(proxy, TestDataProvider.DEFAULT_ANOTHER_USER_ID);
-        
+
         addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -72,11 +72,11 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
 
         // Check CSRF prevention works.
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
-        
+
         addParameter(proxy, "identifier", TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER);
         addInvalidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
-    }    
+    }
 }
