@@ -1,10 +1,12 @@
 package in.partake.controller.action.feed;
 
+import in.partake.base.PartakeException;
+import in.partake.model.EventEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
-import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.ServerErrorCode;
+import in.partake.service.IEventSearchService;
+import in.partake.service.PartakeService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,13 +20,12 @@ public class FeedUpcomingEventsAction extends AbstractFeedPageAction {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public String doExecute() throws DAOException {
+    public String doExecute() throws DAOException, PartakeException {
         // TODO: CACHE!
 
         String category = getParameter("category");
-
-        // check category is correct.
-        if (!EventCategory.isValidCategoryName(category) && !category.equals(EventCategory.getAllEventCategory())) { return NOT_FOUND; }
+        if (!EventCategory.isValidCategoryName(category) && !category.equals(EventCategory.getAllEventCategory()))
+            return renderNotFound();
 
         SyndFeed feed = new SyndFeedImpl();
         feed.setFeedType("rss_2.0");
@@ -39,7 +40,10 @@ public class FeedUpcomingEventsAction extends AbstractFeedPageAction {
         feed.setDescription("近日開催されるイベントを(最大100)フィードします。");
 
         try {
-            List<Event> events = DeprecatedEventDAOFacade.get().getUpcomingEvents(100, category);
+            IEventSearchService searchService = PartakeService.get().getEventSearchService();
+            List<String> eventIds = searchService.getUpcomingByCategory(category, 100);
+            
+            List<EventEx> events = new GetEventsTransaction(eventIds).execute();            
             InputStream is = createFeed(feed, events);
             
             return renderInlineStream(is, "application/rss+xml");

@@ -1,11 +1,13 @@
 package in.partake.controller;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
+import in.partake.model.dao.base.Transaction;
+import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.UserPreference;
@@ -13,6 +15,7 @@ import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.DBService;
+import in.partake.service.PartakeService;
 import in.partake.service.TestDatabaseService;
 import in.partake.session.PartakeSession;
 
@@ -41,6 +44,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     public static void setUpOnce() throws Exception {
         // TODO: Should share the code with AbstractConnectionTestCaseBase.
         PartakeProperties.get().reset("unittest");
+        PartakeService.initialize();
         TestDatabaseService.initialize();
     }
 
@@ -90,14 +94,13 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     }
 
     /** log in した状態にする */
-    protected void loginAs(ActionProxy proxy, String userId) throws DAOException {
+    protected void loginAs(ActionProxy proxy, String userId) throws DAOException, PartakeException {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         assert actionContext.getSession() != null;
 
-        UserEx user = DeprecatedUserDAOFacade.get().getUserExById(userId);
-        if (user == null) {
+        UserEx user = loadUserEx(userId); 
+        if (user == null)
             throw new RuntimeException("No such user.");
-        }
         actionContext.getSession().put(Constants.ATTR_USER, user);
     }
 
@@ -188,6 +191,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     
     // ----------------------------------------------------------------------
     // DB Accessors
+    
+    protected UserEx loadUserEx(final String userId) throws DAOException, PartakeException {
+        return new Transaction<UserEx>() {
+            @Override
+            protected UserEx doExecute(PartakeConnection con) throws DAOException, PartakeException {
+                return UserDAOFacade.getUserEx(con, userId);
+            }
+        }.execute();
+    }
     
     protected UserPreference loadUserPreference(String userId) throws DAOException {
         PartakeDAOFactory factory = DBService.getFactory();

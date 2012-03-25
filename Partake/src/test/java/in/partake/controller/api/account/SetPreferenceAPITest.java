@@ -48,7 +48,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
 
         assertResultOK(proxy);
 
-        UserPreference pref = loadUserPreference(TestDataProvider.DEFAULT_USER_ID);
+        UserPreference pref = loadUserPreference(TestDataProvider.USER_WITHOUT_PREF_ID);
         Assert.assertEquals(false, pref.isProfilePublic());
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());

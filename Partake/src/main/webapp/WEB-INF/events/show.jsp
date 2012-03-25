@@ -1,3 +1,4 @@
+<%@page import="in.partake.controller.action.event.EventShowAction"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
@@ -10,7 +11,6 @@
 <%@page import="in.partake.model.dao.DataIterator"%>
 <%@page import="in.partake.controller.base.permission.UserPermission"%>
 <%@page import="in.partake.model.dto.Enrollment"%>
-<%@page import="in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
 <%@page import="in.partake.model.dto.Comment"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
@@ -28,16 +28,19 @@
 <%@page import="in.partake.model.EventRelationEx"%>
 
 <%
-	EventEx event = (EventEx) request.getAttribute(Constants.ATTR_EVENT);
-	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
-	ParticipationStatus status = (ParticipationStatus)request.getAttribute(Constants.ATTR_PARTICIPATION_STATUS);
-	Boolean deadlineOver = (Boolean)request.getAttribute(Constants.ATTR_DEADLINE_OVER);
-	EventReminder reminderStatus = (EventReminder) request.getAttribute(Constants.ATTR_REMINDER_STATUS);
-	List<EventRelationEx> eventRelations = (List<EventRelationEx>) request.getAttribute(Constants.ATTR_EVENT_RELATIONS);
+    EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
+    UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
+
     String redirectURL = (String)request.getAttribute(Constants.ATTR_REDIRECTURL);
     if (redirectURL == null)
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL);
-    Integer maxCodePointsOfMessage = (Integer) request.getAttribute(Constants.ATTR_MAX_CODE_POINTS_OF_MESSAGE);
+
+    EventEx event = action.getEvent();
+	ParticipationStatus status = action.getParticipationStatus(); 
+	boolean deadlineOver = action.isDeadlineOver(); 
+	EventReminder reminderStatus = action.getEventReminder();
+	List<EventRelationEx> eventRelations = action.getRelations(); 
+	int maxCodePointsOfMessage = action.getRestCodePoints();
 %>
 
 <!DOCTYPE html>
@@ -196,7 +199,7 @@ body {
 <script>
 var message=$('textarea#send_message');
 function handler(e){
-	var left = <%= maxCodePointsOfMessage.intValue() %> - codePointCount(message.val());
+	var left = <%= maxCodePointsOfMessage %> - codePointCount(message.val());
 	$('span#message_length').text(left).css('color', left > 20 ? '#000' : '#f00').parent().find('input[type=submit]').attr('disabled', left < 0 ? 'disabled' : '');
 }
 message.keydown(handler).keyup(handler);<%-- keydownだけではctrl-BS時に表示があわなくなる、keyupだけではBS長押し時に表示があわなくなる --%>

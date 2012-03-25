@@ -2,19 +2,26 @@ package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
-import in.partake.controller.base.permission.UserPermission;
-import in.partake.model.EventEx;
+import in.partake.controller.base.permission.EventEditPermission;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.base.Transaction;
+import in.partake.model.daofacade.EventDAOFacade;
+import in.partake.model.daofacade.ImageDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.resource.UserErrorCode;
+import in.partake.service.DBService;
+import in.partake.service.IEventSearchService;
+import in.partake.service.PartakeService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
 
 public class ModifyAPI extends AbstractEventEditAPI {
     private static final long serialVersionUID = 1L;
@@ -23,33 +30,87 @@ public class ModifyAPI extends AbstractEventEditAPI {
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
         ensureValidSessionToken();
+        boolean draft = optBooleanParameter("draft", true);
         String eventId = getValidEventIdParameter();
         
-        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
-        if (event == null)
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
-        
-        if (!event.hasPermission(user, UserPermission.EVENT_EDIT))
-            return renderForbidden(UserErrorCode.FORBIDDEN_EVENT_EDIT);
-
-        Event embryo = new Event(event);
-        boolean draft = embryo.isPreview() && optBooleanParameter("draft", true);
+        Event embryo = new Event();
         embryo.setPreview(draft);
-        embryo.setModifiedAt(TimeUtil.getCurrentDate());
-        
+        embryo.setCreatedAt(TimeUtil.getCurrentDate());
+
         List<EventRelation> relations = new ArrayList<EventRelation>();
         JSONObject invalidParameters = new JSONObject();
         updateEventFromParameter(user, embryo, invalidParameters);
         updateEventRelationFromParameter(user, relations, invalidParameters);
-        
         if (!invalidParameters.isEmpty())
             return renderInvalid(UserErrorCode.INVALID_PARAMETERS, invalidParameters);
-        
-        DeprecatedEventDAOFacade.get().update(embryo);
-        DeprecatedEventDAOFacade.get().setEventRelations(event.getId(), relations);
+
+        new ModifyTransaction(user, eventId, embryo, relations).execute();
+
+        // private でなければ Lucene にデータ挿入して検索ができるようにする
+        embryo.setId(eventId);
+        IEventSearchService searchService = PartakeService.get().getEventSearchService();
+        if (embryo.isPrivate() || embryo.isPreview())
+            searchService.remove(eventId);
+        else if (searchService.hasIndexed(eventId))
+            searchService.update(embryo);
+        else
+            searchService.create(embryo);
         
         JSONObject obj = new JSONObject();
-        obj.put("eventId", embryo.getId());
-        return renderOK(obj);
+        obj.put("eventId", eventId);
+        return renderOK(obj);        
+    }
+}
+
+class ModifyTransaction extends Transaction<Void> {
+    private UserEx user;
+    private String eventId;
+    private Event embryo;
+    private List<EventRelation> relations;
+    
+    public ModifyTransaction(UserEx user, String eventId, Event embryo, List<EventRelation> relations) {
+        this.user = user;
+        this.eventId = eventId;
+        this.embryo = embryo;
+        this.relations = relations;
+    }
+    
+    @Override
+    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
+        Event event = DBService.getFactory().getEventAccess().find(con, eventId);
+        if (event == null)
+            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
+        if (!EventEditPermission.check(event, user))
+            throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_EDIT);
+
+        if (embryo.getForeImageId() != null) {
+            if (!ImageDAOFacade.checkImageOwner(con, embryo.getForeImageId(), user) ||
+                    !StringUtils.equals(embryo.getForeImageId(), event.getForeImageId()))
+                throw new PartakeException(UserErrorCode.INVALID_IMAGE_OWNER);
+        }
+
+        if (embryo.getBackImageId() != null) {
+            if (!ImageDAOFacade.checkImageOwner(con, embryo.getBackImageId(), user) ||
+                    !StringUtils.equals(embryo.getBackImageId(), event.getBackImageId()))
+                throw new PartakeException(UserErrorCode.INVALID_IMAGE_OWNER);            
+        }
+
+        boolean draft = embryo.isPreview() && event.isPreview();
+        embryo.setId(event.getId());
+        embryo.setPreview(draft);
+        embryo.setOwnerId(event.getOwnerId());
+        embryo.setCreatedAt(event.getCreatedAt());
+        embryo.setModifiedAt(TimeUtil.getCurrentDate());
+        
+        EventDAOFacade.modify(con, embryo);
+        EventDAOFacade.setEventRelations(con, eventId, relations);
+
+        // private でなければ Lucene にデータ挿入して検索ができるようにする
+        if (!embryo.isPrivate() && !embryo.isPreview()) {
+            IEventSearchService searchService = PartakeService.get().getEventSearchService();
+            searchService.create(embryo);
+        }
+
+        return null;
     }
 }

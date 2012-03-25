@@ -7,7 +7,7 @@ import org.junit.Before;
 public class TwitterLinkageAccessTest extends AbstractDaoTestCaseBase<ITwitterLinkageAccess, TwitterLinkage, String> {    
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getTwitterLinkageAccess());
+        super.setup(factory.getTwitterLinkageAccess());
     }
     
     @Override

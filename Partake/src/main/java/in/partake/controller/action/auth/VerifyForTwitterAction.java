@@ -15,7 +15,8 @@ import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
-import in.partake.service.impl.TwitterService;
+import in.partake.service.ITwitterService;
+import in.partake.service.PartakeService;
 import in.partake.session.TwitterLoginInformation;
 
 import java.util.Date;
@@ -37,7 +38,8 @@ public class VerifyForTwitterAction extends AbstractPartakeAction {
             return renderInvalid(UserErrorCode.UNEXPECTED_REQUEST);
 
         try {
-            TwitterLinkage linkage = TwitterService.createTwitterLinkageFromLoginInformation(loginInformation, verifier);
+            ITwitterService twitterService = PartakeService.get().getTwitterService();
+            TwitterLinkage linkage = twitterService.createTwitterLinkageFromLoginInformation(loginInformation, verifier);
             
             UserEx user = new VerifyForTwitterActionTransaction(linkage).execute();
             session.put(Constants.ATTR_USER, user);

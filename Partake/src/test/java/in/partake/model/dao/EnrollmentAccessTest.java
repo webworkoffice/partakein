@@ -43,7 +43,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 
 	@Test
 	public void testGetEmptyPaticipationList() throws DAOException {
-		PartakeConnection con = getPool().getConnection();
+		PartakeConnection con = pool.getConnection();
 
 		try {
 		    String eventId = "eventId" + System.currentTimeMillis();
@@ -63,7 +63,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 		
 		Event event = createEvent(eventId, userId);
 
-		PartakeConnection con = getPool().getConnection();
+		PartakeConnection con = pool.getConnection();
 		try {
 		    con.beginTransaction();
 		    event.setId(eventId);
@@ -93,7 +93,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
         
         Event event = createEvent(eventId, userId);
 
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
         try {
             
             // create

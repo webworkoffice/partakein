@@ -3,8 +3,10 @@ package in.partake.controller.action.event;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.Event;
+import in.partake.service.DBService;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -22,7 +24,7 @@ public class EventPasscodeAction extends AbstractPartakeAction {
 	    if (passcode == null)
 	        return render("events/passcode.jsp");
 
-	    Event event = DeprecatedEventDAOFacade.get().getEventById(eventId);
+	    Event event = new EventPasscodeTransaction(eventId).execute();
 	    if (event == null)
 	        return renderNotFound();
 
@@ -33,6 +35,7 @@ public class EventPasscodeAction extends AbstractPartakeAction {
 	        return render("events/passcode.jsp");
 	    }
 
+	    // TODO: Reconsider Session. 
 	    session.put("event:" + eventId, passcode);
 	    return renderRedirect("/events/" + eventId);
 	}
@@ -40,4 +43,17 @@ public class EventPasscodeAction extends AbstractPartakeAction {
 	public String getEventId() {
 	    return eventId;
 	}
+}
+
+class EventPasscodeTransaction extends Transaction<Event> {
+    private String eventId;
+    
+    public EventPasscodeTransaction(String eventId) {
+        this.eventId = eventId;
+    }
+    
+    @Override
+    protected Event doExecute(PartakeConnection con) throws DAOException, PartakeException {
+        return DBService.getFactory().getEventAccess().find(con, eventId);
+    }
 }

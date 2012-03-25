@@ -11,7 +11,7 @@ import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.Event;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
-import in.partake.service.impl.LuceneService;
+import in.partake.service.PartakeService;
 
 public class RemoveAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
@@ -23,8 +23,7 @@ public class RemoveAPI extends AbstractPartakeAPI {
         String eventId = getValidEventIdParameter();
 
         new RemoveEventTransaction(user, eventId).execute();
-        // EventSearcher からデータを抜く
-        LuceneService.get().removeDocument(eventId);
+        PartakeService.get().getEventSearchService().remove(eventId);
 
         return renderOK();
     }

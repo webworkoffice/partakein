@@ -1,26 +1,28 @@
 package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
+import in.partake.base.TimeUtil;
 import in.partake.base.Util;
+import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
-import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
-import in.partake.model.daofacade.deprecated.DeprecatedUserDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.base.Transaction;
+import in.partake.model.daofacade.EnrollmentDAOFacade;
+import in.partake.model.daofacade.EventDAOFacade;
+import in.partake.model.daofacade.MessageDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.UserErrorCode;
+import in.partake.service.DBService;
 
 import java.util.Date;
 import java.util.List;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONArray;
-
-public class EnrollAPI extends AbstractEventAPI {
+public class EnrollAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -38,46 +40,65 @@ public class EnrollAPI extends AbstractEventAPI {
     
     private String changeParticipationStatus(ParticipationStatus status) throws PartakeException, DAOException {
         UserEx user = ensureLogin();
-
         String eventId = getValidEventIdParameter();
 
         // If the comment does not exist, we use empty string instead.
         String comment = getParameter("comment");
-        if (comment == null) { comment = ""; }
+        if (comment == null)
+            comment = "";
         if (comment.length() > 1024)
             return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
 
-        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
-        if (event == null)
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
+        new EnrollTransaction(user, eventId, comment).execute();
+        
+        return renderOK();
+    }
+}
 
-        Date deadline = event.getCalculatedDeadline();
+class EnrollTransaction extends Transaction<Void> {
+    private UserEx user;
+    private String eventId;
+    private String comment;
 
-        // もし、締め切りを過ぎている場合、変更が出来なくなる。
-        if (deadline.before(new Date()))
-            return renderInvalid(UserErrorCode.INVALID_ENROLL_TIMEOVER);
-
-        // 現在の状況が登録されていない場合、
-        List<EventRelationEx> relations = DeprecatedEventDAOFacade.get().getEventRelationsEx(eventId);
-        ParticipationStatus currentStatus = DeprecatedUserDAOFacade.get().getParticipationStatus(user.getId(), event.getId());
-        if (!currentStatus.isEnrolled()) {
-            List<Event> requiredEvents = getRequiredEventsNotEnrolled(user, relations);
-            if (requiredEvents != null && !requiredEvents.isEmpty())
-                return renderInvalid(UserErrorCode.INVALID_ENROLL_REQUIRED);
-        }
-
-        DeprecatedEventDAOFacade.get().enroll(user.getId(), event.getId(), status, comment, false, event.isReservationTimeOver());
-
-        JSONObject obj = new JSONObject();
-        // Twitter で参加をつぶやく
-        tweetEnrollment(obj, user, event, status);
-
-        return renderOK(obj);
+    public EnrollTransaction(UserEx user, String eventId, String comment) {
+        this.user = user;
+        this.eventId = eventId;
+        this.comment = comment;
     }
     
-    private void tweetEnrollment(JSONObject obj, UserEx user, EventEx event, ParticipationStatus status) throws DAOException {
-        UserPreference pref = DeprecatedUserDAOFacade.get().getUserPreference(user.getId());
-        if (pref == null || !pref.tweetsAttendanceAutomatically()) { return; }
+    // TODO: We should share a lot of code with ChangeEnrollmentCommentAPI.
+    @Override
+    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
+        EventEx event = EventDAOFacade.getEventEx(con, eventId);
+        if (event == null)
+            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
+
+        Date deadline = event.getCalculatedDeadline();
+        // もし、締め切りを過ぎている場合、変更が出来なくなる。
+        if (deadline.before(TimeUtil.getCurrentDate()))
+            throw new PartakeException(UserErrorCode.INVALID_ENROLL_TIMEOVER);
+
+        // 現在の状況が登録されていない場合、
+        List<EventRelationEx> relations = EventDAOFacade.getEventRelationsEx(con, event);
+        ParticipationStatus currentStatus = EnrollmentDAOFacade.getParticipationStatus(con, user.getId(), eventId); 
+        if (!currentStatus.isEnrolled()) {
+            List<Event> requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, user, relations); 
+            if (requiredEvents != null && !requiredEvents.isEmpty())
+                throw new PartakeException(UserErrorCode.INVALID_ENROLL_REQUIRED);
+        }
+
+        EnrollmentDAOFacade.enrollImpl(con, user, event, currentStatus, comment, false, event.isReservationTimeOver());
+        tweetEnrollment(con, user, event, currentStatus);
+        return null;
+    }
+    
+    private void tweetEnrollment(PartakeConnection con, UserEx user, EventEx event, ParticipationStatus status) throws DAOException {
+        UserPreference pref = DBService.getFactory().getUserPreferenceAccess().find(con, user.getId());
+        if (pref == null)
+            pref = UserPreference.getDefaultPreference(user.getId());
+
+        if (!pref.tweetsAttendanceAutomatically())
+            return;
 
         String left = "[PARTAKE] ";
         String right;
@@ -95,14 +116,10 @@ public class EnrollAPI extends AbstractEventAPI {
             right = null;
         }
 
-        if (right == null) {
-            if (!obj.containsKey("warning"))
-                obj.put("warning", new JSONArray());
-            obj.getJSONArray("warning").add("参加予定 tweet に失敗しました。");
+        if (right == null)
             return;
-        }
 
         String message = left + Util.shorten(event.getTitle(), 140 - Util.codePointCount(left) - Util.codePointCount(right)) + right;
-        DeprecatedMessageDAOFacade.get().tweetMessage(user, message);
+        MessageDAOFacade.tweetMessageImpl(con, user, message);
     }
 }

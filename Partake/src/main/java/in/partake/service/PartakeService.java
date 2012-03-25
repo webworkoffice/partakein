@@ -7,7 +7,10 @@ import org.apache.log4j.Logger;
 public abstract class PartakeService {
     private static final Logger logger = Logger.getLogger(PartakeService.class);
     private static PartakeService instance;
+    
     private final IBitlyService bitlyService;
+    private final IEventSearchService eventSearchService;
+    private final ITwitterService twitterService;
 
     public static PartakeService get() {
         return instance;
@@ -31,11 +34,23 @@ public abstract class PartakeService {
     
     protected PartakeService() {
         bitlyService = createBitlyService();
+        eventSearchService = createEventSearchService();
+        twitterService = createTwitterService();
     }
     
     protected abstract IBitlyService createBitlyService();
+    protected abstract IEventSearchService createEventSearchService();
+    protected abstract ITwitterService createTwitterService();
     
     public IBitlyService getBitlyService() {
         return bitlyService;
+    }
+    
+    public IEventSearchService getEventSearchService() {
+        return eventSearchService;
+    }
+    
+    public ITwitterService getTwitterService() {
+        return twitterService;
     }
 }

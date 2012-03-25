@@ -10,7 +10,7 @@ import org.junit.Before;
 public class UserPreferenceAccessTest extends AbstractDaoTestCaseBase<IUserPreferenceAccess, UserPreference, String> {
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getUserPreferenceAccess());
+        super.setup(factory.getUserPreferenceAccess());
     }
 
     @Override

@@ -10,8 +10,7 @@ import com.rosaloves.bitlyj.Bitly.Provider;
 import com.rosaloves.bitlyj.BitlyException;
 import com.rosaloves.bitlyj.ShortenedUrl;
 
-// TODO: should be non-public class.
-public class BitlyService implements IBitlyService {
+class BitlyService implements IBitlyService {
     private static final Logger logger = Logger.getLogger(BitlyService.class);
     
     /**

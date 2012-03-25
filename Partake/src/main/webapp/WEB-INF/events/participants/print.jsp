@@ -1,3 +1,4 @@
+<%@page import="in.partake.controller.action.event.PrintParticipantsAction"%>
 <%@page import="in.partake.model.EventRelationEx"%>
 <%@page import="in.partake.model.dto.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
@@ -16,8 +17,10 @@
 <!DOCTYPE html>
 
 <%
-    EventEx event = (EventEx) request.getAttribute(Constants.ATTR_EVENT);
-    ParticipationList participationList = (ParticipationList) request.getAttribute(Constants.ATTR_PARTICIPATIONLIST);
+    PrintParticipantsAction action = (PrintParticipantsAction) request.getAttribute(Constants.ATTR_ACTION);
+
+    EventEx event = action.getEvent();
+    ParticipationList participationList = action.getParticipationList();
     
     List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
     List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();

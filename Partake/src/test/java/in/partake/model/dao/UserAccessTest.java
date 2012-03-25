@@ -10,7 +10,7 @@ public class UserAccessTest extends AbstractDaoTestCaseBase<IUserAccess, User, S
     
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getUserAccess());
+        super.setup(factory.getUserAccess());
     }
     
     @Override

@@ -6,6 +6,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
+import in.partake.service.EventSearchServiceException;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,9 +44,7 @@ import org.apache.lucene.util.Version;
 /**
  * @author shinyak
  */
-// TODO: Do not use LuceneService directly. Basically use EventSearchService.
-//TODO: should be non-public class.
-public class LuceneService {
+class LuceneService {
 	private static volatile LuceneService instance;
 
 	private IndexWriter indexWriter;
@@ -89,63 +88,63 @@ public class LuceneService {
 		}
 	}
 
-	public void addDocument(Document doc) throws DAOException {
+	public void addDocument(Document doc) throws EventSearchServiceException {
 		try {
 			indexWriter.addDocument(doc, analyzer);
 			indexWriter.commit();
 			reset();
 		} catch (CorruptIndexException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		} catch (IOException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		}
 	}
 
-	public void updateDocument(Document doc) throws DAOException {
+	public void updateDocument(Document doc) throws EventSearchServiceException {
 		try {
 			indexWriter.updateDocument(new Term("ID", doc.get("ID")), doc, analyzer);
 			indexWriter.commit();
 			reset();
 		} catch (CorruptIndexException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		} catch (IOException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		}
 	}
 
-	public void removeDocument(String id) throws DAOException {
+	public void removeDocument(String id) throws EventSearchServiceException {
 		try {
 			indexWriter.deleteDocuments(new Term("ID", id));
 			indexWriter.commit();
 			reset();
 		} catch (CorruptIndexException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		} catch (IOException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		}
 	}
 
-	public boolean hasDocument(String id) throws DAOException {
+	public boolean hasDocument(String id) throws EventSearchServiceException {
 	    try {
 	        Query query = new TermQuery(new Term("ID", id));
 	        TopDocs docs = indexSearcher.search(query, 1);
 	        return docs.totalHits > 0;
 	    } catch (IOException e) {
-	        throw new DAOException(e);
+	        throw new EventSearchServiceException(e);
 	    }
 	}
 
-	public Document getDocument(int doc) throws DAOException {
+	public Document getDocument(int doc) throws EventSearchServiceException {
 		try {
 			return indexSearcher.doc(doc);
 		} catch (CorruptIndexException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		} catch (IOException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		}
 	}
 
-	public TopDocs getRecentDocuments(int n) throws DAOException {
+	public TopDocs getRecentDocuments(int n) throws EventSearchServiceException {
 		try {
 			long current = new Date().getTime();
 			Query query = new TermRangeQuery("DEADLINE-TIME", TimeUtil.getTimeString(current), TimeUtil.getTimeString(Long.MAX_VALUE), true, true);
@@ -154,11 +153,11 @@ public class LuceneService {
 
 			return indexSearcher.search(query, null, n, sort);
 		} catch (IOException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		}
 	}
 
-	public TopDocs getRecentCategoryDocuments(String category, int maxDocument) throws DAOException, IllegalArgumentException {
+	public TopDocs getRecentCategoryDocuments(String category, int maxDocument) throws EventSearchServiceException, IllegalArgumentException {
 		if (!EventCategory.isValidCategoryName(category)) {
 			throw new IllegalArgumentException("Unknown category");
 		}
@@ -167,11 +166,11 @@ public class LuceneService {
 		try {
 			return indexSearcher.search(query, null, maxDocument, sort);
 		} catch (IOException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		}
 	}
 
-	public TopDocs search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws DAOException, ParseException, IllegalArgumentException {
+	public TopDocs search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws EventSearchServiceException, ParseException, IllegalArgumentException {
 		try {
 			Query query;
 			if (StringUtils.isEmpty(term)) {
@@ -232,7 +231,7 @@ public class LuceneService {
 
 			return indexSearcher.search(query, filter, maxDocument, sort);
 		} catch (IOException e) {
-			throw new DAOException(e);
+			throw new EventSearchServiceException(e);
 		}
 	}
 
@@ -240,15 +239,15 @@ public class LuceneService {
 	 * Lucene index を全て捨てる
 	 * @throws DAOException
 	 */
-	public void truncate() throws DAOException {
+	public void truncate() throws EventSearchServiceException {
 	    try {
            indexWriter.deleteAll();
            indexWriter.commit();
            reset();
         } catch (CorruptIndexException e) {
-            throw new DAOException(e);
+            throw new EventSearchServiceException(e);
         } catch (IOException e) {
-            throw new DAOException(e);
+            throw new EventSearchServiceException(e);
         }
 
 	}

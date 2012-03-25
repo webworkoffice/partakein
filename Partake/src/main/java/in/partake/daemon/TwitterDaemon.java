@@ -1,7 +1,7 @@
 package in.partake.daemon;
 
+import in.partake.base.PartakeException;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedMessageDAOFacade;
 import in.partake.resource.PartakeProperties;
 import in.partake.resource.ServerErrorCode;
 
@@ -22,6 +22,10 @@ class TwitterDaemonTask extends TimerTask {
                 runTwitterReminderTask();
                 runStatusChangeTask();
                 runTwitterMessageSendingTask();
+            } catch (PartakeException e) {
+                String reasonString = 
+                        e.isServerError() ? e.getServerErrorCode().getReasonString() : e.getUserErrorCode().getReasonString();
+                logger.warn(reasonString, e);
             } catch (DAOException e) {
                 // run() には DAOException を出させたくない
                 logger.warn(ServerErrorCode.DB_ERROR, e);
@@ -32,23 +36,22 @@ class TwitterDaemonTask extends TimerTask {
         }
     }
     
-    private void runTwitterReminderTask() throws DAOException {
+    private void runTwitterReminderTask() throws DAOException, PartakeException {
         logger.info("TwitterReminderTask START");
-        DeprecatedMessageDAOFacade.get().sendReminders();
+        new TwitterReminderTask().execute();
         logger.info("TwitterReminderTask END");
     }
     
-    private void runStatusChangeTask() throws DAOException {
+    private void runStatusChangeTask() throws DAOException, PartakeException {
         logger.info("ParticipationStatusChangeTask START.");
-
-        DeprecatedMessageDAOFacade.get().sendParticipationStatusChangeNotifications();
+        new SendParticipationStatusChangeNotificationsTask().execute();
         logger.info("ParticipationStatusChangeTask END.");
     }
     
     
-    private void runTwitterMessageSendingTask() throws DAOException {
+    private void runTwitterMessageSendingTask() throws DAOException, PartakeException {
         logger.info("DirectMessageSendingTask START");
-        DeprecatedMessageDAOFacade.get().sendEnvelopes();
+        new SendEnvelopeTask().execute();
         logger.info("DirectMessageSendingTask END");
     }
 }

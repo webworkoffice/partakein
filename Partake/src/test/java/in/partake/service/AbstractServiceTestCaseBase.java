@@ -19,7 +19,8 @@ public abstract class AbstractServiceTestCaseBase {
 
     @BeforeClass
     public static void setUpOnce() {
-        PartakeProperties.get().reset("unittest");        
+        PartakeProperties.get().reset("unittest");
+        PartakeService.initialize();
         TestDatabaseService.initialize();
     }
     

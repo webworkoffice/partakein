@@ -32,8 +32,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
     @Test
     // TODO tell about order of the DataIterator's value.
     public void testToFindByEventId() throws Exception {
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = DBService.getFactory();
+        PartakeConnection con = pool.getConnection();
         TimeUtil.setCurrentDate(TimeUtil.getCurrentDate());
         
         try {
@@ -79,8 +78,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
     
     @Test(expected = UnsupportedOperationException.class)
     public void testToUpdateByIterator() throws Exception {
-        PartakeConnection con = getPool().getConnection();
-        PartakeDAOFactory factory = DBService.getFactory();
+        PartakeConnection con = pool.getConnection();
         
         try {
             con.beginTransaction();

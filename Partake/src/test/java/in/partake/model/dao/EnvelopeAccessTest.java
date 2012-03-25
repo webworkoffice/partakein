@@ -36,7 +36,7 @@ public class EnvelopeAccessTest extends AbstractDaoTestCaseBase<IEnvelopeAccess,
 
     @Test
     public void enqueueWithRequiredProperty() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
         try {
             con.beginTransaction();
             String dummyEnvelopeId = dao.getFreshId(con);
@@ -64,7 +64,7 @@ public class EnvelopeAccessTest extends AbstractDaoTestCaseBase<IEnvelopeAccess,
 
     @Test
     public void enqueueWithLastTriedAt() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
         try {
             con.beginTransaction();
             

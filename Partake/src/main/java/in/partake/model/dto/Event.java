@@ -1,8 +1,6 @@
 package in.partake.model.dto;
 
 import in.partake.base.TimeUtil;
-import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
@@ -725,19 +723,6 @@ public class Event extends PartakeModel<Event> {
         }
 
         return false;
-    }
-
-    // XXX: this methods will access database.
-    // XXX: Hmm...
-    @Deprecated
-    public int fetchNumOfEnrolledUsers() {
-        try {
-            // TODO: something wrong... 
-            return DeprecatedEventDAOFacade.get().getNumOfEnrolledUsers(getId());
-        } catch (DAOException e) {
-            e.printStackTrace();
-            return -1;
-        }
     }
 }
 

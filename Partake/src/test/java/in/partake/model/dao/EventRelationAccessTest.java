@@ -28,7 +28,7 @@ public class EventRelationAccessTest extends AbstractDaoTestCaseBase<IEventRelat
     @Test
     public void testFindByEventId() throws DAOException {
         // Create several event relations.
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
         try {
             con.beginTransaction();
             for (int i = 0; i < 10; ++i) {

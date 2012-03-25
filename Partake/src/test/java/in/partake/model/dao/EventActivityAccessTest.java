@@ -49,7 +49,7 @@ public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActiv
     
     @Test
     public void testToIterator2() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
         String eventId1 = "eventId-findByEventId-1-" + System.currentTimeMillis();
         String eventId2 = "eventId-findByEventId-2-" + System.currentTimeMillis();
         
@@ -84,7 +84,7 @@ public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActiv
     
     @Test
     public void testToIterator3() throws Exception {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
         String eventId1 = "eventId-findByEventId-1-" + System.currentTimeMillis();
         String eventId2 = "eventId-findByEventId-2-" + System.currentTimeMillis();
         
