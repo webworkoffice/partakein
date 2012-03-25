@@ -1,8 +1,9 @@
-package in.partake.daemon;
+package in.partake.daemon.impl;
 
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
+import in.partake.daemon.IPartakeDaemonTask;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
 import in.partake.model.IPartakeDAOs;
@@ -27,8 +28,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class TwitterReminderTask extends Transaction<Void> {
+class TwitterReminderTask extends Transaction<Void> implements IPartakeDaemonTask {
     private static final Logger logger = Logger.getLogger(TwitterReminderTask.class);
+
+    @Override
+    public void run() throws Exception {
+        this.execute();
+    }
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {

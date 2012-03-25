@@ -1,7 +1,7 @@
 package in.partake.view.impl;
 
 import in.partake.base.Util;
-import in.partake.view.IViewInitializer;
+import in.partake.service.IViewInitializer;
 import in.partake.view.util.Helper;
 
 import java.io.BufferedWriter;

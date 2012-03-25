@@ -1,7 +1,7 @@
 package in.partake.servlet.listener;
 
 import in.partake.app.PartakeApp;
-import in.partake.daemon.TwitterDaemon;
+import in.partake.daemon.PartakeDaemon;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -22,7 +22,7 @@ public class InitializationListener implements ServletContextListener {
                 PartakeApp.getViewInitializer().initialize(viewPath);
             }
 
-            TwitterDaemon.getInstance().schedule();
+            PartakeDaemon.getInstance().schedule();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -31,7 +31,7 @@ public class InitializationListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
         try {
-            TwitterDaemon.getInstance().cancel();
+            PartakeDaemon.getInstance().cancel();
         } catch (Throwable ignore) {
             // catch and ignore for shutdown other daemons.
             logger.warn("Unintentional exception is thrown.", ignore);

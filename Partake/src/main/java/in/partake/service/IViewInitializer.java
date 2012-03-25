@@ -1,4 +1,4 @@
-package in.partake.view;
+package in.partake.service;
 
 
 public interface IViewInitializer {

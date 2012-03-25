@@ -6,6 +6,7 @@ import in.partake.resource.ServerErrorCode;
 
 public class StaticErrorPageAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
+
     private ServerErrorCode errorCode;
 
     public String doExecute() throws DAOException {
