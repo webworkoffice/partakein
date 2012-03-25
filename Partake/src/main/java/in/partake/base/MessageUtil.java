@@ -4,7 +4,6 @@ import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 
 public class MessageUtil {
-
     public static final int MESSAGE_MAX_CODEPOINTS = 140;
     public static final int MINIMUM_LENGTH_OF_TITLE = 10;
     private static final String MESSAGE_HEADER = "[PARTAKE] 「";
@@ -45,9 +44,9 @@ public class MessageUtil {
      * @throws NullPointerException 引数のいずれか1つ以上がnullだった場合
      */
     public static int calcRestCodePoints(UserEx sender, EventEx event) throws NullPointerException {
-        if (sender == null || event == null) {
-            throw new NullPointerException();
-        }
+        assert sender != null;
+        assert event != null;
+
         try {
             return MESSAGE_MAX_CODEPOINTS - Util.codePointCount(buildMessage(sender, event.getShortenedURL(), event.getTitle(), ""));
         } catch (TooLongMessageException e) {
