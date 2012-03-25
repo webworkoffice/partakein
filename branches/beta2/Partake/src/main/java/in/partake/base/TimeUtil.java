@@ -16,9 +16,11 @@ import java.util.TimeZone;
 public final class TimeUtil {
     private static Date currentDate;
     private static final DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    
-    private TimeUtil() {}
-    
+
+    private TimeUtil() {
+        // Prevents from instantiation.
+    }
+
     /**
      * Resets the current date.
      */
@@ -57,7 +59,7 @@ public final class TimeUtil {
     public static void setCurrentTime(long time) {
         currentDate = new Date(time);
     }
-    
+
     /**
      * Waits for a while.
      */
@@ -66,7 +68,7 @@ public final class TimeUtil {
             setCurrentTime(currentDate.getTime() + 20);
             return;
         }
-        
+
         long now = new Date().getTime();
         do {
             try {
@@ -89,16 +91,16 @@ public final class TimeUtil {
 
         return calendar.getTime();
     }
-    
+
     public static Calendar calendar(Date date) {
         if (date == null)
             return null;
-        
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return calendar;
     }
-    
+
     public static String formatForEvent(Date date) {
         return dateFormatForEvent.format(date);
     }
@@ -110,7 +112,7 @@ public final class TimeUtil {
             return null;
         }
     }
-    
+
     public static Date oneDayBefore(Date date) {
         return new Date(date.getTime() - 1000 * 3600 * 24);
     }
@@ -122,7 +124,7 @@ public final class TimeUtil {
     public static Date oneDayAfter(Date date) {
         return new Date(date.getTime() + 1000 * 3600 * 24);
     }
-    
+
     public static Date dateFromTimeString(String timeString) {
         try {
             return new Date(Long.parseLong(timeString));
