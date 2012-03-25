@@ -76,10 +76,14 @@
 	       		switch (eventStatus.status) {
 	       		case 'enrolled':
 	       			td.text('参加'); break;
+	       		case 'enrolledOnWaitingList':
+	       			td.text('参加 (補欠)'); break;
 	       		case 'reserved':
 	       			td.text('仮参加'); break;
+	       		case 'reservedOnWaitingList':
+	       			td.text('仮参加 (補欠)'); break;
 	       		case 'cancelled':
-	       			td.text('キャンセル'); break;
+	       			td.text('キャンセル済'); break;
 	       		default:
 	       			td.text('不明'); break;
 	       		}

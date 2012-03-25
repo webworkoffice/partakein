@@ -212,6 +212,7 @@
 	<package name="user-api" namespace="/api/user" extends="partake-api-default">
 		<action name="" class="in.partake.controller.api.user.GetAPI" />
 		<action name="events" class="in.partake.controller.api.user.GetEventsAPI" />
+		<action name="enrollments" class="in.partake.controller.api.user.GetEnrollmentsAPI" />
 	</package>
 
 	<!-- Image API  -->

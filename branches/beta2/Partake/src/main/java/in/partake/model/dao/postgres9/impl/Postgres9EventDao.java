@@ -7,6 +7,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
+import in.partake.model.dao.aux.EventFilterCondition;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9DataIterator;
@@ -237,6 +238,8 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
             return indexDao.count(pcon, new String[] { "isPrivate" }, new Object[] { false });
         case PUBLISHED_EVENT_ONLY:
             return indexDao.count(pcon, new String[] { "draft" }, new Object[] { false });
+        case PUBLISHED_PUBLIC_EVENT_ONLY:
+            return indexDao.count(pcon, new String[] { "draft", "isPrivate" }, new Object[] { false, false });
         }
 
         assert false;
@@ -245,17 +248,20 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     
     @Override
     public int countEventsByOwnerId(PartakeConnection con, String userId, EventFilterCondition criteria) throws DAOException {
+        Postgres9Connection pcon = (Postgres9Connection) con;
         switch (criteria) {
         case ALL_EVENTS:
-            return indexDao.count((Postgres9Connection) con, "ownerId", userId);
+            return indexDao.count(pcon, "ownerId", userId);
         case DRAFT_EVENT_ONLY:
-            return indexDao.count((Postgres9Connection) con, new String[] { "ownerId", "draft" }, new Object[] { userId, true });
+            return indexDao.count(pcon, new String[] { "ownerId", "draft" }, new Object[] { userId, true });
         case PRIVATE_EVENT_ONLY:
-            return indexDao.count((Postgres9Connection) con, new String[] { "ownerId", "isPrivate" }, new Object[] { userId, true });
+            return indexDao.count(pcon, new String[] { "ownerId", "isPrivate" }, new Object[] { userId, true });
         case PUBLISHED_EVENT_ONLY:
-            return indexDao.count((Postgres9Connection) con, new String[] { "ownerId", "draft" }, new Object[] { userId, false });
+            return indexDao.count(pcon, new String[] { "ownerId", "draft" }, new Object[] { userId, false });
         case PUBLIC_EVENT_ONLY:
-            return indexDao.count((Postgres9Connection) con, new String[] { "ownerId", "isPrivate" }, new Object[] { userId, false });
+            return indexDao.count(pcon, new String[] { "ownerId", "isPrivate" }, new Object[] { userId, false });
+        case PUBLISHED_PUBLIC_EVENT_ONLY:
+            return indexDao.count(pcon, new String[] { "ownerId", "draft", "isPrivate" }, new Object[] { userId, false, false });            
         }
         
         assert false;
@@ -290,6 +296,12 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
             return " AND draft = true";
         case PUBLISHED_EVENT_ONLY:
             return " AND draft = false";
+        case PRIVATE_EVENT_ONLY:
+            return " AND isPrivate = true";
+        case PUBLIC_EVENT_ONLY:
+            return " AND isPrivate = false";
+        case PUBLISHED_PUBLIC_EVENT_ONLY:
+            return " AND draft = false AND isPrivate = false";
         }
         
         return "";

@@ -1,7 +1,6 @@
 package in.partake.controller.api.account;
 
 import in.partake.base.PartakeException;
-import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
@@ -9,6 +8,8 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.dao.access.IEventAccess;
+import in.partake.model.dao.aux.EventFilterCondition;
+import in.partake.model.dao.aux.EventStatus;
 import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
@@ -40,35 +41,14 @@ public class GetEventsAPI extends AbstractPartakeAPI {
         transaction.execute(); 
         
         JSONArray statuses = new JSONArray();
-        for (EventStatus status : transaction.getEventStatuses()) {
-            JSONObject obj = new JSONObject();
-            obj.put("event", status.event.toSafeJSON());
-            obj.put("isBeforeDeadline", status.event.getCalculatedDeadline().before(TimeUtil.getCurrentDate()));
-            obj.put("numEnrolledUsers", status.numEnrolledUsers);
-            obj.put("numReservedUsers", status.numReservedUsers);
-            obj.put("numCancelledUsers", status.numCancelledUsers);
-            statuses.add(obj);
-        }
+        for (EventStatus status : transaction.getEventStatuses())
+            statuses.add(status.toSafeJSON());
         
         JSONObject obj = new JSONObject();
         obj.put("numTotalEvents", transaction.getNumTotalEvents());
         obj.put("eventStatuses", statuses);
         
         return renderOK(obj);
-    }
-}
-
-class EventStatus {
-    public Event event;
-    public int numEnrolledUsers;
-    public int numReservedUsers;
-    public int numCancelledUsers;
-    
-    public EventStatus(Event event, int numEnrolledUsers, int numReservedUsers, int numCancelledUsers) {
-        this.event = event;
-        this.numEnrolledUsers = numEnrolledUsers;
-        this.numReservedUsers = numReservedUsers;
-        this.numCancelledUsers = numCancelledUsers;
     }
 }
 
@@ -116,17 +96,15 @@ class GetEventsTransaction extends Transaction<Void> {
     private void getEventsFromDB(PartakeConnection con) throws DAOException, PartakeException {
         IEventAccess eventDao = DBService.getFactory().getEventAccess();
 
-        
-        
         if ("owner".equalsIgnoreCase(queryType)) {
-            this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY);
-            this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY, offset, limit);
+            this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), EventFilterCondition.PUBLISHED_EVENT_ONLY);
+            this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), EventFilterCondition.PUBLISHED_EVENT_ONLY, offset, limit);
         } else if ("draft".equalsIgnoreCase(queryType)) {
-            this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), IEventAccess.EventFilterCondition.DRAFT_EVENT_ONLY);
-            this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), IEventAccess.EventFilterCondition.DRAFT_EVENT_ONLY, offset, limit);
+            this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), EventFilterCondition.DRAFT_EVENT_ONLY);
+            this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), EventFilterCondition.DRAFT_EVENT_ONLY, offset, limit);
         } else if ("editor".equalsIgnoreCase(queryType)) {
-            this.numTotalEvents = eventDao.countEventsByScreenName(con, user.getScreenName(), IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY);
-            this.eventsRetrieved = eventDao.findByScreenName(con, user.getScreenName(), IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY, offset, limit);
+            this.numTotalEvents = eventDao.countEventsByScreenName(con, user.getScreenName(), EventFilterCondition.PUBLISHED_EVENT_ONLY);
+            this.eventsRetrieved = eventDao.findByScreenName(con, user.getScreenName(), EventFilterCondition.PUBLISHED_EVENT_ONLY, offset, limit);
         } else {
             throw new PartakeException(UserErrorCode.INVALID_ARGUMENT);
         }
