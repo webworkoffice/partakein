@@ -1,18 +1,17 @@
 package in.partake.controller.api.event;
 
+import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.model.IPartakeDAOs;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 import in.partake.service.IEventSearchService;
-import in.partake.service.PartakeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +55,7 @@ public class SearchAPI extends AbstractPartakeAPI {
         maxNum = Util.ensureRange(maxNum, 0, MAX_NUM);
         if (maxNum <= 0)
             return renderInvalid(UserErrorCode.INVALID_ARGUMENT);
-        
+
         List<Event> events = new SearchTransaction(query, category, sortOrder, beforeDeadlineOnly, maxNum).execute();
 
         JSONArray jsonEventsArray = new JSONArray();
@@ -101,13 +100,13 @@ public class SearchAPI extends AbstractPartakeAPI {
     }
 }
 
-class SearchTransaction extends Transaction<List<Event>> {
+class SearchTransaction extends DBAccess<List<Event>> {
     private String query;
     private String category;
     private String sortOrder;
     private boolean beforeDeadlineOnly;
     private int maxNum;
-    
+
     public SearchTransaction(String query, String category, String sortOrder, boolean beforeDeadlineOnly, int maxNum) {
         this.query = query;
         this.category = category;
@@ -117,19 +116,18 @@ class SearchTransaction extends Transaction<List<Event>> {
     }
 
     @Override
-    protected List<Event> doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        PartakeDAOFactory factory = DBService.getFactory();
-        IEventSearchService searchService = PartakeService.get().getEventSearchService();
+    protected List<Event> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        IEventSearchService searchService = PartakeApp.getEventSearchService();
 
         List<String> eventIds = searchService.search(query, category, sortOrder, beforeDeadlineOnly, maxNum);
         List<Event> events = new ArrayList<Event>();
 
         for (String eventId : eventIds) {
-            Event event = factory.getEventAccess().find(con, eventId);
+            Event event = daos.getEventAccess().find(con, eventId);
             if (event != null && !event.isPrivate() && !event.isPreview())
                 events.add(event);
         }
-        
+
         return events;
     }
 }

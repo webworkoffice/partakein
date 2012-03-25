@@ -3,9 +3,10 @@ package in.partake.controller.action.calendar;
 import in.partake.base.CalendarUtil;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.model.IPartakeDAOs;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.CalendarDAOFacade;
 import in.partake.resource.ServerErrorCode;
 
@@ -28,7 +29,7 @@ public abstract class AbstractCalendarAction extends AbstractPartakeAction {
     }
 }
 
-class CalendarActionTransaction extends Transaction<InputStream> {
+class CalendarActionTransaction extends DBAccess<InputStream> {
     private String categoryName;
 
     CalendarActionTransaction(String categoryName) {
@@ -36,10 +37,10 @@ class CalendarActionTransaction extends Transaction<InputStream> {
     }
 
     @Override
-    protected InputStream doExecute(PartakeConnection con) throws DAOException, PartakeException {
+    protected InputStream doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         try {
             Calendar calendar = CalendarUtil.createCalendarSkeleton();
-            CalendarDAOFacade.addCalendarByCategoryName(con, categoryName, calendar);
+            CalendarDAOFacade.addCalendarByCategoryName(con, daos, categoryName, calendar);
             return CalendarUtil.outputCalendar(calendar);
         } catch (IOException e) {
             throw new PartakeException(ServerErrorCode.CALENDAR_CREATION_FAILURE, e);

@@ -6,6 +6,10 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import in.partake.app.PartakeApp;
+import in.partake.base.PartakeException;
+import in.partake.model.IPartakeDAOs;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.pk.EventRelationPK;
@@ -15,8 +19,8 @@ import org.junit.Test;
 
 public class EventRelationAccessTest extends AbstractDaoTestCaseBase<IEventRelationAccess, EventRelation, EventRelationPK> {
     @Before
-    public void setup() throws DAOException {
-        super.setup(factory.getEventRelationAccess());
+    public void setup() throws Exception {
+        super.setup(PartakeApp.getDBService().getDAOs().getEventRelationAccess());
     }
 
     @Override
@@ -26,97 +30,89 @@ public class EventRelationAccessTest extends AbstractDaoTestCaseBase<IEventRelat
 
     // TODO: findByEventId
     @Test
-    public void testFindByEventId() throws DAOException {
-        // Create several event relations.
-        PartakeConnection con = pool.getConnection();
-        try {
-            con.beginTransaction();
-            for (int i = 0; i < 10; ++i) {
-                for (int j = 0; j < 10; ++j) {
-                    EventRelation relation = new EventRelation("srcEventId-" + i, "dstEventId-" + i + "-" + j, true, false);
-                    dao.put(con, relation);
+    public void testFindByEventId() throws Exception {
+        new DBAccess<Void>() {
+            @Override
+            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                con.beginTransaction();
+                for (int i = 0; i < 10; ++i) {
+                    for (int j = 0; j < 10; ++j) {
+                        EventRelation relation = new EventRelation("srcEventId-" + i, "dstEventId-" + i + "-" + j, true, false);
+                        dao.put(con, relation);
+                    }
                 }
-            }
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
+                con.commit();
 
-        // Checks find by event relations.
-        con = getPool().getConnection();
-        try {
-            for (int i = 0; i < 10; ++i) {
-                List<EventRelation> rels = dao.findByEventId(con, "srcEventId-" + i);
-                Assert.assertEquals(10, rels.size());
-                
-                ArrayList<String> dsts = new ArrayList<String>();
-                for (EventRelation rel : rels)
-                    dsts.add(rel.getDstEventId());
-                
-                Collections.sort(dsts);
-                for (int j = 0; j < 10; ++j) {
-                    Assert.assertEquals("dstEventId-" + i + "-" + j, dsts.get(j));
-                }
-            }
-        } finally {
-            con.invalidate();
-        }
-    }
-
-    // TODO: removeByEventId
-    @Test
-    public void testRemoveByEventId() throws DAOException {
-        // Create several event relations.
-        PartakeConnection con = getPool().getConnection();
-        try {
-            con.beginTransaction();
-            for (int i = 0; i < 10; ++i) {
-                for (int j = 0; j < 10; ++j) {
-                    EventRelation relation = new EventRelation("srcEventId-" + i, "dstEventId-" + i + "-" + j, true, false);
-                    dao.put(con, relation);
-                }
-            }
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-
-        // 
-        con = getPool().getConnection();
-        try { 
-            con.beginTransaction();
-            dao.removeByEventId(con, "srcEventId-" + 0);
-            dao.removeByEventId(con, "srcEventId-" + 2);
-            dao.removeByEventId(con, "srcEventId-" + 4);
-            dao.removeByEventId(con, "srcEventId-" + 6);
-            dao.removeByEventId(con, "srcEventId-" + 8);
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-        
-        // Checks find by event relations.
-        con = getPool().getConnection();
-        try {
-            for (int i = 0; i < 10; ++i) {
-                List<EventRelation> rels = dao.findByEventId(con, "srcEventId-" + i);
-                if (i % 2 == 0) {
-                    Assert.assertEquals(0, rels.size());
-                } else {
+                // Checks find by event relations.
+                for (int i = 0; i < 10; ++i) {
+                    List<EventRelation> rels = dao.findByEventId(con, "srcEventId-" + i);
                     Assert.assertEquals(10, rels.size());
-                    
+
                     ArrayList<String> dsts = new ArrayList<String>();
                     for (EventRelation rel : rels)
                         dsts.add(rel.getDstEventId());
-                    
+
                     Collections.sort(dsts);
                     for (int j = 0; j < 10; ++j) {
                         Assert.assertEquals("dstEventId-" + i + "-" + j, dsts.get(j));
                     }
                 }
+
+                return null;
             }
-        } finally {
-            con.invalidate();
-        }
+        }.execute();
+
+    }
+
+    // TODO: removeByEventId
+    @Test
+    public void testRemoveByEventId() throws Exception {
+        new DBAccess<Void>() {
+            @Override
+            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                // Create several event relations.
+
+
+                con.beginTransaction();
+                for (int i = 0; i < 10; ++i) {
+                    for (int j = 0; j < 10; ++j) {
+                        EventRelation relation = new EventRelation("srcEventId-" + i, "dstEventId-" + i + "-" + j, true, false);
+                        dao.put(con, relation);
+                    }
+                }
+                con.commit();
+
+                con.beginTransaction();
+                dao.removeByEventId(con, "srcEventId-" + 0);
+                dao.removeByEventId(con, "srcEventId-" + 2);
+                dao.removeByEventId(con, "srcEventId-" + 4);
+                dao.removeByEventId(con, "srcEventId-" + 6);
+                dao.removeByEventId(con, "srcEventId-" + 8);
+                con.commit();
+
+                // Checks find by event relations.
+
+
+                for (int i = 0; i < 10; ++i) {
+                    List<EventRelation> rels = dao.findByEventId(con, "srcEventId-" + i);
+                    if (i % 2 == 0) {
+                        Assert.assertEquals(0, rels.size());
+                    } else {
+                        Assert.assertEquals(10, rels.size());
+
+                        ArrayList<String> dsts = new ArrayList<String>();
+                        for (EventRelation rel : rels)
+                            dsts.add(rel.getDstEventId());
+
+                        Collections.sort(dsts);
+                        for (int j = 0; j < 10; ++j) {
+                            Assert.assertEquals("dstEventId-" + i + "-" + j, dsts.get(j));
+                        }
+                    }
+                }
+
+                return null;
+            }
+        }.execute();
     }
 }

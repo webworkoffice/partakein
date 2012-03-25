@@ -3,11 +3,11 @@ package in.partake.model.daofacade;
 import in.partake.base.PartakeRuntimeException;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
@@ -19,7 +19,6 @@ import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.ServerErrorCode;
-import in.partake.service.DBService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,40 +29,36 @@ import java.util.Set;
 
 public class EnrollmentDAOFacade {
 
-    public static List<EnrollmentEx> getEnrollmentExs(PartakeConnection con, String eventId) throws DAOException {
-        return getEnrollmentExs(con, DBService.getFactory(), eventId);
-    }
-
-    public static List<EnrollmentEx> getEnrollmentExs(PartakeConnection con, PartakeDAOFactory factory, String eventId) throws DAOException {
+    public static List<EnrollmentEx> getEnrollmentExs(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
         // priority のあるイベントに参加している場合、priority に 1 を付加する。
-        
+
         // --- まず、EnrollmentEx を作成
         List<EnrollmentEx> ps = new ArrayList<EnrollmentEx>();
-        for (Enrollment p : factory.getEnrollmentAccess().findByEventId(con, eventId)) {
+        for (Enrollment p : daos.getEnrollmentAccess().findByEventId(con, eventId)) {
             if (p == null) { continue; }
-            UserEx user = UserDAOFacade.getUserEx(con, p.getUserId());
+            UserEx user = UserDAOFacade.getUserEx(con, daos, p.getUserId());
             if (user == null) { continue; }
             EnrollmentEx pe = new EnrollmentEx(p, user, 0);
             ps.add(pe);
         }
-        
+
         // --- 各 related event に対して、参加しているかどうかを調査。
-        List<EventRelation> eventRelations = factory.getEventRelationAccess().findByEventId(con, eventId); 
+        List<EventRelation> eventRelations = daos.getEventRelationAccess().findByEventId(con, eventId);
         for (EventRelation relation : eventRelations) {
-            EventEx ev = EventDAOFacade.getEventEx(con, relation.getDstEventId());
+            EventEx ev = EventDAOFacade.getEventEx(con, daos, relation.getDstEventId());
             if (ev == null) { continue; }
-            
+
             // related event の参加者を Set で取得
             Set<String> relatedEventParticipantsIds = new HashSet<String>();
             {
-                List<Enrollment> relatedEventParticipations = factory.getEnrollmentAccess().findByEventId(con, relation.getDstEventId());
+                List<Enrollment> relatedEventParticipations = daos.getEnrollmentAccess().findByEventId(con, relation.getDstEventId());
                 for (Enrollment p : relatedEventParticipations) {
                     if (p.getStatus().isEnrolled()) {
                         relatedEventParticipantsIds.add(p.getUserId());
                     }
                 }
             }
-            
+
             // 参加していれば、それを追加。priority があれば、+1 する。
             for (EnrollmentEx p : ps) {
                 if (!relatedEventParticipantsIds.contains(p.getUserId())) { continue; }
@@ -74,33 +69,33 @@ public class EnrollmentDAOFacade {
             }
 
         }
-        
+
         for (EnrollmentEx p : ps) {
             p.freeze();
         }
-        
-        Collections.sort(ps, EnrollmentEx.getPriorityBasedComparator());       
-        
+
+        Collections.sort(ps, EnrollmentEx.getPriorityBasedComparator());
+
         return ps;
     }
 
     /** 参加ステータスを表示します */
-    public static CalculatedEnrollmentStatus calculateEnrollmentStatus(PartakeConnection con, String userId, Event event) throws DAOException {
-        ParticipationStatus status = getParticipationStatus(con, userId, event.getId());
+    public static CalculatedEnrollmentStatus calculateEnrollmentStatus(PartakeConnection con, IPartakeDAOs daos, String userId, Event event) throws DAOException {
+        ParticipationStatus status = getParticipationStatus(con, daos, userId, event.getId());
 
         if (status == null)
             return CalculatedEnrollmentStatus.NOT_ENROLLED;
 
         switch (status) {
         case ENROLLED: {
-            int order = getOrderOfEnrolledEvent(con, event.getId(), userId);
+            int order = getOrderOfEnrolledEvent(con, daos, event.getId(), userId);
             if (order <= event.getCapacity() || event.getCapacity() == 0)
                 return CalculatedEnrollmentStatus.ENROLLED;
             else
                 return CalculatedEnrollmentStatus.ENROLLED_ON_WAITING_LIST;
         }
         case RESERVED: {
-            int order = getOrderOfEnrolledEvent(con, event.getId(), userId);
+            int order = getOrderOfEnrolledEvent(con, daos, event.getId(), userId);
             if (order <= event.getCapacity() || event.getCapacity() == 0)
                 return CalculatedEnrollmentStatus.RESERVED;
             else
@@ -114,10 +109,10 @@ public class EnrollmentDAOFacade {
 
         assert false;
         throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
-    }   
+    }
 
-    public static ParticipationStatus getParticipationStatus(PartakeConnection con, String userId, String eventId) throws DAOException {
-        Enrollment enrollment = DBService.getFactory().getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
+    public static ParticipationStatus getParticipationStatus(PartakeConnection con, IPartakeDAOs daos, String userId, String eventId) throws DAOException {
+        Enrollment enrollment = daos.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
 
         if (enrollment == null)
             return ParticipationStatus.NOT_ENROLLED;
@@ -127,9 +122,9 @@ public class EnrollmentDAOFacade {
     /**
      * event の参加順位(何番目に参加したか)を返します。
      */
-    public static int getOrderOfEnrolledEvent(PartakeConnection con, String eventId, String userId) throws DAOException {
-        List<EnrollmentEx> enrollments = getEnrollmentExs(con, eventId);
-        EventEx event = EventDAOFacade.getEventEx(con, eventId);
+    public static int getOrderOfEnrolledEvent(PartakeConnection con, IPartakeDAOs daos, String eventId, String userId) throws DAOException {
+        List<EnrollmentEx> enrollments = getEnrollmentExs(con, daos, eventId);
+        EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
         ParticipationList list = event.calculateParticipationList(enrollments);
 
         int result = 0;
@@ -146,12 +141,11 @@ public class EnrollmentDAOFacade {
     }
 
     // TODO: "changesOnlyComment" should die!
-    public static void enrollImpl(PartakeConnection con, UserEx user, EventEx event, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
+    public static void enrollImpl(PartakeConnection con, IPartakeDAOs daos, UserEx user, EventEx event, ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
         String userId = user.getId();
         String eventId = event.getId();
 
-        Enrollment oldEnrollment = factory.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
+        Enrollment oldEnrollment = daos.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
         Enrollment newEnrollment;
         if (oldEnrollment == null) {
             newEnrollment = new Enrollment(userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, new Date());
@@ -179,7 +173,7 @@ public class EnrollmentDAOFacade {
 
         //
         if (status != null) {
-            IEventActivityAccess eaa = factory.getEventActivityAccess();
+            IEventActivityAccess eaa = daos.getEventActivityAccess();
 
             String title;
             switch (status) {
@@ -194,7 +188,7 @@ public class EnrollmentDAOFacade {
             eaa.put(con, new EventActivity(eaa.getFreshId(con), eventId, title, content, new Date()));
         }
 
-        factory.getEnrollmentAccess().put(con, newEnrollment);
+        daos.getEnrollmentAccess().put(con, newEnrollment);
     }
 
 }

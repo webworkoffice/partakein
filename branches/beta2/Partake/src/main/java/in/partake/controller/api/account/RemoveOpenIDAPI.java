@@ -2,13 +2,13 @@ package in.partake.controller.api.account;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.OpenIDLinkage;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 
 public class RemoveOpenIDAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
@@ -39,12 +39,12 @@ class RemoveOpenIDLinkageTransaction extends Transaction<Void> {
     }
 
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        OpenIDLinkage linkage = DBService.getFactory().getOpenIDLinkageAccess().find(con, identifier);
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        OpenIDLinkage linkage = daos.getOpenIDLinkageAccess().find(con, identifier);
         if (linkage == null || !userId.equals(linkage.getUserId()))
             throw new PartakeException(UserErrorCode.INVALID_OPENID);
 
-        DBService.getFactory().getOpenIDLinkageAccess().remove(con, identifier);
+        daos.getOpenIDLinkageAccess().remove(con, identifier);
         return null;
     }
 }

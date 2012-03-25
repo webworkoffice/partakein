@@ -4,15 +4,15 @@ import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IImageAccess;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.ImageData;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,8 +82,8 @@ class CreateImageAPITransaction extends Transaction<List<String>> {
 
     // TODO: We should not load image in memory here. However, sending image from DB directly will cause
     // another problem, e.g. DoS.
-    public List<String> doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        IImageAccess dao = DBService.getFactory().getImageAccess();
+    public List<String> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        IImageAccess dao = daos.getImageAccess();
 
         byte[] foreImageByteArray;
         try {
@@ -92,7 +92,7 @@ class CreateImageAPITransaction extends Transaction<List<String>> {
             throw new PartakeException(ServerErrorCode.ERROR_IO);
         }
 
-        String imageId = dao.getFreshId(con); 
+        String imageId = dao.getFreshId(con);
         ImageData imageEmbryo = new ImageData(imageId, user.getId(), contentType, foreImageByteArray, TimeUtil.getCurrentDate());
         dao.put(con, imageEmbryo);
 

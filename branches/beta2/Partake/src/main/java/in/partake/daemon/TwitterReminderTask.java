@@ -5,12 +5,12 @@ import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.ParticipationList;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Enrollment;
@@ -21,7 +21,6 @@ import in.partake.model.dto.Message;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
-import in.partake.service.DBService;
 
 import java.util.Date;
 import java.util.List;
@@ -32,33 +31,31 @@ public class TwitterReminderTask extends Transaction<Void> {
     private static final Logger logger = Logger.getLogger(TwitterReminderTask.class);
 
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        PartakeDAOFactory factory = DBService.getFactory();
-
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         String topPath = PartakeProperties.get().getTopPath();
         Date now = TimeUtil.getCurrentDate();
 
         // TODO: 開始時刻が現在時刻より後の event のみを取り出したい
-        DataIterator<Event> it = factory.getEventAccess().getIterator(con);
+        DataIterator<Event> it = daos.getEventAccess().getIterator(con);
         try {
             while (it.hasNext()) {
                 Event e = it.next();
                 if (e == null) { continue; }
                 String eventId = e.getId();
                 if (eventId == null) { continue; }
-                EventEx event = EventDAOFacade.getEventEx(con, eventId);
+                EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
                 if (event == null) { continue; }
                 if (event.getBeginDate().before(now)) { continue; }
 
                 // NOTE: Since the reminderStatus gotten from getEventReminderStatus is frozen,
                 //       the object should be copied to use.
-                EventReminder reminderStatus = new EventReminder(getEventReminderImpl(con, eventId));
+                EventReminder reminderStatus = new EventReminder(getEventReminderImpl(con, daos, eventId));
 
-                boolean changed = sendEventNotification(con, event, reminderStatus, topPath, now);
+                boolean changed = sendEventNotification(con, daos, event, reminderStatus, topPath, now);
                 if (changed) {
                     reminderStatus.setEventId(eventId);
                     con.beginTransaction();
-                    factory.getEventReminderAccess().put(con, reminderStatus);
+                    daos.getEventReminderAccess().put(con, reminderStatus);
                     con.commit();
                 }
             }
@@ -84,23 +81,23 @@ public class TwitterReminderTask extends Transaction<Void> {
      * @param message
      * @throws DAOException
      */
-    private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, Event event, String message) throws DAOException {
-        String messageId = DBService.getFactory().getDirectMessageAccess().getFreshId(con);
+    private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, IPartakeDAOs daos, Event event, String message) throws DAOException {
+        String messageId = daos.getDirectMessageAccess().getFreshId(con);
         Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
-        DBService.getFactory().getDirectMessageAccess().put(con, embryo);
+        daos.getDirectMessageAccess().put(con, embryo);
 
-        List<Enrollment> participations = DBService.getFactory().getEnrollmentAccess().findByEventId(con, event.getId());
+        List<Enrollment> participations = daos.getEnrollmentAccess().findByEventId(con, event.getId());
         Date deadline = event.getCalculatedDeadline();
         for (Enrollment participation : participations) {
             if (!ParticipationStatus.RESERVED.equals(participation.getStatus())) { continue; }
-            String envelopeId = DBService.getFactory().getEnvelopeAccess().getFreshId(con);
+            String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
             Envelope envelope = new Envelope(envelopeId, participation.getUserId(), participation.getUserId(),
                     messageId, deadline, 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-            DBService.getFactory().getEnvelopeAccess().put(con, envelope);
+            daos.getEnvelopeAccess().put(con, envelope);
             logger.info("sendEnvelope : " + participation.getUserId() + " : " + embryo.getMessage());
         }
     }
-    private boolean sendEventNotification(PartakeConnection con, EventEx event, EventReminder reminderStatus, String topPath, Date now) throws DAOException {
+    private boolean sendEventNotification(PartakeConnection con, IPartakeDAOs daos, EventEx event, EventReminder reminderStatus, String topPath, Date now) throws DAOException {
         Date beginDate = event.getBeginDate();
         Date deadline = event.getCalculatedDeadline();
 
@@ -119,7 +116,7 @@ public class TwitterReminderTask extends Transaction<Void> {
         if (needsToSend(now, TimeUtil.oneDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineOneday())) {
             String message = "[PARTAKE] 締め切り１日前です。参加・不参加を確定してください。 " + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
-            sendNotificationOnlyForReservedParticipants(con, event, message);
+            sendNotificationOnlyForReservedParticipants(con, daos, event, message);
 
             reminderStatus.setSentDateOfBeforeDeadlineOneday(now);
             changed = true;
@@ -129,7 +126,7 @@ public class TwitterReminderTask extends Transaction<Void> {
         if (needsToSend(now, TimeUtil.halfDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineHalfday())) {
             String message = "[PARTAKE] 締め切り１２時間前です。参加・不参加を確定してください。 ３時間前までに確定されない場合、キャンセル扱いとなります。" + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
-            sendNotificationOnlyForReservedParticipants(con, event, message);
+            sendNotificationOnlyForReservedParticipants(con, daos, event, message);
 
             reminderStatus.setSentDateOfBeforeDeadlineHalfday(now);
             changed = true;
@@ -140,7 +137,7 @@ public class TwitterReminderTask extends Transaction<Void> {
         if (needsToSend(now, TimeUtil.oneDayBefore(beginDate), reminderStatus.getSentDateOfBeforeTheDay())) {
             String message = "[PARTAKE] イベントの１日前です。あなたの参加は確定しています。 " + shortenedURL + " " + event.getTitle();
             message = Util.shorten(message, 140);
-            sendNotificationOnlyForParticipants(con, event, message);
+            sendNotificationOnlyForParticipants(con, daos, event, message);
 
             reminderStatus.setSentDateOfBeforeTheDay(now);
             changed = true;
@@ -155,29 +152,28 @@ public class TwitterReminderTask extends Transaction<Void> {
      * @param message
      * @throws DAOException
      */
-    private void sendNotificationOnlyForParticipants(PartakeConnection con, EventEx event, String message) throws DAOException {
-        String messageId = DBService.getFactory().getDirectMessageAccess().getFreshId(con);
+    private void sendNotificationOnlyForParticipants(PartakeConnection con, IPartakeDAOs daos, EventEx event, String message) throws DAOException {
+        String messageId = daos.getDirectMessageAccess().getFreshId(con);
         Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
-        DBService.getFactory().getDirectMessageAccess().put(con, embryo);
+        daos.getDirectMessageAccess().put(con, embryo);
 
         Date deadline = event.getCalculatedDeadline();
 
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, event.getId());
+        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event.getId());
         ParticipationList list = event.calculateParticipationList(participations);
 
         for (EnrollmentEx p : list.getEnrolledParticipations()) {
             if (!ParticipationStatus.ENROLLED.equals(p.getStatus())) { continue; }
-            String envelopeId = DBService.getFactory().getEnvelopeAccess().getFreshId(con);
+            String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
             Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
                     messageId, deadline, 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-            DBService.getFactory().getEnvelopeAccess().put(con, envelope);
+            daos.getEnvelopeAccess().put(con, envelope);
             logger.info("sendEnvelope : " + p.getUser().getScreenName() + " : " + embryo.getMessage());
         }
     }
-    
-    private EventReminder getEventReminderImpl(PartakeConnection con, String eventId) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-        EventReminder reminder = factory.getEventReminderAccess().find(con, eventId);
+
+    private EventReminder getEventReminderImpl(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
+        EventReminder reminder = daos.getEventReminderAccess().find(con, eventId);
         if (reminder == null) {
             return new EventReminder(eventId);
         } else {

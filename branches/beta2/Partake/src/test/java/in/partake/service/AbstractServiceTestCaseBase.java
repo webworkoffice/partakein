@@ -1,11 +1,11 @@
 package in.partake.service;
 
+import in.partake.app.PartakeApp;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.impl.EventTestDataProvider;
-import in.partake.resource.PartakeProperties;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,12 +18,10 @@ import org.junit.BeforeClass;
 public abstract class AbstractServiceTestCaseBase {
 
     @BeforeClass
-    public static void setUpOnce() {
-        PartakeProperties.get().reset("unittest");
-        PartakeService.initialize();
-        TestDatabaseService.initialize();
+    public static void setUpOnce() throws Exception {
+        PartakeApp.initialize("unittest");
     }
-    
+
     protected final String createRandomId() {
         return UUID.randomUUID().toString();
     }
@@ -34,9 +32,9 @@ public abstract class AbstractServiceTestCaseBase {
      * @return
      */
     protected Event createEvent(String id) {
-        EventTestDataProvider provider = TestDatabaseService.getTestDataProviderSet().getEventProvider(); 
+        EventTestDataProvider provider = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider();
         Event event = provider.create();
-        
+
         event.setId(id);
         return event;
     }

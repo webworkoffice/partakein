@@ -2,12 +2,12 @@ package in.partake.controller.action.mypage;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.UserPreference;
-import in.partake.service.DBService;
 
 import java.util.List;
 
@@ -17,21 +17,21 @@ public class MypageAction extends AbstractPartakeAction {
 
     private UserPreference preference;
     private List<String> openIds;
-    
+
     public String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
 
         MypageActionTransaction transaction = new MypageActionTransaction(user.getId());
         transaction.execute();
-        
+
         preference = transaction.getPreference();
         openIds = transaction.getOpenIds();
-        
+
         return render("mypage/show.jsp");
     }
-    
+
     // ----------------------------------------------------------------------
-    
+
     public UserPreference getPreference() {
         return preference;
     }
@@ -41,25 +41,25 @@ public class MypageAction extends AbstractPartakeAction {
     }
 }
 
-class MypageActionTransaction extends Transaction<Void> {
+class MypageActionTransaction extends DBAccess<Void> {
     private String userId;
     private UserPreference preference;
-    private List<String> openIds; 
-    
+    private List<String> openIds;
+
     public MypageActionTransaction(String userId) {
         this.userId = userId;
     }
-    
+
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        preference = DBService.getFactory().getUserPreferenceAccess().find(con, userId);
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        preference = daos.getUserPreferenceAccess().find(con, userId);
         if (preference == null)
             preference = UserPreference.getDefaultPreference(userId);
 
-        openIds = DBService.getFactory().getOpenIDLinkageAccess().findByUserId(con, userId);
+        openIds = daos.getOpenIDLinkageAccess().findByUserId(con, userId);
         return null;
     }
-    
+
     public UserPreference getPreference() {
         return preference;
     }

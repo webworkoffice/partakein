@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.app.PartakeApp;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.pk.ShortenedURLDataPK;
@@ -9,10 +10,10 @@ import org.junit.Before;
 
 public class URLShortenerAccessTest extends AbstractDaoTestCaseBase<IURLShortenerAccess, ShortenedURLData, ShortenedURLDataPK> {
     @Before
-    public void setup() throws DAOException {
-        super.setup(factory.getURLShortenerAccess());
+    public void setup() throws Exception {
+        super.setup(PartakeApp.getDBService().getDAOs().getURLShortenerAccess());
     }
-    
+
     @Override
     protected ShortenedURLData create(long pkNumber, String pkSalt, int objNumber) {
         if (pkSalt.contains("putfind")) {

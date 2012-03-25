@@ -1,18 +1,19 @@
 package in.partake.controller.api.event;
 
+import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.ImageDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.IEventSearchService;
-import in.partake.service.PartakeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +50,10 @@ public class CreateAPI extends AbstractEventEditAPI {
         // private でなければ Lucene にデータ挿入して検索ができるようにする
         embryo.setId(eventId);
         if (!embryo.isPrivate() && !embryo.isPreview()) {
-            IEventSearchService searchService = PartakeService.get().getEventSearchService();
+            IEventSearchService searchService = PartakeApp.getEventSearchService();
             searchService.create(embryo);
         }
-        
+
         JSONObject obj = new JSONObject();
         obj.put("eventId", eventId);
 
@@ -72,19 +73,19 @@ class CreateTransaction extends Transaction<String> {
     }
 
     @Override
-    protected String doExecute(PartakeConnection con) throws DAOException, PartakeException {
+    protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         if (embryo.getForeImageId() != null) {
-            if (!ImageDAOFacade.checkImageOwner(con, embryo.getForeImageId(), user))
+            if (!ImageDAOFacade.checkImageOwner(con, daos, embryo.getForeImageId(), user))
                 throw new PartakeException(UserErrorCode.INVALID_IMAGE_OWNER);
         }
 
         if (embryo.getBackImageId() != null) {
-            if (!ImageDAOFacade.checkImageOwner(con, embryo.getBackImageId(), user))
-                throw new PartakeException(UserErrorCode.INVALID_IMAGE_OWNER);            
+            if (!ImageDAOFacade.checkImageOwner(con, daos, embryo.getBackImageId(), user))
+                throw new PartakeException(UserErrorCode.INVALID_IMAGE_OWNER);
         }
 
-        String eventId = EventDAOFacade.create(con, embryo);
-        EventDAOFacade.setEventRelations(con, eventId, relations);
+        String eventId = EventDAOFacade.create(con, daos, embryo);
+        EventDAOFacade.setEventRelations(con, daos, eventId, relations);
 
         return eventId;
     }

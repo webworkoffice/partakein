@@ -5,11 +5,12 @@ import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.EventParticipationListPermission;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.resource.UserErrorCode;
@@ -21,7 +22,7 @@ public class PrintParticipantsAction extends AbstractPartakeAction {
 
     private EventEx event;
     private ParticipationList participationList;
-    
+
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
@@ -29,26 +30,26 @@ public class PrintParticipantsAction extends AbstractPartakeAction {
 
         ParticipantsListTransaction transaction = new ParticipantsListTransaction(user, eventId);
         transaction.execute();
-        
+
         event = transaction.getEvent();
         participationList = transaction.getParticipationList();
 
         return render("events/participants/print.jsp");
     }
-    
+
     public EventEx getEvent() {
         return event;
     }
-    
+
     public ParticipationList getParticipationList() {
         return participationList;
     }
 }
 
-class ParticipantsListTransaction extends Transaction<Void> {
+class ParticipantsListTransaction extends DBAccess<Void> {
     private UserEx user;
     private String eventId;
-    
+
     private EventEx event;
     private ParticipationList participationList;
 
@@ -56,26 +57,26 @@ class ParticipantsListTransaction extends Transaction<Void> {
         this.user = user;
         this.eventId = eventId;
     }
-    
+
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        event = EventDAOFacade.getEventEx(con, eventId);
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        event = EventDAOFacade.getEventEx(con, daos, eventId);
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
 
         // Only owner can retrieve the participants list.
         if (!EventParticipationListPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
-        
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, eventId); 
+
+        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, eventId);
         participationList = event.calculateParticipationList(participations);
         return null;
     }
-    
+
     public EventEx getEvent() {
         return event;
     }
-    
+
     public ParticipationList getParticipationList() {
         return participationList;
     }

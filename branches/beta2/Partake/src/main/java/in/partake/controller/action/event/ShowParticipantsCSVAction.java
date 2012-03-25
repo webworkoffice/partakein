@@ -5,11 +5,12 @@ import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.EventParticipationListPermission;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.UserDAOFacade;
@@ -40,24 +41,24 @@ public class ShowParticipantsCSVAction extends AbstractPartakeAction {
     }
 }
 
-class ShowParticipantsCSVTransaction extends Transaction<InputStream> {
+class ShowParticipantsCSVTransaction extends DBAccess<InputStream> {
     private UserEx user;
     private String eventId;
-    
+
     public ShowParticipantsCSVTransaction(UserEx user, String eventId) {
         this.user = user;
         this.eventId = eventId;
     }
-    
+
     @Override
-    protected InputStream doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        ParticipationList list = calculateParticipationList(con);
+    protected InputStream doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        ParticipationList list = calculateParticipationList(con, daos);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos));
 
         for (Enrollment participation : list.getEnrolledParticipations()) {
-            UserEx attendant = UserDAOFacade.getUserEx(con, participation.getUserId());
+            UserEx attendant = UserDAOFacade.getUserEx(con, daos, participation.getUserId());
 
             String[] lst = new String[4];
             lst[0] = attendant.getTwitterLinkage().getScreenName();
@@ -74,7 +75,7 @@ class ShowParticipantsCSVTransaction extends Transaction<InputStream> {
         }
 
         for (Enrollment participation : list.getSpareParticipations()) {
-            UserEx attendant = UserDAOFacade.getUserEx(con, participation.getUserId());
+            UserEx attendant = UserDAOFacade.getUserEx(con, daos, participation.getUserId());
 
             String[] lst = new String[4];
             lst[0] = attendant.getTwitterLinkage().getScreenName();
@@ -95,12 +96,12 @@ class ShowParticipantsCSVTransaction extends Transaction<InputStream> {
         } catch (IOException e) {
             throw new PartakeException(ServerErrorCode.ERROR_IO);
         }
-        
+
         return new ByteArrayInputStream(baos.toByteArray());
     }
-    
-    private ParticipationList calculateParticipationList(PartakeConnection con) throws DAOException, PartakeException {
-        EventEx event = EventDAOFacade.getEventEx(con, eventId); 
+
+    private ParticipationList calculateParticipationList(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
 
@@ -108,7 +109,7 @@ class ShowParticipantsCSVTransaction extends Transaction<InputStream> {
         if (!EventParticipationListPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, eventId); 
+        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, eventId);
         return event.calculateParticipationList(participations);
     }
 }

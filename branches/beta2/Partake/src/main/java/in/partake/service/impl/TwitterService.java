@@ -10,7 +10,6 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-//TODO: should be non-public class.
 class TwitterService implements ITwitterService {
 
     public TwitterLoginInformation createLoginInformation(String redirectURL) throws TwitterException {

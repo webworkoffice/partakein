@@ -1,8 +1,8 @@
 package in.partake.model.fixture;
 
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.fixture.impl.BinaryTestDataProvider;
 import in.partake.model.fixture.impl.CalendarLinkageTestDataProvider;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
@@ -17,13 +17,13 @@ import in.partake.model.fixture.impl.UserTestDataProvider;
 import java.util.ArrayList;
 
 /**
- * A set of test data providers. 
+ * A set of test data providers.
  * @author shinyak
  *
  */
 public class PartakeTestDataProviderSet {
     private ArrayList<TestDataProvider<?>> providers;
-    
+
     private BinaryTestDataProvider binaryDataProvider;
     private CalendarLinkageTestDataProvider calendarDataProvider;
     private CommentTestDataProvider commentDataprovider;
@@ -34,10 +34,10 @@ public class PartakeTestDataProviderSet {
     private TwitterLinkageTestDataProvider twitterLinkageProvider;
     private UserTestDataProvider userProvider;
     private UserPreferenceTestDataProvider userPreferenceProvider;
-    
+
     public PartakeTestDataProviderSet() {
         this.providers = new ArrayList<TestDataProvider<?>>();
-        
+
         providers.add(binaryDataProvider = createBinaryTestDataProvider());
         providers.add(calendarDataProvider = createCalendarLinkageTestDataProvider());
         providers.add(commentDataprovider = createCommentTestDataProvider());
@@ -49,21 +49,21 @@ public class PartakeTestDataProviderSet {
         providers.add(userProvider = createUserTestDataProvider());
         providers.add(userPreferenceProvider = createUserPreferenceTestDataProvider());
     }
-    
-    public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
+
+    public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
         for (TestDataProvider<?> provider : providers) {
-            provider.createFixtures(con, factory);
+            provider.createFixtures(con, daos);
         }
     }
 
     public BinaryTestDataProvider getBinaryTestDataProvider() {
         return binaryDataProvider;
     }
-    
+
     public CalendarLinkageTestDataProvider getCalendarTestDataProvider() {
         return calendarDataProvider;
     }
-    
+
     public CommentTestDataProvider getCommentDataProvider() {
         return commentDataprovider;
     }
@@ -95,7 +95,7 @@ public class PartakeTestDataProviderSet {
     public UserPreferenceTestDataProvider getUserPreferenceProvider() {
         return userPreferenceProvider;
     }
-    
+
     private BinaryTestDataProvider createBinaryTestDataProvider() {
         return new BinaryTestDataProvider();
     }
@@ -107,7 +107,7 @@ public class PartakeTestDataProviderSet {
     private CommentTestDataProvider createCommentTestDataProvider() {
         return new CommentTestDataProvider();
     }
-    
+
     private EnrollmentTestDataProvider createEnrollmentTestDataProvider() {
         return new EnrollmentTestDataProvider();
     }
@@ -123,15 +123,15 @@ public class PartakeTestDataProviderSet {
     private OpenIDLinkageTestDataProvider createOpenIDLinkageTestDataProvider() {
         return new OpenIDLinkageTestDataProvider();
     }
-    
+
     private TwitterLinkageTestDataProvider createTwitterLinkageTestDataProvider() {
         return new TwitterLinkageTestDataProvider();
     }
-    
+
     private UserTestDataProvider createUserTestDataProvider() {
         return new UserTestDataProvider();
     }
-    
+
     private UserPreferenceTestDataProvider createUserPreferenceTestDataProvider() {
         return new UserPreferenceTestDataProvider();
     }

@@ -10,11 +10,12 @@ import in.partake.model.DirectMessageEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
@@ -22,7 +23,6 @@ import in.partake.model.dto.EventReminder;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 
 import java.util.Date;
 import java.util.List;
@@ -44,24 +44,24 @@ public class EventShowAction extends AbstractPartakeAction {
     private List<DirectMessageEx> messages;
     private EventReminder eventReminder;
     private List<EventRelationEx> relations;
-    
+
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         String eventId = getValidEventIdParameter(UserErrorCode.INVALID_NOTFOUND, UserErrorCode.INVALID_NOTFOUND);
 
         // NOTE: login はしてないかもしれない。
         UserEx user = getLoginUser();
-        
+
         EventShowTransaction transaction = new EventShowTransaction(user, eventId, session);
         transaction.execute();
-        
+
         event = transaction.getEvent();
         if (event == null)
             return renderNotFound();
 
         if (transaction.isNeedsPasscode()) {
             this.event = null;
-            return renderRedirect("/events/passcode?eventId=" + eventId);            
+            return renderRedirect("/events/passcode?eventId=" + eventId);
         }
 
         this.requiredEvents = transaction.getRequiredEvents();
@@ -73,10 +73,10 @@ public class EventShowAction extends AbstractPartakeAction {
         this.messages = transaction.getMessages();
         this.eventReminder = transaction.getEventReminder();
         this.relations = transaction.getRelations();
-        
+
         return render("events/show.jsp");
     }
-    
+
     public EventEx getEvent() {
         return event;
     }
@@ -112,21 +112,21 @@ public class EventShowAction extends AbstractPartakeAction {
     public List<DirectMessageEx> getMessages() {
         return messages;
     }
-    
+
     public EventReminder getEventReminder() {
         return eventReminder;
     }
-    
+
     public List<EventRelationEx> getRelations() {
         return relations;
     }
 }
 
-class EventShowTransaction extends Transaction<Void> {
+class EventShowTransaction extends DBAccess<Void> {
     private UserEx user;
     private String eventId;
     private Map<String, Object> session; // Bad style...
-    
+
     private EventEx event;
     private boolean needsPasscode;
     private List<Event> requiredEvents;
@@ -138,16 +138,16 @@ class EventShowTransaction extends Transaction<Void> {
     private List<DirectMessageEx> messages;
     private EventReminder eventReminder;
     private List<EventRelationEx> relations;
-    
+
     public EventShowTransaction(UserEx user, String eventId, Map<String, Object> session) {
         this.user = user;
         this.eventId = eventId;
         this.session = session;
     }
-    
+
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        event = EventDAOFacade.getEventEx(con, eventId); 
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        event = EventDAOFacade.getEventEx(con, daos, eventId);
         if (event == null)
             return null;
 
@@ -156,7 +156,7 @@ class EventShowTransaction extends Transaction<Void> {
             if (user == null || !DraftEventEditPermission.check(event, user))
                 throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_EDIT);
         }
-        
+
         if (event.isPrivate()) {
             // owner および manager は見ることが出来る。
             String passcode = (String) session.get("event:" + eventId);
@@ -172,13 +172,13 @@ class EventShowTransaction extends Transaction<Void> {
             }
         }
 
-        relations = EventDAOFacade.getEventRelationsEx(con, event);
+        relations = EventDAOFacade.getEventRelationsEx(con, daos, event);
 
         // ----- 登録している、していないの条件を満たしているかどうかのチェック
-        requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, user, relations);
+        requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, daos, user, relations);
 
         // ----- participants を反映
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, eventId); 
+        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, eventId);
         if (participations == null)
             throw new PartakeException(ServerErrorCode.PARTICIPATIONS_RETRIEVAL_ERROR);
 
@@ -189,17 +189,17 @@ class EventShowTransaction extends Transaction<Void> {
             deadline = event.getBeginDate();
         deadlineOver = deadline.before(new Date());
 
-        comments = EventDAOFacade.getCommentsExByEvent(con, eventId);
-        messages = EventDAOFacade.getUserMessagesByEventId(con, eventId);
+        comments = EventDAOFacade.getCommentsExByEvent(con, daos, eventId);
+        messages = EventDAOFacade.getUserMessagesByEventId(con, daos, eventId);
 
         if (user != null)
-            participationStatus = EnrollmentDAOFacade.getParticipationStatus(con, user.getId(), eventId);
+            participationStatus = EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), eventId);
         else
             participationStatus = ParticipationStatus.NOT_ENROLLED;
-        
-        eventReminder = DBService.getFactory().getEventReminderAccess().find(con, eventId);
+
+        eventReminder = daos.getEventReminderAccess().find(con, eventId);
         if (eventReminder == null)
-            eventReminder = new EventReminder(eventId); 
+            eventReminder = new EventReminder(eventId);
 
         if (event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE))
             restCodePoints = MessageUtil.calcRestCodePoints(user, event);
@@ -209,7 +209,7 @@ class EventShowTransaction extends Transaction<Void> {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     public EventEx getEvent() {
         return event;
     }

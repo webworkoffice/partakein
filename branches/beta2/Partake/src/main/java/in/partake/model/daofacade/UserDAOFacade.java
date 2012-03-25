@@ -1,5 +1,6 @@
 package in.partake.model.daofacade;
 
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
@@ -12,11 +13,11 @@ import in.partake.model.dto.User;
 
 public class UserDAOFacade extends AbstractPartakeDAOFacade {
 
-    public static UserEx getUserEx(PartakeConnection con, String userId) throws DAOException {
-        IUserAccess userAccess = factory.getUserAccess();
-        ITwitterLinkageAccess twitterDAO = factory.getTwitterLinkageAccess();
-        ICalendarLinkageAccess calendarDAO = factory.getCalendarAccess();
-        
+    public static UserEx getUserEx(PartakeConnection con, IPartakeDAOs daos, String userId) throws DAOException {
+        IUserAccess userAccess = daos.getUserAccess();
+        ITwitterLinkageAccess twitterDAO = daos.getTwitterLinkageAccess();
+        ICalendarLinkageAccess calendarDAO = daos.getCalendarAccess();
+
         User user = userAccess.find(con, userId);
         if (user == null) { return null; }
 
@@ -31,9 +32,9 @@ public class UserDAOFacade extends AbstractPartakeDAOFacade {
                 user = newUser;
             }
         }
-        
+
         TwitterLinkage linkage = twitterDAO.find(con, String.valueOf(user.getTwitterId()));
-        return new UserEx(user, linkage); 
+        return new UserEx(user, linkage);
     }
 
 }

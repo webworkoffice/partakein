@@ -2,58 +2,58 @@ package in.partake.controller.action.event;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.model.IPartakeDAOs;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.Event;
-import in.partake.service.DBService;
 
 import org.apache.commons.lang.StringUtils;
 
 
 public class EventPasscodeAction extends AbstractPartakeAction {
-	private static final long serialVersionUID = 1L;
-	
-	private String eventId;
-	
-	public String doExecute() throws DAOException, PartakeException {
+    private static final long serialVersionUID = 1L;
+
+    private String eventId;
+
+    public String doExecute() throws DAOException, PartakeException {
         eventId = getValidEventIdParameter();
 
-	    String passcode = getParameter("passcode");
-	    
-	    if (passcode == null)
-	        return render("events/passcode.jsp");
+        String passcode = getParameter("passcode");
 
-	    Event event = new EventPasscodeTransaction(eventId).execute();
-	    if (event == null)
-	        return renderNotFound();
+        if (passcode == null)
+            return render("events/passcode.jsp");
 
-	    String pass = StringUtils.trim(passcode);
+        Event event = new EventPasscodeTransaction(eventId).execute();
+        if (event == null)
+            return renderNotFound();
 
-	    if (!pass.equals(event.getPasscode())) {
-	        addWarningMessage("passcode が一致しませんでした。");
-	        return render("events/passcode.jsp");
-	    }
+        String pass = StringUtils.trim(passcode);
 
-	    // TODO: Reconsider Session. 
-	    session.put("event:" + eventId, passcode);
-	    return renderRedirect("/events/" + eventId);
-	}
-	
-	public String getEventId() {
-	    return eventId;
-	}
+        if (!pass.equals(event.getPasscode())) {
+            addWarningMessage("passcode が一致しませんでした。");
+            return render("events/passcode.jsp");
+        }
+
+        // TODO: Reconsider Session.
+        session.put("event:" + eventId, passcode);
+        return renderRedirect("/events/" + eventId);
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
 }
 
-class EventPasscodeTransaction extends Transaction<Event> {
+class EventPasscodeTransaction extends DBAccess<Event> {
     private String eventId;
-    
+
     public EventPasscodeTransaction(String eventId) {
         this.eventId = eventId;
     }
-    
+
     @Override
-    protected Event doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        return DBService.getFactory().getEventAccess().find(con, eventId);
+    protected Event doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        return daos.getEventAccess().find(con, eventId);
     }
 }

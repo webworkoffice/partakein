@@ -23,7 +23,6 @@ public class PartakeProperties {
     }
 
     private PartakeProperties() {
-        reset();
     }
 
     /** mode 名を用いて読みなおす。初期化及びユニットテスト用途。 */
@@ -56,7 +55,7 @@ public class PartakeProperties {
             return false;
         return Boolean.parseBoolean(value);
     }
-    
+
     // ----------------------------------------------------------------------
 
     public String getMode() {
@@ -75,33 +74,11 @@ public class PartakeProperties {
         return properties.getProperty("in.partake.bitly.username");
     }
 
-    public boolean usesCassandra() {
-        return getDAOFactoryClassName().equals("in.partake.model.dao.cassandra.CassandraDAOFactory");
-    }
-
-    public String getDAOFactoryClassName() {
-        String str = properties.getProperty("in.partake.database.daofactory");
-        if (str == null) {
-            return "in.partake.model.dao.cassandra.CassandraDAOFactory";
-        } else {
-            return str;
-        }
-    }
-
-    public String getConnectionPoolClassName() {
-        String str = properties.getProperty("in.partake.database.pool");
-        if (str == null) {
-            return "in.partake.model.dao.cassandra.CassandraConnectionPool";
-        } else {
-            return str;
-        }
-    }
-    
-    public String getPartakeServiceFactoryClassName() {
-        String str = properties.getProperty("in.partake.service.factory");
+    public String getPartakeAppFactoryClassName() {
+        String str = properties.getProperty("in.partake.app.factory");
         if (str == null)
-            return "in.partake.service.impl.PartakeServiceImpl";
-        
+            str = "in.partake.app.imple.DefaultPartakeAppFactory";
+
         return str;
     }
 
@@ -111,10 +88,6 @@ public class PartakeProperties {
 
     public String getCassandraHost() {
         return properties.getProperty("in.partake.cassandra.host");
-    }
-
-    public int getCassandraPort() {
-        return Integer.parseInt(properties.getProperty("in.partake.cassandra.port"));
     }
 
     public String getTopPath() {
@@ -163,7 +136,7 @@ public class PartakeProperties {
     }
 
     private Properties readFrom(String resourceName) {
-        Properties properties = new Properties(); 
+        Properties properties = new Properties();
         InputStream inputStream = null;
         try {
             inputStream = getClass().getResourceAsStream(resourceName);

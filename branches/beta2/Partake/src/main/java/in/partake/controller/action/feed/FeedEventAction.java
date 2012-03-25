@@ -1,17 +1,17 @@
 package in.partake.controller.action.feed;
 
 import in.partake.base.PartakeException;
+import in.partake.model.IPartakeDAOs;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventFeedAccess;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.DBService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +56,7 @@ public class FeedEventAction extends AbstractFeedPageAction {
     }
 }
 
-class FeedEventTransaction extends Transaction<InputStream> {
+class FeedEventTransaction extends DBAccess<InputStream> {
     private String feedId;
     private Event event;
     private List<EventActivity> eventActivities;
@@ -66,17 +66,17 @@ class FeedEventTransaction extends Transaction<InputStream> {
     }
 
     @Override
-    protected InputStream doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        IEventFeedAccess feedAccess = DBService.getFactory().getEventFeedAccess();
+    protected InputStream doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        IEventFeedAccess feedAccess = daos.getEventFeedAccess();
         EventFeedLinkage linkage = feedAccess.find(con, feedId);
         if (linkage == null)
             return null;
 
-        event = EventDAOFacade.getEventEx(con, linkage.getEventId());
+        event = EventDAOFacade.getEventEx(con, daos, linkage.getEventId());
         if (event == null)
             return null;
-        
-        eventActivities = DBService.getFactory().getEventActivityAccess().findByEventId(con, event.getId(), 100);
+
+        eventActivities = daos.getEventActivityAccess().findByEventId(con, event.getId(), 100);
         return null;
     }
 

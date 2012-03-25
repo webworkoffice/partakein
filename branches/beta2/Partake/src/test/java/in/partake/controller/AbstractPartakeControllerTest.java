@@ -1,22 +1,19 @@
 package in.partake.controller;
 
+import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.Constants;
-import in.partake.resource.PartakeProperties;
-import in.partake.service.DBService;
-import in.partake.service.PartakeService;
-import in.partake.service.TestDatabaseService;
 import in.partake.session.PartakeSession;
 
 import java.util.HashMap;
@@ -42,20 +39,17 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
     @BeforeClass
     public static void setUpOnce() throws Exception {
-        // TODO: Should share the code with AbstractConnectionTestCaseBase.
-        PartakeProperties.get().reset("unittest");
-        PartakeService.initialize();
-        TestDatabaseService.initialize();
+        PartakeApp.initialize("unittest");
     }
 
-    // Make setUp called before each test. 
+    // Make setUp called before each test.
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        TestDatabaseService.setDefaultFixtures();
+        PartakeApp.getTestService().setDefaultFixtures();
     }
 
-    // Make tearDown called after each test. 
+    // Make tearDown called after each test.
     @After
     public void tearDown() throws Exception {
         super.tearDown();
@@ -77,7 +71,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
             Map<String, Object> session = new HashMap<String, Object>();
             actionContext.setSession(session);
 
-            // Adds Partake session 
+            // Adds Partake session
             session.put(Constants.ATTR_PARTAKE_SESSION, PartakeSession.createInitialPartakeSession());
         }
 
@@ -86,7 +80,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
             actionContext.setParameters(parameters);
         }
 
-        // Request has key named "request". 
+        // Request has key named "request".
         if (actionContext.get("request") == null)
             actionContext.put("request", new HashMap<String, Object>());
 
@@ -98,7 +92,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         assert actionContext.getSession() != null;
 
-        UserEx user = loadUserEx(userId); 
+        UserEx user = loadUserEx(userId);
         if (user == null)
             throw new RuntimeException("No such user.");
         actionContext.getSession().put(Constants.ATTR_USER, user);
@@ -113,21 +107,21 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     }
 
     protected void addParameter(ActionProxy proxy, String key, Object obj) throws DAOException {
-        ActionContext actionContext = proxy.getInvocation().getInvocationContext();        
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         actionContext.getParameters().put(key, obj);
     }
 
     protected void addValidSessionTokenToParameter(ActionProxy proxy) throws DAOException {
-        ActionContext actionContext = proxy.getInvocation().getInvocationContext();        
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         assert actionContext.getSession() != null;
 
         PartakeSession session = (PartakeSession) actionContext.getSession().get(Constants.ATTR_PARTAKE_SESSION);
-        actionContext.getParameters().put("sessionToken", session.getCSRFPrevention().getSessionToken());        
+        actionContext.getParameters().put("sessionToken", session.getCSRFPrevention().getSessionToken());
     }
 
     protected void addInvalidSessionTokenToParameter(ActionProxy proxy) throws DAOException {
-        ActionContext actionContext = proxy.getInvocation().getInvocationContext();        
-        actionContext.getParameters().put("sessionToken", "INVALID-SESSION-TOKEN");        
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();
+        actionContext.getParameters().put("sessionToken", "INVALID-SESSION-TOKEN");
     }
 
     // ----------------------------------------------------------------------
@@ -136,7 +130,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         assert actionContext.getSession() != null;
 
-        Assert.assertTrue(actionContext.getSession() == null || !actionContext.getSession().containsKey(Constants.ATTR_USER));        
+        Assert.assertTrue(actionContext.getSession() == null || !actionContext.getSession().containsKey(Constants.ATTR_USER));
     }
 
     protected void assertRedirectedTo(String url) {
@@ -148,12 +142,12 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
 
         Map<String, Object> session = ServletActionContext.getContext().getSession();
         if (session != null) {
-            PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION); 
+            PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
             Assert.assertFalse(partakeSession.hasServerErrorCode());
-            Assert.assertFalse(partakeSession.hasUserErrorCode());            
+            Assert.assertFalse(partakeSession.hasUserErrorCode());
         }
 
-        Assert.assertEquals(200, response.getStatus());        
+        Assert.assertEquals(200, response.getStatus());
     }
 
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {
@@ -188,57 +182,55 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         // Assert.assertEquals(500, response.getStatus());
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/error"));
     }
-    
+
     // ----------------------------------------------------------------------
     // DB Accessors
-    
+
     protected UserEx loadUserEx(final String userId) throws DAOException, PartakeException {
-        return new Transaction<UserEx>() {
+        return new DBAccess<UserEx>() {
             @Override
-            protected UserEx doExecute(PartakeConnection con) throws DAOException, PartakeException {
-                return UserDAOFacade.getUserEx(con, userId);
+            protected UserEx doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return UserDAOFacade.getUserEx(con, daos, userId);
             }
         }.execute();
     }
-    
-    protected UserPreference loadUserPreference(String userId) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-        PartakeConnection con = DBService.getPool().getConnection();
-        try {
-            return factory.getUserPreferenceAccess().find(con, userId);
-        } finally {
-            con.invalidate();
-        }        
+
+    protected UserPreference loadUserPreference(final String userId) throws DAOException, PartakeException {
+        return new DBAccess<UserPreference>() {
+            @Override
+            protected UserPreference doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getUserPreferenceAccess().find(con, userId);
+            }
+        }.execute();
     }
-    
-    protected List<String> loadOpenIDIdentifiers(String userId) throws DAOException {
-        PartakeDAOFactory factory = DBService.getFactory();
-        PartakeConnection con = DBService.getPool().getConnection();
-        try {
-            return factory.getOpenIDLinkageAccess().findByUserId(con, userId);
-        } finally {
-            con.invalidate();
-        }
+
+    protected List<String> loadOpenIDIdentifiers(final String userId) throws DAOException, PartakeException {
+        return new DBAccess<List<String>>() {
+            @Override
+            protected List<String> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getOpenIDLinkageAccess().findByUserId(con, userId);
+            }
+        }.execute();
     }
-    
-    protected String loadCalendarIdFromUser(String userId) throws DAOException {
-        PartakeConnection con = DBService.getPool().getConnection();
-        try {
-            CalendarLinkage linkage = DBService.getFactory().getCalendarAccess().findByUserId(con, userId);
-            if (linkage == null)
-                return null;
-            return linkage.getId();
-        } finally {
-            con.invalidate();
-        }
+
+    protected String loadCalendarIdFromUser(final String userId) throws DAOException, PartakeException {
+        return new DBAccess<String>() {
+            @Override
+            protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                CalendarLinkage linkage = daos.getCalendarAccess().findByUserId(con, userId);
+                if (linkage == null)
+                    return null;
+                return linkage.getId();
+            }
+        }.execute();
     }
-    
-    protected Enrollment loadEnrollment(String userId, String eventId) throws DAOException {
-        PartakeConnection con = DBService.getPool().getConnection();
-        try {
-            return DBService.getFactory().getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
-        } finally {
-            con.invalidate();
-        }
+
+    protected Enrollment loadEnrollment(final String userId, final String eventId) throws DAOException, PartakeException {
+        return new DBAccess<Enrollment>() {
+            @Override
+            protected Enrollment doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
+            }
+        }.execute();
     }
 }

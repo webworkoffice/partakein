@@ -1,17 +1,17 @@
 package in.partake.controller.action.toppage;
 
+import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.aux.EventFilterCondition;
-import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
-import in.partake.service.DBService;
 import in.partake.service.IEventSearchService;
-import in.partake.service.PartakeService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class ToppageAction extends AbstractPartakeAction {
     }
 }
 
-class ToppageTransaction extends Transaction<Void> {
+class ToppageTransaction extends DBAccess<Void> {
     private static final int NUM_EVENTS_TO_DISPLAY = 5;
 
     private UserEx user;
@@ -63,24 +63,24 @@ class ToppageTransaction extends Transaction<Void> {
     }
 
     @Override
-    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
-        IEventSearchService searchService = PartakeService.get().getEventSearchService();
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        IEventSearchService searchService = PartakeApp.getEventSearchService();
         List<String> eventIds = searchService.getRecent(NUM_EVENTS_TO_DISPLAY);
-        
+
         recentEvents = new ArrayList<Event>();
         for (String eventId : eventIds) {
-            Event event = DBService.getFactory().getEventAccess().find(con, eventId);
+            Event event = daos.getEventAccess().find(con, eventId);
             if (event != null)
                 recentEvents.add(event);
         }
 
         if (user != null) {
-            ownedEvents = DBService.getFactory().getEventAccess().findByOwnerId(con, user.getId(), EventFilterCondition.ALL_EVENTS, 0, 5);
-            
-            enrolledEvents = new ArrayList<Event>(); 
-            List<Enrollment> enrollments = DBService.getFactory().getEnrollmentAccess().findByUserId(con, user.getId(), 0, 5);
+            ownedEvents = daos.getEventAccess().findByOwnerId(con, user.getId(), EventFilterCondition.ALL_EVENTS, 0, 5);
+
+            enrolledEvents = new ArrayList<Event>();
+            List<Enrollment> enrollments = daos.getEnrollmentAccess().findByUserId(con, user.getId(), 0, 5);
             for (Enrollment enrollment : enrollments) {
-                Event event = DBService.getFactory().getEventAccess().find(con, enrollment.getEventId());
+                Event event = daos.getEventAccess().find(con, enrollment.getEventId());
                 if (event != null)
                     enrolledEvents.add(event);
             }

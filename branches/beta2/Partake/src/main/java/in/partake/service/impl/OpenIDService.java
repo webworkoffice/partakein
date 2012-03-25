@@ -14,11 +14,10 @@ import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
 import org.openid4java.message.ParameterList;
 
-//TODO: should be non-public class.
-public class OpenIDService implements IOpenIDService {
-    protected static ConsumerManager consumerManager = null;
-    
-    static {
+class OpenIDService implements IOpenIDService {
+    private ConsumerManager consumerManager;
+
+    public OpenIDService() {
         try {
             consumerManager = new ConsumerManager();
         } catch (ConsumerException e) {
@@ -26,20 +25,20 @@ public class OpenIDService implements IOpenIDService {
         }
     }
 
-    public static DiscoveryInformation discover(String identifier) throws OpenIDException {
+    public DiscoveryInformation discover(String identifier) throws OpenIDException {
         String userSuppliedString = identifier;
         List<?> discoveries = consumerManager.discover(userSuppliedString);
         DiscoveryInformation discovered = consumerManager.associate(discoveries);
 
         return discovered;
     }
-    
-    public static String getURLToAuthenticate(DiscoveryInformation discoveryInformation, String callbackURL) throws OpenIDException {
+
+    public String getURLToAuthenticate(DiscoveryInformation discoveryInformation, String callbackURL) throws OpenIDException {
         AuthRequest authReq = consumerManager.authenticate(discoveryInformation, callbackURL);
         return authReq.getDestinationUrl(true);
     }
-    
-    public static String getIdentifier(String receivingURL, Map<String, Object> params, DiscoveryInformation discoveryInformation) throws OpenIDException {
+
+    public String getIdentifier(String receivingURL, Map<String, Object> params, DiscoveryInformation discoveryInformation) throws OpenIDException {
         VerificationResult verification = consumerManager.verify(receivingURL, new ParameterList(params), discoveryInformation);
 
         Identifier verified = verification.getVerifiedId();
