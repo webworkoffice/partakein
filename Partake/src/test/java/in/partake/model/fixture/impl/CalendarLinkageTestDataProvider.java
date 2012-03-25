@@ -31,5 +31,7 @@ public class CalendarLinkageTestDataProvider extends TestDataProvider<CalendarLi
         dao.truncate(con);
 
         dao.put(con, new CalendarLinkage(DEFAULT_CALENDAR_ID, DEFAULT_USER_ID));
+        dao.put(con, new CalendarLinkage(ENROLLED_USER_CALENDAR_ID, EVENT_ENROLLED_USER_ID));
+
     }
 }

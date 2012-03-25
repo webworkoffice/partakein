@@ -54,7 +54,7 @@ class ShowCalendarTransaction extends DBAccess<Calendar> {
         // CalendarLinkage should have cache.
         CalendarLinkage calendarLinkage = daos.getCalendarAccess().find(con, calendarId);
         if (calendarLinkage == null)
-            return null;
+            throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
 
         User user = daos.getUserAccess().find(con, calendarLinkage.getUserId());
         if (user == null)

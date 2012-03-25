@@ -3,6 +3,7 @@ package in.partake.controller;
 import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.controller.base.AbstractPartakeController;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
@@ -14,6 +15,7 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.Constants;
+import in.partake.resource.ServerErrorCode;
 import in.partake.session.PartakeSession;
 
 import java.util.HashMap;
@@ -21,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.struts2.StrutsTestCase;
+import static org.hamcrest.Matchers.*;
 import org.junit.After;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -86,6 +90,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         return proxy;
     }
 
+    protected PartakeSession getPartakeSession(ActionProxy proxy) {
+        ActionContext actionContext = proxy.getInvocation().getInvocationContext();
+
+        if (actionContext.getSession() == null)
+            return null;
+
+        return (PartakeSession) actionContext.getSession().get(Constants.ATTR_PARTAKE_SESSION);
+    }
+
     /** log in した状態にする */
     protected void loginAs(ActionProxy proxy, String userId) throws DAOException, PartakeException {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
@@ -105,12 +118,12 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         actionContext.getSession().remove(Constants.ATTR_USER);
     }
 
-    protected void addParameter(ActionProxy proxy, String key, Object obj) throws DAOException {
+    protected void addParameter(ActionProxy proxy, String key, Object obj) {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         actionContext.getParameters().put(key, obj);
     }
 
-    protected void addValidSessionTokenToParameter(ActionProxy proxy) throws DAOException {
+    protected void addValidSessionTokenToParameter(ActionProxy proxy) {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         assert actionContext.getSession() != null;
 
@@ -118,7 +131,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
         actionContext.getParameters().put("sessionToken", session.getCSRFPrevention().getSessionToken());
     }
 
-    protected void addInvalidSessionTokenToParameter(ActionProxy proxy) throws DAOException {
+    protected void addInvalidSessionTokenToParameter(ActionProxy proxy) {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
         actionContext.getParameters().put("sessionToken", "INVALID-SESSION-TOKEN");
     }
@@ -172,6 +185,13 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase {
     protected void assertResultError(ActionProxy proxy) throws Exception {
         // Assert.assertEquals(500, response.getStatus());
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/error"));
+    }
+
+    protected void assertResultError(ActionProxy proxy, ServerErrorCode errorCode) throws Exception {
+        assertResultError(proxy);
+
+        AbstractPartakeController controller = (AbstractPartakeController) proxy.getAction();
+        assertThat(controller.getRedirectURL(), is("/error?errorCode=" + errorCode.getErrorCode()));
     }
 
     // ----------------------------------------------------------------------

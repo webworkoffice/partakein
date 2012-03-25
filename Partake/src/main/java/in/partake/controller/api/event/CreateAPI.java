@@ -30,12 +30,7 @@ public class CreateAPI extends AbstractEventEditAPI {
 
         Event embryo = new Event();
         embryo.setOwnerId(user.getId());
-
-        Boolean draft = getBooleanParameter("draft");
-        if (draft == null || draft)
-            embryo.setPreview(true);
-        else
-            embryo.setPreview(false);
+        embryo.setPreview(optBooleanParameter("draft", true));
         embryo.setCreatedAt(TimeUtil.getCurrentDate());
 
         List<EventRelation> relations = new ArrayList<EventRelation>();
@@ -56,7 +51,6 @@ public class CreateAPI extends AbstractEventEditAPI {
 
         JSONObject obj = new JSONObject();
         obj.put("eventId", eventId);
-
         return renderOK(obj);
     }
 }

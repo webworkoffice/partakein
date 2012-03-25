@@ -50,5 +50,10 @@ public class EnrollmentTestDataProvider extends TestDataProvider<Enrollment> {
         dao.put(con, new Enrollment(
                 ATTENDANCE_UNKNOWN_USER_ID, DEFAULT_EVENT_ID, "comment", ParticipationStatus.ENROLLED, false,
                 ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
+
+        // Enrollment for private event
+        dao.put(con, new Enrollment(
+                EVENT_ENROLLED_USER_ID, PRIVATE_EVENT_ID, "comment", ParticipationStatus.ENROLLED, false,
+                ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()));
     }
 }

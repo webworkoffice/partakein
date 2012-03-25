@@ -28,7 +28,6 @@ import twitter4j.auth.AccessToken;
 public class SendEnvelopeTask extends Transaction<Void> {
     private static final Logger logger = Logger.getLogger(SendEnvelopeTask.class);
 
-
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         DataIterator<Envelope> it = daos.getEnvelopeAccess().getIterator(con);

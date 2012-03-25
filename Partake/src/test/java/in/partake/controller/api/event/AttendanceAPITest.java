@@ -14,91 +14,91 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testShouldChangeToPresence() throws Exception {
-        // 
+        //
         {
             Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
-            Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus()); 
+            Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }
-        
+
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_ABSENT_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultOK(proxy);
-        
+
         // Check status is changed.
         {
             Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
     }
-    
+
     @Test
     public void testShouldChangeToAbsence() throws Exception {
-        // 
+        //
         {
             Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
-            Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus()); 
+            Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
         }
-        
+
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "absent");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultOK(proxy);
-        
+
         // Check status is changed.
         {
             Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
-        }        
+        }
     }
-    
+
     @Test
     public void testShouldChangeToUnknown() throws Exception {
-        // 
+        //
         {
             Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
-            Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus()); 
+            Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
-        
+
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "unknown");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultOK(proxy);
-        
+
         // Check status is changed.
         {
             Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
         }
     }
-    
+
     @Test
     public void testLoginRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultLoginRequired(proxy);
     }
@@ -107,12 +107,12 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testUserIdRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
-        
+
         // addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -121,12 +121,12 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testEventIdRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         // addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -135,12 +135,12 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testStatusRequired() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         // addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -149,12 +149,12 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testInvalidOwner() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultForbidden(proxy);
     }
@@ -163,12 +163,12 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testInvalidArgument() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "hogehoge");
         addValidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
     }
@@ -178,12 +178,12 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testInvalidSessionToken() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
-        
+
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addInvalidSessionTokenToParameter(proxy);
-        
+
         proxy.execute();
         assertResultInvalid(proxy);
     }
