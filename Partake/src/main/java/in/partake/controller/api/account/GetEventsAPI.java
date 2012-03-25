@@ -119,14 +119,14 @@ class GetEventsTransaction extends Transaction<Void> {
         
         
         if ("owner".equalsIgnoreCase(queryType)) {
-            this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), IEventAccess.EventFindCriteria.PUBLISHED_EVENT_ONLY);
-            this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), IEventAccess.EventFindCriteria.PUBLISHED_EVENT_ONLY, offset, limit);
+            this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY);
+            this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY, offset, limit);
         } else if ("draft".equalsIgnoreCase(queryType)) {
-            this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), IEventAccess.EventFindCriteria.DRAFT_EVENT_ONLY);
-            this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), IEventAccess.EventFindCriteria.DRAFT_EVENT_ONLY, offset, limit);
+            this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), IEventAccess.EventFilterCondition.DRAFT_EVENT_ONLY);
+            this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), IEventAccess.EventFilterCondition.DRAFT_EVENT_ONLY, offset, limit);
         } else if ("editor".equalsIgnoreCase(queryType)) {
-            this.numTotalEvents = eventDao.countEventsByScreenName(con, user.getScreenName(), IEventAccess.EventFindCriteria.PUBLISHED_EVENT_ONLY);
-            this.eventsRetrieved = eventDao.findByScreenName(con, user.getScreenName(), IEventAccess.EventFindCriteria.PUBLISHED_EVENT_ONLY, offset, limit);
+            this.numTotalEvents = eventDao.countEventsByScreenName(con, user.getScreenName(), IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY);
+            this.eventsRetrieved = eventDao.findByScreenName(con, user.getScreenName(), IEventAccess.EventFilterCondition.PUBLISHED_EVENT_ONLY, offset, limit);
         } else {
             throw new PartakeException(UserErrorCode.INVALID_ARGUMENT);
         }

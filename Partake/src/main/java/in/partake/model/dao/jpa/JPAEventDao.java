@@ -197,22 +197,27 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
     }
     
     @Override
-    public int countEventsByScreenName(PartakeConnection con, String screenName, EventFindCriteria criteria) throws DAOException {
+    public int countEventsByScreenName(PartakeConnection con, String screenName, EventFilterCondition conditon) throws DAOException {
         throw new RuntimeException("Not implemented yet");
     }
     
     @Override
-    public List<Event> findByOwnerId(PartakeConnection con, String userId, EventFindCriteria criteria, int offset, int limit) throws DAOException {
+    public List<Event> findByOwnerId(PartakeConnection con, String userId, EventFilterCondition conditon, int offset, int limit) throws DAOException {
         throw new RuntimeException("Not implemented yet");
     }
     
     @Override
-    public List<Event> findByScreenName(PartakeConnection con, String screenName, EventFindCriteria criteria, int offset, int limit) throws DAOException {
+    public List<Event> findByScreenName(PartakeConnection con, String screenName, EventFilterCondition conditon, int offset, int limit) throws DAOException {
         throw new RuntimeException("Not implemented yet");
     }
     
     @Override
-    public int countEventsByOwnerId(PartakeConnection con, String userId, EventFindCriteria criteria) throws DAOException {
+    public int countEventsByOwnerId(PartakeConnection con, String userId, EventFilterCondition conditon) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
+    
+    @Override
+    public int count(PartakeConnection con, EventFilterCondition cond) {
         throw new RuntimeException("Not implemented yet");
     }
 }

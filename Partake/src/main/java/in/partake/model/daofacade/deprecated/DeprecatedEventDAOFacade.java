@@ -1070,42 +1070,4 @@ public final class DeprecatedEventDAOFacade extends DeprecatedPartakeDAOFacade {
 
         logger.info("bot will tweet: " + message);
     }
-
-    public EventCount countEvents() throws DAOException {
-        PartakeDAOFactory factory = getFactory();
-        PartakeConnection con = getPool().getConnection();
-        EventCount count = new EventCount();
-
-        try {
-            con.beginTransaction();
-            // TODO use MapReduce for speed-up
-            DataIterator<Event> iter = factory.getEventAccess().getIterator(con);
-            try {
-                while (iter.hasNext()) {
-                    Event event = iter.next();
-                    if (event == null) continue;
-                    count.numEvent++;
-                    if (event.isPrivate()) {
-                        count.numPrivateEvent++;
-                    } else {
-                    	count.numPublicEvent++;
-                    }
-                }
-            } finally {
-                iter.close();
-            }
-            con.commit();
-        } finally {
-            con.invalidate();
-        }
-
-        return count;
-    }
-
-    public static final class EventCount {
-        public int numEvent;
-        public int numPrivateEvent;
-        public int numPublicEvent;
-    }
-
 }
