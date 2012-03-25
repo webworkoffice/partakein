@@ -1,11 +1,9 @@
 package in.partake.controller.action;
 
-import in.partake.base.Util;
 import in.partake.controller.base.AbstractPartakeController;
 import in.partake.resource.MessageCode;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.view.util.Helper;
 
 import java.io.InputStream;
 
@@ -89,7 +87,9 @@ public abstract class AbstractPartakeAction extends AbstractPartakeController {
     protected String renderRedirect(String url, MessageCode messageCode) {
         ServletActionContext.getResponse().setStatus(402);
         setRedirectURL(url);
-        getPartakeSession().setMessageCode(messageCode);
+        if (messageCode != null)
+            ensurePartakeSession().setMessageCode(messageCode);
+
         return REDIRECT;
     }
 

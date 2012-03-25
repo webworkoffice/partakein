@@ -3,7 +3,6 @@ package in.partake.controller.api.event;
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.controller.base.permission.PrivateEventShowPermission;
-import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.EventEx;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;

@@ -7,6 +7,8 @@ import in.partake.service.IEventSearchService;
 import in.partake.service.IOpenIDService;
 import in.partake.service.ITestService;
 import in.partake.service.ITwitterService;
+import in.partake.view.IViewInitializer;
+import in.partake.view.impl.ViewInitializerImpl;
 
 public class DefaultPartakeAppFactory implements PartakeAppFactory {
 
@@ -38,5 +40,10 @@ public class DefaultPartakeAppFactory implements PartakeAppFactory {
     @Override
     public IOpenIDService createOpenIDService() {
         return new OpenIDService();
+    }
+
+    @Override
+    public IViewInitializer createViewInitializer() {
+        return new ViewInitializerImpl();
     }
 }

@@ -314,8 +314,22 @@ public abstract class AbstractPartakeController implements SessionAware, Request
     }
 
     public PartakeSession getPartakeSession() {
-        if (session == null) { return null; }
+        if (session == null)
+            return null;
         return (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
+    }
+
+    public PartakeSession ensurePartakeSession() {
+        if (session == null)
+            return null;
+
+        PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
+        if (partakeSession == null) {
+            partakeSession = PartakeSession.createInitialPartakeSession();
+            session.put(Constants.ATTR_PARTAKE_SESSION, partakeSession);
+        }
+
+        return partakeSession;
     }
 
     // ----------------------------------------------------------------------

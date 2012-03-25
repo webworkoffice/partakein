@@ -5,7 +5,7 @@ import in.partake.base.MessageUtil.TooLongMessageException;
 import in.partake.base.PartakeException;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
-import in.partake.controller.base.permission.UserPermission;
+import in.partake.controller.base.permission.EventSendMessagePermission;
 import in.partake.model.EventEx;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
@@ -74,7 +74,7 @@ class SendMessageTransaction extends Transaction<Void> {
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
 
-        if (!event.hasPermission(senderUser, UserPermission.EVENT_SEND_MESSAGE))
+        if (!EventSendMessagePermission.check(event, senderUser))
             throw new PartakeException(UserErrorCode.INVALID_PROHIBITED);
 
         // ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。

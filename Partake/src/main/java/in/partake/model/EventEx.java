@@ -1,8 +1,6 @@
 package in.partake.model;
 
-import in.partake.controller.base.permission.UserPermission;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -111,39 +109,5 @@ public class EventEx extends Event {
         }
 
         return new ParticipationList(enrolledParticipations, spareParticipations, cancelledParticipations, reservedEnrolled, reservedSpare);
-    }
-
-    public boolean hasPermission(UserEx user, UserPermission permission) {
-        if (user == null || permission == null) { return false; }
-
-        // TODO: Hmm... UserPermission should have a check method. This should be polymorphic.
-        switch (permission) {
-        case EVENT_EDIT:
-            return isOwner(user) || isManager(user);
-        case EVENT_REMOVE:
-            return isOwner(user);
-        case EVENT_PARTICIPATION_LIST:
-            return isOwner(user) || isManager(user);
-        case EVENT_PRIVATE_EVENT:
-            return isOwner(user) || isManager(user);
-        case EVENT_SEND_MESSAGE:
-            return isOwner(user) || isManager(user);
-        case EVENT_EDIT_PARTICIPANTS:
-            return isOwner(user) || isManager(user);
-        }
-
-        throw new RuntimeException("Unknown permission is being required... This must be a bug.");
-    }
-
-    /** return true if [user] is the owner of the event. */
-    private boolean isOwner(User user) {
-        if (user == null || user.getId() == null) { return false; }
-        if (getOwnerId() == null) { return false; }
-        return getOwnerId().equals(user.getId());
-    }
-
-    private boolean isManager(UserEx user) {
-        if (user == null || user.getTwitterLinkage() == null) { return false; }
-        return isManager(user.getTwitterLinkage().getScreenName());
     }
 }

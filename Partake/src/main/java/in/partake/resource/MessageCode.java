@@ -27,7 +27,12 @@ public enum MessageCode {
         if (id == null)
             return null;
 
-        MessageCode errorCode = MessageCode.valueOf(id);
+        MessageCode errorCode = null;
+        try {
+            errorCode = MessageCode.valueOf(id);
+        } catch (IllegalArgumentException ignore) {
+        }
+
         if (errorCode != null)
             return errorCode;
 

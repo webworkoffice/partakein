@@ -43,7 +43,7 @@ public class Event extends PartakeModel<Event> {
     private Date endDate;
     @Column
     private int capacity;       // how many people can attend?
-    @Column(length = 10000) 
+    @Column(length = 10000)
     private String url;         // URL
     @Column
     private String place;       // event place
@@ -72,7 +72,7 @@ public class Event extends PartakeModel<Event> {
     // TODO: isPreview should be renamed to 'draft'
     @Column
     private boolean isPreview;    // true if the event is still in preview.
-    
+
     // TODO: isRemoved should be renamed to 'removed'
     @Column
     private boolean isRemoved;
@@ -84,7 +84,7 @@ public class Event extends PartakeModel<Event> {
     @Column
     private int revision;       // used for RSS.
 
-    // begin date 順に並べる comparator 
+    // begin date 順に並べる comparator
     // TODO: Should be purged! This should be done in DB.
     public static Comparator<Event> getComparatorBeginDateAsc() {
         return new Comparator<Event>() {
@@ -96,7 +96,7 @@ public class Event extends PartakeModel<Event> {
                 if (!lhs.getBeginDate().equals(rhs.getBeginDate())) {
                     if (lhs.getBeginDate().before(rhs.getBeginDate())) { return -1; }
                     else { return 1; }
-                } else { 
+                } else {
                     return lhs.getId().compareTo(rhs.getId());
                 }
             }
@@ -163,7 +163,7 @@ public class Event extends PartakeModel<Event> {
     }
 
     public Event(JSONObject json) {
-        this.id = json.getString("id"); 
+        this.id = json.getString("id");
         this.shortId = json.optString("shortId", null);
         this.title = json.getString("title");
         this.summary = json.getString("summary");
@@ -230,7 +230,7 @@ public class Event extends PartakeModel<Event> {
     }
 
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
-            String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames, 
+            String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             String foreImageId, String backImageId,
             boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, Date createdAt, Date modifiedAt, int revision) {
         this.id = id;
@@ -273,7 +273,7 @@ public class Event extends PartakeModel<Event> {
         return new Event(this);
     }
 
-    /** JSON string for external clients. 
+    /** JSON string for external clients.
      * TODO: All Date should be long instead of Formatted date. However, maybe some clients uses this values... What should we do?
      * Maybe we should take a version number in request query. The version 2 format should obey the rule.
      */
@@ -285,15 +285,22 @@ public class Event extends PartakeModel<Event> {
         obj.put("summary", summary);
         obj.put("category", category);
         // TODO Localeは外部ファイルなどで設定可能にする
+        // TODO: We don't want to use locale. Instead, we just return date as a long value.
         DateFormat format = new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
         if (deadline != null) {
+            // TODO: deadline should be deprecated.
             obj.put("deadline", format.format(deadline));
+            obj.put("deadlineTime", deadline.getTime());
         }
         if (beginDate != null) {
+            // TODO: beginDate should be deprecated.
             obj.put("beginDate", format.format(beginDate));
+            obj.put("beginDateTime", beginDate.getTime());
         }
         if (endDate != null) {
+            // TODO: endDate should be deprecated.
             obj.put("endDate", format.format(endDate));
+            obj.put("endDateTime", endDate.getTime());
         }
         obj.put("capacity", capacity);
         obj.put("url", url);
@@ -359,7 +366,7 @@ public class Event extends PartakeModel<Event> {
 
 
     // ----------------------------------------------------------------------
-    // equals method 
+    // equals method
 
     @Override
     public boolean equals(Object obj) {
@@ -399,7 +406,7 @@ public class Event extends PartakeModel<Event> {
 
     @Override
     public int hashCode() {
-        int code = 0;        
+        int code = 0;
 
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(shortId);
@@ -431,7 +438,7 @@ public class Event extends PartakeModel<Event> {
     }
 
     // ----------------------------------------------------------------------
-    // 
+    //
 
     public String getId() {
         return this.id;
@@ -642,7 +649,7 @@ public class Event extends PartakeModel<Event> {
 
     public void setRemoved(boolean isRemoved) {
         checkToUpdateStatus();
-        this.isRemoved = isRemoved;        
+        this.isRemoved = isRemoved;
     }
 
     public void setCreatedAt(Date createdAt) {
@@ -699,7 +706,7 @@ public class Event extends PartakeModel<Event> {
      * true if all reservations are cancelled.
      * @return
      */
-    public boolean isReservationTimeOver() {        
+    public boolean isReservationTimeOver() {
         Date now = new Date();
         Date deadline = getCalculatedReservationDeadline();
 
