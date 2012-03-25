@@ -3,6 +3,8 @@
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.controller.action.mypage.MypageAction"%>
 <%@page import="in.partake.model.UserEx"%>
+<%@page import="static in.partake.view.util.Helper.h" %>
+
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
 
@@ -30,13 +32,13 @@
 	<p>イベントがありません。</p>
 </div>
 
-<div id="<%= ident %>-pagenation" class="pagination pagination-centered"></div>
+<div id="<%= ident %>-pagination" class="pagination pagination-centered"></div>
 
 
 <script>
 (function() {
-	var queryType = '<%= queryType %>';
-	var ident = '<%= ident %>';
+	var queryType = '<%= h(queryType) %>';
+	var ident = '<%= h(ident) %>';
 	
 	function createTable(nthPage, eventStatuses) {
 		if (!eventStatuses || !eventStatuses.length) {
@@ -91,105 +93,18 @@
 		}
 	}
 	
-	// TODO: Replace with partakeUI.pagination.
-	function addPagenation(text, nthPage, ul, active) {
-		if (nthPage < 0 || !nthPage) {
-			if (active)
-				$('<li class="active"><a>' + text + '</a></li>').appendTo(ul);
-			else
-				$('<li class="disabled"><a>' + text + '</a></li>').appendTo(ul);
-			return;
-		}
-		
-		var li = $('<li></li>');
-		var a = $("<a>" + text + "</a>");
-		a.click(function() { update(nthPage); });
-		a.appendTo(li);
-		li.appendTo(ul);
-	}
-	
-	function createPagenation(nthPage, numEvents) {
-		var maxPageNum = Math.ceil(numEvents / 10); 
-		if (maxPageNum == 0)
-			maxPageNum = 1;
-		
-		var pagenation = $('#' + ident + '-pagenation');
-		pagenation.empty();
-		
-		var ul = $('<ul></ul>');
-		
-		// 常に 11 個にしたい
-		var beginPage = -1, endPage = -1;
-		if (maxPageNum <= 11) {
-			beginPage = 1;
-			endPage = maxPageNum;
-		} else {
-			beginPage = nthPage - 3;
-			endPage = nthPage + 3;
-			if (beginPage < 1) {
-				endPage = endPage + (1 - beginPage);
-				beginPage = 1;
-			}
-			if (maxPageNum < endPage) {
-				beginPage = beginPage - (endPage - maxPageNum);
-				endPage = maxPageNum;
-			}
-			
-			if (beginPage == 1)
-				endPage += 2;
-			else if (beginPage == 2) {
-				beginPage = 1;
-				endPage += 1;
-			}
-			
-			if (endPage == maxPageNum)
-				beginPage -= 2;
-			else if (endPage + 1 == maxPageNum) {
-				beginPage -= 1;
-				endPage = maxPageNum;
-			}
-		}
-		
-		if (nthPage == 1)
-			addPagenation('«', 0, ul);
-		else
-			addPagenation('«', nthPage - 1, ul);
-
-		if (beginPage != 1) {
-			addPagenation(1, 1, ul);
-			addPagenation('…', 0, ul);
-		}
-	
-		for (var i = beginPage; i <= endPage; ++i)
-			addPagenation(i, i == nthPage ? 0 : i, ul, i == nthPage);
-
-		if (endPage != maxPageNum) {
-			addPagenation('…', 0, ul);
-			addPagenation(maxPageNum, maxPageNum, ul);
-		}
-		
-		if (nthPage == maxPageNum)
-			addPagenation('»', 0, ul);
-		else
-			addPagenation('»', nthPage + 1, ul);
-		
-		ul.appendTo(pagenation);
-	}
-	
 	function update(nthPage) {
 		partake.account.getEvents(queryType, (nthPage - 1) * 10, 10)
 		.done(function (json) {
 			createTable(nthPage, json.eventStatuses);
-			createPagenation(nthPage, json.numTotalEvents);
+            var lst = partakeUI.pagination($('#' + ident + '-pagination'), nthPage, json.numTotalEvents, 10);
+            for (var i = 0; i < lst.length; ++i) {
+                lst[i].anchor.click((function(i) {
+                    return function() { update(lst[i].pageNum); };
+                })(i));
+            }
 		})
-		.fail(function (xhr) {
-			try {
-				var json = $.parseJSON(xhr.responseText);
-				alert(json.reason);
-			} catch (e) {
-				alert('レスポンスが JSON 形式ではありません。');
-			}
-		});
+		.fail(partake.defaultFailHandler);
 	}
 	
 	update(1);
