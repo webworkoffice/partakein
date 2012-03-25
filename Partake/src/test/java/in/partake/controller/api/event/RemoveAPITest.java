@@ -48,4 +48,15 @@ public class RemoveAPITest extends APIControllerTest {
         proxy.execute();
         assertResultLoginRequired(proxy);
     }
+
+    @Test
+    public void testToRemoveWithalidSessionToken() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/remove");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addParameter(proxy, "eventId", INVALID_EVENT_ID);
+        addValidSessionTokenToParameter(proxy);
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_EVENT_ID);
+    }
 }

@@ -27,30 +27,29 @@ public class EnrollAPI extends AbstractPartakeAPI {
 
     @Override
     protected String doExecute() throws PartakeException, DAOException {
-        String status = getParameter("status");
-        if ("enroll".equalsIgnoreCase(status))
-            return changeParticipationStatus(ParticipationStatus.ENROLLED);
-        else if ("reserve".equalsIgnoreCase(status))
-            return changeParticipationStatus(ParticipationStatus.RESERVED);
-        else if ("cancel".equals(status))
-            return changeParticipationStatus(ParticipationStatus.CANCELLED);
-        else
-            return renderInvalid(UserErrorCode.INVALID_ENROLL_STATUS);
-    }
-
-    private String changeParticipationStatus(ParticipationStatus status) throws PartakeException, DAOException {
         UserEx user = ensureLogin();
         String eventId = getValidEventIdParameter();
+        String status = getParameter("status");
+        String comment = getParameter("comment");
+        ensureValidSessionToken();
 
         // If the comment does not exist, we use empty string instead.
-        String comment = getParameter("comment");
         if (comment == null)
             comment = "";
         if (comment.length() > 1024)
             return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
 
-        new EnrollTransaction(user, eventId, comment).execute();
+        ParticipationStatus participationStatus;
+        if ("enroll".equalsIgnoreCase(status))
+            participationStatus = ParticipationStatus.ENROLLED;
+        else if ("reserve".equalsIgnoreCase(status))
+            participationStatus = ParticipationStatus.RESERVED;
+        else if ("cancel".equals(status))
+            participationStatus = ParticipationStatus.CANCELLED;
+        else
+            return renderInvalid(UserErrorCode.INVALID_ENROLL_STATUS);
 
+        new EnrollTransaction(user, eventId, participationStatus, comment).execute();
         return renderOK();
     }
 }
@@ -58,11 +57,13 @@ public class EnrollAPI extends AbstractPartakeAPI {
 class EnrollTransaction extends Transaction<Void> {
     private UserEx user;
     private String eventId;
+    private ParticipationStatus status;
     private String comment;
 
-    public EnrollTransaction(UserEx user, String eventId, String comment) {
+    public EnrollTransaction(UserEx user, String eventId, ParticipationStatus status, String comment) {
         this.user = user;
         this.eventId = eventId;
+        this.status = status;
         this.comment = comment;
     }
 
@@ -87,8 +88,8 @@ class EnrollTransaction extends Transaction<Void> {
                 throw new PartakeException(UserErrorCode.INVALID_ENROLL_REQUIRED);
         }
 
-        EnrollmentDAOFacade.enrollImpl(con, daos, user, event, currentStatus, comment, false, event.isReservationTimeOver());
-        tweetEnrollment(con, daos, user, event, currentStatus);
+        EnrollmentDAOFacade.enrollImpl(con, daos, user, event, status, comment, false, event.isReservationTimeOver());
+        tweetEnrollment(con, daos, user, event, status);
         return null;
     }
 
