@@ -1,3 +1,4 @@
+<%@page import="in.partake.controller.action.event.ShowParticipantsAction"%>
 <%@page import="in.partake.base.Util"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.auxiliary.AttendanceStatus"%>
@@ -18,8 +19,10 @@
 <!DOCTYPE html>
 
 <%
-    EventEx event = (EventEx) request.getAttribute(Constants.ATTR_EVENT);
-    ParticipationList participationList = (ParticipationList) request.getAttribute(Constants.ATTR_PARTICIPATIONLIST);
+	ShowParticipantsAction action = (ShowParticipantsAction) request.getAttribute(Constants.ATTR_ACTION);
+	
+	EventEx event = action.getEvent();
+	ParticipationList participationList = action.getParticipationList();
     
     List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
     List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
@@ -40,33 +43,17 @@
         
 		partake.event.removeAttendant(userId, eventId)
 		.done(function (json) {
-			// TODO: Do something here.
 			location.reload();
 		})
-		.fail(function (xhr) {
-			try {
-				var json = $.parseJSON(xhr.responseText);
-				alert(json.reason);
-			} catch (e) {
-				alert('レスポンスが JSON 形式ではありません。');
-			}
-		});
+        .fail(partake.defaultFailHandler);		
     }
 
     function makeAttendantVIP(userId, eventId, vip) {
     	partake.event.makeAttendantVIP(userId, eventId, vip)
     	.done(function (json) {
-    		// TODO: Do something here!
     		location.reload();
     	})
-    	.fail(function (xhr) {
-			try {
-				var json = $.parseJSON(xhr.responseText);
-				alert(json.reason);
-			} catch (e) {
-				alert('レスポンスが JSON 形式ではありません。');
-			}    		
-    	});
+    	.fail(partake.defaultFailHandler);
     }    
 
     function changeAttendance(userId, eventId, status) {

@@ -1,6 +1,7 @@
 package in.partake.controller.base.permission;
 
 // TODO: Move these.
+@Deprecated
 public enum UserPermission {
     /** can edit the event */
     EVENT_EDIT,

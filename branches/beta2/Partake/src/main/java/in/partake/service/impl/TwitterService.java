@@ -11,9 +11,9 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 //TODO: should be non-public class.
-public class TwitterService implements ITwitterService {
+class TwitterService implements ITwitterService {
 
-    public static TwitterLoginInformation createLoginInformation(String redirectURL) throws TwitterException {
+    public TwitterLoginInformation createLoginInformation(String redirectURL) throws TwitterException {
         Twitter twitter = new TwitterFactory().getInstance();
         String callbackURL = PartakeProperties.get().getTopPath() + "/auth/verifyForTwitter";
         RequestToken requestToken = twitter.getOAuthRequestToken(callbackURL);
@@ -21,7 +21,7 @@ public class TwitterService implements ITwitterService {
         return new TwitterLoginInformation(twitter, requestToken, redirectURL);
     }
     
-    public static TwitterLinkage createTwitterLinkageFromLoginInformation(TwitterLoginInformation information, String verifier) throws TwitterException {
+    public TwitterLinkage createTwitterLinkageFromLoginInformation(TwitterLoginInformation information, String verifier) throws TwitterException {
         Twitter twitter = information.getTwitter();
         RequestToken requestToken = information.getRequestToken();         
         AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);

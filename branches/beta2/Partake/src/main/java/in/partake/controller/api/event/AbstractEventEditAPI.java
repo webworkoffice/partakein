@@ -4,11 +4,8 @@ import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
-import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.ImageData;
 import in.partake.model.dto.auxiliary.EventCategory;
 
 import java.net.MalformedURLException;
@@ -26,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
 public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
-    protected void updateEventFromParameter(UserEx user, Event event, JSONObject invalidParameters) throws DAOException {        
+    protected void updateEventFromParameter(UserEx user, Event event, JSONObject invalidParameters) {        
         // Title
         String title = getParameter("title");
         if (StringUtils.isBlank(title) || title.length() > 100)
@@ -64,35 +61,37 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
         // EndDate
         {
             Date endDate = getDateParameter("endDate");
-            Calendar endCalendar = TimeUtil.calendar(endDate);
             if (endDate == null)
                 event.setEndDate(null);
-            else if (endCalendar.get(Calendar.YEAR) < 2000 || 2100 < endCalendar.get(Calendar.YEAR))
-                invalidParameters.put("endDate", "終了日時の範囲が不正です。");
-            else if (beginDate != null && endDate.before(beginDate))
-                invalidParameters.put("endDate", "終了日時が開始日時より前になっています。");
-            else
-                event.setEndDate(endDate);
+            else {
+                Calendar endCalendar = TimeUtil.calendar(endDate);
+                if (endCalendar.get(Calendar.YEAR) < 2000 || 2100 < endCalendar.get(Calendar.YEAR))
+                    invalidParameters.put("endDate", "終了日時の範囲が不正です。");
+                else if (beginDate != null && endDate.before(beginDate))
+                    invalidParameters.put("endDate", "終了日時が開始日時より前になっています。");
+                else
+                    event.setEndDate(endDate);
+            }
         }
         
         // Deadline
         {
             Date deadline = getDateParameter("deadline");
-            Calendar deadlineCalendar = TimeUtil.calendar(deadline);
             if (deadline == null)                
                 event.setDeadline(null);
-            else if (deadlineCalendar.get(Calendar.YEAR) < 2000 || 2100 < deadlineCalendar.get(Calendar.YEAR))
-                invalidParameters.put("deadline", "締切日時が範囲外の値になっています。");
-            else
-                event.setDeadline(deadline);
+            else {
+                Calendar deadlineCalendar = TimeUtil.calendar(deadline);
+                if (deadlineCalendar.get(Calendar.YEAR) < 2000 || 2100 < deadlineCalendar.get(Calendar.YEAR))
+                    invalidParameters.put("deadline", "締切日時が範囲外の値になっています。");
+                else
+                    event.setDeadline(deadline);
+            }
         }
         
         // Capacity
-        Integer capacity = getIntegerParameter("capacity");
-        if (capacity != null && 0 <= capacity)
+        int capacity = optIntegerParameter("capacity", 0);
+        if (0 <= capacity)
             event.setCapacity(capacity);
-        else if (capacity == null)
-            event.setCapacity(0);
         else
             invalidParameters.put("capacity", "定員が範囲外の値になっています。");
 
@@ -135,8 +134,8 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
 
         {
             String description = getParameter("description");
-            if (description != null && 100000 < description.length())
-                invalidParameters.put("description", "説明は 100000 文字以下で入力してください。");
+            if (description != null && 1000000 < description.length())
+                invalidParameters.put("description", "説明は 1000000 文字以下で入力してください。");
             else
                 event.setDescription(description);
         }
@@ -185,18 +184,6 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                 event.setForeImageId(null);
             } else if (!Util.isUUID(foreImageId)) {
                 invalidParameters.put("foreImageId", "画像IDが不正です。");
-            } else {
-                // Checks foreImageId is one of your images.
-                // TODO: We can do this in light-weight way. 
-                ImageData data = DeprecatedEventDAOFacade.get().getImageData(foreImageId);
-                if (data == null)
-                    invalidParameters.put("foreImageId", "画像IDが不正です。");
-                else if (StringUtils.equals(foreImageId, event.getForeImageId()))
-                    event.setForeImageId(foreImageId);
-                else if (!StringUtils.equals(user.getId(), data.getUserId()))
-                    invalidParameters.put("foreImageId", "画像IDが不正です。");
-                else
-                    event.setForeImageId(foreImageId);
             }
         }
         
@@ -206,22 +193,11 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                 event.setBackImageId(null);
             } else if (!Util.isUUID(backImageId)) {
                 invalidParameters.put("backImageId", "画像IDが不正です。");
-            } else {
-                // TODO: We can do this in light-weight way. 
-                ImageData data = DeprecatedEventDAOFacade.get().getImageData(backImageId);
-                if (data == null)
-                    invalidParameters.put("backImageId", "画像IDが不正です。");
-                else if (StringUtils.equals(backImageId, event.getBackImageId()))
-                    event.setBackImageId(backImageId);
-                else if (!StringUtils.equals(user.getId(), data.getUserId()))
-                    invalidParameters.put("backImageId", "画像IDが不正です。");
-                else
-                    event.setBackImageId(backImageId);
             }
         }
     }
     
-    protected void updateEventRelationFromParameter(UserEx user, List<EventRelation> relations, JSONObject invalidParameters) throws DAOException {
+    protected void updateEventRelationFromParameter(UserEx user, List<EventRelation> relations, JSONObject invalidParameters) {
         String[] relatedEventIDs = getParameters("relatedEventID[]");
         if (relatedEventIDs == null)
             return;

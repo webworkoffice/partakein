@@ -10,7 +10,7 @@ import org.junit.Before;
 public class URLShortenerAccessTest extends AbstractDaoTestCaseBase<IURLShortenerAccess, ShortenedURLData, ShortenedURLDataPK> {
     @Before
     public void setup() throws DAOException {
-        super.setup(getFactory().getURLShortenerAccess());
+        super.setup(factory.getURLShortenerAccess());
     }
     
     @Override

@@ -1,5 +1,7 @@
 package in.partake.model.dao;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dto.PartakeModel;
@@ -12,9 +14,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 /**
  * Dao のテストケースのベース。
  * 
@@ -23,34 +22,21 @@ import static org.hamcrest.Matchers.*;
  */
 public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T extends PartakeModel<T>, PK> extends AbstractConnectionTestCaseBase {
     protected DAO dao;
-    protected PartakeConnectionPool pool;
-    protected PartakeDAOFactory factory;
-    
-    @Deprecated
-    protected PartakeConnectionPool getPool() {
-        return pool;
-    }
-    
-    @Deprecated
-    protected PartakeDAOFactory getFactory() {
-        return factory;
-    }
-    
+
+
     // setup() should be implemented in each test case.
     @Before
     protected abstract void setup() throws DAOException;
-    
+
     protected void setup(DAO dao) throws DAOException {
         // remove the current data
         TimeUtil.resetCurrentDate();
 
-        this.pool = DBService.getPool();
-        this.factory = DBService.getFactory();        
         this.dao = dao;
-        
+
         if (dao == null)
             return;
-        
+
         // truncate all data.
         PartakeConnection con = DBService.getPool().getConnection();
         try {
@@ -61,26 +47,26 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             con.invalidate();
         }        
     }
-    
+
     // 同じ (pkNumber, pkSalt) なら同じ結果を返すようにする。
     // TODO: We should use TestDataProvider instead.
     protected abstract T create(long pkNumber, String pkSalt, int objNumber);
-    
+
     // ------------------------------------------------------------
-    
+
     @Test
     public final void testToCreate() {
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 T t1 = create(0, "create", 0);
                 T t2 = create(i, "create", j);
-                
+
                 if (i == 0 && j == 0) {
                     Assert.assertEquals(t1, t2);
                 } else {
                     Assert.assertFalse(t1.equals(t2));
                 }
-                
+
                 if (i == 0) {
                     Assert.assertEquals(t1.getPrimaryKey(), t2.getPrimaryKey());
                 } else {
@@ -89,9 +75,9 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             }
         }
     }
-    
-    
-    
+
+
+
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutFind() throws Exception {
@@ -102,11 +88,11 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             T t1 = create(System.currentTimeMillis(), "putfind", 0);
             dao.put(con, t1);
             con.commit();
-            
+
             con.beginTransaction();
             T t2 = dao.find(con, (PK) t1.getPrimaryKey());
             con.commit();
-            
+
             Assert.assertEquals(t1, t2);
             Assert.assertNotSame(t1, t2);
             Assert.assertFalse(t1.isFrozen());
@@ -118,7 +104,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             con.invalidate();
         }
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutFindInTransaction() throws Exception {
@@ -131,7 +117,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
 
             T t2 = dao.find(con, (PK) t1.getPrimaryKey());
             con.commit();
-            
+
             Assert.assertEquals(t1, t2);     
             Assert.assertFalse(t1.isFrozen());
             Assert.assertTrue(t2.isFrozen());
@@ -143,7 +129,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         }
     }
 
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutPutFind() throws Exception {
@@ -151,25 +137,25 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
 
         try {
             long time = System.currentTimeMillis();
-            
+
             con.beginTransaction();
             T t1 = create(time, "putputfind", 0); 
             dao.put(con, t1);
             con.commit();
 
             TimeUtil.waitForTick();
-            
+
             con.beginTransaction();
             T t2 = create(time, "putputfind", 1); 
             dao.put(con, t2);
             con.commit();
-            
+
             Assert.assertEquals(t1.getPrimaryKey(), t2.getPrimaryKey());
 
             con.beginTransaction();
             T t3 = dao.find(con, (PK) t1.getPrimaryKey());
             con.commit();
-            
+
             Assert.assertFalse(t1.equals(t3));
             Assert.assertEquals(t2, t3);            
         } catch (Exception e) {
@@ -179,7 +165,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             con.invalidate();
         }
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutRemoveFind() throws Exception {
@@ -187,18 +173,18 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
 
         try {
             TimeUtil.waitForTick();
-            
+
             con.beginTransaction();
             T t1 = create(System.currentTimeMillis(), "putremovefind", 0); 
             dao.put(con, t1);
             con.commit();
-            
+
             TimeUtil.waitForTick();
-            
+
             con.beginTransaction();
             dao.remove(con, (PK) t1.getPrimaryKey());
             con.commit();
-            
+
             T t2 = dao.find(con, (PK) t1.getPrimaryKey());
             Assert.assertNull(t2);            
         } catch (Exception e) {
@@ -208,7 +194,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             con.invalidate();
         }
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public final void testToPutRemovePutFind() throws Exception {
@@ -219,13 +205,13 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             T t1 = create(System.currentTimeMillis(), "putremovefind", 0); 
             dao.put(con, t1);
             con.commit();
-            
+
             TimeUtil.waitForTick();
-            
+
             con.beginTransaction();
             dao.remove(con, (PK) t1.getPrimaryKey());
             con.commit();
-            
+
             TimeUtil.waitForTick();
 
             con.beginTransaction();
@@ -233,7 +219,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             con.commit();
 
             T t2 = dao.find(con, (PK) t1.getPrimaryKey());
-            
+
             Assert.assertEquals(t1, t2);
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,7 +229,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
         }
     }
 
-    
+
     @Test
     @SuppressWarnings("unchecked")        
     public final void testToRemoveInvalidObject() throws Exception {
@@ -251,11 +237,11 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
 
         try {
             T t1 = create(System.currentTimeMillis(), "removeinvalid", 0);
-            
+
             con.beginTransaction();
             dao.remove(con, (PK) t1.getPrimaryKey());
             con.commit();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -271,11 +257,11 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
 
         try {
             T t1 = create(System.currentTimeMillis(), "findInvalid", 0);
-            
+
             con.beginTransaction();
             T t = dao.find(con, (PK) t1.getPrimaryKey());
             con.commit();
-            
+
             Assert.assertNull(t);
         } catch (Exception e) {
             e.printStackTrace();
@@ -293,12 +279,12 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             for (int i = 0; i < 3; ++i) {
                 T t = create(System.currentTimeMillis(), String.valueOf(i), i);
                 created.add(t);
-                
+
                 con.beginTransaction();
                 dao.put(con, t);
                 con.commit();
             }
-            
+
             int count = 0;
             DataIterator<T> it = dao.getIterator(con);
             try {
@@ -316,7 +302,7 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             con.invalidate();
         }
     }
-    
+
     @Test
     public final void testToCount() throws Exception {
         PartakeConnection con = DBService.getPool().getConnection();
@@ -325,12 +311,12 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             for (int i = 0; i < 10; ++i) {
                 T t = create(System.currentTimeMillis(), String.valueOf(i), i);
                 created.add(t);
-                
+
                 con.beginTransaction();
                 dao.put(con, t);
                 con.commit();
             }
-            
+
             assertThat(dao.count(con), is(10));
         } finally {
             con.invalidate();

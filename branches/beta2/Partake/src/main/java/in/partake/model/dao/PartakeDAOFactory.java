@@ -1,5 +1,6 @@
 package in.partake.model.dao;
 
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dao.access.IBinaryAccess;
 import in.partake.model.dao.access.ICalendarLinkageAccess;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class PartakeDAOFactory {
+public abstract class PartakeDAOFactory implements IPartakeDAOs {
     private final ICalendarLinkageAccess calendarLinkageAccess;    
     private final IBinaryAccess binaryAccess;
     private final ICommentAccess commentAccess;

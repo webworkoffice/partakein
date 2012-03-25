@@ -1,45 +1,103 @@
 package in.partake.controller.action.toppage;
 
+import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.aux.EventFilterCondition;
+import in.partake.model.dao.base.Transaction;
+import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
+import in.partake.service.DBService;
+import in.partake.service.IEventSearchService;
+import in.partake.service.PartakeService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ToppageAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
-	//private static final Logger logger = Logger.getLogger(ToppageAction.class);
-	
+
+    private List<Event> recentEvents;
+    private List<Event> ownedEvents;
+    private List<Event> enrolledEvents;
+
+    protected String doExecute() throws DAOException, PartakeException {
+        // もしログインしていれば、最近のイベントを表示する。
+        UserEx user = getLoginUser();
+
+        ToppageTransaction transaction = new ToppageTransaction(user);
+        transaction.execute();
+
+        recentEvents = transaction.getRecentEvents();
+        ownedEvents = transaction.getOwnedEvents();
+        enrolledEvents = transaction.getEnrolledEvents();
+
+        return render("index.jsp");
+    }
+
+    public List<Event> getRecentEvents() {
+        return this.recentEvents;
+    }
+
+    public List<Event> getOwnedEvents() {
+        return this.ownedEvents;
+    }
+
+    public List<Event> getEnrolledEvents() {
+        return this.enrolledEvents;
+    }
+}
+
+class ToppageTransaction extends Transaction<Void> {
     private static final int NUM_EVENTS_TO_DISPLAY = 5;
 
-	private List<Event> recentEvents;
-	private List<Event> ownedEvents;
-	private List<Event> enrolledEvents;
-	
-	protected String doExecute() throws DAOException {
-	    recentEvents = DeprecatedEventDAOFacade.get().getRecentEvents(NUM_EVENTS_TO_DISPLAY);
-		
-		// もしログインしていれば、最近のイベントを表示する。
-		UserEx user = getLoginUser();
-		if (user != null) {
-		    ownedEvents = DeprecatedEventDAOFacade.get().getUnfinishedEventsOwnedBy(user.getId());
-	        enrolledEvents = DeprecatedEventDAOFacade.get().getUnfinishedEnrolledEvents(user.getId());
-		}
+    private UserEx user;
+    private List<Event> recentEvents;
+    private List<Event> ownedEvents;
+    private List<Event> enrolledEvents;
 
-		return render("index.jsp");
-	}
+    public ToppageTransaction(UserEx user) {
+        this.user = user;
+    }
 
-	public List<Event> getRecentEvents() {
-	    return this.recentEvents;
-	}
+    @Override
+    protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
+        IEventSearchService searchService = PartakeService.get().getEventSearchService();
+        List<String> eventIds = searchService.getRecent(NUM_EVENTS_TO_DISPLAY);
+        
+        recentEvents = new ArrayList<Event>();
+        for (String eventId : eventIds) {
+            Event event = DBService.getFactory().getEventAccess().find(con, eventId);
+            if (event != null)
+                recentEvents.add(event);
+        }
 
-	public List<Event> getOwnedEvents() {
-	    return this.ownedEvents;
-	}
-	
-	public List<Event> getEnrolledEvents() {
-	    return this.enrolledEvents;
-	}
+        if (user != null) {
+            ownedEvents = DBService.getFactory().getEventAccess().findByOwnerId(con, user.getId(), EventFilterCondition.ALL_EVENTS, 0, 5);
+            
+            enrolledEvents = new ArrayList<Event>(); 
+            List<Enrollment> enrollments = DBService.getFactory().getEnrollmentAccess().findByUserId(con, user.getId(), 0, 5);
+            for (Enrollment enrollment : enrollments) {
+                Event event = DBService.getFactory().getEventAccess().find(con, enrollment.getEventId());
+                if (event != null)
+                    enrolledEvents.add(event);
+            }
+        }
+
+        return null;
+    }
+
+    public List<Event> getRecentEvents() {
+        return this.recentEvents;
+    }
+
+    public List<Event> getOwnedEvents() {
+        return this.ownedEvents;
+    }
+
+    public List<Event> getEnrolledEvents() {
+        return this.enrolledEvents;
+    }
 }

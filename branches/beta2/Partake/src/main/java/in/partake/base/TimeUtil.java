@@ -16,7 +16,7 @@ import java.util.TimeZone;
 public final class TimeUtil {
     private static Date currentDate;
     private static final DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
+    
     private TimeUtil() {}
     
     /**

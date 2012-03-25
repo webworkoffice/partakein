@@ -35,9 +35,9 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
                 data[i] = (byte)(i % N);
             }
             
-            return new ImageData(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", data, TimeUtil.getCurrentDate());
+            return new ImageData(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", data, new Date(objNumber));
         } else {
-            return new ImageData(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", new byte[] { 1, 2, (byte) objNumber }, TimeUtil.getCurrentDate());
+            return new ImageData(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", new byte[] { 1, 2, (byte) objNumber }, new Date(objNumber));
         }
     }
     

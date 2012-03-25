@@ -1,10 +1,13 @@
 package in.partake.controller.action.event;
 
 import in.partake.base.PartakeException;
-import in.partake.controller.base.permission.UserPermission;
+import in.partake.controller.base.permission.EventEditPermission;
+import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.base.Transaction;
+import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.resource.UserErrorCode;
 
 public class EventEditAction extends AbstractEventEditAction {
@@ -15,13 +18,26 @@ public class EventEditAction extends AbstractEventEditAction {
         UserEx user = ensureLogin();
         String eventId = getValidEventIdParameter();
         
-        event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
+        event = new EventEditTransaction(eventId).execute();
         if (event == null)
             return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
-        if (!event.hasPermission(user, UserPermission.EVENT_EDIT))
+        if (!EventEditPermission.check(event, user)) 
             return renderForbidden(UserErrorCode.FORBIDDEN_EVENT_EDIT);
 
         return render("events/edit.jsp");
+    }
+}
+
+class EventEditTransaction extends Transaction<EventEx> {
+    private String eventId;
+    
+    public EventEditTransaction(String eventId) {
+        this.eventId = eventId;
+    }
+    
+    @Override
+    protected EventEx doExecute(PartakeConnection con) throws DAOException, PartakeException {
+        return EventDAOFacade.getEventEx(con, eventId);
     }
 }

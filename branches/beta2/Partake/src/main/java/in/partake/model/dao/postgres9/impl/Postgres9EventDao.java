@@ -101,7 +101,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     public DataIterator<Event> getIterator(PartakeConnection con) throws DAOException {
         return new MapperDataIterator<Postgres9Entity, Event>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
-
+    
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
         return entityDao.getFreshId((Postgres9Connection) con);
@@ -163,7 +163,17 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
             psars.close();
         }
     }
+    
+    @Override
+    public DataIterator<Event> getIterator(PartakeConnection con, EventFilterCondition condition) throws DAOException {
+        String draftSql = conditionClauseForCriteria(condition); 
+        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE 1 = 1 " + draftSql + " ORDER BY beginDate DESC",
+                new Object[] {});
 
+        Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
+        return new Postgres9DataIterator<Event>(idMapper, psars);
+    }
 
     // TODO: Why not DataIterator?
     // TODO: This is very slow!

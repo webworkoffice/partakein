@@ -1,11 +1,10 @@
 package in.partake.controller.api.event;
 
-import junit.framework.Assert;
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.fixture.TestDataProvider;
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -17,14 +16,14 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToPresence() throws Exception {
         // 
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.ATTENDANCE_ABSENT_USER_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus()); 
         }
         
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.EVENT_ENROLLED_USER_ID);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_ABSENT_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
@@ -34,7 +33,7 @@ public class AttendanceAPITest extends APIControllerTest {
         
         // Check status is changed.
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
     }
@@ -43,14 +42,14 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToAbsence() throws Exception {
         // 
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus()); 
         }
         
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.EVENT_ENROLLED_USER_ID);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "absent");
         addValidSessionTokenToParameter(proxy);
@@ -60,7 +59,7 @@ public class AttendanceAPITest extends APIControllerTest {
         
         // Check status is changed.
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }        
     }
@@ -69,14 +68,14 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToUnknown() throws Exception {
         // 
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus()); 
         }
         
         ActionProxy proxy = getActionProxy("/api/event/attend");
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         
-        addParameter(proxy, "userId", TestDataProvider.EVENT_ENROLLED_USER_ID);
+        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
         addParameter(proxy, "status", "unknown");
         addValidSessionTokenToParameter(proxy);
@@ -86,10 +85,9 @@ public class AttendanceAPITest extends APIControllerTest {
         
         // Check status is changed.
         {
-            Enrollment enrollment = DeprecatedEventDAOFacade.get().findEnrollment(TestDataProvider.DEFAULT_EVENT_ID, TestDataProvider.EVENT_ENROLLED_USER_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
-        }        
-
+        }
     }
     
     @Test

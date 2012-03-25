@@ -1,19 +1,26 @@
 package in.partake.controller.api.event;
 
+import in.partake.base.PartakeException;
+import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.PartakeDAOFactory;
+import in.partake.model.dao.base.Transaction;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.UserErrorCode;
+import in.partake.service.DBService;
+import in.partake.service.IEventSearchService;
+import in.partake.service.PartakeService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.queryParser.ParseException;
 
 // search API can take
 //  1) query (String)
@@ -23,51 +30,42 @@ import org.apache.lucene.queryParser.ParseException;
 //  5) maxNum (integer)
 
 public class SearchAPI extends AbstractPartakeAPI {
-	private static final long serialVersionUID = 1L;
-    // private static final Logger logger = Logger.getLogger(SearchAction.class);
-	private static final String DEFAULT_CATEGORY = EventCategory.getAllEventCategory();
-	private static final String DEFAULT_BEFORE_DEADLINE_ONLY = "true";
+    private static final long serialVersionUID = 1L;
+    private static final String DEFAULT_CATEGORY = EventCategory.getAllEventCategory();
+    private static final boolean DEFAULT_BEFORE_DEADLINE_ONLY = true;
     private static final String DEFAULT_SORT_ORDER = "score";
     private static final int DEFAULT_MAX_NUM = 10;
-
     public static final int MAX_NUM = 100;
 
-    
-    public String doExecute() throws DAOException {
+
+    public String doExecute() throws DAOException, PartakeException {
         String query = getQuery();
 
         String category = getCategory();
-        if (category == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_CATEGORY); }
+        if (category == null)
+            return renderInvalid(UserErrorCode.MISSING_SEARCH_CATEGORY);
 
         String sortOrder = getSortOrder();
-        if (sortOrder == null) { return renderInvalid(UserErrorCode.MISSING_SEARCH_ORDER); }
+        if (sortOrder == null)
+            return renderInvalid(UserErrorCode.MISSING_SEARCH_ORDER);
 
-        final String beforeDeadlineOnly;
-        final int maxNum;
-        try {
-            beforeDeadlineOnly = getBeforeDeadlineOnly();
-            maxNum = getMaxNum();
-        } catch (IllegalRequestException e) {
-            return renderInvalid(e.getErrorCode());
-        }
+        boolean beforeDeadlineOnly =
+                optBooleanParameter("beforeDeadlineOnly", DEFAULT_BEFORE_DEADLINE_ONLY);
 
-        try {
-            List<Event> events = DeprecatedEventDAOFacade.get().search(query, category, sortOrder, Boolean.parseBoolean(beforeDeadlineOnly), maxNum);
+        int maxNum = optIntegerParameter("maxNum", DEFAULT_MAX_NUM);
+        maxNum = Util.ensureRange(maxNum, 0, MAX_NUM);
+        if (maxNum <= 0)
+            return renderInvalid(UserErrorCode.INVALID_ARGUMENT);
+        
+        List<Event> events = new SearchTransaction(query, category, sortOrder, beforeDeadlineOnly, maxNum).execute();
 
-            JSONArray jsonEventsArray = new JSONArray();
-            for (Event event : events) {
-                jsonEventsArray.add(event.toSafeJSON());
-            }
-            JSONObject obj = new JSONObject();
-            obj.put("events", jsonEventsArray);
-            return renderOK(obj);
-        } catch (IllegalArgumentException e) {
-            return renderInvalid(UserErrorCode.INVALID_SEARCH_QUERY);
-        } catch (ParseException e) {
-            return renderInvalid(UserErrorCode.INVALID_SEARCH_QUERY);
-        }
+        JSONArray jsonEventsArray = new JSONArray();
+        for (Event event : events)
+            jsonEventsArray.add(event.toSafeJSON());
 
-
+        JSONObject obj = new JSONObject();
+        obj.put("events", jsonEventsArray);
+        return renderOK(obj);
     }
 
     private String getQuery() {
@@ -87,20 +85,6 @@ public class SearchAPI extends AbstractPartakeAPI {
         }
     }
 
-    private String getBeforeDeadlineOnly() throws IllegalRequestException {
-        String beforeDeadlineOnly = getParameter("beforeDeadlineOnly");
-        if (beforeDeadlineOnly == null) { return DEFAULT_BEFORE_DEADLINE_ONLY; }
-
-        if ("true".equalsIgnoreCase(beforeDeadlineOnly)) {
-            return "true";
-        }
-        if ("false".equalsIgnoreCase(beforeDeadlineOnly)) {
-            return "false";
-        }
-
-        throw new IllegalRequestException(UserErrorCode.INVALID_SEARCH_DEADLINE);
-    }
-
     private String getSortOrder() {
         String sortOrder = getParameter("sortOrder");
         if (sortOrder == null) { return DEFAULT_SORT_ORDER; }
@@ -115,37 +99,37 @@ public class SearchAPI extends AbstractPartakeAPI {
 
         return null;
     }
+}
 
-    private int getMaxNum() throws IllegalRequestException {
-        String maxNum = getParameter("maxNum");
-        if (maxNum == null) {
-            return DEFAULT_MAX_NUM;
-        }
-
-        try {
-            int v = Integer.parseInt(StringUtils.trim(maxNum));
-            if (v <= 0 || MAX_NUM < v) {
-                throw new IllegalRequestException(UserErrorCode.INVALID_SEARCH_MAXNUM);
-            }
-
-            return v;
-        } catch (NumberFormatException e) {
-            throw new IllegalRequestException(UserErrorCode.INVALID_SEARCH_MAXNUM);
-        }
+class SearchTransaction extends Transaction<List<Event>> {
+    private String query;
+    private String category;
+    private String sortOrder;
+    private boolean beforeDeadlineOnly;
+    private int maxNum;
+    
+    public SearchTransaction(String query, String category, String sortOrder, boolean beforeDeadlineOnly, int maxNum) {
+        this.query = query;
+        this.category = category;
+        this.sortOrder = sortOrder;
+        this.beforeDeadlineOnly = beforeDeadlineOnly;
+        this.maxNum = maxNum;
     }
 
-    // 他のActionクラスでも使うようならcontroller.apiパッケージに移動することも検討
-    private static class IllegalRequestException extends Exception {
-        private static final long serialVersionUID = -2150899144288175828L;
-        private final UserErrorCode errorCode;
-        IllegalRequestException(UserErrorCode errorCode) {
-            if (errorCode == null) {
-                throw new IllegalArgumentException();
-            }
-            this.errorCode = errorCode;
+    @Override
+    protected List<Event> doExecute(PartakeConnection con) throws DAOException, PartakeException {
+        PartakeDAOFactory factory = DBService.getFactory();
+        IEventSearchService searchService = PartakeService.get().getEventSearchService();
+
+        List<String> eventIds = searchService.search(query, category, sortOrder, beforeDeadlineOnly, maxNum);
+        List<Event> events = new ArrayList<Event>();
+
+        for (String eventId : eventIds) {
+            Event event = factory.getEventAccess().find(con, eventId);
+            if (event != null && !event.isPrivate() && !event.isPreview())
+                events.add(event);
         }
-        UserErrorCode getErrorCode() {
-            return this.errorCode;
-        }
+        
+        return events;
     }
 }

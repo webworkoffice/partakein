@@ -3,7 +3,7 @@ package in.partake.service;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.fixture.PartakeTestDataProviderSet;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
@@ -48,20 +48,19 @@ public class TestDatabaseService {
      * @see EventTestDataProvider
      * @see EnrollmentTestDataProvider
      */
-    public static void setDefaultFixtures() throws DAOException {
+    public static void setDefaultFixtures() throws DAOException, EventSearchServiceException {
         // LOGGER.trace("TestService#setDefaultFixtures() is called, now start to create all fixtures.");
         PartakeConnection con = DBService.getPool().getConnection(); 
         PartakeDAOFactory factory = DBService.getFactory();
+        IEventSearchService searchService = PartakeService.get().createEventSearchService();
         try {
             con.beginTransaction();
             testDataProviderSet.createFixtures(con, factory);
+            EventDAOFacade.recreateEventIndex(con, searchService);
             con.commit();
         } finally {
             con.invalidate();
         }
-        
-        // create lucene search index
-        DeprecatedEventDAOFacade.get().recreateEventIndex();
     }
 
     private static void initializeDataSource() throws NamingException {

@@ -90,7 +90,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
         
         proxy.execute();
-        assertResultInvalid(proxy, UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
+        assertResultForbidden(proxy);
     }
     
     @Test

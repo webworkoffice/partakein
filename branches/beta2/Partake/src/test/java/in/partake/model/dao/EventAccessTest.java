@@ -34,7 +34,7 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
 	
 	@Test
 	public void testToGetFreshId() throws DAOException {
-	    PartakeConnection con = getPool().getConnection();
+	    PartakeConnection con = pool.getConnection();
 
         try {
             Set<String> visited = new HashSet<String>(); 
@@ -52,7 +52,7 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
     
     @Test
     public void testToFindByOwnerId() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
 
         try {
             String userId = "userId-getbyowner-" + System.currentTimeMillis();
@@ -88,7 +88,7 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
 
     @Test
     public void testToFindByInvalidOwner() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
 
         try {
             String userId = "userId-getbyowner-" + System.currentTimeMillis();
@@ -124,7 +124,7 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
     
     @Test
     public void testToFindByScreenName() throws DAOException {
-        PartakeConnection con = getPool().getConnection();
+        PartakeConnection con = pool.getConnection();
 
         try {
             String userId = "userId-screenname-" + System.currentTimeMillis();

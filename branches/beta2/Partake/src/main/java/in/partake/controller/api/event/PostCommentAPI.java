@@ -2,7 +2,6 @@ package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
-import in.partake.model.EventEx;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
@@ -10,8 +9,8 @@ import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.base.Transaction;
 import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
 import in.partake.model.dto.Comment;
+import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.DBService;
@@ -29,10 +28,6 @@ public class PostCommentAPI extends AbstractPartakeAPI {
         UserEx user = ensureLogin();
         ensureValidSessionToken();        
         String eventId = getValidEventIdParameter();
-
-        EventEx event = DeprecatedEventDAOFacade.get().getEventExById(eventId);
-        if (event == null)
-            return renderInvalid(UserErrorCode.INVALID_EVENT_ID);
 
         String comment = getParameter("comment");
         if (StringUtils.isBlank(comment))
@@ -57,6 +52,10 @@ class PostCommentTransaction extends Transaction<Void> {
     @Override
     protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
         PartakeDAOFactory factory = DBService.getFactory();
+
+        Event event = factory.getEventAccess().find(con, commentEmbryo.getEventId());
+        if (event == null)
+            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
         
         commentEmbryo.setId(factory.getCommentAccess().getFreshId(con));
         factory.getCommentAccess().put(con, commentEmbryo);

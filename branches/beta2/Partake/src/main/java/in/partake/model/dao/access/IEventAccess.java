@@ -1,6 +1,7 @@
 package in.partake.model.dao.access;
 
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.aux.EventFilterCondition;
 import in.partake.model.dto.Event;
@@ -14,6 +15,7 @@ public interface IEventAccess extends IAccess<Event, String> {
     public abstract boolean isRemoved(PartakeConnection con, String eventId) throws DAOException;
     
     public abstract int count(PartakeConnection con, EventFilterCondition condition) throws DAOException;
+    public abstract DataIterator<Event> getIterator(PartakeConnection con, EventFilterCondition condition) throws DAOException;
     
     /**
      * fetch events whose owner id is <code>userId</code>. 

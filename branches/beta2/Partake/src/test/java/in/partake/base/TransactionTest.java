@@ -5,6 +5,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.base.Transaction;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.DBService;
+import in.partake.service.PartakeService;
 import in.partake.service.TestDatabaseService;
 import junit.framework.Assert;
 
@@ -14,7 +15,8 @@ import org.junit.Test;
 public class TransactionTest {
     @BeforeClass
     public static void setUpOnce() {
-        PartakeProperties.get().reset("unittest");        
+        PartakeProperties.get().reset("unittest");
+        PartakeService.initialize();
         TestDatabaseService.initialize();
     }
     

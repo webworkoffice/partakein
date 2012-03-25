@@ -4,7 +4,8 @@ import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
-import in.partake.service.impl.TwitterService;
+import in.partake.service.ITwitterService;
+import in.partake.service.PartakeService;
 import in.partake.session.TwitterLoginInformation;
 import twitter4j.TwitterException;
 
@@ -16,7 +17,8 @@ public class LoginByTwitterAction extends AbstractPartakeAction {
            return renderInvalid(UserErrorCode.MISSING_SESSION);
         
         try {
-            TwitterLoginInformation info = TwitterService.createLoginInformation(getParameter("redirectURL"));
+            ITwitterService twitterService = PartakeService.get().getTwitterService();
+            TwitterLoginInformation info = twitterService.createLoginInformation(getParameter("redirectURL"));
             String url = info.getRequestToken().getAuthenticationURL();
 
             getPartakeSession().setTwitterLoginInformation(info);

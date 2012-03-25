@@ -47,7 +47,6 @@ public final class Constants {
     public static final String ATTR_FINISHED_EVENTSET = "finishedeventset";
 
     // TODO: Remove these.
-    public static final String ATTR_PARTICIPATIONLIST = "PARTICIPATION_LIST";
     public static final String ATTR_REMINDER_STATUS = "REMINDER_STATUS";
 
     public static final String ATTR_REDIRECTURL = "redirectURL";

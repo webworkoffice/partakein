@@ -1,12 +1,13 @@
 package in.partake.service.mock;
 
 import in.partake.model.dao.mock.MockConnectionPool;
-import in.partake.model.daofacade.deprecated.DeprecatedPartakeDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
 import in.partake.resource.PartakeProperties;
+import in.partake.service.DBService;
+import in.partake.service.PartakeService;
 import in.partake.service.TestDatabaseService;
 
 import java.util.Calendar;
@@ -18,12 +19,13 @@ import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 
-public class MockServiceTestBase extends DeprecatedPartakeDAOFacade {
+public class MockServiceTestBase {
     
     @BeforeClass
     public static void setUpOnce() {
         // TODO: Should share the code with AbstractConnectionTestCaseBase.
         PartakeProperties.get().reset("mock");
+        PartakeService.initialize();
         TestDatabaseService.initialize();
     }
     
@@ -31,7 +33,7 @@ public class MockServiceTestBase extends DeprecatedPartakeDAOFacade {
      * assert that all connections are released.
      */
     protected void assureAllConnectionsAreReleased() {
-        MockConnectionPool pool = (MockConnectionPool) getPool();
+        MockConnectionPool pool = (MockConnectionPool) DBService.getPool();
         Assert.assertTrue(pool.areAllConnectionsReleased());
     }
     

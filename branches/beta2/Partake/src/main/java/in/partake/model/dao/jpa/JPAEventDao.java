@@ -221,4 +221,9 @@ class JPAEventDao extends JPADao<Event> implements IEventAccess {
     public int count(PartakeConnection con, EventFilterCondition cond) {
         throw new RuntimeException("Not implemented yet");
     }
+
+    @Override
+    public DataIterator<Event> getIterator(PartakeConnection con, EventFilterCondition condition) throws DAOException {
+        throw new RuntimeException("Not implemented yet");
+    }
 }

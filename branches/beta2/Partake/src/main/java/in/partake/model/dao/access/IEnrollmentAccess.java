@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface IEnrollmentAccess extends IAccess<Enrollment, EnrollmentPK> {
     /** enrollment の一覧を取得。 */
+    // TODO: Should return DataIterator.
     @Deprecated
     public List<Enrollment> findByEventId(PartakeConnection con, String eventId) throws DAOException;
     public List<Enrollment> findByEventId(PartakeConnection con, String eventId, int offset, int limit) throws DAOException;

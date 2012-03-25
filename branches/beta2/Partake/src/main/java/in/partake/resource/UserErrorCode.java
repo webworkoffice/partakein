@@ -25,8 +25,9 @@ public enum UserErrorCode {
     INVALID_EVENT_ID("invalid.event.id"),
     MISSING_EVENT_ID("invalid.event.id.missing"),
 
-    FORBIDDEN_EVENT_EDIT("invalid.event.edit.forbidden"),
-    FORBIDDEN_EVENT_ATTENDANT_EDIT("invalid.event.attendant.edit.forbidden"),
+    FORBIDDEN_EVENT_SHOW("invalid.event.show.forbidden", 403),
+    FORBIDDEN_EVENT_EDIT("invalid.event.edit.forbidden", 403),
+    FORBIDDEN_EVENT_ATTENDANT_EDIT("invalid.event.attendant.edit.forbidden", 403),
 
     INVALID_ENROLL_TIMEOVER("invalid.event.enroll.timeover"),
     INVALID_ENROLL_STATUS("invalid.event.enroll.status"),
@@ -51,6 +52,7 @@ public enum UserErrorCode {
     MISSING_IMAGEID("invalid.image.id.missing"),
     INVALID_NOIMAGE("invalid.image.noimage"),
     INVALID_IMAGE_CONTENTTYPE("invalid.image.contenttype"),
+    INVALID_IMAGE_OWNER("invalid.image.owner"),
     
     // CALENDAR
     INVALID_CALENDAR_ID("invalid.calendar.id"),

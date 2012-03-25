@@ -39,6 +39,8 @@ public enum ServerErrorCode {
     
     OPENID_ERROR("error.opneid"),
     
+    EVENT_SEARCH_SERVICE_ERROR("error.service.event_search"),
+    
     LUCENE_INITIALIZATION_FAILURE("error.lucene.initialization_failure");
     
     // ----------------------------------------------------------------------

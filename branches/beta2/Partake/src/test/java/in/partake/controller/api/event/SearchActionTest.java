@@ -4,12 +4,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import in.partake.base.PartakeException;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dao.DAOException;
-import in.partake.model.daofacade.deprecated.DeprecatedEventDAOFacade;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.base.Transaction;
+import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.resource.UserErrorCode;
+import in.partake.service.PartakeService;
 import in.partake.service.TestDatabaseService;
 
 import java.text.DateFormat;
@@ -58,7 +62,7 @@ public class SearchActionTest extends APIControllerTest {
     public void testSearchJapaneseQueryWithBeforeDeadlineOnly() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/search");
         addQueryParameter(proxy, EventTestDataProvider.JAPANESE_IDENTIFIER, "all", "false", "score", "10");
-        
+
         assertThat(proxy.execute(), equalTo("json"));
 
         assertResultOK(proxy);
@@ -175,18 +179,36 @@ public class SearchActionTest extends APIControllerTest {
         return event;
     }
 
-    private Event storeEventAfterDeadline() throws DAOException {
-        Event event = createEvent();
+    private Event storeEventAfterDeadline() throws DAOException, PartakeException {
+        final Event event = createEvent();
         event.setDeadline(new Date(0L));
-        DeprecatedEventDAOFacade.get().create(event, null, null);
+
+        new Transaction<Void>() {
+            @Override
+            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
+                EventDAOFacade.create(con, event);
+                return null;
+            }
+        }.execute();
+
+        PartakeService.get().getEventSearchService().create(event);
         return event;
     }
 
-    private Event storeEventBeforeDeadline() throws DAOException {
-        Event event = createEvent();
+    private Event storeEventBeforeDeadline() throws DAOException, PartakeException {
+        final Event event = createEvent();
         Date tomorrow = new Date(System.currentTimeMillis() + 24L * 60L * 60L * 1000L);
         event.setDeadline(tomorrow);
-        DeprecatedEventDAOFacade.get().create(event, null, null);
+
+        new Transaction<Void>() {
+            @Override
+            protected Void doExecute(PartakeConnection con) throws DAOException, PartakeException {
+                EventDAOFacade.create(con, event);
+                return null;
+            }
+        }.execute();
+
+        PartakeService.get().getEventSearchService().create(event);
         return event;
     }
 
