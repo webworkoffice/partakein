@@ -28,7 +28,7 @@ import org.junit.Test;
 import com.opensymphony.xwork2.ActionProxy;
 
 
-public class SearchActionTest extends APIControllerTest {
+public class SearchAPITest extends APIControllerTest {
     private static final String SEARCH_QUERY = "あ";
 
     @Test

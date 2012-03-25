@@ -28,6 +28,7 @@ public class TwitterLinkageTestDataProvider extends TestDataProvider<TwitterLink
         dao.put(con, new TwitterLinkage(DEFAULT_ANOTHER_TWITTER_ID, DEFAULT_ANOTHER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", DEFAULT_ANOTHER_USER_ID));
         dao.put(con, new TwitterLinkage(ADMIN_USER_TWITTER_ID, ADMIN_USER_SCREENNAME, "testUser 2", "accessToken", "accessTokenSecret", "http://www.example.com/", ADMIN_USER_ID));
         dao.put(con, new TwitterLinkage(USER_WITHOUT_PREF_TWITTER_ID, USER_WITHOUT_PREF_SCREENNAME, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/", USER_WITHOUT_PREF_ID));
+        dao.put(con, new TwitterLinkage(USER_WITH_PRIVATE_PREF_TWITTER_ID, USER_WITHOUT_PREF_SCREENNAME, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/", USER_WITH_PRIVATE_PREF_ID));
 
         dao.put(con, new TwitterLinkage(EVENT_OWNER_TWITTER_ID, EVENT_OWNER_TWITTER_SCREENNAME, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_OWNER_ID));
         dao.put(con, new TwitterLinkage(EVENT_EDITOR_TWITTER_ID, EVENT_EDITOR_TWITTER_SCREENNAME, "testUser 4", "accessToken", "accessTokenSecret", "http://www.example.com/", EVENT_EDITOR_ID));

@@ -5,6 +5,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.Date;
@@ -55,26 +56,27 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
 
         Date now = new Date();
         Date late = new Date(now.getTime() + 1000 * 3600);
+        String category = EventCategory.getCategories().get(0).getKey();
 
-        dao.put(con, new Event(DEFAULT_EVENT_ID, "short-id", "title", "summary", "category",
+        dao.put(con, new Event(DEFAULT_EVENT_ID, "short-id", "title", "summary", category,
                 late, late, late, 0, "url", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, null, false, false,
                 now, now, -1));
 
-        dao.put(con, new Event(PRIVATE_EVENT_ID, "short-id", "title", "summary", "category",
+        dao.put(con, new Event(PRIVATE_EVENT_ID, "short-id", "title", "summary", category,
                 late, late, late, 0, "url", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, true, "passcode", false, false,
                 now, now, -1));
 
-        dao.put(con, new Event(JAPANESE_EVENT_ID, "short-id", "title", "summary", "category",
+        dao.put(con, new Event(JAPANESE_EVENT_ID, "short-id", "title", "summary", category,
                 late, late, late, 0, "url", "place",
                 "address", "unique identifier -- " + JAPANESE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,
                 now, now, -1));
 
-        dao.put(con, new Event(UNIQUEIDENTIFIER_EVENT_ID, "short-id", "title", "summary", "category",
+        dao.put(con, new Event(UNIQUEIDENTIFIER_EVENT_ID, "short-id", "title", "summary", category,
                 late, late, late, 0, "url", "place",
                 "address", "unique identifier -- " + UNIQUE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,

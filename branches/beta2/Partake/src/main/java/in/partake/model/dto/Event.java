@@ -111,7 +111,7 @@ public class Event extends PartakeModel<Event> {
         this.shortId = null;
         this.title = "";
         this.summary = "";
-        this.category = EventCategory.CATEGORIES.get(0).getKey();
+        this.category = EventCategory.getCategories().get(0).getKey();
         this.deadline = null;
         this.beginDate = TimeUtil.oneDayAfter(TimeUtil.getCurrentDate());
         this.endDate = null;

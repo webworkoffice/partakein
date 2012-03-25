@@ -19,7 +19,6 @@ public class ViewInitializerImpl implements IViewInitializer {
     private static final Logger logger = Logger.getLogger(ViewInitializerImpl.class);
 
     private static final String CSS_ENCODE = "UTF-8";
-    private static final String CSS_DIR_NAME = "css";
     /** 結合すべきCSSファイルと結合順序を記録したリスト。 */
     private static final List<String> COMPOSITE_TARGETS = Arrays.asList(new String[]{
             // "layout.css", "color.css", "font.css", "openid.css", "print.css",

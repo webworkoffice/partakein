@@ -32,5 +32,6 @@ public class UserPreferenceTestDataProvider extends TestDataProvider<UserPrefere
         dao.truncate(con);
 
         dao.put(con, new UserPreference(DEFAULT_USER_ID, true, true, false));
+        dao.put(con, new UserPreference(USER_WITH_PRIVATE_PREF_ID, false, true, false));
     }
 }

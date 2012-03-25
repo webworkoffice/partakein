@@ -7,7 +7,7 @@ public class TwitterLoginInformation {
     private Twitter twitter;
     private RequestToken requestToken;
     private String redirectURL;
-    
+
     public TwitterLoginInformation(Twitter twitter, RequestToken requestToken, String redirectURL) {
         this.twitter = twitter;
         this.requestToken = requestToken;
@@ -24,5 +24,9 @@ public class TwitterLoginInformation {
 
     public String getRedirectURL() {
         return redirectURL;
+    }
+
+    public String getAuthenticationURL() {
+        return getRequestToken().getAuthenticationURL();
     }
 }
