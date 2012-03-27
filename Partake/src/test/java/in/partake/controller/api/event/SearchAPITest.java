@@ -163,9 +163,7 @@ public class SearchAPITest extends APIControllerTest {
         addParameter(proxy, "beforeDeadlineOnly", "(´・ω・`)");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultInvalid(proxy);
-        JSONObject json = getJSON(proxy);
-        assertThat(json.getString("reason"), equalTo(UserErrorCode.INVALID_SEARCH_DEADLINE.getReasonString()));
+        assertResultSuccess(proxy);
     }
 
     private Event createEvent() {
@@ -222,9 +220,7 @@ public class SearchAPITest extends APIControllerTest {
         addParameter(proxy, "maxNum", "10000");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultInvalid(proxy);
-        JSONObject json = getJSON(proxy);
-        assertThat(json.getString("reason"), equalTo(UserErrorCode.INVALID_SEARCH_MAXNUM.getReasonString()));
+        assertResultSuccess(proxy);
     }
 
     /**
@@ -254,9 +250,7 @@ public class SearchAPITest extends APIControllerTest {
         addParameter(proxy, "maxNum", "");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultInvalid(proxy);
-        JSONObject json = getJSON(proxy);
-        assertThat(json.getString("reason"), equalTo(UserErrorCode.INVALID_SEARCH_MAXNUM.getReasonString()));
+        assertResultSuccess(proxy);
     }
 
     @Test
@@ -266,9 +260,7 @@ public class SearchAPITest extends APIControllerTest {
         addParameter(proxy, "maxNum", "m(_ _)m");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultInvalid(proxy);
-        JSONObject json = getJSON(proxy);
-        assertThat(json.getString("reason"), equalTo(UserErrorCode.INVALID_SEARCH_MAXNUM.getReasonString()));
+        assertResultSuccess(proxy);
     }
 
     /**
