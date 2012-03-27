@@ -49,7 +49,7 @@ public class Message extends PartakeModel<Message> {
         this.id = obj.getString("id");
         this.userId = obj.optString("senderId", null);
         this.message = obj.getString("message");
-        this.eventId = obj.getString("eventId");
+        this.eventId = obj.optString("eventId", null);
         if (obj.containsKey("createdAt"))
             this.createdAt = new Date(obj.getLong("createdAt"));
     }

@@ -7,6 +7,7 @@ import in.partake.model.fixture.impl.BinaryTestDataProvider;
 import in.partake.model.fixture.impl.CalendarLinkageTestDataProvider;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
+import in.partake.model.fixture.impl.EnvelopeTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.model.fixture.impl.ImageTestDataProvider;
 import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
@@ -28,6 +29,7 @@ public class PartakeTestDataProviderSet {
     private CalendarLinkageTestDataProvider calendarDataProvider;
     private CommentTestDataProvider commentDataprovider;
     private EnrollmentTestDataProvider enrollmentProvider;
+    private EnvelopeTestDataProvider envelopeTestDataProvider;
     private EventTestDataProvider eventProvider;
     private ImageTestDataProvider imageProvider;
     private OpenIDLinkageTestDataProvider openIDLinkageProvider;
@@ -42,6 +44,7 @@ public class PartakeTestDataProviderSet {
         providers.add(calendarDataProvider = createCalendarLinkageTestDataProvider());
         providers.add(commentDataprovider = createCommentTestDataProvider());
         providers.add(enrollmentProvider = createEnrollmentTestDataProvider());
+        providers.add(envelopeTestDataProvider = createEnvelopeTestDataProvider());
         providers.add(eventProvider = createEventTestDataProvider());
         providers.add(imageProvider = createImageTestDataProvider());
         providers.add(openIDLinkageProvider = createOpenIDLinkageTestDataProvider());
@@ -70,6 +73,10 @@ public class PartakeTestDataProviderSet {
 
     public EnrollmentTestDataProvider getEnrollmentProvider() {
         return enrollmentProvider;
+    }
+
+    public EnvelopeTestDataProvider getEnvelopeTestDataProvider() {
+        return envelopeTestDataProvider;
     }
 
     public EventTestDataProvider getEventProvider() {
@@ -114,6 +121,10 @@ public class PartakeTestDataProviderSet {
 
     private EventTestDataProvider createEventTestDataProvider() {
         return new EventTestDataProvider();
+    }
+
+    private EnvelopeTestDataProvider createEnvelopeTestDataProvider() {
+        return new EnvelopeTestDataProvider();
     }
 
     private ImageTestDataProvider createImageTestDataProvider() {
