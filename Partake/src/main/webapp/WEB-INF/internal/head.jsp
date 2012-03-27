@@ -9,17 +9,6 @@
 <link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.8.16.custom.css" />
 <link rel="stylesheet" type="text/css" href="/css/jquery-ui-timepicker-addon.css" />
 <link rel="stylesheet" type="text/css" href="/css/style.css?version=<%= Helper.getCssVersion() %>" media="screen,print" />
-
-<script type="text/javascript">
-if (navigator.userAgent.idenxOf('iPhone') > 0 ||
-        navigator.userAgent.indexOf('iPad') > 0 ||
-        navigator.userAgent.index('iPod') > 0) {
-    // document.write();
-} else {
-
-}
-</script>
-
 <link rel="shortcut icon" href="/images/favicon.ico">
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
