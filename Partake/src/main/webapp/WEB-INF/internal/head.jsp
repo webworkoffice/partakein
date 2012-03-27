@@ -2,16 +2,36 @@
 <%@page import="in.partake.view.util.Helper"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.8.16.custom.css" />
+<link rel="stylesheet" type="text/css" href="/css/jquery-ui-timepicker-addon.css" />
+<link rel="stylesheet" type="text/css" href="/css/style.css?version=<%= Helper.getCssVersion() %>" media="screen,print" />
+
+<script type="text/javascript">
+if (navigator.userAgent.idenxOf('iPhone') > 0 ||
+        navigator.userAgent.indexOf('iPad') > 0 ||
+        navigator.userAgent.index('iPod') > 0) {
+    // document.write();
+} else {
+
+}
+</script>
+
+<link rel="shortcut icon" href="/images/favicon.ico">
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>/css/style.css?version=<%= Helper.getCssVersion() %>" media="screen,print" />
-<link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.8.16.custom.css" />
-<link rel="stylesheet" type="text/css" href="/css/jquery-ui-timepicker-addon.css" />
+
+<!-- for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
 <%= Helper.javascript(
         "/js/script.js",
         "/js/partake.js",
@@ -26,13 +46,12 @@
         "/js/jquery.fixup.js",
         "/js/bootstrap.min.js"
         ) %>
-        
+
 <script type="text/javascript">
-	$partake = createPartakeClient('<%= Helper.getSessionToken() %>');
-	partake = $partake;
-	partakeUI = createPartakeUIClient();
+    partake = createPartakeClient('<%= Helper.getSessionToken() %>');
+    partakeUI = createPartakeUIClient();
+    $partake = partake; // For backward compatibility.
 </script>
-<link rel="shortcut icon" href="<%= request.getContextPath() %>/images/favicon.ico">
 
 <%-- if google analytics is installed, analytics code will be shown here. --%>
 <% if (PartakeProperties.get().getGoogleAnalyticsCode() != null) {%>
