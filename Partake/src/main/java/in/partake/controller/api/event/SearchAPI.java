@@ -39,10 +39,7 @@ public class SearchAPI extends AbstractPartakeAPI {
 
     public String doExecute() throws DAOException, PartakeException {
         String query = getQuery();
-
         String category = getCategory();
-        if (category == null)
-            return renderInvalid(UserErrorCode.MISSING_SEARCH_CATEGORY);
 
         String sortOrder = getSortOrder();
         if (sortOrder == null)
@@ -74,19 +71,20 @@ public class SearchAPI extends AbstractPartakeAPI {
 
     private String getCategory() {
         String category = getParameter("category");
-        if (category == null) { return DEFAULT_CATEGORY; }
+        if (category == null)
+            return DEFAULT_CATEGORY;
 
         category = category.trim();
-        if (EventCategory.getAllEventCategory().equals(category) || EventCategory.isValidCategoryName(category)) {
+        if (EventCategory.getAllEventCategory().equals(category) || EventCategory.isValidCategoryName(category))
             return category;
-        } else {
-            return null;
-        }
+        else
+            return DEFAULT_CATEGORY;
     }
 
     private String getSortOrder() {
         String sortOrder = getParameter("sortOrder");
-        if (sortOrder == null) { return DEFAULT_SORT_ORDER; }
+        if (sortOrder == null)
+            return DEFAULT_SORT_ORDER;
 
         sortOrder = sortOrder.trim();
         if ("score".equalsIgnoreCase(sortOrder))       { return "score"; }
@@ -96,7 +94,7 @@ public class SearchAPI extends AbstractPartakeAPI {
         if ("beginDate".equalsIgnoreCase(sortOrder))   { return "beginDate"; }
         if ("beginDate-r".equalsIgnoreCase(sortOrder)) { return "beginDate-r"; }
 
-        return null;
+        return DEFAULT_SORT_ORDER;
     }
 }
 
