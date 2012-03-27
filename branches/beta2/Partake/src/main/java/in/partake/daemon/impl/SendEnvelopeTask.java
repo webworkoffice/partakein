@@ -56,7 +56,6 @@ class SendEnvelopeTask extends Transaction<Void> implements IPartakeDaemonTask {
                     continue;
                 }
 
-
                 switch (envelope.getPostingType()) {
                 case POSTING_TWITTER_DIRECT:
                     if (sendDirectMessage(con, daos, it, envelope)) { it.remove(); }

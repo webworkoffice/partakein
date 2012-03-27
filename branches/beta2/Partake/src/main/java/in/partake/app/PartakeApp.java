@@ -15,12 +15,12 @@ import org.apache.log4j.Logger;
 public class PartakeApp {
     private static final Logger logger = Logger.getLogger(PartakeApp.class);
 
-    private static IDBService dbService;
-    private static IBitlyService bitlyService;
-    private static IEventSearchService eventSearchService;
-    private static ITwitterService twitterService;
-    private static ITestService testService;
-    private static IOpenIDService openIDService;
+    protected static IDBService dbService;
+    protected static IBitlyService bitlyService;
+    protected static IEventSearchService eventSearchService;
+    protected static ITwitterService twitterService;
+    protected static ITestService testService;
+    protected static IOpenIDService openIDService;
 
     // Initializers
     private static IViewInitializer viewInitializer;

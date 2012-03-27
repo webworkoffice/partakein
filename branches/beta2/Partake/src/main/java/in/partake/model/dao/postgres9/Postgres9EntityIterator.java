@@ -8,14 +8,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
-public class Postgres9DataIterator<T> extends DataIterator<T> {
+public class Postgres9EntityIterator extends DataIterator<Postgres9Entity> {
     private Postgres9StatementAndResultSet sars;
-    private DataMapper<ResultSet, T> mapper;
-    private T next;
-    private T current;
+    private Postgres9EntityDao entityDao;
+    private Postgres9Connection pcon;
+    private DataMapper<ResultSet, Postgres9Entity> mapper;
+    private Postgres9Entity next;
+    private Postgres9Entity current;
 
-    public Postgres9DataIterator(DataMapper<ResultSet, T> mapper, Postgres9StatementAndResultSet sars) {
+    public Postgres9EntityIterator(DataMapper<ResultSet, Postgres9Entity> mapper, Postgres9EntityDao entityDao, Postgres9Connection pcon, Postgres9StatementAndResultSet sars) {
         this.mapper = mapper;
+        this.entityDao = entityDao;
+        this.pcon = pcon;
         this.sars = sars;
     }
 
@@ -36,7 +40,7 @@ public class Postgres9DataIterator<T> extends DataIterator<T> {
     }
 
     @Override
-    public T next() throws DAOException {
+    public Postgres9Entity next() throws DAOException {
         if (hasNext()) {
             current = next;
             next = null;
@@ -55,11 +59,11 @@ public class Postgres9DataIterator<T> extends DataIterator<T> {
 
     @Override
     public void remove() throws DAOException, UnsupportedOperationException {
-        throw new UnsupportedOperationException();
+        entityDao.remove(pcon, current.getId());
     }
 
     @Override
-    public void update(T t) throws DAOException, UnsupportedOperationException {
-        throw new UnsupportedOperationException();
+    public void update(Postgres9Entity entity) throws DAOException, UnsupportedOperationException {
+        entityDao.update(pcon, entity);
     }
 }
