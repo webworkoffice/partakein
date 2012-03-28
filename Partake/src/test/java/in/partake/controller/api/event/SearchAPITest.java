@@ -14,7 +14,6 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.fixture.impl.EventTestDataProvider;
-import in.partake.resource.UserErrorCode;
 
 import java.text.DateFormat;
 import java.text.ParseException;
