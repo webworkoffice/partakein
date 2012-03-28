@@ -11,6 +11,7 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class EnrollmentTestDataProvider extends TestDataProvider<Enrollment> {
 
@@ -28,31 +29,31 @@ public class EnrollmentTestDataProvider extends TestDataProvider<Enrollment> {
         IEnrollmentAccess dao = daos.getEnrollmentAccess();
 
         dao.truncate(con);
-        dao.put(con, new Enrollment(
+        dao.put(con, new Enrollment(UUID.randomUUID().toString(),
                 EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_ID, "comment", ParticipationStatus.ENROLLED, false,
                 ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()));
-        dao.put(con, new Enrollment(
+        dao.put(con, new Enrollment(UUID.randomUUID().toString(),
                 EVENT_VIP_ENROLLED_USER_ID, DEFAULT_EVENT_ID, "comment", ParticipationStatus.ENROLLED, true,
                 ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()));
-        dao.put(con, new Enrollment(
+        dao.put(con, new Enrollment(UUID.randomUUID().toString(),
                 EVENT_RESERVED_USER_ID, DEFAULT_EVENT_ID, "comment", ParticipationStatus.RESERVED, false,
                 ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()));
-        dao.put(con, new Enrollment(
+        dao.put(con, new Enrollment(UUID.randomUUID().toString(),
                 EVENT_CANCELLED_USER_ID, DEFAULT_EVENT_ID, "comment", ParticipationStatus.CANCELLED, false,
                 ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()));
 
-        dao.put(con, new Enrollment(
+        dao.put(con, new Enrollment(UUID.randomUUID().toString(),
                 ATTENDANCE_PRESENT_USER_ID, DEFAULT_EVENT_ID, "comment", ParticipationStatus.ENROLLED, false,
                 ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()));
-        dao.put(con, new Enrollment(
+        dao.put(con, new Enrollment(UUID.randomUUID().toString(),
                 ATTENDANCE_ABSENT_USER_ID, DEFAULT_EVENT_ID, "comment", ParticipationStatus.ENROLLED, false,
                 ModificationStatus.CHANGED, AttendanceStatus.ABSENT, new Date()));
-        dao.put(con, new Enrollment(
+        dao.put(con, new Enrollment(UUID.randomUUID().toString(),
                 ATTENDANCE_UNKNOWN_USER_ID, DEFAULT_EVENT_ID, "comment", ParticipationStatus.ENROLLED, false,
                 ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
 
         // Enrollment for private event
-        dao.put(con, new Enrollment(
+        dao.put(con, new Enrollment(UUID.randomUUID().toString(),
                 EVENT_ENROLLED_USER_ID, PRIVATE_EVENT_ID, "comment", ParticipationStatus.ENROLLED, false,
                 ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()));
     }

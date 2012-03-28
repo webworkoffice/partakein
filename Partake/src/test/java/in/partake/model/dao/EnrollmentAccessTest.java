@@ -12,7 +12,6 @@ import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.dto.pk.EnrollmentPK;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAccess, Enrollment, EnrollmentPK> {
+public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAccess, Enrollment, String> {
     @Rule
     public TestName name = new TestName();
 
@@ -35,7 +34,9 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
 
     @Override
     protected Enrollment create(long pkNumber, String pkSalt, int objNumber) {
-        return new Enrollment("userId" + pkSalt + pkNumber,
+        return new Enrollment(
+                "id" + pkSalt + pkNumber,
+                "userId" + pkSalt + pkNumber,
                 "eventId" + pkSalt + pkNumber,
                 "comment" + objNumber,
                 ParticipationStatus.ENROLLED,
@@ -66,6 +67,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 ParticipationStatus status = ParticipationStatus.ENROLLED;
 
+                String id = UUID.randomUUID().toString();
                 String eventId = UUID.randomUUID().toString();
                 String userId = UUID.randomUUID().toString();
 
@@ -75,7 +77,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
                 daos.getEventAccess().put(con, event);
                 daos.getUserAccess().put(con, new User(userId, 0, new Date(), null));
 
-                dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
+                dao.put(con, new Enrollment(id, userId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
 
                 List<Enrollment> list = dao.findByEventId(con, eventId);
                 con.commit();
@@ -97,6 +99,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
         new DBAccess<Void>() {
             @Override
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                String id = UUID.randomUUID().toString();
                 String eventId = UUID.randomUUID().toString();
                 String userId  = UUID.randomUUID().toString();
                 Event event = createEvent(eventId, userId);
@@ -107,7 +110,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
                     event.setId(eventId);
                     daos.getEventAccess().put(con, event);
                     daos.getUserAccess().put(con, new User(userId, 0, new Date(), null));
-                    dao.put(con, new Enrollment(userId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
+                    dao.put(con, new Enrollment(id, userId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, new Date()));
                     con.commit();
                 }
 

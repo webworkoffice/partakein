@@ -12,7 +12,6 @@ import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
-import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.UserErrorCode;
 
 public class AttendAPI extends AbstractPartakeAPI {
@@ -65,7 +64,7 @@ class AttendTransaction extends Transaction<Void> {
 
         // We have already checked the event exists, so when no enrollment is found, we throw an "invalid user id"
         // exception here.
-        Enrollment enrollment = enrollmentAccess.find(con, new EnrollmentPK(userId, eventId));
+        Enrollment enrollment = enrollmentAccess.findByEventIdAndUserId(con, eventId, userId);
         if (enrollment == null)
             throw new PartakeException(UserErrorCode.INVALID_USER_ID);
 

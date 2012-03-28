@@ -3,14 +3,10 @@ package in.partake.model.dto;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.dto.pk.EnrollmentPK;
 
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -18,25 +14,15 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@IdClass(EnrollmentPK.class)
-@Entity(name = "Enrollments")
 public class Enrollment extends PartakeModel<Enrollment> {
-    @Id
+    private String id;
     private String userId;
-    @Id
     private String eventId;
-
-    @Column(length = 65535)
     private String comment;
-    @Column
     private boolean vip;
-    @Column
     private ParticipationStatus status;
-    @Column
     private ModificationStatus modificationStatus;
-    @Column
     private AttendanceStatus attendanceStatus;
-
     // TODO: should be renamed to enrolledAt.
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;
@@ -48,9 +34,10 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.vip = false;
     }
 
-    public Enrollment(String userId, String eventId, String comment,
-                    ParticipationStatus status, boolean vip, ModificationStatus modificationStatus,
-                    AttendanceStatus attendanceStatus, Date modifiedAt) {
+    public Enrollment(String id, String userId, String eventId, String comment,
+            ParticipationStatus status, boolean vip, ModificationStatus modificationStatus,
+            AttendanceStatus attendanceStatus, Date modifiedAt) {
+        this.id = id;
         this.userId = userId;
         this.eventId = eventId;
         this.comment = comment;
@@ -86,7 +73,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
 
     @Override
     public Object getPrimaryKey() {
-        return new EnrollmentPK(userId, eventId);
+        return id;
     }
 
     @Override

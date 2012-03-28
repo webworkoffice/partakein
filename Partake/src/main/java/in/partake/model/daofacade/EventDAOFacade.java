@@ -24,7 +24,6 @@ import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventSearchServiceException;
 import in.partake.service.IEventSearchService;
@@ -236,7 +235,7 @@ public class EventDAOFacade {
                 continue;
             }
 
-            Enrollment enrollment = daos.getEnrollmentAccess().find(con, new EnrollmentPK(user.getId(), relation.getEvent().getId()));
+            Enrollment enrollment = daos.getEnrollmentAccess().findByEventIdAndUserId(con, relation.getEvent().getId(), user.getId());
             ParticipationStatus status = enrollment != null ? enrollment.getStatus() : ParticipationStatus.NOT_ENROLLED;
 
             if (status.isEnrolled())

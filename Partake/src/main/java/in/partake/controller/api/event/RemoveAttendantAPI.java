@@ -10,7 +10,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.UserErrorCode;
 
 public class RemoveAttendantAPI extends AbstractPartakeAPI {
@@ -50,7 +49,7 @@ class RemoveAttendantTransaction extends Transaction<Void>
         if (!EventEditParticipantsPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        daos.getEnrollmentAccess().remove(con, new EnrollmentPK(userId, eventId));
+        daos.getEnrollmentAccess().removeByEventIdAndUserId(con, eventId, userId);
         return null;
     }
 }
