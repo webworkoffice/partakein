@@ -1,5 +1,7 @@
 package in.partake.controller;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
@@ -13,7 +15,6 @@ import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.UserPreference;
-import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
@@ -24,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.struts2.StrutsTestCase;
-import static org.hamcrest.Matchers.*;
 import org.junit.After;
 import org.junit.Assert;
-import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -241,7 +240,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
         return new DBAccess<Enrollment>() {
             @Override
             protected Enrollment doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-                return daos.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
+                return daos.getEnrollmentAccess().findByEventIdAndUserId(con, eventId, userId);
             }
         }.execute();
     }

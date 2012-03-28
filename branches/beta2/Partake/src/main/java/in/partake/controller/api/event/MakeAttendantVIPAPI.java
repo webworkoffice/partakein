@@ -10,7 +10,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.UserErrorCode;
 
 public class MakeAttendantVIPAPI extends AbstractPartakeAPI {
@@ -55,7 +54,7 @@ class MakeAttendantVIPTransaction extends Transaction<Void> {
         if (!EventEditParticipantsPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        Enrollment enrollment = daos.getEnrollmentAccess().find(con, new EnrollmentPK(vipUserId, eventId));
+        Enrollment enrollment = daos.getEnrollmentAccess().findByEventIdAndUserId(con, eventId, vipUserId);
         if (enrollment == null)
             throw new PartakeException(UserErrorCode.INVALID_ATTENDANT_EDIT);
 

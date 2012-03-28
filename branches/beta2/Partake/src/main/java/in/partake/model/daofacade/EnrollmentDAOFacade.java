@@ -17,7 +17,6 @@ import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.CalculatedEnrollmentStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.dto.pk.EnrollmentPK;
 import in.partake.resource.ServerErrorCode;
 
 import java.util.ArrayList;
@@ -112,8 +111,7 @@ public class EnrollmentDAOFacade {
     }
 
     public static ParticipationStatus getParticipationStatus(PartakeConnection con, IPartakeDAOs daos, String userId, String eventId) throws DAOException {
-        Enrollment enrollment = daos.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
-
+        Enrollment enrollment = daos.getEnrollmentAccess().findByEventIdAndUserId(con, eventId, userId);
         if (enrollment == null)
             return ParticipationStatus.NOT_ENROLLED;
         return enrollment.getStatus();
@@ -145,10 +143,11 @@ public class EnrollmentDAOFacade {
         String userId = user.getId();
         String eventId = event.getId();
 
-        Enrollment oldEnrollment = daos.getEnrollmentAccess().find(con, new EnrollmentPK(userId, eventId));
+        Enrollment oldEnrollment = daos.getEnrollmentAccess().findByEventIdAndUserId(con, eventId, userId);
         Enrollment newEnrollment;
         if (oldEnrollment == null) {
-            newEnrollment = new Enrollment(userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, new Date());
+            String id = daos.getEnrollmentAccess().getFreshId(con);
+            newEnrollment = new Enrollment(id, userId, eventId, comment, ParticipationStatus.NOT_ENROLLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, new Date());
         } else {
             newEnrollment = new Enrollment(oldEnrollment);
         }

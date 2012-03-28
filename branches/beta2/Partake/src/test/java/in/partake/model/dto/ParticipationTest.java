@@ -14,73 +14,73 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author skypencil (@eller86)
  */
 public final class ParticipationTest extends AbstractPartakeModelTest<Enrollment> {
-	Enrollment[] samples;
+    Enrollment[] samples;
 
-	@Before
-	public void createSamples() {
-		samples = new Enrollment[]{
-				new Enrollment(),
-				new Enrollment("userId0", "eventId0", "comment-a", ParticipationStatus.NOT_ENROLLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, new Date()),
-				new Enrollment("userId1", "eventId1", "comment-b", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.ABSENT, new Date()),
-				new Enrollment("userId2", "eventId2", "comment-c", ParticipationStatus.RESERVED, true, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()),
-				new Enrollment("userId3", "eventId3", "comment-d", ParticipationStatus.CANCELLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, new Date()),
-		};
-	}
+    @Before
+    public void createSamples() {
+        samples = new Enrollment[]{
+                new Enrollment(),
+                new Enrollment("id1", "userId0", "eventId0", "comment-a", ParticipationStatus.NOT_ENROLLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, new Date()),
+                new Enrollment("id2", "userId1", "eventId1", "comment-b", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.ABSENT, new Date()),
+                new Enrollment("id3", "userId2", "eventId2", "comment-c", ParticipationStatus.RESERVED, true, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date()),
+                new Enrollment("id4", "userId3", "eventId3", "comment-d", ParticipationStatus.CANCELLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, new Date()),
+        };
+    }
 
-	@Test
-	public void testCopyConstructor() {
-		for (Enrollment source : samples) {
-			// Participation class doesn't override #equals() method.
+    @Test
+    public void testCopyConstructor() {
+        for (Enrollment source : samples) {
+            // Participation class doesn't override #equals() method.
 //			Assert.assertEquals(source, new Participation(source));
 
-			Assert.assertEquals(source.getUserId(), new Enrollment(source).getUserId());
-			Assert.assertEquals(source.getComment(), new Enrollment(source).getComment());
-			Assert.assertEquals(source.getStatus(), new Enrollment(source).getStatus());
-			Assert.assertEquals(source.isVIP(), new Enrollment(source).isVIP());
-			Assert.assertEquals(source.getModificationStatus(), new Enrollment(source).getModificationStatus());
-			Assert.assertEquals(source.getModifiedAt(), new Enrollment(source).getModifiedAt());
-			if (source.getModifiedAt() != null) {
-				Assert.assertNotSame(source.getModifiedAt(), new Enrollment(source).getModifiedAt());
-			}
-		}
-	}
+            Assert.assertEquals(source.getUserId(), new Enrollment(source).getUserId());
+            Assert.assertEquals(source.getComment(), new Enrollment(source).getComment());
+            Assert.assertEquals(source.getStatus(), new Enrollment(source).getStatus());
+            Assert.assertEquals(source.isVIP(), new Enrollment(source).isVIP());
+            Assert.assertEquals(source.getModificationStatus(), new Enrollment(source).getModificationStatus());
+            Assert.assertEquals(source.getModifiedAt(), new Enrollment(source).getModifiedAt());
+            if (source.getModifiedAt() != null) {
+                Assert.assertNotSame(source.getModifiedAt(), new Enrollment(source).getModifiedAt());
+            }
+        }
+    }
 
-	@Test
-	public void testCopyConstructorByReflection() throws IllegalArgumentException, IllegalAccessException {
-		for (Enrollment source : samples) {
-			Enrollment copy = new Enrollment(source);
+    @Test
+    public void testCopyConstructorByReflection() throws IllegalArgumentException, IllegalAccessException {
+        for (Enrollment source : samples) {
+            Enrollment copy = new Enrollment(source);
 
-			for (Field field : Enrollment.class.getDeclaredFields()) {
-				if (!Modifier.isStatic(field.getModifiers())) {
-					field.setAccessible(true);
-					Assert.assertEquals(field.get(source), field.get(copy));
-				}
-			}
-		}
-	}
+            for (Field field : Enrollment.class.getDeclaredFields()) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    field.setAccessible(true);
+                    Assert.assertEquals(field.get(source), field.get(copy));
+                }
+            }
+        }
+    }
 
-	@Test(expected = NullPointerException.class)
-	public void testCopyConstructorByNullValue() {
-		new Enrollment((Enrollment) null);
-	}
+    @Test(expected = NullPointerException.class)
+    public void testCopyConstructorByNullValue() {
+        new Enrollment((Enrollment) null);
+    }
 
-	@Test
-	public void testCopyConstructorByFlozenInstance() {
-		Enrollment source = new Enrollment();
-		Assert.assertFalse(source.isFrozen());
+    @Test
+    public void testCopyConstructorByFlozenInstance() {
+        Enrollment source = new Enrollment();
+        Assert.assertFalse(source.isFrozen());
 
-		source.freeze();
-		Assert.assertTrue(source.isFrozen());
+        source.freeze();
+        Assert.assertTrue(source.isFrozen());
 
-		Assert.assertFalse(new Enrollment(source).isFrozen());
-	}
+        Assert.assertFalse(new Enrollment(source).isFrozen());
+    }
 
-	@Override
-	protected Enrollment createModel() {
-		return new Enrollment();
-	}
+    @Override
+    protected Enrollment createModel() {
+        return new Enrollment();
+    }
 }
