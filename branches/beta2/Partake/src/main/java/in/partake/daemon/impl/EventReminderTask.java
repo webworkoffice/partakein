@@ -28,8 +28,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-class TwitterReminderTask extends Transaction<Void> implements IPartakeDaemonTask {
-    private static final Logger logger = Logger.getLogger(TwitterReminderTask.class);
+class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask {
+    private static final Logger logger = Logger.getLogger(EventReminderTask.class);
 
     @Override
     public void run() throws Exception {
@@ -41,7 +41,7 @@ class TwitterReminderTask extends Transaction<Void> implements IPartakeDaemonTas
         String topPath = PartakeProperties.get().getTopPath();
         Date now = TimeUtil.getCurrentDate();
 
-        // TODO: 開始時刻が現在時刻より後の event のみを取り出したい
+        // TODO: 開始時刻が現在時刻より後の event のみを取り出したい、というかリマインダーを送るべりイベントのみを取り出したい
         DataIterator<Event> it = daos.getEventAccess().getIterator(con);
         try {
             while (it.hasNext()) {
