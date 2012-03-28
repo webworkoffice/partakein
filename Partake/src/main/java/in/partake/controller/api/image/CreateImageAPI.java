@@ -37,8 +37,10 @@ public class CreateImageAPI extends AbstractPartakeAPI {
         UserEx user = ensureLogin();
         ensureValidSessionToken();
 
-        if (file == null || contentType == null)
+        if (file == null)
             return renderInvalid(UserErrorCode.INVALID_NOIMAGE);
+        if (contentType == null)
+            return renderInvalid(UserErrorCode.INVALID_IMAGE_CONTENTTYPE);
 
         // IE sends jpeg file using contentType = "image/pjpeg". We should handle this here.
         if ("image/pjpeg".equals(contentType))
