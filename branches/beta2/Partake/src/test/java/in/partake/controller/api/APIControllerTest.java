@@ -54,7 +54,7 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
         Assert.assertEquals(200, response.getStatus());
 
         JSONObject obj = getJSON(proxy);
-        Assert.assertEquals("ok", obj.get("result"));
+        assertThat(obj.getString("result"), is("ok"));
     }
 
     @Deprecated

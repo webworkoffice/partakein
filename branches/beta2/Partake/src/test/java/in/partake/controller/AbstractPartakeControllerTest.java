@@ -14,6 +14,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.ImageData;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.resource.Constants;
@@ -241,6 +242,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
             @Override
             protected Enrollment doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getEnrollmentAccess().findByEventIdAndUserId(con, eventId, userId);
+            }
+        }.execute();
+    }
+
+    protected ImageData loadImage(final String imageId) throws DAOException, PartakeException {
+        return new DBAccess<ImageData>() {
+            @Override
+            protected ImageData doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getImageAccess().find(con, imageId);
             }
         }.execute();
     }
