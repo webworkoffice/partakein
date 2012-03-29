@@ -35,7 +35,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
     @Override
     protected Enrollment create(long pkNumber, String pkSalt, int objNumber) {
         return new Enrollment(
-                "id" + pkSalt + pkNumber,
+                new UUID(("id" + pkSalt).hashCode(), pkNumber).toString(),
                 "userId" + pkSalt + pkNumber,
                 "eventId" + pkSalt + pkNumber,
                 "comment" + objNumber,
