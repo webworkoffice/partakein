@@ -130,6 +130,10 @@ public class Enrollment extends PartakeModel<Enrollment> {
     // ----------------------------------------------------------------------
     //
 
+    public String getId() {
+        return id;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -166,6 +170,10 @@ public class Enrollment extends PartakeModel<Enrollment> {
 
     public Date getModifiedAt() {
         return modifiedAt;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setUserId(String userId) {
