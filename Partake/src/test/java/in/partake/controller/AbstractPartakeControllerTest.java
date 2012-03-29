@@ -9,11 +9,13 @@ import in.partake.controller.base.AbstractPartakeController;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
+import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.Event;
 import in.partake.model.dto.ImageData;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProviderConstants;
@@ -216,6 +218,19 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
         }.execute();
     }
 
+    protected String storeEvent(final Event event) throws DAOException, PartakeException {
+        return new Transaction<String>() {
+            protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException ,PartakeException {
+                if (event.getId() == null) {
+                    String eventId = daos.getEventAccess().getFreshId(con);
+                    event.setId(eventId);
+                }
+                daos.getEventAccess().put(con, event);
+                return event.getId();
+            };
+        }.execute();
+    }
+
     protected List<String> loadOpenIDIdentifiers(final String userId) throws DAOException, PartakeException {
         return new DBAccess<List<String>>() {
             @Override
@@ -242,6 +257,20 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
             @Override
             protected Enrollment doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getEnrollmentAccess().findByEventIdAndUserId(con, eventId, userId);
+            }
+        }.execute();
+    }
+
+    protected String storeEnrollment(final Enrollment enrollment) throws DAOException, PartakeException {
+        return new Transaction<String>() {
+            @Override
+            protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                if (enrollment.getId() == null) {
+                    String enrollmentId = daos.getEnrollmentAccess().getFreshId(con);
+                    enrollment.setId(enrollmentId);
+                }
+                daos.getEnrollmentAccess().put(con, enrollment);
+                return enrollment.getId();
             }
         }.execute();
     }
