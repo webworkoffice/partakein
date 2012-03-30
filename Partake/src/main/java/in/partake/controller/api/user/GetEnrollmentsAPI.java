@@ -41,14 +41,9 @@ public class GetEnrollmentsAPI extends AbstractPartakeAPI {
         JSONArray statuses = new JSONArray();
         for (Pair<Event, CalculatedEnrollmentStatus> eventStatus : transaction.getStatuses()) {
             if (eventStatus.getFirst().isPrivate() || eventStatus.getFirst().isPreview()) {
-                // TODO: We should consider how join EventEntities and EnrollmentEntities.
+                // TODO: We should consider how to join EventEntities and EnrollmentEntities.
                 // If the event is private (or draft), its information does not be fed.
                 // However, we show the existence of the event now.
-                JSONObject obj = new JSONObject();
-                JSONObject event = new JSONObject();
-                event.put("isPrivate", true);
-                obj.put("event", event);
-                obj.put("status", eventStatus.getSecond().toString());
             } else {
                 JSONObject obj = new JSONObject();
                 obj.put("event", eventStatus.getFirst().toSafeJSON());
