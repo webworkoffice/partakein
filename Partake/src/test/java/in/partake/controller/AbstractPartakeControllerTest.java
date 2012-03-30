@@ -157,6 +157,14 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
         Assert.assertEquals(200, response.getStatus());
     }
 
+    protected void assertResultSuccess(ActionProxy proxy, String jspLocation) throws Exception {
+        Assert.assertTrue(proxy.getAction() instanceof AbstractPartakeAction);
+        Assert.assertEquals(200, response.getStatus());
+
+        AbstractPartakeAction action = (AbstractPartakeAction) proxy.getAction();
+        assertThat(jspLocation, is(action.getLocation()));
+    }
+
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {
         // Assert.assertEquals(400, response.getStatus());
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/invalid"));

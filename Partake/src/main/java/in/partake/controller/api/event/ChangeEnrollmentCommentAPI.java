@@ -31,6 +31,7 @@ public class ChangeEnrollmentCommentAPI extends AbstractPartakeAPI {
     private String changeParticipationStatus(ParticipationStatus status) throws PartakeException, DAOException {
         UserEx user = ensureLogin();
         String eventId = getValidEventIdParameter();
+        ensureValidSessionToken();
 
         // If the comment does not exist, we use empty string instead.
         String comment = getParameter("comment");
