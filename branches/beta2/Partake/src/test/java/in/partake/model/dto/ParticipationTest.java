@@ -63,11 +63,6 @@ public final class ParticipationTest extends AbstractPartakeModelTest<Enrollment
         }
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testCopyConstructorByNullValue() {
-        new Enrollment((Enrollment) null);
-    }
-
     @Test
     public void testCopyConstructorByFlozenInstance() {
         Enrollment source = new Enrollment();
