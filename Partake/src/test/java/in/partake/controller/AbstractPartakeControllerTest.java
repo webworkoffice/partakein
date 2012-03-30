@@ -218,6 +218,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
         }.execute();
     }
 
+    protected Event loadEvent(final String eventId) throws DAOException, PartakeException {
+        return new DBAccess<Event>() {
+            @Override
+            protected Event doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getEventAccess().find(con, eventId);
+            }
+        }.execute();
+    }
+
     protected String storeEvent(final Event event) throws DAOException, PartakeException {
         return new Transaction<String>() {
             protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException ,PartakeException {

@@ -40,9 +40,7 @@ public class FeedRecentEventsAction extends AbstractFeedPageAction {
             List<EventEx> events = new GetEventsTransaction(eventIds).execute();
             InputStream is = createFeed(feed, events);
 
-            return renderInlineStream(is, "application/rss+xml");
-        } catch (DAOException e) {
-            return renderError(ServerErrorCode.DB_ERROR, e);
+            return renderInlineStream(is, "application/rss+xml; charset=utf-8");
         } catch (IOException e) {
             return renderError(ServerErrorCode.ERROR_IO, e);
         } catch (FeedException e) {

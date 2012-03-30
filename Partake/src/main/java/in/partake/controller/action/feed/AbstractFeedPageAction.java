@@ -3,6 +3,7 @@ package in.partake.controller.action.feed;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.EventEx;
 import in.partake.model.dto.EventActivity;
+import in.partake.resource.PartakeProperties;
 import in.partake.view.util.Helper;
 
 import java.io.ByteArrayInputStream;
@@ -30,7 +31,7 @@ public abstract class AbstractFeedPageAction extends AbstractPartakeAction{
 
         for (EventEx event : events) {
             if (event == null) { continue; }
-            if (event.isPrivate()) { continue; }
+            if (event.isPrivate() || event.isPreview()) { continue; }
 
             SyndContent content = new SyndContentImpl();
             content.setType("text/html");
