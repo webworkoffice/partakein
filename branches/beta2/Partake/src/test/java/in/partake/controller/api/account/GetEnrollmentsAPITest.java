@@ -29,10 +29,6 @@ public class GetEnrollmentsAPITest extends APIControllerTest {
         List<String> eventIds = prepareEvents(20);
         prepareEnrollment(DEFAULT_USER_ID, eventIds);
 
-        for (String eventId : eventIds) {
-            System.out.println(eventId);
-        }
-
         ActionProxy proxy = getActionProxy("/api/account/enrollments");
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "limit", "10");
