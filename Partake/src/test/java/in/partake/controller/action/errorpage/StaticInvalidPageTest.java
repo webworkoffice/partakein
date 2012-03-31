@@ -31,7 +31,7 @@ public class StaticInvalidPageTest extends AbstractPartakeControllerTest {
 
     @Test
     public void testAccessWithErrorCode() throws Exception {
-        ActionProxy proxy = getActionProxy("/error");
+        ActionProxy proxy = getActionProxy("/invalid");
         addParameter(proxy, "errorCode", UserErrorCode.INTENTIONAL_USER_ERROR.getErrorCode());
         proxy.execute();
         assertResultSuccess(proxy);
@@ -43,7 +43,7 @@ public class StaticInvalidPageTest extends AbstractPartakeControllerTest {
 
     @Test
     public void testAccessWithInvalidErrorCode() throws Exception {
-        ActionProxy proxy = getActionProxy("/error");
+        ActionProxy proxy = getActionProxy("/invalid");
         addParameter(proxy, "errorCode", "hogehoge");
         proxy.execute();
         assertResultSuccess(proxy);
