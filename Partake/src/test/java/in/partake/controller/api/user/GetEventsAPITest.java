@@ -67,12 +67,38 @@ public class GetEventsAPITest extends APIControllerTest {
         }.execute();
     }
 
-
     @Test
-    public void testToGetEvents() throws Exception {
+    public void testToGetEventsForOwner() throws Exception {
         ActionProxy proxy = getActionProxy("/api/user/events");
         addParameter(proxy, "userId", EVENT_OWNER_ID);
         addParameter(proxy, "queryType", "owner");
+        proxy.execute();
+        assertResultOK(proxy);
+
+        JSONObject obj = getJSON(proxy);
+        assertThat(obj.getInt("numTotalEvents"), is(N - 6));
+        assertThat(obj.getJSONArray("eventStatuses"), is(not(nullValue())));
+        JSONArray array = obj.getJSONArray("eventStatuses");
+        assertThat(array.size(), is(10));
+
+        int pos = N - 1;
+        for (int i = 0; i < array.size(); ++i) {
+            while (pos % 8 == 0 || pos % 8 == 1)
+                pos -= 1;
+
+            JSONObject eventStatus = array.getJSONObject(i);
+            JSONObject event = eventStatus.getJSONObject("event");
+            assertThat(event.getString("id"), is(ids.get(pos)));
+
+            pos -= 1;
+        }
+    }
+
+    @Test
+    public void testToGetEventsForEditor() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/user/events");
+        addParameter(proxy, "userId", EVENT_EDITOR_ID);
+        addParameter(proxy, "queryType", "editor");
         proxy.execute();
         assertResultOK(proxy);
 
