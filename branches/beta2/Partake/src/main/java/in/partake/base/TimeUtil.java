@@ -125,6 +125,10 @@ public final class TimeUtil {
         return new Date(date.getTime() + 1000 * 3600 * 24);
     }
 
+    public static Date halfDayAfter(Date date) {
+        return new Date(date.getTime() + 1000 * 3600 * 12);
+    }
+
     public static Date dateFromTimeString(String timeString) {
         try {
             return new Date(Long.parseLong(timeString));

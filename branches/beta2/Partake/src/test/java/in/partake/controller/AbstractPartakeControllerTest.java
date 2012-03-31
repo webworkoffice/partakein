@@ -13,8 +13,10 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.UserDAOFacade;
+import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.ImageData;
 import in.partake.model.dto.UserPreference;
@@ -299,5 +301,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
                 return daos.getImageAccess().find(con, imageId);
             }
         }.execute();
+    }
+
+    protected List<Envelope> loadEnvelopes() throws DAOException, PartakeException {
+        return new DBAccess<List<Envelope>>() {
+            @Override
+            protected List<Envelope> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return DAOUtil.convertToList(daos.getEnvelopeAccess().getIterator(con));
+            }
+        }.execute();
+
     }
 }

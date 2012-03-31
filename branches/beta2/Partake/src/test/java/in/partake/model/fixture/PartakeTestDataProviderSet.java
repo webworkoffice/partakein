@@ -8,6 +8,7 @@ import in.partake.model.fixture.impl.CalendarLinkageTestDataProvider;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
 import in.partake.model.fixture.impl.EnvelopeTestDataProvider;
+import in.partake.model.fixture.impl.EventReminderTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.model.fixture.impl.ImageTestDataProvider;
 import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
@@ -31,6 +32,7 @@ public class PartakeTestDataProviderSet {
     private EnrollmentTestDataProvider enrollmentProvider;
     private EnvelopeTestDataProvider envelopeTestDataProvider;
     private EventTestDataProvider eventProvider;
+    private EventReminderTestDataProvider eventReminderProvider;
     private ImageTestDataProvider imageProvider;
     private OpenIDLinkageTestDataProvider openIDLinkageProvider;
     private TwitterLinkageTestDataProvider twitterLinkageProvider;
@@ -46,6 +48,7 @@ public class PartakeTestDataProviderSet {
         providers.add(enrollmentProvider = createEnrollmentTestDataProvider());
         providers.add(envelopeTestDataProvider = createEnvelopeTestDataProvider());
         providers.add(eventProvider = createEventTestDataProvider());
+        providers.add(eventReminderProvider = createEventReminderTestDataProvider());
         providers.add(imageProvider = createImageTestDataProvider());
         providers.add(openIDLinkageProvider = createOpenIDLinkageTestDataProvider());
         providers.add(twitterLinkageProvider = createTwitterLinkageTestDataProvider());
@@ -81,6 +84,10 @@ public class PartakeTestDataProviderSet {
 
     public EventTestDataProvider getEventProvider() {
         return eventProvider;
+    }
+
+    public EventReminderTestDataProvider getEventReminderProvider() {
+        return eventReminderProvider;
     }
 
     public ImageTestDataProvider getImageProvider() {
@@ -121,6 +128,10 @@ public class PartakeTestDataProviderSet {
 
     private EventTestDataProvider createEventTestDataProvider() {
         return new EventTestDataProvider();
+    }
+
+    private EventReminderTestDataProvider createEventReminderTestDataProvider() {
+        return new EventReminderTestDataProvider();
     }
 
     private EnvelopeTestDataProvider createEnvelopeTestDataProvider() {
