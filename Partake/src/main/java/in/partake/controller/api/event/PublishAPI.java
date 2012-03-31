@@ -23,6 +23,7 @@ public class PublishAPI extends AbstractPartakeAPI {
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
         String eventId = getValidEventIdParameter();
+        ensureValidSessionToken();
 
         Event event = new PublishTransaction(user, eventId).execute();
         IEventSearchService searchService = PartakeApp.getEventSearchService();
@@ -56,6 +57,7 @@ class PublishTransaction extends Transaction<Event> {
         if (!event.isPreview())
             throw new PartakeException(UserErrorCode.EVENT_ALREADY_PUBLISHED);
 
+        event = new Event(event);
         event.setPreview(false);
         daos.getEventAccess().put(con, event);
 

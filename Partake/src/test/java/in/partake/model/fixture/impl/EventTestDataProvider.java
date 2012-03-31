@@ -81,5 +81,11 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
                 "address", "unique identifier -- " + UNIQUE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,
                 now, now, -1));
+
+        dao.put(con, new Event(UNPUBLISHED_EVENT_ID, "short-id", "title", "summary", category,
+                late, late, late, 0, "url", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, null, true, false,
+                now, now, -1));
     }
 }

@@ -97,6 +97,17 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
         Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
     }
 
+    protected void assertResultForbidden(ActionProxy proxy, UserErrorCode ec) throws Exception {
+        assert ec.getStatusCode() == 403;
+        // status code should be 403
+        Assert.assertEquals(403, response.getStatus());
+
+        JSONObject obj = getJSON(proxy);
+        Assert.assertEquals("forbidden", obj.get("result"));
+        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
+        // TODO: Check errorCode here.
+    }
+
     @Deprecated
     protected void assertResultError(ActionProxy proxy) throws Exception {
         Assert.assertEquals(500, response.getStatus());
