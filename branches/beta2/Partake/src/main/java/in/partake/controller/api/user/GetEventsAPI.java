@@ -78,6 +78,9 @@ class GetEventsTransaction extends DBAccess<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        if (!daos.getUserAccess().exists(con, userId))
+            throw new PartakeException(UserErrorCode.INVALID_USER_ID);
+
         // If |user| does not publish their events, return immediately.
         UserPreference pref = daos.getUserPreferenceAccess().find(con, userId);
         if (pref == null)
