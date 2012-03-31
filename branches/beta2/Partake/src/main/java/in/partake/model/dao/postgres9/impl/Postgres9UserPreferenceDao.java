@@ -14,7 +14,7 @@ import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.UserPreference;
 import net.sf.json.JSONObject;
 
-class EntityUserPreferenceMapper extends Postgres9EntityDataMapper<UserPreference> {   
+class EntityUserPreferenceMapper extends Postgres9EntityDataMapper<UserPreference> {
     public UserPreference map(JSONObject obj) {
         return new UserPreference(obj).freeze();
     }
@@ -50,7 +50,7 @@ public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPre
         // TODO: Why User does not have createdAt and modifiedAt?
         Postgres9Entity entity = new Postgres9Entity(pref.getUserId(), CURRENT_VERSION, pref.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, pref.getUserId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
     }
@@ -58,6 +58,11 @@ public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPre
     @Override
     public UserPreference find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
@@ -69,7 +74,7 @@ public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPre
     public DataIterator<UserPreference> getIterator(PartakeConnection con) throws DAOException {
         return new MapperDataIterator<Postgres9Entity, UserPreference>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);

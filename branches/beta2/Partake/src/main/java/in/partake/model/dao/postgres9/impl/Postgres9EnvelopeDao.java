@@ -14,7 +14,7 @@ import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.Envelope;
 import net.sf.json.JSONObject;
 
-class EntityEnvelopeMapper extends Postgres9EntityDataMapper<Envelope> {   
+class EntityEnvelopeMapper extends Postgres9EntityDataMapper<Envelope> {
     public Envelope map(JSONObject obj) {
         return new Envelope(obj).freeze();
     }
@@ -50,7 +50,7 @@ public class Postgres9EnvelopeDao extends Postgres9Dao implements IEnvelopeAcces
         // TODO: Why User does not have createdAt and modifiedAt?
         Postgres9Entity entity = new Postgres9Entity(envelope.getEnvelopeId(), CURRENT_VERSION, envelope.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, envelope.getEnvelopeId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
     }
@@ -63,6 +63,11 @@ public class Postgres9EnvelopeDao extends Postgres9Dao implements IEnvelopeAcces
 
         JSONObject json = JSONObject.fromObject(new String(entity.getBody(), UTF8));
         return new Envelope(json).freeze();
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class Postgres9EnvelopeDao extends Postgres9Dao implements IEnvelopeAcces
     public String getFreshId(PartakeConnection con) throws DAOException {
         return entityDao.getFreshId((Postgres9Connection) con);
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);

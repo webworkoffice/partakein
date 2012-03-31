@@ -93,6 +93,11 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
     }
 
     @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
+    }
+
+    @Override
     public void remove(PartakeConnection con, String id) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.remove(pcon, id);

@@ -298,4 +298,26 @@ public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T exte
             }
         }.execute();
     }
+
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public final void testToExist() throws Exception {
+        new DBAccess<T>() {
+            @Override
+            protected T doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                T t1 = create(System.currentTimeMillis(), "exist", 0);
+                T t2 = create(System.currentTimeMillis(), "not-exist", 0);
+
+                con.beginTransaction();
+                dao.put(con, t1);
+                con.commit();
+
+                assertThat(dao.exists(con, (PK) t1.getPrimaryKey()), is(true));
+                assertThat(dao.exists(con, (PK) t2.getPrimaryKey()), is(false));
+
+                return null;
+            }
+        }.execute();
+    }
 }

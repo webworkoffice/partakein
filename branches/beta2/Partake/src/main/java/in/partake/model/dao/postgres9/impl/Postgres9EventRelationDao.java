@@ -24,7 +24,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-class EntityEventRelationMapper extends Postgres9EntityDataMapper<EventRelation> {   
+class EntityEventRelationMapper extends Postgres9EntityDataMapper<EventRelation> {
     public EventRelation map(JSONObject obj) {
         return new EventRelation(obj).freeze();
     }
@@ -65,7 +65,7 @@ public class Postgres9EventRelationDao extends Postgres9Dao implements IEventRel
     @Override
     public void put(PartakeConnection con, EventRelation relation) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "srcEventId", "dstEventId" }, new Object[] { relation.getSrcEventId(), relation.getDstEventId() }); 
+        String id = indexDao.find(pcon, "id", new String[] { "srcEventId", "dstEventId" }, new Object[] { relation.getSrcEventId(), relation.getDstEventId() });
         if (id == null)
             id = entityDao.getFreshId(pcon);
 
@@ -82,7 +82,7 @@ public class Postgres9EventRelationDao extends Postgres9Dao implements IEventRel
     @Override
     public EventRelation find(PartakeConnection con, EventRelationPK pk) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "srcEventId", "dstEventId" }, new Object[] { pk.getSrcEventId(), pk.getDstEventId() }); 
+        String id = indexDao.find(pcon, "id", new String[] { "srcEventId", "dstEventId" }, new Object[] { pk.getSrcEventId(), pk.getDstEventId() });
         if (id == null)
             return null;
 
@@ -94,9 +94,19 @@ public class Postgres9EventRelationDao extends Postgres9Dao implements IEventRel
     }
 
     @Override
+    public boolean exists(PartakeConnection con, EventRelationPK pk) throws DAOException {
+        Postgres9Connection pcon = (Postgres9Connection) con;
+        String id = indexDao.find(pcon, "id", new String[] { "srcEventId", "dstEventId" }, new Object[] { pk.getSrcEventId(), pk.getDstEventId() });
+        if (id == null)
+            return false;
+
+        return entityDao.exists((Postgres9Connection) con, id);
+    }
+
+    @Override
     public void remove(PartakeConnection con, EventRelationPK pk) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "srcEventId", "dstEventId" }, new Object[] { pk.getSrcEventId(), pk.getDstEventId() }); 
+        String id = indexDao.find(pcon, "id", new String[] { "srcEventId", "dstEventId" }, new Object[] { pk.getSrcEventId(), pk.getDstEventId() });
         if (id == null)
             return;
 
@@ -106,7 +116,7 @@ public class Postgres9EventRelationDao extends Postgres9Dao implements IEventRel
     void removeById(PartakeConnection con, String id) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.remove(pcon, id);
-        indexDao.remove(pcon, "id", id);        
+        indexDao.remove(pcon, "id", id);
     }
 
     @Override
@@ -159,7 +169,7 @@ public class Postgres9EventRelationDao extends Postgres9Dao implements IEventRel
             it.close();
         }
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);

@@ -17,7 +17,7 @@ import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.Comment;
 import net.sf.json.JSONObject;
 
-class EntityCommentMapper extends Postgres9EntityDataMapper<Comment> {   
+class EntityCommentMapper extends Postgres9EntityDataMapper<Comment> {
     public Comment map(JSONObject obj) {
         return new Comment(obj).freeze();
     }
@@ -27,11 +27,11 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
     static final String TABLE_NAME = "CommentEntities";
     static final int CURRENT_VERSION = 1;
     static final String INDEX_TABLE_NAME = "CommentIndex";
-    
+
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
     private final EntityCommentMapper mapper;
-    
+
     public Postgres9CommentDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
@@ -42,7 +42,7 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
     public void initialize(PartakeConnection con) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.initialize(pcon);
-        
+
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, eventId TEXT NOT NULL, createdAt TIMESTAMP NOT NULL)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventId" + " ON " + INDEX_TABLE_NAME + "(eventId, createdAt)");
@@ -58,7 +58,7 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
     @Override
     public void put(PartakeConnection con, Comment comment) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        
+
         Postgres9Entity entity = new Postgres9Entity(comment.getId(), CURRENT_VERSION, comment.toJSON().toString().getBytes(UTF8), null, comment.getCreatedAt());
         if (entityDao.exists(pcon, comment.getId()))
             entityDao.update(pcon, entity);
@@ -71,6 +71,11 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
     @Override
     public Comment find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
@@ -98,7 +103,7 @@ public class Postgres9CommentDao extends Postgres9Dao implements ICommentAccess 
         Postgres9IdMapper<Comment> idMapper = new Postgres9IdMapper<Comment>((Postgres9Connection) con, mapper, entityDao);
         return new Postgres9DataIterator<Comment>(idMapper, psars);
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
