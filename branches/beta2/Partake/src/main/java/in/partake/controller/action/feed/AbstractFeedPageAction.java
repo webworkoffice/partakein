@@ -3,7 +3,6 @@ package in.partake.controller.action.feed;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.EventEx;
 import in.partake.model.dto.EventActivity;
-import in.partake.resource.PartakeProperties;
 import in.partake.view.util.Helper;
 
 import java.io.ByteArrayInputStream;
