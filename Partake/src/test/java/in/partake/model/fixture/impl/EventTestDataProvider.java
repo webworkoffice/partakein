@@ -29,7 +29,7 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
     public Event create(long pkNumber, String pkSalt, int objNumber) {
         Date now = new Date(1L);
         Date beginDate = now;
-        String url = "http://localhost:8080/";
+        String url = "http://www.example.com/";
         String place = "";
         String address = "";
         String description = "";
@@ -59,31 +59,31 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
         String category = EventCategory.getCategories().get(0).getKey();
 
         dao.put(con, new Event(DEFAULT_EVENT_ID, "short-id", "title", "summary", category,
-                late, late, late, 0, "url", "place",
+                late, late, late, 0, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, null, false, false,
                 now, now, -1));
 
         dao.put(con, new Event(PRIVATE_EVENT_ID, "short-id", "title", "summary", category,
-                late, late, late, 0, "url", "place",
+                late, late, late, 0, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, true, "passcode", false, false,
                 now, now, -1));
 
         dao.put(con, new Event(JAPANESE_EVENT_ID, "short-id", "title", "summary", category,
-                late, late, late, 0, "url", "place",
+                late, late, late, 0, "http://www.example.com/", "place",
                 "address", "unique identifier -- " + JAPANESE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,
                 now, now, -1));
 
         dao.put(con, new Event(UNIQUEIDENTIFIER_EVENT_ID, "short-id", "title", "summary", category,
-                late, late, late, 0, "url", "place",
+                late, late, late, 0, "http://www.example.com/", "place",
                 "address", "unique identifier -- " + UNIQUE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,
                 now, now, -1));
 
         dao.put(con, new Event(UNPUBLISHED_EVENT_ID, "short-id", "title", "summary", category,
-                late, late, late, 0, "url", "place",
+                late, late, late, 0, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, null, true, false,
                 now, now, -1));
