@@ -27,7 +27,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-class EntityEventMapper extends Postgres9EntityDataMapper<Event> {   
+class EntityEventMapper extends Postgres9EntityDataMapper<Event> {
     public Event map(JSONObject obj) {
         return new Event(obj).freeze();
     }
@@ -52,12 +52,12 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     public void initialize(PartakeConnection con) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.initialize(pcon);
-        
+
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME +
                     "(id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, editorNames TEXT, draft BOOL NOT NULL, isPrivate BOOL NOT NULL, beginDate TIMESTAMP NOT NULL)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "OwnerId"     + " ON " + INDEX_TABLE_NAME + "(ownerId, draft, beginDate)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EditorNames" + " ON " + INDEX_TABLE_NAME + "(editorNames, draft, beginDate)");            
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EditorNames" + " ON " + INDEX_TABLE_NAME + "(editorNames, draft, beginDate)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "Draft"       + " ON " + INDEX_TABLE_NAME + "(draft)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "isPrivate"   + " ON " + INDEX_TABLE_NAME + "(isPrivate)");
         }
@@ -76,18 +76,23 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
 
         Postgres9Entity entity = new Postgres9Entity(event.getId(), CURRENT_VERSION, event.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, event.getId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
 
-        indexDao.put(pcon, 
-                new String[] {"id", "ownerId", "editorNames", "draft", "isPrivate", "beginDate" }, 
-                new Object[] { event.getId(), event.getOwnerId(), event.getManagerScreenNames(), event.isPreview(), event.isPrivate(), event.getBeginDate() });        
+        indexDao.put(pcon,
+                new String[] {"id", "ownerId", "editorNames", "draft", "isPrivate", "beginDate" },
+                new Object[] { event.getId(), event.getOwnerId(), event.getManagerScreenNames(), event.isPreview(), event.isPrivate(), event.getBeginDate() });
     }
 
     @Override
     public Event find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
@@ -101,7 +106,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     public DataIterator<Event> getIterator(PartakeConnection con) throws DAOException {
         return new MapperDataIterator<Postgres9Entity, Event>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
-    
+
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
         return entityDao.getFreshId((Postgres9Connection) con);
@@ -112,7 +117,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         // TODO: should be implemented.
         return false;
     }
-    
+
     // TODO: Why not DataIterator?
     @Override
     public List<Event> findByOwnerId(PartakeConnection con, String userId) throws DAOException {
@@ -121,7 +126,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                 new Object[] { userId });
 
         Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
-        
+
         try {
             ArrayList<Event> events = new ArrayList<Event>();
             DataIterator<Event> it = new Postgres9DataIterator<Event>(idMapper, psars);
@@ -131,7 +136,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                     continue;
                 events.add(event);
             }
-            
+
             return events;
         } finally {
             psars.close();
@@ -141,13 +146,13 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     @Override
     public List<Event> findByOwnerId(PartakeConnection con, String userId, EventFilterCondition criteria, int offset, int limit) throws DAOException {
         String draftSql = conditionClauseForCriteria(criteria);
-        
+
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ownerId = ? " + draftSql + " ORDER BY beginDate DESC OFFSET ? LIMIT ?",
                 new Object[] { userId, offset, limit });
 
         Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
-        
+
         try {
             ArrayList<Event> events = new ArrayList<Event>();
             DataIterator<Event> it = new Postgres9DataIterator<Event>(idMapper, psars);
@@ -157,16 +162,16 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                     continue;
                 events.add(event);
             }
-            
+
             return events;
         } finally {
             psars.close();
         }
     }
-    
+
     @Override
     public DataIterator<Event> getIterator(PartakeConnection con, EventFilterCondition condition) throws DAOException {
-        String draftSql = conditionClauseForCriteria(condition); 
+        String draftSql = conditionClauseForCriteria(condition);
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE 1 = 1 " + draftSql + " ORDER BY beginDate DESC",
                 new Object[] {});
@@ -184,7 +189,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                 new Object[] { "%" + screenName + "%" });
 
         Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
-        
+
         try {
             ArrayList<Event> events = new ArrayList<Event>();
             DataIterator<Event> it = new Postgres9DataIterator<Event>(idMapper, psars);
@@ -195,7 +200,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                 if (event.isManager(screenName))
                     events.add(event);
             }
-            
+
             return events;
         } finally {
             psars.close();
@@ -211,7 +216,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                 new Object[] { "%" + screenName + "%", offset, limit });
 
         Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
-        
+
         try {
             ArrayList<Event> events = new ArrayList<Event>();
             DataIterator<Event> it = new Postgres9DataIterator<Event>(idMapper, psars);
@@ -222,18 +227,18 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                 if (event.isManager(screenName))
                     events.add(event);
             }
-            
+
             return events;
         } finally {
             psars.close();
         }
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
     }
-    
+
     @Override
     public int count(PartakeConnection con, EventFilterCondition condition) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
@@ -255,7 +260,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         assert false;
         throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
     }
-    
+
     @Override
     public int countEventsByOwnerId(PartakeConnection con, String userId, EventFilterCondition criteria) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
@@ -271,20 +276,20 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         case PUBLIC_EVENT_ONLY:
             return indexDao.count(pcon, new String[] { "ownerId", "isPrivate" }, new Object[] { userId, false });
         case PUBLISHED_PUBLIC_EVENT_ONLY:
-            return indexDao.count(pcon, new String[] { "ownerId", "draft", "isPrivate" }, new Object[] { userId, false, false });            
+            return indexDao.count(pcon, new String[] { "ownerId", "draft", "isPrivate" }, new Object[] { userId, false, false });
         }
-        
+
         assert false;
         throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
     }
-    
+
     @Override
     public int countEventsByScreenName(PartakeConnection con, String screenName, EventFilterCondition criteria) throws DAOException {
         String condition = conditionClauseForCriteria(criteria);
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT count(1) FROM " + INDEX_TABLE_NAME + " WHERE editorNames LIKE ? " + condition,
                 new Object[] { "%" + screenName + "%" });
-        
+
         try {
             ResultSet rs = psars.getResultSet();
             if (rs.next())
@@ -297,7 +302,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
             psars.close();
         }
     }
-    
+
     private String conditionClauseForCriteria(EventFilterCondition criteria) {
         switch (criteria) {
         case ALL_EVENTS:
@@ -313,7 +318,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         case PUBLISHED_PUBLIC_EVENT_ONLY:
             return " AND draft = false AND isPrivate = false";
         }
-        
+
         return "";
     }
 }

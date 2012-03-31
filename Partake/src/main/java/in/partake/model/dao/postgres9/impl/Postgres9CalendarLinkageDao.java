@@ -15,7 +15,7 @@ import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.CalendarLinkage;
 import net.sf.json.JSONObject;
 
-class EntityCalendarLinkageMapper extends Postgres9EntityDataMapper<CalendarLinkage> {   
+class EntityCalendarLinkageMapper extends Postgres9EntityDataMapper<CalendarLinkage> {
     public CalendarLinkage map(JSONObject obj) {
         return new CalendarLinkage(obj).freeze();
     }
@@ -24,13 +24,13 @@ class EntityCalendarLinkageMapper extends Postgres9EntityDataMapper<CalendarLink
 public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalendarLinkageAccess {
     static final String TABLE_NAME = "CalendarLinkageEntities";
     static final int CURRENT_VERSION = 1;
-    
+
     static final String INDEX_TABLE_NAME = "CalendarLinkageIndex";
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao userIndexDao;
     private final EntityCalendarLinkageMapper mapper;
-    
+
     public Postgres9CalendarLinkageDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.userIndexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
@@ -44,7 +44,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
         Postgres9Connection pcon = (Postgres9Connection) con;
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             userIndexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL)");
-            userIndexDao.createIndex(pcon, "CREATE INDEX "+ INDEX_TABLE_NAME + "UserId ON " + INDEX_TABLE_NAME + "(userId)");            
+            userIndexDao.createIndex(pcon, "CREATE INDEX "+ INDEX_TABLE_NAME + "UserId ON " + INDEX_TABLE_NAME + "(userId)");
         }
     }
 
@@ -60,7 +60,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
 
         Postgres9Entity entity = new Postgres9Entity(linkage.getId(), CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, linkage.getId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
         userIndexDao.put(pcon, new String[] { "id", "userId" }, new String[] { linkage.getId(), linkage.getUserId() });
@@ -72,11 +72,16 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
     }
 
     @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
+    }
+
+    @Override
     public void remove(PartakeConnection con, String id) throws DAOException {
         entityDao.remove((Postgres9Connection) con, id);
         userIndexDao.remove((Postgres9Connection) con, "id", id);
     }
-    
+
 
     @Override
     public DataIterator<CalendarLinkage> getIterator(PartakeConnection con) throws DAOException {
@@ -97,7 +102,7 @@ public class Postgres9CalendarLinkageDao extends Postgres9Dao implements ICalend
 
         return mapper.map(entityDao.find(pcon, id));
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);

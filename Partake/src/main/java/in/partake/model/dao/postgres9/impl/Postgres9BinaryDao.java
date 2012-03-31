@@ -14,7 +14,7 @@ import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.BinaryData;
 import net.sf.json.JSONObject;
 
-class EntityBinaryMapper extends Postgres9EntityDataMapper<BinaryData> {   
+class EntityBinaryMapper extends Postgres9EntityDataMapper<BinaryData> {
     public BinaryData map(Postgres9Entity entity) throws DAOException {
         if (entity == null)
             return null;
@@ -35,7 +35,7 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
     private final Postgres9EntityDao entityDao;
     private final EntityBinaryMapper mapper;
 
-    
+
     public Postgres9BinaryDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.mapper = new EntityBinaryMapper();
@@ -55,10 +55,10 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
     @Override
     public void put(PartakeConnection con, BinaryData binary) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        
+
         Postgres9Entity entity = new Postgres9Entity(binary.getId(), CURRENT_VERSION, binary.toJSON().toString().getBytes(UTF8), binary.getData(), TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, binary.getId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
     }
@@ -66,6 +66,11 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
     @Override
     public BinaryData find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
@@ -77,12 +82,12 @@ public class Postgres9BinaryDao extends Postgres9Dao implements IBinaryAccess {
     public DataIterator<BinaryData> getIterator(PartakeConnection con) throws DAOException {
         return new MapperDataIterator<Postgres9Entity, BinaryData>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
-    
+
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
         return entityDao.getFreshId((Postgres9Connection) con);
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);

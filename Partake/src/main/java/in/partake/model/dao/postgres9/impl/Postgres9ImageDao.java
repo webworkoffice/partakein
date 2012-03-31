@@ -22,7 +22,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-class EntityImageMapper extends Postgres9EntityDataMapper<ImageData> {   
+class EntityImageMapper extends Postgres9EntityDataMapper<ImageData> {
     public ImageData map(Postgres9Entity entity) throws DAOException {
         if (entity == null)
             return null;
@@ -44,7 +44,7 @@ public class Postgres9ImageDao extends Postgres9Dao implements IImageAccess {
     private final Postgres9IndexDao indexDao;
     private final EntityImageMapper mapper;
 
-    
+
     public Postgres9ImageDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(USER_INDEX_TABLE_NAME);
@@ -55,13 +55,12 @@ public class Postgres9ImageDao extends Postgres9Dao implements IImageAccess {
     public void initialize(PartakeConnection con) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.initialize(pcon);
-        
+
         if (!existsTable(pcon, USER_INDEX_TABLE_NAME)) {
             indexDao.createIndexTable(pcon, "CREATE TABLE " + USER_INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL, createdAt TIMESTAMP)");
             indexDao.createIndex(pcon, "CREATE INDEX " + USER_INDEX_TABLE_NAME + "UserId" + " ON " + USER_INDEX_TABLE_NAME + "(userId)");
             indexDao.createIndex(pcon, "CREATE INDEX " + USER_INDEX_TABLE_NAME + "CreatedAt" + " ON " + USER_INDEX_TABLE_NAME + "(createdAt)");
         }
-
     }
 
     @Override
@@ -73,19 +72,24 @@ public class Postgres9ImageDao extends Postgres9Dao implements IImageAccess {
     @Override
     public void put(PartakeConnection con, ImageData imageData) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        
+
         Postgres9Entity entity = new Postgres9Entity(imageData.getId(), CURRENT_VERSION, imageData.toJSON().toString().getBytes(UTF8), imageData.getData(), TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, imageData.getId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
-        
+
         indexDao.put(pcon, new String[] {"id", "userId", "createdAt"}, new Object[] { imageData.getId(), imageData.getUserId(), imageData.getCreatedAt() });
     }
 
     @Override
     public ImageData find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
@@ -98,7 +102,7 @@ public class Postgres9ImageDao extends Postgres9Dao implements IImageAccess {
     public DataIterator<ImageData> getIterator(PartakeConnection con) throws DAOException {
         return new MapperDataIterator<Postgres9Entity, ImageData>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
-    
+
     @Override
     public List<String> findIdsByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
@@ -115,10 +119,10 @@ public class Postgres9ImageDao extends Postgres9Dao implements IImageAccess {
         } finally {
             psars.close();
         }
-        
+
         return result;
     }
-    
+
     @Override
     public int countByUserId(PartakeConnection con, String userId) throws DAOException {
         return indexDao.count((Postgres9Connection) con, "userId", userId);
@@ -128,7 +132,7 @@ public class Postgres9ImageDao extends Postgres9Dao implements IImageAccess {
     public String getFreshId(PartakeConnection con) throws DAOException {
         return entityDao.getFreshId((Postgres9Connection) con);
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);

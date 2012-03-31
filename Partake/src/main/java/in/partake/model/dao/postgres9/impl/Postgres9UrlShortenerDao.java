@@ -16,7 +16,7 @@ import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.pk.ShortenedURLDataPK;
 import net.sf.json.JSONObject;
 
-class EntityURLShortenerMapper extends Postgres9EntityDataMapper<ShortenedURLData> {   
+class EntityURLShortenerMapper extends Postgres9EntityDataMapper<ShortenedURLData> {
     public ShortenedURLData map(JSONObject obj) {
         return new ShortenedURLData(obj).freeze();
     }
@@ -58,7 +58,7 @@ public class Postgres9UrlShortenerDao extends Postgres9Dao implements IURLShorte
     @Override
     public void put(PartakeConnection con, ShortenedURLData t) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "originalURL", "serviceType" }, new Object[] { t.getOriginalURL(), t.getServiceType() }); 
+        String id = indexDao.find(pcon, "id", new String[] { "originalURL", "serviceType" }, new Object[] { t.getOriginalURL(), t.getServiceType() });
         if (id == null)
             id = entityDao.getFreshId(pcon);
 
@@ -75,7 +75,7 @@ public class Postgres9UrlShortenerDao extends Postgres9Dao implements IURLShorte
     @Override
     public ShortenedURLData find(PartakeConnection con, ShortenedURLDataPK pk) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "originalURL", "serviceType" }, new Object[] { pk.getOriginalURL(), pk.getServiceType() }); 
+        String id = indexDao.find(pcon, "id", new String[] { "originalURL", "serviceType" }, new Object[] { pk.getOriginalURL(), pk.getServiceType() });
         if (id == null)
             return null;
 
@@ -87,9 +87,19 @@ public class Postgres9UrlShortenerDao extends Postgres9Dao implements IURLShorte
     }
 
     @Override
+    public boolean exists(PartakeConnection con, ShortenedURLDataPK pk) throws DAOException {
+        Postgres9Connection pcon = (Postgres9Connection) con;
+        String id = indexDao.find(pcon, "id", new String[] { "originalURL", "serviceType" }, new Object[] { pk.getOriginalURL(), pk.getServiceType() });
+        if (id == null)
+            return false;
+
+        return entityDao.exists((Postgres9Connection) con, id);
+    }
+
+    @Override
     public void remove(PartakeConnection con, ShortenedURLDataPK pk) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "originalURL", "serviceType" }, new Object[] { pk.getOriginalURL(), pk.getServiceType() }); 
+        String id = indexDao.find(pcon, "id", new String[] { "originalURL", "serviceType" }, new Object[] { pk.getOriginalURL(), pk.getServiceType() });
         if (id == null)
             return;
 
@@ -99,7 +109,7 @@ public class Postgres9UrlShortenerDao extends Postgres9Dao implements IURLShorte
     void removeById(PartakeConnection con, String id) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.remove(pcon, id);
-        indexDao.remove(pcon, "id", id);        
+        indexDao.remove(pcon, "id", id);
     }
 
     @Override
@@ -110,7 +120,7 @@ public class Postgres9UrlShortenerDao extends Postgres9Dao implements IURLShorte
     @Override
     public ShortenedURLData findByURL(PartakeConnection con, String originalURL) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "originalURL" }, new Object[] { originalURL }); 
+        String id = indexDao.find(pcon, "id", new String[] { "originalURL" }, new Object[] { originalURL });
         if (id == null)
             return null;
 
@@ -120,13 +130,13 @@ public class Postgres9UrlShortenerDao extends Postgres9Dao implements IURLShorte
     @Override
     public void removeByURL(PartakeConnection con, String originalURL) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "originalURL" }, new Object[] { originalURL }); 
+        String id = indexDao.find(pcon, "id", new String[] { "originalURL" }, new Object[] { originalURL });
         if (id == null)
             return;
 
         removeById(pcon, id);
     }
-    
+
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);

@@ -38,7 +38,7 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
     private final EntityOpenIDLinkageMapper mapper;
-    
+
     public Postgres9OpenIDLinkageDao() {
         this.entityDao = new Postgres9EntityDao(TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
@@ -48,7 +48,7 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        
+
         entityDao.initialize((Postgres9Connection) con);
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, openId TEXT NOT NULL, userId TEXT NOT NULL)");
@@ -69,7 +69,7 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
         String id = indexDao.find(pcon, "id", "openId", linkage.getId());
         if (id == null)
             id = entityDao.getFreshId(pcon);
-        
+
         Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
 
         if (entityDao.exists(pcon, id)) {
@@ -85,10 +85,19 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
         String id = indexDao.find((Postgres9Connection) con, "id", "openId", openId);
         if (id == null)
             return null;
-        
+
         return findById(con, id);
     }
-    
+
+    @Override
+    public boolean exists(PartakeConnection con, String openId) throws DAOException {
+        String id = indexDao.find((Postgres9Connection) con, "id", "openId", openId);
+        if (id == null)
+            return false;
+
+        return entityDao.exists((Postgres9Connection) con, id);
+    }
+
     public OpenIDLinkage findById(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
@@ -104,7 +113,7 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
 
     @Override
     public DataIterator<OpenIDLinkage> getIterator(PartakeConnection con) throws DAOException {
-        DataIterator<Postgres9Entity> iterator = entityDao.getIterator((Postgres9Connection) con); 
+        DataIterator<Postgres9Entity> iterator = entityDao.getIterator((Postgres9Connection) con);
         return new MapperDataIterator<Postgres9Entity, OpenIDLinkage>(mapper, iterator);
     }
 
@@ -125,7 +134,7 @@ public class Postgres9OpenIDLinkageDao extends Postgres9Dao implements IOpenIDLi
                 OpenIDLinkage t = it.next();
                 if (t == null)
                     continue;
-                
+
                 results.add(t.getId());
             }
 

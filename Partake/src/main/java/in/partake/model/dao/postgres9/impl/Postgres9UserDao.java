@@ -1,7 +1,5 @@
 package in.partake.model.dao.postgres9.impl;
 
-import java.util.Date;
-
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -15,9 +13,12 @@ import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.User;
+
+import java.util.Date;
+
 import net.sf.json.JSONObject;
 
-class EntityUserMapper extends Postgres9EntityDataMapper<User> {   
+class EntityUserMapper extends Postgres9EntityDataMapper<User> {
     public User map(JSONObject obj) {
         return new User(obj).freeze();
     }
@@ -42,7 +43,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     public void initialize(PartakeConnection con) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.initialize(pcon);
-        
+
         if (!existsTable(pcon, LOGIN_INDEX_TABLE_NAME)) {
             loginIndexDao.createIndexTable(pcon, "CREATE TABLE " + LOGIN_INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, lastLoginAt TIMESTAMP)");
             loginIndexDao.createIndex(pcon, "CREATE INDEX " + LOGIN_INDEX_TABLE_NAME + "Login" + " ON " + LOGIN_INDEX_TABLE_NAME + "(lastLoginAt)");
@@ -62,10 +63,10 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
         // TODO: Why User does not have createdAt and modifiedAt?
         Postgres9Entity entity = new Postgres9Entity(user.getId(), CURRENT_VERSION, user.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, user.getId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
-        
+
         loginIndexDao.put(pcon,
                 new String[] { "id", "lastLoginAt" },
                 new Object[] { user.getId(), user.getLastLoginAt() });
@@ -74,6 +75,11 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     @Override
     public User find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
@@ -96,7 +102,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
     }
-    
+
     @Override
     public int countActiveUsers(PartakeConnection con, Date loggedinAfter) throws DAOException {
         return loginIndexDao.count((Postgres9Connection) con, "lastLoginAt >= ?", new Object[] { loggedinAfter });

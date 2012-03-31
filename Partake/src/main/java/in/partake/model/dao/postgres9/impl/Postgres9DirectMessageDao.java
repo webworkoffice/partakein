@@ -18,7 +18,7 @@ import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.dto.Message;
 import net.sf.json.JSONObject;
 
-class EntityMessageMapper extends Postgres9EntityDataMapper<Message> {   
+class EntityMessageMapper extends Postgres9EntityDataMapper<Message> {
     public Message map(JSONObject obj) {
         return new Message(obj).freeze();
     }
@@ -44,7 +44,7 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
     public void initialize(PartakeConnection con) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.initialize(pcon);
-        
+
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             // event id may be NULL if system message.
             indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, eventId TEXT, createdAt TIMESTAMP NOT NULL)");
@@ -66,7 +66,7 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
         // TODO: Why User does not have createdAt and modifiedAt?
         Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, t.getId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
         indexDao.put(pcon, new String[] { "id", "eventId", "createdAt" }, new Object[] { t.getId(), t.getEventId(), t.getCreatedAt() } );
@@ -78,6 +78,11 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
     }
 
     @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
+    }
+
+    @Override
     public void remove(PartakeConnection con, String id) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.remove(pcon, id);
@@ -86,7 +91,7 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
 
     @Override
     public DataIterator<Message> getIterator(PartakeConnection con) throws DAOException {
-        return new MapperDataIterator<Postgres9Entity, Message>(mapper, entityDao.getIterator((Postgres9Connection) con));        
+        return new MapperDataIterator<Postgres9Entity, Message>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override

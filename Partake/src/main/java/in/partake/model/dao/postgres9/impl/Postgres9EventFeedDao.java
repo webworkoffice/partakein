@@ -15,7 +15,7 @@ import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.EventFeedLinkage;
 import net.sf.json.JSONObject;
 
-class EntityEventFeedMapper extends Postgres9EntityDataMapper<EventFeedLinkage> {   
+class EntityEventFeedMapper extends Postgres9EntityDataMapper<EventFeedLinkage> {
     public EventFeedLinkage map(JSONObject obj) {
         return new EventFeedLinkage(obj).freeze();
     }
@@ -38,9 +38,9 @@ public class Postgres9EventFeedDao extends Postgres9Dao implements IEventFeedAcc
 
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
-        Postgres9Connection pcon = (Postgres9Connection) con; 
+        Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.initialize(pcon);
-        
+
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, eventId TEXT NOT NULL)");
             indexDao.createIndex(pcon, "CREATE UNIQUE INDEX " + INDEX_TABLE_NAME + "EventId" + " ON " + INDEX_TABLE_NAME + "(eventId)");
@@ -68,6 +68,11 @@ public class Postgres9EventFeedDao extends Postgres9Dao implements IEventFeedAcc
     @Override
     public EventFeedLinkage find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override

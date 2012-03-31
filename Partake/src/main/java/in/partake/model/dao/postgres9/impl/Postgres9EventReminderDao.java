@@ -14,7 +14,7 @@ import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dto.EventReminder;
 import net.sf.json.JSONObject;
 
-class EntityEventReminderMapper extends Postgres9EntityDataMapper<EventReminder> {   
+class EntityEventReminderMapper extends Postgres9EntityDataMapper<EventReminder> {
     public EventReminder map(JSONObject obj) {
         return new EventReminder(obj).freeze();
     }
@@ -48,7 +48,7 @@ public class Postgres9EventReminderDao extends Postgres9Dao implements IEventRem
 
         Postgres9Entity entity = new Postgres9Entity(reminder.getEventId(), CURRENT_VERSION, reminder.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, reminder.getEventId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
     }
@@ -56,6 +56,11 @@ public class Postgres9EventReminderDao extends Postgres9Dao implements IEventRem
     @Override
     public EventReminder find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
