@@ -30,6 +30,83 @@ public class EnrollAPITest extends APIControllerTest {
     }
 
     @Test
+    public void testReserve() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        loginAs(proxy, DEFAULT_USER_ID);
+        addParameter(proxy, "status", "reserve");
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "comment", "comment");
+        addValidSessionTokenToParameter(proxy);
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_ID);
+        assertThat(enrollment.getStatus(), is(ParticipationStatus.RESERVED));
+    }
+
+    @Test
+    public void testCancel() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        loginAs(proxy, DEFAULT_USER_ID);
+        addParameter(proxy, "status", "cancel");
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "comment", "comment");
+        addValidSessionTokenToParameter(proxy);
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_ID);
+        assertThat(enrollment.getStatus(), is(ParticipationStatus.CANCELLED));
+    }
+
+    @Test
+    public void testWithInvalidStatus() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        loginAs(proxy, DEFAULT_USER_ID);
+        addParameter(proxy, "status", "invalid");
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "comment", "comment");
+        addValidSessionTokenToParameter(proxy);
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_ENROLL_STATUS);
+    }
+
+    @Test
+    public void testEnrollWithoutComment() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        loginAs(proxy, DEFAULT_USER_ID);
+        addParameter(proxy, "status", "enroll");
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addValidSessionTokenToParameter(proxy);
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_ID);
+        assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
+        assertThat(enrollment.getComment(), is(""));
+    }
+
+    @Test
+    public void testEnrollWithLongComment() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        loginAs(proxy, DEFAULT_USER_ID);
+        addParameter(proxy, "status", "enroll");
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 1025; ++i)
+            builder.append('a');
+        addParameter(proxy, "comment", builder.toString());
+        addValidSessionTokenToParameter(proxy);
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_COMMENT_TOOLONG);
+    }
+
+    @Test
     public void testEnrollWontChangeEnrolledAt() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/enroll");
         loginAs(proxy, EVENT_RESERVED_USER_ID);
@@ -59,5 +136,16 @@ public class EnrollAPITest extends APIControllerTest {
 
         proxy.execute();
         assertResultInvalid(proxy, UserErrorCode.INVALID_SECURITY_CSRF);
+    }
+
+    @Test
+    public void testWithoutLogin() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        addParameter(proxy, "status", "enroll");
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "comment", "comment");
+
+        proxy.execute();
+        assertResultLoginRequired(proxy);
     }
 }
