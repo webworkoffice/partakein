@@ -78,6 +78,7 @@ public interface TestDataProviderConstants {
     public static final String PRIVATE_EVENT_ID = new UUID(2, 10).toString();
     public static final String JAPANESE_EVENT_ID = new UUID(2, 20).toString();
     public static final String UNIQUEIDENTIFIER_EVENT_ID = new UUID(2, 30).toString();
+    public static final String UNPUBLISHED_EVENT_ID = new UUID(2, 40).toString();
 
     // Event Comments
     public static final String INVALID_COMMENT_ID = new UUID(4, -1).toString();
