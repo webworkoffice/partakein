@@ -4,6 +4,7 @@ import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.resource.UserErrorCode;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class AttendanceAPITest extends APIControllerTest {
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }
 
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_ABSENT_USER_ID);
@@ -46,7 +47,7 @@ public class AttendanceAPITest extends APIControllerTest {
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
         }
 
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
@@ -72,7 +73,7 @@ public class AttendanceAPITest extends APIControllerTest {
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
 
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
@@ -92,7 +93,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testLoginRequired() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
@@ -105,7 +106,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testUserIdRequired() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         // addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
@@ -114,12 +115,12 @@ public class AttendanceAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.MISSING_USER_ID);
     }
 
     @Test
     public void testEventIdRequired() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
@@ -128,12 +129,12 @@ public class AttendanceAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.MISSING_EVENT_ID);
     }
 
     @Test
     public void testStatusRequired() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
@@ -142,12 +143,12 @@ public class AttendanceAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.MISSING_ATTENDANCE_STATUS);
     }
 
     @Test
     public void testInvalidOwner() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
@@ -161,7 +162,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
     @Test
     public void testInvalidArgument() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
@@ -170,13 +171,12 @@ public class AttendanceAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_ATTENDANCE_STATUS);
     }
-
 
     @Test
     public void testInvalidSessionToken() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/attend");
+        ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
@@ -185,7 +185,7 @@ public class AttendanceAPITest extends APIControllerTest {
         addInvalidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_SECURITY_CSRF);
     }
 
 }
