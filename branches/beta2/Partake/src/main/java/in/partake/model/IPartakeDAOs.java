@@ -16,7 +16,6 @@ import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.ITwitterMessageAccess;
-import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserNotificationAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
@@ -45,5 +44,4 @@ public interface IPartakeDAOs {
     public IUserSentMessageAccess getUserSentMessageAccess();
     public IUserNotificationAccess getUserNotificationAccess();
     public IUserPreferenceAccess getUserPreferenceAccess();
-    public IURLShortenerAccess getURLShortenerAccess();
 }

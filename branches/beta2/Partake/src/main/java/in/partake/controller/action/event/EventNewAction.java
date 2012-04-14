@@ -35,7 +35,7 @@ public class EventNewAction extends AbstractEventEditAction {
             return renderRedirect("/events/new");
 
         if (event == null)
-            event = new EventEx(new Event(), user, null, null, new ArrayList<EventRelationEx>());
+            event = new EventEx(new Event(), user, null, new ArrayList<EventRelationEx>());
 
         return render("events/new.jsp");
     }

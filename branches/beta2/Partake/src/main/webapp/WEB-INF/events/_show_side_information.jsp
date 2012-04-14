@@ -78,6 +78,4 @@
 <% } %>
 
 <h3>その他</h3>
-<% String shortenURL = event.getShortenedURL(); %>
 <p>カテゴリ: <%= event.getCategory() != null ? EventCategory.getReadableCategoryName(event.getCategory()) : "-" %></p>
-<p>短縮 URL: <a href="<%= h(shortenURL) %>"><%= h(shortenURL) %></a></p>

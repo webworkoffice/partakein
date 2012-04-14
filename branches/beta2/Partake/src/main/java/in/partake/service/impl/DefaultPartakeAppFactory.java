@@ -2,7 +2,6 @@ package in.partake.service.impl;
 
 import in.partake.app.PartakeAppFactory;
 import in.partake.daemon.impl.DaemonInitializer;
-import in.partake.service.IBitlyService;
 import in.partake.service.IDBService;
 import in.partake.service.IDaemonInitializer;
 import in.partake.service.IEventSearchService;
@@ -17,11 +16,6 @@ public class DefaultPartakeAppFactory implements PartakeAppFactory {
     @Override
     public IDBService createDBService() throws Exception{
         return new Postgres9DBService();
-    }
-
-    @Override
-    public IBitlyService createBitlyService() throws Exception{
-        return new BitlyService();
     }
 
     @Override

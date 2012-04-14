@@ -17,7 +17,6 @@ import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.ITwitterMessageAccess;
-import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserNotificationAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
@@ -94,11 +93,6 @@ public class MockDaoFactory extends PartakeDAOFactory {
     @Override
     protected IUserPreferenceAccess createUserPreferenceAccess() {
         return Mockito.mock(IUserPreferenceAccess.class);
-    }
-
-    @Override
-    protected IURLShortenerAccess createUrlShortenerAccess() {
-        return Mockito.mock(IURLShortenerAccess.class);
     }
 
     @Override

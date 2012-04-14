@@ -16,7 +16,6 @@ import in.partake.model.fixture.impl.ImageTestDataProvider;
 import in.partake.model.fixture.impl.MessageEnvelopeTestDataProvider;
 import in.partake.model.fixture.impl.MessageTestDataProvider;
 import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
-import in.partake.model.fixture.impl.ShortenedUrlTestDataProvider;
 import in.partake.model.fixture.impl.ThumbnailTestDataProvider;
 import in.partake.model.fixture.impl.TwitterLinkageTestDataProvider;
 import in.partake.model.fixture.impl.TwitterMessageTestDataProvider;
@@ -57,7 +56,6 @@ public class PartakeTestDataProviderSet {
     private MessageEnvelopeTestDataProvider messageEnvelopeProvider;
     private ThumbnailTestDataProvider thumbnailProvider;
     private TwitterMessageTestDataProvider twitterMessageProvider;
-    private ShortenedUrlTestDataProvider shortenedUrlProvider;
 
     public PartakeTestDataProviderSet() {
         this.providers = new ArrayList<TestDataProvider<?>>();
@@ -80,7 +78,6 @@ public class PartakeTestDataProviderSet {
         providers.add(messageEnvelopeProvider = createMessageEnvelopeTestDataProvider());
         providers.add(thumbnailProvider = createThumbnailTestDataProvider());
         providers.add(twitterMessageProvider = createTwitterMessageTestDataProvider());
-        providers.add(shortenedUrlProvider = createShortenedURLTestDataProvider());
         providers.add(userMessageProvider = createUserReceivedMessageTestDataProvider());
         providers.add(userSentMessageProvider = createUserSentMessageTestDataProvider());
         providers.add(userNotificationProvider = createUserNotificationTestDataProvider());
@@ -162,10 +159,6 @@ public class PartakeTestDataProviderSet {
 
     public TwitterMessageTestDataProvider getTwitterMessageProvider() {
         return twitterMessageProvider;
-    }
-
-    public ShortenedUrlTestDataProvider getURLShortenerProvider() {
-        return shortenedUrlProvider;
     }
 
     public UserReceivedMessageTestDataProvider getUserReceivedMessageProvider() {
@@ -250,10 +243,6 @@ public class PartakeTestDataProviderSet {
 
     private ThumbnailTestDataProvider createThumbnailTestDataProvider() {
         return new ThumbnailTestDataProvider();
-    }
-
-    private ShortenedUrlTestDataProvider createShortenedURLTestDataProvider() {
-        return new ShortenedUrlTestDataProvider();
     }
 
     private UserReceivedMessageTestDataProvider createUserReceivedMessageTestDataProvider() {

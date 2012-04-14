@@ -70,24 +70,12 @@ public class PartakeProperties {
         return properties.getProperty("in.partake.lucene.indexdir");
     }
 
-    public String getBitlyUserName() {
-        return properties.getProperty("in.partake.bitly.username");
-    }
-
     public String getPartakeAppFactoryClassName() {
         String str = properties.getProperty("in.partake.app.factory");
         if (str == null)
             str = "in.partake.app.imple.DefaultPartakeAppFactory";
 
         return str;
-    }
-
-    public String getBitlyAPIKey() {
-        return properties.getProperty("in.partake.bitly.apikey");
-    }
-
-    public String getCassandraHost() {
-        return properties.getProperty("in.partake.cassandra.host");
     }
 
     public String getTopPath() {
