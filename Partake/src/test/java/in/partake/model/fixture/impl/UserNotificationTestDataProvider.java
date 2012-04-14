@@ -16,7 +16,7 @@ public class UserNotificationTestDataProvider extends TestDataProvider<UserNotif
     @Override
     public UserNotification create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, pkSalt.hashCode());
-        return new UserNotification(uuid.toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, new DateTime(0), null);
+        return new UserNotification(uuid.toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, new DateTime(objNumber), null);
     }
 
     @Override

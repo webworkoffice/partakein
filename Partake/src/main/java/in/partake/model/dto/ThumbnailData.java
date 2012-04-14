@@ -14,17 +14,6 @@ public class ThumbnailData extends PartakeModel<ThumbnailData> {
     private byte[] data;
     private Date   createdAt;
 
-    public ThumbnailData() {
-        this(null, null, null, null, null);
-    }
-
-    public ThumbnailData(String userId, String type, byte[] data, Date createdAt) {
-        this.userId = userId;
-        this.type = type;
-        this.data = data;
-        this.createdAt = createdAt;
-    }
-
     public ThumbnailData(String id, String userId, String type, byte[] data, Date createdAt) {
         this.id = id;
         this.userId = userId;
@@ -34,11 +23,7 @@ public class ThumbnailData extends PartakeModel<ThumbnailData> {
     }
 
     public ThumbnailData(ThumbnailData src) {
-        this.id = src.id;
-        this.userId = src.userId;
-        this.type = src.type;
-        this.data = src.data;
-        this.createdAt = src.createdAt;
+        this(src.id, src.userId, src.type, src.data, src.createdAt);
     }
 
     public ThumbnailData(JSONObject obj) {

@@ -17,7 +17,7 @@ public class UserReceivedMessageTestDataProvider extends TestDataProvider<UserRe
     public UserReceivedMessage create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, pkSalt.hashCode());
         return new UserReceivedMessage(uuid, "senderId", "receiverId", "messageId",
-                false, MessageDelivery.SUCCESS, null, null, new DateTime(0L), null);
+                false, MessageDelivery.SUCCESS, null, null, new DateTime(objNumber), null);
     }
 
     @Override

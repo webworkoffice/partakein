@@ -25,10 +25,6 @@ public class EventNotification extends PartakeModel<EventNotification> {
     private DateTime createdAt;
     private DateTime modifiedAt;
 
-    public EventNotification() {
-        // do nothing
-    }
-
     public EventNotification(EventNotification message) {
         this(message.id, message.eventId, message.userIds, message.notificationType, message.createdAt, message.modifiedAt);
     }

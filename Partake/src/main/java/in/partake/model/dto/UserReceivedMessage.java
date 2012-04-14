@@ -27,10 +27,6 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
     private DateTime createdAt;
     private DateTime modifiedAt;
 
-    public UserReceivedMessage() {
-        // do nothing
-    }
-
     public UserReceivedMessage(UserReceivedMessage message) {
         this(message.id, message.senderId, message.receiverId, message.messageId,
                 message.opened, message.delivery, message.openedAt, message.deliveredAt,

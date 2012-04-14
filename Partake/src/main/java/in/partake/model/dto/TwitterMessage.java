@@ -17,10 +17,6 @@ public class TwitterMessage extends PartakeModel<TwitterMessage> {
     private DateTime createdAt;
     private DateTime modifiedAt;
 
-    public TwitterMessage() {
-        // do nothing
-    }
-
     public TwitterMessage(TwitterMessage message) {
         this(message.id, message.userId, message.message, message.delivery, message.createdAt, message.modifiedAt);
     }

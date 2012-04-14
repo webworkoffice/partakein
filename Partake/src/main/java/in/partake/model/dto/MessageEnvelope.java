@@ -63,8 +63,7 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
         return envelope;
     }
 
-    public MessageEnvelope() {
-        // do nothing
+    private MessageEnvelope() {
     }
 
     public MessageEnvelope(String id, String userMessageId, String twitterMessageId, String userNotificationId,
