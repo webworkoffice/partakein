@@ -1,15 +1,8 @@
 /* CAUTION: this file will be overwritten by InitializationListener class. */
 
-@import "layout.css";
-@import "color.css";
-@import "font.css";
-
-@import "openid.css";
-@import "print.css";
-
-/* For bootstrap. */
-@import "bootstrap.min.css";
+@import "bootstrap.css";
 @import "bootstrap.fix.css";
+@import "partake.css";
 
 /* IE reads non-doublequoted files */
 @import fixie.css;

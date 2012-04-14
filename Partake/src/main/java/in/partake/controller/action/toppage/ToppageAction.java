@@ -51,7 +51,7 @@ public class ToppageAction extends AbstractPartakeAction {
 }
 
 class ToppageTransaction extends DBAccess<Void> {
-    private static final int NUM_EVENTS_TO_DISPLAY = 5;
+    private static final int NUM_EVENTS_TO_DISPLAY = 10;
 
     private UserEx user;
     private List<Event> recentEvents;

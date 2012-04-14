@@ -21,8 +21,7 @@ public class ViewInitializerImpl implements IViewInitializer {
     private static final String CSS_ENCODE = "UTF-8";
     /** 結合すべきCSSファイルと結合順序を記録したリスト。 */
     private static final List<String> COMPOSITE_TARGETS = Arrays.asList(new String[]{
-            // "layout.css", "color.css", "font.css", "openid.css", "print.css",
-            "bootstrap.css", "bootstrap.fix.css"
+            "bootstrap.css", "bootstrap.fix.css", "partake.css"
     });
     /** IEにのみ適用すべきCSSファイル。結合すべきでない。 */
     private static final String FIXIE_FILE_NAME = "fixie.css";
