@@ -1,7 +1,8 @@
 package in.partake.model.dto;
 
+import in.partake.base.DateTime;
+
 import java.util.Arrays;
-import java.util.Date;
 
 import net.sf.json.JSONObject;
 
@@ -12,9 +13,9 @@ public class ThumbnailData extends PartakeModel<ThumbnailData> {
     private String userId;
     private String type;
     private byte[] data;
-    private Date   createdAt;
+    private DateTime createdAt;
 
-    public ThumbnailData(String id, String userId, String type, byte[] data, Date createdAt) {
+    public ThumbnailData(String id, String userId, String type, byte[] data, DateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.type = type;
@@ -31,7 +32,7 @@ public class ThumbnailData extends PartakeModel<ThumbnailData> {
         this.userId = obj.optString("userId");
         this.type = obj.getString("type");
         if (obj.containsKey("createdAt"))
-            this.createdAt = new Date(obj.getLong("createdAt"));
+            this.createdAt = new DateTime(obj.getLong("createdAt"));
 
         // We don't create data from JSONObject.
     }
@@ -98,7 +99,7 @@ public class ThumbnailData extends PartakeModel<ThumbnailData> {
         return data;
     }
 
-    public Date getCreatedAt() {
+    public DateTime getCreatedAt() {
         return createdAt;
     }
 
@@ -122,7 +123,7 @@ public class ThumbnailData extends PartakeModel<ThumbnailData> {
         this.data = data;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(DateTime createdAt) {
         checkFrozen();
         this.createdAt = createdAt;
     }
