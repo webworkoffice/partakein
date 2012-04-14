@@ -79,10 +79,25 @@ body {
 <body class="event">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
-<div class="row" style="position: relative; min-height: 30px;">
-    <div class="event-promotion-container">
-        <!-- hatena -->
-        <div class="pull-right">
+<% if (user != null && EventEditPermission.check(event, user)) { %>
+    <jsp:include page="/WEB-INF/events/_show_manage_navigation.jsp" flush="true" />
+<% } %>
+
+<div class="event-body">
+
+<div class="page-header">
+    <h1>
+        <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png" title="非公開イベント" /><% } %>
+        <%= h(event.getTitle()) %>
+    </h1>
+    <% if (!StringUtils.isEmpty(event.getSummary())) { %>
+        <p><%= h(event.getSummary()) %></p>
+    <% } %>
+</div>
+
+<div class="row">
+    <!-- hatena -->
+    <div class="pull-right">
         <div style="display:inline-block;">
             <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
             <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
@@ -104,24 +119,7 @@ body {
         <% if (event.getFeedId() != null) { %>
             <div style="display:inline-block; vertical-align: top;"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-15x15.png" /></a></div>
         <% } %>
-        </div>
     </div>
-
-    <% if (user != null && EventEditPermission.check(event, user)) { %>
-        <jsp:include page="/WEB-INF/events/_show_manage_navigation.jsp" flush="true" />
-    <% } %>
-</div>
-
-<div class="event-body">
-
-<div class="page-header">
-    <h1>
-        <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png" title="非公開イベント" /><% } %>
-        <%= h(event.getTitle()) %>
-    </h1>
-    <% if (!StringUtils.isEmpty(event.getSummary())) { %>
-        <p><%= h(event.getSummary()) %></p>
-    <% } %>
 </div>
 
 <jsp:include page="/WEB-INF/events/_show_enroll.jsp" flush="true" />

@@ -24,7 +24,7 @@
     List<EventRelationEx> eventRelations = action.getRelations();
 %>
 
-<div style="padding-top: 10px;">
+<div class="enroll-bar">
     <div class="row clearfix">
         <div class="span5">
             <p>開催期間 <%= Helper.readableDuration(event.getBeginDate(), event.getEndDate()) %></p>
