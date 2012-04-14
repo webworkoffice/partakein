@@ -79,17 +79,17 @@ public class Postgres9UserReceivedMessageDao extends Postgres9Dao implements IUs
     }
 
     @Override
-    public UserReceivedMessage find(PartakeConnection con, String id) throws DAOException {
+    public UserReceivedMessage find(PartakeConnection con, UUID id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
-    public boolean exists(PartakeConnection con, String id) throws DAOException {
+    public boolean exists(PartakeConnection con, UUID id) throws DAOException {
         return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
-    public void remove(PartakeConnection con, String id) throws DAOException {
+    public void remove(PartakeConnection con, UUID id) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.remove(pcon, id);
         indexDao.remove(pcon, "id", id);

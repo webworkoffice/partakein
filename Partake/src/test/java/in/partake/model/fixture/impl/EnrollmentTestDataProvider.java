@@ -25,7 +25,7 @@ public class EnrollmentTestDataProvider extends TestDataProvider<Enrollment> {
     }
 
     @Override
-    public List<Enrollment> createGetterSetterSamples() {
+    public List<Enrollment> createSamples() {
         List<Enrollment> array = new ArrayList<Enrollment>();
         array.add(new Enrollment("id", "userId", "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(0L)));
         array.add(new Enrollment("id1", "userId", "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(0L)));

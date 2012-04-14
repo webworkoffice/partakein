@@ -60,7 +60,8 @@ public class Comment extends PartakeModel<Comment> {
         this.userId = obj.getString("userId");
         this.comment = obj.getString("comment");
         this.isHTML = obj.getBoolean("isHTML");
-        this.createdAt = new Date(obj.getLong("createdAt"));
+        if (obj.containsKey("createdAt"))
+            this.createdAt = new Date(obj.getLong("createdAt"));
     }
 
     @Override

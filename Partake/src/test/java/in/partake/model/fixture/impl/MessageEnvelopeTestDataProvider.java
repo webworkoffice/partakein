@@ -1,7 +1,6 @@
 package in.partake.model.fixture.impl;
 
 import in.partake.base.DateTime;
-import in.partake.base.TimeUtil;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
@@ -16,15 +15,16 @@ public class MessageEnvelopeTestDataProvider extends TestDataProvider<MessageEnv
     @Override
     public MessageEnvelope create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, pkSalt.hashCode());
-        MessageEnvelope envelope = new MessageEnvelope(uuid.toString(), "userMessageId", null, null, 0, null, null, null, TimeUtil.getCurrentDateTime(), null);
+        MessageEnvelope envelope = new MessageEnvelope(uuid.toString(), "userMessageId", null, null, 0, null, null, null, new DateTime(objNumber), null);
         return envelope;
     }
 
     @Override
-    public List<MessageEnvelope> createGetterSetterSamples() {
+    public List<MessageEnvelope> createSamples() {
         List<MessageEnvelope> array = new ArrayList<MessageEnvelope>();
         array.add(new MessageEnvelope(new UUID(0, 0).toString(), "userMessageId", null, null, 0, null, null, null, new DateTime(0), null));
-        array.add(new MessageEnvelope(new UUID(0, 1).toString(), "userMessageId1", null, null, 0, null, null, null, new DateTime(0), null));
+        array.add(new MessageEnvelope(new UUID(0, 1).toString(), "userMessageId", null, null, 0, null, null, null, new DateTime(0), null));
+        array.add(new MessageEnvelope(new UUID(0, 0).toString(), "userMessageId1", null, null, 0, null, null, null, new DateTime(0), null));
         array.add(new MessageEnvelope(new UUID(0, 0).toString(), "userMessageId", "hoge", null, 0, null, null, null, new DateTime(0), null));
         array.add(new MessageEnvelope(new UUID(0, 0).toString(), "userMessageId", null, "fuga", 0, null, null, null, new DateTime(0), null));
         array.add(new MessageEnvelope(new UUID(0, 0).toString(), "userMessageId", null, null, 1, null, null, null, new DateTime(0), null));

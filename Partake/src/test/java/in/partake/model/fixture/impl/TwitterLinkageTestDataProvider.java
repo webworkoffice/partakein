@@ -18,7 +18,7 @@ public class TwitterLinkageTestDataProvider extends TestDataProvider<TwitterLink
     }
 
     @Override
-    public List<TwitterLinkage> createGetterSetterSamples() {
+    public List<TwitterLinkage> createSamples() {
         List<TwitterLinkage> array = new ArrayList<TwitterLinkage>();
         array.add(new TwitterLinkage("twitterId", "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId"));
         array.add(new TwitterLinkage("twitterId1", "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId"));

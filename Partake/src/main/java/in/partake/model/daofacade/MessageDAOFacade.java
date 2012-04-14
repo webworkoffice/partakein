@@ -17,6 +17,7 @@ import in.partake.model.dto.auxiliary.MessageDelivery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MessageDAOFacade {
 
@@ -30,7 +31,7 @@ public class MessageDAOFacade {
             UserEx sender = UserDAOFacade.getUserEx(con, daos, userMessage.getSenderId());
             if (sender == null)
                 continue;
-            Message message = daos.getMessageAccess().find(con, userMessage.getMessageId());
+            Message message = daos.getMessageAccess().find(con, UUID.fromString(userMessage.getMessageId()));
             if (message == null)
                 continue;
             UserMessageEx messageEx = new UserMessageEx(userMessage, sender, message);
@@ -51,7 +52,7 @@ public class MessageDAOFacade {
             if (sender == null)
                 continue;
 
-            Message message = daos.getMessageAccess().find(con, eventMessage.getMessageId());
+            Message message = daos.getMessageAccess().find(con, UUID.fromString(eventMessage.getMessageId()));
             if (message == null)
                 continue;
 

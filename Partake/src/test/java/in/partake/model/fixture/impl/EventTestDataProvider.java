@@ -39,7 +39,7 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
     }
 
     @Override
-    public List<Event> createGetterSetterSamples() {
+    public List<Event> createSamples() {
         List<Event> array = new ArrayList<Event>();
         array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
         array.add(new Event("id1", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));

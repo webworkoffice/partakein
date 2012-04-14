@@ -20,7 +20,7 @@ public class UserNotificationTestDataProvider extends TestDataProvider<UserNotif
     }
 
     @Override
-    public List<UserNotification> createGetterSetterSamples() {
+    public List<UserNotification> createSamples() {
         List<UserNotification> array = new ArrayList<UserNotification>();
         array.add(new UserNotification(new UUID(0, 0).toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, new DateTime(0), null));
         array.add(new UserNotification(new UUID(0, 1).toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, new DateTime(0), null));

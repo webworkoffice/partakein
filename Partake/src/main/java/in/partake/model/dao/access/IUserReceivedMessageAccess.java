@@ -7,7 +7,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.UserReceivedMessage;
 
-public interface IUserReceivedMessageAccess extends IAccess<UserReceivedMessage, String> {
+public interface IUserReceivedMessageAccess extends IAccess<UserReceivedMessage, UUID> {
     public UUID getFreshId(PartakeConnection con) throws DAOException;
 
     int countByReceiverId(PartakeConnection con, String receiverId) throws DAOException;

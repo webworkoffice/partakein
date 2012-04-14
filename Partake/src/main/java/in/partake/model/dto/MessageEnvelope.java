@@ -103,7 +103,7 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
         if (json.containsKey("createdAt"))
             this.createdAt = new DateTime(json.getLong("createdAt"));
         if (json.containsKey("modifiedAt"))
-            this.createdAt = new DateTime(json.getLong("modifiedAt"));
+            this.modifiedAt = new DateTime(json.getLong("modifiedAt"));
     }
 
     @Override

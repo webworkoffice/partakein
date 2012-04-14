@@ -16,7 +16,7 @@ public class ShortenedUrlTestDataProvider extends TestDataProvider<ShortenedURLD
     }
 
     @Override
-    public List<ShortenedURLData> createGetterSetterSamples() {
+    public List<ShortenedURLData> createSamples() {
         List<ShortenedURLData> array = new ArrayList<ShortenedURLData>();
         array.add(new ShortenedURLData("http://www.example.com/original", "bitly", "http://short.en/ed"));
         array.add(new ShortenedURLData("http://www.example.com/original1", "bitly", "http://short.en/ed"));

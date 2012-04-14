@@ -46,7 +46,7 @@ public class Postgres9UserSentMessageDao extends Postgres9Dao implements IUserSe
 
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             // event id may be NULL if system message.
-            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, senderId TEXT NOT NULL, opened BOOLEAN NOT NULL, createdAt TIMESTAMP NOT NULL)");
+            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, senderId TEXT NOT NULL, createdAt TIMESTAMP NOT NULL)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "SenderId" + " ON " + INDEX_TABLE_NAME + "(senderId, createdAt)");
         }
     }
@@ -68,21 +68,21 @@ public class Postgres9UserSentMessageDao extends Postgres9Dao implements IUserSe
             entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
-        indexDao.put(pcon, new String[] { "id", "senderId", "createdAt" }, new Object[] { t.getId(), t.getSenderId(), t.getCreatedAt() } );
+        indexDao.put(pcon, new String[] { "id", "senderId", "createdAt" }, new Object[] { t.getId().toString(), t.getSenderId(), t.getCreatedAt() } );
     }
 
     @Override
-    public UserSentMessage find(PartakeConnection con, String id) throws DAOException {
+    public UserSentMessage find(PartakeConnection con, UUID id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
     @Override
-    public boolean exists(PartakeConnection con, String id) throws DAOException {
+    public boolean exists(PartakeConnection con, UUID id) throws DAOException {
         return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
-    public void remove(PartakeConnection con, String id) throws DAOException {
+    public void remove(PartakeConnection con, UUID id) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.remove(pcon, id);
         indexDao.remove(pcon, "id", id);

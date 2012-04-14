@@ -20,7 +20,7 @@ public class EventActivityTestDataProvider extends TestDataProvider<EventActivit
     }
 
     @Override
-    public List<EventActivity> createGetterSetterSamples() {
+    public List<EventActivity> createSamples() {
         List<EventActivity> array = new ArrayList<EventActivity>();
         array.add(new EventActivity(new UUID(0, 0).toString(), "eventId", "title", "content", new Date(0)));
         array.add(new EventActivity(new UUID(0, 1).toString(), "eventId", "title", "content", new Date(0)));

@@ -24,7 +24,7 @@ public class UserPreferenceTestDataProvider extends TestDataProvider<UserPrefere
     }
 
     @Override
-    public List<UserPreference> createGetterSetterSamples() {
+    public List<UserPreference> createSamples() {
         List<UserPreference> array = new ArrayList<UserPreference>();
         array.add(new UserPreference("userId", false, false, false));
         array.add(new UserPreference("userId1", false, false, false));

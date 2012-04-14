@@ -32,13 +32,13 @@ public class TwitterMessage extends PartakeModel<TwitterMessage> {
 
     public TwitterMessage(JSONObject obj) {
         this.id = obj.getString("id");
-        this.userId = obj.optString("senderId", null);
+        this.userId = obj.optString("userId", null);
         this.message = obj.getString("message");
         this.delivery = MessageDelivery.safeValueOf(obj.getString("delivery"));
         if (obj.containsKey("createdAt"))
             this.createdAt = new DateTime(obj.getLong("createdAt"));
         if (obj.containsKey("modifiedAt"))
-            this.createdAt = new DateTime(obj.getLong("modifiedAt"));
+            this.modifiedAt = new DateTime(obj.getLong("modifiedAt"));
     }
 
     @Override
@@ -54,7 +54,8 @@ public class TwitterMessage extends PartakeModel<TwitterMessage> {
         obj.put("message", message);
         obj.put("delivery", delivery);
         obj.put("createdAt", createdAt.getTime());
-        obj.put("modifiedAt", modifiedAt.getTime());
+        if (modifiedAt != null)
+            obj.put("modifiedAt", modifiedAt.getTime());
         return obj;
     }
 

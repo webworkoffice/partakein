@@ -88,7 +88,7 @@ class SendMessageTransaction extends Transaction<Void> {
         ensureNotSendingTooMuch(con, daos);
 
         UUID messageId = daos.getMessageAccess().getFreshId(con);
-        Message message = new Message(messageId, subject, body, eventId, TimeUtil.getCurrentDateTime(), null);
+        Message message = new Message(messageId, subject, body, TimeUtil.getCurrentDateTime(), null);
         daos.getMessageAccess().put(con, message);
 
         String eventMessageId = daos.getEventMessageAccess().getFreshId(con);
@@ -107,7 +107,7 @@ class SendMessageTransaction extends Transaction<Void> {
             MessageDelivery delivery = pref.isReceivingTwitterMessage() ? MessageDelivery.INQUEUE : MessageDelivery.NOT_DELIVERED;
 
             UUID userMessageId = daos.getUserReceivedMessageAccess().getFreshId(con);
-            UserReceivedMessage userMessage = new UserReceivedMessage(userMessageId, sender.getId(), participation.getUserId(), messageId.toString(),
+            UserReceivedMessage userMessage = new UserReceivedMessage(userMessageId, sender.getId(), participation.getUserId(), eventId, messageId.toString(),
                     false, delivery, null, null, TimeUtil.getCurrentDateTime(), null);
             daos.getUserReceivedMessageAccess().put(con, userMessage);
 

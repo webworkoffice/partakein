@@ -22,7 +22,7 @@ public class UserTestDataProvider extends TestDataProvider<User> {
     }
 
     @Override
-    public List<User> createGetterSetterSamples() {
+    public List<User> createSamples() {
         List<User> array = new ArrayList<User>();
         array.add(new User("id", 0, new Date(0L), "calendarId"));
         array.add(new User("id", 1, new Date(0L), "calendarId"));

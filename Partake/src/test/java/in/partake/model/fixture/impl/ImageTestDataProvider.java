@@ -54,7 +54,7 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
     }
 
     @Override
-    public List<ImageData> createGetterSetterSamples() {
+    public List<ImageData> createSamples() {
         List<ImageData> array = new ArrayList<ImageData>();
         array.add(new ImageData("id", "userId", "type", new byte[] { 0, 1, 2 } , new Date(0)));
         array.add(new ImageData("id1", "userId", "type", new byte[] { 0, 1, 2 } , new Date(0)));

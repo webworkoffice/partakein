@@ -6,6 +6,6 @@ import in.partake.model.dto.UserSentMessage;
 
 import java.util.UUID;
 
-public interface IUserSentMessageAccess extends IAccess<UserSentMessage, String> {
+public interface IUserSentMessageAccess extends IAccess<UserSentMessage, UUID> {
     public UUID getFreshId(PartakeConnection con) throws DAOException;
 }

@@ -27,7 +27,7 @@ public class CommentTestDataProvider extends TestDataProvider<Comment> {
     }
 
     @Override
-    public List<Comment> createGetterSetterSamples() {
+    public List<Comment> createSamples() {
         List<Comment> list = new ArrayList<Comment>();
 
         Date now = new Date();

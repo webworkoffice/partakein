@@ -1,16 +1,22 @@
 package in.partake.model.dto;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 import in.partake.app.PartakeApp;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
+
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -65,10 +71,25 @@ public abstract class AbstractPartakeModelTest<T extends PartakeModel<T>> {
 
     @Test
     public final void testToCheckEquals() throws Exception {
-        List<T> samples = getTestDataProvider().createGetterSetterSamples();
+        List<T> samples = getTestDataProvider().createSamples();
 
         for (int i = 1; i < samples.size(); ++i)
             assertThat(samples.get(0).equals(samples.get(i)), is(false));
+
+        assertThat(samples.get(0).equals(null), is(false));
+    }
+
+    @Test
+    public final void testToCheckJSON() throws Exception {
+        List<T> samples = getTestDataProvider().createSamples();
+        Constructor<?> ctor = samples.get(0).getClass().getConstructor(JSONObject.class);
+
+        assumeThat(samples.get(0).getClass(), not(isIn(new Object[] { ImageData.class, ThumbnailData.class })));
+
+        for (T t : samples) {
+            Object created = ctor.newInstance(t.toJSON());
+            assertThat(t.equals(created), is(true));
+        }
     }
 
     // ----------------------------------------------------------------------
