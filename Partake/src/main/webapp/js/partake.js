@@ -49,6 +49,15 @@
             return $.post('/api/account/images', arg);
         },
 
+        getMessages: function(offset, limit) {
+            var arg = {
+                offset: offset,
+                limit: limit
+            };
+
+            return $.post('/api/account/messages', arg);
+        },
+
         setPreference: function(receivingTwitterMessage, profilePublic, tweetingAttendanceAutomatically) {
             var arg = {
                 sessionToken: partake.sessionToken,

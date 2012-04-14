@@ -4,7 +4,7 @@ import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
-import in.partake.model.dao.access.IMessageAccess;
+import in.partake.model.dao.access.IDirectMessageAccess;
 import in.partake.model.dto.DirectMessage;
 
 import java.util.Date;
@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, DirectMessage, String> {
+public class DirectMessageAccessTest extends AbstractDaoTestCaseBase<IDirectMessageAccess, DirectMessage, String> {
     public TestName name = new TestName();
 
     @Before

@@ -20,6 +20,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventMessage;
 import in.partake.model.dto.EventReminder;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.ServerErrorCode;
@@ -43,6 +44,7 @@ public class EventShowAction extends AbstractPartakeAction {
     private boolean deadlineOver;
     private List<CommentEx> comments;
     private List<DirectMessageEx> messages;
+    private List<EventMessage> eventMessages;
     private EventReminder eventReminder;
     private List<EventRelationEx> relations;
 
@@ -72,6 +74,7 @@ public class EventShowAction extends AbstractPartakeAction {
         this.deadlineOver = transaction.isDeadlineOver();
         this.comments = transaction.getComments();
         this.messages = transaction.getDirectMessages();
+        this.eventMessages = transaction.getEventMessages();
         this.eventReminder = transaction.getEventReminder();
         this.relations = transaction.getRelations();
 
@@ -137,6 +140,7 @@ class EventShowTransaction extends DBAccess<Void> {
     private boolean deadlineOver;
     private List<CommentEx> comments;
     private List<DirectMessageEx> messages;
+    private List<EventMessage> eventMessages;
     private EventReminder eventReminder;
     private List<EventRelationEx> relations;
 
@@ -191,7 +195,8 @@ class EventShowTransaction extends DBAccess<Void> {
         deadlineOver = deadline.before(new Date());
 
         comments = EventDAOFacade.getCommentsExByEvent(con, daos, eventId);
-        messages = EventDAOFacade.getUserMessagesByEventId(con, daos, eventId);
+        messages = EventDAOFacade.getDirectMessagesByEventId(con, daos, eventId);
+        eventMessages = daos.getEventMessageAccess().findByEventId(con, eventId, 0, 100);
 
         if (user != null)
             participationStatus = EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), eventId);
@@ -245,6 +250,10 @@ class EventShowTransaction extends DBAccess<Void> {
 
     public List<DirectMessageEx> getDirectMessages() {
         return messages;
+    }
+
+    public List<EventMessage> getEventMessages() {
+        return eventMessages;
     }
 
     public EventReminder getEventReminder() {

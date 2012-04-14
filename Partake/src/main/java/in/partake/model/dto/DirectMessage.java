@@ -14,6 +14,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "Messages")
+@Deprecated
 public class DirectMessage extends PartakeModel<DirectMessage> {
     @Id
     private String id;
