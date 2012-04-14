@@ -25,10 +25,6 @@ public class TwitterLinkage extends PartakeModel<TwitterLinkage> {
     @Column
     private String userId;
 
-    public TwitterLinkage() {
-
-    }
-
     public TwitterLinkage(String twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
         this.twitterId = twitterId;
         this.screenName = screenName;

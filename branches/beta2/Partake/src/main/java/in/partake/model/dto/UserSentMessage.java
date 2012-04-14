@@ -23,10 +23,6 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
     private DateTime createdAt;
     private DateTime modifiedAt;
 
-    public UserSentMessage() {
-        // do nothing
-    }
-
     public UserSentMessage(UserSentMessage message) {
         this(message.id, message.senderId, message.receiverIds, message.messageId,
                 message.createdAt, message.modifiedAt);

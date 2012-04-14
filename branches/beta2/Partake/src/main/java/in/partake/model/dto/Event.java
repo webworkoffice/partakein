@@ -29,68 +29,39 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 
-@Entity(name = "Events")
 public class Event extends PartakeModel<Event> {
-    @Id
     private String id;
-    @Column
     private String shortId;     // event short id // TODO: short id が使えるように実装する
-    @Column
     private String title;       // event title
-    @Column
     private String summary;     // event summary
-    @Column
     private String category;    // event category
-
-    @Column
     private Date deadline;
-    @Column
     private Date beginDate;
-    @Column
     private Date endDate;
-    @Column
     private int capacity;       // how many people can attend?
-    @Column(length = 10000)
     private String url;         // URL
-    @Column
     private String place;       // event place
-    @Column
     private String address;
-    @Column(length = 1024 * 1024)
     private String description; // event description
-    @Column
     private String hashTag;
-    @Column
     private String ownerId;
-    @Column // TODO: これどうするんだ
-    private String managerScreenNames;
-
-    @Column
+    private String managerScreenNames; // TODO: これどうするんだ
     private String foreImageId;
-    @Column
     private String backImageId;
 
     // TODO: 'isPrivate' should be removed. Use passcode is null or not instead.
-    @Column
     private boolean isPrivate;  // true if the event is private.
-    @Column
     private String passcode;    // passcode to show (if not public)
 
     // TODO: isPreview should be renamed to 'draft'
-    @Column
     private boolean isPreview;    // true if the event is still in preview.
 
     // TODO: isRemoved should be renamed to 'removed'
-    @Column
     private boolean isRemoved;
 
     private List<EventRelation> eventRelations;
-
-    @Column @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;     //
-    @Column @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedAt;    //
-    @Column
     private int revision;       // used for RSS.
 
     // begin date 順に並べる comparator

@@ -1,7 +1,6 @@
 package in.partake.model.fixture.impl;
 
 import in.partake.base.DateTime;
-import in.partake.base.TimeUtil;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
@@ -16,7 +15,7 @@ public class MessageTestDataProvider extends TestDataProvider<Message> {
     @Override
     public Message create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, pkSalt.hashCode());
-        return new Message(uuid, "subject", "body", "eventId", TimeUtil.getCurrentDateTime(), null);
+        return new Message(uuid, "subject", "body", "eventId", new DateTime(objNumber), null);
     }
 
     @Override

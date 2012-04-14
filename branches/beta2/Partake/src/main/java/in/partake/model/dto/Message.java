@@ -19,14 +19,6 @@ public class Message extends PartakeModel<Message> {
     private DateTime createdAt;
     private DateTime modifiedAt;
 
-    public Message() {
-        // do nothing
-    }
-
-    public Message(Message message) {
-        this(message.id, message.subject, message.body, message.eventId, message.createdAt, message.modifiedAt);
-    }
-
     public Message(UUID id, String subject, String body, String eventId, DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.subject = subject;
@@ -34,6 +26,10 @@ public class Message extends PartakeModel<Message> {
         this.eventId = eventId;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+    }
+
+    public Message(Message message) {
+        this(message.id, message.subject, message.body, message.eventId, message.createdAt, message.modifiedAt);
     }
 
     public Message(JSONObject obj) {
