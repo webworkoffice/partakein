@@ -40,6 +40,13 @@ public final class TimeUtil {
             return new Date();
     }
 
+    public static DateTime getCurrentDateTime() {
+        if (currentDate != null)
+            return new DateTime(currentDate.getTime());
+        else
+            return new DateTime(System.currentTimeMillis());
+    }
+
     /**
      * 現在時刻をミリ秒単位で返す。現在時刻が陽に設定されていれば、その現在時刻を返す。
      * そうでなければ、new Date().getTime() と同じ。

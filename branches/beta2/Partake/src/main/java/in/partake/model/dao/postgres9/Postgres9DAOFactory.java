@@ -11,15 +11,19 @@ import in.partake.model.dao.access.IEnvelopeAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
+import in.partake.model.dao.access.IEventMessageAccess;
+import in.partake.model.dao.access.IEventNotificationAccess;
 import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IImageAccess;
+import in.partake.model.dao.access.IDirectMessageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
+import in.partake.model.dao.access.IUserMessageAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dao.postgres9.impl.Postgres9BinaryDao;
 import in.partake.model.dao.postgres9.impl.Postgres9CalendarLinkageDao;
@@ -30,14 +34,18 @@ import in.partake.model.dao.postgres9.impl.Postgres9EnvelopeDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventActivityDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventFeedDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EventMessageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EventNotificationDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventRelationDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventReminderDao;
 import in.partake.model.dao.postgres9.impl.Postgres9ImageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9MessageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9OpenIDLinkageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9ThumbnailDao;
 import in.partake.model.dao.postgres9.impl.Postgres9TwitterLinkageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UrlShortenerDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserMessageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserPreferenceDao;
 
 public class Postgres9DAOFactory extends PartakeDAOFactory {
@@ -66,7 +74,7 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected IMessageAccess createDirectMessageAccess() {
+    protected IDirectMessageAccess createDirectMessageAccess() {
         return new Postgres9DirectMessageDao();
     }
 
@@ -126,6 +134,11 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     }
 
     @Override
+    protected IMessageAccess createMessageAccess() {
+        return new Postgres9MessageDao();
+    }
+
+    @Override
     protected IUserAccess creataeUserAccess() {
         return new Postgres9UserDao();
     }
@@ -140,4 +153,18 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
         return new Postgres9UrlShortenerDao();
     }
 
+    @Override
+    protected IEventMessageAccess createEventMessageAccess() {
+        return new Postgres9EventMessageDao();
+    }
+
+    @Override
+    protected IUserMessageAccess createUserMessageAccess() {
+        return new Postgres9UserMessageDao();
+    }
+
+    @Override
+    protected IEventNotificationAccess createEventNotificationAccess() {
+        return new Postgres9EventNotificationDao();
+    }
 }

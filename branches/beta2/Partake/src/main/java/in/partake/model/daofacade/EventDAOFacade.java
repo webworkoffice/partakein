@@ -288,7 +288,7 @@ public class EventDAOFacade {
      * @return
      * @throws DAOException
      */
-    public static List<DirectMessageEx> getUserMessagesByEventId(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
+    public static List<DirectMessageEx> getDirectMessagesByEventId(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
         List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
         DataIterator<DirectMessage> it = daos.getDirectMessageAccess().findByEventId(con, eventId);
         try {

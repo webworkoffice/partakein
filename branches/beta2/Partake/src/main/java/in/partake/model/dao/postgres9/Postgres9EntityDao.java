@@ -114,6 +114,10 @@ public class Postgres9EntityDao extends Postgres9Dao {
         }
     }
 
+    public boolean exists(Postgres9Connection pcon, UUID id) throws DAOException {
+        return exists(pcon, id.toString());
+    }
+
     public boolean exists(Postgres9Connection pcon, String id) throws DAOException {
         Connection con = pcon.getConnection();
         PreparedStatement ps = null;

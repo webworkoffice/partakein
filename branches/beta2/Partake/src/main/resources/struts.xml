@@ -191,6 +191,7 @@
         <action name="events" class="in.partake.controller.api.account.GetEventsAPI" />
         <action name="enrollments" class="in.partake.controller.api.account.GetEnrollmentsAPI" />
         <action name="images" class="in.partake.controller.api.account.GetImagesAPI" />
+        <action name="messages" class="in.partake.controller.api.account.GetMessagesAPI" />
 
         <action name="removeOpenID" class="in.partake.controller.api.account.RemoveOpenIDAPI" />
         <action name="revokeCalendar" class="in.partake.controller.api.account.RevokeCalendarAPI" />
