@@ -25,6 +25,7 @@ import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
+import in.partake.resource.UserErrorCode;
 import in.partake.session.PartakeSession;
 
 import java.util.HashMap;
@@ -172,6 +173,10 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {
         // Assert.assertEquals(400, response.getStatus());
         Assert.assertTrue(response.getRedirectedUrl().startsWith("/invalid"));
+    }
+
+    protected void assertResultInvalid(ActionProxy proxy, UserErrorCode ec) throws Exception {
+        Assert.assertTrue(response.getRedirectedUrl().startsWith("/invalid?errorCode=" + ec.getErrorCode()));
     }
 
     protected void assertResultLoginRequired(ActionProxy proxy) throws Exception {
