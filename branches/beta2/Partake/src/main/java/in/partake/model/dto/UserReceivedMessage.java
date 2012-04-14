@@ -111,10 +111,12 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
         if (!(ObjectUtils.equals(lhs.receiverId,  rhs.receiverId)))  { return false; }
         if (!(ObjectUtils.equals(lhs.messageId,   rhs.messageId)))   { return false; }
         if (!(ObjectUtils.equals(lhs.delivery,    rhs.delivery)))    { return false; }
+        if (!(ObjectUtils.equals(lhs.opened,      rhs.opened)))      { return false; }
         if (!(ObjectUtils.equals(lhs.openedAt,    rhs.openedAt)))    { return false; }
         if (!(ObjectUtils.equals(lhs.deliveredAt, rhs.deliveredAt))) { return false; }
         if (!(ObjectUtils.equals(lhs.createdAt,   rhs.createdAt)))   { return false; }
         if (!(ObjectUtils.equals(lhs.modifiedAt,  rhs.modifiedAt)))  { return false; }
+
         return true;
     }
 
@@ -126,8 +128,8 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
         code = code * 37 + ObjectUtils.hashCode(senderId);
         code = code * 37 + ObjectUtils.hashCode(receiverId);
         code = code * 37 + ObjectUtils.hashCode(messageId);
-        code = code * 37 + ObjectUtils.hashCode(opened);
         code = code * 37 + ObjectUtils.hashCode(delivery);
+        code = code * 37 + ObjectUtils.hashCode(opened);
         code = code * 37 + ObjectUtils.hashCode(openedAt);
         code = code * 37 + ObjectUtils.hashCode(deliveredAt);
         code = code * 37 + ObjectUtils.hashCode(createdAt);

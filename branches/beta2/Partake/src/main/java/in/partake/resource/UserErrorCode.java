@@ -91,6 +91,7 @@ public enum UserErrorCode {
 
     // MESSAGE
     MISSING_MESSAGE("invalid.message.missing"),
+    MISSING_MESSAGE_SUBJECT("invalid.message.subject"),
     INVALID_MESSAGE_TOOMUCH("invalid.message.toomuch"),
     INVALID_MESSAGE_TOOLONG("invalid.message.toolong"),
 

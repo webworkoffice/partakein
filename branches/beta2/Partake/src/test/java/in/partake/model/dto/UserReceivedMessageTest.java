@@ -12,6 +12,6 @@ public class UserReceivedMessageTest extends AbstractPartakeModelTest<UserReceiv
 
     @Override
     protected TestDataProvider<UserReceivedMessage> getTestDataProvider() {
-        return PartakeApp.getTestService().getTestDataProviderSet().getUserMessageProvider();
+        return PartakeApp.getTestService().getTestDataProviderSet().getUserReceivedMessageProvider();
     }
 }

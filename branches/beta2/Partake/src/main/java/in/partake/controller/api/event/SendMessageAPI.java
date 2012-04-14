@@ -16,8 +16,8 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.EventMessage;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.MessageEnvelope;
-import in.partake.model.dto.UserReceivedMessage;
 import in.partake.model.dto.UserPreference;
+import in.partake.model.dto.UserReceivedMessage;
 import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.resource.UserErrorCode;
 
@@ -37,7 +37,11 @@ public class SendMessageAPI extends AbstractPartakeAPI {
 
         String subject = getParameter("subject");
         String body = getParameter("body");
-        if (StringUtils.isBlank(body) || StringUtils.isBlank(subject))
+
+        if (StringUtils.isBlank(subject))
+            return renderInvalid(UserErrorCode.MISSING_MESSAGE_SUBJECT);
+
+        if (StringUtils.isBlank(body))
             return renderInvalid(UserErrorCode.MISSING_MESSAGE);
 
         try {

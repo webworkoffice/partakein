@@ -168,7 +168,7 @@ public class PartakeTestDataProviderSet {
         return shortenedUrlProvider;
     }
 
-    public UserReceivedMessageTestDataProvider getUserMessageProvider() {
+    public UserReceivedMessageTestDataProvider getUserReceivedMessageProvider() {
         return userMessageProvider;
     }
 
