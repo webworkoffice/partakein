@@ -29,8 +29,9 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
         Date beginDate = now;
 
         UUID uuid = new UUID(pkNumber, ("event" + pkSalt).hashCode());
+        UUID ownerId = new UUID(objNumber, objNumber);
         Event event = new Event(uuid.toString(), "shortId", "title", "summary", "category", null, beginDate, null, 0,
-                "url", "place", "address", "description", "hashTag", "ownerId", null, null, null,
+                "url", "place", "address", "description", "hashTag", ownerId.toString(), null, null, null,
                 true, "passcode", false, false, new ArrayList<EventRelation>(), now, now, 0);
         return event;
     }
