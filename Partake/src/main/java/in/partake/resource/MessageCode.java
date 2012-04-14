@@ -15,11 +15,9 @@ public enum MessageCode {
     MESSAGE_PASSCODE_INVALID("message.event.passcode.invalid", MessageLevel.WARNING),
     MESSAGE_EVENT_INDEX_RECREATED("message.event.index.recreated"),
 
-
     MESSAGE_OPENID_LOGIN_FAILURE("message.openid.login.failure", MessageLevel.WARNING),
     MESSAGE_OPENID_LOGIN_NOLINKAGE("message.openid.login.nolinkage", MessageLevel.WARNING),
-    MESSAGE_OPENID_CONNECTION_SUCCESS("message.openid.connection.success")
-    ;
+    MESSAGE_OPENID_CONNECTION_SUCCESS("message.openid.connection.success");
 
     // ----------------------------------------------------------------------
 

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertThat;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.EventEx;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventRelation;
+import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.UserErrorCode;
 
 import org.junit.Test;
@@ -101,7 +101,7 @@ public class ModifyAPITest extends APIControllerTest {
 
             for (int i = 0; i < event.getEventRelations().size(); ++i) {
                 EventRelation relation = event.getEventRelations().get(i);
-                relatedEventIds[i] = relation.getDstEventId();
+                relatedEventIds[i] = relation.getEventId();
                 relatedEventRequired[i] = String.valueOf(relation.isRequired());
                 relatedEventPriority[i] = String.valueOf(relation.hasPriority());
             }

@@ -12,9 +12,9 @@ import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
-import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.CalculatedEnrollmentStatus;
+import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.ServerErrorCode;
@@ -28,12 +28,12 @@ import java.util.Set;
 
 public class EnrollmentDAOFacade {
 
-    public static List<EnrollmentEx> getEnrollmentExs(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
+    public static List<EnrollmentEx> getEnrollmentExs(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
         // priority のあるイベントに参加している場合、priority に 1 を付加する。
 
         // --- まず、EnrollmentEx を作成
         List<EnrollmentEx> ps = new ArrayList<EnrollmentEx>();
-        for (Enrollment p : daos.getEnrollmentAccess().findByEventId(con, eventId)) {
+        for (Enrollment p : daos.getEnrollmentAccess().findByEventId(con, event.getId())) {
             if (p == null) { continue; }
             UserEx user = UserDAOFacade.getUserEx(con, daos, p.getUserId());
             if (user == null) { continue; }
@@ -42,15 +42,15 @@ public class EnrollmentDAOFacade {
         }
 
         // --- 各 related event に対して、参加しているかどうかを調査。
-        List<EventRelation> eventRelations = daos.getEventRelationAccess().findByEventId(con, eventId);
+        List<EventRelation> eventRelations = event.getRelations();
         for (EventRelation relation : eventRelations) {
-            EventEx ev = EventDAOFacade.getEventEx(con, daos, relation.getDstEventId());
+            EventEx ev = EventDAOFacade.getEventEx(con, daos, relation.getEventId());
             if (ev == null) { continue; }
 
             // related event の参加者を Set で取得
             Set<String> relatedEventParticipantsIds = new HashSet<String>();
             {
-                List<Enrollment> relatedEventParticipations = daos.getEnrollmentAccess().findByEventId(con, relation.getDstEventId());
+                List<Enrollment> relatedEventParticipations = daos.getEnrollmentAccess().findByEventId(con, relation.getEventId());
                 for (Enrollment p : relatedEventParticipations) {
                     if (p.getStatus().isEnrolled()) {
                         relatedEventParticipantsIds.add(p.getUserId());
@@ -61,7 +61,7 @@ public class EnrollmentDAOFacade {
             // 参加していれば、それを追加。priority があれば、+1 する。
             for (EnrollmentEx p : ps) {
                 if (!relatedEventParticipantsIds.contains(p.getUserId())) { continue; }
-                p.addRelatedEventId(relation.getDstEventId());
+                p.addRelatedEventId(relation.getEventId());
                 if (relation.hasPriority()) {
                     p.setPriority(p.getPriority() + 1);
                 }
@@ -87,14 +87,14 @@ public class EnrollmentDAOFacade {
 
         switch (status) {
         case ENROLLED: {
-            int order = getOrderOfEnrolledEvent(con, daos, event.getId(), userId);
+            int order = getOrderOfEnrolledEvent(con, daos, event, userId);
             if (order <= event.getCapacity() || event.getCapacity() == 0)
                 return CalculatedEnrollmentStatus.ENROLLED;
             else
                 return CalculatedEnrollmentStatus.ENROLLED_ON_WAITING_LIST;
         }
         case RESERVED: {
-            int order = getOrderOfEnrolledEvent(con, daos, event.getId(), userId);
+            int order = getOrderOfEnrolledEvent(con, daos, event, userId);
             if (order <= event.getCapacity() || event.getCapacity() == 0)
                 return CalculatedEnrollmentStatus.RESERVED;
             else
@@ -120,9 +120,8 @@ public class EnrollmentDAOFacade {
     /**
      * event の参加順位(何番目に参加したか)を返します。
      */
-    public static int getOrderOfEnrolledEvent(PartakeConnection con, IPartakeDAOs daos, String eventId, String userId) throws DAOException {
-        List<EnrollmentEx> enrollments = getEnrollmentExs(con, daos, eventId);
-        EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
+    public static int getOrderOfEnrolledEvent(PartakeConnection con, IPartakeDAOs daos, Event event, String userId) throws DAOException {
+        List<EnrollmentEx> enrollments = getEnrollmentExs(con, daos, event);
         ParticipationList list = event.calculateParticipationList(enrollments);
 
         int result = 0;

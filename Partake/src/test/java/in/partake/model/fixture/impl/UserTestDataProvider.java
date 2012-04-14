@@ -8,20 +8,27 @@ import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.User;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class UserTestDataProvider extends TestDataProvider<User> {
 
     @Override
-    public User create() {
-        return create(0, "", 0);
-    }
-
-    @Override
     public User create(long pkNumber, String pkSalt, int objNumber) {
         UUID id = new UUID(pkNumber, ("user" + pkSalt).hashCode());
         return new User(id.toString(), 1, new Date(0), "calendarId" + objNumber);
+    }
+
+    @Override
+    public List<User> createGetterSetterSamples() {
+        List<User> array = new ArrayList<User>();
+        array.add(new User("id", 0, new Date(0L), "calendarId"));
+        array.add(new User("id", 1, new Date(0L), "calendarId"));
+        array.add(new User("id", 0, new Date(1L), "calendarId"));
+        array.add(new User("id", 0, new Date(0L), "calendarId2"));
+        return array;
     }
 
     /**

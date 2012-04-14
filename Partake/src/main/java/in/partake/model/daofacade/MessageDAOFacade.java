@@ -1,27 +1,29 @@
 package in.partake.model.daofacade;
 
+import in.partake.base.TimeUtil;
+import in.partake.model.EventMessageEx;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.UserMessageEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.DirectMessage;
-import in.partake.model.dto.Envelope;
+import in.partake.model.dto.EventMessage;
 import in.partake.model.dto.Message;
+import in.partake.model.dto.MessageEnvelope;
+import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.User;
-import in.partake.model.dto.UserMessage;
-import in.partake.model.dto.auxiliary.DirectMessagePostingType;
+import in.partake.model.dto.UserReceivedMessage;
+import in.partake.model.dto.auxiliary.MessageDelivery;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MessageDAOFacade {
 
     public static List<UserMessageEx> findUserMessageExByReceiverId(PartakeConnection con, IPartakeDAOs daos, String userId, int offset, int limit) throws DAOException {
-        List<UserMessage> userMessages = daos.getUserMessageAccess().findByReceiverId(con, userId, offset, limit);
+        List<UserReceivedMessage> userMessages = daos.getUserReceivedMessageAccess().findByReceiverId(con, userId, offset, limit);
         List<UserMessageEx> userMessageExs = new ArrayList<UserMessageEx>();
-        for (UserMessage userMessage : userMessages) {
+        for (UserReceivedMessage userMessage : userMessages) {
             if (userMessage == null)
                 continue;
 
@@ -38,15 +40,38 @@ public class MessageDAOFacade {
         return userMessageExs;
     }
 
+    public static List<EventMessageEx> findEventMessageExs(PartakeConnection con, IPartakeDAOs daos, String eventId, int offset, int limit) throws DAOException {
+        List<EventMessage> messages = daos.getEventMessageAccess().findByEventId(con, eventId, 0, 100);
+        List<EventMessageEx> messageExs = new ArrayList<EventMessageEx>();
+        for (EventMessage eventMessage : messages) {
+            if (eventMessage == null)
+                continue;
+
+            UserEx sender = UserDAOFacade.getUserEx(con, daos, eventMessage.getSenderId());
+            if (sender == null)
+                continue;
+
+            Message message = daos.getMessageAccess().find(con, eventMessage.getMessageId());
+            if (message == null)
+                continue;
+
+            EventMessageEx ex = new EventMessageEx(eventMessage, sender, message);
+            messageExs.add(ex);
+        }
+
+        return messageExs;
+    }
+
+
+
     public static void tweetMessageImpl(PartakeConnection con, IPartakeDAOs daos, User user, String messageStr) throws DAOException {
-        String messageId = daos.getDirectMessageAccess().getFreshId(con);
-        DirectMessage embryo = new DirectMessage(messageId, user.getId(), messageStr, null, new Date());
+        String twitterMessageId = daos.getTwitterMessageAccess().getFreshId(con);
+        TwitterMessage message = new TwitterMessage(twitterMessageId, user.getId(), messageStr, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
+        daos.getTwitterMessageAccess().put(con, message);
 
-        daos.getDirectMessageAccess().put(con, embryo);
-
-        String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
-        Envelope envelope = new Envelope(envelopeId, user.getId(), null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
-        daos.getEnvelopeAccess().put(con, envelope);
+        String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
+        MessageEnvelope envelope = MessageEnvelope.createForTwitterMessage(envelopeId, twitterMessageId, null);
+        daos.getMessageEnvelopeAccess().put(con, envelope);
     }
 
 }

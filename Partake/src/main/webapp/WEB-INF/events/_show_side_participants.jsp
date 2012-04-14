@@ -8,7 +8,6 @@
 <%@page import="in.partake.model.dto.Event"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
-<%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="in.partake.model.CommentEx"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.model.EventEx"%>
@@ -23,14 +22,12 @@
 
     EventEx event = action.getEvent();
     List<CommentEx> comments = action.getComments();
-    List<DirectMessageEx> messages = action.getDirectMessages();
     boolean deadlineOver = action.isDeadlineOver();
     String redirectURL = action.getRedirectURL();
     if (redirectURL == null)
         redirectURL = action.getCurrentURL();
     ParticipationStatus status = action.getParticipationStatus();
     EventReminder reminderStatus = action.getEventReminder();
-    int maxCodePointsOfMessage = action.getRestCodePoints();
 %>
 
 <%

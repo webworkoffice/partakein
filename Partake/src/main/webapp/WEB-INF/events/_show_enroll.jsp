@@ -22,7 +22,6 @@
     boolean deadlineOver = action.isDeadlineOver();
     EventReminder reminderStatus = action.getEventReminder();
     List<EventRelationEx> eventRelations = action.getRelations();
-    int maxCodePointsOfMessage = action.getRestCodePoints();
 %>
 
 <div style="padding-top: 10px;">

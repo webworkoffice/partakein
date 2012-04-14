@@ -8,15 +8,12 @@ import in.partake.model.dao.access.ICommentAccess;
 import in.partake.model.dto.Comment;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class CommentTestDataProvider extends TestDataProvider<Comment> {
-
-    @Override
-    public Comment create() {
-        return new Comment();
-    }
 
     @Override
     public Comment create(long pkNumber, String pkSalt, int objNumber) {
@@ -27,6 +24,22 @@ public class CommentTestDataProvider extends TestDataProvider<Comment> {
         boolean isHTML = false;
         Date createdAt = new Date(objNumber);
         return new Comment(uuid.toString(), eventId, userId, comment, isHTML, createdAt);
+    }
+
+    @Override
+    public List<Comment> createGetterSetterSamples() {
+        List<Comment> list = new ArrayList<Comment>();
+
+        Date now = new Date();
+        list.add(new Comment("id", "eventId", "userId", "comment", false, now));
+        list.add(new Comment("id1", "eventId1", "userId", "comment", false, now));
+        list.add(new Comment("id", "eventId1", "userId", "comment", false, now));
+        list.add(new Comment("id", "eventId", "userId1", "comment", false, now));
+        list.add(new Comment("id", "eventId", "userId", "comment1", false, now));
+        list.add(new Comment("id", "eventId", "userId", "comment", true, now));
+        list.add(new Comment("id", "eventId", "userId", "comment", false, null));
+
+        return list;
     }
 
     @Override

@@ -3,17 +3,27 @@ package in.partake.model.fixture;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.fixture.impl.BinaryTestDataProvider;
 import in.partake.model.fixture.impl.CalendarLinkageTestDataProvider;
 import in.partake.model.fixture.impl.CommentTestDataProvider;
 import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
-import in.partake.model.fixture.impl.EnvelopeTestDataProvider;
+import in.partake.model.fixture.impl.EventActivityTestDataProvider;
+import in.partake.model.fixture.impl.EventFeedTestDataProvider;
+import in.partake.model.fixture.impl.EventMessageTestDataProvider;
+import in.partake.model.fixture.impl.EventNotificationTestDataProvider;
 import in.partake.model.fixture.impl.EventReminderTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.model.fixture.impl.ImageTestDataProvider;
+import in.partake.model.fixture.impl.MessageEnvelopeTestDataProvider;
+import in.partake.model.fixture.impl.MessageTestDataProvider;
 import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
+import in.partake.model.fixture.impl.ShortenedUrlTestDataProvider;
+import in.partake.model.fixture.impl.ThumbnailTestDataProvider;
 import in.partake.model.fixture.impl.TwitterLinkageTestDataProvider;
+import in.partake.model.fixture.impl.TwitterMessageTestDataProvider;
+import in.partake.model.fixture.impl.UserNotificationTestDataProvider;
 import in.partake.model.fixture.impl.UserPreferenceTestDataProvider;
+import in.partake.model.fixture.impl.UserReceivedMessageTestDataProvider;
+import in.partake.model.fixture.impl.UserSentMessageTestDataProvider;
 import in.partake.model.fixture.impl.UserTestDataProvider;
 
 import java.util.ArrayList;
@@ -26,27 +36,35 @@ import java.util.ArrayList;
 public class PartakeTestDataProviderSet {
     private ArrayList<TestDataProvider<?>> providers;
 
-    private BinaryTestDataProvider binaryDataProvider;
     private CalendarLinkageTestDataProvider calendarDataProvider;
     private CommentTestDataProvider commentDataprovider;
     private EnrollmentTestDataProvider enrollmentProvider;
-    private EnvelopeTestDataProvider envelopeTestDataProvider;
     private EventTestDataProvider eventProvider;
     private EventReminderTestDataProvider eventReminderProvider;
     private ImageTestDataProvider imageProvider;
     private OpenIDLinkageTestDataProvider openIDLinkageProvider;
     private TwitterLinkageTestDataProvider twitterLinkageProvider;
     private UserTestDataProvider userProvider;
+    private UserReceivedMessageTestDataProvider userMessageProvider;
     private UserPreferenceTestDataProvider userPreferenceProvider;
+    private UserSentMessageTestDataProvider userSentMessageProvider;
+    private UserNotificationTestDataProvider userNotificationProvider;
+    private EventActivityTestDataProvider eventActivityProvider;
+    private EventFeedTestDataProvider eventFeedProvider;
+    private EventMessageTestDataProvider eventMessageProvider;
+    private EventNotificationTestDataProvider eventNotificationProvider;
+    private MessageTestDataProvider messageProvider;
+    private MessageEnvelopeTestDataProvider messageEnvelopeProvider;
+    private ThumbnailTestDataProvider thumbnailProvider;
+    private TwitterMessageTestDataProvider twitterMessageProvider;
+    private ShortenedUrlTestDataProvider shortenedUrlProvider;
 
     public PartakeTestDataProviderSet() {
         this.providers = new ArrayList<TestDataProvider<?>>();
 
-        providers.add(binaryDataProvider = createBinaryTestDataProvider());
         providers.add(calendarDataProvider = createCalendarLinkageTestDataProvider());
         providers.add(commentDataprovider = createCommentTestDataProvider());
         providers.add(enrollmentProvider = createEnrollmentTestDataProvider());
-        providers.add(envelopeTestDataProvider = createEnvelopeTestDataProvider());
         providers.add(eventProvider = createEventTestDataProvider());
         providers.add(eventReminderProvider = createEventReminderTestDataProvider());
         providers.add(imageProvider = createImageTestDataProvider());
@@ -54,16 +72,24 @@ public class PartakeTestDataProviderSet {
         providers.add(twitterLinkageProvider = createTwitterLinkageTestDataProvider());
         providers.add(userProvider = createUserTestDataProvider());
         providers.add(userPreferenceProvider = createUserPreferenceTestDataProvider());
+        providers.add(eventActivityProvider = createEventActivityTestDataProvider());
+        providers.add(eventFeedProvider = createEventFeedTestDataProvider());
+        providers.add(eventMessageProvider = createEventMessageTestDataProvider());
+        providers.add(eventNotificationProvider = createEventNotificationTestDataProvider());
+        providers.add(messageProvider = createMessageTestDataProvider());
+        providers.add(messageEnvelopeProvider = createMessageEnvelopeTestDataProvider());
+        providers.add(thumbnailProvider = createThumbnailTestDataProvider());
+        providers.add(twitterMessageProvider = createTwitterMessageTestDataProvider());
+        providers.add(shortenedUrlProvider = createShortenedURLTestDataProvider());
+        providers.add(userMessageProvider = createUserReceivedMessageTestDataProvider());
+        providers.add(userSentMessageProvider = createUserSentMessageTestDataProvider());
+        providers.add(userNotificationProvider = createUserNotificationTestDataProvider());
     }
 
     public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
         for (TestDataProvider<?> provider : providers) {
             provider.createFixtures(con, daos);
         }
-    }
-
-    public BinaryTestDataProvider getBinaryTestDataProvider() {
-        return binaryDataProvider;
     }
 
     public CalendarLinkageTestDataProvider getCalendarTestDataProvider() {
@@ -76,10 +102,6 @@ public class PartakeTestDataProviderSet {
 
     public EnrollmentTestDataProvider getEnrollmentProvider() {
         return enrollmentProvider;
-    }
-
-    public EnvelopeTestDataProvider getEnvelopeTestDataProvider() {
-        return envelopeTestDataProvider;
     }
 
     public EventTestDataProvider getEventProvider() {
@@ -110,8 +132,52 @@ public class PartakeTestDataProviderSet {
         return userPreferenceProvider;
     }
 
-    private BinaryTestDataProvider createBinaryTestDataProvider() {
-        return new BinaryTestDataProvider();
+    public EventActivityTestDataProvider getEventActivityProvider() {
+        return eventActivityProvider;
+    }
+
+    public EventFeedTestDataProvider getEventFeedProvider() {
+        return eventFeedProvider;
+    }
+
+    public EventMessageTestDataProvider getEventMessageProvider() {
+        return eventMessageProvider;
+    }
+
+    public EventNotificationTestDataProvider getEventNotificationProvider() {
+        return eventNotificationProvider;
+    }
+
+    public MessageTestDataProvider getMessageProvider() {
+        return messageProvider;
+    }
+
+    public MessageEnvelopeTestDataProvider getMessageEnvelopeProvider() {
+        return messageEnvelopeProvider;
+    }
+
+    public ThumbnailTestDataProvider getThumbnailProvider() {
+        return thumbnailProvider;
+    }
+
+    public TwitterMessageTestDataProvider getTwitterMessageProvider() {
+        return twitterMessageProvider;
+    }
+
+    public ShortenedUrlTestDataProvider getURLShortenerProvider() {
+        return shortenedUrlProvider;
+    }
+
+    public UserReceivedMessageTestDataProvider getUserMessageProvider() {
+        return userMessageProvider;
+    }
+
+    public UserSentMessageTestDataProvider getUserSentMessageProvider() {
+        return userSentMessageProvider;
+    }
+
+    public UserNotificationTestDataProvider getUserNotificationProvider() {
+        return userNotificationProvider;
     }
 
     private CalendarLinkageTestDataProvider createCalendarLinkageTestDataProvider() {
@@ -134,10 +200,6 @@ public class PartakeTestDataProviderSet {
         return new EventReminderTestDataProvider();
     }
 
-    private EnvelopeTestDataProvider createEnvelopeTestDataProvider() {
-        return new EnvelopeTestDataProvider();
-    }
-
     private ImageTestDataProvider createImageTestDataProvider() {
         return new ImageTestDataProvider();
     }
@@ -156,5 +218,53 @@ public class PartakeTestDataProviderSet {
 
     private UserPreferenceTestDataProvider createUserPreferenceTestDataProvider() {
         return new UserPreferenceTestDataProvider();
+    }
+
+    private EventActivityTestDataProvider createEventActivityTestDataProvider() {
+        return new EventActivityTestDataProvider();
+    }
+
+    private EventFeedTestDataProvider createEventFeedTestDataProvider() {
+        return new EventFeedTestDataProvider();
+    }
+
+    private EventMessageTestDataProvider createEventMessageTestDataProvider() {
+        return new EventMessageTestDataProvider();
+    }
+
+    private EventNotificationTestDataProvider createEventNotificationTestDataProvider() {
+        return new EventNotificationTestDataProvider();
+    }
+
+    private MessageTestDataProvider createMessageTestDataProvider() {
+        return new MessageTestDataProvider();
+    }
+
+    private MessageEnvelopeTestDataProvider createMessageEnvelopeTestDataProvider() {
+        return new MessageEnvelopeTestDataProvider();
+    }
+
+    private TwitterMessageTestDataProvider createTwitterMessageTestDataProvider() {
+        return new TwitterMessageTestDataProvider();
+    }
+
+    private ThumbnailTestDataProvider createThumbnailTestDataProvider() {
+        return new ThumbnailTestDataProvider();
+    }
+
+    private ShortenedUrlTestDataProvider createShortenedURLTestDataProvider() {
+        return new ShortenedUrlTestDataProvider();
+    }
+
+    private UserReceivedMessageTestDataProvider createUserReceivedMessageTestDataProvider() {
+        return new UserReceivedMessageTestDataProvider();
+    }
+
+    private UserSentMessageTestDataProvider createUserSentMessageTestDataProvider() {
+        return new UserSentMessageTestDataProvider();
+    }
+
+    private UserNotificationTestDataProvider createUserNotificationTestDataProvider() {
+        return new UserNotificationTestDataProvider();
     }
 }

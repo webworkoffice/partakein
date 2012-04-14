@@ -1,8 +1,8 @@
 package in.partake.daemon.impl;
 
+import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
-import in.partake.base.Util;
 import in.partake.daemon.IPartakeDaemonTask;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
@@ -15,14 +15,16 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Enrollment;
-import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventNotification;
 import in.partake.model.dto.EventReminder;
-import in.partake.model.dto.DirectMessage;
-import in.partake.model.dto.auxiliary.DirectMessagePostingType;
+import in.partake.model.dto.MessageEnvelope;
+import in.partake.model.dto.UserNotification;
+import in.partake.model.dto.auxiliary.NotificationType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -69,7 +71,6 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
             it.close();
         }
 
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -87,29 +88,36 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
      * @param message
      * @throws DAOException
      */
-    private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, IPartakeDAOs daos, Event event, String message) throws DAOException {
-        String messageId = daos.getDirectMessageAccess().getFreshId(con);
-        DirectMessage embryo = new DirectMessage(messageId, event.getOwnerId(), message, null, new Date());
-        daos.getDirectMessageAccess().put(con, embryo);
-
+    private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, IPartakeDAOs daos, Event event, NotificationType notificationType) throws DAOException {
         List<Enrollment> participations = daos.getEnrollmentAccess().findByEventId(con, event.getId());
-        Date deadline = event.getCalculatedDeadline();
+
+        List<String> userIds = new ArrayList<String>();
         for (Enrollment participation : participations) {
             if (!ParticipationStatus.RESERVED.equals(participation.getStatus())) { continue; }
-            String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
-            Envelope envelope = new Envelope(envelopeId, participation.getUserId(), participation.getUserId(),
-                    messageId, deadline, 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-            daos.getEnvelopeAccess().put(con, envelope);
-            logger.info("sendEnvelope : " + participation.getUserId() + " : " + embryo.getMessage());
+            userIds.add(participation.getUserId());
+        }
+
+        // TODO: ここから下のコードは、参加者のみにおくる場合と仮参加者のみに送る場合で共有するべき
+        String eventNotificationId = daos.getEventNotificationAccess().getFreshId(con);
+        EventNotification notification = new EventNotification(eventNotificationId, event.getId(), userIds, notificationType, TimeUtil.getCurrentDateTime(), null);
+        daos.getEventNotificationAccess().put(con, notification);
+
+        DateTime invalidAfter = new DateTime(event.getCalculatedDeadline().getTime());
+        for (String userId : userIds) {
+            String notificationId = daos.getUserNotificationAccess().getFreshId(con);
+            UserNotification userNotification = new UserNotification(notificationId, event.getId(), userId, notificationType, TimeUtil.getCurrentDateTime(), null);
+            daos.getUserNotificationAccess().put(con, userNotification);
+
+            String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
+            MessageEnvelope envelope = MessageEnvelope.createForEventNotification(envelopeId, notificationId, invalidAfter);
+            daos.getMessageEnvelopeAccess().put(con, envelope);
+            logger.info("sendEnvelope : " + userId + " : " + notificationType);
         }
     }
     private boolean sendEventNotification(PartakeConnection con, IPartakeDAOs daos, EventEx event, EventReminder reminderStatus, String topPath, Date now) throws DAOException {
         Date beginDate = event.getBeginDate();
         Date deadline = event.getCalculatedDeadline();
-
         boolean changed = false;
-
-        String shortenedURL = event.getShortenedURL();
 
         // TODO: isBeforeDeadline() とかわかりにくいな。
         // 締め切り１日前になっても RESERVED ステータスの人がいればメッセージを送付する。
@@ -120,9 +128,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
         //    2.2. 前回送った時刻が締め切り２４時間以上前で、かつ送った時刻より１時間以上経過している。
 
         if (needsToSend(now, TimeUtil.oneDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineOneday())) {
-            String message = "[PARTAKE] 締め切り１日前です。参加・不参加を確定してください。 " + shortenedURL + " " + event.getTitle();
-            message = Util.shorten(message, 140);
-            sendNotificationOnlyForReservedParticipants(con, daos, event, message);
+            sendNotificationOnlyForReservedParticipants(con, daos, event, NotificationType.ONE_DAY_BEFORE_REMINDER_FOR_RESERVATION);
 
             reminderStatus.setSentDateOfBeforeDeadlineOneday(now);
             changed = true;
@@ -130,9 +136,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
 
         // 締め切り１２時間前になっても RESERVED な人がいればメッセージを送付する。
         if (needsToSend(now, TimeUtil.halfDayBefore(deadline), reminderStatus.getSentDateOfBeforeDeadlineHalfday())) {
-            String message = "[PARTAKE] 締め切り１２時間前です。参加・不参加を確定してください。 ３時間前までに確定されない場合、キャンセル扱いとなります。" + shortenedURL + " " + event.getTitle();
-            message = Util.shorten(message, 140);
-            sendNotificationOnlyForReservedParticipants(con, daos, event, message);
+            sendNotificationOnlyForReservedParticipants(con, daos, event, NotificationType.HALF_DAY_BEFORE_REMINDER_FOR_RESERVATION);
 
             reminderStatus.setSentDateOfBeforeDeadlineHalfday(now);
             changed = true;
@@ -141,9 +145,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
         // イベント１日前で、参加が確定している人にはメッセージを送付する。
         // 参加が確定していない人には、RESERVED なメッセージが送られている。
         if (needsToSend(now, TimeUtil.oneDayBefore(beginDate), reminderStatus.getSentDateOfBeforeTheDay())) {
-            String message = "[PARTAKE] イベントの１日前です。あなたの参加は確定しています。 " + shortenedURL + " " + event.getTitle();
-            message = Util.shorten(message, 140);
-            sendNotificationOnlyForParticipants(con, daos, event, message);
+            sendNotificationOnlyForParticipants(con, daos, event, NotificationType.EVENT_ONEDAY_BEFORE_REMINDER);
 
             reminderStatus.setSentDateOfBeforeTheDay(now);
             changed = true;
@@ -158,23 +160,31 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
      * @param message
      * @throws DAOException
      */
-    private void sendNotificationOnlyForParticipants(PartakeConnection con, IPartakeDAOs daos, EventEx event, String message) throws DAOException {
-        String messageId = daos.getDirectMessageAccess().getFreshId(con);
-        DirectMessage embryo = new DirectMessage(messageId, event.getOwnerId(), message, null, new Date());
-        daos.getDirectMessageAccess().put(con, embryo);
-
-        Date deadline = event.getCalculatedDeadline();
-
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event.getId());
+    private void sendNotificationOnlyForParticipants(PartakeConnection con, IPartakeDAOs daos, EventEx event, NotificationType notificationType) throws DAOException {
+        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event);
         ParticipationList list = event.calculateParticipationList(participations);
 
+        List<String> userIds = new ArrayList<String>();
         for (EnrollmentEx p : list.getEnrolledParticipations()) {
-            if (!ParticipationStatus.ENROLLED.equals(p.getStatus())) { continue; }
-            String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
-            Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
-                    messageId, deadline, 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-            daos.getEnvelopeAccess().put(con, envelope);
-            logger.info("sendEnvelope : " + p.getUser().getScreenName() + " : " + embryo.getMessage());
+            if (!ParticipationStatus.ENROLLED.equals(p.getStatus()))
+                continue;
+            userIds.add(p.getUserId());
+        }
+
+        String eventNotificationId = daos.getEventNotificationAccess().getFreshId(con);
+        EventNotification notification = new EventNotification(eventNotificationId, event.getId(), userIds, notificationType, TimeUtil.getCurrentDateTime(), null);
+        daos.getEventNotificationAccess().put(con, notification);
+
+        DateTime invalidAfter = new DateTime(event.getCalculatedDeadline().getTime());
+        for (String userId : userIds) {
+            String notificationId = daos.getUserNotificationAccess().getFreshId(con);
+            UserNotification userNotification = new UserNotification(notificationId, event.getId(), userId, notificationType, TimeUtil.getCurrentDateTime(), null);
+            daos.getUserNotificationAccess().put(con, userNotification);
+
+            String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
+            MessageEnvelope envelope = MessageEnvelope.createForEventNotification(envelopeId, notificationId, invalidAfter);
+            daos.getMessageEnvelopeAccess().put(con, envelope);
+            logger.info("sendEnvelope : " + userId + " : " + notificationType);
         }
     }
 

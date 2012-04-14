@@ -6,10 +6,6 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -23,9 +19,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     private ParticipationStatus status;
     private ModificationStatus modificationStatus;
     private AttendanceStatus attendanceStatus;
-    // TODO: should be renamed to enrolledAt.
-    @Column @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedAt;
+    private Date modifiedAt; // TODO: should be renamed to enrolledAt.
 
     // ----------------------------------------------------------------------
     // constructors
@@ -49,6 +43,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     }
 
     public Enrollment(Enrollment p) {
+        this.id = p.id;
         this.userId = p.userId;
         this.eventId = p.eventId;
         this.comment = p.comment;
@@ -60,6 +55,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     }
 
     public Enrollment(JSONObject obj) {
+        this.id = obj.getString("id");
         this.userId = obj.getString("userId");
         this.eventId = obj.getString("eventId");
         this.comment = obj.getString("comment");
@@ -79,6 +75,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
+        obj.put("id", id);
         obj.put("userId", userId);
         obj.put("eventId", eventId);
         obj.put("comment", comment);
@@ -100,6 +97,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         Enrollment lhs = this;
         Enrollment rhs = (Enrollment) obj;
 
+        if (!ObjectUtils.equals(lhs.id,                 rhs.id))                 { return false; }
         if (!ObjectUtils.equals(lhs.userId,             rhs.userId))             { return false; }
         if (!ObjectUtils.equals(lhs.eventId,            rhs.eventId))            { return false; }
         if (!ObjectUtils.equals(lhs.comment,            rhs.comment))            { return false; }
@@ -115,6 +113,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     public int hashCode() {
         int hashCode = 0;
 
+        hashCode = hashCode * 37 + ObjectUtils.hashCode(id);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(userId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(eventId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(comment);
@@ -173,6 +172,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
     }
 
     public void setId(String id) {
+        checkFrozen();
         this.id = id;
     }
 

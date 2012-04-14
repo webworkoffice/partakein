@@ -12,7 +12,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.ImageDAOFacade;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventRelation;
+import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.IEventSearchService;
 
@@ -101,9 +101,9 @@ class ModifyTransaction extends Transaction<Void> {
         embryo.setOwnerId(event.getOwnerId());
         embryo.setCreatedAt(event.getCreatedAt());
         embryo.setModifiedAt(TimeUtil.getCurrentDate());
+        embryo.setRelations(relations);
 
         EventDAOFacade.modify(con, daos, embryo);
-        EventDAOFacade.setEventRelations(con, daos, eventId, relations);
 
         // private でなければ Lucene にデータ挿入して検索ができるようにする
         if (!embryo.isPrivate() && !embryo.isPreview()) {

@@ -242,11 +242,12 @@
     Partake.prototype.message = {
         partake: this,
 
-        sendMessage: function(eventId, message) {
+        sendMessage: function(eventId, subject, body) {
             var arg = {
                 sessionToken: partake.sessionToken,
                 eventId: eventId,
-                message: message
+                subject: subject,
+                body: body
             };
 
             return $.post('/api/event/sendMessage', arg);

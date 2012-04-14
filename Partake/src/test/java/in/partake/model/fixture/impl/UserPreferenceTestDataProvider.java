@@ -7,14 +7,11 @@ import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class UserPreferenceTestDataProvider extends TestDataProvider<UserPreference> {
-
-    @Override
-    public UserPreference create() {
-        return new UserPreference();
-    }
 
     @Override
     public UserPreference create(long pkNumber, String pkSalt, int objNumber) {
@@ -24,6 +21,17 @@ public class UserPreferenceTestDataProvider extends TestDataProvider<UserPrefere
         boolean receivingTwitterMessage = (objNumber & 0x10) != 0;
         boolean tweetingAttendanceAutomatically = (objNumber & 0x100) != 0;
         return new UserPreference(id.toString(), profilePublic, receivingTwitterMessage, tweetingAttendanceAutomatically);
+    }
+
+    @Override
+    public List<UserPreference> createGetterSetterSamples() {
+        List<UserPreference> array = new ArrayList<UserPreference>();
+        array.add(new UserPreference("userId", false, false, false));
+        array.add(new UserPreference("userId1", false, false, false));
+        array.add(new UserPreference("userId", true, false, false));
+        array.add(new UserPreference("userId", false, true, false));
+        array.add(new UserPreference("userId", false, false, true));
+        return array;
     }
 
     @Override

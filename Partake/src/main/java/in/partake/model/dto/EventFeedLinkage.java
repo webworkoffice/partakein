@@ -10,7 +10,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 
-// TODO: Should be merged into Event.
+// TODO: Should be merged into Event...
 @Entity(name = "EventFeedLinkages")
 public class EventFeedLinkage extends PartakeModel<EventFeedLinkage> {
     @Id

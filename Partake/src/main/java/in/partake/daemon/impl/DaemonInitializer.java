@@ -10,6 +10,6 @@ public class DaemonInitializer implements IDaemonInitializer {
         PartakeDaemon.getInstance().removeAllTasks();
         PartakeDaemon.getInstance().addTask(new EventReminderTask());
         PartakeDaemon.getInstance().addTask(new SendParticipationStatusChangeNotificationsTask());
-        PartakeDaemon.getInstance().addTask(new SendEnvelopeTask());
+        PartakeDaemon.getInstance().addTask(new SendMessageEnvelopeTask());
     }
 }

@@ -8,6 +8,7 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
@@ -59,7 +60,7 @@ public class GetEnrollmentsAPITest extends APIControllerTest {
             Event event = new Event(null, "short-id", "title", "summary", category,
                     late, late, late, 0, "url", "place",
                     "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
-                    EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, isPrivate, null, false, false,
+                    EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, isPrivate, null, false, false, new ArrayList<EventRelation>(),
                     now, now, -1);
 
             String id = storeEvent(event);

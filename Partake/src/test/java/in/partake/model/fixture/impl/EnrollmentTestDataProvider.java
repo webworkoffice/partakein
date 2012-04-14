@@ -1,5 +1,6 @@
 package in.partake.model.fixture.impl;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
@@ -10,19 +11,32 @@ import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class EnrollmentTestDataProvider extends TestDataProvider<Enrollment> {
 
     @Override
-    public Enrollment create() {
-        throw new RuntimeException("Not implemented yet");
+    public Enrollment create(long pkNumber, String pkSalt, int objNumber) {
+        UUID uuid = new UUID(pkNumber, pkSalt.hashCode());
+        return new Enrollment(uuid.toString(), "userId" + objNumber, "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, TimeUtil.getCurrentDate());
     }
 
     @Override
-    public Enrollment create(long pkNumber, String pkSalt, int objNumber) {
-        throw new RuntimeException("Not implemented yet");
+    public List<Enrollment> createGetterSetterSamples() {
+        List<Enrollment> array = new ArrayList<Enrollment>();
+        array.add(new Enrollment("id", "userId", "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(0L)));
+        array.add(new Enrollment("id1", "userId", "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(0L)));
+        array.add(new Enrollment("id", "userId1", "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(0L)));
+        array.add(new Enrollment("id", "userId", "eventId1", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(0L)));
+        array.add(new Enrollment("id", "userId", "eventId", "comment1", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(0L)));
+        array.add(new Enrollment("id", "userId", "eventId", "comment1", ParticipationStatus.RESERVED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(0L)));
+        array.add(new Enrollment("id", "userId", "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date(0L)));
+        array.add(new Enrollment("id", "userId", "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.ABSENT, new Date(0L)));
+        array.add(new Enrollment("id", "userId", "eventId", "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(1L)));
+        return array;
     }
 
     public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {

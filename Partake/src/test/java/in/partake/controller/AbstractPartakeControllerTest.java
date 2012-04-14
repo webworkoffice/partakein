@@ -18,9 +18,9 @@ import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
-import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.ImageData;
+import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.resource.Constants;
@@ -217,6 +217,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
     // ----------------------------------------------------------------------
     // DB Accessors
 
+    protected List<MessageEnvelope> loadMessageEnvelopes() throws DAOException, PartakeException {
+        return new DBAccess<List<MessageEnvelope>>() {
+            @Override
+            protected List<MessageEnvelope> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return DAOUtil.convertToList(daos.getMessageEnvelopeAccess().getIterator(con));
+            }
+        }.execute();
+    }
+
     protected UserEx loadUserEx(final String userId) throws DAOException, PartakeException {
         return new DBAccess<UserEx>() {
             @Override
@@ -317,15 +326,5 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
                 return daos.getImageAccess().find(con, imageId);
             }
         }.execute();
-    }
-
-    protected List<Envelope> loadEnvelopes() throws DAOException, PartakeException {
-        return new DBAccess<List<Envelope>>() {
-            @Override
-            protected List<Envelope> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-                return DAOUtil.convertToList(daos.getEnvelopeAccess().getIterator(con));
-            }
-        }.execute();
-
     }
 }
