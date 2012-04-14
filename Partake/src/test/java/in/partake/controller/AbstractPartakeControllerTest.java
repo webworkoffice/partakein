@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
+import in.partake.base.PartakeParamNamesConstants;
 import in.partake.base.TimeUtil;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.AbstractPartakeController;
@@ -53,7 +54,8 @@ import com.opensymphony.xwork2.ActionProxy;
 // When a test class extends TestCase class, such a test class seems to run on JUnit3.
 // To avoid it, @RunWith(JUnit4.class) is set.
 @RunWith(JUnit4.class)
-public abstract class AbstractPartakeControllerTest extends StrutsTestCase implements TestDataProviderConstants {
+public abstract class AbstractPartakeControllerTest extends StrutsTestCase
+    implements TestDataProviderConstants, PartakeActionURLConstants, PartakeParamNamesConstants {
 
     @BeforeClass
     public static void setUpOnce() throws Exception {

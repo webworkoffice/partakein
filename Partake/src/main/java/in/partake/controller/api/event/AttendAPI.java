@@ -25,8 +25,10 @@ public class AttendAPI extends AbstractPartakeAPI {
         String eventId = getValidEventIdParameter();
 
         String status = getParameter("status");
-        if (status == null || !AttendanceStatus.isValueOf(status))
+        if (status == null)
             return renderInvalid(UserErrorCode.MISSING_ATTENDANCE_STATUS);
+        if (!AttendanceStatus.isValueOf(status))
+            return renderInvalid(UserErrorCode.INVALID_ATTENDANCE_STATUS);
 
         new AttendTransaction(user, userId, eventId, AttendanceStatus.safeValueOf(status)).execute();
         return renderOK();
