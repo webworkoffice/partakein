@@ -12,6 +12,17 @@ public interface TestDataProviderConstants {
     public static final String DEFAULT_USER_OPENID_IDENTIFIER = "http://www.example.com/ident";
     public static final String DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER = "http://www.example.com/alternative";
 
+    // Users who do not have any specific rolls.
+    public static final String[] DEFAULT_USER_IDS = new String[] {
+        new UUID(1, 100).toString(), new UUID(1, 101).toString(), new UUID(1, 102).toString(), new UUID(1, 103).toString(), new UUID(1, 104).toString(),
+    };
+    public static final String[] DEFAULT_USER_TWITTER_IDS = new String[] {
+        "100", "101", "102", "103", "104"
+    };
+    public static final String[] DEFAULT_USER_TWITTER_SCREENNAME = new String[] {
+        "Kotori Otonashi", "Chihaya Kisaragi", "Haruka Amami", "Miki Hoshii", "Mami Tokachi Futami"
+    };
+
     public static final String DEFAULT_ANOTHER_USER_ID = new UUID(1, 1).toString();
     public static final String DEFAULT_ANOTHER_TWITTER_ID = "1";
     public static final String DEFAULT_ANOTHER_TWITTER_SCREENNAME = "testUser1";

@@ -8,11 +8,18 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IUserNotificationAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
+import in.partake.model.dao.postgres9.Postgres9DataIterator;
 import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
+import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
+import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
+import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.UserNotification;
+
+import java.util.List;
+
 import net.sf.json.JSONObject;
 
 class EntityUserNotificationMapper extends Postgres9EntityDataMapper<UserNotification> {
@@ -71,6 +78,17 @@ public class Postgres9UserNotificationDao extends Postgres9Dao implements IUserN
     @Override
     public UserNotification find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
+    }
+
+    @Override
+    public List<UserNotification> findByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
+        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE userId = ? OFFSET ? LIMIT ?",
+                new Object[] { userId, offset, limit });
+
+        Postgres9IdMapper<UserNotification> idMapper = new Postgres9IdMapper<UserNotification>((Postgres9Connection) con, mapper, entityDao);
+        DataIterator<UserNotification> it = new Postgres9DataIterator<UserNotification>(idMapper, psars);
+        return DAOUtil.freeze(DAOUtil.convertToList(it));
     }
 
     @Override

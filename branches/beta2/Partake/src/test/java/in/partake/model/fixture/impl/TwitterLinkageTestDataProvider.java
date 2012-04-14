@@ -5,10 +5,12 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.User;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TwitterLinkageTestDataProvider extends TestDataProvider<TwitterLinkage> {
     @Override
@@ -34,6 +36,10 @@ public class TwitterLinkageTestDataProvider extends TestDataProvider<TwitterLink
     public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
         ITwitterLinkageAccess dao = daos.getTwitterLinkageAccess();
         dao.truncate(con);
+
+
+        for (int i = 0; i < DEFAULT_USER_IDS.length; ++i)
+            dao.put(con, new TwitterLinkage(DEFAULT_USER_TWITTER_IDS[i], DEFAULT_USER_TWITTER_SCREENNAME[i], "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", DEFAULT_USER_IDS[i]));
 
         dao.put(con, new TwitterLinkage(DEFAULT_TWITTER_ID, DEFAULT_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", DEFAULT_USER_ID));
         dao.put(con, new TwitterLinkage(DEFAULT_ANOTHER_TWITTER_ID, DEFAULT_ANOTHER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", DEFAULT_ANOTHER_USER_ID));

@@ -43,118 +43,112 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
     public void sendParticipationStatusChangeNotifications(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
         Date now = new Date();
 
+        DataIterator<Event> it = daos.getEventAccess().getIterator(con);
         try {
-            con.beginTransaction();
-            DataIterator<Event> it = daos.getEventAccess().getIterator(con);
-            try {
-                while (it.hasNext()) {
-                    Event e = it.next();
-                    if (e == null) { continue; }
-                    String eventId = e.getId();
-                    if (eventId == null) { continue; }
-                    EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
-                    if (event == null) { continue; }
+            while (it.hasNext()) {
+                Event e = it.next();
+                if (e == null) { continue; }
+                String eventId = e.getId();
+                if (eventId == null) { continue; }
+                EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
+                if (event == null) { continue; }
 
-                    if (!now.before(event.getBeginDate())) { continue; }
+                if (!now.before(event.getBeginDate())) { continue; }
 
-                    List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event);
-                    ParticipationList list = event.calculateParticipationList(participations);
+                List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event);
+                ParticipationList list = event.calculateParticipationList(participations);
 
-                    // TODO: ここのソース汚い。同一化できる。とくに、あとの２つは一緒。
-                    List<String> userIdsToBeEnrolled = new ArrayList<String>();
-                    for (Enrollment p : list.getEnrolledParticipations()) {
-                        // -- 参加者向
+                // TODO: ここのソース汚い。同一化できる。とくに、あとの２つは一緒。
+                List<String> userIdsToBeEnrolled = new ArrayList<String>();
+                for (Enrollment p : list.getEnrolledParticipations()) {
+                    // -- 参加者向
 
-                        ModificationStatus status = p.getModificationStatus();
-                        if (status == null) { continue; }
+                    ModificationStatus status = p.getModificationStatus();
+                    if (status == null) { continue; }
 
-                        switch (status) {
-                        case CHANGED: { // 自分自身の力で変化させていた場合は status を enrolled にのみ変更して対応
-                            updateLastStatus(con, daos, eventId, p, ModificationStatus.ENROLLED);
-                            break;
-                        }
-                        case NOT_ENROLLED: {
-                            userIdsToBeEnrolled.add(p.getUserId());
-                            updateLastStatus(con, daos, eventId, p, ModificationStatus.ENROLLED);
-                            break;
-                        }
-                        case ENROLLED:
-                            break;
-                        }
+                    switch (status) {
+                    case CHANGED: { // 自分自身の力で変化させていた場合は status を enrolled にのみ変更して対応
+                        updateLastStatus(con, daos, eventId, p, ModificationStatus.ENROLLED);
+                        break;
                     }
-                    if (!userIdsToBeEnrolled.isEmpty()) {
-                        String eventNotificationId = daos.getEventNotificationAccess().getFreshId(con);
-                        EventNotification notification = new EventNotification(eventNotificationId, eventId, userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_ENROLLED, TimeUtil.getCurrentDateTime(), null);
-                        daos.getEventNotificationAccess().put(con, notification);
-
-                        for (String userId : userIdsToBeEnrolled) {
-                            String userNotificationid = daos.getUserNotificationAccess().getFreshId(con);
-                            UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_ENROLLED, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
-                            daos.getUserNotificationAccess().put(con, userNotification);
-
-                            String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
-                            MessageEnvelope envelope = MessageEnvelope.createForUserNotification(envelopeId, userNotificationid, null);
-                            daos.getMessageEnvelopeAccess().put(con, envelope);
-                        }
+                    case NOT_ENROLLED: {
+                        userIdsToBeEnrolled.add(p.getUserId());
+                        updateLastStatus(con, daos, eventId, p, ModificationStatus.ENROLLED);
+                        break;
                     }
-
-                    List<String> userIdsToBeCancelled = new ArrayList<String>();
-                    for (Enrollment p : list.getSpareParticipations()) {
-                        ModificationStatus status = p.getModificationStatus();
-                        if (status == null) { continue; }
-
-                        switch (status) {
-                        case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
-                            updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
-                            break;
-                        case NOT_ENROLLED:
-                            break;
-                        case ENROLLED:
-                            updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
-                            userIdsToBeCancelled.add(p.getUserId());
-                            break;
-                        }
-                    }
-
-                    for (Enrollment p : list.getCancelledParticipations()) {
-                        ModificationStatus status = p.getModificationStatus();
-                        if (status == null) { continue; }
-
-                        switch (status) {
-                        case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
-                            updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
-                            break;
-                        case NOT_ENROLLED:
-                            break;
-                        case ENROLLED:
-                            updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
-                            userIdsToBeCancelled.add(p.getUserId());
-                            break;
-                        }
-                    }
-
-                    if (!userIdsToBeCancelled.isEmpty()) {
-                        String notificationId = daos.getEventNotificationAccess().getFreshId(con);
-                        EventNotification notification = new EventNotification(notificationId, eventId, userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_CANCELLED, TimeUtil.getCurrentDateTime(), null);
-                        daos.getEventNotificationAccess().put(con, notification);
-
-                        for (String userId : userIdsToBeCancelled) {
-                            String userNotificationid = daos.getUserNotificationAccess().getFreshId(con);
-                            UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
-                            daos.getUserNotificationAccess().put(con, userNotification);
-
-                            String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
-                            MessageEnvelope envelope = MessageEnvelope.createForUserNotification(envelopeId, userNotificationid, null);
-                            daos.getMessageEnvelopeAccess().put(con, envelope);
-                        }
+                    case ENROLLED:
+                        break;
                     }
                 }
-            } finally {
-                it.close();
+                if (!userIdsToBeEnrolled.isEmpty()) {
+                    String eventNotificationId = daos.getEventNotificationAccess().getFreshId(con);
+                    EventNotification notification = new EventNotification(eventNotificationId, eventId, userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_ENROLLED, TimeUtil.getCurrentDateTime(), null);
+                    daos.getEventNotificationAccess().put(con, notification);
+
+                    for (String userId : userIdsToBeEnrolled) {
+                        String userNotificationid = daos.getUserNotificationAccess().getFreshId(con);
+                        UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_ENROLLED, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
+                        daos.getUserNotificationAccess().put(con, userNotification);
+
+                        String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
+                        MessageEnvelope envelope = MessageEnvelope.createForUserNotification(envelopeId, userNotificationid, null);
+                        daos.getMessageEnvelopeAccess().put(con, envelope);
+                    }
+                }
+
+                List<String> userIdsToBeCancelled = new ArrayList<String>();
+                for (Enrollment p : list.getSpareParticipations()) {
+                    ModificationStatus status = p.getModificationStatus();
+                    if (status == null) { continue; }
+
+                    switch (status) {
+                    case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
+                        updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
+                        break;
+                    case NOT_ENROLLED:
+                        break;
+                    case ENROLLED:
+                        updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
+                        userIdsToBeCancelled.add(p.getUserId());
+                        break;
+                    }
+                }
+
+                for (Enrollment p : list.getCancelledParticipations()) {
+                    ModificationStatus status = p.getModificationStatus();
+                    if (status == null) { continue; }
+
+                    switch (status) {
+                    case CHANGED: // 自分自身の力で変化させていた場合は status を not_enrolled にのみ変更して対応
+                        updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
+                        break;
+                    case NOT_ENROLLED:
+                        break;
+                    case ENROLLED:
+                        updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
+                        userIdsToBeCancelled.add(p.getUserId());
+                        break;
+                    }
+                }
+
+                if (!userIdsToBeCancelled.isEmpty()) {
+                    String notificationId = daos.getEventNotificationAccess().getFreshId(con);
+                    EventNotification notification = new EventNotification(notificationId, eventId, userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_CANCELLED, TimeUtil.getCurrentDateTime(), null);
+                    daos.getEventNotificationAccess().put(con, notification);
+
+                    for (String userId : userIdsToBeCancelled) {
+                        String userNotificationid = daos.getUserNotificationAccess().getFreshId(con);
+                        UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
+                        daos.getUserNotificationAccess().put(con, userNotification);
+
+                        String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
+                        MessageEnvelope envelope = MessageEnvelope.createForUserNotification(envelopeId, userNotificationid, null);
+                        daos.getMessageEnvelopeAccess().put(con, envelope);
+                    }
+                }
             }
-            con.commit();
         } finally {
-            con.invalidate();
+            it.close();
         }
     }
 

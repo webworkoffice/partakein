@@ -48,6 +48,9 @@ public class UserTestDataProvider extends TestDataProvider<User> {
 
         Date now = TimeUtil.getCurrentDate();
 
+        for (int i = 0; i < DEFAULT_USER_IDS.length; ++i)
+            dao.put(con, new User(DEFAULT_USER_IDS[i], DEFAULT_USER_TWITTER_IDS[i], now, null));
+
         dao.put(con, new User(DEFAULT_USER_ID, DEFAULT_TWITTER_ID, now, null));
         dao.put(con, new User(DEFAULT_ANOTHER_USER_ID, DEFAULT_ANOTHER_TWITTER_ID, now, null));
         dao.put(con, new User(ADMIN_USER_ID, ADMIN_USER_TWITTER_ID, now, null));
