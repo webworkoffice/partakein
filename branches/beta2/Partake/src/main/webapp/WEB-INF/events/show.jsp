@@ -1,9 +1,10 @@
+<%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
+<%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.ParticipationList"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@taglib prefix="s" uri="/struts-tags" %>
 <%@page import="in.partake.model.CommentEx"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="in.partake.model.EventEx"%>
@@ -79,6 +80,39 @@ body {
 <body class="event">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
+<div class="row" style="position: relative; min-height: 30px;">
+    <div class="event-promotion-container">
+        <!-- hatena -->
+        <div class="pull-right">
+        <div style="display:inline-block;">
+            <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+            <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+        </div>
+
+        <!-- facebook -->
+        <iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true" height="20" width="100"></iframe>
+
+        <!--  twitter -->
+        <div style="display:inline-block; width:105px" >
+            <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>" data-width="105px">Tweet</a>
+            <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+        </div>
+
+        <!-- +1 -->
+        <div style="display:inline-block; width:70px;"><div class="g-plusone" data-size="medium" data-href="<%= h(event.getEventURL()) %>"></div></div>
+
+        <!-- rss -->
+        <% if (event.getFeedId() != null) { %>
+            <div style="display:inline-block; vertical-align: top;"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-15x15.png" /></a></div>
+        <% } %>
+        </div>
+    </div>
+
+    <% if (user != null && EventEditPermission.check(event, user)) { %>
+        <jsp:include page="/WEB-INF/events/_show_manage_navigation.jsp" flush="true" />
+    <% } %>
+</div>
+
 <div class="event-body">
 
 <div class="page-header">
@@ -91,107 +125,57 @@ body {
     <% } %>
 </div>
 
-<div class="row clearfix">
-    <!-- hatena -->
-    <div class="pull-right">
-    <div style="display:inline-block;">
-        <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
-        <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-    </div>
-
-    <!-- facebook -->
-    <iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true" height="20" width="100"></iframe>
-
-    <!--  twitter -->
-    <div style="display:inline-block; width:105px" >
-        <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>" data-width="105px">Tweet</a>
-        <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-    </div>
-
-    <!-- +1 -->
-    <div style="display:inline-block; width:70px;"><div class="g-plusone" data-size="medium" data-href="<%= h(event.getEventURL()) %>"></div></div>
-
-    <!-- rss -->
-    <% if (event.getFeedId() != null) { %>
-        <div style="display:inline-block;"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-15x15.png" /></a></div>
-    <% } %>
-    </div>
-</div>
+<jsp:include page="/WEB-INF/events/_show_enroll.jsp" flush="true" />
 
 <div class="row">
 
-<div class="span9">
+<div class="span4 tabbable pull-right">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#side-information" data-toggle="tab">イベント情報</a></li>
+        <li><a href="#side-participants" data-toggle="tab">参加者情報</a></li>
+        <li><a href="#side-twitter" data-toggle="tab">Twitter</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="side-information">
+            <jsp:include page="/WEB-INF/events/_show_side_information.jsp" flush="true" />
+        </div>
+        <div class="tab-pane" id="side-participants">
+            <jsp:include page="/WEB-INF/events/_show_side_participants.jsp" flush="true" />
+        </div>
+        <div class="tab-pane" id="side-twitter">
+            <jsp:include page="/WEB-INF/events/_show_side_twitter.jsp" flush="true" />
+        </div>
+    </div>
+</div>
+
+<div class="span8">
     <% if (event.getForeImageId() != null) { %>
-    <div class="event-image">
-        <img id="event-image-image" src="/images/<%= event.getForeImageId() %>" />
+    <div class="row">
+        <div class="span8">
+            <div class="event-image">
+                <img id="event-image-image" src="/images/<%= event.getForeImageId() %>" />
+            </div>
+        </div>
     </div>
     <% } %>
 
-    <div class="row">
-        <div class="span6">
-        <table class="table table-striped">
-            <tr><th>日時</th><td><%= Helper.readableDuration(event.getBeginDate(), event.getEndDate()) %></td></tr>
-            <tr><th>申込締切</th><td><%= Helper.readableDate(event.getDeadline() == null ? event.getBeginDate() : event.getDeadline()) %></td></tr>
-            <tr><th>カテゴリ</th><td><%= event.getCategory() != null ? EventCategory.getReadableCategoryName(event.getCategory()) : "-" %></td></tr>
-            <tr><th>定員</th><td><%= event.getCapacity() != 0 ? String.valueOf(event.getCapacity()) : "-" %></td></tr>
-            <tr><th>会場</th><td><%= h(StringUtils.isEmpty(event.getPlace()) ? "-" : event.getPlace()) %></td></tr>
-            <tr><th>住所</th><td><%= h(StringUtils.isEmpty(event.getAddress()) ? "-" : event.getAddress()) %></td></tr>
-            <% if (!StringUtils.isEmpty(event.getUrl())) { %>
-                <tr><th>URL</th><td><a href="<%= h(event.getUrl()) %>"><%= h(event.getUrl()) %></a></td></tr>
-            <% } %>
-            <tr><th>管理者</th>
-                <td><a href="<%= request.getContextPath() %>/users/<%= h(event.getOwnerId()) %>">
-                    <% if (event.getOwner().getTwitterLinkage().getName() != null) { %>
-                        <%= escapeTwitterResponse(event.getOwner().getTwitterLinkage().getName()) %>
-                        (<%= h(event.getOwner().getTwitterLinkage().getScreenName()) %>)
-                    <% } else { %>
-                        <%= h(event.getOwner().getTwitterLinkage().getScreenName()) %>
-                    <% } %>
-            </a></td></tr>
-            <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
-                <tr><th>ハッシュタグ：</th><td><a href="http://twitter.com/#search?q=<%= Util.encodeURIComponent(event.getHashTag()) %>"><%= h(event.getHashTag()) %></a></td></tr>
-            <% } %>
-
-            <% String shortenURL = event.getShortenedURL(); %>
-            <tr><th>短縮 URL</th><td><a href="<%= h(shortenURL) %>"><%= h(shortenURL) %></a></td></tr>
-
-            <% if (eventRelations != null && !eventRelations.isEmpty()) { %>
-                <tr><th>関連イベント</th>
-                <% for (EventRelationEx eventRelation : eventRelations) { %>
-                <td>
-                    <img src="<%= request.getContextPath() %>/images/mark.png" class="" alt="" />
-                    <a href="<%= h(eventRelation.getEvent().getEventURL()) %>"><%= h(eventRelation.getEvent().getTitle()) %></a>
-                    <p><% if (eventRelation.isRequired()) { %><img src="<%= request.getContextPath() %>/images/attention.png" alt="" /> この関連イベントへの参加が必須です<% } %>
-                        <% if (eventRelation.hasPriority()) { %><img src="<%= request.getContextPath() %>/images/star.png" alt="" /> 参加すると本イベントへ優先的に参加可<% } %>
-                        </p>
-                </td>
-            <% } %>
-            </tr>
-            <% } %>
-        </table>
-        </div>
-
-        <div class="span3">
-            <% if (!StringUtils.isEmpty(event.getAddress())) { %>
-            <div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(Util.encodeURIComponent(event.getAddress())) %>">
-                <img src="http://maps.google.co.jp/maps/api/staticmap?size=240x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />
-            </a></div>
-            <% } %>
-        </div>
-    </div>
-
-    <div class="event-description">
+    <h3>イベント</h3>
+    <div class="event-description" style="min-height: 200px;">
         <%= cleanupHTML(event.getDescription()) %>
     </div>
 
+    <h3>コメント</h3>
     <jsp:include page="/WEB-INF/events/_show_eventstream.jsp" flush="true" />
 </div>
 
-<jsp:include page="/WEB-INF/events/_show_sidebar.jsp" flush="true" />
+</div><%-- end of .span8 --%>
 
-</div><%-- end of .span9 --%>
+<jsp:include page="/WEB-INF/events/_show_enroll.jsp" flush="true" />
 
 </div><%-- end of event-body --%>
+
+<jsp:include page="/WEB-INF/events/_show_forms.jsp" flush="true" />
+
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 
