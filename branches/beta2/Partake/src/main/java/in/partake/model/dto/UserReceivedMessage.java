@@ -17,7 +17,7 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
     private UUID id;
     private String senderId;
     private String receiverId;
-
+    private String eventId;
     private String messageId;
 
     private boolean opened;
@@ -28,17 +28,18 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
     private DateTime modifiedAt;
 
     public UserReceivedMessage(UserReceivedMessage message) {
-        this(message.id, message.senderId, message.receiverId, message.messageId,
+        this(message.id, message.senderId, message.receiverId, message.eventId, message.messageId,
                 message.opened, message.delivery, message.openedAt, message.deliveredAt,
                 message.createdAt, message.modifiedAt);
     }
 
-    public UserReceivedMessage(UUID id, String senderId, String receiverId, String messageId,
+    public UserReceivedMessage(UUID id, String senderId, String receiverId, String eventId, String messageId,
             boolean opened, MessageDelivery delivery, DateTime openedAt, DateTime deliveredAt,
             DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
+        this.eventId = eventId;
         this.messageId = messageId;
         this.opened = opened;
         this.delivery = delivery;
@@ -52,6 +53,7 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
         this.id = UUID.fromString(obj.getString("id"));
         this.senderId = obj.getString("senderId");
         this.receiverId = obj.getString("receiverId");
+        this.eventId = obj.getString("eventId");
         this.messageId = obj.getString("messageId");
         this.opened = obj.getBoolean("opened");
         this.delivery = MessageDelivery.safeValueOf(obj.getString("delivery"));
@@ -74,9 +76,11 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
-        obj.put("id", id);
+        obj.put("id", id.toString());
         obj.put("senderId", senderId);
         obj.put("receiverId", receiverId);
+        if (eventId != null)
+            obj.put("eventId", eventId);
         obj.put("messageId", messageId);
         obj.put("opened", opened);
         obj.put("delivery", delivery.toString());
@@ -85,8 +89,8 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
             obj.put("openedAt", openedAt.getTime());
         if (deliveredAt != null)
             obj.put("deliveredAt", deliveredAt.getTime());
-        if (createdAt != null)
-            obj.put("createdAt", createdAt.getTime());
+
+        obj.put("createdAt", createdAt.getTime());
         if (modifiedAt != null)
             obj.put("modifiedAt", modifiedAt.getTime());
         return obj;
@@ -105,6 +109,7 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
         if (!(ObjectUtils.equals(lhs.id,          rhs.id)))          { return false; }
         if (!(ObjectUtils.equals(lhs.senderId,    rhs.senderId)))    { return false; }
         if (!(ObjectUtils.equals(lhs.receiverId,  rhs.receiverId)))  { return false; }
+        if (!(ObjectUtils.equals(lhs.eventId,     rhs.eventId)))     { return false; }
         if (!(ObjectUtils.equals(lhs.messageId,   rhs.messageId)))   { return false; }
         if (!(ObjectUtils.equals(lhs.delivery,    rhs.delivery)))    { return false; }
         if (!(ObjectUtils.equals(lhs.opened,      rhs.opened)))      { return false; }
@@ -123,6 +128,7 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(senderId);
         code = code * 37 + ObjectUtils.hashCode(receiverId);
+        code = code * 37 + ObjectUtils.hashCode(eventId);
         code = code * 37 + ObjectUtils.hashCode(messageId);
         code = code * 37 + ObjectUtils.hashCode(delivery);
         code = code * 37 + ObjectUtils.hashCode(opened);
@@ -147,6 +153,10 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
 
     public String getReceiverId() {
         return receiverId;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 
     public String getMessageId() {
@@ -178,6 +188,11 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
     public void setReceiverId(String receiverId) {
         checkFrozen();
         this.receiverId = receiverId;
+    }
+
+    public void setEventId(String eventId) {
+        checkFrozen();
+        this.eventId = eventId;
     }
 
     public void setMessageId(String messageId) {

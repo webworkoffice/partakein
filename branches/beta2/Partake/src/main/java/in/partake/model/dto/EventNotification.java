@@ -32,10 +32,12 @@ public class EventNotification extends PartakeModel<EventNotification> {
     public EventNotification(String id, String eventId, List<String> userIds, NotificationType notificationType,  DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.eventId = eventId;
-        this.userIds = new ArrayList<String>(userIds);
+        if (userIds != null)
+            this.userIds = new ArrayList<String>(userIds);
         this.notificationType = notificationType;
         this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
+        if (modifiedAt != null)
+            this.modifiedAt = modifiedAt;
     }
 
     public EventNotification(JSONObject obj) {
@@ -43,9 +45,11 @@ public class EventNotification extends PartakeModel<EventNotification> {
         this.eventId = obj.getString("eventId");
 
         this.userIds = new ArrayList<String>();
-        JSONArray array = obj.getJSONArray("userIds");
-        for (int i = 0; i < array.size(); ++i)
-            userIds.add(array.getString(i));
+        if (userIds != null) {
+            JSONArray array = obj.getJSONArray("userIds");
+            for (int i = 0; i < array.size(); ++i)
+                userIds.add(array.getString(i));
+        }
 
         this.notificationType = NotificationType.safeValueOf(obj.getString("notificationType"));
         this.createdAt = new DateTime(obj.getLong("createdAt"));
@@ -67,6 +71,7 @@ public class EventNotification extends PartakeModel<EventNotification> {
         JSONArray array = new JSONArray();
         for (String userId : userIds)
             array.add(userId);
+        obj.put("userIds", userIds);
 
         obj.put("notificationType", notificationType.toString());
         if (createdAt != null)

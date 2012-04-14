@@ -15,12 +15,12 @@ public class EventMessageTestDataProvider extends TestDataProvider<EventMessage>
     @Override
     public EventMessage create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, pkSalt.hashCode());
-        EventMessage message = new EventMessage(uuid.toString(), "eventId", "senderId", "messageId", new DateTime(0), null);
+        EventMessage message = new EventMessage(uuid.toString(), "eventId", "senderId", "messageId", new DateTime(objNumber), null);
         return message;
     }
 
     @Override
-    public List<EventMessage> createGetterSetterSamples() {
+    public List<EventMessage> createSamples() {
         List<EventMessage> array = new ArrayList<EventMessage>();
         array.add(new EventMessage(new UUID(0, 0).toString(), "eventId", "senderId", "messageId", new DateTime(0), null));
         array.add(new EventMessage(new UUID(0, 1).toString(), "eventId", "senderId", "messageId", new DateTime(0), null));

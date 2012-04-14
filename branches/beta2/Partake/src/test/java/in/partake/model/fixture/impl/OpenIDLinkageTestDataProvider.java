@@ -20,7 +20,7 @@ public class OpenIDLinkageTestDataProvider extends TestDataProvider<OpenIDLinkag
     }
 
     @Override
-    public List<OpenIDLinkage> createGetterSetterSamples() {
+    public List<OpenIDLinkage> createSamples() {
         List<OpenIDLinkage> array = new ArrayList<OpenIDLinkage>();
         array.add(new OpenIDLinkage("identifier", "userId"));
         array.add(new OpenIDLinkage("identifier1", "userId"));

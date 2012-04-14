@@ -20,9 +20,11 @@ import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.UserNotification;
-import in.partake.model.dto.UserReceivedMessage;
 import in.partake.model.dto.UserPreference;
+import in.partake.model.dto.UserReceivedMessage;
 import in.partake.model.dto.auxiliary.MessageDelivery;
+
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -53,7 +55,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
                 if (envelope.getInvalidAfter() != null && envelope.getInvalidAfter().isBefore(TimeUtil.getCurrentDateTime())) {
                     logger.warn("run : envelope id " + envelope.getId() + " could not be sent : Time out.");
                     if (envelope.getUserMessageId() != null) {
-                        UserReceivedMessage userMessage = daos.getUserReceivedMessageAccess().find(con, envelope.getUserMessageId());
+                        UserReceivedMessage userMessage = daos.getUserReceivedMessageAccess().find(con, UUID.fromString(envelope.getUserMessageId()));
                         if (userMessage != null) {
                             userMessage.setMessageDelivery(MessageDelivery.FAIL);
                             daos.getUserReceivedMessageAccess().put(con, userMessage);
@@ -95,7 +97,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
      * @return
      */
     private void sendUserMessage(PartakeConnection con, IPartakeDAOs daos, DataIterator<MessageEnvelope> it, MessageEnvelope envelope) throws DAOException {
-        UserReceivedMessage userMessage = daos.getUserReceivedMessageAccess().find(con, envelope.getUserMessageId());
+        UserReceivedMessage userMessage = daos.getUserReceivedMessageAccess().find(con, UUID.fromString(envelope.getUserMessageId()));
         if (userMessage == null) {
             it.remove();
             return;
@@ -129,12 +131,12 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
         }
 
         try {
-            Message message = daos.getMessageAccess().find(con, userMessage.getMessageId());
+            Message message = daos.getMessageAccess().find(con, UUID.fromString(userMessage.getMessageId()));
             long twitterId = Long.parseLong(twitterLinkage.getTwitterId());
 
             Event event = null;
-            if (message.getEventId() != null)
-                event = daos.getEventAccess().find(con, message.getEventId());
+            if (userMessage.getEventId() != null)
+                event = daos.getEventAccess().find(con, userMessage.getEventId());
 
             String url = "http://partake.in/messages/" + userMessage.getId();
             String messageBody;

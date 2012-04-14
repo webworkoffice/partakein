@@ -15,19 +15,18 @@ public class MessageTestDataProvider extends TestDataProvider<Message> {
     @Override
     public Message create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, pkSalt.hashCode());
-        return new Message(uuid, "subject", "body", "eventId", new DateTime(objNumber), null);
+        return new Message(uuid, "subject", "body", new DateTime(objNumber), null);
     }
 
     @Override
-    public List<Message> createGetterSetterSamples() {
+    public List<Message> createSamples() {
         List<Message> array = new ArrayList<Message>();
-        array.add(new Message(new UUID(0, 0), "subject", "body", "eventId", new DateTime(0), null));
-        array.add(new Message(new UUID(0, 1), "subject", "body", "eventId", new DateTime(0), null));
-        array.add(new Message(new UUID(0, 0), "subject1", "body", "eventId", new DateTime(0), null));
-        array.add(new Message(new UUID(0, 0), "subject", "body1", "eventId", new DateTime(0), null));
-        array.add(new Message(new UUID(0, 0), "subject", "body", "eventId1", new DateTime(0), null));
-        array.add(new Message(new UUID(0, 0), "subject", "body", "eventId", new DateTime(1L), null));
-        array.add(new Message(new UUID(0, 0), "subject", "body", "eventId", new DateTime(0), new DateTime(0)));
+        array.add(new Message(new UUID(0, 0), "subject", "body", new DateTime(0), null));
+        array.add(new Message(new UUID(0, 1), "subject", "body", new DateTime(0), null));
+        array.add(new Message(new UUID(0, 0), "subject1", "body", new DateTime(0), null));
+        array.add(new Message(new UUID(0, 0), "subject", "body1", new DateTime(0), null));
+        array.add(new Message(new UUID(0, 0), "subject", "body", new DateTime(1L), null));
+        array.add(new Message(new UUID(0, 0), "subject", "body", new DateTime(0), new DateTime(0)));
         return array;
     }
 

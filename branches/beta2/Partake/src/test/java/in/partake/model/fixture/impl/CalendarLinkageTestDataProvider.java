@@ -24,7 +24,7 @@ public class CalendarLinkageTestDataProvider extends TestDataProvider<CalendarLi
     }
 
     @Override
-    public List<CalendarLinkage> createGetterSetterSamples() {
+    public List<CalendarLinkage> createSamples() {
         List<CalendarLinkage> list = new ArrayList<CalendarLinkage>();
 
         list.add(new CalendarLinkage("id", "userId"));

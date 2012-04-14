@@ -46,18 +46,14 @@ public final class EnrollmentTest extends AbstractPartakeModelTest<Enrollment> {
     @Test
     public void testCopyConstructor() {
         for (Enrollment source : samples) {
-            // Participation class doesn't override #equals() method.
-//			Assert.assertEquals(source, new Participation(source));
-
             Assert.assertEquals(source.getUserId(), new Enrollment(source).getUserId());
             Assert.assertEquals(source.getComment(), new Enrollment(source).getComment());
             Assert.assertEquals(source.getStatus(), new Enrollment(source).getStatus());
             Assert.assertEquals(source.isVIP(), new Enrollment(source).isVIP());
             Assert.assertEquals(source.getModificationStatus(), new Enrollment(source).getModificationStatus());
             Assert.assertEquals(source.getModifiedAt(), new Enrollment(source).getModifiedAt());
-            if (source.getModifiedAt() != null) {
+            if (source.getModifiedAt() != null)
                 Assert.assertNotSame(source.getModifiedAt(), new Enrollment(source).getModifiedAt());
-            }
         }
     }
 

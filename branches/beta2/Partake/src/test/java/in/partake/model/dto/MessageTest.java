@@ -25,12 +25,12 @@ public class MessageTest extends AbstractPartakeModelTest<Message> {
     public void testToCopy() {
         DateTime dt = new DateTime(0);
         UUID id = UUID.randomUUID();
-        Message message = new Message(id, "title", "body", null, dt, dt);
+        Message message = new Message(id, "title", "body", dt, dt);
         Message copied = new Message(message);
         Assert.assertEquals(message, copied);
-        Assert.assertEquals(message, new Message(id, "title", "body", null, dt, dt));
+        Assert.assertEquals(message, new Message(id, "title", "body", dt, dt));
 
         // Ensures NullPointerException won't happen.
-        new Message(new Message(id, "title", "message", null, dt, null));
+        new Message(new Message(id, "title", "message", dt, null));
     }
 }

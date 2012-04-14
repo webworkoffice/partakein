@@ -17,12 +17,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -138,7 +132,8 @@ public class Event extends PartakeModel<Event> {
         this.passcode = event.passcode;
         this.isPreview = event.isPreview;
         this.isRemoved = event.isRemoved;
-        this.eventRelations = new ArrayList<EventRelation>(event.eventRelations);
+        if (event.eventRelations != null)
+            this.eventRelations = new ArrayList<EventRelation>(event.eventRelations);
         this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
         this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
         this.revision = event.revision;
@@ -170,9 +165,9 @@ public class Event extends PartakeModel<Event> {
         this.passcode = json.optString("passcode", null);
         this.isPreview = json.optBoolean("draft", false);
         this.isRemoved = json.optBoolean("removed", false);
-        this.eventRelations = new ArrayList<EventRelation>();
-        JSONArray ar = json.optJSONArray("eventRelations");
+        JSONArray ar = json.optJSONArray("relations");
         if (ar != null) {
+            this.eventRelations = new ArrayList<EventRelation>();
             for (int i = 0; i < ar.size(); ++i)
                 eventRelations.add(new EventRelation(ar.getJSONObject(i)));
         }
@@ -212,7 +207,8 @@ public class Event extends PartakeModel<Event> {
 
         this.isPreview = isPreview;
         this.isRemoved = isRemoved;
-        this.eventRelations = new ArrayList<EventRelation>(relations);
+        if (relations != null)
+            this.eventRelations = new ArrayList<EventRelation>(relations);
 
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -350,10 +346,12 @@ public class Event extends PartakeModel<Event> {
         obj.put("draft", isPreview);
         obj.put("removed", isRemoved);
 
-        JSONArray array = new JSONArray();
-        for (EventRelation relation : eventRelations)
-            array.add(relation.toJSON());
-        obj.put("relations", array);
+        if (eventRelations != null) {
+            JSONArray array = new JSONArray();
+            for (EventRelation relation : eventRelations)
+                array.add(relation.toJSON());
+            obj.put("relations", array);
+        }
 
         if (createdAt != null)
             obj.put("createdAt", createdAt.getTime());

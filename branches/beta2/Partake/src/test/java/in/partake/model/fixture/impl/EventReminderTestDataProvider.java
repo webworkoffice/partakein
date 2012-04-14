@@ -25,7 +25,7 @@ public class EventReminderTestDataProvider extends TestDataProvider<EventReminde
     }
 
     @Override
-    public List<EventReminder> createGetterSetterSamples() {
+    public List<EventReminder> createSamples() {
         List<EventReminder> array = new ArrayList<EventReminder>();
         array.add(new EventReminder("eventId", new Date(0L), new Date(0L), new Date(0L)));
         array.add(new EventReminder("eventId1", new Date(0L), new Date(0L), new Date(0L)));

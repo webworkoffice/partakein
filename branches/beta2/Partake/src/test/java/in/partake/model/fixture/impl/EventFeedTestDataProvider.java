@@ -17,7 +17,7 @@ public class EventFeedTestDataProvider extends TestDataProvider<EventFeedLinkage
     }
 
     @Override
-    public List<EventFeedLinkage> createGetterSetterSamples() {
+    public List<EventFeedLinkage> createSamples() {
         List<EventFeedLinkage> array = new ArrayList<EventFeedLinkage>();
         array.add(new EventFeedLinkage(new UUID(0, 0).toString(), "eventId"));
         array.add(new EventFeedLinkage(new UUID(0, 1).toString(), "eventId"));

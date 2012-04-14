@@ -15,11 +15,11 @@ public class ThumbnailTestDataProvider extends TestDataProvider<ThumbnailData> {
     @Override
     public ThumbnailData create(long pkNumber, String pkSalt, int objNumber) {
         UUID id = new UUID(pkNumber, pkSalt.hashCode());
-        return new ThumbnailData(id.toString(), "userId", "image/png", new byte[] { 0, 1, 2 } , new Date(0L));
+        return new ThumbnailData(id.toString(), "userId", "image/png", new byte[] { 0, 1, (byte) objNumber } , new Date(0L));
     }
 
     @Override
-    public List<ThumbnailData> createGetterSetterSamples() {
+    public List<ThumbnailData> createSamples() {
         List<ThumbnailData> array = new ArrayList<ThumbnailData>();
         array.add(new ThumbnailData("id", "userId", "image/png", new byte[] { 0, 1, 2 }, new Date(0L)));
         array.add(new ThumbnailData("id1", "userId", "image/png", new byte[] { 0, 1, 2 }, new Date(0L)));

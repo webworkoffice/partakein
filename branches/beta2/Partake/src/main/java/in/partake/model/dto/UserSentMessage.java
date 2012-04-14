@@ -19,20 +19,23 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
     private UUID id;
     private String senderId;
     private List<String> receiverIds;
+    private String eventId;
     private String messageId;
     private DateTime createdAt;
     private DateTime modifiedAt;
 
     public UserSentMessage(UserSentMessage message) {
-        this(message.id, message.senderId, message.receiverIds, message.messageId,
+        this(message.id, message.senderId, message.receiverIds,
+                message.eventId, message.messageId,
                 message.createdAt, message.modifiedAt);
     }
 
-    public UserSentMessage(UUID id, String senderId, List<String> receiverIds, String messageId,
+    public UserSentMessage(UUID id, String senderId, List<String> receiverIds, String eventId, String messageId,
             DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.senderId = senderId;
         this.receiverIds = new ArrayList<String>(receiverIds);
+        this.eventId = eventId;
         this.messageId = messageId;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -47,6 +50,7 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
             for (int i = 0; i < array.size(); ++i)
                 this.receiverIds.add(array.getString(i));
         }
+        this.eventId = obj.optString("eventId", null);
         this.messageId = obj.getString("messageId");
 
         this.createdAt = new DateTime(obj.getLong("createdAt"));
@@ -62,14 +66,16 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
-        obj.put("id", id);
+        obj.put("id", id.toString());
         obj.put("senderId", senderId);
 
         JSONArray array = new JSONArray();
         for (String receiverId : receiverIds)
             array.add(receiverId);
-
         obj.put("receiverIds", array);
+
+        if (eventId != null)
+            obj.put("eventId", eventId);
         obj.put("messageId", messageId);
 
         if (createdAt != null)
@@ -92,6 +98,7 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
         if (!(ObjectUtils.equals(lhs.id,          rhs.id)))          { return false; }
         if (!(ObjectUtils.equals(lhs.senderId,    rhs.senderId)))    { return false; }
         if (!(ObjectUtils.equals(lhs.receiverIds, rhs.receiverIds))) { return false; }
+        if (!(ObjectUtils.equals(lhs.eventId,     rhs.eventId)))     { return false; }
         if (!(ObjectUtils.equals(lhs.messageId,   rhs.messageId)))   { return false; }
         if (!(ObjectUtils.equals(lhs.createdAt,   rhs.createdAt)))   { return false; }
         if (!(ObjectUtils.equals(lhs.modifiedAt,  rhs.modifiedAt)))  { return false; }
@@ -105,6 +112,7 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(senderId);
         code = code * 37 + ObjectUtils.hashCode(receiverIds);
+        code = code * 37 + ObjectUtils.hashCode(eventId);
         code = code * 37 + ObjectUtils.hashCode(messageId);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
@@ -125,6 +133,10 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
 
     public List<String> getReceiverIds() {
         return receiverIds;
+    }
+
+    public String getEventId() {
+        return eventId;
     }
 
     public String getMessageId() {
@@ -152,6 +164,11 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
     public void setReceiverIds(List<String> receiverIds) {
         checkFrozen();
         this.receiverIds = new ArrayList<String>(receiverIds);
+    }
+
+    public void setEventId(String eventId) {
+        checkFrozen();
+        this.eventId = eventId;
     }
 
     public void setMessageId(String messageId) {

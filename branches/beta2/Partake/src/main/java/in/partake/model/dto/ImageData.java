@@ -18,13 +18,6 @@ public class ImageData extends PartakeModel<ImageData> {
         this(null, null, null, null, null);
     }
 
-    public ImageData(String userId, String type, byte[] data, Date createdAt) {
-        this.userId = userId;
-        this.type = type;
-        this.data = data;
-        this.createdAt = createdAt;
-    }
-
     public ImageData(String id, String userId, String type, byte[] data, Date createdAt) {
         this.id = id;
         this.userId = userId;

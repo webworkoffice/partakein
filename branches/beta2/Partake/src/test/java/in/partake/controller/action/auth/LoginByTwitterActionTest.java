@@ -15,7 +15,7 @@ import com.opensymphony.xwork2.ActionProxy;
 public class LoginByTwitterActionTest extends AbstractPartakeControllerTest {
     @Test
     public void testWithValidVerifierLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/auth/VerifyForTwitter");
+        ActionProxy proxy = getActionProxy("/auth/verifyForTwitter");
         proxy.execute();
 
         assertRedirectedTo("http://www.example.com/validAuthenticationURL");

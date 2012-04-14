@@ -20,7 +20,7 @@ public class TwitterMessageTestDataProvider extends TestDataProvider<TwitterMess
     }
 
     @Override
-    public List<TwitterMessage> createGetterSetterSamples() {
+    public List<TwitterMessage> createSamples() {
         List<TwitterMessage> array = new ArrayList<TwitterMessage>();
         array.add(new TwitterMessage(new UUID(0, 0).toString(), "userId", "message", MessageDelivery.SUCCESS, new DateTime(0), null));
         array.add(new TwitterMessage(new UUID(0, 1).toString(), "userId", "message", MessageDelivery.SUCCESS, new DateTime(0), null));

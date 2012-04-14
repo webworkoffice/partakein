@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Date;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -96,6 +97,10 @@ public class Postgres9IndexDao extends Postgres9Dao {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    public void remove(Postgres9Connection con, String column, UUID value) throws DAOException {
+        remove(con, column, value.toString());
     }
 
     public void truncate(Postgres9Connection con) throws DAOException {

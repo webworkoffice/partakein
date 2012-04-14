@@ -1,6 +1,7 @@
 package in.partake.model.dao.access;
 
 import java.util.List;
+import java.util.UUID;
 
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;

@@ -162,6 +162,10 @@ public class Postgres9EntityDao extends Postgres9Dao {
         }
     }
 
+    public Postgres9Entity find(Postgres9Connection pcon, UUID id) throws DAOException {
+        return find(pcon, id.toString());
+    }
+
     /** Removes */
     public void remove(Postgres9Connection pcon, String id) throws DAOException {
         Connection con = pcon.getConnection();
@@ -176,6 +180,10 @@ public class Postgres9EntityDao extends Postgres9Dao {
         } finally {
             close(ps);
         }
+    }
+
+    public void remove(Postgres9Connection pcon, UUID id) throws DAOException {
+        remove(pcon, id.toString());
     }
 
     /** Removes all entities. All data might be lost. You should call this very carefully. */

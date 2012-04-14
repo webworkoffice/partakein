@@ -12,7 +12,7 @@ public abstract class TestDataProvider<T> implements TestDataProviderConstants {
     }
 
     public abstract T create(long pkNumber, String pkSalt, int objNumber);
-    public abstract List<T> createGetterSetterSamples();
+    public abstract List<T> createSamples();
 
     public abstract void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException;
 }
