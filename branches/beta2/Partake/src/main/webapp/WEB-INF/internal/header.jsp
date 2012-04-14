@@ -21,7 +21,7 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="/">PARTAKE</a>
+            <a class="brand" href="/"><img src="/images/momonga2.png" alt="" style="vertical-align: baseline"> PARTAKE</a>
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -43,12 +43,13 @@
                 if (user != null) {
             %>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%=user.getScreenName()%> <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="<%=h(user.getTwitterLinkage().getProfileImageURL())%>" class="profile-image rad sdw" alt="profile image" width="20" height="20" />
+                        <%=user.getScreenName()%>
+                        <b class="caret"></b>
+                    </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/mypage">
-                            <img src="<%=h(user.getTwitterLinkage().getProfileImageURL())%>" class="profile-image rad sdw" alt="profile image" width="20" height="20" />
-                            <%=I18n.t("page.mypage")%>
-                        </a></li>
+                        <li><a href="/mypage"><%=I18n.t("page.mypage")%></a></li>
                         <li class="divider"></li>
                         <%
                             if (user.isAdministrator()) {
