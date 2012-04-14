@@ -7,25 +7,25 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-public class ImageData extends PartakeModel<ImageData> {
+public class ThumbnailData extends PartakeModel<ThumbnailData> {
     private String id;
     private String userId;
     private String type;
     private byte[] data;
     private Date   createdAt;
 
-    public ImageData() {
+    public ThumbnailData() {
         this(null, null, null, null, null);
     }
 
-    public ImageData(String userId, String type, byte[] data, Date createdAt) {
+    public ThumbnailData(String userId, String type, byte[] data, Date createdAt) {
         this.userId = userId;
         this.type = type;
         this.data = data;
         this.createdAt = createdAt;
     }
 
-    public ImageData(String id, String userId, String type, byte[] data, Date createdAt) {
+    public ThumbnailData(String id, String userId, String type, byte[] data, Date createdAt) {
         this.id = id;
         this.userId = userId;
         this.type = type;
@@ -33,7 +33,7 @@ public class ImageData extends PartakeModel<ImageData> {
         this.createdAt = createdAt;
     }
 
-    public ImageData(ImageData src) {
+    public ThumbnailData(ThumbnailData src) {
         this.id = src.id;
         this.userId = src.userId;
         this.type = src.type;
@@ -41,7 +41,7 @@ public class ImageData extends PartakeModel<ImageData> {
         this.createdAt = src.createdAt;
     }
 
-    public ImageData(JSONObject obj) {
+    public ThumbnailData(JSONObject obj) {
         this.id = obj.getString("id");
         this.userId = obj.optString("userId");
         this.type = obj.getString("type");
@@ -61,10 +61,10 @@ public class ImageData extends PartakeModel<ImageData> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ImageData)) { return false; }
+        if (!(obj instanceof ThumbnailData)) { return false; }
 
-        ImageData lhs = this;
-        ImageData rhs = (ImageData) obj;
+        ThumbnailData lhs = this;
+        ThumbnailData rhs = (ThumbnailData) obj;
 
         if (!ObjectUtils.equals(lhs.id, rhs.id))         { return false; }
         if (!ObjectUtils.equals(lhs.userId, rhs.userId)) { return false; }

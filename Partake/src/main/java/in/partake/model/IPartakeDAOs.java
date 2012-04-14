@@ -13,6 +13,7 @@ import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
+import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
@@ -32,6 +33,7 @@ public interface IPartakeDAOs {
     public IEventActivityAccess getEventActivityAccess();
     public IImageAccess getImageAccess();
     public IOpenIDLinkageAccess getOpenIDLinkageAccess();
+    public IThumbnailAccess getThumbnailAccess();
     public ITwitterLinkageAccess getTwitterLinkageAccess();
     public IUserAccess getUserAccess();
     public IUserPreferenceAccess getUserPreferenceAccess();

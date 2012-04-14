@@ -16,6 +16,7 @@ import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
+import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
@@ -33,6 +34,7 @@ import in.partake.model.dao.postgres9.impl.Postgres9EventRelationDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventReminderDao;
 import in.partake.model.dao.postgres9.impl.Postgres9ImageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9OpenIDLinkageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9ThumbnailDao;
 import in.partake.model.dao.postgres9.impl.Postgres9TwitterLinkageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UrlShortenerDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserDao;
@@ -42,12 +44,12 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     public Postgres9DAOFactory() {
         super();
     }
-    
+
     @Override
     public void initialize(PartakeConnection con) throws DAOException {
         super.initialize(con);
     }
-    
+
     @Override
     protected ICalendarLinkageAccess createCalendarLinkageAccess() {
         return new Postgres9CalendarLinkageDao();
@@ -112,7 +114,12 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     protected IImageAccess createImageAccess() {
         return new Postgres9ImageDao();
     }
-    
+
+    @Override
+    protected IThumbnailAccess createThumbnailAccess() {
+        return new Postgres9ThumbnailDao();
+    }
+
     @Override
     protected ITwitterLinkageAccess createTwitterLinkageAccess() {
         return new Postgres9TwitterLinkageDao();

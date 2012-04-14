@@ -15,6 +15,7 @@ import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
+import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
@@ -25,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class PartakeDAOFactory implements IPartakeDAOs {
-    private final ICalendarLinkageAccess calendarLinkageAccess;    
+    private final ICalendarLinkageAccess calendarLinkageAccess;
     private final IBinaryAccess binaryAccess;
     private final ICommentAccess commentAccess;
     private final IMessageAccess directMessageAccess;
@@ -38,16 +39,17 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     private final IEventActivityAccess eventActivityAccess;
     private final IImageAccess imageAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
+    private final IThumbnailAccess thumbnailAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
     private final IUserPreferenceAccess userPreferenceAccess;
     private final IURLShortenerAccess urlShortenerAccess;
-    
+
     private final List<IAccess<?, ?>> daos;
-    
+
     protected PartakeDAOFactory() {
         daos = new ArrayList<IAccess<?, ?>>();
-        
+
         addDao(calendarLinkageAccess = createCalendarLinkageAccess());
         addDao(binaryAccess          = createBinaryAccess());
         addDao(commentAccess         = createCommentAccess());
@@ -61,6 +63,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         addDao(eventActivityAccess   = createEventActivityAccess());
         addDao(imageAccess           = createImageAccess());
         addDao(openIDLinkageAccess   = createOpenIDLinkageAccess());
+        addDao(thumbnailAccess       = createThumbnailAccess());
         addDao(twitterLinkageAccess  = createTwitterLinkageAccess());
         addDao(userAccess            = creataeUserAccess());
         addDao(userPreferenceAccess  = createUserPreferenceAccess());
@@ -72,31 +75,31 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
             dao.initialize(con);
         }
     }
-    
+
     // ----------------------------------------------------------------------
-    // 
-    
+    //
+
     private void addDao(IAccess<?, ?> t) {
         if (t != null)
             daos.add(t);
     }
-    
+
     public List<IAccess<?, ?>> getDaos() {
         return Collections.unmodifiableList(daos);
     }
-    
-    
+
+
     // ----------------------------------------------------------------------
     // accessors
-    
+
     public final ICalendarLinkageAccess getCalendarAccess() {
         return calendarLinkageAccess;
     }
-    
+
     public final IBinaryAccess getBinaryAccess() {
         return binaryAccess;
     }
-    
+
     public final ICommentAccess getCommentAccess() {
         return commentAccess;
     }
@@ -104,15 +107,15 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     public final IMessageAccess getDirectMessageAccess() {
         return directMessageAccess;
     }
-    
+
     public final IEventReminderAccess getEventReminderAccess() {
         return eventReminderAccess;
     }
-    
+
     public final IEnvelopeAccess getEnvelopeAccess() {
         return envelopeAccess;
     }
-    
+
     public final IEnrollmentAccess getEnrollmentAccess() {
         return enrollmentAccess;
     }
@@ -120,7 +123,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     public final IEventAccess getEventAccess() {
         return eventAccess;
     }
-    
+
     public final IEventRelationAccess getEventRelationAccess() {
         return eventRelationAccess;
     }
@@ -128,7 +131,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     public final IEventFeedAccess getEventFeedAccess() {
         return eventFeedAccess;
     }
-    
+
     public final IEventActivityAccess getEventActivityAccess() {
         return eventActivityAccess;
     }
@@ -136,11 +139,15 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     public final IImageAccess getImageAccess() {
         return imageAccess;
     }
-    
+
     public final IOpenIDLinkageAccess getOpenIDLinkageAccess() {
         return openIDLinkageAccess;
     }
-    
+
+    public final IThumbnailAccess getThumbnailAccess() {
+        return thumbnailAccess;
+    }
+
     public final ITwitterLinkageAccess getTwitterLinkageAccess() {
         return twitterLinkageAccess;
     }
@@ -148,18 +155,18 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     public final IUserAccess getUserAccess() {
         return userAccess;
     }
-    
+
     public final IUserPreferenceAccess getUserPreferenceAccess() {
         return userPreferenceAccess;
     }
-    
+
     public final IURLShortenerAccess getURLShortenerAccess() {
         return urlShortenerAccess;
     }
-    
+
     // ----------------------------------------------------------------------
     // abstract factory
-    
+
     protected abstract ICalendarLinkageAccess createCalendarLinkageAccess();
     protected abstract IBinaryAccess createBinaryAccess();
     protected abstract ICommentAccess createCommentAccess();
@@ -173,6 +180,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     protected abstract IEventActivityAccess createEventActivityAccess();
     protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
     protected abstract IImageAccess createImageAccess();
+    protected abstract IThumbnailAccess createThumbnailAccess();
     protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();
     protected abstract IUserAccess creataeUserAccess();
     protected abstract IUserPreferenceAccess createUserPreferenceAccess();
