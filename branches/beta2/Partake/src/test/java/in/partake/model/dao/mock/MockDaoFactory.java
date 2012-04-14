@@ -14,6 +14,7 @@ import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IOpenIDLinkageAccess;
+import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
@@ -25,7 +26,7 @@ public class MockDaoFactory extends PartakeDAOFactory {
 
     public MockDaoFactory() {
     }
-    
+
     @Override
     protected ICalendarLinkageAccess createCalendarLinkageAccess() {
         return Mockito.mock(ICalendarLinkageAccess.class);
@@ -70,12 +71,17 @@ public class MockDaoFactory extends PartakeDAOFactory {
     protected IEventActivityAccess createEventActivityAccess() {
         return Mockito.mock(IEventActivityAccess.class);
     }
-    
+
     @Override
     protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
         return Mockito.mock(IOpenIDLinkageAccess.class);
     }
-    
+
+    @Override
+    protected IThumbnailAccess createThumbnailAccess() {
+        return Mockito.mock(IThumbnailAccess.class);
+    }
+
     @Override
     protected ITwitterLinkageAccess createTwitterLinkageAccess() {
         return Mockito.mock(ITwitterLinkageAccess.class);
@@ -100,12 +106,12 @@ public class MockDaoFactory extends PartakeDAOFactory {
     protected IEnvelopeAccess createEnvelopeAccess() {
         return Mockito.mock(IEnvelopeAccess.class);
     }
-    
+
     @Override
     protected IEventReminderAccess createEventReminderAccess() {
         return Mockito.mock(IEventReminderAccess.class);
     }
-    
+
     @Override
     protected IImageAccess createImageAccess() {
         return Mockito.mock(IImageAccess.class);

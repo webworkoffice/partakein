@@ -116,6 +116,9 @@
     </package>
 
     <package name="images" namespace="/images" extends="partake-default">
+        <action name="thumbnail/*" class="in.partake.controller.action.image.ThumbnailAction">
+            <param name="imageId">{1}</param>
+        </action>
         <action name="*" class="in.partake.controller.action.image.ImageAction">
             <param name="imageId">{1}</param>
         </action>

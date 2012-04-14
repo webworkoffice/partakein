@@ -1,31 +1,28 @@
 package in.partake.controller.action.image;
 
-import in.partake.app.PartakeApp;
 import in.partake.controller.AbstractPartakeControllerTest;
 
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class ImageActionTest extends AbstractPartakeControllerTest {
+public class ThumbnailActionTest extends AbstractPartakeControllerTest {
 
     @Test
     public void testToGetImage() throws Exception {
-        ActionProxy proxy = getActionProxy("/images/" + DEFAULT_IMAGE_ID);
+        ActionProxy proxy = getActionProxy("/images/thumbnail/" + DEFAULT_IMAGE_ID);
 
         proxy.execute();
         assertResultSuccess(proxy);
 
-        byte[] array = PartakeApp.getTestService().getTestDataProviderSet().getImageProvider().getDefaultImageContent();
-        Assert.assertArrayEquals(array, response.getContentAsByteArray());
+        // TODO: do some test here.
    }
 
     @Test
     public void testToGetWithoutImageId() throws Exception {
-        ActionProxy proxy = getActionProxy("/images/");
+        ActionProxy proxy = getActionProxy("/images/thumbnail/");
 
         proxy.execute();
         assertResultInvalid(proxy);
@@ -33,7 +30,7 @@ public class ImageActionTest extends AbstractPartakeControllerTest {
 
     @Test
     public void testToGetWithInvalidId() throws Exception {
-        ActionProxy proxy = getActionProxy("/images/invalid");
+        ActionProxy proxy = getActionProxy("/images/thumbnail/invalid");
 
         proxy.execute();
         assertResultInvalid(proxy);
@@ -42,7 +39,7 @@ public class ImageActionTest extends AbstractPartakeControllerTest {
     @Test
     public void testToGetNonexistentImage() throws Exception {
         UUID uuid = new UUID(0, 0);
-        ActionProxy proxy = getActionProxy("/images/" + uuid.toString());
+        ActionProxy proxy = getActionProxy("/images/thumbnail/" + uuid.toString());
 
         proxy.execute();
         assertResultNotFound(proxy);

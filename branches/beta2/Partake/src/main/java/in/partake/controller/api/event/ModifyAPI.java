@@ -84,13 +84,13 @@ class ModifyTransaction extends Transaction<Void> {
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_EDIT);
 
         if (embryo.getForeImageId() != null) {
-            if (!ImageDAOFacade.checkImageOwner(con, daos, embryo.getForeImageId(), user) ||
+            if (!ImageDAOFacade.checkImageOwner(con, daos, embryo.getForeImageId(), user) &&
                     !StringUtils.equals(embryo.getForeImageId(), event.getForeImageId()))
                 throw new PartakeException(UserErrorCode.INVALID_IMAGE_OWNER);
         }
 
         if (embryo.getBackImageId() != null) {
-            if (!ImageDAOFacade.checkImageOwner(con, daos, embryo.getBackImageId(), user) ||
+            if (!ImageDAOFacade.checkImageOwner(con, daos, embryo.getBackImageId(), user) &&
                     !StringUtils.equals(embryo.getBackImageId(), event.getBackImageId()))
                 throw new PartakeException(UserErrorCode.INVALID_IMAGE_OWNER);
         }

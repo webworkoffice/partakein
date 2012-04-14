@@ -23,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
 public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
-    protected void updateEventFromParameter(UserEx user, Event event, JSONObject invalidParameters) {        
+    protected void updateEventFromParameter(UserEx user, Event event, JSONObject invalidParameters) {
         // Title
         String title = getParameter("title");
         if (StringUtils.isBlank(title) || title.length() > 100)
@@ -37,7 +37,7 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
             invalidParameters.put("summary", "概要は 100 文字以下で入力してください。");
         else
             event.setSummary(summary);
-        
+
         // Category
         String category = getParameter("category");
         if (category == null || !EventCategory.isValidCategoryName(category))
@@ -57,7 +57,7 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                 event.setBeginDate(beginDate);
             }
         }
-        
+
         // EndDate
         {
             Date endDate = getDateParameter("endDate");
@@ -73,11 +73,11 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                     event.setEndDate(endDate);
             }
         }
-        
+
         // Deadline
         {
             Date deadline = getDateParameter("deadline");
-            if (deadline == null)                
+            if (deadline == null)
                 event.setDeadline(null);
             else {
                 Calendar deadlineCalendar = TimeUtil.calendar(deadline);
@@ -87,7 +87,7 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                     event.setDeadline(deadline);
             }
         }
-        
+
         // Capacity
         int capacity = optIntegerParameter("capacity", 0);
         if (0 <= capacity)
@@ -106,14 +106,14 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                 invalidParameters.put("url", "URL が不正です。");
             else {
                 try {
-                    new URL(urlStr);  // Confirms URL is not malformed. 
+                    new URL(urlStr);  // Confirms URL is not malformed.
                     event.setUrl(urlStr);
                 } catch (MalformedURLException e) {
                     invalidParameters.put("url", "URL が不正です。");
                 }
             }
-        }        
-        
+        }
+
         // Field
         {
             String place = getParameter("place");
@@ -122,7 +122,7 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
             else
                 event.setPlace(place);
         }
-        
+
         // Address
         {
             String address = getParameter("address");
@@ -149,7 +149,7 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
             else if (!Util.isValidHashtag(hashTag))
                 invalidParameters.put("hashTag", "ハッシュタグは # から始まる英数字や日本語が指定できます。記号は使えません。");
             else
-                event.setHashTag(hashTag);            
+                event.setHashTag(hashTag);
         }
 
         {
@@ -177,37 +177,41 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
             else
                 event.setManagerScreenNames(editors);
         }
-        
+
         {
             String foreImageId = getParameter("foreImageId");
             if (StringUtils.isBlank(foreImageId)) {
                 event.setForeImageId(null);
             } else if (!Util.isUUID(foreImageId)) {
                 invalidParameters.put("foreImageId", "画像IDが不正です。");
+            } else {
+                event.setForeImageId(foreImageId);
             }
         }
-        
+
         {
             String backImageId = getParameter("backImageId");
             if (StringUtils.isBlank(backImageId)) {
                 event.setBackImageId(null);
             } else if (!Util.isUUID(backImageId)) {
                 invalidParameters.put("backImageId", "画像IDが不正です。");
+            } else {
+                event.setBackImageId(backImageId);
             }
         }
     }
-    
+
     protected void updateEventRelationFromParameter(UserEx user, List<EventRelation> relations, JSONObject invalidParameters) {
         String[] relatedEventIDs = getParameters("relatedEventID[]");
         if (relatedEventIDs == null)
             return;
-        
+
         int size = relatedEventIDs.length;
 
         String[] relatedEventRequired = getParameters("relatedEventRequired[]");
         if (relatedEventRequired == null || relatedEventRequired.length != size)
             invalidParameters.put("relatedEvents", "関連イベントのパラメータに誤りがあります。");
-        
+
         String[] relatedEventPriority = getParameters("relatedEventPriority[]");
         if (relatedEventPriority == null || relatedEventPriority.length != size)
             invalidParameters.put("relatedEvents", "関連イベントのパラメータに誤りがあります。");
@@ -216,21 +220,21 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
         for (int i = 0; i < size; ++i) {
             if (StringUtils.isBlank(relatedEventIDs[i]))
                 continue;
-            
+
             if (!Util.isUUID(relatedEventIDs[i])) {
                 invalidParameters.put("relatedEvents", "関連イベントのパラメータに誤りがあります。");
                 break;
             }
-            
+
             String dstEventId = relatedEventIDs[i];
             boolean required = Util.parseBooleanParameter(relatedEventRequired[i]);
-            boolean priority = Util.parseBooleanParameter(relatedEventPriority[i]); 
-            
+            boolean priority = Util.parseBooleanParameter(relatedEventPriority[i]);
+
             if (visitedEventIds.contains(dstEventId)) {
                 invalidParameters.put("relatedEvents", "関連イベントが重複しています。");
                 break;
             }
-            
+
             EventRelation relation = new EventRelation(null, dstEventId, required, priority);
             relations.add(relation);
             visitedEventIds.add(dstEventId);

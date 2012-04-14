@@ -122,8 +122,8 @@
                                 <%
                                     if (event.getForeImageId() != null) {
                                 %>
-                                    <a href="<%=request.getContextPath()%>/events/<%=event.getId()%>">
-                                    <img class="rad sdw cler" src="/events/images/<%=event.getForeImageId()%>" alt="" /></a>
+                                    <a href="/events/<%=event.getId()%>">
+                                    <img class="rad sdw cler" src="/images/<%=event.getForeImageId()%>" alt="" /></a>
                                 <%
                                     } else {
                                 %>
@@ -221,51 +221,32 @@
 
             <%-- 新着イベント --%>
             <div id="new-events" class="tab-pane<%=user != null ? "" : " active"%>">
-                <%
-                    if (recentEvents != null) {
-                %>
+                <% if (recentEvents != null) { %>
                     <%
                         for (Event event : recentEvents) {
+                            if (event == null)
+                                continue;
                     %>
-                        <%
-                            if (event == null) {
-                                        continue;
-                                    }
-                        %>
-                        <div class="well thin"><div class="row event">
-                            <div class="event-image span-onehalf">
-                                <%
-                                    if (event.getForeImageId() != null) {
-                                %>
-                                    <a href="<%=request.getContextPath()%>/events/<%=event.getId()%>">
-                                    <img class="rad sdw cler" src="/events/images/<%=event.getForeImageId()%>" alt="" /></a>
-                                <%
-                                    } else {
-                                %>
-                                    <a href="<%=request.getContextPath()%>/events/<%=event.getId()%>">
-                                    <img class="rad sdw cler" src="/images/no-image.png" alt="" /></a>
-                                <%
-                                    }
-                                %>
-                            </div>
-                            <div class="span5">
-                                <h3><a href="<%=request.getContextPath()%>/events/<%=event.getId()%>"><%=h(event.getTitle())%></a></h3>
-                                <p><%=h(event.getSummary())%>
-                                <%
-                                    if (event.getBeginDate() != null) {
-                                %>
-                                    <br /><%=I18n.t("event.time")%>：<%=Helper.readableDate(event.getBeginDate())%>
-                                <%
-                                    }
-                                %></p>
-                            </div>
-                        </div></div>
-                    <%
-                        }
-                    %>
-                <%
-                    }
-                %>
+                    <div class="well thin"><div class="row event">
+                        <div class="event-image span-onehalf">
+                            <% if (event.getForeImageId() != null) { %>
+                                <a href="/events/<%= event.getId() %>">
+                                <img src="/images/thumbnail/<%= event.getForeImageId() %>" alt="" /></a>
+                            <% } else { %>
+                                <a href="/events/<%= event.getId() %>">
+                                <img src="/images/no-image.png" alt="" /></a>
+                            <% } %>
+                        </div>
+                        <div class="span5">
+                            <h3><a href="/events/<%= event.getId() %>"><%=h(event.getTitle())%></a></h3>
+                            <p><%=h(event.getSummary())%></p>
+                            <% if (event.getBeginDate() != null) { %>
+                                <p><%=I18n.t("event.time")%>：<%=Helper.readableDate(event.getBeginDate())%></p>
+                            <% } %>
+                        </div>
+                    </div></div>
+                    <% } %>
+                <% } %>
                 <p class="more"><a href="/events/search"><%=I18n.t("page.toppage.recent.more")%></a></p>
             </div>
         </div>

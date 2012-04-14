@@ -1,6 +1,7 @@
 package in.partake.model.fixture.impl;
 
 import in.partake.base.TimeUtil;
+import in.partake.base.Util;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
@@ -8,6 +9,8 @@ import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dto.ImageData;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -17,7 +20,19 @@ import java.util.UUID;
  *
  */
 public class ImageTestDataProvider extends TestDataProvider<ImageData> {
-    public static final byte[] BYTE1_CONTENT = new byte[] { 1, 2, 3 };
+    private final byte[] defaultImageContent;
+
+    public ImageTestDataProvider() {
+        try {
+            defaultImageContent = Util.getContentOfFile(new File("src/test/resources/images/null.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] getDefaultImageContent() {
+        return defaultImageContent;
+    }
 
     @Override
     public ImageData create() {
@@ -47,9 +62,9 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
         dao.truncate(con);
 
         // IMAGE_OWNED_BY_DEFAULT_USER_ID contains DEFAULT_IMAGE_ID.
-        dao.put(con, new ImageData(EVENT_FOREIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", BYTE1_CONTENT, TimeUtil.getCurrentDate()));
-        dao.put(con, new ImageData(EVENT_BACKIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", BYTE1_CONTENT, TimeUtil.getCurrentDate()));
+        dao.put(con, new ImageData(EVENT_FOREIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", defaultImageContent, TimeUtil.getCurrentDate()));
+        dao.put(con, new ImageData(EVENT_BACKIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", defaultImageContent, TimeUtil.getCurrentDate()));
         for (int i = 0; i < IMAGE_OWNED_BY_DEFAULT_USER_ID.length; ++i)
-            dao.put(con, new ImageData(IMAGE_OWNED_BY_DEFAULT_USER_ID[i], DEFAULT_USER_ID, "byte/octet-stream", BYTE1_CONTENT, new Date(IMAGE_OWNED_BY_DEFAULT_USER_ID.length - i)));
+            dao.put(con, new ImageData(IMAGE_OWNED_BY_DEFAULT_USER_ID[i], DEFAULT_USER_ID, "byte/octet-stream", defaultImageContent, new Date(IMAGE_OWNED_BY_DEFAULT_USER_ID.length - i)));
     }
 }
