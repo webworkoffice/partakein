@@ -1,6 +1,7 @@
 package in.partake.model.dto;
 
 import in.partake.base.DateTime;
+import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.dto.auxiliary.NotificationType;
 import net.sf.json.JSONObject;
 
@@ -15,6 +16,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
     private String eventId;
     private String userId;
     private NotificationType notificationType;
+    private MessageDelivery delivery;
     private DateTime createdAt;
     private DateTime modifiedAt;
 
@@ -23,14 +25,15 @@ public class UserNotification extends PartakeModel<UserNotification> {
     }
 
     public UserNotification(UserNotification message) {
-        this(message.id, message.eventId, message.userId, message.notificationType, message.createdAt, message.modifiedAt);
+        this(message.id, message.eventId, message.userId, message.notificationType, message.delivery, message.createdAt, message.modifiedAt);
     }
 
-    public UserNotification(String id, String eventId, String userId, NotificationType notificationType, DateTime createdAt, DateTime modifiedAt) {
+    public UserNotification(String id, String eventId, String userId, NotificationType notificationType, MessageDelivery delivery, DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.eventId = eventId;
         this.userId = userId;
         this.notificationType = notificationType;
+        this.delivery = delivery;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
@@ -40,6 +43,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
         this.eventId = obj.getString("eventId");
         this.userId = obj.getString("userId");
         this.notificationType = NotificationType.safeValueOf(obj.getString("notificationType"));
+        this.delivery = MessageDelivery.safeValueOf(obj.getString("delivery"));
         this.createdAt = new DateTime(obj.getLong("createdAt"));
         if (obj.containsKey("modifiedAt"))
             this.modifiedAt = new DateTime(obj.getLong("modifiedAt"));
@@ -57,6 +61,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
         obj.put("eventId", eventId);
         obj.put("userId", userId);
         obj.put("notificationType", notificationType.toString());
+        obj.put("delivery", delivery.toString());
         if (createdAt != null)
             obj.put("createdAt", createdAt.getTime());
         if (modifiedAt != null)
@@ -78,6 +83,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
         if (!(ObjectUtils.equals(lhs.eventId,    rhs.eventId)))    { return false; }
         if (!(ObjectUtils.equals(lhs.userId,     rhs.userId)))     { return false; }
         if (!(ObjectUtils.equals(lhs.notificationType,   rhs.notificationType)))   { return false; }
+        if (!(ObjectUtils.equals(lhs.delivery,   rhs.delivery)))   { return false; }
         if (!(ObjectUtils.equals(lhs.createdAt,  rhs.createdAt)))  { return false; }
         if (!(ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt))) { return false; }
         return true;
@@ -91,6 +97,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
         code = code * 37 + ObjectUtils.hashCode(eventId);
         code = code * 37 + ObjectUtils.hashCode(userId);
         code = code * 37 + ObjectUtils.hashCode(notificationType);
+        code = code * 37 + ObjectUtils.hashCode(delivery);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
 
@@ -114,6 +121,10 @@ public class UserNotification extends PartakeModel<UserNotification> {
 
     public NotificationType getNotificationType() {
         return notificationType;
+    }
+
+    public MessageDelivery getDelivery() {
+        return delivery;
     }
 
     public DateTime getCreatedAt() {
@@ -142,6 +153,11 @@ public class UserNotification extends PartakeModel<UserNotification> {
     public void setNotificationType(NotificationType notificationType) {
         checkFrozen();
         this.notificationType = notificationType;
+    }
+
+    public void setDelivery(MessageDelivery delivery) {
+        checkFrozen();
+        this.delivery = delivery;
     }
 
     public void setCreatedAt(DateTime createdAt) {

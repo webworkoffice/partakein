@@ -52,7 +52,7 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
         return envelope;
     }
 
-    public static MessageEnvelope createForEventNotification(String id, String userNotificationId, DateTime invalidAfter) {
+    public static MessageEnvelope createForUserNotification(String id, String userNotificationId, DateTime invalidAfter) {
         MessageEnvelope envelope = new MessageEnvelope();
         envelope.id = id;
         envelope.userNotificationId = userNotificationId;
@@ -196,7 +196,7 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
 
     public String getUserMessageId()  { return userMessageId; }
     public String getTwitterMessageId() { return twitterMessageId; }
-    public String getUserNotificationid() { return userNotificationId; }
+    public String getUserNotificationId() { return userNotificationId; }
 
     public int getNumTried() { return numTried; }
 

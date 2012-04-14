@@ -2,9 +2,6 @@ package in.partake.model.dto;
 
 import in.partake.base.DateTime;
 import in.partake.model.dto.auxiliary.MessageDelivery;
-
-import java.util.Date;
-
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -107,13 +104,21 @@ public class TwitterMessage extends PartakeModel<TwitterMessage> {
         return message;
     }
 
+    public MessageDelivery getDelivery() {
+        return delivery;
+    }
+
+    public DateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public DateTime getModifiedAt() {
+        return modifiedAt;
+    }
+
     public void setId(String id) {
         checkFrozen();
         this.id = id;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt == null ? null : new Date(createdAt.getTime());
     }
 
     public void setUserId(String userId) {

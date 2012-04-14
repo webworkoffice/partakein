@@ -72,6 +72,14 @@ public interface TestDataProviderConstants {
     public static final String ATTENDANCE_UNKNOWN_USER_TWITTER_ID = "82";
     public static final String ATTENDANCE_UNKNOWN_USER_TWITTER_SCREENNAME = "attendanceUnknownUser";
 
+    public static final String DEFAULT_SENDER_ID = new UUID(1, 90).toString();
+    public static final String DEFAULT_SENDER_TWITTER_ID = "90";
+    public static final String DEFAULT_SENDER_TWITTER_SCREENNAME = "sender";
+
+    public static final String DEFAULT_RECEIVER_ID = new UUID(1, 91).toString();
+    public static final String DEFAULT_RECEIVER_TWITTER_ID = "91";
+    public static final String DEFAULT_RECEIVER_TWITTER_SCREENNAME = "receiver";
+
     // Events
     public static final String INVALID_EVENT_ID = new UUID(2, -1).toString();
     public static final String DEFAULT_EVENT_ID = new UUID(2, 0).toString();
@@ -97,9 +105,24 @@ public interface TestDataProviderConstants {
     };
     // IMAGE_OWNED_BY_DEFAULT_USER_ID contains DEFAULT_IMAGE_ID.
     public static final String DEFAULT_IMAGE_ID = IMAGE_OWNED_BY_DEFAULT_USER_ID[0];
+    public static final String IMAGE_HAVING_NO_THUMBNAIL_ID = IMAGE_OWNED_BY_DEFAULT_USER_ID[1];
 
     // Calendar Id
     public static final String DEFAULT_CALENDAR_ID = new UUID(5, 1).toString();
     public static final String ENROLLED_USER_CALENDAR_ID = new UUID(5, 2).toString();
     public static final String INVALID_CALENDAR_ID = new UUID(5, -1).toString();
+
+    // Message
+    public static final UUID DEFAULT_MESSAGE_ID = new UUID(6, 1);
+
+    // TwitterMessage
+    public static final String TWITTER_MESSAGE_INQUEUE_ID = new UUID(10, 1).toString();
+
+    // UserNotificationMessage
+    public static final String USER_NOTIFICATION_INQUEUE_ID = new UUID(11, 1).toString();
+
+    // UserReceivedMessage
+    public static final UUID USER_RECEIVED_MESSAGE_INQUEUE_ID = new UUID(12, 1);
+
+
 }

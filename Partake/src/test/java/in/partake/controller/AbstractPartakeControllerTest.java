@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
+import in.partake.base.TimeUtil;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.AbstractPartakeController;
 import in.partake.model.EventEx;
@@ -21,7 +22,11 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.ImageData;
 import in.partake.model.dto.MessageEnvelope;
+import in.partake.model.dto.ThumbnailData;
+import in.partake.model.dto.TwitterMessage;
+import in.partake.model.dto.UserNotification;
 import in.partake.model.dto.UserPreference;
+import in.partake.model.dto.UserReceivedMessage;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
@@ -31,6 +36,7 @@ import in.partake.session.PartakeSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.struts2.StrutsTestCase;
 import org.junit.After;
@@ -58,6 +64,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
     public void setUp() throws Exception {
         super.setUp();
         PartakeApp.getTestService().setDefaultFixtures();
+        TimeUtil.resetCurrentDate();
     }
 
     // Make tearDown called after each test.
@@ -284,6 +291,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
         }.execute();
     }
 
+    protected List<MessageEnvelope> loadEnvelopes() throws DAOException, PartakeException {
+        return new DBAccess<List<MessageEnvelope>>() {
+            @Override
+            protected List<MessageEnvelope> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return DAOUtil.convertToList(daos.getMessageEnvelopeAccess().getIterator(con));
+            }
+        }.execute();
+    }
+
     protected String loadCalendarIdFromUser(final String userId) throws DAOException, PartakeException {
         return new DBAccess<String>() {
             @Override
@@ -327,4 +343,41 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase imple
             }
         }.execute();
     }
+
+    protected ThumbnailData loadThumbnail(final String imageId) throws DAOException, PartakeException {
+        return new DBAccess<ThumbnailData>() {
+            @Override
+            protected ThumbnailData doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getThumbnailAccess().find(con, imageId);
+            }
+        }.execute();
+    }
+
+    protected TwitterMessage loadTwitterMessage(final String twitterMessageId) throws DAOException, PartakeException {
+        return new DBAccess<TwitterMessage>() {
+            @Override
+            protected TwitterMessage doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getTwitterMessageAccess().find(con, twitterMessageId);
+            }
+        }.execute();
+    }
+
+    protected UserNotification loadUserNotification(final String userNotificationId) throws DAOException, PartakeException {
+        return new DBAccess<UserNotification>() {
+            @Override
+            protected UserNotification doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getUserNotificationAccess().find(con, userNotificationId);
+            }
+        }.execute();
+    }
+
+    protected UserReceivedMessage loadUserReceivedMessage(final UUID userReceivedMessageId) throws DAOException, PartakeException {
+        return new DBAccess<UserReceivedMessage>() {
+            @Override
+            protected UserReceivedMessage doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getUserReceivedMessageAccess().find(con, userReceivedMessageId);
+            }
+        }.execute();
+    }
+
 }

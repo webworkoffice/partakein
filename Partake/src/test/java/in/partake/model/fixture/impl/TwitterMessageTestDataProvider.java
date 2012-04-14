@@ -4,6 +4,7 @@ import in.partake.base.DateTime;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.ITwitterMessageAccess;
 import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.fixture.TestDataProvider;
@@ -32,6 +33,9 @@ public class TwitterMessageTestDataProvider extends TestDataProvider<TwitterMess
 
     @Override
     public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
-        daos.getTwitterMessageAccess().truncate(con);
+        ITwitterMessageAccess dao = daos.getTwitterMessageAccess();
+        dao.truncate(con);
+
+        dao.put(con, new TwitterMessage(TWITTER_MESSAGE_INQUEUE_ID, DEFAULT_USER_ID, "message", MessageDelivery.INQUEUE, new DateTime(0), null));
     }
 }

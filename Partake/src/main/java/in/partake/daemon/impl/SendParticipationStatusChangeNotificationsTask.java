@@ -18,6 +18,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.EventNotification;
 import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.UserNotification;
+import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.NotificationType;
 
@@ -88,11 +89,11 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
 
                         for (String userId : userIdsToBeEnrolled) {
                             String userNotificationid = daos.getUserNotificationAccess().getFreshId(con);
-                            UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_ENROLLED, TimeUtil.getCurrentDateTime(), null);
+                            UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_ENROLLED, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
                             daos.getUserNotificationAccess().put(con, userNotification);
 
                             String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
-                            MessageEnvelope envelope = MessageEnvelope.createForEventNotification(envelopeId, userNotificationid, null);
+                            MessageEnvelope envelope = MessageEnvelope.createForUserNotification(envelopeId, userNotificationid, null);
                             daos.getMessageEnvelopeAccess().put(con, envelope);
                         }
                     }
@@ -139,11 +140,11 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
 
                         for (String userId : userIdsToBeCancelled) {
                             String userNotificationid = daos.getUserNotificationAccess().getFreshId(con);
-                            UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_CANCELLED, TimeUtil.getCurrentDateTime(), null);
+                            UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
                             daos.getUserNotificationAccess().put(con, userNotification);
 
                             String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
-                            MessageEnvelope envelope = MessageEnvelope.createForEventNotification(envelopeId, userNotificationid, null);
+                            MessageEnvelope envelope = MessageEnvelope.createForUserNotification(envelopeId, userNotificationid, null);
                             daos.getMessageEnvelopeAccess().put(con, envelope);
                         }
                     }

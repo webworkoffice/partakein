@@ -7,15 +7,10 @@ public enum MessageDelivery {
     FAIL;          // Failed sending.
 
     public static MessageDelivery safeValueOf(String str) {
-        if ("notDelivery".equalsIgnoreCase(str))
+        try {
+            return valueOf(str);
+        } catch (IllegalArgumentException e) {
             return NOT_DELIVERED;
-        if ("inqueue".equalsIgnoreCase(str))
-            return INQUEUE;
-        if ("success".equalsIgnoreCase(str))
-            return SUCCESS;
-        if ("fail".equalsIgnoreCase(str))
-            return FAIL;
-
-        return NOT_DELIVERED;
+        }
     }
 }

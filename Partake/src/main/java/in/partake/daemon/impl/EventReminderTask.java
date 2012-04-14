@@ -20,6 +20,7 @@ import in.partake.model.dto.EventNotification;
 import in.partake.model.dto.EventReminder;
 import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.UserNotification;
+import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.dto.auxiliary.NotificationType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
@@ -105,11 +106,11 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
         DateTime invalidAfter = new DateTime(event.getCalculatedDeadline().getTime());
         for (String userId : userIds) {
             String notificationId = daos.getUserNotificationAccess().getFreshId(con);
-            UserNotification userNotification = new UserNotification(notificationId, event.getId(), userId, notificationType, TimeUtil.getCurrentDateTime(), null);
+            UserNotification userNotification = new UserNotification(notificationId, event.getId(), userId, notificationType, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
             daos.getUserNotificationAccess().put(con, userNotification);
 
             String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
-            MessageEnvelope envelope = MessageEnvelope.createForEventNotification(envelopeId, notificationId, invalidAfter);
+            MessageEnvelope envelope = MessageEnvelope.createForUserNotification(envelopeId, notificationId, invalidAfter);
             daos.getMessageEnvelopeAccess().put(con, envelope);
             logger.info("sendEnvelope : " + userId + " : " + notificationType);
         }
@@ -178,11 +179,11 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
         DateTime invalidAfter = new DateTime(event.getCalculatedDeadline().getTime());
         for (String userId : userIds) {
             String notificationId = daos.getUserNotificationAccess().getFreshId(con);
-            UserNotification userNotification = new UserNotification(notificationId, event.getId(), userId, notificationType, TimeUtil.getCurrentDateTime(), null);
+            UserNotification userNotification = new UserNotification(notificationId, event.getId(), userId, notificationType, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
             daos.getUserNotificationAccess().put(con, userNotification);
 
             String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
-            MessageEnvelope envelope = MessageEnvelope.createForEventNotification(envelopeId, notificationId, invalidAfter);
+            MessageEnvelope envelope = MessageEnvelope.createForUserNotification(envelopeId, notificationId, invalidAfter);
             daos.getMessageEnvelopeAccess().put(con, envelope);
             logger.info("sendEnvelope : " + userId + " : " + notificationType);
         }

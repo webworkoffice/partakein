@@ -179,42 +179,6 @@ public class Event extends PartakeModel<Event> {
         this.revision = json.optInt("revision", 1);
     }
 
-    public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
-            String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
-            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, List<EventRelation> relations, Date createdAt, Date modifiedAt) {
-        this.id = null;
-        this.shortId = shortId;
-        this.title = title;
-        this.summary = summary;
-        this.category = category;
-        this.deadline = deadline;
-        this.beginDate = beginDate;
-        this.endDate = endDate;
-        this.capacity = capacity;
-        this.url = url;
-        this.place = place;
-        this.address = address;
-        this.description = description;
-        this.hashTag = hashTag;
-        this.ownerId = ownerId;
-        this.managerScreenNames = managerScreenNames;
-
-        this.foreImageId = null;
-        this.backImageId = null;
-
-        this.isPrivate = isPrivate;
-        this.passcode = passcode;
-
-        this.isPreview = isPreview;
-        this.isRemoved = isRemoved;
-        if (relations != null)
-            this.eventRelations = new ArrayList<EventRelation>(relations);
-
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-        this.revision = 0;
-    }
-
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             String foreImageId, String backImageId,

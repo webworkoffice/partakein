@@ -4,6 +4,7 @@ import in.partake.base.DateTime;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IUserReceivedMessageAccess;
 import in.partake.model.dto.UserReceivedMessage;
 import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.fixture.TestDataProvider;
@@ -40,6 +41,11 @@ public class UserReceivedMessageTestDataProvider extends TestDataProvider<UserRe
 
     @Override
     public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
-        daos.getUserReceivedMessageAccess().truncate(con);
+        IUserReceivedMessageAccess dao = daos.getUserReceivedMessageAccess();
+        dao.truncate(con);
+
+        dao.put(con, new UserReceivedMessage(USER_RECEIVED_MESSAGE_INQUEUE_ID,
+                DEFAULT_SENDER_ID, DEFAULT_RECEIVER_ID, DEFAULT_EVENT_ID, DEFAULT_MESSAGE_ID.toString(),
+                false, MessageDelivery.INQUEUE, null, null, new DateTime(0L), null));
     }
 }

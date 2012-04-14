@@ -59,6 +59,10 @@ public final class TimeUtil {
             return new Date().getTime();
     }
 
+    public static void setCurrentDateTime(DateTime dt) {
+        currentDate = new Date(dt.getTime());
+    }
+
     public static void setCurrentDate(Date date) {
         currentDate = date;
     }
@@ -118,6 +122,10 @@ public final class TimeUtil {
         } catch (ParseException e) {
             return null;
         }
+    }
+
+    public static DateTime oneDayBefore(DateTime dt) {
+        return new DateTime(dt.getTime() - 1000 * 3600 * 24);
     }
 
     public static Date oneDayBefore(Date date) {

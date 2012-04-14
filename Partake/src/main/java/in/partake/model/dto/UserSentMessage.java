@@ -163,7 +163,10 @@ public class UserSentMessage extends PartakeModel<UserSentMessage> {
 
     public void setReceiverIds(List<String> receiverIds) {
         checkFrozen();
-        this.receiverIds = new ArrayList<String>(receiverIds);
+        if (receiverIds == null)
+            this.receiverIds = null;
+        else
+            this.receiverIds = new ArrayList<String>(receiverIds);
     }
 
     public void setEventId(String eventId) {
