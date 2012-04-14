@@ -135,12 +135,12 @@ $('#comment-form-submit').click(postComment);
     </div>
 </div>
 
-<script type="text/javascript" src="<%= request.getContextPath() %>/js/tiny_mce_jquery/jquery.tinymce.js"></script>
+<script type="text/javascript" src="/js/tiny_mce_jquery/jquery.tinymce.js"></script>
 <script type="text/javascript">
 $(function() {
     $('#commentForm-commentEdit').tinymce({
         // Location of TinyMCE script
-        script_url: "<%= request.getContextPath() %>/js/tiny_mce_jquery/tiny_mce.js",
+        script_url: "/js/tiny_mce_jquery/tiny_mce.js",
 
         theme: "advanced",
         language: "ja",
