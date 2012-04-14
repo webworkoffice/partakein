@@ -218,7 +218,6 @@
         <action name="remove" class="in.partake.controller.api.event.RemoveAPI" />
 
         <action name="enroll" class="in.partake.controller.api.event.EnrollAPI" />
-        <action name="enroll/changeComment" class="in.partake.controller.api.event.ChangeEnrollmentCommentAPI" />
 
         <action name="attend" class="in.partake.controller.api.event.AttendAPI" />
         <action name="makeAttendantVIP" class="in.partake.controller.api.event.MakeAttendantVIPAPI" />

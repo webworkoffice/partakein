@@ -14,7 +14,6 @@
 <%@page import="in.partake.model.EventEx"%>
 
 <%@page import="static in.partake.view.util.Helper.h"%>
-<%@taglib prefix="s" uri="/struts-tags" %>
 
 <%
     UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
@@ -31,15 +30,9 @@
     <ul class="nav nav-tabs">
         <li class="active"><a href="#news1" title="コメントボード" data-toggle="tab">掲示板</a></li>
         <li><a href="#news2" title="管理者からのメッセージ" data-toggle="tab">管理者から</a></li>
-        <li><a href="#news3" title="このイベントのハッシュタグがついたTweet" data-toggle="tab">みんなのTweet</a></li>
     </ul>
     <div class="tab-content row">
         <div id="news1" class="tab-pane span9 active">
-            <s:form action="removeComment" id="removeCommentForm" name="removeCommentForm">
-                <%= Helper.tokenTags() %>
-                <s:hidden id="removeCommentId" name="commentId" value="" />
-                <s:hidden name="eventId" value="%{eventId}" />
-            </s:form>
             <script>
                 function removeComment(anchorElem, commentId) {
                     var spinner = partakeUI.spinner(anchorElem);
@@ -138,47 +131,6 @@ $('#comment-form-submit').click(postComment);
                 <% } %>
             <% } %>
             </div>
-        </div>
-        <div id="news3" class="tab-pane span9">
-            <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
-            <div class="event-twitter-hashtag-stream">
-            <script>
-            new TWTR.Widget({
-                version: 2,
-                type: 'search',
-                search: '<%= h(event.getHashTag()) %>',
-                interval: 6000,
-                title: 'Twitter Hashtag Live Feed',
-                subject: '<%= h(event.getHashTag()) %>',
-                width: 'auto',
-                height: 450,
-                theme: {
-                    shell: {
-                    background: 'none',
-                    color: '#7c7c7c'
-                    },
-                    tweets: {
-                    background: '#ffffff',
-                    color: '#444444',
-                    links: '#1985b5'
-                    }
-                },
-                features: {
-                    scrollbar: true,
-                    loop: false,
-                    live: true,
-                    hashtags: true,
-                    timestamp: true,
-                    avatars: true,
-                    toptweets: true,
-                    behavior: 'all'
-                }
-                }).render().start();
-            </script>
-            </div>
-            <% } else { %>
-            <p>ツイートを表示するにはハッシュタグを設定してください。</p>
-            <% } %>
         </div>
     </div>
 </div>
