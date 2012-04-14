@@ -5,12 +5,10 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dto.TwitterLinkage;
-import in.partake.model.dto.User;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class TwitterLinkageTestDataProvider extends TestDataProvider<TwitterLinkage> {
     @Override
