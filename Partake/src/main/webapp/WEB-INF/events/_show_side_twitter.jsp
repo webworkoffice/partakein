@@ -27,6 +27,7 @@
 %>
 
 <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
+<script src="http://widgets.twimg.com/j/2/widget.js"></script>
 <div class="event-twitter-hashtag-stream">
 <script>
 new TWTR.Widget({
