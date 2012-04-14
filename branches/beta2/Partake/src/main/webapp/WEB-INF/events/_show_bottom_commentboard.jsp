@@ -2,7 +2,6 @@
 <%@page import="in.partake.controller.base.permission.RemoveCommentPermission"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.base.Util"%>
-<%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="java.util.List"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.UserEx"%>
@@ -21,7 +20,6 @@
 
     EventEx event = action.getEvent();
     List<CommentEx> comments = action.getComments();
-    List<DirectMessageEx> messages = action.getDirectMessages();
 %>
 
 

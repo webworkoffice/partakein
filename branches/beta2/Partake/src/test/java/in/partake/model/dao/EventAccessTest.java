@@ -2,14 +2,12 @@ package in.partake.model.dao;
 
 import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
-import in.partake.base.TimeUtil;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -156,7 +154,6 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
                     }
 
                     Assert.assertEquals(expectedEventIds, targetEventIds);
-
                 }
 
                 return null;
@@ -165,14 +162,12 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
     }
 
     private Event createEvent(String eventId, String userId) {
-        Date beginDate = TimeUtil.getCurrentDate();
-        Date now = TimeUtil.getCurrentDate();
-        String url = "http://localhost:8080/";
-        String place = "";
-        String address = "";
-        String description = "";
-        Event event = new Event(eventId, "DUMMY EVENT", "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", userId, null, true, "passcode", false, false, now, now);
+        EventTestDataProvider provider = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider();
+        Event event = provider.create();
+
         event.setId(eventId);
+        event.setOwnerId(userId);
+
         return event;
     }
 }

@@ -7,6 +7,7 @@ import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.UserPreference;
 
 import java.util.List;
@@ -52,10 +53,7 @@ class MypageActionTransaction extends DBAccess<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        preference = daos.getUserPreferenceAccess().find(con, userId);
-        if (preference == null)
-            preference = UserPreference.getDefaultPreference(userId);
-
+        preference = UserDAOFacade.getPreference(con, daos, userId);
         openIds = daos.getOpenIDLinkageAccess().findByUserId(con, userId);
         return null;
     }

@@ -11,7 +11,9 @@ import in.partake.model.fixture.TestDataProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -35,11 +37,6 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
     }
 
     @Override
-    public ImageData create() {
-        return new ImageData(UUID.randomUUID().toString(), DEFAULT_USER_ID, "test", new byte[] { 1, 2, 3 }, TimeUtil.getCurrentDate());
-    }
-
-    @Override
     public ImageData create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, ("image" + pkSalt).toString().hashCode());
 
@@ -54,6 +51,18 @@ public class ImageTestDataProvider extends TestDataProvider<ImageData> {
         } else {
             return new ImageData(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", new byte[] { 1, 2, (byte) objNumber }, new Date(objNumber));
         }
+    }
+
+    @Override
+    public List<ImageData> createGetterSetterSamples() {
+        List<ImageData> array = new ArrayList<ImageData>();
+        array.add(new ImageData("id", "userId", "type", new byte[] { 0, 1, 2 } , new Date(0)));
+        array.add(new ImageData("id1", "userId", "type", new byte[] { 0, 1, 2 } , new Date(0)));
+        array.add(new ImageData("id", "userId1", "type", new byte[] { 0, 1, 2 } , new Date(0)));
+        array.add(new ImageData("id", "userId", "type1", new byte[] { 0, 1, 2 } , new Date(0)));
+        array.add(new ImageData("id", "userId", "type", new byte[] { 0, 1, 3 } , new Date(0)));
+        array.add(new ImageData("id", "userId", "type", new byte[] { 0, 1, 2 } , new Date(1)));
+        return array;
     }
 
     @Override

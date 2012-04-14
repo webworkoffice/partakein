@@ -8,7 +8,6 @@
 <%@page import="in.partake.model.dto.Event"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
-<%@page import="in.partake.model.DirectMessageEx"%>
 <%@page import="in.partake.model.CommentEx"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.model.EventEx"%>
@@ -23,14 +22,12 @@
 
     EventEx event = action.getEvent();
     List<CommentEx> comments = action.getComments();
-    List<DirectMessageEx> messages = action.getDirectMessages();
     boolean deadlineOver = action.isDeadlineOver();
     String redirectURL = action.getRedirectURL();
     if (redirectURL == null)
         redirectURL = action.getCurrentURL();
     ParticipationStatus status = action.getParticipationStatus();
     EventReminder reminderStatus = action.getEventReminder();
-    int maxCodePointsOfMessage = action.getRestCodePoints();
 %>
 
 <div class="clearfix editing-nav">
@@ -115,11 +112,12 @@
     </div>
     <div class="modal-body">
         <%-- TODO: maxCodePointsOfMessage should not be null. --%>
-        <p>参加者に twitter 経由でメッセージを送ることができます。メッセージは、長くとも<%= maxCodePointsOfMessage %>文字以内で記述してください。最大で１時間３回１日５回まで送ることができます。</p>
+        <p>参加者に twitter 経由でメッセージを送ることができます。メッセージは、長くとも 500 文字以内で記述してください。最大で１時間３回１日５回まで送ることができます。</p>
         <form>
-            <textarea id="message-send-dialog-textarea" name="message" class="span7" rows="4"></textarea>
+            <label>題名<input id="message-send-dialog-subject" type="text" name="title" /></label>
+            <label>本文<textarea id="message-send-dialog-body" name="message" class="span7" rows="4"></textarea></label>
         </form>
-        <p>残り <span id="message_length"><%= maxCodePointsOfMessage %></span> 文字</p>
+        <p>残り <span id="message-length">500</span> 文字</p>
     </div>
     <div class="modal-footer spinner-container">
         <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
@@ -128,7 +126,8 @@
     <script>
         function sendMessage() {
             var eventId = '<%= h(event.getId()) %>';
-            var message = $('#message-send-dialog-textarea').val();
+            var subject = $('#message-send-dialog-subject').val();
+            var body = $('#message-send-dialog-body').val();
 
             var spinner = partakeUI.spinner(document.getElementById('message-send-dialog-submit-button'));
             var button = $('#message-send-dialog-submit-button');
@@ -136,7 +135,7 @@
             spinner.show();
             button.attr('disabled', '');
 
-            partake.message.sendMessage(eventId, message)
+            partake.message.sendMessage(eventId, subject, body)
             .always(function () {
                 spinner.hide();
                 button.removeAttr('disabled');
@@ -144,22 +143,15 @@
             .done(function (json) {
                 $('#message-send-dialog').modal('hide');
             })
-            .fail(function (xhr) {
-                try {
-                    var json = $.parseJSON(xhr.responseText);
-                    alert(json.reason);
-                } catch (e) {
-                    alert('レスポンスが JSON 形式ではありません。');
-                }
-            });
+            .fail(partake.defaultFailHandler);
         }
         $('#message-send-dialog-submit-button').click(sendMessage);
 
         function onMessageChange() {
-            var textarea = $('#message-send-dialog-textarea');
+            var textarea = $('#message-send-dialog-body');
             var submitButton = $('#message-send-dialog-submit-button');
-            var messageSpan = $('#message_length');
-            var left = <%= maxCodePointsOfMessage %> - codePointCount(textarea.val());
+            var messageSpan = $('#message-length');
+            var left = 500 - codePointCount(textarea.val());
 
             messageSpan.text(left).css('color', left > 20 ? '#000' : '#f00');
             if (left < 0)

@@ -14,7 +14,6 @@
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL);
 
     EventEx event = action.getEvent();
-    int maxCodePointsOfMessage = action.getRestCodePoints();
 %>
 
 <%-- 参加登録フォーム --%>

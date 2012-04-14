@@ -40,7 +40,6 @@
     boolean deadlineOver = action.isDeadlineOver();
     EventReminder reminderStatus = action.getEventReminder();
     List<EventRelationEx> eventRelations = action.getRelations();
-    int maxCodePointsOfMessage = action.getRestCodePoints();
 %>
 
 <!DOCTYPE html>
@@ -191,18 +190,7 @@ body {
 
 <jsp:include page="/WEB-INF/events/_show_forms.jsp" flush="true" />
 
-
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
-
-<script>
-var message=$('textarea#send_message');
-function handler(e){
-    var left = <%= maxCodePointsOfMessage %> - codePointCount(message.val());
-    $('span#message_length').text(left).css('color', left > 20 ? '#000' : '#f00').parent().find('input[type=submit]').attr('disabled', left < 0 ? 'disabled' : '');
-}
-message.keydown(handler).keyup(handler);<%-- keydownだけではctrl-BS時に表示があわなくなる、keyupだけではBS長押し時に表示があわなくなる --%>
-</script>
-
 
 </body>
 </html>

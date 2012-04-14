@@ -74,17 +74,13 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
     public void put(PartakeConnection con, Enrollment t) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        String id = indexDao.find(pcon, "id", new String[] { "userId", "eventId" }, new Object[] { t.getUserId(), t.getEventId() });
-        if (id == null)
-            id = entityDao.getFreshId(pcon);
+        Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
 
-        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
-
-        if (entityDao.exists(pcon, id))
+        if (entityDao.exists(pcon, t.getId()))
             entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
-        indexDao.put(pcon, new String[] { "id", "userId", "eventId", "enrolledAt" } , new Object[] { id, t.getUserId(), t.getEventId(), t.getModifiedAt() });
+        indexDao.put(pcon, new String[] { "id", "userId", "eventId", "enrolledAt" } , new Object[] { t.getId(), t.getUserId(), t.getEventId(), t.getModifiedAt() });
     }
 
     @Override

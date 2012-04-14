@@ -1,7 +1,7 @@
 package in.partake.daemon.impl;
 
 import in.partake.base.PartakeException;
-import in.partake.base.Util;
+import in.partake.base.TimeUtil;
 import in.partake.daemon.IPartakeDaemonTask;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
@@ -14,12 +14,14 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Enrollment;
-import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.DirectMessage;
-import in.partake.model.dto.auxiliary.DirectMessagePostingType;
+import in.partake.model.dto.EventNotification;
+import in.partake.model.dto.MessageEnvelope;
+import in.partake.model.dto.UserNotification;
 import in.partake.model.dto.auxiliary.ModificationStatus;
+import in.partake.model.dto.auxiliary.NotificationType;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,18 +56,11 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
 
                     if (!now.before(event.getBeginDate())) { continue; }
 
-                    List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, eventId);
+                    List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event);
                     ParticipationList list = event.calculateParticipationList(participations);
 
-                    String enrollingMessage = "[PARTAKE] 補欠から参加者へ繰り上がりました。 " + event.getShortenedURL() + " " + event.getTitle();
-                    String cancellingMessage = "[PARTAKE] 参加者から補欠扱い(あるいはキャンセル扱い)に変更になりました。 " + event.getShortenedURL() + " " + event.getTitle();
-                    enrollingMessage = Util.shorten(enrollingMessage, 140);
-                    cancellingMessage = Util.shorten(cancellingMessage, 140);
-
-                    String okMessageId = null;
-                    String ngMessageId = null;
-
                     // TODO: ここのソース汚い。同一化できる。とくに、あとの２つは一緒。
+                    List<String> userIdsToBeEnrolled = new ArrayList<String>();
                     for (Enrollment p : list.getEnrolledParticipations()) {
                         // -- 参加者向
 
@@ -78,25 +73,31 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
                             break;
                         }
                         case NOT_ENROLLED: {
-                            if (okMessageId == null) {
-                                okMessageId = daos.getDirectMessageAccess().getFreshId(con);
-                                DirectMessage okEmbryo = new DirectMessage(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date());
-                                daos.getDirectMessageAccess().put(con, okEmbryo);
-                            }
-
+                            userIdsToBeEnrolled.add(p.getUserId());
                             updateLastStatus(con, daos, eventId, p, ModificationStatus.ENROLLED);
-                            String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
-                            Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
-                                    okMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                            daos.getEnvelopeAccess().put(con, envelope);
-
                             break;
                         }
                         case ENROLLED:
                             break;
                         }
                     }
+                    if (!userIdsToBeEnrolled.isEmpty()) {
+                        String eventNotificationId = daos.getEventNotificationAccess().getFreshId(con);
+                        EventNotification notification = new EventNotification(eventNotificationId, eventId, userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_ENROLLED, TimeUtil.getCurrentDateTime(), null);
+                        daos.getEventNotificationAccess().put(con, notification);
 
+                        for (String userId : userIdsToBeEnrolled) {
+                            String userNotificationid = daos.getUserNotificationAccess().getFreshId(con);
+                            UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_ENROLLED, TimeUtil.getCurrentDateTime(), null);
+                            daos.getUserNotificationAccess().put(con, userNotification);
+
+                            String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
+                            MessageEnvelope envelope = MessageEnvelope.createForEventNotification(envelopeId, userNotificationid, null);
+                            daos.getMessageEnvelopeAccess().put(con, envelope);
+                        }
+                    }
+
+                    List<String> userIdsToBeCancelled = new ArrayList<String>();
                     for (Enrollment p : list.getSpareParticipations()) {
                         ModificationStatus status = p.getModificationStatus();
                         if (status == null) { continue; }
@@ -108,18 +109,8 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
                         case NOT_ENROLLED:
                             break;
                         case ENROLLED:
-                            if (ngMessageId == null) {
-                                ngMessageId = daos.getDirectMessageAccess().getFreshId(con);
-                                DirectMessage ngEmbryo = new DirectMessage(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
-                                daos.getDirectMessageAccess().put(con, ngEmbryo);
-                            }
-
                             updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
-
-                            String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
-                            Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
-                                    ngMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                            daos.getEnvelopeAccess().put(con, envelope);
+                            userIdsToBeCancelled.add(p.getUserId());
                             break;
                         }
                     }
@@ -135,19 +126,25 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
                         case NOT_ENROLLED:
                             break;
                         case ENROLLED:
-                            if (ngMessageId == null) {
-                                ngMessageId = daos.getDirectMessageAccess().getFreshId(con);
-                                DirectMessage ngEmbryo = new DirectMessage(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
-                                daos.getDirectMessageAccess().put(con, ngEmbryo);
-                            }
-
                             updateLastStatus(con, daos, eventId, p, ModificationStatus.NOT_ENROLLED);
-
-                            String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
-                            Envelope envelope = new Envelope(envelopeId, p.getUserId(), p.getUserId(),
-                                    ngMessageId, event.getBeginDate(), 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date());
-                            daos.getEnvelopeAccess().put(con, envelope);
+                            userIdsToBeCancelled.add(p.getUserId());
                             break;
+                        }
+                    }
+
+                    if (!userIdsToBeCancelled.isEmpty()) {
+                        String notificationId = daos.getEventNotificationAccess().getFreshId(con);
+                        EventNotification notification = new EventNotification(notificationId, eventId, userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_CANCELLED, TimeUtil.getCurrentDateTime(), null);
+                        daos.getEventNotificationAccess().put(con, notification);
+
+                        for (String userId : userIdsToBeCancelled) {
+                            String userNotificationid = daos.getUserNotificationAccess().getFreshId(con);
+                            UserNotification userNotification = new UserNotification(userNotificationid, eventId, userId, NotificationType.BECAME_TO_BE_CANCELLED, TimeUtil.getCurrentDateTime(), null);
+                            daos.getUserNotificationAccess().put(con, userNotification);
+
+                            String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
+                            MessageEnvelope envelope = MessageEnvelope.createForEventNotification(envelopeId, userNotificationid, null);
+                            daos.getMessageEnvelopeAccess().put(con, envelope);
                         }
                     }
                 }

@@ -1,15 +1,13 @@
 package in.partake.controller.action.event;
 
-import in.partake.base.MessageUtil;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.DraftEventEditPermission;
-import in.partake.controller.base.permission.EventSendMessagePermission;
 import in.partake.controller.base.permission.PrivateEventShowPermission;
 import in.partake.model.CommentEx;
-import in.partake.model.DirectMessageEx;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
+import in.partake.model.EventMessageEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.ParticipationList;
@@ -19,8 +17,8 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
+import in.partake.model.daofacade.MessageDAOFacade;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventMessage;
 import in.partake.model.dto.EventReminder;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.ServerErrorCode;
@@ -40,11 +38,9 @@ public class EventShowAction extends AbstractPartakeAction {
     private List<Event> requiredEvents;
     private ParticipationStatus participationStatus;
     private ParticipationList participationList;
-    private int restCodePoints;
     private boolean deadlineOver;
     private List<CommentEx> comments;
-    private List<DirectMessageEx> messages;
-    private List<EventMessage> eventMessages;
+    private List<EventMessageEx> eventMessages;
     private EventReminder eventReminder;
     private List<EventRelationEx> relations;
 
@@ -70,10 +66,8 @@ public class EventShowAction extends AbstractPartakeAction {
         this.requiredEvents = transaction.getRequiredEvents();
         this.participationStatus = transaction.getParticipationStatus();
         this.participationList = transaction.getParticipationList();
-        this.restCodePoints = transaction.getRestCodePoints();
         this.deadlineOver = transaction.isDeadlineOver();
         this.comments = transaction.getComments();
-        this.messages = transaction.getDirectMessages();
         this.eventMessages = transaction.getEventMessages();
         this.eventReminder = transaction.getEventReminder();
         this.relations = transaction.getRelations();
@@ -101,10 +95,6 @@ public class EventShowAction extends AbstractPartakeAction {
         return participationList;
     }
 
-    public int getRestCodePoints() {
-        return restCodePoints;
-    }
-
     public boolean isDeadlineOver() {
         return deadlineOver;
     }
@@ -113,12 +103,12 @@ public class EventShowAction extends AbstractPartakeAction {
         return comments;
     }
 
-    public List<DirectMessageEx> getDirectMessages() {
-        return messages;
-    }
-
     public EventReminder getEventReminder() {
         return eventReminder;
+    }
+
+    public List<EventMessageEx> getEventMessages() {
+        return eventMessages;
     }
 
     public List<EventRelationEx> getRelations() {
@@ -136,11 +126,9 @@ class EventShowTransaction extends DBAccess<Void> {
     private List<Event> requiredEvents;
     private ParticipationStatus participationStatus;
     private ParticipationList participationList;
-    private int restCodePoints;
     private boolean deadlineOver;
     private List<CommentEx> comments;
-    private List<DirectMessageEx> messages;
-    private List<EventMessage> eventMessages;
+    private List<EventMessageEx> eventMessages;
     private EventReminder eventReminder;
     private List<EventRelationEx> relations;
 
@@ -183,7 +171,7 @@ class EventShowTransaction extends DBAccess<Void> {
         requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, daos, user, relations);
 
         // ----- participants を反映
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, eventId);
+        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event);
         if (participations == null)
             throw new PartakeException(ServerErrorCode.PARTICIPATIONS_RETRIEVAL_ERROR);
 
@@ -195,8 +183,7 @@ class EventShowTransaction extends DBAccess<Void> {
         deadlineOver = deadline.before(new Date());
 
         comments = EventDAOFacade.getCommentsExByEvent(con, daos, eventId);
-        messages = EventDAOFacade.getDirectMessagesByEventId(con, daos, eventId);
-        eventMessages = daos.getEventMessageAccess().findByEventId(con, eventId, 0, 100);
+        eventMessages = MessageDAOFacade.findEventMessageExs(con, daos, eventId, 0, 100);
 
         if (user != null)
             participationStatus = EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), eventId);
@@ -207,12 +194,6 @@ class EventShowTransaction extends DBAccess<Void> {
         if (eventReminder == null)
             eventReminder = new EventReminder(eventId);
 
-        if (EventSendMessagePermission.check(event, user))
-            restCodePoints = MessageUtil.calcRestCodePoints(user, event);
-        else
-            restCodePoints = 0;
-
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -236,10 +217,6 @@ class EventShowTransaction extends DBAccess<Void> {
         return participationList;
     }
 
-    public int getRestCodePoints() {
-        return restCodePoints;
-    }
-
     public boolean isDeadlineOver() {
         return deadlineOver;
     }
@@ -248,11 +225,7 @@ class EventShowTransaction extends DBAccess<Void> {
         return comments;
     }
 
-    public List<DirectMessageEx> getDirectMessages() {
-        return messages;
-    }
-
-    public List<EventMessage> getEventMessages() {
+    public List<EventMessageEx> getEventMessages() {
         return eventMessages;
     }
 

@@ -1,5 +1,7 @@
 package in.partake.model.dao.postgres9.impl;
 
+import java.util.UUID;
+
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -78,8 +80,8 @@ public class Postgres9MessageDao extends Postgres9Dao implements IMessageAccess 
     }
 
     @Override
-    public String getFreshId(PartakeConnection con) throws DAOException {
-        return entityDao.getFreshId((Postgres9Connection) con);
+    public UUID getFreshId(PartakeConnection con) throws DAOException {
+        return UUID.fromString(entityDao.getFreshId((Postgres9Connection) con));
     }
 
     @Override

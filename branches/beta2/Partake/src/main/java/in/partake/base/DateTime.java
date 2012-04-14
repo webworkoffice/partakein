@@ -17,4 +17,26 @@ public class DateTime {
     public Date getDate() {
         return new Date(millis);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DateTime))
+            return false;
+
+        DateTime lhs = this;
+        DateTime rhs = (DateTime) obj;
+
+        return lhs.millis == rhs.millis;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) millis;
+    }
+
+    public boolean isBefore(DateTime dt) {
+        return millis < dt.millis;
+    }
+
+
 }

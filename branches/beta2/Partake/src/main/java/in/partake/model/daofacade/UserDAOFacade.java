@@ -10,8 +10,16 @@ import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
+import in.partake.model.dto.UserPreference;
 
 public class UserDAOFacade extends AbstractPartakeDAOFacade {
+
+    public static UserPreference getPreference(PartakeConnection con, IPartakeDAOs daos, String userId) throws DAOException {
+        UserPreference pref = daos.getUserPreferenceAccess().find(con, userId);
+        if (pref == null)
+            pref = UserPreference.getDefaultPreference(userId);
+        return pref;
+    }
 
     public static UserEx getUserEx(PartakeConnection con, IPartakeDAOs daos, String userId) throws DAOException {
         IUserAccess userAccess = daos.getUserAccess();

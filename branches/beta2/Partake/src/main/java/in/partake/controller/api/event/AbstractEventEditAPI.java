@@ -5,8 +5,8 @@ import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventRelation;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.model.dto.auxiliary.EventRelation;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -235,7 +235,7 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
                 break;
             }
 
-            EventRelation relation = new EventRelation(null, dstEventId, required, priority);
+            EventRelation relation = new EventRelation(dstEventId, required, priority);
             relations.add(relation);
             visitedEventIds.add(dstEventId);
         }

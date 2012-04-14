@@ -1,5 +1,6 @@
 package in.partake.view.util;
 
+import in.partake.base.DateTime;
 import in.partake.base.Util;
 import in.partake.resource.Constants;
 import in.partake.session.CSRFPrevention;
@@ -187,7 +188,6 @@ public final class Helper {
 
     /** 日時を読みやすい形で表示します */
     public static String readableDate(Date d) {
-
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(d);
 
@@ -212,6 +212,10 @@ public final class Helper {
         }
 
         return String.format("%04d年%d月%d日(%s) %02d:%02d", year, month, date, dayStr, hour, min);
+    }
+
+    public static String readableDate(DateTime d) {
+        return readableDate(new Date(d.getTime()));
     }
 
     public static String readableDuration(Date beginDate, Date endDate) {

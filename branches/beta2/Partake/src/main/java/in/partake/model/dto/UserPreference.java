@@ -23,10 +23,6 @@ public class UserPreference extends PartakeModel<UserPreference> {
         return new UserPreference(userId, true, true, false);
     }
 
-    public UserPreference() {
-        // do nothing
-    }
-
     public UserPreference(String userId, boolean profilePublic, boolean receivingTwitterMessage, boolean tweetingAttendanceAutomatically) {
         this.userId = userId;
         this.profilePublic = profilePublic;

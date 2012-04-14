@@ -36,6 +36,13 @@ public class PartakeApp {
         createServices();
     }
 
+    public static void initializeIfNotInitialized(String mode) throws Exception {
+        if (mode.equals(PartakeProperties.get().getMode()))
+            return;
+
+        initialize(mode);
+    }
+
     private static void createServices() throws Exception {
         try {
             Class<?> factoryClass = Class.forName(PartakeProperties.get().getPartakeAppFactoryClassName());

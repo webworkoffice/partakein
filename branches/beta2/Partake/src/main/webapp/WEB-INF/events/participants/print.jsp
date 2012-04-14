@@ -1,6 +1,6 @@
 <%@page import="in.partake.controller.action.event.PrintParticipantsAction"%>
 <%@page import="in.partake.model.EventRelationEx"%>
-<%@page import="in.partake.model.dto.EventRelation"%>
+<%@page import="in.partake.model.dto.auxiliary.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="java.util.List"%>

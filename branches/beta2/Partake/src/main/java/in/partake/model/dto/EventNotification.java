@@ -1,9 +1,12 @@
 package in.partake.model.dto;
 
+import in.partake.base.DateTime;
 import in.partake.model.dto.auxiliary.NotificationType;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -12,27 +15,29 @@ import org.apache.commons.lang.ObjectUtils;
  * @author shinyak
  *
  */
+// TODO: Should use MessageCode to convert EventNotification to Text.
 public class EventNotification extends PartakeModel<EventNotification> {
     private String id;
     private String eventId;
+    private List<String> userIds;
     private NotificationType notificationType;
-    private String messageId;
-    private Date createdAt;
-    private Date modifiedAt;
+
+    private DateTime createdAt;
+    private DateTime modifiedAt;
 
     public EventNotification() {
         // do nothing
     }
 
     public EventNotification(EventNotification message) {
-        this(message.id, message.eventId, message.notificationType, message.messageId, message.createdAt, message.modifiedAt);
+        this(message.id, message.eventId, message.userIds, message.notificationType, message.createdAt, message.modifiedAt);
     }
 
-    public EventNotification(String id, String eventId, NotificationType notificationType, String messageId, Date createdAt, Date modifiedAt) {
+    public EventNotification(String id, String eventId, List<String> userIds, NotificationType notificationType,  DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.eventId = eventId;
+        this.userIds = new ArrayList<String>(userIds);
         this.notificationType = notificationType;
-        this.messageId = messageId;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
@@ -40,11 +45,16 @@ public class EventNotification extends PartakeModel<EventNotification> {
     public EventNotification(JSONObject obj) {
         this.id = obj.getString("id");
         this.eventId = obj.getString("eventId");
+
+        this.userIds = new ArrayList<String>();
+        JSONArray array = obj.getJSONArray("userIds");
+        for (int i = 0; i < array.size(); ++i)
+            userIds.add(array.getString(i));
+
         this.notificationType = NotificationType.safeValueOf(obj.getString("notificationType"));
-        this.messageId = obj.getString("messageId");
-        this.createdAt = new Date(obj.getLong("createdAt"));
+        this.createdAt = new DateTime(obj.getLong("createdAt"));
         if (obj.containsKey("modifiedAt"))
-            this.modifiedAt = new Date(obj.getLong("modifiedAt"));
+            this.modifiedAt = new DateTime(obj.getLong("modifiedAt"));
     }
 
     @Override
@@ -57,8 +67,12 @@ public class EventNotification extends PartakeModel<EventNotification> {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
         obj.put("eventId", eventId);
+
+        JSONArray array = new JSONArray();
+        for (String userId : userIds)
+            array.add(userId);
+
         obj.put("notificationType", notificationType.toString());
-        obj.put("messageId", messageId);
         if (createdAt != null)
             obj.put("createdAt", createdAt.getTime());
         if (modifiedAt != null)
@@ -78,8 +92,8 @@ public class EventNotification extends PartakeModel<EventNotification> {
 
         if (!(ObjectUtils.equals(lhs.id,         rhs.id)))         { return false; }
         if (!(ObjectUtils.equals(lhs.eventId,    rhs.eventId)))    { return false; }
+        if (!(ObjectUtils.equals(lhs.userIds,    rhs.userIds)))    { return false; }
         if (!(ObjectUtils.equals(lhs.notificationType,   rhs.notificationType)))   { return false; }
-        if (!(ObjectUtils.equals(lhs.messageId,  rhs.messageId)))  { return false; }
         if (!(ObjectUtils.equals(lhs.createdAt,  rhs.createdAt)))  { return false; }
         if (!(ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt))) { return false; }
         return true;
@@ -91,8 +105,8 @@ public class EventNotification extends PartakeModel<EventNotification> {
 
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(eventId);
+        code = code * 37 + ObjectUtils.hashCode(userIds);
         code = code * 37 + ObjectUtils.hashCode(notificationType);
-        code = code * 37 + ObjectUtils.hashCode(messageId);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
 
@@ -110,19 +124,19 @@ public class EventNotification extends PartakeModel<EventNotification> {
         return eventId;
     }
 
+    public List<String> getUserIds() {
+        return this.userIds;
+    }
+
     public NotificationType getNotificationType() {
         return notificationType;
     }
 
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public Date getCreatedAt() {
+    public DateTime getCreatedAt() {
         return createdAt;
     }
 
-    public Date getModifiedAt() {
+    public DateTime getModifiedAt() {
         return modifiedAt;
     }
 
@@ -136,24 +150,24 @@ public class EventNotification extends PartakeModel<EventNotification> {
         this.eventId = eventId;
     }
 
+    public void setUserIds(List<String> userIds) {
+        checkFrozen();
+        this.userIds = new ArrayList<String>(userIds);
+    }
+
     public void setNotificationType(NotificationType notificationType) {
         checkFrozen();
         this.notificationType = notificationType;
     }
 
-    public void setBody(String messageId) {
+    public void setCreatedAt(DateTime createdAt) {
         checkFrozen();
-        this.messageId = messageId;
+        this.createdAt = createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setModifiedAt(DateTime modifiedAt) {
         checkFrozen();
-        this.createdAt = createdAt != null ? new Date(createdAt.getTime()) : null;
-    }
-
-    public void setModifiedAt(Date modifiedAt) {
-        checkFrozen();
-        this.modifiedAt = modifiedAt != null ? new Date(modifiedAt.getTime()) : null;
+        this.modifiedAt = modifiedAt;
     }
 }
 

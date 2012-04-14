@@ -1,18 +1,16 @@
 package in.partake.model.dto;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import in.partake.app.PartakeApp;
+import in.partake.model.fixture.TestDataProvider;
 
 public class OpenIDLinkageTest extends AbstractPartakeModelTest<OpenIDLinkage> {
+    @Override
+    protected OpenIDLinkage copy(OpenIDLinkage t) {
+        return new OpenIDLinkage(t);
+    }
 
-    @Test @Ignore("Not implemented yet.")	
-	public void testsShouldBeAdded() {
-		throw new RuntimeException("Not implemented yet");
-	}
-
-	@Override
-	protected OpenIDLinkage createModel() {
-		return new OpenIDLinkage();
-	}
-
+    @Override
+    protected TestDataProvider<OpenIDLinkage> getTestDataProvider() {
+        return PartakeApp.getTestService().getTestDataProviderSet().getOpenIDLinkageProvider();
+    }
 }

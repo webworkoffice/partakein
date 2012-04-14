@@ -1,10 +1,7 @@
 package in.partake.model.dto;
 
+import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
-import in.partake.model.dto.auxiliary.DirectMessagePostingType;
-
-import java.util.Date;
-
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -18,29 +15,50 @@ import org.apache.commons.lang.ObjectUtils;
 
 public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
     private String id;
-    private String receiverId;
 
-    private String eventMessageId;
+    // Either of these messageId is set.
     private String userMessageId;
-    private String eventNotificationId;
+    private String twitterMessageId;
+    private String userNotificationId;
 
     private int numTried;
-    private DirectMessagePostingType postingType;
 
-    private Date lastTriedAt;
-    private Date invalidAfter;
-    private Date tryAfter;
+    private DateTime lastTriedAt;
+    private DateTime invalidAfter;
+    private DateTime tryAfter;
 
-    private Date createdAt;
-    private Date modifiedAt;
+    private DateTime createdAt;
+    private DateTime modifiedAt;
 
-    public static MessageEnvelope createForEventMessage(String receiverId, String eventMessageId, DirectMessagePostingType postingType) {
+    public static MessageEnvelope createForUserMessage(String id, String userMessageId, DateTime invalidAfter) {
         MessageEnvelope envelope = new MessageEnvelope();
-        envelope.receiverId = receiverId;
-        envelope.eventMessageId = eventMessageId;
+        envelope.id = id;
+        envelope.userMessageId = userMessageId;
         envelope.numTried = 0;
-        envelope.postingType = postingType;
-        envelope.createdAt = TimeUtil.getCurrentDate();
+        envelope.invalidAfter = invalidAfter;
+        envelope.createdAt = TimeUtil.getCurrentDateTime();
+
+        return envelope;
+    }
+
+    public static MessageEnvelope createForTwitterMessage(String id, String twitterMessageId, DateTime invalidAfter) {
+        MessageEnvelope envelope = new MessageEnvelope();
+        envelope.id = id;
+        envelope.twitterMessageId = twitterMessageId;
+        envelope.numTried = 0;
+        envelope.invalidAfter = invalidAfter;
+        envelope.createdAt = TimeUtil.getCurrentDateTime();
+
+        return envelope;
+    }
+
+    public static MessageEnvelope createForEventNotification(String id, String userNotificationId, DateTime invalidAfter) {
+        MessageEnvelope envelope = new MessageEnvelope();
+        envelope.id = id;
+        envelope.userNotificationId = userNotificationId;
+        envelope.numTried = 0;
+        envelope.invalidAfter = invalidAfter;
+        envelope.createdAt = TimeUtil.getCurrentDateTime();
 
         return envelope;
     }
@@ -49,17 +67,13 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
         // do nothing
     }
 
-    public MessageEnvelope(String id, String receiverId,
-            String eventMessageId, String userMessageId, String eventNotificationId,
-            int numTried, DirectMessagePostingType postingType,
-            Date lastTriedAt, Date invalidAfter, Date tryAfter, Date createdAt, Date modifiedAt) {
+    public MessageEnvelope(String id, String userMessageId, String twitterMessageId, String userNotificationId,
+            int numTried, DateTime lastTriedAt, DateTime invalidAfter, DateTime tryAfter, DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
-        this.receiverId = receiverId;
-        this.eventMessageId = eventMessageId;
         this.userMessageId = userMessageId;
-        this.eventNotificationId = eventNotificationId;
+        this.twitterMessageId = twitterMessageId;
+        this.userNotificationId = userNotificationId;
         this.numTried = numTried;
-        this.postingType = postingType;
         this.lastTriedAt = lastTriedAt;
         this.invalidAfter = invalidAfter;
         this.tryAfter = tryAfter;
@@ -68,34 +82,29 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
     }
 
     public MessageEnvelope(MessageEnvelope envelope) {
-        this(envelope.id, envelope.receiverId,
-                envelope.eventMessageId, envelope.userMessageId, envelope.eventNotificationId,
-                envelope.numTried, envelope.postingType,
-                envelope.lastTriedAt, envelope.invalidAfter, envelope.tryAfter, envelope.createdAt, envelope.modifiedAt);
+        this(envelope.id, envelope.userMessageId, envelope.twitterMessageId, envelope.userNotificationId,
+                envelope.numTried, envelope.lastTriedAt, envelope.invalidAfter, envelope.tryAfter, envelope.createdAt, envelope.modifiedAt);
     }
 
     public MessageEnvelope(JSONObject json) {
         this.id = json.getString("id");
-        this.receiverId = json.getString("receiverId");
-        if (json.containsKey("eventMessageId"))
-            this.eventMessageId = json.getString("eventMessageId");
-        if (json.containsKey("userMessageId"))
-            this.userMessageId = json.getString("userMessageId");
-        if (json.containsKey("eventNotificationId"))
-            this.eventNotificationId = json.getString("eventNotificationId");
+
+        this.userMessageId = json.optString("userMessageId", null);
+        this.twitterMessageId = json.optString("twitterMessageId", null);
+        this.userNotificationId = json.optString("userNotificationId", null);
+
         this.numTried = json.getInt("numTried");
-        this.postingType = DirectMessagePostingType.valueOf(json.getString("postingType"));
 
         if (json.containsKey("lastTriedAt"))
-            this.lastTriedAt = new Date(json.getLong("lastTriedAt"));
+            this.lastTriedAt = new DateTime(json.getLong("lastTriedAt"));
         if (json.containsKey("invalidAfter"))
-            this.invalidAfter = new Date(json.getLong("invalidAfter"));
+            this.invalidAfter = new DateTime(json.getLong("invalidAfter"));
         if (json.containsKey("tryAfter"))
-            this.tryAfter = new Date(json.getLong("tryAfter"));
+            this.tryAfter = new DateTime(json.getLong("tryAfter"));
         if (json.containsKey("createdAt"))
-            this.createdAt = new Date(json.getLong("createdAt"));
+            this.createdAt = new DateTime(json.getLong("createdAt"));
         if (json.containsKey("modifiedAt"))
-            this.createdAt = new Date(json.getLong("modifiedAt"));
+            this.createdAt = new DateTime(json.getLong("modifiedAt"));
     }
 
     @Override
@@ -107,18 +116,15 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        if (receiverId != null)
-            obj.put("receiverId", receiverId);
 
-        if (eventMessageId != null)
-            obj.put("eventMessageId", eventMessageId);
         if (userMessageId != null)
             obj.put("userMessageId", userMessageId);
-        if (eventNotificationId != null)
-            obj.put("eventNotificationId", eventNotificationId);
+        if (twitterMessageId != null)
+            obj.put("twitterMessageId", twitterMessageId);
+        if (userNotificationId != null)
+            obj.put("userNotificationId", userNotificationId);
 
         obj.put("numTried", numTried);
-        obj.put("postingType", postingType.toString());
         if (lastTriedAt != null)
             obj.put("lastTriedAt", lastTriedAt.getTime());
         if (invalidAfter != null)
@@ -145,14 +151,12 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
         MessageEnvelope rhs = (MessageEnvelope) obj;
 
         if (!ObjectUtils.equals(lhs.id,  rhs.id))  { return false; }
-        if (!ObjectUtils.equals(lhs.receiverId,  rhs.receiverId))  { return false; }
 
-        if (!ObjectUtils.equals(lhs.eventMessageId,   rhs.eventMessageId))   { return false; }
         if (!ObjectUtils.equals(lhs.userMessageId,   rhs.userMessageId))   { return false; }
-        if (!ObjectUtils.equals(lhs.eventNotificationId,   rhs.eventNotificationId))   { return false; }
+        if (!ObjectUtils.equals(lhs.twitterMessageId,   rhs.twitterMessageId))   { return false; }
+        if (!ObjectUtils.equals(lhs.userNotificationId,   rhs.userNotificationId))   { return false; }
 
         if (!ObjectUtils.equals(lhs.numTried,    rhs.numTried))    { return false; }
-        if (!ObjectUtils.equals(lhs.postingType, rhs.postingType)) { return false; }
 
         if (!ObjectUtils.equals(lhs.lastTriedAt, rhs.lastTriedAt)) { return false; }
         if (!ObjectUtils.equals(lhs.invalidAfter,    rhs.invalidAfter))    { return false; }
@@ -169,13 +173,12 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
         int code = 0;
 
         code = code * 37 + ObjectUtils.hashCode(id);
-        code = code * 37 + ObjectUtils.hashCode(receiverId);
-        code = code * 37 + ObjectUtils.hashCode(eventMessageId);
+
         code = code * 37 + ObjectUtils.hashCode(userMessageId);
-        code = code * 37 + ObjectUtils.hashCode(eventNotificationId);
+        code = code * 37 + ObjectUtils.hashCode(twitterMessageId);
+        code = code * 37 + ObjectUtils.hashCode(userNotificationId);
 
         code = code * 37 + ObjectUtils.hashCode(numTried);
-        code = code * 37 + ObjectUtils.hashCode(postingType);
 
         code = code * 37 + ObjectUtils.hashCode(lastTriedAt);
         code = code * 37 + ObjectUtils.hashCode(invalidAfter);
@@ -190,26 +193,25 @@ public class MessageEnvelope extends PartakeModel<MessageEnvelope> {
     // ----------------------------------------------------------------------
     // accessors
 
-    public String getEnvelopeId() { return id; }
-    public String getReceiverId() { return receiverId; }
-    public String getEventMessageId()  { return eventMessageId; }
+    public String getId() { return id; }
+
     public String getUserMessageId()  { return userMessageId; }
-    public String getEventNotificationId()  { return eventNotificationId; }
+    public String getTwitterMessageId() { return twitterMessageId; }
+    public String getUserNotificationid() { return userNotificationId; }
 
     public int getNumTried() { return numTried; }
-    public DirectMessagePostingType getPostingType() { return postingType; }
 
-    public Date getLastTriedAt() { return lastTriedAt; }
-    public Date getDeadline() { return invalidAfter; }
-    public Date getTryAfter() { return tryAfter; }
+    public DateTime getLastTriedAt() { return lastTriedAt; }
+    public DateTime getInvalidAfter() { return invalidAfter; }
+    public DateTime getTryAfter() { return tryAfter; }
 
-    public Date getCreatedAt() { return createdAt; }
-    public Date getModifiedAt() { return modifiedAt; }
+    public DateTime getCreatedAt() { return createdAt; }
+    public DateTime getModifiedAt() { return modifiedAt; }
 
-    public void updateForSendingFailure() {
+    public void updateForSendingFailure(DateTime retryAfter) {
         checkFrozen();
         this.numTried += 1;
-        this.lastTriedAt = new Date();
+        this.lastTriedAt = TimeUtil.getCurrentDateTime();
+        this.tryAfter = retryAfter;
     }
-
 }

@@ -68,7 +68,7 @@ class GetMessagesTransaction extends DBAccess<Void> {
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         this.imageIds = MessageDAOFacade.findUserMessageExByReceiverId(con, daos, user.getId(), offset, limit);
-        this.count = daos.getUserMessageAccess().countByReceiverId(con, user.getId());
+        this.count = daos.getUserReceivedMessageAccess().countByReceiverId(con, user.getId());
         return null;
     }
 

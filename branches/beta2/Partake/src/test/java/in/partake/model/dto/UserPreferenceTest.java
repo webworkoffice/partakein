@@ -2,11 +2,24 @@ package in.partake.model.dto;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import in.partake.app.PartakeApp;
+import in.partake.model.fixture.TestDataProvider;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class UserPreferenceTest extends AbstractPartakeModelTest<UserPreference> {
+    @Override
+    protected UserPreference copy(UserPreference t) {
+        return new UserPreference(t);
+    }
+
+    @Override
+    protected TestDataProvider<UserPreference> getTestDataProvider() {
+        return PartakeApp.getTestService().getTestDataProviderSet().getUserPreferenceProvider();
+    }
+
     private UserPreference[] samples;
 
     @Before
@@ -49,9 +62,11 @@ public class UserPreferenceTest extends AbstractPartakeModelTest<UserPreference>
         }
     }
 
-    @Override
-    protected UserPreference createModel() {
-        return new UserPreference();
-    }
+    @Test
+    public void testSetUserId() {
+        UserPreference pref = samples[0];
+        pref.setUserId("modified");
 
+        assertThat(pref.getUserId(), is("modified"));
+    }
 }

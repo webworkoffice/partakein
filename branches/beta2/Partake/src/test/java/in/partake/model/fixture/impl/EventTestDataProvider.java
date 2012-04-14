@@ -6,9 +6,12 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,11 +24,6 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
     public static final String JAPANESE_IDENTIFIER = "音無小鳥";
 
     @Override
-    public Event create() {
-        return create(0, "", 0);
-    }
-
-    @Override
     public Event create(long pkNumber, String pkSalt, int objNumber) {
         Date now = new Date(1L);
         Date beginDate = now;
@@ -33,11 +31,43 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
         String place = "";
         String address = "";
         String description = "";
-        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT" + objNumber, "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, now, now);
+        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT" + objNumber, "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, new ArrayList<EventRelation>(), now, now);
 
         UUID uuid = new UUID(pkNumber, ("event" + pkSalt).hashCode());
         event.setId(uuid.toString());
         return event;
+    }
+
+    @Override
+    public List<Event> createGetterSetterSamples() {
+        List<Event> array = new ArrayList<Event>();
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id1", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId1", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "titl1e", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summ1ary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "ca1tegory", new Date(1), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(1), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(1), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 1, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "ur1l", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "pl1ace", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "addre1ss", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "descr1iption", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "ha1shTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "own1erId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "manager1ScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "fo1reImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "bac1kImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", false, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode1", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", true, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, true, new ArrayList<EventRelation>(), new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, null, new Date(0), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(1), new Date(0), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(1), 0));
+        array.add(new Event("id", "shortId", "title", "summary", "category", new Date(0), new Date(0), new Date(0), 0, "url", "place", "address", "description", "hashTag", "ownerId", "managerScreenNames", "foreImageId", "backImageId", true, "passcode", false, false, new ArrayList<EventRelation>(), new Date(0), new Date(0), 1));
+        return array;
     }
 
     /**
@@ -62,30 +92,35 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
                 late, late, late, 0, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, null, false, false,
+                new ArrayList<EventRelation>(),
                 now, now, -1));
 
         dao.put(con, new Event(PRIVATE_EVENT_ID, "short-id", "title", "summary", category,
                 late, late, late, 0, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, true, "passcode", false, false,
+                new ArrayList<EventRelation>(),
                 now, now, -1));
 
         dao.put(con, new Event(JAPANESE_EVENT_ID, "short-id", "title", "summary", category,
                 late, late, late, 0, "http://www.example.com/", "place",
                 "address", "unique identifier -- " + JAPANESE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,
+                new ArrayList<EventRelation>(),
                 now, now, -1));
 
         dao.put(con, new Event(UNIQUEIDENTIFIER_EVENT_ID, "short-id", "title", "summary", category,
                 late, late, late, 0, "http://www.example.com/", "place",
                 "address", "unique identifier -- " + UNIQUE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, "passcode", false, false,
+                new ArrayList<EventRelation>(),
                 now, now, -1));
 
         dao.put(con, new Event(UNPUBLISHED_EVENT_ID, "short-id", "title", "summary", category,
                 late, late, late, 0, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, null, true, false,
+                new ArrayList<EventRelation>(),
                 now, now, -1));
     }
 }

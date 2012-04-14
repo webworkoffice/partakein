@@ -1,5 +1,8 @@
 package in.partake.model.dto;
 
+import in.partake.app.PartakeApp;
+import in.partake.model.fixture.TestDataProvider;
+
 import java.util.Date;
 
 import junit.framework.Assert;
@@ -9,8 +12,13 @@ import org.junit.Test;
 public class EventActivityTest extends AbstractPartakeModelTest<EventActivity> {
 
     @Override
-    protected EventActivity createModel() {
-        return new EventActivity();
+    protected TestDataProvider<EventActivity> getTestDataProvider() {
+        return PartakeApp.getTestService().getTestDataProviderSet().getEventActivityProvider();
+    }
+
+    @Override
+    protected EventActivity copy(EventActivity t) {
+        return new EventActivity(t);
     }
 
     @Test

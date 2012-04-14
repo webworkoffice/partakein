@@ -2,7 +2,7 @@
 <%@page import="in.partake.base.Util"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.auxiliary.AttendanceStatus"%>
-<%@page import="in.partake.model.dto.EventRelation"%>
+<%@page import="in.partake.model.dto.auxiliary.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="java.util.List"%>

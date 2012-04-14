@@ -7,17 +7,28 @@ import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TwitterLinkageTestDataProvider extends TestDataProvider<TwitterLinkage> {
-
-    @Override
-    public TwitterLinkage create() {
-        return create(0, "", 0);
-    }
-
     @Override
     public TwitterLinkage create(long pkNumber, String pkSalt, int objNumber) {
         return new TwitterLinkage("twitterId" + pkNumber + pkSalt, "screenName", "name", "accessToken",
                 "accessTokenSecret", "profileImageURL", "userId" + objNumber);
+    }
+
+    @Override
+    public List<TwitterLinkage> createGetterSetterSamples() {
+        List<TwitterLinkage> array = new ArrayList<TwitterLinkage>();
+        array.add(new TwitterLinkage("twitterId", "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId"));
+        array.add(new TwitterLinkage("twitterId1", "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId"));
+        array.add(new TwitterLinkage("twitterId", "screenName1", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId"));
+        array.add(new TwitterLinkage("twitterId", "screenName", "name1", "accessToken", "accessTokenSecret", "profileImageURL", "userId"));
+        array.add(new TwitterLinkage("twitterId", "screenName", "name", "accessToken1", "accessTokenSecret", "profileImageURL", "userId"));
+        array.add(new TwitterLinkage("twitterId", "screenName", "name", "accessToken", "accessTokenSecret1", "profileImageURL", "userId"));
+        array.add(new TwitterLinkage("twitterId", "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL1", "userId"));
+        array.add(new TwitterLinkage("twitterId", "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId1"));
+        return array;
     }
 
     public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {

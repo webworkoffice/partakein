@@ -1,14 +1,20 @@
 package in.partake.model.dto;
 
 import in.partake.base.TimeUtil;
+import in.partake.model.EnrollmentEx;
+import in.partake.model.ParticipationList;
 import in.partake.model.dto.auxiliary.EventCategory;
+import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.Column;
@@ -17,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -77,6 +84,8 @@ public class Event extends PartakeModel<Event> {
     @Column
     private boolean isRemoved;
 
+    private List<EventRelation> eventRelations;
+
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;     //
     @Column @Temporal(TemporalType.TIMESTAMP)
@@ -129,6 +138,7 @@ public class Event extends PartakeModel<Event> {
         this.passcode = null;
         this.isPreview = true;
         this.isRemoved = false;
+        this.eventRelations = Collections.emptyList();
         this.createdAt = TimeUtil.getCurrentDate();
         this.modifiedAt = null;
         this.revision = 1;
@@ -157,6 +167,7 @@ public class Event extends PartakeModel<Event> {
         this.passcode = event.passcode;
         this.isPreview = event.isPreview;
         this.isRemoved = event.isRemoved;
+        this.eventRelations = new ArrayList<EventRelation>(event.eventRelations);
         this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
         this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
         this.revision = event.revision;
@@ -188,6 +199,13 @@ public class Event extends PartakeModel<Event> {
         this.passcode = json.optString("passcode", null);
         this.isPreview = json.optBoolean("draft", false);
         this.isRemoved = json.optBoolean("removed", false);
+        this.eventRelations = new ArrayList<EventRelation>();
+        JSONArray ar = json.optJSONArray("eventRelations");
+        if (ar != null) {
+            for (int i = 0; i < ar.size(); ++i)
+                eventRelations.add(new EventRelation(ar.getJSONObject(i)));
+        }
+
         if (json.containsKey("createdAt"))
             this.createdAt = new Date(json.getLong("createdAt"));
         if (json.containsKey("modifiedAt"))
@@ -197,7 +215,7 @@ public class Event extends PartakeModel<Event> {
 
     public Event(String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
-            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, Date createdAt, Date modifiedAt) {
+            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, List<EventRelation> relations, Date createdAt, Date modifiedAt) {
         this.id = null;
         this.shortId = shortId;
         this.title = title;
@@ -223,6 +241,7 @@ public class Event extends PartakeModel<Event> {
 
         this.isPreview = isPreview;
         this.isRemoved = isRemoved;
+        this.eventRelations = new ArrayList<EventRelation>(relations);
 
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -232,7 +251,7 @@ public class Event extends PartakeModel<Event> {
     public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             String foreImageId, String backImageId,
-            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, Date createdAt, Date modifiedAt, int revision) {
+            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, List<EventRelation> relations, Date createdAt, Date modifiedAt, int revision) {
         this.id = id;
         this.shortId = shortId;
         this.title = title;
@@ -257,6 +276,8 @@ public class Event extends PartakeModel<Event> {
         this.passcode = passcode;
         this.isPreview = isPreview;
         this.isRemoved = isRemoved;
+        if (relations != null)
+            this.eventRelations = new ArrayList<EventRelation>(relations);
 
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -312,6 +333,12 @@ public class Event extends PartakeModel<Event> {
         obj.put("passcode", passcode);
         obj.put("draft", isPreview);
         // obj.put("removed", isRemoved);
+
+        JSONArray array = new JSONArray();
+        for (EventRelation relation : eventRelations)
+            array.add(relation.toJSON());
+        obj.put("relations", array);
+
         if (createdAt != null) {
             obj.put("createdAt", format.format(createdAt));
         }
@@ -351,6 +378,12 @@ public class Event extends PartakeModel<Event> {
         obj.put("passcode", passcode);
         obj.put("draft", isPreview);
         obj.put("removed", isRemoved);
+
+        JSONArray array = new JSONArray();
+        for (EventRelation relation : eventRelations)
+            array.add(relation.toJSON());
+        obj.put("relations", array);
+
         if (createdAt != null)
             obj.put("createdAt", createdAt.getTime());
         if (modifiedAt != null)
@@ -392,6 +425,7 @@ public class Event extends PartakeModel<Event> {
         if (!ObjectUtils.equals(lhs.passcode, rhs.passcode)) { return false; }
         if (!ObjectUtils.equals(lhs.isPreview, rhs.isPreview)) { return false; }
         if (!ObjectUtils.equals(lhs.isRemoved, rhs.isRemoved)) { return false; }
+        if (!ObjectUtils.equals(lhs.eventRelations, rhs.eventRelations)) { return false; }
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
         if (!ObjectUtils.equals(lhs.revision, rhs.revision)) { return false; }
@@ -425,6 +459,7 @@ public class Event extends PartakeModel<Event> {
         code = code * 37 + ObjectUtils.hashCode(passcode);
         code = code * 37 + ObjectUtils.hashCode(isPreview);
         code = code * 37 + ObjectUtils.hashCode(isRemoved);
+        code = code * 37 + ObjectUtils.hashCode(eventRelations);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
         code = code * 37 + ObjectUtils.hashCode(revision);
@@ -531,6 +566,10 @@ public class Event extends PartakeModel<Event> {
 
     public boolean isRemoved() {
         return isRemoved;
+    }
+
+    public List<EventRelation> getRelations() {
+        return eventRelations;
     }
 
     public Date getCreatedAt() {
@@ -647,6 +686,11 @@ public class Event extends PartakeModel<Event> {
         this.isRemoved = isRemoved;
     }
 
+    public void setRelations(List<EventRelation> relations) {
+        checkToUpdateStatus();
+        this.eventRelations = relations;
+    }
+
     public void setCreatedAt(Date createdAt) {
         checkToUpdateStatus();
         this.createdAt = createdAt;
@@ -667,7 +711,6 @@ public class Event extends PartakeModel<Event> {
     public String getEventURL() {
         String topPath = PartakeProperties.get().getTopPath();
         String thispageURL = topPath + "/events/" + getId();
-
         return thispageURL;
     }
 
@@ -725,6 +768,56 @@ public class Event extends PartakeModel<Event> {
         }
 
         return false;
+    }
+
+    /**
+     * From participations, distribute participation to enrolled, spare, or cancelled.
+     * @param participations
+     * @return
+     */
+    public ParticipationList calculateParticipationList(List<EnrollmentEx> participations) {
+        List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>();
+        List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>();
+        List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>();
+        boolean timeover = isReservationTimeOver();
+
+        int reservedEnrolled = 0;
+        int reservedSpare = 0;
+
+        for (EnrollmentEx participation : participations) {
+            switch (participation.getStatus()) {
+            case CANCELLED:
+                cancelledParticipations.add(participation);
+                break;
+            case ENROLLED:
+                if (getCapacity() == 0 || enrolledParticipations.size() < getCapacity()) {
+                    enrolledParticipations.add(participation);
+                } else {
+                    spareParticipations.add(participation);
+                }
+                break;
+            case RESERVED:
+                if (timeover) {
+                    cancelledParticipations.add(participation);
+                } else if (getCapacity() == 0 || enrolledParticipations.size() < getCapacity()) {
+                    enrolledParticipations.add(participation);
+                    ++reservedEnrolled;
+                } else {
+                    spareParticipations.add(participation);
+                    ++reservedSpare;
+                }
+                break;
+            case NOT_ENROLLED: // TODO: shouldn't happen.
+                cancelledParticipations.add(participation);
+                break;
+            }
+        }
+
+        return new ParticipationList(enrolledParticipations, spareParticipations, cancelledParticipations, reservedEnrolled, reservedSpare);
+    }
+
+    public boolean hasEndDate() {
+        return getEndDate() != null;
     }
 }
 

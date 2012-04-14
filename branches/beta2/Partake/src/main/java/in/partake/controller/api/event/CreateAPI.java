@@ -11,7 +11,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.ImageDAOFacade;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventRelation;
+import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.IEventSearchService;
 
@@ -78,8 +78,9 @@ class CreateTransaction extends Transaction<String> {
                 throw new PartakeException(UserErrorCode.INVALID_IMAGE_OWNER);
         }
 
+        // TODO: relations はここに渡って来る前に set されているべきでは？
+        embryo.setRelations(relations);
         String eventId = EventDAOFacade.create(con, daos, embryo);
-        EventDAOFacade.setEventRelations(con, daos, eventId, relations);
 
         return eventId;
     }

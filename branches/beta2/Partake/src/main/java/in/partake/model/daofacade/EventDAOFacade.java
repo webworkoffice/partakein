@@ -1,8 +1,8 @@
 package in.partake.model.daofacade;
 
+import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.model.CommentEx;
-import in.partake.model.DirectMessageEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.IPartakeDAOs;
@@ -11,25 +11,23 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventActivityAccess;
-import in.partake.model.dao.access.IEventRelationAccess;
 import in.partake.model.dto.Comment;
 import in.partake.model.dto.Enrollment;
-import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
-import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.DirectMessage;
+import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.TwitterLinkage;
-import in.partake.model.dto.auxiliary.DirectMessagePostingType;
+import in.partake.model.dto.TwitterMessage;
+import in.partake.model.dto.auxiliary.EventRelation;
+import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventSearchServiceException;
 import in.partake.service.IEventSearchService;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -46,7 +44,7 @@ public class EventDAOFacade {
         String feedId = daos.getEventFeedAccess().findByEventId(con, eventId);
         String shortenedURL = getShortenedURL(con, daos, event);
 
-        List<EventRelation> relations = daos.getEventRelationAccess().findByEventId(con, eventId);
+        List<EventRelation> relations = event.getRelations();
         List<EventRelationEx> relationExs = new ArrayList<EventRelationEx>();
         if (relations != null) {
             for (EventRelation relation : relations) {
@@ -60,7 +58,7 @@ public class EventDAOFacade {
     }
 
     public static EventRelationEx getEventRelationEx(PartakeConnection con, IPartakeDAOs daos, EventRelation relation) throws DAOException {
-        Event event = daos.getEventAccess().find(con, relation.getDstEventId());
+        Event event = daos.getEventAccess().find(con, relation.getEventId());
         if (event == null) { return null; }
         return new EventRelationEx(relation, event);
     }
@@ -147,58 +145,16 @@ public class EventDAOFacade {
 
     public static List<EventRelationEx> getEventRelationsEx(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
         List<EventRelationEx> relations = new ArrayList<EventRelationEx>();
-        for (EventRelation relation : daos.getEventRelationAccess().findByEventId(con, event.getId())) {
+        for (EventRelation relation : event.getRelations()) {
             if (relation == null)
                 continue;
 
             EventRelationEx relex = new EventRelationEx(relation, event);
-            relex.freeze();
             relations.add(relex);
         }
 
         return relations;
-
     }
-
-    public static void setEventRelations(PartakeConnection con, IPartakeDAOs daos, String eventId, List<EventRelation> relations) throws DAOException {
-        IEventRelationAccess dao = daos.getEventRelationAccess();
-
-        // NOTE: こういうふうにやると、Cassandra の場合 remove が優先されてしまう。
-        //            con.beginTransaction();
-        //            factory.getEventRelationAccess().removeByEventId(con, eventId);
-        //            for (EventRelation er : relations) {
-        //                assert (eventId.equals(er.getSrcEventId()));
-        //                factory.getEventRelationAccess().put(con, er);
-        //            }
-        //          con.commit();
-
-        // 古いものを update/remove
-        List<EventRelation> oldRelations = dao.findByEventId(con, eventId);
-        for (EventRelation er : oldRelations) {
-            boolean found = false;
-            for (int i = 0; i < relations.size(); ++i) {
-                if (relations.get(i) == null)
-                    continue;
-                if (relations.get(i).getPrimaryKey().equals(er.getPrimaryKey())) {
-                    found = true;
-                    dao.put(con, relations.get(i));
-                    relations.set(i, null);
-                    break;
-                }
-            }
-
-            if (!found)
-                dao.remove(con, er.getPrimaryKey());
-        }
-
-        // 新しいものを insert
-        for (int i = 0; i < relations.size(); ++i) {
-            EventRelation er = relations.get(i);
-            if (er == null) { continue; }
-            dao.put(con, er);
-        }
-    }
-
 
     public static void recreateEventIndex(PartakeConnection con, IPartakeDAOs daos, IEventSearchService searchService) throws DAOException, EventSearchServiceException {
         searchService.truncate();
@@ -282,27 +238,6 @@ public class EventDAOFacade {
         return result;
     }
 
-    /**
-     * ある event で管理者がユーザーに送ったメッセージを送った順に取得する。
-     * @param eventId
-     * @return
-     * @throws DAOException
-     */
-    public static List<DirectMessageEx> getDirectMessagesByEventId(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
-        List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
-        DataIterator<DirectMessage> it = daos.getDirectMessageAccess().findByEventId(con, eventId);
-        try {
-            while (it.hasNext()) {
-                DirectMessage message = it.next();
-                messages.add(new DirectMessageEx(message, UserDAOFacade.getUserEx(con, daos, message.getUserId())));
-            }
-        } finally {
-            it.close();
-        }
-
-        return messages;
-    }
-
     private static void tweetNewEventArrival(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
         String shortenedURL = null;
         ShortenedURLData shortenedURLData = daos.getURLShortenerAccess().findByURL(con, event.getEventURL());
@@ -333,12 +268,13 @@ public class EventDAOFacade {
             return;
         }
 
-        String messageId = daos.getDirectMessageAccess().getFreshId(con);
-        DirectMessage embryo = new DirectMessage(messageId, userId, message, null, new Date());
-        daos.getDirectMessageAccess().put(con, embryo);
-        String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
-        Envelope envelope = new Envelope(envelopeId, userId, null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
-        daos.getEnvelopeAccess().put(con, envelope);
+        String twitterMessageId = daos.getTwitterMessageAccess().getFreshId(con);
+        TwitterMessage twitterMessage = new TwitterMessage(twitterMessageId, userId, twitterMessageId, MessageDelivery.INQUEUE, TimeUtil.getCurrentDateTime(), null);
+        daos.getTwitterMessageAccess().put(con, twitterMessage);
+
+        String envelopeId = daos.getMessageEnvelopeAccess().getFreshId(con);
+        MessageEnvelope envelope = MessageEnvelope.createForTwitterMessage(envelopeId, twitterMessageId, null);
+        daos.getMessageEnvelopeAccess().put(con, envelope);
 
         logger.info("bot will tweet: " + message);
     }

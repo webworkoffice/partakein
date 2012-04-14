@@ -12,6 +12,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.resource.UserErrorCode;
 
@@ -58,7 +59,7 @@ public class GetEventsAPITest extends APIControllerTest {
                     dao.put(con, new Event(ids.get(i), "short-id", "title", "summary", "category",
                             null, new Date(i), null, 0, "url", "place",
                             "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID, TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME,
-                            null, null, isPrivate, null, draft, false,
+                            null, null, isPrivate, null, draft, false, new ArrayList<EventRelation>(),
                             new Date(i), new Date(i), -1));
                 }
 
