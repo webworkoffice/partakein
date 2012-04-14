@@ -7,8 +7,7 @@ import in.partake.model.dto.pk.ShortenedURLDataPK;
 
 import org.junit.Before;
 
-
-public class URLShortenerAccessTest extends AbstractDaoTestCaseBase<IURLShortenerAccess, ShortenedURLData, ShortenedURLDataPK> {
+public class ShortenedURLAccessTest extends AbstractDaoTestCaseBase<IURLShortenerAccess, ShortenedURLData, ShortenedURLDataPK> {
     @Before
     public void setup() throws Exception {
         super.setup(PartakeApp.getDBService().getDAOs().getURLShortenerAccess());

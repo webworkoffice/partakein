@@ -75,7 +75,7 @@ public class Postgres9UserReceivedMessageDao extends Postgres9Dao implements IUs
             entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
-        indexDao.put(pcon, new String[] { "id", "senderId", "receiverId", "createdAt" }, new Object[] { t.getId(), t.getSenderId(), t.getReceiverId(), t.getCreatedAt() } );
+        indexDao.put(pcon, new String[] { "id", "senderId", "receiverId", "opened", "createdAt" }, new Object[] { t.getId().toString(), t.getSenderId(), t.getReceiverId(), t.isOpened(), t.getCreatedAt() } );
     }
 
     @Override

@@ -15,5 +15,4 @@ public class TwitterLinkageAccessTest extends AbstractDaoTestCaseBase<ITwitterLi
     protected TwitterLinkage create(long pkNumber, String pkSalt, int objNumber) {
         return new TwitterLinkage(pkSalt + pkNumber, "screenName", "name", "accessToken", "accessTokenSecret", "profileImageURL", "userId" + objNumber);
     }
-
 }

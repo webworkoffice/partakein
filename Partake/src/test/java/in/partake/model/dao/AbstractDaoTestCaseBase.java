@@ -26,7 +26,10 @@ import org.junit.Test;
 public abstract class AbstractDaoTestCaseBase<DAO extends IAccess<T, PK>, T extends PartakeModel<T>, PK> extends AbstractConnectionTestCaseBase {
     protected DAO dao;
 
+    // TODO: setUp should take DAO and TestDataProvider.
+
     // setup() should be implemented in each test case.
+    //
     @Before
     protected abstract void setup() throws Exception;
 

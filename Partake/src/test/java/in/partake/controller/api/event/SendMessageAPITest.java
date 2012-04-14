@@ -3,6 +3,7 @@ package in.partake.controller.api.event;
 import in.partake.base.Util;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.resource.UserErrorCode;
 
 import org.junit.Test;
 
@@ -15,7 +16,8 @@ public class SendMessageAPITest extends APIControllerTest {
 
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
-        addParameter(proxy, "message", "hogehogehoge");
+        addParameter(proxy, "subject", "subject");
+        addParameter(proxy, "body", "message");
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
@@ -32,11 +34,14 @@ public class SendMessageAPITest extends APIControllerTest {
 
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
-        addParameter(proxy, "message", longMessage);
+        addParameter(proxy, "subject", "subject");
+        addParameter(proxy, "body", longMessage);
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultOK(proxy);
+
+        // TODO: Check DB.
     }
 
     @Test
@@ -45,7 +50,8 @@ public class SendMessageAPITest extends APIControllerTest {
 
         loginAs(proxy, TestDataProvider.EVENT_EDITOR_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
-        addParameter(proxy, "message", "hogehogehoge");
+        addParameter(proxy, "subject", "subject");
+        addParameter(proxy, "body", "hogehogehoge");
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
@@ -58,7 +64,8 @@ public class SendMessageAPITest extends APIControllerTest {
 
         loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
-        addParameter(proxy, "message", "hogehogehoge");
+        addParameter(proxy, "subject", "subject");
+        addParameter(proxy, "body", "hogehogehoge");
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
@@ -70,9 +77,24 @@ public class SendMessageAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/event/sendMessage");
 
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
-        addParameter(proxy, "message", "hogehogehoge");
+        addParameter(proxy, "subject", "subject");
+        addParameter(proxy, "body", "hogehogehoge");
+        addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
         assertResultLoginRequired(proxy);
+    }
+
+    @Test
+    public void testToSendMessageWithoutTitle() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/sendMessage");
+        loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
+
+        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "body", "hogehogehoge");
+        addValidSessionTokenToParameter(proxy);
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.MISSING_MESSAGE_SUBJECT);
     }
 }
