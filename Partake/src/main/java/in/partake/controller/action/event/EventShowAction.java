@@ -71,7 +71,7 @@ public class EventShowAction extends AbstractPartakeAction {
         this.restCodePoints = transaction.getRestCodePoints();
         this.deadlineOver = transaction.isDeadlineOver();
         this.comments = transaction.getComments();
-        this.messages = transaction.getMessages();
+        this.messages = transaction.getDirectMessages();
         this.eventReminder = transaction.getEventReminder();
         this.relations = transaction.getRelations();
 
@@ -110,7 +110,7 @@ public class EventShowAction extends AbstractPartakeAction {
         return comments;
     }
 
-    public List<DirectMessageEx> getMessages() {
+    public List<DirectMessageEx> getDirectMessages() {
         return messages;
     }
 
@@ -243,7 +243,7 @@ class EventShowTransaction extends DBAccess<Void> {
         return comments;
     }
 
-    public List<DirectMessageEx> getMessages() {
+    public List<DirectMessageEx> getDirectMessages() {
         return messages;
     }
 

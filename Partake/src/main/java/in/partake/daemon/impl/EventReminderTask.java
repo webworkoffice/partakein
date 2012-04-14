@@ -18,7 +18,7 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventReminder;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
@@ -89,7 +89,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
      */
     private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, IPartakeDAOs daos, Event event, String message) throws DAOException {
         String messageId = daos.getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
+        DirectMessage embryo = new DirectMessage(messageId, event.getOwnerId(), message, null, new Date());
         daos.getDirectMessageAccess().put(con, embryo);
 
         List<Enrollment> participations = daos.getEnrollmentAccess().findByEventId(con, event.getId());
@@ -160,7 +160,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
      */
     private void sendNotificationOnlyForParticipants(PartakeConnection con, IPartakeDAOs daos, EventEx event, String message) throws DAOException {
         String messageId = daos.getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
+        DirectMessage embryo = new DirectMessage(messageId, event.getOwnerId(), message, null, new Date());
         daos.getDirectMessageAccess().put(con, embryo);
 
         Date deadline = event.getCalculatedDeadline();

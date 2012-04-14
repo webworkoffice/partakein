@@ -4,7 +4,7 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Envelope;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 
@@ -14,7 +14,7 @@ public class MessageDAOFacade {
 
     public static void tweetMessageImpl(PartakeConnection con, IPartakeDAOs daos, User user, String messageStr) throws DAOException {
         String messageId = daos.getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(messageId, user.getId(), messageStr, null, new Date());
+        DirectMessage embryo = new DirectMessage(messageId, user.getId(), messageStr, null, new Date());
 
         daos.getDirectMessageAccess().put(con, embryo);
 

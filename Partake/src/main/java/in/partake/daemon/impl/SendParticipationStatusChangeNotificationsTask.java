@@ -16,7 +16,7 @@ import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 
@@ -80,7 +80,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
                         case NOT_ENROLLED: {
                             if (okMessageId == null) {
                                 okMessageId = daos.getDirectMessageAccess().getFreshId(con);
-                                Message okEmbryo = new Message(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date());
+                                DirectMessage okEmbryo = new DirectMessage(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date());
                                 daos.getDirectMessageAccess().put(con, okEmbryo);
                             }
 
@@ -110,7 +110,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
                         case ENROLLED:
                             if (ngMessageId == null) {
                                 ngMessageId = daos.getDirectMessageAccess().getFreshId(con);
-                                Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
+                                DirectMessage ngEmbryo = new DirectMessage(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
                                 daos.getDirectMessageAccess().put(con, ngEmbryo);
                             }
 
@@ -137,7 +137,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
                         case ENROLLED:
                             if (ngMessageId == null) {
                                 ngMessageId = daos.getDirectMessageAccess().getFreshId(con);
-                                Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
+                                DirectMessage ngEmbryo = new DirectMessage(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
                                 daos.getDirectMessageAccess().put(con, ngEmbryo);
                             }
 

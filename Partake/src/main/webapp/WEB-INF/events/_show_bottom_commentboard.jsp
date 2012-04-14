@@ -21,7 +21,7 @@
 
     EventEx event = action.getEvent();
     List<CommentEx> comments = action.getComments();
-    List<DirectMessageEx> messages = action.getMessages();
+    List<DirectMessageEx> messages = action.getDirectMessages();
 %>
 
 
