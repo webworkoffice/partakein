@@ -27,7 +27,7 @@
 
     EventEx event = action.getEvent();
     List<CommentEx> comments = action.getComments();
-    List<DirectMessageEx> messages = action.getMessages();
+    List<DirectMessageEx> messages = action.getDirectMessages();
     boolean deadlineOver = action.isDeadlineOver();
     String redirectURL = action.getRedirectURL();
     if (redirectURL == null)

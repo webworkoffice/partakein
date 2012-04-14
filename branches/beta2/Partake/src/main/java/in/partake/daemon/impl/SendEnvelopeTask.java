@@ -12,7 +12,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.Envelope;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.UserPreference;
 
@@ -98,7 +98,7 @@ class SendEnvelopeTask extends Transaction<Void> implements IPartakeDaemonTask {
         }
 
         try {
-            Message message = daos.getDirectMessageAccess().find(con, envelope.getMessageId());
+            DirectMessage message = daos.getDirectMessageAccess().find(con, envelope.getMessageId());
             long twitterId = Long.parseLong(twitterLinkage.getTwitterId());
             PartakeApp.getTwitterService().sendDirectMesage(
                     twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret(), twitterId, message.getMessage());
@@ -153,7 +153,7 @@ class SendEnvelopeTask extends Transaction<Void> implements IPartakeDaemonTask {
         }
 
         try {
-            Message message = daos.getDirectMessageAccess().find(con, envelope.getMessageId());
+            DirectMessage message = daos.getDirectMessageAccess().find(con, envelope.getMessageId());
             PartakeApp.getTwitterService().updateStatus(twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret(), message.getMessage());
             return true;
         } catch (TwitterException e) {

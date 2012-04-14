@@ -16,7 +16,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Envelope;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.resource.UserErrorCode;
 
@@ -78,12 +78,12 @@ class SendMessageTransaction extends Transaction<Void> {
             throw new PartakeException(UserErrorCode.INVALID_PROHIBITED);
 
         // ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。
-        List<Message> messages = getRecentUserMessage(con, daos, eventId, 5);
+        List<DirectMessage> messages = getRecentUserMessage(con, daos, eventId, 5);
 
         Date currentTime = new Date();
 
         if (messages.size() >= 3) {
-            Message msg = messages.get(2);
+            DirectMessage msg = messages.get(2);
             Date msgDate = msg.getCreatedAt();
             Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60); // one hour later after the message was sent.
             if (currentTime.before(thresholdDate)) // NG
@@ -91,7 +91,7 @@ class SendMessageTransaction extends Transaction<Void> {
         }
 
         if (messages.size() >= 5) {
-            Message msg = messages.get(4);
+            DirectMessage msg = messages.get(4);
             Date msgDate = msg.getCreatedAt();
             Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60 * 24); // one day later after the message was sent.
 
@@ -137,15 +137,15 @@ class SendMessageTransaction extends Transaction<Void> {
 
     private String addMessage(PartakeConnection con, IPartakeDAOs daos, String userId, String message, String eventId, boolean isUserMessage) throws DAOException {
         String id = daos.getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(id, userId, message, isUserMessage ? eventId : null, new Date());
+        DirectMessage embryo = new DirectMessage(id, userId, message, isUserMessage ? eventId : null, new Date());
         daos.getDirectMessageAccess().put(con, embryo);
 
         return id;
     }
 
-    private List<Message> getRecentUserMessage(PartakeConnection con, IPartakeDAOs daos, String eventId, int maxMessage) throws DAOException {
-        List<Message> messages = new ArrayList<Message>();
-        DataIterator<Message> it = daos.getDirectMessageAccess().findByEventId(con, eventId);
+    private List<DirectMessage> getRecentUserMessage(PartakeConnection con, IPartakeDAOs daos, String eventId, int maxMessage) throws DAOException {
+        List<DirectMessage> messages = new ArrayList<DirectMessage>();
+        DataIterator<DirectMessage> it = daos.getDirectMessageAccess().findByEventId(con, eventId);
         try {
             for (int i = 0; i < maxMessage; ++i) {
                 if (!it.hasNext()) { break; }

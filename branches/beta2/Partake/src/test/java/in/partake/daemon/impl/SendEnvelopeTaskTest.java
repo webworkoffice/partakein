@@ -17,7 +17,7 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Envelope;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.service.ITwitterService;
@@ -56,7 +56,7 @@ public class SendEnvelopeTaskTest implements TestDataProviderConstants {
     @Test
     public void sendDirectMessage() throws Exception {
         String messageId = UUID.randomUUID().toString();
-        Message message = new Message(messageId, DEFAULT_USER_ID, "message", null, new Date(0L));
+        DirectMessage message = new DirectMessage(messageId, DEFAULT_USER_ID, "message", null, new Date(0L));
         Envelope envelope = new Envelope(UUID.randomUUID().toString(),
                 DEFAULT_USER_ID, DEFAULT_USER_ID, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER_DIRECT, new Date(0L));
         addQueue(message, envelope);
@@ -68,7 +68,7 @@ public class SendEnvelopeTaskTest implements TestDataProviderConstants {
         verify(PartakeApp.getTwitterService(), never()).updateStatus(anyString(), anyString(), anyString());
     }
 
-    private void addQueue(final Message message, final Envelope envelope) throws Exception {
+    private void addQueue(final DirectMessage message, final Envelope envelope) throws Exception {
         new Transaction<Void>() {
             @Override
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {

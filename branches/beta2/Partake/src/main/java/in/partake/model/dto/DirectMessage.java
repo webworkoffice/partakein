@@ -14,7 +14,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.ObjectUtils;
 
 @Entity(name = "Messages")
-public class Message extends PartakeModel<Message> {
+public class DirectMessage extends PartakeModel<DirectMessage> {
     @Id
     private String id;
     @Column
@@ -26,18 +26,18 @@ public class Message extends PartakeModel<Message> {
     @Column @Temporal(TemporalType.TIMESTAMP)
     private Date   createdAt;
 
-    public Message() {
+    public DirectMessage() {
         // do nothing
     }
 
-    public Message(Message message) {
+    public DirectMessage(DirectMessage message) {
         this(message.id, message.userId, message.message, message.eventId, message.createdAt);
     }
 
     /** eventId が null -> system からのメッセージ、null でない -> user からのメッセージ。
      * TODO これは直感的でないので後で直すこと。
      */
-    public Message(String id, String userId, String message, String eventId, Date createdAt) {
+    public DirectMessage(String id, String userId, String message, String eventId, Date createdAt) {
         this.id = id;
         this.userId = userId;
         this.message = message;
@@ -45,7 +45,7 @@ public class Message extends PartakeModel<Message> {
         this.createdAt = createdAt == null ? null : new Date(createdAt.getTime());
     }
 
-    public Message(JSONObject obj) {
+    public DirectMessage(JSONObject obj) {
         this.id = obj.getString("id");
         this.userId = obj.optString("senderId", null);
         this.message = obj.getString("message");
@@ -75,10 +75,10 @@ public class Message extends PartakeModel<Message> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Message)) { return false; }
+        if (!(obj instanceof DirectMessage)) { return false; }
 
-        Message lhs = this;
-        Message rhs = (Message) obj;
+        DirectMessage lhs = this;
+        DirectMessage rhs = (DirectMessage) obj;
 
         if (!(ObjectUtils.equals(lhs.id,        rhs.id)))        { return false; }
         if (!(ObjectUtils.equals(lhs.userId,    rhs.userId)))    { return false; }

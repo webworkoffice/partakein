@@ -5,7 +5,7 @@ import in.partake.base.PartakeException;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.access.IMessageAccess;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 
 import java.util.Date;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, Message, String> {
+public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, DirectMessage, String> {
     public TestName name = new TestName();
 
     @Before
@@ -25,9 +25,9 @@ public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, M
     }
 
     @Override
-    protected Message create(long pkNumber, String pkSalt, int objNumber) {
+    protected DirectMessage create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, ("message" + pkSalt).hashCode());
-        return new Message(uuid.toString(), "userId" + objNumber, "some message", "eventId" + objNumber, new Date(1L));
+        return new DirectMessage(uuid.toString(), "userId" + objNumber, "some message", "eventId" + objNumber, new Date(1L));
     }
 
     @Test
@@ -37,18 +37,18 @@ public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, M
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 con.beginTransaction();
                 String eventId = "eventId" + System.currentTimeMillis();
-                dao.put(con, new Message(dao.getFreshId(con), "userId", "message", eventId, new Date(100000L)));
-                dao.put(con, new Message(dao.getFreshId(con), "userId", "message", eventId, new Date(0L)));
-                dao.put(con, new Message(dao.getFreshId(con), "userId", "message", eventId, new Date(200000L)));
+                dao.put(con, new DirectMessage(dao.getFreshId(con), "userId", "message", eventId, new Date(100000L)));
+                dao.put(con, new DirectMessage(dao.getFreshId(con), "userId", "message", eventId, new Date(0L)));
+                dao.put(con, new DirectMessage(dao.getFreshId(con), "userId", "message", eventId, new Date(200000L)));
                 con.commit();
 
                 Date date = null;
                 int count = 0;
                 con.beginTransaction();
-                DataIterator<Message> iter = dao.findByEventId(con, eventId);
+                DataIterator<DirectMessage> iter = dao.findByEventId(con, eventId);
                 try {
                     while (iter.hasNext()) {
-                        Message m = iter.next();
+                        DirectMessage m = iter.next();
                         if (m == null)
                             continue;
                         if (date != null) {

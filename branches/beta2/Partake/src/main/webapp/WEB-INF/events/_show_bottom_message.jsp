@@ -15,7 +15,7 @@
 
 <%
     EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
-    List<DirectMessageEx> messages = action.getMessages();
+    List<DirectMessageEx> messages = action.getDirectMessages();
 %>
 
 <div class="event-comments">

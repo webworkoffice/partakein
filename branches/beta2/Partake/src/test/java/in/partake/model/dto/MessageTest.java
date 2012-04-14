@@ -6,37 +6,37 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class MessageTest extends AbstractPartakeModelTest<Message> {
+public class MessageTest extends AbstractPartakeModelTest<DirectMessage> {
 
     @Override
-    protected Message createModel() {
-        return new Message();
+    protected DirectMessage createModel() {
+        return new DirectMessage();
     }
 
     @Test
     public void testToCopy() {
         Date date = new Date(0L);
-        Message message = new Message("id", "userId", "message", "eventId", date);
-        Message copied = new Message(message);
+        DirectMessage message = new DirectMessage("id", "userId", "message", "eventId", date);
+        DirectMessage copied = new DirectMessage(message);
         Assert.assertEquals(message, copied);
-        Assert.assertEquals(message, new Message("id", "userId", "message", "eventId", date));
+        Assert.assertEquals(message, new DirectMessage("id", "userId", "message", "eventId", date));
         Assert.assertNotSame(message.getCreatedAt(), copied.getCreatedAt());
 
         // Ensures NullPointerException won't happen.
-        new Message(new Message("id", "userId", "message", "eventId", null));
+        new DirectMessage(new DirectMessage("id", "userId", "message", "eventId", null));
     }
 
     @Test
     public void getCreatedAtExecutesDefensiveCopy() {
         Date date = new Date(0L);
-        Message message = new Message("id", "userId", "message", "eventId", date);
+        DirectMessage message = new DirectMessage("id", "userId", "message", "eventId", date);
         Assert.assertNotSame(date, message.getCreatedAt());
         message.getCreatedAt().setTime(1L);
         Assert.assertEquals(date, message.getCreatedAt());
 
         // avoid NullPointerException at defensive copy?
         try {
-            new Message("id", "userId", "message", "eventId", null).getCreatedAt();
+            new DirectMessage("id", "userId", "message", "eventId", null).getCreatedAt();
         } catch (NullPointerException e) {
             Assert.fail("should do null check at defensive copy");
         }
@@ -45,14 +45,14 @@ public class MessageTest extends AbstractPartakeModelTest<Message> {
     @Test
     public void setCreatedAtExecutesDefensiveCopy() {
         Date date = new Date(0L);
-        Message message = new Message("id", "userId", "message", "eventId", date);
+        DirectMessage message = new DirectMessage("id", "userId", "message", "eventId", date);
         message.setCreatedAt(date);
         date.setTime(1L);
         Assert.assertEquals(0L, message.getCreatedAt().getTime());
 
         // avoid NullPointerException at defensive copy?
         try {
-            new Message("id", "userId", "message", "eventId", date).setCreatedAt(null);
+            new DirectMessage("id", "userId", "message", "eventId", date).setCreatedAt(null);
         } catch (NullPointerException e) {
             Assert.fail("should do null check at defensive copy");
         }
@@ -61,13 +61,13 @@ public class MessageTest extends AbstractPartakeModelTest<Message> {
     @Test
     public void constructorExecutesDefensiveCopy() {
         Date date = new Date(0L);
-        Message message = new Message("id", "userId", "message", "eventId", date);
+        DirectMessage message = new DirectMessage("id", "userId", "message", "eventId", date);
         date.setTime(1L);
         Assert.assertEquals(0L, message.getCreatedAt().getTime());
 
         // avoid NullPointerException at defensive copy?
         try {
-            new Message("id", "userId", "message", "eventId", null);
+            new DirectMessage("id", "userId", "message", "eventId", null);
         } catch (NullPointerException e) {
             Assert.fail("should do null check at defensive copy");
         }

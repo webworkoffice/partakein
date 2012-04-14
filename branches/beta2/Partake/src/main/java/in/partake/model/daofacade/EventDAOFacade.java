@@ -19,7 +19,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
 import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
@@ -290,10 +290,10 @@ public class EventDAOFacade {
      */
     public static List<DirectMessageEx> getUserMessagesByEventId(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
         List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
-        DataIterator<Message> it = daos.getDirectMessageAccess().findByEventId(con, eventId);
+        DataIterator<DirectMessage> it = daos.getDirectMessageAccess().findByEventId(con, eventId);
         try {
             while (it.hasNext()) {
-                Message message = it.next();
+                DirectMessage message = it.next();
                 messages.add(new DirectMessageEx(message, UserDAOFacade.getUserEx(con, daos, message.getUserId())));
             }
         } finally {
@@ -334,7 +334,7 @@ public class EventDAOFacade {
         }
 
         String messageId = daos.getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(messageId, userId, message, null, new Date());
+        DirectMessage embryo = new DirectMessage(messageId, userId, message, null, new Date());
         daos.getDirectMessageAccess().put(con, embryo);
         String envelopeId = daos.getEnvelopeAccess().getFreshId(con);
         Envelope envelope = new Envelope(envelopeId, userId, null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());
