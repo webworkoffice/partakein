@@ -27,7 +27,6 @@
 %>
 
 <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
-<p>ハッシュタグ: <a href="http://twitter.com/#search?q=<%= Util.encodeURIComponent(event.getHashTag()) %>"><%= h(event.getHashTag()) %></a></p>
 <div class="event-twitter-hashtag-stream">
 <script>
 new TWTR.Widget({
@@ -38,7 +37,7 @@ new TWTR.Widget({
     title: 'Twitter Hashtag Live Feed',
     subject: '<%= h(event.getHashTag()) %>',
     width: 'auto',
-    height: 600,
+    height: 400,
     theme: {
         shell: {
         background: 'none',

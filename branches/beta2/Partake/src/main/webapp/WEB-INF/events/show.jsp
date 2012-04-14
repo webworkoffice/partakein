@@ -133,7 +133,6 @@ body {
     <ul class="nav nav-tabs">
         <li class="active"><a href="#side-information" data-toggle="tab">イベント情報</a></li>
         <li><a href="#side-participants" data-toggle="tab">参加者情報</a></li>
-        <li><a href="#side-twitter" data-toggle="tab">Twitter</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="side-information">
@@ -141,9 +140,6 @@ body {
         </div>
         <div class="tab-pane" id="side-participants">
             <jsp:include page="/WEB-INF/events/_show_side_participants.jsp" flush="true" />
-        </div>
-        <div class="tab-pane" id="side-twitter">
-            <jsp:include page="/WEB-INF/events/_show_side_twitter.jsp" flush="true" />
         </div>
     </div>
 </div>
