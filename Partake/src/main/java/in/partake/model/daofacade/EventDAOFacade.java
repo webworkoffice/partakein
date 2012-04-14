@@ -17,7 +17,6 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
 import in.partake.model.dto.MessageEnvelope;
-import in.partake.model.dto.ShortenedURLData;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.auxiliary.EventRelation;
@@ -42,7 +41,6 @@ public class EventDAOFacade {
         if (user == null) { return null; }
 
         String feedId = daos.getEventFeedAccess().findByEventId(con, eventId);
-        String shortenedURL = getShortenedURL(con, daos, event);
 
         List<EventRelation> relations = event.getRelations();
         List<EventRelationEx> relationExs = new ArrayList<EventRelationEx>();
@@ -54,7 +52,7 @@ public class EventDAOFacade {
             }
         }
 
-        return new EventEx(event, user, feedId, shortenedURL, relationExs);
+        return new EventEx(event, user, feedId, relationExs);
     }
 
     public static EventRelationEx getEventRelationEx(PartakeConnection con, IPartakeDAOs daos, EventRelation relation) throws DAOException {
@@ -62,38 +60,6 @@ public class EventDAOFacade {
         if (event == null) { return null; }
         return new EventRelationEx(relation, event);
     }
-
-    public static String getShortenedURL(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
-        // TODO: Connection 掴んだまま BitlyService 呼び出すとか狂気の沙汰すぎる。
-        ShortenedURLData shortenedURLData = daos.getURLShortenerAccess().findByURL(con, event.getEventURL());
-//        if (shortenedURLData == null) {
-//            Date now = new Date();
-//            try {
-//                if (bitlyRateLimitExceededTime == null || now.before(new Date(bitlyRateLimitExceededTime.getTime() + 1000 * 1800))) { // rate limit が出ていたら 30 分待つ。
-//                    String bitlyShortenedURL = BitlyService.callBitlyShortenURL(event.getEventURL());
-//                    shortenedURLData = new ShortenedURLData(event.getEventURL(), "bitly", bitlyShortenedURL);
-//                    factory.getURLShortenerAccess().put(con, shortenedURLData);
-//                }
-//            } catch (BitlyException e) {
-//                // TODO: debugging...
-//                logger.info(bitlyRateLimitExceededTime != null ? bitlyRateLimitExceededTime : "bitlyRateLimitExceededTime is NULL now.");
-//                logger.info("now = " + now.toString());
-//
-//                logger.error("failed to shorten URL " + now.toString(), e);
-//
-//                //if (e.getMessage().contains("RATE_LIMIT_EXCEEDED")) {
-//                    bitlyRateLimitExceededTime = now;
-//                //}
-//            }
-//        }
-
-        if (shortenedURLData != null) {
-            return shortenedURLData.getShortenedURL();
-        } else {
-            return null;
-        }
-    }
-
 
     /**
      * event をデータベースに保持します。
@@ -239,19 +205,13 @@ public class EventDAOFacade {
     }
 
     private static void tweetNewEventArrival(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
-        String shortenedURL = null;
-        ShortenedURLData shortenedURLData = daos.getURLShortenerAccess().findByURL(con, event.getEventURL());
-        if (shortenedURLData != null)
-            shortenedURL = shortenedURLData.getServiceType();
-        else
-            shortenedURL = event.getEventURL();
-
         String hashTag = event.getHashTag() != null ? event.getHashTag() : "";
         String messagePrefix = "[PARTAKE] 新しいイベントが追加されました :";
-        int length = (messagePrefix.length() + 1) + (shortenedURL.length() + 1) + (hashTag.length() + 1);
+        String eventURL = event.getUrl(); // always 20
+        int length = (messagePrefix.length() + 1) + (20 + 1) + (hashTag.length() + 1);
         String title = Util.shorten(event.getTitle(), 140 - length);
 
-        String message = messagePrefix + " " + title + " " + shortenedURL + " " + hashTag;
+        String message = messagePrefix + " " + title + " " + eventURL + " " + hashTag;
         int twitterId = PartakeProperties.get().getTwitterBotTwitterId();
         if (twitterId < 0) {
             logger.info("No bot id.");

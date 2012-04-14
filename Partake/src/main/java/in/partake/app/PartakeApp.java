@@ -1,11 +1,10 @@
 package in.partake.app;
 
 import in.partake.resource.PartakeProperties;
-import in.partake.service.IBitlyService;
 import in.partake.service.IDBService;
+import in.partake.service.IDaemonInitializer;
 import in.partake.service.IEventSearchService;
 import in.partake.service.IOpenIDService;
-import in.partake.service.IDaemonInitializer;
 import in.partake.service.ITestService;
 import in.partake.service.ITwitterService;
 import in.partake.service.IViewInitializer;
@@ -16,7 +15,6 @@ public class PartakeApp {
     private static final Logger logger = Logger.getLogger(PartakeApp.class);
 
     protected static IDBService dbService;
-    protected static IBitlyService bitlyService;
     protected static IEventSearchService eventSearchService;
     protected static ITwitterService twitterService;
     protected static ITestService testService;
@@ -67,7 +65,6 @@ public class PartakeApp {
             testService.initialize();
 
         dbService = factory.createDBService();
-        bitlyService = factory.createBitlyService();
         eventSearchService = factory.createEventSearchService();
         twitterService = factory.createTwitterService();
         openIDService = factory.createOpenIDService();
@@ -82,10 +79,6 @@ public class PartakeApp {
 
     public static IDBService getDBService() {
         return dbService;
-    }
-
-    public static IBitlyService getBitlyService() {
-        return bitlyService;
     }
 
     public static IEventSearchService getEventSearchService() {

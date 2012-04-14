@@ -13,14 +13,12 @@ import java.util.List;
 public class EventEx extends Event {
     private UserEx owner;
     private String feedId;
-    private String cachedShortenedURL;
     private List<EventRelationEx> eventRelations;
 
-    public EventEx(Event event, UserEx owner, String feedId, String cachedShortenedURL, List<EventRelationEx> eventRelations) {
+    public EventEx(Event event, UserEx owner, String feedId, List<EventRelationEx> eventRelations) {
         super(event);
         this.owner = owner;
         this.feedId = feedId;
-        this.cachedShortenedURL = cachedShortenedURL;
         this.eventRelations = eventRelations;
     }
 
@@ -32,25 +30,14 @@ public class EventEx extends Event {
         return feedId;
     }
 
-    public String getCachedShortenedURL() {
-        return cachedShortenedURL;
-    }
-
-    public String getShortenedURL() {
-        if (cachedShortenedURL != null) { return cachedShortenedURL; }
-        return getEventURL();
-    }
-
     public List<EventRelationEx> getEventRelations() {
         return Collections.unmodifiableList(eventRelations);
     }
 
     public String getDefaultTwitterPromotionMessage() {
-        String shortenedURL = getShortenedURL();
-
         StringBuilder builder = new StringBuilder();
         builder.append(getTitle());
-        builder.append(" ").append(shortenedURL).append(" ");
+        builder.append(" ").append(getEventURL()).append(" ");
         if (getHashTag() != null && !"".equals(getHashTag())) {
             builder.append(" ").append(getHashTag());
         }

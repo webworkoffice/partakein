@@ -18,7 +18,6 @@ import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.ITwitterMessageAccess;
-import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserNotificationAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
@@ -43,7 +42,6 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
     private final IUserPreferenceAccess userPreferenceAccess;
-    private final IURLShortenerAccess urlShortenerAccess;
 
     private final IEventMessageAccess eventMessageAccess;
     private final IUserReceivedMessageAccess userMessageAccess;
@@ -73,7 +71,6 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         addDao(twitterLinkageAccess  = createTwitterLinkageAccess());
         addDao(userAccess            = creataeUserAccess());
         addDao(userPreferenceAccess  = createUserPreferenceAccess());
-        addDao(urlShortenerAccess    = createUrlShortenerAccess());
         addDao(eventMessageAccess = createEventMessageAccess());
         addDao(userMessageAccess = createUserReceivedMessageAccess());
         addDao(eventNotificationMessageAccess = createEventNotificationAccess());
@@ -158,20 +155,12 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         return userPreferenceAccess;
     }
 
-    public final IURLShortenerAccess getURLShortenerAccess() {
-        return urlShortenerAccess;
-    }
-
     public final IEventMessageAccess getEventMessageAccess() {
         return eventMessageAccess;
     }
 
     public final ICalendarLinkageAccess getCalendarLinkageAccess() {
         return calendarLinkageAccess;
-    }
-
-    public final IURLShortenerAccess getUrlShortenerAccess() {
-        return urlShortenerAccess;
     }
 
     public final IUserReceivedMessageAccess getUserReceivedMessageAccess() {
@@ -219,7 +208,6 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();
     protected abstract IUserAccess creataeUserAccess();
     protected abstract IUserPreferenceAccess createUserPreferenceAccess();
-    protected abstract IURLShortenerAccess createUrlShortenerAccess();
     protected abstract IEventMessageAccess createEventMessageAccess();
     protected abstract IUserReceivedMessageAccess createUserReceivedMessageAccess();
     protected abstract IEventNotificationAccess createEventNotificationAccess();

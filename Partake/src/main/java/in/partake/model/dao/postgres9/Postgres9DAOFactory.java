@@ -19,7 +19,6 @@ import in.partake.model.dao.access.IOpenIDLinkageAccess;
 import in.partake.model.dao.access.IThumbnailAccess;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.dao.access.ITwitterMessageAccess;
-import in.partake.model.dao.access.IURLShortenerAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserNotificationAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
@@ -41,11 +40,10 @@ import in.partake.model.dao.postgres9.impl.Postgres9OpenIDLinkageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9ThumbnailDao;
 import in.partake.model.dao.postgres9.impl.Postgres9TwitterLinkageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9TwitterMessageDao;
-import in.partake.model.dao.postgres9.impl.Postgres9UrlShortenerDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserDao;
-import in.partake.model.dao.postgres9.impl.Postgres9UserReceivedMessageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserNotificationDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserPreferenceDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserReceivedMessageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserSentMessageDao;
 
 public class Postgres9DAOFactory extends PartakeDAOFactory {
@@ -126,11 +124,6 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     @Override
     protected IUserPreferenceAccess createUserPreferenceAccess() {
         return new Postgres9UserPreferenceDao();
-    }
-
-    @Override
-    protected IURLShortenerAccess createUrlShortenerAccess() {
-        return new Postgres9UrlShortenerDao();
     }
 
     @Override

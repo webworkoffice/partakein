@@ -105,13 +105,13 @@ class EnrollTransaction extends Transaction<Void> {
         String right;
         switch (status) {
         case ENROLLED:
-            right = " (" + event.getShortenedURL() + ") へ参加します。";
+            right = " (" + event.getEventURL() + ") へ参加します。";
             break;
         case RESERVED:
-            right = " (" + event.getShortenedURL() + ") へ参加予定です。";
+            right = " (" + event.getEventURL() + ") へ参加予定です。";
             break;
         case CANCELLED:
-            right = " (" + event.getShortenedURL() + ") への参加を取りやめました。";
+            right = " (" + event.getEventURL() + ") への参加を取りやめました。";
             break;
         default:
             right = null;
