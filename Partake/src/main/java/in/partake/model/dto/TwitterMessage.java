@@ -131,7 +131,7 @@ public class TwitterMessage extends PartakeModel<TwitterMessage> {
         this.message = message;
     }
 
-    public void setMessageDelivery(MessageDelivery delivery) {
+    public void setDelivery(MessageDelivery delivery) {
         checkFrozen();
         this.delivery = delivery;
     }
