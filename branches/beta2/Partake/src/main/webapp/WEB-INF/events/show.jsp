@@ -161,7 +161,26 @@ body {
     </div>
 
     <h3>コメント</h3>
-    <jsp:include page="/WEB-INF/events/_show_eventstream.jsp" flush="true" />
+    <div class="tabbable event-nav">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#news1" title="コメントボード" data-toggle="tab">掲示板</a></li>
+            <li><a href="#news2" title="管理者からのメッセージ" data-toggle="tab">管理者から</a></li>
+            <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
+            <li><a href="#side-twitter" data-toggle="tab">Twitter</a></li>
+            <% } %>
+        </ul>
+        <div class="tab-content">
+            <div id="news1" class="tab-pane active">
+                <jsp:include page="/WEB-INF/events/_show_bottom_commentboard.jsp" flush="true" />
+            </div>
+            <div id="news2" class="tab-pane">
+                <jsp:include page="/WEB-INF/events/_show_bottom_message.jsp" flush="true" />
+            </div>
+            <div id="side-twitter" class="tab-pane">
+                <jsp:include page="/WEB-INF/events/_show_side_twitter.jsp" flush="true" />
+            </div>
+        </div>
+    </div>
 </div>
 
 </div><%-- end of .span8 --%>
