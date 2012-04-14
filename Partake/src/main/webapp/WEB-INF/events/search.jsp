@@ -63,6 +63,10 @@
             </div>
         </fieldset>
     </form>
+    <form style="display:none">
+        <%-- This is a hack to enable a browser 'back' button. --%>
+        <textarea id="textareaToSavetemporaryJSON"></textarea>
+    </form>
     <script>
     function formatDate(date) {
         return "YYYY-MM-DD HH:MM";
@@ -95,6 +99,21 @@
         return row;
     }
 
+    function render(json) {
+        var events = json.events;
+        $('#searched-events').empty();
+
+        $('#searched-events').append($('<h2>検索結果</h2>'));
+        if (events.length == 0) {
+            $('#searched-events').append($('<p>ヒットしませんでした。別の単語で試してみてください。</p>'));
+            return;
+        }
+        for (var i = 0; i < events.length; ++i) {
+            var line = createLine(events[i]);
+            $('#searched-events').append(line);
+        }
+    }
+
     function doSearch() {
         var query = $('#search-term').val();
         var category = $('#category option:selected').val();
@@ -102,22 +121,9 @@
         var beforeDeadlineOnly = $('#before-deadline-only').is(':checked');
 
         partake.event.search(query, category, sortOrder, beforeDeadlineOnly, 100)
-        .done(function(json) {
-            var events = json.events;
-            $('#searched-events').empty();
-
-            $('#searched-events').append($('<h2>検索結果</h2>'));
-            if (events.length == 0) {
-                $('#searched-events').append($('<p>ヒットしませんでした。別の単語で試してみてください。</p>'));
-                return;
-            }
-            console.log(events);
-            for (var i = 0; i < events.length; ++i) {
-                var line = createLine(events[i]);
-
-                $('#searched-events').append(line);
-            }
-
+        .done(function (json) {
+            $('#textareaToSavetemporaryJSON').val($.toJSON(json));
+            render(json);
         })
         .fail(partake.defaultFailHandler);
     }
@@ -130,6 +136,20 @@
     });
 
     $('#search-form-button').click(doSearch);
+
+
+
+    $(function() {
+        try {
+            console.log($('#textareaToSavetemporaryJSON').val());
+            var json = $.parseJSON($('#textareaToSavetemporaryJSON').val());
+            console.log(json);
+            render(json);
+        } catch (e) {
+            console.log(e);
+            // Do nothing.
+        }
+    });
     </script>
 </div>
 

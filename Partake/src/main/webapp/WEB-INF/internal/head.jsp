@@ -31,6 +31,7 @@
         "/js/jquery.switchHat.js",
         "/js/jquery-ui-timepicker-addon.js",
         "/js/jquery-ui-timepicker-ja.js",
+        "/js/jquery.json.2.3.js",
         "/js/scrolltopcontrol.js",
         "/js/jquery.fixup.js",
         "/js/bootstrap.min.js"
