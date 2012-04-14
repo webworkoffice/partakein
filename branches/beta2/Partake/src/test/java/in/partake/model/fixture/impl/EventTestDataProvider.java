@@ -25,16 +25,13 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
 
     @Override
     public Event create(long pkNumber, String pkSalt, int objNumber) {
-        Date now = new Date(1L);
+        Date now = new Date(objNumber);
         Date beginDate = now;
-        String url = "http://www.example.com/";
-        String place = "";
-        String address = "";
-        String description = "";
-        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT" + objNumber, "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, new ArrayList<EventRelation>(), now, now);
 
         UUID uuid = new UUID(pkNumber, ("event" + pkSalt).hashCode());
-        event.setId(uuid.toString());
+        Event event = new Event(uuid.toString(), "shortId", "title", "summary", "category", null, beginDate, null, 0,
+                "url", "place", "address", "description", "hashTag", "ownerId", null, null, null,
+                true, "passcode", false, false, new ArrayList<EventRelation>(), now, now, 0);
         return event;
     }
 

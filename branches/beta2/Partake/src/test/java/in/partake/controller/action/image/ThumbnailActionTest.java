@@ -1,5 +1,8 @@
 package in.partake.controller.action.image;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import in.partake.controller.AbstractPartakeControllerTest;
 
 import java.util.UUID;
@@ -18,7 +21,17 @@ public class ThumbnailActionTest extends AbstractPartakeControllerTest {
         assertResultSuccess(proxy);
 
         // TODO: do some test here.
-   }
+    }
+
+    @Test
+    public void testToGetImageHavingNoThumbnail() throws Exception {
+        ActionProxy proxy = getActionProxy("/images/thumbnail/" + IMAGE_HAVING_NO_THUMBNAIL_ID);
+
+        proxy.execute();
+        assertResultSuccess(proxy);
+
+        assertThat(loadThumbnail(IMAGE_HAVING_NO_THUMBNAIL_ID), is(notNullValue()));
+    }
 
     @Test
     public void testToGetWithoutImageId() throws Exception {

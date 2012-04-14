@@ -4,6 +4,8 @@ import in.partake.base.DateTime;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dao.access.IMessageAccess;
+import in.partake.model.dto.Message;
 import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.fixture.TestDataProvider;
 
@@ -38,6 +40,9 @@ public class MessageEnvelopeTestDataProvider extends TestDataProvider<MessageEnv
 
     @Override
     public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
-        daos.getMessageEnvelopeAccess().truncate(con);
+        IMessageAccess dao = daos.getMessageAccess();
+        dao.truncate(con);
+
+        dao.put(con, new Message(DEFAULT_MESSAGE_ID, "subject", "body", new DateTime(0L), null));
     }
 }

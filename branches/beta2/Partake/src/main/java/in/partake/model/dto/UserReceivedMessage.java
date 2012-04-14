@@ -167,6 +167,10 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
         return opened;
     }
 
+    public MessageDelivery getDelivery() {
+        return delivery;
+    }
+
     public DateTime getCreatedAt() {
         return createdAt;
     }
@@ -205,7 +209,7 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
         this.opened = opened;
     }
 
-    public void setMessageDelivery(MessageDelivery delivery) {
+    public void setDelivery(MessageDelivery delivery) {
         checkFrozen();
         this.delivery = delivery;
     }

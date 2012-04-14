@@ -62,6 +62,19 @@ public abstract class AbstractPartakeModelTest<T extends PartakeModel<T>> {
     }
 
     @Test
+    public final void testToCheckSetterWhenNotFrozen() throws Exception {
+        final T model = getTestDataProvider().create();
+
+        for (Method method : model.getClass().getMethods()) {
+            if (!checkDestructiveMethod(method) || method.getDeclaringClass().equals(Object.class))
+                continue;
+
+            Object[] args = createArgsFor(method);
+            method.invoke(model, args);
+        }
+    }
+
+    @Test
     public final void testToCheckCopy() throws Exception {
         final T original = getTestDataProvider().create();
         final T copied = copy(original);

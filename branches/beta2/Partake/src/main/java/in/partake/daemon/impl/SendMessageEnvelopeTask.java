@@ -57,7 +57,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
                     if (envelope.getUserMessageId() != null) {
                         UserReceivedMessage userMessage = daos.getUserReceivedMessageAccess().find(con, UUID.fromString(envelope.getUserMessageId()));
                         if (userMessage != null) {
-                            userMessage.setMessageDelivery(MessageDelivery.FAIL);
+                            userMessage.setDelivery(MessageDelivery.FAIL);
                             daos.getUserReceivedMessageAccess().put(con, userMessage);
                         }
                     }
@@ -75,7 +75,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
                     sendTwitterMessage(con, daos, it, envelope);
                 else if (envelope.getUserMessageId() != null)
                     sendUserMessage(con, daos, it, envelope);
-                else if (envelope.getUserNotificationid() != null)
+                else if (envelope.getUserNotificationId() != null)
                     sendUserNotification(con, daos, it, envelope);
                 else {
                     // Hmm... shouldn't happen.
@@ -115,7 +115,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
 
         // twitter message を受け取らない設定になっていれば送らない。
         if (!pref.isReceivingTwitterMessage()) {
-            userMessage.setMessageDelivery(MessageDelivery.NOT_DELIVERED);
+            userMessage.setDelivery(MessageDelivery.NOT_DELIVERED);
             daos.getUserReceivedMessageAccess().put(con, userMessage);
             it.remove();
             return;
@@ -124,7 +124,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
         TwitterLinkage twitterLinkage = receiver.getTwitterLinkage();
         if (twitterLinkage == null || !twitterLinkage.isAuthorized()) {
             logger.warn("sendDirectMessage : envelope id " + envelope.getId() + " could not be sent : No access token");
-            userMessage.setMessageDelivery(MessageDelivery.NOT_DELIVERED);
+            userMessage.setDelivery(MessageDelivery.NOT_DELIVERED);
             daos.getUserReceivedMessageAccess().put(con, userMessage);
             it.remove();
             return;
@@ -167,34 +167,17 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
 
             PartakeApp.getTwitterService().sendDirectMesage(
                     twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret(), twitterId, messageBody);
-            userMessage.setMessageDelivery(MessageDelivery.FAIL);
+            userMessage.setDelivery(MessageDelivery.FAIL);
             daos.getUserReceivedMessageAccess().put(con, userMessage);
             it.remove();
             logger.info("sendDirectMessage : direct message has been sent to " + twitterLinkage.getScreenName());
         } catch (NumberFormatException e) {
             logger.error("twitterId has not a number.", e);
-            userMessage.setMessageDelivery(MessageDelivery.NOT_DELIVERED);
+            userMessage.setDelivery(MessageDelivery.NOT_DELIVERED);
             daos.getUserReceivedMessageAccess().put(con, userMessage);
             it.remove();
         } catch (TwitterException e) {
-            if (e.isCausedByNetworkIssue()) {
-                logger.warn("sendDirectMessage : Twitter Unreachable?", e);
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + 120 * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            } else if (e.exceededRateLimitation()) {
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + e.getRetryAfter() * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            } else {
-                if (e.getStatusCode() == HttpServletResponse.SC_UNAUTHORIZED) {
-                    markAsUnauthorizedUser(con, daos, receiver);
-                    logger.info("sendDirectMessage : Unauthorized User : " + envelope.getId() + " was failed to deliver.", e);
-                }
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + 600 * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            }
+            updateEnvelopeByTwitterException(con, daos, receiver, envelope, it, e);
         }
     }
 
@@ -220,29 +203,17 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
             it.remove();
             return;
         } catch (TwitterException e) {
-            if (e.isCausedByNetworkIssue()) {
-                logger.warn("Twitter Unreachable?", e);
-                // Retry after 10 minutes later.
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + 600 * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            } else if (e.exceededRateLimitation()) {
-                logger.warn("sendTwitterMessage : Twitter Rate Limination : " + envelope.getId() + " was failed to deliver.", e);
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + e.getRetryAfter() * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            } else {
-                logger.warn("sendTwitterMessage : Unknown Error : " + envelope.getId() + " was failed to deliver.", e);
-                // Retry after 2 minutes later.
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + 600 * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            }
+            updateEnvelopeByTwitterException(con, daos, sender, envelope, it, e);
         }
     }
 
     private void sendUserNotification(PartakeConnection con, IPartakeDAOs daos, DataIterator<MessageEnvelope> it, MessageEnvelope envelope) throws DAOException {
-        UserNotification notification = daos.getUserNotificationAccess().find(con, envelope.getUserMessageId());
+        UserNotification notification = daos.getUserNotificationAccess().find(con, envelope.getUserNotificationId());
+        if (notification == null) {
+            it.remove();
+            return;
+        }
+
 
         UserEx sender = UserDAOFacade.getUserEx(con, daos, notification.getUserId());
         if (sender == null) {
@@ -323,24 +294,34 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
             it.remove();
             return;
         } catch (TwitterException e) {
-            if (e.isCausedByNetworkIssue()) {
-                logger.warn("Twitter Unreachable?", e);
-                // Retry after 10 minutes later.
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + 600 * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            } else if (e.exceededRateLimitation()) {
-                logger.warn("sendTwitterMessage : Twitter Rate Limination : " + envelope.getId() + " was failed to deliver.", e);
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + e.getRetryAfter() * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            } else {
-                logger.warn("sendTwitterMessage : Unknown Error : " + envelope.getId() + " was failed to deliver.", e);
-                // Retry after 2 minutes later.
-                DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + 600 * 1000);
-                envelope.updateForSendingFailure(retryAfter);
-                it.update(envelope);
-            }
+            updateEnvelopeByTwitterException(con, daos, sender, envelope, it, e);
+        }
+    }
+
+    private void updateEnvelopeByTwitterException(PartakeConnection con, IPartakeDAOs daos,
+            UserEx user, MessageEnvelope envelope, DataIterator<MessageEnvelope> it, TwitterException e) throws DAOException {
+        if (e.isCausedByNetworkIssue()) {
+            logger.warn("Twitter Unreachable?", e);
+            // Retry after 10 minutes later.
+            DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + 600 * 1000);
+            envelope.updateForSendingFailure(retryAfter);
+            it.update(envelope);
+        } else if (e.exceededRateLimitation()) {
+            logger.warn("Twitter Rate Limination : " + envelope.getId() + " was failed to deliver.", e);
+            DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + e.getRetryAfter() * 1000);
+            envelope.updateForSendingFailure(retryAfter);
+            it.update(envelope);
+        } else {
+            if (e.getStatusCode() == HttpServletResponse.SC_UNAUTHORIZED) {
+                markAsUnauthorizedUser(con, daos, user);
+                logger.info("Unauthorized User : " + envelope.getId() + " was failed to deliver.", e);
+            } else
+                logger.warn("Unknown Error : " + envelope.getId() + " was failed to deliver.", e);
+
+            // Retry after 2 minutes later.
+            DateTime retryAfter = new DateTime(TimeUtil.getCurrentTime() + 600 * 1000);
+            envelope.updateForSendingFailure(retryAfter);
+            it.update(envelope);
         }
     }
 
