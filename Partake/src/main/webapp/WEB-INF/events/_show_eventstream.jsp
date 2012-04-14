@@ -30,9 +30,12 @@
     <ul class="nav nav-tabs">
         <li class="active"><a href="#news1" title="コメントボード" data-toggle="tab">掲示板</a></li>
         <li><a href="#news2" title="管理者からのメッセージ" data-toggle="tab">管理者から</a></li>
+        <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
+        <li><a href="#side-twitter" data-toggle="tab">Twitter</a></li>
+        <% } %>
     </ul>
-    <div class="tab-content row">
-        <div id="news1" class="tab-pane span9 active">
+    <div class="tab-content">
+        <div id="news1" class="tab-pane active">
             <script>
                 function removeComment(anchorElem, commentId) {
                     var spinner = partakeUI.spinner(anchorElem);
@@ -79,7 +82,7 @@
                     <form class="spinner-container">
                         <%= Helper.tokenTags() %>
                         <strong>コメント</strong><br />
-                        <textarea id="commentForm-commentEdit" name="comment" class="span9"></textarea><br />
+                        <textarea id="commentForm-commentEdit" name="comment"></textarea><br />
                         <input id="comment-form-submit" type="button" class="btn btn-primary" value="コメントを投稿"  />
                     </form>
 <script>
@@ -118,7 +121,7 @@ $('#comment-form-submit').click(postComment);
                 <% } %>
             </div>
         </div>
-        <div id="news2" class="tab-pane span9">
+        <div id="news2" class="tab-pane">
             <div class="event-comments">
             <% if (messages != null) { %>
                 <% for (DirectMessageEx message : messages) { %>
@@ -132,31 +135,68 @@ $('#comment-form-submit').click(postComment);
             <% } %>
             </div>
         </div>
+        <div id="side-twitter" class="tab-pane">
+            <jsp:include page="/WEB-INF/events/_show_side_twitter.jsp" flush="true" />
+        </div>
     </div>
 </div>
 
 <script type="text/javascript" src="/js/tiny_mce_jquery/jquery.tinymce.js"></script>
 <script type="text/javascript">
 $(function() {
-    $('#commentForm-commentEdit').tinymce({
+    var initArg = {
         // Location of TinyMCE script
         script_url: "/js/tiny_mce_jquery/tiny_mce.js",
 
         theme: "advanced",
         language: "ja",
-        width: "550",
-
-        plugins: "inlinepopups,searchreplace,spellchecker,style,table,xhtmlxtras",
-        // plugins : "spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template",
-
-        theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect",
-        theme_advanced_buttons2: "cut,copy,paste,|,bullist,numlist,|,outdent,indent,blockquote,|,link,unlink,anchor,image,cleanup,help,code,|,forecolor,backcolor",
-        theme_advanced_buttons3: "tablecontrols,|,hr,|,sub,sup,|,styleprops,spellchecker",
+        width: "300",
 
         theme_advanced_toolbar_location: "top",
-        theme_advanced_toolbar_align: "left",
+        theme_advanced_toolbar_align:  "left",
         theme_advanced_statusbar_location: "bottom",
         theme_advanced_resizing: true
+    };
+
+    var width = $(window).width();
+    console.log(width);
+    if (width <= 480) {
+        initArg.initial_type = "phone";
+        initArg.width = "" + (width - 40);
+
+        initArg.theme_advanced_buttons1 = "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull";
+        initArg.theme_advanced_buttons2 = "formatselect,fontselect,fontsizeselect";
+        initArg.theme_advanced_buttons3 = "";
+    } else {
+        if (width < 980)
+            initArg.width = "476";
+        else
+            initArg.width = "620";
+
+        initArg.plugins = "inlinepopups,searchreplace,spellchecker,style,table,xhtmlxtras";
+
+        initArg.theme_advanced_buttons1 = "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,formatselect,fontselect,fontsizeselect";
+        initArg.theme_advanced_buttons2 = "cut,copy,paste,|,bullist,numlist,|,outdent,indent,blockquote,|,link,unlink,anchor,image,cleanup,help,code,|,forecolor,backcolor";
+        initArg.theme_advanced_buttons3 = "tablecontrols,|,hr,|,sub,sup,|,styleprops,spellchecker";
+    }
+
+    $('#commentForm-commentEdit').tinymce(initArg);
+
+    $(window).resize(function() {
+        console.log("resize");
+        console.log(initArg.width);
+        console.log($(window).width());
+        if (initArg.initial_type != "phone")
+            return;
+        var width = $(window).width();
+
+        var ifr = $('#commentForm-commentEdit_ifr');
+        if (width <= 480)
+            ifr.width(width - 40);
+        else if (width < 980)
+            ifr.width(476);
+        else
+            ifr.width(620);
     });
 });
 </script>
