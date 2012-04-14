@@ -81,7 +81,7 @@ class ThumbnailTransaction extends Transaction<ThumbnailData> {
             ImageIO.write(converted, "png", os);
             os.close();
 
-            ThumbnailData thumbnail = new ThumbnailData(image.getId(), image.getUserId(), "image/png", os.toByteArray(), TimeUtil.getCurrentDate());
+            ThumbnailData thumbnail = new ThumbnailData(image.getId(), image.getUserId(), "image/png", os.toByteArray(), TimeUtil.getCurrentDateTime());
             daos.getThumbnailAccess().put(con, thumbnail);
 
             return thumbnail;
