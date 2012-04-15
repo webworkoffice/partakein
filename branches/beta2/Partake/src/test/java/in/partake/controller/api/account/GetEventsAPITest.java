@@ -53,7 +53,7 @@ public class GetEventsAPITest extends APIControllerTest {
                 dao.truncate(con);
 
                 for (int i = 0; i < N; ++i) {
-                    dao.put(con, new Event(ids.get(i), "short-id", "title", "summary", "category",
+                    dao.put(con, new Event(ids.get(i), "title", "summary", "category",
                             null, new Date(i), null, 0, "url", "place",
                             "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID, TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME,
                             null, null, false, null, false, false, new ArrayList<EventRelation>(),

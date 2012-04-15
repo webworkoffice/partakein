@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 
 public class Event extends PartakeModel<Event> {
     private String id;
-    private String shortId;     // event short id // TODO: short id が使えるように実装する
     private String title;       // event title
     private String summary;     // event summary
     private String category;    // event category
@@ -82,7 +81,6 @@ public class Event extends PartakeModel<Event> {
 
     public Event() {
         this.id = null;
-        this.shortId = null;
         this.title = "";
         this.summary = "";
         this.category = EventCategory.getCategories().get(0).getKey();
@@ -111,7 +109,6 @@ public class Event extends PartakeModel<Event> {
 
     public Event(Event event) {
         this.id = event.id;
-        this.shortId = event.shortId;
         this.title = event.title;
         this.summary = event.summary;
         this.category = event.category;
@@ -141,7 +138,6 @@ public class Event extends PartakeModel<Event> {
 
     public Event(JSONObject json) {
         this.id = json.getString("id");
-        this.shortId = json.optString("shortId", null);
         this.title = json.getString("title");
         this.summary = json.getString("summary");
         this.category = json.getString("category");
@@ -179,12 +175,11 @@ public class Event extends PartakeModel<Event> {
         this.revision = json.optInt("revision", 1);
     }
 
-    public Event(String id, String shortId, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
+    public Event(String id, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             String foreImageId, String backImageId,
             boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, List<EventRelation> relations, Date createdAt, Date modifiedAt, int revision) {
         this.id = id;
-        this.shortId = shortId;
         this.title = title;
         this.summary = summary;
         this.category = category;
@@ -227,7 +222,6 @@ public class Event extends PartakeModel<Event> {
     public JSONObject toSafeJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("shortId", shortId);
         obj.put("title", title);
         obj.put("summary", summary);
         obj.put("category", category);
@@ -284,7 +278,6 @@ public class Event extends PartakeModel<Event> {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("shortId", shortId);
         obj.put("title", title);
         obj.put("summary", summary);
         obj.put("category", category);
@@ -337,7 +330,6 @@ public class Event extends PartakeModel<Event> {
         Event rhs = (Event) obj;
 
         if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
-        if (!ObjectUtils.equals(lhs.shortId, rhs.shortId)) { return false; }
         if (!ObjectUtils.equals(lhs.title, rhs.title)) { return false; }
         if (!ObjectUtils.equals(lhs.summary, rhs.summary)) { return false; }
         if (!ObjectUtils.equals(lhs.category, rhs.category)) { return false; }
@@ -371,7 +363,6 @@ public class Event extends PartakeModel<Event> {
         int code = 0;
 
         code = code * 37 + ObjectUtils.hashCode(id);
-        code = code * 37 + ObjectUtils.hashCode(shortId);
         code = code * 37 + ObjectUtils.hashCode(title);
         code = code * 37 + ObjectUtils.hashCode(summary);
         code = code * 37 + ObjectUtils.hashCode(category);
@@ -415,10 +406,6 @@ public class Event extends PartakeModel<Event> {
     public void setBackImageId(String backImageId) {
         checkToUpdateStatus();
         this.backImageId = backImageId;
-    }
-
-    public String getShortId() {
-        return shortId;
     }
 
     public String getTitle() {
@@ -522,11 +509,6 @@ public class Event extends PartakeModel<Event> {
     public void setId(String id) {
         checkToUpdateStatus();
         this.id = id;
-    }
-
-    public void setShortId(String shortId) {
-        checkToUpdateStatus();
-        this.shortId = shortId;
     }
 
     public void setTitle(String title) {

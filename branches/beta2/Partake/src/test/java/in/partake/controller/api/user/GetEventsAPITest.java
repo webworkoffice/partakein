@@ -56,7 +56,7 @@ public class GetEventsAPITest extends APIControllerTest {
                 for (int i = 0; i < N; ++i) {
                     boolean isPrivate = i % 8 == 0;
                     boolean draft = i % 8 == 1;
-                    dao.put(con, new Event(ids.get(i), "short-id", "title", "summary", "category",
+                    dao.put(con, new Event(ids.get(i), "title", "summary", "category",
                             null, new Date(i), null, 0, "url", "place",
                             "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID, TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME,
                             null, null, isPrivate, null, draft, false, new ArrayList<EventRelation>(),
