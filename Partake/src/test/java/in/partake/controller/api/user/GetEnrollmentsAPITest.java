@@ -57,7 +57,7 @@ public class GetEnrollmentsAPITest extends APIControllerTest {
 
         for (int i = 0; i < n; ++i) {
             boolean isPrivate = i % 2 == 1;
-            Event event = new Event(null, "short-id", "title", "summary", category,
+            Event event = new Event(null, "title", "summary", category,
                     late, late, late, 0, "url", "place",
                     "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                     EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, isPrivate, null, false, false, new ArrayList<EventRelation>(),

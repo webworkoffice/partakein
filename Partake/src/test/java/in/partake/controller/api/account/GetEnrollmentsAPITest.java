@@ -56,7 +56,7 @@ public class GetEnrollmentsAPITest extends APIControllerTest {
         String category = EventCategory.getCategories().get(0).getKey();
 
         for (int i = 0; i < n; ++i) {
-            Event event = new Event(null, "short-id", "title", "summary", category,
+            Event event = new Event(null, "title", "summary", category,
                     late, late, late, 0, "url", "place",
                     "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
                     EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, false, null, false, false, new ArrayList<EventRelation>(),

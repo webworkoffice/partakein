@@ -37,13 +37,13 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
     public void createSamples() {
         samples = new Event[] {
                 new Event(),
-                new Event("id", "shortId", "title", "summary", "category",
+                new Event("id", "title", "summary", "category",
                         new Date(), new Date(), new Date(), 0, "url", "place",
                         "address", "description", "#hashTag", "ownerId", null,
                         "foreImageId", "backImageId", true, "passcode", false, false,
                         new ArrayList<EventRelation>(),
                         new Date(), new Date(), -1),
-                new Event("id2", "shortId2", "title2", "summary2", "category2",
+                new Event("id2", "title2", "summary2", "category2",
                         new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
                         "address2", "description2", "#hashTag2", "ownerId2", "hoge,fuga",
                         "foreImageId2", "backImageId2", false, "passcode2", false, false,
@@ -59,7 +59,6 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
             // Assert.assertEquals(source, new Event(source));
 
             Assert.assertEquals(source.getId(), new Event(source).getId());
-            Assert.assertEquals(source.getShortId(), new Event(source).getShortId());
             Assert.assertEquals(source.getTitle(), new Event(source).getTitle());
             Assert.assertEquals(source.getSummary(), new Event(source).getSummary());
             Assert.assertEquals(source.getCategory(), new Event(source).getCategory());

@@ -135,7 +135,7 @@ public final class EventComparatorBeginDateAscTest {
         calendar.set(Calendar.MINUTE, beginMin);
         Date beginDate = calendar.getTime();
 
-        Event event = new Event(id, "shortId", "title", "summary", "category", null, beginDate, null, 0,
+        Event event = new Event(id, "title", "summary", "category", null, beginDate, null, 0,
                 "url", "place", "address", "description", "hashTag", "ownerId", null, null, null,
                 true, "passcode", false, false, new ArrayList<EventRelation>(), createdAt, null, 0);
         return event;
