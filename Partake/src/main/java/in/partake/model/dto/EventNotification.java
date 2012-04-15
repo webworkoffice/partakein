@@ -154,7 +154,7 @@ public class EventNotification extends PartakeModel<EventNotification> {
     public void setUserIds(List<String> userIds) {
         checkFrozen();
         if (userIds == null)
-            userIds = null;
+            this.userIds = null;
         else
             this.userIds = new ArrayList<String>(userIds);
     }

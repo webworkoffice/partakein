@@ -12,6 +12,7 @@ import in.partake.model.fixture.impl.EventMessageTestDataProvider;
 import in.partake.model.fixture.impl.EventNotificationTestDataProvider;
 import in.partake.model.fixture.impl.EventReminderTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
+import in.partake.model.fixture.impl.EventTicketTestDataProvider;
 import in.partake.model.fixture.impl.ImageTestDataProvider;
 import in.partake.model.fixture.impl.MessageEnvelopeTestDataProvider;
 import in.partake.model.fixture.impl.MessageTestDataProvider;
@@ -52,6 +53,7 @@ public class PartakeTestDataProviderSet {
     private EventFeedTestDataProvider eventFeedProvider;
     private EventMessageTestDataProvider eventMessageProvider;
     private EventNotificationTestDataProvider eventNotificationProvider;
+    private EventTicketTestDataProvider eventTicketProvider;
     private MessageTestDataProvider messageProvider;
     private MessageEnvelopeTestDataProvider messageEnvelopeProvider;
     private ThumbnailTestDataProvider thumbnailProvider;
@@ -74,6 +76,7 @@ public class PartakeTestDataProviderSet {
         providers.add(eventFeedProvider = createEventFeedTestDataProvider());
         providers.add(eventMessageProvider = createEventMessageTestDataProvider());
         providers.add(eventNotificationProvider = createEventNotificationTestDataProvider());
+        providers.add(eventTicketProvider = createEventTicketTestDataProvider());
         providers.add(messageProvider = createMessageTestDataProvider());
         providers.add(messageEnvelopeProvider = createMessageEnvelopeTestDataProvider());
         providers.add(thumbnailProvider = createThumbnailTestDataProvider());
@@ -107,6 +110,10 @@ public class PartakeTestDataProviderSet {
 
     public EventReminderTestDataProvider getEventReminderProvider() {
         return eventReminderProvider;
+    }
+
+    public EventTicketTestDataProvider getEventTicketProvider() {
+        return eventTicketProvider;
     }
 
     public ImageTestDataProvider getImageProvider() {
@@ -255,5 +262,9 @@ public class PartakeTestDataProviderSet {
 
     private UserNotificationTestDataProvider createUserNotificationTestDataProvider() {
         return new UserNotificationTestDataProvider();
+    }
+
+    private EventTicketTestDataProvider createEventTicketTestDataProvider() {
+        return new EventTicketTestDataProvider();
     }
 }

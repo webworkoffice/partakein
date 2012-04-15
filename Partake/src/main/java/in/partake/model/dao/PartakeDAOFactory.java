@@ -11,6 +11,7 @@ import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventMessageAccess;
 import in.partake.model.dao.access.IEventNotificationAccess;
 import in.partake.model.dao.access.IEventReminderAccess;
+import in.partake.model.dao.access.IEventTicketAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IMessageEnvelopeAccess;
@@ -36,13 +37,13 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     private final IEventReminderAccess eventReminderAccess;
     private final IEventFeedAccess eventFeedAccess;
     private final IEventActivityAccess eventActivityAccess;
+    private final IEventTicketAccess eventTicketAccess;
     private final IImageAccess imageAccess;
     private final IOpenIDLinkageAccess openIDLinkageAccess;
     private final IThumbnailAccess thumbnailAccess;
     private final ITwitterLinkageAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
     private final IUserPreferenceAccess userPreferenceAccess;
-
     private final IEventMessageAccess eventMessageAccess;
     private final IUserReceivedMessageAccess userMessageAccess;
     private final IEventNotificationAccess eventNotificationMessageAccess;
@@ -65,6 +66,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         addDao(eventReminderAccess   = createEventReminderAccess());
         addDao(eventFeedAccess       = createEventFeedAccess());
         addDao(eventActivityAccess   = createEventActivityAccess());
+        addDao(eventTicketAccess     = createEventTicketAccess());
         addDao(imageAccess           = createImageAccess());
         addDao(openIDLinkageAccess   = createOpenIDLinkageAccess());
         addDao(thumbnailAccess       = createThumbnailAccess());
@@ -159,6 +161,10 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         return eventMessageAccess;
     }
 
+    public final IEventTicketAccess getEventTicketAccess() {
+        return eventTicketAccess;
+    }
+
     public final ICalendarLinkageAccess getCalendarLinkageAccess() {
         return calendarLinkageAccess;
     }
@@ -199,6 +205,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     protected abstract ICommentAccess createCommentAccess();
     protected abstract IEnrollmentAccess createEnrollmentAccess();
     protected abstract IEventAccess createEventAccess();
+    protected abstract IEventTicketAccess createEventTicketAccess();
     protected abstract IEventReminderAccess createEventReminderAccess();
     protected abstract IEventFeedAccess createEventFeedAccess();
     protected abstract IEventActivityAccess createEventActivityAccess();
