@@ -9,6 +9,7 @@ import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventMessageAccess;
 import in.partake.model.dao.access.IEventNotificationAccess;
 import in.partake.model.dao.access.IEventReminderAccess;
+import in.partake.model.dao.access.IEventTicketAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IMessageEnvelopeAccess;
@@ -32,6 +33,7 @@ public interface IPartakeDAOs {
     public IEventMessageAccess getEventMessageAccess();
     public IEventNotificationAccess getEventNotificationAccess();
     public IEventReminderAccess getEventReminderAccess();
+    public IEventTicketAccess getEventTicketAccess();
     public IImageAccess getImageAccess();
     public IMessageAccess getMessageAccess();
     public IMessageEnvelopeAccess getMessageEnvelopeAccess();

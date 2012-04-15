@@ -99,6 +99,14 @@ public interface TestDataProviderConstants {
     public static final String UNIQUEIDENTIFIER_EVENT_ID = new UUID(2, 30).toString();
     public static final String UNPUBLISHED_EVENT_ID = new UUID(2, 40).toString();
 
+    // Event Tickets
+    public static final UUID INVALID_EVENT_TICKET_ID = new UUID(21, -1);
+    public static final UUID DEFAULT_EVENT_TICKET_ID = new UUID(21, 0);
+    public static final UUID PRIVATE_EVENT_TICKET_ID = new UUID(21, 10);
+    public static final UUID JAPANESE_EVENT_TICKET_ID = new UUID(21, 20);
+    public static final UUID UNIQUEIDENTIFIER_EVENT_TICKET_ID = new UUID(21, 30);
+    public static final UUID UNPUBLISHED_EVENT_TICKET_ID = new UUID(21, 40);
+
     // Event Comments
     public static final String INVALID_COMMENT_ID = new UUID(4, -1).toString();
     public static final String OWNER_COMMENT_ID = new UUID(4, 1).toString();
