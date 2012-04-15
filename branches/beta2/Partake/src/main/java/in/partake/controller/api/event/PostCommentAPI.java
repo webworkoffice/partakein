@@ -1,6 +1,7 @@
 package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
+import in.partake.base.TimeUtil;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
@@ -13,8 +14,6 @@ import in.partake.model.dto.Comment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.resource.UserErrorCode;
-
-import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -34,7 +33,7 @@ public class PostCommentAPI extends AbstractPartakeAPI {
         if (comment.length() > MAX_COMMENT_LENGTH)
             return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
 
-        Comment embryo = new Comment(eventId, user.getId(), comment, true, new Date());
+        Comment embryo = new Comment(null, eventId, user.getId(), comment, true, TimeUtil.getCurrentDateTime());
         new PostCommentTransaction(embryo).execute();
 
         return renderOK();
@@ -62,7 +61,7 @@ class PostCommentTransaction extends Transaction<Void> {
         UserEx user = UserDAOFacade.getUserEx(con, daos, commentEmbryo.getUserId());
         String title = user.getScreenName() + " さんがコメントを投稿しました";
         String content = commentEmbryo.getComment();
-        eaa.put(con, new EventActivity(eaa.getFreshId(con), commentEmbryo.getEventId(), title, content, commentEmbryo.getCreatedAt()));
+        eaa.put(con, new EventActivity(eaa.getFreshId(con), commentEmbryo.getEventId(), title, content, TimeUtil.toDate(commentEmbryo.getCreatedAt())));
 
         return null;
     }

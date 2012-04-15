@@ -17,7 +17,7 @@ public class Postgres9Entity {
     /** Time index updated at. */
     private DateTime updatedAt;
 
-    // This
+    // TODO: This ctor should be deprecated later.
     public Postgres9Entity(String id, int version, byte[] body, byte[] opt, Date updatedAt) {
         this.id = id;
         this.version = version;
@@ -25,6 +25,15 @@ public class Postgres9Entity {
         this.opt = opt;
         if (updatedAt != null)
             this.updatedAt = new DateTime(updatedAt.getTime());
+    }
+
+    // TODO: This ctor should be deprecated later.
+    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, DateTime updatedAt) {
+        this.id = id;
+        this.version = version;
+        this.body = body;
+        this.opt = opt;
+        this.updatedAt = updatedAt;
     }
 
     public Postgres9Entity(UUID id, int version, byte[] body, byte[] opt, DateTime updatedAt) {

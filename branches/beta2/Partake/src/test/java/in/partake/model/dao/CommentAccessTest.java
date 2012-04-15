@@ -44,7 +44,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
                 for (int i = 0; i < 10; ++i) {
                     for (int j = 0; j < 10; ++j) {
                         ids[i][j] = UUID.randomUUID().toString();
-                        Comment original = new Comment(ids[i][j], prefix + "eventId" + i, "userId", "comment content", false, TimeUtil.getCurrentDate());
+                        Comment original = new Comment(ids[i][j], prefix + "eventId" + i, "userId", "comment content", false, TimeUtil.getCurrentDateTime());
                         daos.getCommentAccess().put(con, original);
                         TimeUtil.waitForTick();
                     }
@@ -85,7 +85,7 @@ public class CommentAccessTest extends AbstractDaoTestCaseBase<ICommentAccess, C
                 // create
                 for (int i = 0; i < 10; ++i) {
                     ids[i] = UUID.randomUUID().toString();
-                    Comment original = new Comment(ids[i], prefix + "eventId", "userId", "comment content", false, TimeUtil.getCurrentDate());
+                    Comment original = new Comment(ids[i], prefix + "eventId", "userId", "comment content", false, TimeUtil.getCurrentDateTime());
                     daos.getCommentAccess().put(con, original);
                 }
 

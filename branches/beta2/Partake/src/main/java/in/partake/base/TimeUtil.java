@@ -21,6 +21,13 @@ public final class TimeUtil {
         // Prevents from instantiation.
     }
 
+    // TODO: This should be removed later.
+    public static Date toDate(DateTime dt) {
+        if (dt == null)
+            return null;
+        return new Date(dt.getTime());
+    }
+
     /**
      * Resets the current date.
      */

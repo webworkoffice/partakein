@@ -1,11 +1,11 @@
 package in.partake.model.dto;
 
 import in.partake.app.PartakeApp;
+import in.partake.base.DateTime;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Date;
 
 import junit.framework.Assert;
 
@@ -32,8 +32,8 @@ public final class CommentTest extends AbstractPartakeModelTest<Comment> {
     @Before
     public void createSamples() {
         samples = new Comment[] {
-            new Comment("id1", "eventId1", "userId1", "comment1", false, new Date()),
-            new Comment("id2", "eventId2", "userId2", "comment2", true, new Date(1)),
+            new Comment("id1", "eventId1", "userId1", "comment1", false, new DateTime(0)),
+            new Comment("id2", "eventId2", "userId2", "comment2", true, new DateTime(1)),
         };
     }
 
@@ -76,19 +76,12 @@ public final class CommentTest extends AbstractPartakeModelTest<Comment> {
 
     @Test
     public void testCopyConstructorByFlozenInstance() {
-        Comment source = new Comment();
+        Comment source = getTestDataProvider().create();
         Assert.assertFalse(source.isFrozen());
 
         source.freeze();
         Assert.assertTrue(source.isFrozen());
 
         Assert.assertFalse(new Comment(source).isFrozen());
-    }
-
-    @Test
-    public void testToJSONFromJSON() {
-        for (Comment comment : samples) {
-            Assert.assertEquals(comment, Comment.fromJSON(comment.toJSON()));
-        }
     }
 }
