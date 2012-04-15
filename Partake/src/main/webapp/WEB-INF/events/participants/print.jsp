@@ -21,11 +21,11 @@
 
     EventEx event = action.getEvent();
     ParticipationList participationList = action.getParticipationList();
-    
+
     List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
     List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
     List<EnrollmentEx> cancelledParticipations = participationList.getCancelledParticipations();
-    
+
     List<EnrollmentEx> ps = new ArrayList<EnrollmentEx>();
     ps.addAll(enrolledParticipations);
     ps.addAll(spareParticipations);
@@ -40,40 +40,40 @@
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <div class="page-header">
-	<h1>参加者リスト</h1>
+    <h1>参加者リスト</h1>
 </div>
 
 <ul>
-	<li><a href="/events/<%= h(event.getId()) %>">イベントに戻る</a></li>
-	<li><a href="#" onclick="window.print()">印刷する</a></li>
-	<li><a href="/events/participants/<%= event.getId() %>.csv">CSVで出力する(UTF-8)</a></li>
+    <li><a href="/events/<%= h(event.getId()) %>">イベントに戻る</a></li>
+    <li><a href="#" onclick="window.print()">印刷する</a></li>
+    <li><a href="/events/participants/<%= event.getId() %>.csv">CSVで出力する(UTF-8)</a></li>
 </ul>
 
 <h3><%= h(event.getTitle()) %> - 参加者リスト</h3>
 
 <table class="table table-striped">
     <colgroup>
-	    <col width="32px" /><col width="85px" /><col width="58px" /><col width="150px" /><col width="30px" />
-	    <% for (EventRelationEx eventRelation : event.getEventRelations()) { %>
-	        <% if (eventRelation == null) { continue; } %>
-			<col width="60px" />
-		<% } %>
-	    <col width="60px" />
-    </colgroup>    
+        <col width="32px" /><col width="85px" /><col width="58px" /><col width="150px" /><col width="30px" />
+        <% for (EventRelationEx eventRelation : event.getEventRelations()) { %>
+            <% if (eventRelation == null) { continue; } %>
+            <col width="60px" />
+        <% } %>
+        <col width="60px" />
+    </colgroup>
 <thead>
     <tr>
-    	<th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th>優先度</th>
-    	<%  {
-	    		int cnt = 0;
-	    		for (EventRelationEx eventRelation : event.getEventRelations()) { %>
-	    		    <% if (eventRelation == null) { continue; } %>
-	    			<th>関連イベント <%= ++cnt %> <a href="<%= h(eventRelation.getEvent().getEventURL()) %>">*</a></th>
-	    		<% }
-    	} %>
+        <th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th>優先度</th>
+        <%  {
+                int cnt = 0;
+                for (EventRelationEx eventRelation : event.getEventRelations()) { %>
+                    <% if (eventRelation == null) { continue; } %>
+                    <th>関連イベント <%= ++cnt %> <a href="<%= h(eventRelation.getEvent().getEventURL()) %>">*</a></th>
+                <% }
+        } %>
     </tr>
 </thead>
 <tbody>
-    <% 
+    <%
     int order = 0;
     for (EnrollmentEx p : ps) { %>
     <tr>
@@ -82,15 +82,15 @@
         <td><%= ParticipationStatus.ENROLLED.equals(p.getStatus()) ? "参加" : "仮参加" %></td>
         <td><%= h(p.getComment()) %></td>
         <td><%= p.getPriority() > 0 ? String.format(" 優先 %d", p.getPriority()) : "-" %></td>
-       	<% 
-       		for (EventRelation eventRelation : event.getEventRelations()) { %>
-       		<% if (eventRelation == null) { continue; } %>
-       		<% if (p.getRelatedEventIds().contains(eventRelation.getDstEventId())) { %>
-       			<td>出席</td>
-       		<% } else { %>
-       			<td>欠席</td>
-       		<% } %>
-       	<% } %>        
+        <%
+            for (EventRelation eventRelation : event.getEventRelations()) { %>
+            <% if (eventRelation == null) { continue; } %>
+            <% if (p.getRelatedEventIds().contains(eventRelation.getEventId())) { %>
+                <td>出席</td>
+            <% } else { %>
+                <td>欠席</td>
+            <% } %>
+        <% } %>
     </tr>
     <% } %>
 </tbody>
