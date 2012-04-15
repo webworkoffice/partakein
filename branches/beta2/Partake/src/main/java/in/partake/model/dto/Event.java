@@ -1,6 +1,7 @@
 package in.partake.model.dto;
 
 import in.partake.base.TimeUtil;
+import in.partake.base.Util;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.ParticipationList;
 import in.partake.model.dto.auxiliary.EventCategory;
@@ -259,9 +260,7 @@ public class Event extends PartakeModel<Event> {
         obj.put("draft", isPreview);
         // obj.put("removed", isRemoved);
 
-        JSONArray array = new JSONArray();
-        for (EventRelation relation : eventRelations)
-            array.add(relation.toJSON());
+        JSONArray array = Util.toJSONArray(eventRelations);
         obj.put("relations", array);
 
         if (createdAt != null) {
