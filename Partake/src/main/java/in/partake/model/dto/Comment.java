@@ -1,6 +1,6 @@
 package in.partake.model.dto;
 
-import java.util.Date;
+import in.partake.base.DateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,23 +26,15 @@ public class Comment extends PartakeModel<Comment> {
     @Column
     private boolean isHTML;     // true if HTML.
     @Column @Temporal(TemporalType.TIMESTAMP)
-    private Date   createdAt;   // when
+    private DateTime createdAt;
 
-    public Comment() {
-        this(null, null, null, null, false, null);
-    }
-
-    public Comment(String eventId, String userId, String comment, boolean isHTML, Date createdAt) {
-        this(null, eventId, userId, comment, isHTML, createdAt);
-    }
-
-    public Comment(String id, String eventId, String userId, String comment, boolean isHTML, Date createdAt) {
+    public Comment(String id, String eventId, String userId, String comment, boolean isHTML, DateTime createdAt) {
         this.id = id;
         this.eventId = eventId;
         this.userId = userId;
         this.comment = comment;
         this.isHTML = isHTML;
-        this.createdAt = createdAt == null ? null : (Date) createdAt.clone();
+        this.createdAt = createdAt;
     }
 
     public Comment(Comment comment) {
@@ -51,7 +43,7 @@ public class Comment extends PartakeModel<Comment> {
         this.userId = comment.userId;
         this.comment = comment.comment;
         this.isHTML = comment.isHTML;
-        this.createdAt = comment.createdAt == null ? null : (Date) comment.createdAt.clone();
+        this.createdAt = comment.createdAt;
     }
 
     public Comment(JSONObject obj) {
@@ -61,7 +53,7 @@ public class Comment extends PartakeModel<Comment> {
         this.comment = obj.getString("comment");
         this.isHTML = obj.getBoolean("isHTML");
         if (obj.containsKey("createdAt"))
-            this.createdAt = new Date(obj.getLong("createdAt"));
+            this.createdAt = new DateTime(obj.getLong("createdAt"));
     }
 
     @Override
@@ -82,30 +74,6 @@ public class Comment extends PartakeModel<Comment> {
             json.put("createdAt", createdAt.getTime());
 
         return json;
-    }
-
-    public static Comment fromJSON(JSONObject json) {
-        if (!json.containsKey("id"))
-            return null;
-        if (!json.containsKey("eventId"))
-            return null;
-        if (!json.containsKey("userId"))
-            return null;
-
-        Comment comment = new Comment();
-        comment.id = json.getString("id");
-        comment.eventId = json.getString("eventId");
-        comment.userId = json.getString("userId");
-        comment.comment = json.getString("comment");
-        if (json.containsKey("isHTML"))
-            comment.isHTML = json.getBoolean("isHTML");
-        else
-            comment.isHTML = false;
-        if (json.containsKey("createdAt") && json.get("createdAt") != null)
-            comment.createdAt = new Date(json.getLong("createdAt"));
-        else
-            comment.createdAt = null;
-        return comment;
     }
 
     // ----------------------------------------------------------------------
@@ -166,7 +134,7 @@ public class Comment extends PartakeModel<Comment> {
         return isHTML;
     }
 
-    public Date getCreatedAt() {
+    public DateTime getCreatedAt() {
         return createdAt;
     }
 
@@ -195,7 +163,7 @@ public class Comment extends PartakeModel<Comment> {
         this.isHTML = isHTML;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(DateTime createdAt) {
         checkFrozen();
         this.createdAt = createdAt;
     }
