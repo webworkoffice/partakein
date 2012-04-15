@@ -62,7 +62,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
     public String getFreshId(Postgres9Connection con) throws DAOException {
         for (int i = 0; i < 5; ++i) {
             UUID uuid = UUID.randomUUID();
-            if (!exists((Postgres9Connection) con, uuid.toString()))
+            if (!exists(con, uuid.toString()))
                 return uuid.toString();
         }
 

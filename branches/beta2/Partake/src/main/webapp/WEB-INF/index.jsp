@@ -38,9 +38,7 @@
                 <p>
                     <a href="/events/demo" class="btn btn-primary btn-large">デモを見る</a>
                     <a href="/events/search" class="btn btn-primary btn-large">イベントを探す</a>
-                    <% if (user == null) { %>
-                        <a href="/auth/loginByTwitter" class="btn btn-primary btn-large">ログイン</a>
-                    <% } %>
+                    <a href="/auth/loginByTwitter" class="btn btn-primary btn-large">ログイン</a>
                 </p>
             </div>
         <% } else { %>
