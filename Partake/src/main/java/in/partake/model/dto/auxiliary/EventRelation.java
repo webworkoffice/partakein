@@ -1,10 +1,11 @@
 package in.partake.model.dto.auxiliary;
 
+import in.partake.base.IJSONable;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-public class EventRelation {
+public class EventRelation implements IJSONable {
     private String eventId;
     private boolean required; // true if the original event requires this event.
     private boolean priority; // true if the participants of the original event will be prioritized if participating this event.

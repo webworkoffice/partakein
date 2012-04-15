@@ -13,9 +13,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import net.sf.json.JSONArray;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -56,6 +59,17 @@ public final class Util {
 
     // ----------------------------------------------------------------------
     // Text
+
+    public static <T extends IJSONable> JSONArray toJSONArray(List<T> list) {
+        if (list == null)
+            return null;
+
+        JSONArray array = new JSONArray();
+        for (IJSONable jsonable : list)
+            array.add(jsonable.toJSON());
+
+        return array;
+    }
 
     public static Boolean parseBooleanParameter(String value) {
         if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value))
