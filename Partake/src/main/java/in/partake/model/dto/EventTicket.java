@@ -13,13 +13,15 @@ public class EventTicket extends PartakeModel<EventTicket> {
     private UUID id;
     private String eventId;
     private TicketType ticketType;
+    private String name;
     private int amount; // The number of ticket. 0 means infinity.
     private DateTime createdAt;
     private DateTime modifiedAt;
 
-    public EventTicket(UUID id, String eventId, TicketType ticketType, int amount, DateTime createdAt, DateTime modifiedAt) {
+    public EventTicket(UUID id, String eventId, String name, TicketType ticketType, int amount, DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.eventId = eventId;
+        this.name = name;
         this.ticketType = ticketType;
         this.amount = amount;
         this.createdAt = createdAt;
@@ -27,12 +29,13 @@ public class EventTicket extends PartakeModel<EventTicket> {
     }
 
     public EventTicket(EventTicket t) {
-        this(t.id, t.eventId, t.ticketType, t.amount, t.createdAt, t.modifiedAt);
+        this(t.id, t.eventId, t.name, t.ticketType, t.amount, t.createdAt, t.modifiedAt);
     }
 
     public EventTicket(JSONObject obj) {
         this.id = UUID.fromString(obj.getString("id"));
         this.eventId = obj.getString("eventId");
+        this.name = obj.getString("name");
         this.ticketType = TicketType.valueOf(obj.getString("ticketType"));
         this.amount = obj.getInt("amount");
         this.createdAt = new DateTime(obj.getLong("createdAt"));
@@ -51,6 +54,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
         json.put("id", id.toString());
         json.put("eventId", eventId);
+        json.put("name", name);
         json.put("ticketType", ticketType.toString());
         json.put("amount", amount);
         json.put("createdAt", createdAt.getTime());
@@ -72,6 +76,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
         if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
         if (!ObjectUtils.equals(lhs.eventId, rhs.eventId)) { return false; }
+        if (!ObjectUtils.equals(lhs.name, rhs.name)) { return false; }
         if (!ObjectUtils.equals(lhs.ticketType, rhs.ticketType)) { return false; }
         if (!ObjectUtils.equals(lhs.amount, rhs.amount)) { return false; }
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
@@ -86,6 +91,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(eventId);
+        code = code * 37 + ObjectUtils.hashCode(name);
         code = code * 37 + ObjectUtils.hashCode(ticketType);
         code = code * 37 + ObjectUtils.hashCode(amount);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
@@ -104,6 +110,10 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
     public String getEventId() {
         return eventId;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public TicketType getTicketType() {
@@ -130,6 +140,11 @@ public class EventTicket extends PartakeModel<EventTicket> {
     public void setEventId(String eventId) {
         checkFrozen();
         this.eventId = eventId;
+    }
+
+    public void setName(String name) {
+        checkFrozen();
+        this.name = name;
     }
 
     public void setTicketType(TicketType ticketType) {
