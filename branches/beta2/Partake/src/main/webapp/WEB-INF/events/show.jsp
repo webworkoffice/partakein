@@ -90,8 +90,11 @@ body {
         <% if (!StringUtils.isEmpty(event.getSummary())) { %>
             <%= h(event.getSummary()) %>
         <% } %>
-        <span class="label label-info"><%= h(EventCategory.getReadableCategoryName(event.getCategory())) %></span>
+
     </p>
+    <p>
+        <span class="label label-info"><%= h(EventCategory.getReadableCategoryName(event.getCategory())) %></span>
+    <p>
 </div>
 
 <div class="row">

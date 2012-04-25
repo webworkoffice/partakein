@@ -95,8 +95,8 @@ public class Postgres9EventTicketDao extends Postgres9Dao implements IEventTicke
     }
 
     @Override
-    public String getFreshId(PartakeConnection con) throws DAOException {
-        return entityDao.getFreshId((Postgres9Connection) con);
+    public UUID getFreshId(PartakeConnection con) throws DAOException {
+        return UUID.fromString(entityDao.getFreshId((Postgres9Connection) con));
     }
 
     @Override

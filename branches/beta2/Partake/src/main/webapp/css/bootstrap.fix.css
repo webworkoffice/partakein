@@ -167,12 +167,14 @@
     padding-bottom: 10px;
 }
 
-.span1-half {
-    width: 100px;
+.span-half {
+    width: 30px;
 }
-
+.span1-half {
+    width: 110px;
+}
 .span2-half {
-    width: 180px;
+    width: 190px;
 }
 
 input.span1-half,textarea.span1-half,.uneditable-input.span1-half {
