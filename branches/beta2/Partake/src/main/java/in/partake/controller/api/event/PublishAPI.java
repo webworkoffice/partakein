@@ -11,8 +11,11 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
+import in.partake.model.dto.EventTicket;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.IEventSearchService;
+
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -25,12 +28,15 @@ public class PublishAPI extends AbstractPartakeAPI {
         String eventId = getValidEventIdParameter();
         ensureValidSessionToken();
 
-        Event event = new PublishTransaction(user, eventId).execute();
+        PublishTransaction transaction = new PublishTransaction(user, eventId);
+        Event event = transaction.execute();
+        List<EventTicket> tickets = transaction.getTickets();
+
         IEventSearchService searchService = PartakeApp.getEventSearchService();
         if (event.isPrivate())
             searchService.remove(event.getId());
         else
-            searchService.create(event);
+            searchService.create(event, tickets);
 
         return renderOK();
     }
@@ -39,6 +45,7 @@ public class PublishAPI extends AbstractPartakeAPI {
 class PublishTransaction extends Transaction<Event> {
     private UserEx user;
     private String eventId;
+    private List<EventTicket> tickets;
 
     public PublishTransaction(UserEx user, String eventId) {
         this.user = user;
@@ -66,6 +73,12 @@ class PublishTransaction extends Transaction<Event> {
         EventActivity activity = new EventActivity(eaa.getFreshId(con), event.getId(), "イベントが更新されました : " + event.getTitle(), event.getDescription(), event.getCreatedAt());
         eaa.put(con, activity);
 
+        this.tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+
         return event;
+    }
+
+    public List<EventTicket> getTickets() {
+        return this.tickets;
     }
 }

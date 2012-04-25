@@ -7,7 +7,7 @@
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
-<%@page import="in.partake.model.ParticipationList"%>
+<%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
@@ -21,7 +21,7 @@
 <%@page import="static in.partake.view.util.Helper.escapeTwitterResponse"%>
 
 <%
-    UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
+	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
     EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
 
     EventEx event = action.getEvent();
@@ -36,7 +36,7 @@
 %>
 
 <%
-    ParticipationList participationList = action.getParticipationList();
+	EventTicketHolderList participationList = action.getParticipationList();
     List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
     List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
     List<EnrollmentEx> cancelledParticipations = participationList.getCancelledParticipations();

@@ -5,7 +5,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IEventNotificationAccess;
+import in.partake.model.dao.access.IEventTicketNotificationAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9DataIterator;
@@ -16,19 +16,21 @@ import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.daoutil.DAOUtil;
-import in.partake.model.dto.EventNotification;
+import in.partake.model.dto.EventTicketNotification;
+import in.partake.model.dto.auxiliary.NotificationType;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
-class EntityEventNotificationMapper extends Postgres9EntityDataMapper<EventNotification> {
-    public EventNotification map(JSONObject obj) {
-        return new EventNotification(obj).freeze();
+class EntityEventNotificationMapper extends Postgres9EntityDataMapper<EventTicketNotification> {
+    public EventTicketNotification map(JSONObject obj) {
+        return new EventTicketNotification(obj).freeze();
     }
 }
 
-public class Postgres9EventNotificationDao extends Postgres9Dao implements IEventNotificationAccess {
+public class Postgres9EventNotificationDao extends Postgres9Dao implements IEventTicketNotificationAccess {
     static final String TABLE_NAME = "EventNotificationEntities";
     static final String INDEX_TABLE_NAME = "EventNotificationIndex";
     static final int CURRENT_VERSION = 1;
@@ -50,8 +52,9 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
 
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             // event id may be NULL if system message.
-            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, eventId TEXT NOT NULL, createdAt TIMESTAMP NOT NULL)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventId" + " ON " + INDEX_TABLE_NAME + "(eventId, createdAt)");
+            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, ticketId TEXT NOT NULL, createdAt TIMESTAMP NOT NULL)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketId" + " ON " + INDEX_TABLE_NAME + "(ticketId, createdAt)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketIdNotificationType" + " ON " + INDEX_TABLE_NAME + "(ticketId, notificationType, createdAt)");
         }
     }
 
@@ -63,7 +66,7 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
     }
 
     @Override
-    public void put(PartakeConnection con, EventNotification t) throws DAOException {
+    public void put(PartakeConnection con, EventTicketNotification t) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why User does not have createdAt and modifiedAt?
@@ -72,11 +75,14 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
             entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
-        indexDao.put(pcon, new String[] { "id", "eventId", "createdAt" }, new Object[] { t.getId(), t.getEventId(), t.getCreatedAt() } );
+
+        indexDao.put(pcon,
+        		new String[] { "id", "ticketId", "notificationType", "createdAt" },
+        		new Object[] { t.getId(), t.getTicketId().toString(), t.getNotificationType().toString(), t.getCreatedAt() } );
     }
 
     @Override
-    public EventNotification find(PartakeConnection con, String id) throws DAOException {
+    public EventTicketNotification find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
@@ -93,8 +99,8 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
     }
 
     @Override
-    public DataIterator<EventNotification> getIterator(PartakeConnection con) throws DAOException {
-        return new MapperDataIterator<Postgres9Entity, EventNotification>(mapper, entityDao.getIterator((Postgres9Connection) con));
+    public DataIterator<EventTicketNotification> getIterator(PartakeConnection con) throws DAOException {
+        return new MapperDataIterator<Postgres9Entity, EventTicketNotification>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override
@@ -103,13 +109,28 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
     }
 
     @Override
-    public List<EventNotification> findByEventId(PartakeConnection con, String eventId, int offset, int limit) throws DAOException {
+    public List<EventTicketNotification> findByTicketId(PartakeConnection con, UUID ticketId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY createdAt DESC OFFSET ? LIMIT ?",
-                new Object[] { eventId, offset, limit });
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? ORDER BY createdAt DESC OFFSET ? LIMIT ?",
+                new Object[] { ticketId.toString(), offset, limit });
 
-        Postgres9IdMapper<EventNotification> idMapper = new Postgres9IdMapper<EventNotification>((Postgres9Connection) con, mapper, entityDao);
-        return DAOUtil.convertToList(new Postgres9DataIterator<EventNotification>(idMapper, psars));
+        Postgres9IdMapper<EventTicketNotification> idMapper = new Postgres9IdMapper<EventTicketNotification>((Postgres9Connection) con, mapper, entityDao);
+        return DAOUtil.convertToList(new Postgres9DataIterator<EventTicketNotification>(idMapper, psars));
+    }
+
+    @Override
+    public EventTicketNotification findLastNotification(PartakeConnection con, UUID ticketId, NotificationType type) throws DAOException {
+    	Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
+    			"SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? AND notificationType = ? ORDER BY createdAt DESC LIMIT 1",
+    			new Object[] { ticketId, type.toString() });
+
+        Postgres9IdMapper<EventTicketNotification> idMapper = new Postgres9IdMapper<EventTicketNotification>((Postgres9Connection) con, mapper, entityDao);
+        List<EventTicketNotification> list = DAOUtil.convertToList(new Postgres9DataIterator<EventTicketNotification>(idMapper, psars));
+
+        if (list.isEmpty())
+        	return null;
+        else
+        	return list.get(0);
     }
 
     @Override

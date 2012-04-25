@@ -37,6 +37,10 @@ public enum UserErrorCode {
     INVALID_ATTENDANT_EDIT("invalid.attendant.edit"),
     EVENT_ALREADY_PUBLISHED("invalid.event.publish.already"),
 
+    // TICKET
+    INVALID_TICKET_ID("invalid.ticket.id"),
+    MISSING_TICKET_ID("invalid.ticket.id.missing"),
+
     // USER
     INVALID_USER_ID("invalid.invalid_userid"),
     MISSING_USER_ID("invalid.missing_userid"),

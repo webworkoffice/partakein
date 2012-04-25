@@ -61,7 +61,7 @@ class PostCommentTransaction extends Transaction<Void> {
         UserEx user = UserDAOFacade.getUserEx(con, daos, commentEmbryo.getUserId());
         String title = user.getScreenName() + " さんがコメントを投稿しました";
         String content = commentEmbryo.getComment();
-        eaa.put(con, new EventActivity(eaa.getFreshId(con), commentEmbryo.getEventId(), title, content, TimeUtil.toDate(commentEmbryo.getCreatedAt())));
+        eaa.put(con, new EventActivity(eaa.getFreshId(con), commentEmbryo.getEventId(), title, content, commentEmbryo.getCreatedAt()));
 
         return null;
     }

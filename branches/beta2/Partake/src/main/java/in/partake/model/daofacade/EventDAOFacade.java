@@ -16,12 +16,12 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.MessageDelivery;
-import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventSearchServiceException;
 import in.partake.service.IEventSearchService;
@@ -52,7 +52,8 @@ public class EventDAOFacade {
             }
         }
 
-        return new EventEx(event, user, feedId, relationExs);
+        List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+        return new EventEx(event, user, feedId, relationExs, tickets);
     }
 
     public static EventRelationEx getEventRelationEx(PartakeConnection con, IPartakeDAOs daos, EventRelation relation) throws DAOException {
@@ -129,12 +130,15 @@ public class EventDAOFacade {
             while (it.hasNext()) {
                 Event event = it.next();
                 if (event == null) { continue; }
+
+                List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, event.getId());
+
                 if (event.isPrivate() || event.isPreview())
                     searchService.remove(event.getId());
                 else if (searchService.hasIndexed(event.getId()))
-                    searchService.update(event);
+                    searchService.update(event, tickets);
                 else
-                    searchService.create(event);
+                    searchService.create(event, tickets);
             }
         } finally {
             it.close();
@@ -157,13 +161,18 @@ public class EventDAOFacade {
                 continue;
             }
 
-            Enrollment enrollment = daos.getEnrollmentAccess().findByEventIdAndUserId(con, relation.getEvent().getId(), user.getId());
-            ParticipationStatus status = enrollment != null ? enrollment.getStatus() : ParticipationStatus.NOT_ENROLLED;
+            boolean enrolled = false;
+            List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, relation.getEventId());
+            for (EventTicket ticket : tickets) {
+                Enrollment enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId());
+                if (enrollment != null && enrollment.getStatus().isEnrolled()) {
+                	enrolled = true;
+                	break;
+                }
+            }
 
-            if (status.isEnrolled())
-                continue;
-
-            requiredEvents.add(relation.getEvent());
+            if (!enrolled)
+            	requiredEvents.add(relation.getEvent());
         }
 
         return requiredEvents;

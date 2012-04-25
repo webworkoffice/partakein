@@ -21,13 +21,6 @@ public final class TimeUtil {
         // Prevents from instantiation.
     }
 
-    // TODO: This should be removed later.
-    public static Date toDate(DateTime dt) {
-        if (dt == null)
-            return null;
-        return new Date(dt.getTime());
-    }
-
     /**
      * Resets the current date.
      */
@@ -135,22 +128,47 @@ public final class TimeUtil {
         return new DateTime(dt.getTime() - 1000 * 3600 * 24);
     }
 
+    public static DateTime oneDayAfter(DateTime dt) {
+        return new DateTime(dt.getTime() + 1000 * 3600 * 24);
+    }
+
+    public static DateTime halfDayBefore(DateTime dt) {
+        return new DateTime(dt.getTime() - 1000 * 3600 * 12);
+    }
+
+    public static DateTime halfDayAfter(DateTime dt) {
+        return new DateTime(dt.getTime() + 1000 * 3600 * 12);
+    }
+
+    @Deprecated
     public static Date oneDayBefore(Date date) {
         return new Date(date.getTime() - 1000 * 3600 * 24);
     }
 
+    @Deprecated
     public static Date halfDayBefore(Date date) {
         return new Date(date.getTime() - 1000 * 3600 * 12);
     }
 
+    @Deprecated
     public static Date oneDayAfter(Date date) {
         return new Date(date.getTime() + 1000 * 3600 * 24);
     }
 
+    @Deprecated
     public static Date halfDayAfter(Date date) {
         return new Date(date.getTime() + 1000 * 3600 * 12);
     }
 
+    public static DateTime dateTimeFromTimeString(String timeString) {
+        try {
+            return new DateTime(Long.parseLong(timeString));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    @Deprecated
     public static Date dateFromTimeString(String timeString) {
         try {
             return new Date(Long.parseLong(timeString));
@@ -159,6 +177,11 @@ public final class TimeUtil {
         }
     }
 
+    public static String getTimeString(DateTime date) {
+        return getTimeString(date.getTime());
+    }
+
+    @Deprecated
     public static String getTimeString(Date date) {
         return getTimeString(date.getTime());
     }

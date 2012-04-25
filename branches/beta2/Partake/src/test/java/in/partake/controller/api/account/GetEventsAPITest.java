@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.IPartakeDAOs;
@@ -16,7 +17,6 @@ import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,10 +54,10 @@ public class GetEventsAPITest extends APIControllerTest {
 
                 for (int i = 0; i < N; ++i) {
                     dao.put(con, new Event(ids.get(i), "title", "summary", "category",
-                            null, new Date(i), null, 0, "url", "place",
+                            new DateTime(i), null, "url", "place",
                             "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID, TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME,
                             null, null, false, null, false, false, new ArrayList<EventRelation>(),
-                            new Date(i), new Date(i), -1));
+                            new DateTime(i), new DateTime(i), -1));
                 }
 
                 return null;

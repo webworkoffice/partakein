@@ -1,5 +1,6 @@
 package in.partake.controller.base;
 
+import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -197,6 +199,7 @@ public abstract class AbstractPartakeController implements SessionAware, Request
         }
     }
 
+    @Deprecated
     protected Date getDateParameter(String key) {
         String value = getParameter(key);
         if (value == null)
@@ -217,6 +220,20 @@ public abstract class AbstractPartakeController implements SessionAware, Request
         return null;
     }
 
+    protected DateTime getDateTimeParameter(String key) {
+        Date d = getDateParameter(key);
+        return d != null ? new DateTime(d.getTime()) : null;
+    }
+
+    protected UUID getValidUUIDParameter(String key, UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
+        String id = getParameter(key);
+        if (id == null)
+            throw new PartakeException(missing);
+        if (!Util.isUUID(id))
+            throw new PartakeException(invalid);
+
+        return UUID.fromString(id);
+    }
     protected String getValidIdParameter(String key, UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
         String id = getParameter(key);
         if (id == null)
@@ -246,7 +263,15 @@ public abstract class AbstractPartakeController implements SessionAware, Request
     }
 
     protected String getValidEventIdParameter() throws PartakeException {
-        return getValidIdParameter("eventId", UserErrorCode.MISSING_EVENT_ID, UserErrorCode.INVALID_EVENT_ID);
+    	return getValidIdParameter("eventId", UserErrorCode.MISSING_EVENT_ID, UserErrorCode.INVALID_EVENT_ID);
+    }
+
+    protected UUID getValidTicketIdParameter() throws PartakeException {
+    	return getValidUUIDParameter("ticketId", UserErrorCode.MISSING_TICKET_ID, UserErrorCode.INVALID_TICKET_ID);
+    }
+
+    protected UUID getValidTicketIdParameter(UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
+        return getValidUUIDParameter("ticketId", missing, invalid);
     }
 
     protected String getValidEventIdParameter(UserErrorCode missing, UserErrorCode invalid) throws PartakeException {

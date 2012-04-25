@@ -1,14 +1,14 @@
 package in.partake.model.dto;
 
 import in.partake.app.PartakeApp;
-import in.partake.model.dto.Event;
+import in.partake.base.DateTime;
+import in.partake.base.TimeUtil;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Date;
 
 import net.sf.json.JSONObject;
 
@@ -35,20 +35,20 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
 
     @Before
     public void createSamples() {
+        DateTime now = TimeUtil.getCurrentDateTime();
         samples = new Event[] {
-                new Event(),
                 new Event("id", "title", "summary", "category",
-                        new Date(), new Date(), new Date(), 0, "url", "place",
+                        now, now, "url", "place",
                         "address", "description", "#hashTag", "ownerId", null,
                         "foreImageId", "backImageId", true, "passcode", false, false,
                         new ArrayList<EventRelation>(),
-                        new Date(), new Date(), -1),
+                        now, now, -1),
                 new Event("id2", "title2", "summary2", "category2",
-                        new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
+                        now, now, "url2", "place2",
                         "address2", "description2", "#hashTag2", "ownerId2", "hoge,fuga",
                         "foreImageId2", "backImageId2", false, "passcode2", false, false,
                         new ArrayList<EventRelation>(),
-                        new Date(4), new Date(5), 1)
+                        now, now, 1)
         };
     }
 
@@ -62,10 +62,8 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
             Assert.assertEquals(source.getTitle(), new Event(source).getTitle());
             Assert.assertEquals(source.getSummary(), new Event(source).getSummary());
             Assert.assertEquals(source.getCategory(), new Event(source).getCategory());
-            Assert.assertEquals(source.getDeadline(), new Event(source).getDeadline());
             Assert.assertEquals(source.getBeginDate(), new Event(source).getBeginDate());
             Assert.assertEquals(source.getEndDate(), new Event(source).getEndDate());
-            Assert.assertEquals(source.getCapacity(), new Event(source).getCapacity());
             Assert.assertEquals(source.getUrl(), new Event(source).getUrl());
             Assert.assertEquals(source.getPlace(), new Event(source).getPlace());
             Assert.assertEquals(source.getAddress(), new Event(source).getAddress());
@@ -82,9 +80,6 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
             Assert.assertEquals(source.getModifiedAt(), new Event(source).getModifiedAt());
             Assert.assertEquals(source.getRevision(), new Event(source).getRevision());
 
-            if (source.getDeadline() != null) {
-                Assert.assertNotSame(source.getDeadline(), new Event(source).getDeadline());
-            }
             if (source.getBeginDate() != null) {
                 Assert.assertNotSame(source.getBeginDate(), new Event(source).getBeginDate());
             }
@@ -189,7 +184,7 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
     @Test
     public void testToJsonWhenBeginDateExistsAndEndDateIsNull() {
         Event event = new Event();
-        event.setBeginDate(new Date(0L));
+        event.setBeginDate(new DateTime(0L));
         JSONObject json = event.toSafeJSON();
         Assert.assertEquals("1970/01/01 09:00:00", json.getString("beginDate"));
         Assert.assertFalse(json.containsKey("endDate"));

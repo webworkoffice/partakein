@@ -1,6 +1,7 @@
 package in.partake.controller.api.user;
 
 import in.partake.base.PartakeException;
+import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.IPartakeDAOs;
@@ -14,6 +15,7 @@ import in.partake.model.dao.aux.EventFilterCondition;
 import in.partake.model.dao.aux.EventStatus;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.UserErrorCode;
@@ -98,10 +100,12 @@ class GetEventsTransaction extends DBAccess<Void> {
             if (event == null)
                 continue;
 
-            int numEnrolledUsers = enrollmentAccess.countParticipants(con, event.getId(), ParticipationStatus.ENROLLED);
-            int numReservedUsers = enrollmentAccess.countParticipants(con, event.getId(), ParticipationStatus.RESERVED);
-            int numCancelledUsers = enrollmentAccess.countParticipants(con, event.getId(), ParticipationStatus.CANCELLED);
-            eventStatuses.add(new EventStatus(event, numEnrolledUsers, numReservedUsers, numCancelledUsers));
+            List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, event.getId());
+            boolean isBeforeDeadline = event.getDeadlineOfAllTickets(tickets).isBefore(TimeUtil.getCurrentDateTime());
+            int numEnrolledUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.ENROLLED);
+            int numReservedUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.RESERVED);
+            int numCancelledUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.CANCELLED);
+            eventStatuses.add(new EventStatus(event, isBeforeDeadline, numEnrolledUsers, numReservedUsers, numCancelledUsers));
         }
 
         return null;

@@ -3,7 +3,7 @@ package in.partake.base;
 import java.util.Date;
 
 // Since java.util.Date is mutable, We prefer to use DateTime instead.
-public class DateTime {
+public final class DateTime implements Comparable<DateTime> {
     private long millis;
 
     public DateTime(long millis) {
@@ -14,7 +14,7 @@ public class DateTime {
         return millis;
     }
 
-    public Date getDate() {
+    public Date toDate() {
         return new Date(millis);
     }
 
@@ -34,9 +34,22 @@ public class DateTime {
         return (int) millis;
     }
 
+    @Override
+    public int compareTo(DateTime rhs) {
+        DateTime lhs = this;
+        if (lhs.millis < rhs.millis)
+            return -1;
+        else if (lhs.millis == rhs.millis)
+            return 0;
+        else
+            return 1;
+    }
+
     public boolean isBefore(DateTime dt) {
         return millis < dt.millis;
     }
 
-
+    public boolean isAfter(DateTime dt) {
+        return dt.millis < millis;
+    }
 }

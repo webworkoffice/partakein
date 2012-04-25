@@ -18,20 +18,20 @@ public class UserNotificationTestDataProvider extends TestDataProvider<UserNotif
     @Override
     public UserNotification create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, pkSalt.hashCode());
-        return new UserNotification(uuid.toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(objNumber), null);
+        return new UserNotification(uuid.toString(), new UUID(1, 0), "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(objNumber), null);
     }
 
     @Override
     public List<UserNotification> createSamples() {
         List<UserNotification> array = new ArrayList<UserNotification>();
-        array.add(new UserNotification(new UUID(0, 0).toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), null));
-        array.add(new UserNotification(new UUID(0, 1).toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), null));
-        array.add(new UserNotification(new UUID(0, 0).toString(), "eventId1", "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), null));
-        array.add(new UserNotification(new UUID(0, 0).toString(), "eventId", "userId1", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), null));
-        array.add(new UserNotification(new UUID(0, 0).toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_ENROLLED, MessageDelivery.SUCCESS, new DateTime(0), null));
-        array.add(new UserNotification(new UUID(0, 0).toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.FAIL, new DateTime(0), null));
-        array.add(new UserNotification(new UUID(0, 0).toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(1), null));
-        array.add(new UserNotification(new UUID(0, 0).toString(), "eventId", "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), new DateTime(1)));
+        array.add(new UserNotification(new UUID(0, 0).toString(), new UUID(1, 0), "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), null));
+        array.add(new UserNotification(new UUID(0, 1).toString(), new UUID(1, 0), "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), null));
+        array.add(new UserNotification(new UUID(0, 0).toString(), new UUID(1, 1), "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), null));
+        array.add(new UserNotification(new UUID(0, 0).toString(), new UUID(1, 0), "userId1", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), null));
+        array.add(new UserNotification(new UUID(0, 0).toString(), new UUID(1, 0), "userId", NotificationType.BECAME_TO_BE_ENROLLED, MessageDelivery.SUCCESS, new DateTime(0), null));
+        array.add(new UserNotification(new UUID(0, 0).toString(), new UUID(1, 0), "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.FAIL, new DateTime(0), null));
+        array.add(new UserNotification(new UUID(0, 0).toString(), new UUID(1, 0), "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(1), null));
+        array.add(new UserNotification(new UUID(0, 0).toString(), new UUID(1, 0), "userId", NotificationType.BECAME_TO_BE_CANCELLED, MessageDelivery.SUCCESS, new DateTime(0), new DateTime(1)));
         return array;
     }
 
@@ -39,6 +39,6 @@ public class UserNotificationTestDataProvider extends TestDataProvider<UserNotif
         IUserNotificationAccess dao = daos.getUserNotificationAccess();
         dao.truncate(con);
 
-        dao.put(con, new UserNotification(USER_NOTIFICATION_INQUEUE_ID, DEFAULT_EVENT_ID, DEFAULT_USER_ID, NotificationType.EVENT_ONEDAY_BEFORE_REMINDER, MessageDelivery.INQUEUE, new DateTime(0), null));
+        dao.put(con, new UserNotification(USER_NOTIFICATION_INQUEUE_ID, DEFAULT_EVENT_TICKET_ID, DEFAULT_USER_ID, NotificationType.EVENT_ONEDAY_BEFORE_REMINDER, MessageDelivery.INQUEUE, new DateTime(0), null));
     }
 }

@@ -21,7 +21,8 @@ import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventNotification;
+import in.partake.model.dto.EventTicketNotification;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.ImageData;
 import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.ThumbnailData;
@@ -285,6 +286,15 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
+    protected void storeEventTicket(final EventTicket ticket) throws DAOException, PartakeException {
+        new Transaction<Void>() {
+            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException ,PartakeException {
+                daos.getEventTicketAccess().put(con, ticket);
+                return null;
+            };
+        }.execute();
+    }
+
     protected List<String> loadOpenIDIdentifiers(final String userId) throws DAOException, PartakeException {
         return new DBAccess<List<String>>() {
             @Override
@@ -324,20 +334,20 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
-    protected Enrollment loadEnrollment(final String userId, final String eventId) throws DAOException, PartakeException {
+    protected Enrollment loadEnrollment(final String userId, final UUID ticketId) throws DAOException, PartakeException {
         return new DBAccess<Enrollment>() {
             @Override
             protected Enrollment doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-                return daos.getEnrollmentAccess().findByEventIdAndUserId(con, eventId, userId);
+                return daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, userId);
             }
         }.execute();
     }
 
-    protected List<EventNotification> loadEventNotificationsByEventId(final String eventId) throws Exception {
-        return new DBAccess<List<EventNotification>>() {
+    protected List<EventTicketNotification> loadEventTicketNotificationsByEventId(final UUID ticketId) throws Exception {
+        return new DBAccess<List<EventTicketNotification>>() {
             @Override
-            protected List<EventNotification> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-                return daos.getEventNotificationAccess().findByEventId(con, eventId, 0, Integer.MAX_VALUE);
+            protected List<EventTicketNotification> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getEventNotificationAccess().findByTicketId(con, ticketId, 0, Integer.MAX_VALUE);
             }
         }.execute();
     }

@@ -5,7 +5,7 @@
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
 <%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
-<%@page import="in.partake.model.ParticipationList"%>
+<%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>

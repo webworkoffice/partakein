@@ -9,9 +9,8 @@ import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventMessageAccess;
-import in.partake.model.dao.access.IEventNotificationAccess;
-import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IEventTicketAccess;
+import in.partake.model.dao.access.IEventTicketNotificationAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IMessageEnvelopeAccess;
@@ -34,7 +33,6 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     private final ICommentAccess commentAccess;
     private final IEnrollmentAccess enrollmentAccess;
     private final IEventAccess eventAccess;
-    private final IEventReminderAccess eventReminderAccess;
     private final IEventFeedAccess eventFeedAccess;
     private final IEventActivityAccess eventActivityAccess;
     private final IEventTicketAccess eventTicketAccess;
@@ -46,7 +44,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     private final IUserPreferenceAccess userPreferenceAccess;
     private final IEventMessageAccess eventMessageAccess;
     private final IUserReceivedMessageAccess userMessageAccess;
-    private final IEventNotificationAccess eventNotificationMessageAccess;
+    private final IEventTicketNotificationAccess eventNotificationMessageAccess;
     private final IMessageAccess messageAccess;
     private final IMessageEnvelopeAccess messageEnvelopeAccess;
     private final ITwitterMessageAccess twitterMessageAccess;
@@ -63,7 +61,6 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         addDao(commentAccess         = createCommentAccess());
         addDao(enrollmentAccess      = createEnrollmentAccess());
         addDao(eventAccess           = createEventAccess());
-        addDao(eventReminderAccess   = createEventReminderAccess());
         addDao(eventFeedAccess       = createEventFeedAccess());
         addDao(eventActivityAccess   = createEventActivityAccess());
         addDao(eventTicketAccess     = createEventTicketAccess());
@@ -111,10 +108,6 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
 
     public final ICommentAccess getCommentAccess() {
         return commentAccess;
-    }
-
-    public final IEventReminderAccess getEventReminderAccess() {
-        return eventReminderAccess;
     }
 
     public final IEnrollmentAccess getEnrollmentAccess() {
@@ -173,7 +166,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         return userMessageAccess;
     }
 
-    public final IEventNotificationAccess getEventNotificationAccess() {
+    public final IEventTicketNotificationAccess getEventNotificationAccess() {
         return eventNotificationMessageAccess;
     }
 
@@ -206,7 +199,6 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     protected abstract IEnrollmentAccess createEnrollmentAccess();
     protected abstract IEventAccess createEventAccess();
     protected abstract IEventTicketAccess createEventTicketAccess();
-    protected abstract IEventReminderAccess createEventReminderAccess();
     protected abstract IEventFeedAccess createEventFeedAccess();
     protected abstract IEventActivityAccess createEventActivityAccess();
     protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
@@ -217,7 +209,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     protected abstract IUserPreferenceAccess createUserPreferenceAccess();
     protected abstract IEventMessageAccess createEventMessageAccess();
     protected abstract IUserReceivedMessageAccess createUserReceivedMessageAccess();
-    protected abstract IEventNotificationAccess createEventNotificationAccess();
+    protected abstract IEventTicketNotificationAccess createEventNotificationAccess();
     protected abstract IMessageAccess createMessageAccess();
     protected abstract ITwitterMessageAccess createTwitterMessageAccess();
     protected abstract IMessageEnvelopeAccess createMessageEnvelopeAccess();

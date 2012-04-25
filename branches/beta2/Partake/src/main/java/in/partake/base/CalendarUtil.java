@@ -32,7 +32,7 @@ public class CalendarUtil {
         TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
         JST_TIMEZONE = registry.getTimeZone("Asia/Tokyo");
     }
-    
+
     public static Calendar createCalendarSkeleton() {
         Calendar calendar = new Calendar();
 
@@ -75,9 +75,9 @@ public class CalendarUtil {
         // modified
         DateTime modifiedAt = null;
         if (event.getModifiedAt() != null) {
-            modifiedAt = new DateTime(event.getModifiedAt());
+            modifiedAt = new DateTime(event.getModifiedAt().getTime());
         } else if (event.getCreatedAt() != null){
-            modifiedAt = new DateTime(event.getCreatedAt());
+            modifiedAt = new DateTime(event.getCreatedAt().getTime());
         }
         if (modifiedAt != null) {
             modifiedAt.setTimeZone(JST_TIMEZONE);

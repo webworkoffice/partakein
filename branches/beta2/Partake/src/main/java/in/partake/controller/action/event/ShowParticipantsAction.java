@@ -3,15 +3,18 @@ package in.partake.controller.action.event;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.EventEx;
-import in.partake.model.ParticipationList;
+import in.partake.model.EventTicketHolderList;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
+
+import java.util.Map;
+import java.util.UUID;
 
 public class ShowParticipantsAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
 
     private EventEx event;
-    private ParticipationList participationList;
+    private Map<UUID, EventTicketHolderList> ticketHolderListMap;
 
     @Override
     protected String doExecute() throws DAOException, PartakeException {
@@ -20,18 +23,18 @@ public class ShowParticipantsAction extends AbstractPartakeAction {
 
         ParticipantsListTransaction transaction = new ParticipantsListTransaction(user, eventId);
         transaction.execute();
-        
+
         event = transaction.getEvent();
-        participationList = transaction.getParticipationList();
+        ticketHolderListMap = transaction.getTicketHolderListMap();
 
         return render("events/participants/show.jsp");
     }
-    
+
     public EventEx getEvent() {
         return event;
     }
-    
-    public ParticipationList getParticipationList() {
-        return participationList;
+
+    public Map<UUID, EventTicketHolderList> getTicketHolderListMap() {
+        return ticketHolderListMap;
     }
 }

@@ -1,10 +1,11 @@
 package in.partake.model.dto;
 
+import in.partake.base.DateTime;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
-import java.util.Date;
+import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
@@ -13,13 +14,14 @@ import org.apache.commons.lang.ObjectUtils;
 public class Enrollment extends PartakeModel<Enrollment> {
     private String id;
     private String userId;
-    private String eventId;
+    private UUID ticketId;
+    private String eventId; // Note: this is a bit redundant, but this will reduce DB access a lot.
     private String comment;
     private boolean vip;
     private ParticipationStatus status;
     private ModificationStatus modificationStatus;
     private AttendanceStatus attendanceStatus;
-    private Date modifiedAt; // TODO: should be renamed to enrolledAt.
+    private DateTime modifiedAt; // TODO: should be renamed to enrolledAt.
 
     // ----------------------------------------------------------------------
     // constructors
@@ -28,11 +30,12 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.vip = false;
     }
 
-    public Enrollment(String id, String userId, String eventId, String comment,
+    public Enrollment(String id, String userId, UUID ticketId, String eventId, String comment,
             ParticipationStatus status, boolean vip, ModificationStatus modificationStatus,
-            AttendanceStatus attendanceStatus, Date modifiedAt) {
+            AttendanceStatus attendanceStatus, DateTime modifiedAt) {
         this.id = id;
         this.userId = userId;
+        this.ticketId = ticketId;
         this.eventId = eventId;
         this.comment = comment;
         this.status = status;
@@ -45,18 +48,20 @@ public class Enrollment extends PartakeModel<Enrollment> {
     public Enrollment(Enrollment p) {
         this.id = p.id;
         this.userId = p.userId;
+        this.ticketId = p.ticketId;
         this.eventId = p.eventId;
         this.comment = p.comment;
         this.status = p.status;
         this.vip = p.vip;
         this.modificationStatus = p.modificationStatus;
         this.attendanceStatus = p.attendanceStatus;
-        this.modifiedAt = p.modifiedAt == null ? null : (Date) p.modifiedAt.clone();
+        this.modifiedAt = p.modifiedAt;
     }
 
     public Enrollment(JSONObject obj) {
         this.id = obj.getString("id");
         this.userId = obj.getString("userId");
+        this.ticketId = UUID.fromString(obj.getString("ticketId"));
         this.eventId = obj.getString("eventId");
         this.comment = obj.getString("comment");
         this.vip = obj.getBoolean("vip");
@@ -64,7 +69,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.modificationStatus = ModificationStatus.safeValueOf(obj.getString("modificationStatus"));
         this.attendanceStatus = AttendanceStatus.safeValueOf(obj.getString("attendanceStatus"));
         if (obj.containsKey("modifiedAt"))
-            this.modifiedAt = new Date(obj.getLong("modifiedAt"));
+            this.modifiedAt = new DateTime(obj.getLong("modifiedAt"));
     }
 
     @Override
@@ -77,6 +82,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
         obj.put("userId", userId);
+        obj.put("ticketId", ticketId);
         obj.put("eventId", eventId);
         obj.put("comment", comment);
         obj.put("vip", vip);
@@ -99,6 +105,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
 
         if (!ObjectUtils.equals(lhs.id,                 rhs.id))                 { return false; }
         if (!ObjectUtils.equals(lhs.userId,             rhs.userId))             { return false; }
+        if (!ObjectUtils.equals(lhs.ticketId,           rhs.ticketId))           { return false; }
         if (!ObjectUtils.equals(lhs.eventId,            rhs.eventId))            { return false; }
         if (!ObjectUtils.equals(lhs.comment,            rhs.comment))            { return false; }
         if (!ObjectUtils.equals(lhs.vip,                rhs.vip))                { return false; }
@@ -115,6 +122,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
 
         hashCode = hashCode * 37 + ObjectUtils.hashCode(id);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(userId);
+        hashCode = hashCode * 37 + ObjectUtils.hashCode(ticketId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(eventId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(comment);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(vip);
@@ -135,6 +143,10 @@ public class Enrollment extends PartakeModel<Enrollment> {
 
     public String getUserId() {
         return userId;
+    }
+
+    public UUID getTicketId() {
+        return ticketId;
     }
 
     public String getEventId() {
@@ -167,7 +179,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         return vip;
     }
 
-    public Date getModifiedAt() {
+    public DateTime getModifiedAt() {
         return modifiedAt;
     }
 
@@ -179,6 +191,16 @@ public class Enrollment extends PartakeModel<Enrollment> {
     public void setUserId(String userId) {
         checkFrozen();
         this.userId = userId;
+    }
+
+    public void setTicketId(UUID ticketId) {
+        checkFrozen();
+        this.ticketId = ticketId;
+    }
+
+    public void setEventId(String eventId) {
+        checkFrozen();
+        this.eventId = eventId;
     }
 
     public void setComment(String comment) {
@@ -206,7 +228,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         this.attendanceStatus = attendanceStatus;
     }
 
-    public void setModifiedAt(Date modifiedAt) {
+    public void setModifiedAt(DateTime modifiedAt) {
         checkFrozen();
         this.modifiedAt = modifiedAt;
     }

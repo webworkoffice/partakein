@@ -17,7 +17,7 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToPresence() throws Exception {
         //
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }
 
@@ -34,7 +34,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
         // Check status is changed.
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
     }
@@ -43,7 +43,7 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToAbsence() throws Exception {
         //
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
         }
 
@@ -60,7 +60,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
         // Check status is changed.
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }
     }
@@ -69,7 +69,7 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToUnknown() throws Exception {
         //
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
 
@@ -86,7 +86,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
         // Check status is changed.
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_ID);
+            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
         }
     }

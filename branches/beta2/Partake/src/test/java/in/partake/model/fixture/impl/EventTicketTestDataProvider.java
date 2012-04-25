@@ -18,20 +18,24 @@ public class EventTicketTestDataProvider extends TestDataProvider<EventTicket> {
     @Override
     public EventTicket create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, ("eventticket" + pkSalt).hashCode());
-        return new EventTicket(uuid, DEFAULT_EVENT_ID, "name", TicketType.FREE_TICKET, 0, new DateTime(objNumber), null);
+        return new EventTicket(uuid, DEFAULT_EVENT_ID, "name", TicketType.FREE_TICKET, 0,
+                new DateTime(0L), new DateTime(1L), new DateTime(objNumber), null);
+
     }
 
     @Override
     public List<EventTicket> createSamples() {
         List<EventTicket> list = new ArrayList<EventTicket>();
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 1), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId1", "name", TicketType.FREE_TICKET, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name1", TicketType.FREE_TICKET, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.UNKNOWN_TICKET, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 1, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(1), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(0), new DateTime(1)));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(0L), new DateTime(1L), new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 1), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(0L), new DateTime(1L), new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId1", "name", TicketType.FREE_TICKET, 0, new DateTime(0L), new DateTime(1L), new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", "name1", TicketType.FREE_TICKET, 0, new DateTime(0L), new DateTime(1L), new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.UNKNOWN_TICKET, 0, new DateTime(0L), new DateTime(1L), new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 1, new DateTime(0L), new DateTime(1L), new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(1L), new DateTime(1L), new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(0L), new DateTime(2L), new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(0L), new DateTime(1L), new DateTime(1), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketType.FREE_TICKET, 0, new DateTime(0L), new DateTime(1L), new DateTime(0), new DateTime(1)));
 
         return list;
     }
@@ -41,10 +45,10 @@ public class EventTicketTestDataProvider extends TestDataProvider<EventTicket> {
         IEventTicketAccess dao = daos.getEventTicketAccess();
         dao.truncate(con);
 
-        dao.put(con, new EventTicket(DEFAULT_EVENT_TICKET_ID, DEFAULT_EVENT_ID, "name", TicketType.FREE_TICKET, 0, new DateTime(0), null));
-        dao.put(con, new EventTicket(PRIVATE_EVENT_TICKET_ID, PRIVATE_EVENT_ID, "name", TicketType.FREE_TICKET, 0, new DateTime(0), null));
-        dao.put(con, new EventTicket(JAPANESE_EVENT_TICKET_ID, JAPANESE_EVENT_ID, "name", TicketType.FREE_TICKET, 0, new DateTime(0), null));
-        dao.put(con, new EventTicket(UNIQUEIDENTIFIER_EVENT_TICKET_ID, UNIQUEIDENTIFIER_EVENT_ID, "name", TicketType.FREE_TICKET, 0, new DateTime(0), null));
-        dao.put(con, new EventTicket(UNPUBLISHED_EVENT_TICKET_ID, UNPUBLISHED_EVENT_ID, "name", TicketType.FREE_TICKET, 0, new DateTime(0), null));
+        dao.put(con, new EventTicket(DEFAULT_EVENT_TICKET_ID, DEFAULT_EVENT_ID, "name", TicketType.FREE_TICKET, 0, null, null, new DateTime(0), null));
+        dao.put(con, new EventTicket(PRIVATE_EVENT_TICKET_ID, PRIVATE_EVENT_ID, "name", TicketType.FREE_TICKET, 0, null, null,new DateTime(0), null));
+        dao.put(con, new EventTicket(JAPANESE_EVENT_TICKET_ID, JAPANESE_EVENT_ID, "name", TicketType.FREE_TICKET, 0, null, null,new DateTime(0), null));
+        dao.put(con, new EventTicket(UNIQUEIDENTIFIER_EVENT_TICKET_ID, UNIQUEIDENTIFIER_EVENT_ID, "name", TicketType.FREE_TICKET, 0, null, null,new DateTime(0), null));
+        dao.put(con, new EventTicket(UNPUBLISHED_EVENT_TICKET_ID, UNPUBLISHED_EVENT_ID, "name", TicketType.FREE_TICKET, 0, null, null, new DateTime(0), null));
     }
 }

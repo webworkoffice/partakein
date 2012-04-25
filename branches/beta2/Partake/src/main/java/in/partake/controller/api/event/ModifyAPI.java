@@ -12,6 +12,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.ImageDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.IEventSearchService;
@@ -35,16 +36,19 @@ public class ModifyAPI extends AbstractEventEditAPI {
 
         Event embryo = new Event();
         embryo.setPreview(draft);
-        embryo.setCreatedAt(TimeUtil.getCurrentDate());
+        embryo.setCreatedAt(TimeUtil.getCurrentDateTime());
 
         List<EventRelation> relations = new ArrayList<EventRelation>();
+        List<EventTicket> tickets = new ArrayList<EventTicket>();
+
         JSONObject invalidParameters = new JSONObject();
         updateEventFromParameter(user, embryo, invalidParameters);
+        updateTicketsFromParameter(user, tickets, invalidParameters);
         updateEventRelationFromParameter(user, relations, invalidParameters);
         if (!invalidParameters.isEmpty())
             return renderInvalid(UserErrorCode.INVALID_PARAMETERS, invalidParameters);
 
-        new ModifyTransaction(user, eventId, embryo, relations).execute();
+        new ModifyTransaction(user, eventId, embryo, relations, tickets).execute();
 
         // private でなければ Lucene にデータ挿入して検索ができるようにする
         embryo.setId(eventId);
@@ -52,9 +56,9 @@ public class ModifyAPI extends AbstractEventEditAPI {
         if (embryo.isPrivate() || embryo.isPreview())
             searchService.remove(eventId);
         else if (searchService.hasIndexed(eventId))
-            searchService.update(embryo);
+            searchService.update(embryo, tickets);
         else
-            searchService.create(embryo);
+            searchService.create(embryo, tickets);
 
         JSONObject obj = new JSONObject();
         obj.put("eventId", eventId);
@@ -67,12 +71,14 @@ class ModifyTransaction extends Transaction<Void> {
     private String eventId;
     private Event embryo;
     private List<EventRelation> relations;
+    private List<EventTicket> tickets;
 
-    public ModifyTransaction(UserEx user, String eventId, Event embryo, List<EventRelation> relations) {
+    public ModifyTransaction(UserEx user, String eventId, Event embryo, List<EventRelation> relations, List<EventTicket> tickets) {
         this.user = user;
         this.eventId = eventId;
         this.embryo = embryo;
         this.relations = relations;
+        this.tickets = tickets;
     }
 
     @Override
@@ -100,7 +106,7 @@ class ModifyTransaction extends Transaction<Void> {
         embryo.setPreview(draft);
         embryo.setOwnerId(event.getOwnerId());
         embryo.setCreatedAt(event.getCreatedAt());
-        embryo.setModifiedAt(TimeUtil.getCurrentDate());
+        embryo.setModifiedAt(TimeUtil.getCurrentDateTime());
         embryo.setRelations(relations);
 
         EventDAOFacade.modify(con, daos, embryo);
@@ -108,7 +114,7 @@ class ModifyTransaction extends Transaction<Void> {
         // private でなければ Lucene にデータ挿入して検索ができるようにする
         if (!embryo.isPrivate() && !embryo.isPreview()) {
             IEventSearchService searchService = PartakeApp.getEventSearchService();
-            searchService.create(embryo);
+            searchService.create(embryo, tickets);
         }
 
         return null;

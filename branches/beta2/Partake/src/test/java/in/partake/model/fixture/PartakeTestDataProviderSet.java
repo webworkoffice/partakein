@@ -9,9 +9,8 @@ import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
 import in.partake.model.fixture.impl.EventActivityTestDataProvider;
 import in.partake.model.fixture.impl.EventFeedTestDataProvider;
 import in.partake.model.fixture.impl.EventMessageTestDataProvider;
-import in.partake.model.fixture.impl.EventNotificationTestDataProvider;
-import in.partake.model.fixture.impl.EventReminderTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
+import in.partake.model.fixture.impl.EventTicketNotificationTestDataProvider;
 import in.partake.model.fixture.impl.EventTicketTestDataProvider;
 import in.partake.model.fixture.impl.ImageTestDataProvider;
 import in.partake.model.fixture.impl.MessageEnvelopeTestDataProvider;
@@ -40,7 +39,6 @@ public class PartakeTestDataProviderSet {
     private CommentTestDataProvider commentDataprovider;
     private EnrollmentTestDataProvider enrollmentProvider;
     private EventTestDataProvider eventProvider;
-    private EventReminderTestDataProvider eventReminderProvider;
     private ImageTestDataProvider imageProvider;
     private OpenIDLinkageTestDataProvider openIDLinkageProvider;
     private TwitterLinkageTestDataProvider twitterLinkageProvider;
@@ -52,7 +50,7 @@ public class PartakeTestDataProviderSet {
     private EventActivityTestDataProvider eventActivityProvider;
     private EventFeedTestDataProvider eventFeedProvider;
     private EventMessageTestDataProvider eventMessageProvider;
-    private EventNotificationTestDataProvider eventNotificationProvider;
+    private EventTicketNotificationTestDataProvider eventTicketNotificationProvider;
     private EventTicketTestDataProvider eventTicketProvider;
     private MessageTestDataProvider messageProvider;
     private MessageEnvelopeTestDataProvider messageEnvelopeProvider;
@@ -66,7 +64,6 @@ public class PartakeTestDataProviderSet {
         providers.add(commentDataprovider = createCommentTestDataProvider());
         providers.add(enrollmentProvider = createEnrollmentTestDataProvider());
         providers.add(eventProvider = createEventTestDataProvider());
-        providers.add(eventReminderProvider = createEventReminderTestDataProvider());
         providers.add(imageProvider = createImageTestDataProvider());
         providers.add(openIDLinkageProvider = createOpenIDLinkageTestDataProvider());
         providers.add(twitterLinkageProvider = createTwitterLinkageTestDataProvider());
@@ -75,7 +72,7 @@ public class PartakeTestDataProviderSet {
         providers.add(eventActivityProvider = createEventActivityTestDataProvider());
         providers.add(eventFeedProvider = createEventFeedTestDataProvider());
         providers.add(eventMessageProvider = createEventMessageTestDataProvider());
-        providers.add(eventNotificationProvider = createEventNotificationTestDataProvider());
+        providers.add(eventTicketNotificationProvider = createEventNotificationTestDataProvider());
         providers.add(eventTicketProvider = createEventTicketTestDataProvider());
         providers.add(messageProvider = createMessageTestDataProvider());
         providers.add(messageEnvelopeProvider = createMessageEnvelopeTestDataProvider());
@@ -106,10 +103,6 @@ public class PartakeTestDataProviderSet {
 
     public EventTestDataProvider getEventProvider() {
         return eventProvider;
-    }
-
-    public EventReminderTestDataProvider getEventReminderProvider() {
-        return eventReminderProvider;
     }
 
     public EventTicketTestDataProvider getEventTicketProvider() {
@@ -148,8 +141,8 @@ public class PartakeTestDataProviderSet {
         return eventMessageProvider;
     }
 
-    public EventNotificationTestDataProvider getEventNotificationProvider() {
-        return eventNotificationProvider;
+    public EventTicketNotificationTestDataProvider getEventTicketNotificationProvider() {
+        return eventTicketNotificationProvider;
     }
 
     public MessageTestDataProvider getMessageProvider() {
@@ -196,10 +189,6 @@ public class PartakeTestDataProviderSet {
         return new EventTestDataProvider();
     }
 
-    private EventReminderTestDataProvider createEventReminderTestDataProvider() {
-        return new EventReminderTestDataProvider();
-    }
-
     private ImageTestDataProvider createImageTestDataProvider() {
         return new ImageTestDataProvider();
     }
@@ -232,8 +221,8 @@ public class PartakeTestDataProviderSet {
         return new EventMessageTestDataProvider();
     }
 
-    private EventNotificationTestDataProvider createEventNotificationTestDataProvider() {
-        return new EventNotificationTestDataProvider();
+    private EventTicketNotificationTestDataProvider createEventNotificationTestDataProvider() {
+        return new EventTicketNotificationTestDataProvider();
     }
 
     private MessageTestDataProvider createMessageTestDataProvider() {

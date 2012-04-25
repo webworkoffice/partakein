@@ -15,11 +15,12 @@ import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
+import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
@@ -55,9 +56,12 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
         entityDao.initialize(pcon);
 
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
-            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL, eventId TEXT NOT NULL, enrolledAt TIMESTAMP NOT NULL)");
-            indexDao.createIndex(pcon, "CREATE UNIQUE INDEX " + INDEX_TABLE_NAME + "UserIdEventId" + " ON " + INDEX_TABLE_NAME + "(userId, eventId)");
+            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL, ticketId TEXT NOT NULL, eventId TEXT NOT NULL, status, enrolledAt TIMESTAMP NOT NULL)");
+            indexDao.createIndex(pcon, "CREATE UNIQUE INDEX " + INDEX_TABLE_NAME + "UserIdTicketId" + " ON " + INDEX_TABLE_NAME + "(userId, ticketId)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketId" + " ON " + INDEX_TABLE_NAME + "(ticketId, enrolledAt)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketIdStatus" + " ON " + INDEX_TABLE_NAME + "(ticketId, status, enrolledAt)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventId" + " ON " + INDEX_TABLE_NAME + "(eventId, enrolledAt)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventIdStatus" + " ON " + INDEX_TABLE_NAME + "(ticketId, status, enrolledAt)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "UserId" + " ON " + INDEX_TABLE_NAME + "(userId, enrolledAt)");
         }
     }
@@ -80,7 +84,9 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
             entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
-        indexDao.put(pcon, new String[] { "id", "userId", "eventId", "enrolledAt" } , new Object[] { t.getId(), t.getUserId(), t.getEventId(), t.getModifiedAt() });
+        indexDao.put(pcon,
+                new String[] { "id", "userId", "ticketId", "eventId", "status", "enrolledAt" },
+                new Object[] { t.getId(), t.getUserId(), t.getTicketId().toString(), t.getEventId(), t.getStatus().toString(), t.getModifiedAt() });
     }
 
     @Override
@@ -106,9 +112,9 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
     }
 
     @Override
-    public Enrollment findByEventIdAndUserId(PartakeConnection con, String eventId, String userId) throws DAOException {
+    public Enrollment findByTicketIdAndUserId(PartakeConnection con, UUID ticketId, String userId) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "userId", "eventId" }, new Object[] { userId, eventId });
+        String id = indexDao.find(pcon, "id", new String[] { "userId", "ticketId" }, new Object[] { userId, ticketId.toString() });
         if (id == null)
             return null;
 
@@ -116,9 +122,9 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
     }
 
     @Override
-    public void removeByEventIdAndUserId(PartakeConnection con, String eventId, String userId) throws DAOException {
+    public void removeByEventTicketIdAndUserId(PartakeConnection con, UUID eventTicketId, String userId) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", new String[] { "userId", "eventId" }, new Object[] { userId, eventId });
+        String id = indexDao.find(pcon, "id", new String[] { "userId", "ticketId" }, new Object[] { userId, eventTicketId.toString() });
         if (id == null)
             return;
 
@@ -126,29 +132,14 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
     }
 
     @Override
-    public List<Enrollment> findByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public List<Enrollment> findByTicketId(PartakeConnection con, UUID eventTicketId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ?",
-                new Object[] { eventId });
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? ORDER BY enrolledAt DESC OFFSET ? LIMIT ?",
+                new Object[] { eventTicketId.toString(), offset, limit });
 
         Postgres9IdMapper<Enrollment> idMapper = new Postgres9IdMapper<Enrollment>((Postgres9Connection) con, mapper, entityDao);
-
-
-        try {
-            DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
-
-            ArrayList<Enrollment> rels = new ArrayList<Enrollment>();
-            while (it.hasNext()) {
-                Enrollment rel = it.next();
-                if (rel == null)
-                    continue;
-                rels.add(rel.freeze());
-            }
-
-            return rels;
-        } finally {
-            psars.close();
-        }
+        DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
+        return DAOUtil.freeze(DAOUtil.convertToList(it));
     }
 
     @Override
@@ -158,49 +149,10 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
                 new Object[] { eventId, offset, limit });
 
         Postgres9IdMapper<Enrollment> idMapper = new Postgres9IdMapper<Enrollment>((Postgres9Connection) con, mapper, entityDao);
-
-
-        try {
-            DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
-
-            ArrayList<Enrollment> rels = new ArrayList<Enrollment>();
-            while (it.hasNext()) {
-                Enrollment rel = it.next();
-                if (rel == null)
-                    continue;
-                rels.add(rel.freeze());
-            }
-
-            return rels;
-        } finally {
-            psars.close();
-        }
+        DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
+        return DAOUtil.freeze(DAOUtil.convertToList(it));
     }
 
-    @Override
-    public List<Enrollment> findByUserId(PartakeConnection con, String userId) throws DAOException {
-        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE userId = ?",
-                new Object[] { userId });
-
-        Postgres9IdMapper<Enrollment> idMapper = new Postgres9IdMapper<Enrollment>((Postgres9Connection) con, mapper, entityDao);
-
-        try {
-            DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
-
-            ArrayList<Enrollment> rels = new ArrayList<Enrollment>();
-            while (it.hasNext()) {
-                Enrollment rel = it.next();
-                if (rel == null)
-                    continue;
-                rels.add(rel.freeze());
-            }
-
-            return rels;
-        } finally {
-            psars.close();
-        }
-    }
 
     @Override
     public List<Enrollment> findByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
@@ -209,40 +161,36 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
                 new Object[] { userId, offset, limit });
 
         Postgres9IdMapper<Enrollment> idMapper = new Postgres9IdMapper<Enrollment>((Postgres9Connection) con, mapper, entityDao);
-
-        try {
-            DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
-
-            ArrayList<Enrollment> rels = new ArrayList<Enrollment>();
-            while (it.hasNext()) {
-                Enrollment rel = it.next();
-                if (rel == null)
-                    continue;
-                rels.add(rel.freeze());
-            }
-
-            return rels;
-        } finally {
-            psars.close();
-        }
+        DataIterator<Enrollment> it = new Postgres9DataIterator<Enrollment>(idMapper, psars);
+        return DAOUtil.freeze(DAOUtil.convertToList(it));
     }
 
     @Override
-    public int countEventsByUserId(PartakeConnection con, String userId, ParticipationStatus status) throws DAOException {
+    public int countByUserId(PartakeConnection con, String userId, ParticipationStatus status) throws DAOException {
         return indexDao.count((Postgres9Connection) con,
                 new String[] { "userId", "status" },
                 new String[] { userId, status.toString() });
     }
 
     @Override
-    public int countEventsByUserId(PartakeConnection con, String userId) throws DAOException {
+    public int countByUserId(PartakeConnection con, String userId) throws DAOException {
         return indexDao.count((Postgres9Connection) con, "userId", userId);
     }
 
     @Override
-    public int countParticipants(PartakeConnection con, String eventId, ParticipationStatus status) throws DAOException {
-        return indexDao.count((Postgres9Connection) con, "eventId", status.toString());
+    public int countByTicketId(PartakeConnection con, UUID eventTicketId, ParticipationStatus status) throws DAOException {
+        return indexDao.count((Postgres9Connection) con,
+                new String[] { "ticketId", "status" },
+                new Object[] { eventTicketId.toString(), status.toString() });
     }
+
+    @Override
+    public int countByEventId(PartakeConnection con, String eventId, ParticipationStatus status) throws DAOException {
+        return indexDao.count((Postgres9Connection) con,
+                new String[] { "eventId", "status" },
+                new Object[] { eventId.toString(), status.toString() });
+    }
+
 
     @Override
     public int count(PartakeConnection con) throws DAOException {

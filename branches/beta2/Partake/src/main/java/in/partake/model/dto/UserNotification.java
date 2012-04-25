@@ -1,5 +1,7 @@
 package in.partake.model.dto;
 
+import java.util.UUID;
+
 import in.partake.base.DateTime;
 import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.dto.auxiliary.NotificationType;
@@ -13,7 +15,7 @@ import org.apache.commons.lang.ObjectUtils;
  */
 public class UserNotification extends PartakeModel<UserNotification> {
     private String id;
-    private String eventId;
+    private UUID ticketId;
     private String userId;
     private NotificationType notificationType;
     private MessageDelivery delivery;
@@ -25,12 +27,12 @@ public class UserNotification extends PartakeModel<UserNotification> {
     }
 
     public UserNotification(UserNotification message) {
-        this(message.id, message.eventId, message.userId, message.notificationType, message.delivery, message.createdAt, message.modifiedAt);
+        this(message.id, message.ticketId, message.userId, message.notificationType, message.delivery, message.createdAt, message.modifiedAt);
     }
 
-    public UserNotification(String id, String eventId, String userId, NotificationType notificationType, MessageDelivery delivery, DateTime createdAt, DateTime modifiedAt) {
+    public UserNotification(String id, UUID ticketId, String userId, NotificationType notificationType, MessageDelivery delivery, DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
-        this.eventId = eventId;
+        this.ticketId = ticketId;
         this.userId = userId;
         this.notificationType = notificationType;
         this.delivery = delivery;
@@ -40,7 +42,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
 
     public UserNotification(JSONObject obj) {
         this.id = obj.getString("id");
-        this.eventId = obj.getString("eventId");
+        this.ticketId = UUID.fromString(obj.getString("ticketId"));
         this.userId = obj.getString("userId");
         this.notificationType = NotificationType.safeValueOf(obj.getString("notificationType"));
         this.delivery = MessageDelivery.safeValueOf(obj.getString("delivery"));
@@ -58,7 +60,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("eventId", eventId);
+        obj.put("ticketId", ticketId);
         obj.put("userId", userId);
         obj.put("notificationType", notificationType.toString());
         obj.put("delivery", delivery.toString());
@@ -80,7 +82,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
         UserNotification rhs = (UserNotification) obj;
 
         if (!(ObjectUtils.equals(lhs.id,         rhs.id)))         { return false; }
-        if (!(ObjectUtils.equals(lhs.eventId,    rhs.eventId)))    { return false; }
+        if (!(ObjectUtils.equals(lhs.ticketId,   rhs.ticketId)))    { return false; }
         if (!(ObjectUtils.equals(lhs.userId,     rhs.userId)))     { return false; }
         if (!(ObjectUtils.equals(lhs.notificationType,   rhs.notificationType)))   { return false; }
         if (!(ObjectUtils.equals(lhs.delivery,   rhs.delivery)))   { return false; }
@@ -94,7 +96,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
         int code = 0;
 
         code = code * 37 + ObjectUtils.hashCode(id);
-        code = code * 37 + ObjectUtils.hashCode(eventId);
+        code = code * 37 + ObjectUtils.hashCode(ticketId);
         code = code * 37 + ObjectUtils.hashCode(userId);
         code = code * 37 + ObjectUtils.hashCode(notificationType);
         code = code * 37 + ObjectUtils.hashCode(delivery);
@@ -111,8 +113,8 @@ public class UserNotification extends PartakeModel<UserNotification> {
         return id;
     }
 
-    public String getEventId() {
-        return eventId;
+    public UUID getTicketId() {
+        return ticketId;
     }
 
     public String getUserId() {
@@ -140,9 +142,9 @@ public class UserNotification extends PartakeModel<UserNotification> {
         this.id = id;
     }
 
-    public void setEventId(String eventId) {
+    public void setTicketId(UUID ticketId) {
         checkFrozen();
-        this.eventId = eventId;
+        this.ticketId = ticketId;
     }
 
     public void setUserId(String userId) {

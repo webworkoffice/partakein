@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import in.partake.app.PartakeApp;
 import in.partake.app.PartakeTestApp;
+import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.controller.AbstractPartakeControllerTest;
@@ -14,7 +15,8 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventNotification;
+import in.partake.model.dto.EventTicketNotification;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.UserNotification;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.MessageDelivery;
@@ -24,7 +26,6 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.service.ITwitterService;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,14 +53,18 @@ public class EventReminderTaskTest extends AbstractPartakeControllerTest impleme
     public void sendReminder() throws Exception {
         truncate();
 
-        Date now = TimeUtil.getCurrentDate();
+        DateTime now = TimeUtil.getCurrentDateTime();
         Event event = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider().create();
         event.setOwnerId(DEFAULT_USER_ID);
         event.setBeginDate(TimeUtil.halfDayAfter(now));
         storeEvent(event);
 
+        UUID ticketId = UUID.randomUUID();
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event);
+        storeEventTicket(ticket);
+
         String id = UUID.randomUUID().toString();
-        Enrollment enrollment = new Enrollment(id, DEFAULT_USER_ID, event.getId(), "comment", ParticipationStatus.ENROLLED,
+        Enrollment enrollment = new Enrollment(id, DEFAULT_USER_ID, ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                 false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, now);
         storeEnrollment(enrollment);
 
@@ -70,11 +75,11 @@ public class EventReminderTaskTest extends AbstractPartakeControllerTest impleme
         List<UserNotification> userNotifications = loadUserNotificationsByUserId(DEFAULT_USER_ID);
         assertThat(userNotifications.size(), is(1));
         UserNotification userNotification = userNotifications.get(0);
-        assertThat(userNotification.getEventId(), is(event.getId()));
+        assertThat(userNotification.getTicketId(), is(ticket.getId()));
         assertThat(userNotification.getDelivery(), is(MessageDelivery.INQUEUE));
         assertThat(userNotification.getNotificationType(), is(NotificationType.EVENT_ONEDAY_BEFORE_REMINDER));
 
-        List<EventNotification> eventNotifications = loadEventNotificationsByEventId(event.getId());
+        List<EventTicketNotification> eventNotifications = loadEventTicketNotificationsByEventId(ticketId);
         assertThat(eventNotifications.size(), is(3));
 
         // Re-run.
@@ -82,7 +87,7 @@ public class EventReminderTaskTest extends AbstractPartakeControllerTest impleme
 
         userNotifications = loadUserNotificationsByUserId(DEFAULT_USER_ID);
         assertThat(userNotifications.size(), is(1));
-        eventNotifications = loadEventNotificationsByEventId(event.getId());
+        eventNotifications = loadEventTicketNotificationsByEventId(ticketId);
         assertThat(eventNotifications.size(), is(3));
     }
 

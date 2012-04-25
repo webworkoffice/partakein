@@ -4,17 +4,17 @@ import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.EventParticipationListPermission;
 import in.partake.model.EnrollmentEx;
-import in.partake.model.EventEx;
+import in.partake.model.EventTicketHolderList;
 import in.partake.model.IPartakeDAOs;
-import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
-import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.UUID;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -34,29 +35,48 @@ public class ShowParticipantsCSVAction extends AbstractPartakeAction {
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
-        String eventId = getValidEventIdParameter(UserErrorCode.INVALID_NOTFOUND, UserErrorCode.INVALID_NOTFOUND);
+        UUID ticketId = getValidTicketIdParameter(UserErrorCode.INVALID_NOTFOUND, UserErrorCode.INVALID_NOTFOUND);
 
-        InputStream is = new ShowParticipantsCSVTransaction(user, eventId).execute();
+        InputStream is = new ShowParticipantsCSVTransaction(user, ticketId).execute();
         return renderAttachmentStream(is, "text/csv");
     }
 }
 
 class ShowParticipantsCSVTransaction extends DBAccess<InputStream> {
     private UserEx user;
-    private String eventId;
+    private UUID ticketId;
 
-    public ShowParticipantsCSVTransaction(UserEx user, String eventId) {
+    public ShowParticipantsCSVTransaction(UserEx user, UUID ticketId) {
         this.user = user;
-        this.eventId = eventId;
+        this.ticketId = ticketId;
     }
 
     @Override
     protected InputStream doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        ParticipationList list = calculateParticipationList(con, daos);
+    	EventTicket ticket = daos.getEventTicketAccess().find(con, ticketId);
+    	if (ticket == null)
+    		throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
+
+    	Event event = daos.getEventAccess().find(con, ticket.getEventId());
+        if (event == null)
+        	throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
+
+        // Only owner can retrieve the participants list.
+        if (!EventParticipationListPermission.check(event, user))
+            throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
+
+        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+        EventTicketHolderList list = ticket.calculateParticipationList(event, participations);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos));
 
+        doWrite(con, daos, list, writer);
+
+        return new ByteArrayInputStream(baos.toByteArray());
+    }
+
+    private void doWrite(PartakeConnection con, IPartakeDAOs daos, EventTicketHolderList list, CSVWriter writer) throws DAOException, PartakeException {
         for (Enrollment participation : list.getEnrolledParticipations()) {
             UserEx attendant = UserDAOFacade.getUserEx(con, daos, participation.getUserId());
 
@@ -96,20 +116,5 @@ class ShowParticipantsCSVTransaction extends DBAccess<InputStream> {
         } catch (IOException e) {
             throw new PartakeException(ServerErrorCode.ERROR_IO);
         }
-
-        return new ByteArrayInputStream(baos.toByteArray());
-    }
-
-    private ParticipationList calculateParticipationList(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
-        if (event == null)
-            throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
-
-        // Only owner can retrieve the participants list.
-        if (!EventParticipationListPermission.check(event, user))
-            throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
-
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event);
-        return event.calculateParticipationList(participations);
     }
 }
