@@ -9,8 +9,8 @@ import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventMessageEx;
 import in.partake.model.EventRelationEx;
+import in.partake.model.EventTicketHolderList;
 import in.partake.model.IPartakeDAOs;
-import in.partake.model.ParticipationList;
 import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
@@ -19,14 +19,15 @@ import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.MessageDAOFacade;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventReminder;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -36,12 +37,11 @@ public class EventShowAction extends AbstractPartakeAction {
     private EventEx event;
     private boolean needsPasscode;
     private List<Event> requiredEvents;
-    private ParticipationStatus participationStatus;
-    private ParticipationList participationList;
-    private boolean deadlineOver;
+    private List<EventTicket> tickets;
+    private Map<UUID, ParticipationStatus> participationStatusMap;
+    private Map<UUID, EventTicketHolderList> ticketHolderListMap;
     private List<CommentEx> comments;
     private List<EventMessageEx> eventMessages;
-    private EventReminder eventReminder;
     private List<EventRelationEx> relations;
 
     @Override
@@ -64,12 +64,11 @@ public class EventShowAction extends AbstractPartakeAction {
         }
 
         this.requiredEvents = transaction.getRequiredEvents();
-        this.participationStatus = transaction.getParticipationStatus();
-        this.participationList = transaction.getParticipationList();
-        this.deadlineOver = transaction.isDeadlineOver();
+        this.tickets = transaction.getEventTickets();
+        this.participationStatusMap = transaction.getParticipationStatusMap();
+        this.ticketHolderListMap = transaction.getTicketHolderListMap();
         this.comments = transaction.getComments();
         this.eventMessages = transaction.getEventMessages();
-        this.eventReminder = transaction.getEventReminder();
         this.relations = transaction.getRelations();
 
         return render("events/show.jsp");
@@ -87,24 +86,16 @@ public class EventShowAction extends AbstractPartakeAction {
         return requiredEvents;
     }
 
-    public ParticipationStatus getParticipationStatus() {
-        return participationStatus;
+    public Map<UUID, ParticipationStatus> getParticipationStatusMap() {
+    	return participationStatusMap;
     }
 
-    public ParticipationList getParticipationList() {
-        return participationList;
-    }
-
-    public boolean isDeadlineOver() {
-        return deadlineOver;
+    public Map<UUID, EventTicketHolderList>getTicketHolderListMap() {
+    	return ticketHolderListMap;
     }
 
     public List<CommentEx> getComments() {
         return comments;
-    }
-
-    public EventReminder getEventReminder() {
-        return eventReminder;
     }
 
     public List<EventMessageEx> getEventMessages() {
@@ -113,6 +104,10 @@ public class EventShowAction extends AbstractPartakeAction {
 
     public List<EventRelationEx> getRelations() {
         return relations;
+    }
+
+    public List<EventTicket> getTickets() {
+    	return tickets;
     }
 }
 
@@ -124,12 +119,13 @@ class EventShowTransaction extends DBAccess<Void> {
     private EventEx event;
     private boolean needsPasscode;
     private List<Event> requiredEvents;
-    private ParticipationStatus participationStatus;
-    private ParticipationList participationList;
-    private boolean deadlineOver;
+
+    private Map<UUID, ParticipationStatus> participationStatusMap;
+    private Map<UUID, EventTicketHolderList> ticketHolderListMap;
+
+    private List<EventTicket> tickets;
     private List<CommentEx> comments;
     private List<EventMessageEx> eventMessages;
-    private EventReminder eventReminder;
     private List<EventRelationEx> relations;
 
     public EventShowTransaction(UserEx user, String eventId, Map<String, Object> session) {
@@ -166,33 +162,28 @@ class EventShowTransaction extends DBAccess<Void> {
         }
 
         relations = EventDAOFacade.getEventRelationsEx(con, daos, event);
+        tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
 
         // ----- 登録している、していないの条件を満たしているかどうかのチェック
         requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, daos, user, relations);
 
         // ----- participants を反映
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event);
-        if (participations == null)
-            throw new PartakeException(ServerErrorCode.PARTICIPATIONS_RETRIEVAL_ERROR);
+        ticketHolderListMap = new HashMap<UUID, EventTicketHolderList>();
+        participationStatusMap = new HashMap<UUID, ParticipationStatus>();
+        for (EventTicket ticket : tickets) {
+            List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+            if (participations == null)
+                throw new PartakeException(ServerErrorCode.PARTICIPATIONS_RETRIEVAL_ERROR);
 
-        participationList = event.calculateParticipationList(participations);
-
-        Date deadline = event.getDeadline();
-        if (deadline == null)
-            deadline = event.getBeginDate();
-        deadlineOver = deadline.before(new Date());
+          	ticketHolderListMap.put(ticket.getId(), ticket.calculateParticipationList(event, participations));
+            if (user != null)
+            	participationStatusMap.put(ticket.getId(), EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), ticket.getId()));
+            else
+            	participationStatusMap.put(ticket.getId(), ParticipationStatus.NOT_ENROLLED);
+        }
 
         comments = EventDAOFacade.getCommentsExByEvent(con, daos, eventId);
         eventMessages = MessageDAOFacade.findEventMessageExs(con, daos, eventId, 0, 100);
-
-        if (user != null)
-            participationStatus = EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), eventId);
-        else
-            participationStatus = ParticipationStatus.NOT_ENROLLED;
-
-        eventReminder = daos.getEventReminderAccess().find(con, eventId);
-        if (eventReminder == null)
-            eventReminder = new EventReminder(eventId);
 
         return null;
     }
@@ -209,16 +200,12 @@ class EventShowTransaction extends DBAccess<Void> {
         return requiredEvents;
     }
 
-    public ParticipationStatus getParticipationStatus() {
-        return participationStatus;
+    public Map<UUID, ParticipationStatus> getParticipationStatusMap() {
+    	return participationStatusMap;
     }
 
-    public ParticipationList getParticipationList() {
-        return participationList;
-    }
-
-    public boolean isDeadlineOver() {
-        return deadlineOver;
+    public Map<UUID, EventTicketHolderList>getTicketHolderListMap() {
+    	return ticketHolderListMap;
     }
 
     public List<CommentEx> getComments() {
@@ -229,8 +216,8 @@ class EventShowTransaction extends DBAccess<Void> {
         return eventMessages;
     }
 
-    public EventReminder getEventReminder() {
-        return eventReminder;
+    public List<EventTicket> getEventTickets() {
+        return tickets;
     }
 
     public List<EventRelationEx> getRelations() {

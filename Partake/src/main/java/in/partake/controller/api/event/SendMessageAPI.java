@@ -95,7 +95,7 @@ class SendMessageTransaction extends Transaction<Void> {
         EventMessage eventMessage = new EventMessage(eventMessageId, eventId, sender.getId(), messageId.toString(), TimeUtil.getCurrentDateTime(), null);
         daos.getEventMessageAccess().put(con, eventMessage);
 
-        List<Enrollment> participations = daos.getEnrollmentAccess().findByEventId(con, eventId);
+        List<Enrollment> participations = daos.getEnrollmentAccess().findByEventId(con, eventId, 0, Integer.MAX_VALUE);
         for (Enrollment participation : participations) {
             if (!participation.getStatus().isEnrolled())
                 continue;

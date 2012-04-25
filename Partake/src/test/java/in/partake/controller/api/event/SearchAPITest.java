@@ -5,7 +5,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import in.partake.app.PartakeApp;
+import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
+import in.partake.base.TimeUtil;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.Transaction;
@@ -13,12 +15,16 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
+import in.partake.model.dto.auxiliary.TicketType;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
@@ -170,17 +176,15 @@ public class SearchAPITest extends APIControllerTest {
         event.setTitle(SEARCH_QUERY);
         event.setSummary(SEARCH_QUERY);
         event.setDescription(SEARCH_QUERY);
-        event.setBeginDate(new Date(0L));
+        event.setBeginDate(new DateTime(0L));
         event.setCategory("neta");
-        event.setCreatedAt(new Date(0L));
+        event.setCreatedAt(new DateTime(0L));
         event.setPrivate(false);	// privateイベントは検索の対象にならないので公開イベントとして作成
         return event;
     }
 
     private Event storeEventAfterDeadline() throws DAOException, PartakeException {
         final Event event = createEvent();
-        event.setDeadline(new Date(0L));
-
         new Transaction<Void>() {
             @Override
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
@@ -189,15 +193,17 @@ public class SearchAPITest extends APIControllerTest {
             }
         }.execute();
 
-        PartakeApp.getEventSearchService().create(event);
+        UUID ticketId = UUID.randomUUID();
+        final EventTicket ticket = new EventTicket(ticketId, event.getId(), "name", TicketType.FREE_TICKET, 0,
+                new DateTime(0L), new DateTime(0L), new DateTime(0L), null);
+        storeEventTicket(ticket);
+
+        PartakeApp.getEventSearchService().create(event, Collections.singletonList(ticket));
         return event;
     }
 
     private Event storeEventBeforeDeadline() throws DAOException, PartakeException {
         final Event event = createEvent();
-        Date tomorrow = new Date(System.currentTimeMillis() + 24L * 60L * 60L * 1000L);
-        event.setDeadline(tomorrow);
-
         new Transaction<Void>() {
             @Override
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
@@ -206,7 +212,13 @@ public class SearchAPITest extends APIControllerTest {
             }
         }.execute();
 
-        PartakeApp.getEventSearchService().create(event);
+        UUID ticketId = UUID.randomUUID();
+        DateTime tomorrow = TimeUtil.oneDayAfter(TimeUtil.getCurrentDateTime());
+        final EventTicket ticket = new EventTicket(ticketId, event.getId(), "name", TicketType.FREE_TICKET, 0,
+                new DateTime(0L), new DateTime(0L), new DateTime(0L), null);
+        storeEventTicket(ticket);
+
+        PartakeApp.getEventSearchService().create(event, Collections.singletonList(ticket));
         return event;
     }
 

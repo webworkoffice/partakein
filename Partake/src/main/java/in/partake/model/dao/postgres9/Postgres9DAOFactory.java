@@ -10,9 +10,8 @@ import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventMessageAccess;
-import in.partake.model.dao.access.IEventNotificationAccess;
-import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IEventTicketAccess;
+import in.partake.model.dao.access.IEventTicketNotificationAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IMessageEnvelopeAccess;
@@ -33,7 +32,6 @@ import in.partake.model.dao.postgres9.impl.Postgres9EventDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventFeedDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventMessageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventNotificationDao;
-import in.partake.model.dao.postgres9.impl.Postgres9EventReminderDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventTicketDao;
 import in.partake.model.dao.postgres9.impl.Postgres9ImageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9MessageDao;
@@ -76,11 +74,6 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     @Override
     protected IEventAccess createEventAccess() {
         return new Postgres9EventDao();
-    }
-
-    @Override
-    protected IEventReminderAccess createEventReminderAccess() {
-        return new Postgres9EventReminderDao();
     }
 
     @Override
@@ -144,7 +137,7 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected IEventNotificationAccess createEventNotificationAccess() {
+    protected IEventTicketNotificationAccess createEventNotificationAccess() {
         return new Postgres9EventNotificationDao();
     }
 

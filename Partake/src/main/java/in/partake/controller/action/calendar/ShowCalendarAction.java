@@ -9,6 +9,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.CalendarLinkage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.User;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
@@ -66,7 +67,9 @@ class ShowCalendarTransaction extends DBAccess<Calendar> {
         List<Enrollment> enrollments =
                 daos.getEnrollmentAccess().findByUserId(con, user.getId(), 0, 1000);
         for (Enrollment enrollment : enrollments) {
-            Event event = daos.getEventAccess().find(con, enrollment.getEventId());
+            // TODO: Event should be search-able by ticket-id.
+            EventTicket ticket = daos.getEventTicketAccess().find(con, enrollment.getTicketId());
+            Event event = daos.getEventAccess().find(con, ticket.getEventId());
             if (event == null)
                 continue;
             CalendarUtil.addToCalendar(calendar, event);

@@ -8,9 +8,8 @@ import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventMessageAccess;
-import in.partake.model.dao.access.IEventNotificationAccess;
-import in.partake.model.dao.access.IEventReminderAccess;
 import in.partake.model.dao.access.IEventTicketAccess;
+import in.partake.model.dao.access.IEventTicketNotificationAccess;
 import in.partake.model.dao.access.IImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IMessageEnvelopeAccess;
@@ -62,8 +61,8 @@ public class MockDaoFactory extends PartakeDAOFactory {
     }
 
     @Override
-    public IEventNotificationAccess createEventNotificationAccess() {
-        return Mockito.mock(IEventNotificationAccess.class);
+    public IEventTicketNotificationAccess createEventNotificationAccess() {
+        return Mockito.mock(IEventTicketNotificationAccess.class);
     }
 
     @Override
@@ -99,11 +98,6 @@ public class MockDaoFactory extends PartakeDAOFactory {
     @Override
     protected IUserPreferenceAccess createUserPreferenceAccess() {
         return Mockito.mock(IUserPreferenceAccess.class);
-    }
-
-    @Override
-    protected IEventReminderAccess createEventReminderAccess() {
-        return Mockito.mock(IEventReminderAccess.class);
     }
 
     @Override

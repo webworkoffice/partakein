@@ -1,8 +1,10 @@
 package in.partake.service.impl;
 
+import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.service.EventSearchServiceException;
 import in.partake.service.IEventSearchService;
 
@@ -24,8 +26,8 @@ class EventSearchService implements IEventSearchService {
     }
 
     @Override
-    public void create(Event event) throws EventSearchServiceException {
-        Document doc = makeDocument(event.getId(), event);
+    public void create(Event event, List<EventTicket> tickets) throws EventSearchServiceException {
+        Document doc = makeDocument(event, tickets);
         LuceneService.get().addDocument(doc);
     }
 
@@ -40,8 +42,8 @@ class EventSearchService implements IEventSearchService {
     }
 
     @Override
-    public void update(Event event) throws EventSearchServiceException {
-        Document doc = makeDocument(event.getId(), event);
+    public void update(Event event, List<EventTicket> tickets) throws EventSearchServiceException {
+        Document doc = makeDocument(event, tickets);
         LuceneService.get().updateDocument(doc);
     }
 
@@ -60,19 +62,19 @@ class EventSearchService implements IEventSearchService {
             throw new EventSearchServiceException(e);
         }
     }
-    
+
     @Override
     public List<String> getRecent(int maxDocument) throws EventSearchServiceException {
         TopDocs docs = LuceneService.get().getRecentDocuments(maxDocument);
         return convertToIds(docs);
     }
-    
+
     @Override
     public List<String> getRecentByCategory(String category, int maxDocument) throws EventSearchServiceException {
         TopDocs docs = LuceneService.get().getRecentCategoryDocuments(category, maxDocument);
         return convertToIds(docs);
     }
-    
+
     @Override
     public List<String> search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws EventSearchServiceException {
         try {
@@ -83,41 +85,44 @@ class EventSearchService implements IEventSearchService {
             throw new EventSearchServiceException(e);
         }
     }
-    
+
     private List<String> convertToIds(TopDocs docs) throws EventSearchServiceException {
         List<String> eventIds = new ArrayList<String>();
-        
+
         for (ScoreDoc doc : docs.scoreDocs) {
             Document document = LuceneService.get().getDocument(doc.doc);
             String id = document.get("ID");
             if (id == null)
                 continue;
-            
+
             eventIds.add(id);
         }
-        
+
         return eventIds;
     }
+
     /**
      * create a lucene document from eventId and event.
      */
-    private Document makeDocument(String eventId, Event eventEmbryo) {
+    private Document makeDocument(Event event, List<EventTicket> tickets) {
         StringBuilder builder = new StringBuilder();
-        builder.append(eventEmbryo.getTitle()).append(" ");
-        builder.append(eventEmbryo.getSummary()).append(" ");
-        builder.append(eventEmbryo.getAddress()).append(" ");
-        builder.append(eventEmbryo.getPlace()).append(" ");
-        builder.append(Util.removeTags(eventEmbryo.getDescription()));
+        builder.append(event.getTitle()).append(" ");
+        builder.append(event.getSummary()).append(" ");
+        builder.append(event.getAddress()).append(" ");
+        builder.append(event.getPlace()).append(" ");
+        builder.append(Util.removeTags(event.getDescription()));
 
-        long beginTime = eventEmbryo.getBeginDate().getTime();
-        long deadlineTime = eventEmbryo.getDeadline() != null ? eventEmbryo.getDeadline().getTime() : beginTime;
+        DateTime deadline = event.getDeadlineOfAllTickets(tickets);
+        long beginTime = event.getBeginDate().getTime();
+        long deadlineTime = deadline.getTime();
+
         Document doc = new Document();
-        doc.add(new Field("ID", eventId, Store.YES, Index.NOT_ANALYZED));
-        doc.add(new Field("CATEGORY", eventEmbryo.getCategory(), Store.NO, Index.NOT_ANALYZED, TermVector.WITH_POSITIONS));
-        doc.add(new Field("CREATED-AT", TimeUtil.getTimeString(eventEmbryo.getCreatedAt().getTime()), Store.NO, Index.NOT_ANALYZED));
+        doc.add(new Field("ID", event.getId(), Store.YES, Index.NOT_ANALYZED));
+        doc.add(new Field("CATEGORY", event.getCategory(), Store.NO, Index.NOT_ANALYZED, TermVector.WITH_POSITIONS));
+        doc.add(new Field("CREATED-AT", TimeUtil.getTimeString(event.getCreatedAt().getTime()), Store.NO, Index.NOT_ANALYZED));
         doc.add(new Field("BEGIN-TIME", TimeUtil.getTimeString(beginTime), Store.NO, Index.NOT_ANALYZED));
         doc.add(new Field("DEADLINE-TIME", TimeUtil.getTimeString(deadlineTime), Store.NO, Index.NOT_ANALYZED));
-        doc.add(new Field("TITLE", eventEmbryo.getTitle(), Store.NO, Index.ANALYZED, TermVector.WITH_POSITIONS));
+        doc.add(new Field("TITLE", event.getTitle(), Store.NO, Index.ANALYZED, TermVector.WITH_POSITIONS));
         doc.add(new Field("CONTENT", builder.toString(), Store.NO, Index.ANALYZED, TermVector.WITH_POSITIONS));
 
         return doc;

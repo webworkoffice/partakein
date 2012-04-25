@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import in.partake.app.PartakeApp;
 import in.partake.app.PartakeTestApp;
+import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.controller.AbstractPartakeControllerTest;
@@ -14,6 +15,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.UserNotification;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.MessageDelivery;
@@ -23,7 +25,6 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.service.ITwitterService;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,21 +51,25 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
     public void testChangedToEnrolled() throws Exception {
         truncate();
 
-        Date now = TimeUtil.getCurrentDate();
+        DateTime now = TimeUtil.getCurrentDateTime();
 
         Event event = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider().create();
         event.setOwnerId(EVENT_OWNER_ID);
         event.setBeginDate(TimeUtil.halfDayAfter(now));
         storeEvent(event);
 
+        UUID ticketId = UUID.randomUUID();
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event);
+        storeEventTicket(ticket);
+
         String[] enrollmentIds = new String[] { UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), };
 
         Enrollment[] enrollments = new Enrollment[] {
-                new Enrollment(enrollmentIds[0], DEFAULT_USER_IDS[0], event.getId(), "comment", ParticipationStatus.ENROLLED,
+                new Enrollment(enrollmentIds[0], DEFAULT_USER_IDS[0], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                         false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.PRESENT, now),
-                new Enrollment(enrollmentIds[1], DEFAULT_USER_IDS[1], event.getId(), "comment", ParticipationStatus.RESERVED,
+                new Enrollment(enrollmentIds[1], DEFAULT_USER_IDS[1], ticketId, event.getId(), "comment", ParticipationStatus.RESERVED,
                         false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.PRESENT, now),
-                new Enrollment(enrollmentIds[2], DEFAULT_USER_IDS[2], event.getId(), "comment", ParticipationStatus.ENROLLED,
+                new Enrollment(enrollmentIds[2], DEFAULT_USER_IDS[2], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                         false, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, now)
         };
 
@@ -84,14 +89,14 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
         {
             List<UserNotification> notifications = loadUserNotificationsByUserId(DEFAULT_USER_IDS[0]);
             assertThat(notifications.size(), is(1));
-            assertThat(notifications.get(0).getEventId(), is(event.getId()));
+            assertThat(notifications.get(0).getTicketId(), is(ticket.getId()));
             assertThat(notifications.get(0).getNotificationType(), is(NotificationType.BECAME_TO_BE_ENROLLED));
             assertThat(notifications.get(0).getDelivery(), is(MessageDelivery.INQUEUE));
         }
         {
             List<UserNotification> notifications = loadUserNotificationsByUserId(DEFAULT_USER_IDS[1]);
             assertThat(notifications.size(), is(1));
-            assertThat(notifications.get(0).getEventId(), is(event.getId()));
+            assertThat(notifications.get(0).getTicketId(), is(ticket.getId()));
             assertThat(notifications.get(0).getNotificationType(), is(NotificationType.BECAME_TO_BE_ENROLLED));
             assertThat(notifications.get(0).getDelivery(), is(MessageDelivery.INQUEUE));
         }
@@ -105,27 +110,31 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
     public void testChangedToCancelled() throws Exception {
         truncate();
 
-        Date now = TimeUtil.getCurrentDate();
+        DateTime now = TimeUtil.getCurrentDateTime();
 
         Event event = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider().create();
         event.setOwnerId(EVENT_OWNER_ID);
-        event.setCapacity(1);
         event.setBeginDate(TimeUtil.halfDayAfter(now));
         storeEvent(event);
+
+        UUID ticketId = UUID.randomUUID();
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event);
+        ticket.setAmount(1);
+        storeEventTicket(ticket);
 
         String[] enrollmentIds = new String[] {
                 UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(),
         };
 
         Enrollment[] enrollments = new Enrollment[] {
-                new Enrollment(enrollmentIds[0], DEFAULT_USER_IDS[0], event.getId(), "comment", ParticipationStatus.ENROLLED,
+                new Enrollment(enrollmentIds[0], DEFAULT_USER_IDS[0], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                         false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, now),
-                new Enrollment(enrollmentIds[1], DEFAULT_USER_IDS[1], event.getId(), "comment", ParticipationStatus.RESERVED,
-                        false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(now.getTime() + 1)),
-                new Enrollment(enrollmentIds[2], DEFAULT_USER_IDS[2], event.getId(), "comment", ParticipationStatus.ENROLLED,
-                        false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new Date(now.getTime() + 2)),
-                new Enrollment(enrollmentIds[3], DEFAULT_USER_IDS[3], event.getId(), "comment", ParticipationStatus.ENROLLED,
-                        false, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new Date(now.getTime() + 3))
+                new Enrollment(enrollmentIds[1], DEFAULT_USER_IDS[1], ticketId, event.getId(), "comment", ParticipationStatus.RESERVED,
+                        false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 1)),
+                new Enrollment(enrollmentIds[2], DEFAULT_USER_IDS[2], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
+                        false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 2)),
+                new Enrollment(enrollmentIds[3], DEFAULT_USER_IDS[3], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
+                        false, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 3))
         };
 
         for (Enrollment enrollment : enrollments)
@@ -150,14 +159,14 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
         {
             List<UserNotification> notifications = loadUserNotificationsByUserId(DEFAULT_USER_IDS[1]);
             assertThat(notifications.size(), is(1));
-            assertThat(notifications.get(0).getEventId(), is(event.getId()));
+            assertThat(notifications.get(0).getTicketId(), is(ticket.getId()));
             assertThat(notifications.get(0).getNotificationType(), is(NotificationType.BECAME_TO_BE_CANCELLED));
             assertThat(notifications.get(0).getDelivery(), is(MessageDelivery.INQUEUE));
         }
         {
             List<UserNotification> notifications = loadUserNotificationsByUserId(DEFAULT_USER_IDS[2]);
             assertThat(notifications.size(), is(1));
-            assertThat(notifications.get(0).getEventId(), is(event.getId()));
+            assertThat(notifications.get(0).getTicketId(), is(ticket.getId()));
             assertThat(notifications.get(0).getNotificationType(), is(NotificationType.BECAME_TO_BE_CANCELLED));
             assertThat(notifications.get(0).getDelivery(), is(MessageDelivery.INQUEUE));
         }

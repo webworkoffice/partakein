@@ -1,19 +1,19 @@
 package in.partake.model.dao;
 
-import java.util.Date;
+import in.partake.app.PartakeApp;
+import in.partake.base.DateTime;
+import in.partake.base.PartakeException;
+import in.partake.model.IPartakeDAOs;
+import in.partake.model.access.DBAccess;
+import in.partake.model.dao.access.IEventActivityAccess;
+import in.partake.model.dto.EventActivity;
+
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import in.partake.app.PartakeApp;
-import in.partake.base.PartakeException;
-import in.partake.model.IPartakeDAOs;
-import in.partake.model.access.DBAccess;
-import in.partake.model.dao.access.IEventActivityAccess;
-import in.partake.model.dto.EventActivity;
 
 public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActivityAccess, EventActivity, String> {
     @Before
@@ -24,7 +24,7 @@ public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActiv
     @Override
     public EventActivity create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, ("activity" + pkSalt).hashCode());
-        return new EventActivity(uuid.toString(), "eventId", "title" + objNumber, "content", new Date(objNumber % 10));
+        return new EventActivity(uuid.toString(), "eventId", "title" + objNumber, "content", new DateTime(objNumber % 10));
     }
 
     @Test
@@ -36,7 +36,7 @@ public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActiv
 
                 con.beginTransaction();
                 for (int i = 0; i < 10; ++i) {
-                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId, "title-" + i, "content", new Date(i));
+                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId, "title-" + i, "content", new DateTime(i));
                     dao.put(con, activity);
                 }
                 con.commit();
@@ -67,11 +67,11 @@ public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActiv
 
                 con.beginTransaction();
                 for (int i = 0; i < 10; ++i) {
-                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId1, "title-" + i, "content", new Date(i));
+                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId1, "title-" + i, "content", new DateTime(i));
                     dao.put(con, activity);
                 }
                 for (int i = 0; i < 10; ++i) {
-                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId2, "title-" + i, "content", new Date(i));
+                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId2, "title-" + i, "content", new DateTime(i));
                     dao.put(con, activity);
                 }
                 con.commit();
@@ -104,13 +104,13 @@ public class EventActivityAccessTest extends AbstractDaoTestCaseBase<IEventActiv
 
                 con.beginTransaction();
                 for (int i = 0; i < 100; ++i) {
-                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId1, "title-" + i, "content", new Date(i));
+                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId1, "title-" + i, "content", new DateTime(i));
                     dao.put(con, activity);
                 }
                 con.commit();
                 con.beginTransaction();
                 for (int i = 0; i < 100; ++i) {
-                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId2, "title-" + i, "content", new Date(i));
+                    EventActivity activity = new EventActivity(dao.getFreshId(con), eventId2, "title-" + i, "content", new DateTime(i));
                     dao.put(con, activity);
                 }
                 con.commit();

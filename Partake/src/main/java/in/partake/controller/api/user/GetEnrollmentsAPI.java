@@ -12,6 +12,7 @@ import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.auxiliary.CalculatedEnrollmentStatus;
 import in.partake.resource.UserErrorCode;
@@ -86,7 +87,7 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
         IEnrollmentAccess enrollmentAccess = daos.getEnrollmentAccess();
         List<Enrollment> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
 
-        this.numTotalEvents = enrollmentAccess.countEventsByUserId(con, userId);
+        this.numTotalEvents = enrollmentAccess.countByUserId(con, userId);
         this.statuses = new ArrayList<Pair<Event, CalculatedEnrollmentStatus>>();
 
         for (Enrollment enrollment : enrollments) {
@@ -97,7 +98,11 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
             if (event == null)
                 continue;
 
-            CalculatedEnrollmentStatus calculatedEnrollmentStatus = EnrollmentDAOFacade.calculateEnrollmentStatus(con, daos, userId, event);
+            EventTicket ticket = daos.getEventTicketAccess().find(con, enrollment.getTicketId());
+            if (ticket == null)
+                continue;
+
+            CalculatedEnrollmentStatus calculatedEnrollmentStatus = EnrollmentDAOFacade.calculateEnrollmentStatus(con, daos, userId, ticket, event);
             statuses.add(new Pair<Event, CalculatedEnrollmentStatus>(event, calculatedEnrollmentStatus));
         }
 

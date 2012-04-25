@@ -39,7 +39,7 @@ public abstract class AbstractFeedPageAction extends AbstractPartakeAction{
             SyndEntry entry = new SyndEntryImpl();
             entry.setTitle(event.getTitle());
             entry.setLink(event.getEventURL());
-            entry.setPublishedDate(event.getCreatedAt());
+            entry.setPublishedDate(event.getCreatedAt().toDate());
 
             entry.setAuthor(event.getOwner().getScreenName());
             entry.setDescription(content);

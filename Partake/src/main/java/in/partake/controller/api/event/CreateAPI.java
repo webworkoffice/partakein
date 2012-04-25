@@ -11,6 +11,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.ImageDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.IEventSearchService;
@@ -31,11 +32,13 @@ public class CreateAPI extends AbstractEventEditAPI {
         Event embryo = new Event();
         embryo.setOwnerId(user.getId());
         embryo.setPreview(optBooleanParameter("draft", true));
-        embryo.setCreatedAt(TimeUtil.getCurrentDate());
+        embryo.setCreatedAt(TimeUtil.getCurrentDateTime());
 
         List<EventRelation> relations = new ArrayList<EventRelation>();
+        List<EventTicket> tickets = new ArrayList<EventTicket>();
         JSONObject invalidParameters = new JSONObject();
         updateEventFromParameter(user, embryo, invalidParameters);
+        updateTicketsFromParameter(user, tickets, invalidParameters);
         updateEventRelationFromParameter(user, relations, invalidParameters);
         if (!invalidParameters.isEmpty())
             return renderInvalid(UserErrorCode.INVALID_PARAMETERS, invalidParameters);
@@ -46,7 +49,7 @@ public class CreateAPI extends AbstractEventEditAPI {
         embryo.setId(eventId);
         if (!embryo.isPrivate() && !embryo.isPreview()) {
             IEventSearchService searchService = PartakeApp.getEventSearchService();
-            searchService.create(embryo);
+            searchService.create(embryo, tickets);
         }
 
         JSONObject obj = new JSONObject();

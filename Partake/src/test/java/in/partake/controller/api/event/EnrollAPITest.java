@@ -25,7 +25,7 @@ public class EnrollAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_ID);
+        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
     }
 
@@ -41,7 +41,7 @@ public class EnrollAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_ID);
+        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.RESERVED));
     }
 
@@ -57,7 +57,7 @@ public class EnrollAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_ID);
+        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.CANCELLED));
     }
 
@@ -85,7 +85,7 @@ public class EnrollAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_ID);
+        Enrollment enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
         assertThat(enrollment.getComment(), is(""));
     }
@@ -115,12 +115,12 @@ public class EnrollAPITest extends APIControllerTest {
         addParameter(proxy, "comment", "comment");
         addValidSessionTokenToParameter(proxy);
 
-        Enrollment original = loadEnrollment(EVENT_RESERVED_USER_ID, DEFAULT_EVENT_ID);
+        Enrollment original = loadEnrollment(EVENT_RESERVED_USER_ID, DEFAULT_EVENT_TICKET_ID);
 
         proxy.execute();
         assertResultOK(proxy);
 
-        Enrollment enrollment = loadEnrollment(EVENT_RESERVED_USER_ID, DEFAULT_EVENT_ID);
+        Enrollment enrollment = loadEnrollment(EVENT_RESERVED_USER_ID, DEFAULT_EVENT_TICKET_ID);
 
         assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
         assertThat(enrollment.getModifiedAt(), is(original.getModifiedAt()));

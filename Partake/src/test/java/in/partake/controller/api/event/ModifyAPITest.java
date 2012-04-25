@@ -69,9 +69,6 @@ public class ModifyAPITest extends APIControllerTest {
         addParameter(proxy, "beginDate", String.valueOf(event.getBeginDate().getTime()));
         if (event.getEndDate() != null)
             addParameter(proxy, "endDate", String.valueOf(event.getEndDate().getTime()));
-        if (event.getDeadline() != null)
-            addParameter(proxy, "deadline", String.valueOf(event.getDeadline().getTime()));
-        addParameter(proxy, "capacity", String.valueOf(event.getCapacity()));
         if (event.getUrl() != null)
             addParameter(proxy, "url", event.getUrl());
         if (event.getPlace() != null)

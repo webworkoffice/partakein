@@ -1,5 +1,7 @@
 package in.partake.controller.api.event;
 
+import java.util.UUID;
+
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.controller.base.permission.EventEditParticipantsPermission;
@@ -11,6 +13,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.resource.UserErrorCode;
 
@@ -22,7 +25,7 @@ public class AttendAPI extends AbstractPartakeAPI {
         UserEx user = ensureLogin();
         ensureValidSessionToken();
         String userId = getValidUserIdParameter();
-        String eventId = getValidEventIdParameter();
+        UUID ticketId = getValidTicketIdParameter();
 
         String status = getParameter("status");
         if (status == null)
@@ -30,7 +33,7 @@ public class AttendAPI extends AbstractPartakeAPI {
         if (!AttendanceStatus.isValueOf(status))
             return renderInvalid(UserErrorCode.INVALID_ATTENDANCE_STATUS);
 
-        new AttendTransaction(user, userId, eventId, AttendanceStatus.safeValueOf(status)).execute();
+        new AttendTransaction(user, userId, ticketId, AttendanceStatus.safeValueOf(status)).execute();
         return renderOK();
     }
 }
@@ -38,21 +41,25 @@ public class AttendAPI extends AbstractPartakeAPI {
 class AttendTransaction extends Transaction<Void> {
     private UserEx user;
     private String userId;
-    private String eventId;
+    private UUID ticketId;
     private AttendanceStatus status;
 
-    public AttendTransaction(UserEx user, String userId, String eventId, AttendanceStatus status) {
+    public AttendTransaction(UserEx user, String userId, UUID ticketId, AttendanceStatus status) {
         this.user = user;
         this.userId = userId;
-        this.eventId = eventId;
+        this.ticketId = ticketId;
         this.status = status;
     }
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        Event event = daos.getEventAccess().find(con, eventId);
+    	EventTicket ticket = daos.getEventTicketAccess().find(con, ticketId);
+    	if (ticket == null)
+    		throw new PartakeException(UserErrorCode.INVALID_TICKET_ID);
+
+        Event event = daos.getEventAccess().find(con, ticket.getEventId());
         if (event == null)
-            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
+        	throw new PartakeException(UserErrorCode.INVALID_TICKET_ID);
 
         if (!EventEditParticipantsPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
@@ -66,7 +73,7 @@ class AttendTransaction extends Transaction<Void> {
 
         // We have already checked the event exists, so when no enrollment is found, we throw an "invalid user id"
         // exception here.
-        Enrollment enrollment = enrollmentAccess.findByEventIdAndUserId(con, eventId, userId);
+        Enrollment enrollment = enrollmentAccess.findByTicketIdAndUserId(con, ticketId, userId);
         if (enrollment == null)
             throw new PartakeException(UserErrorCode.INVALID_USER_ID);
 

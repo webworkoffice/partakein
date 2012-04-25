@@ -11,9 +11,12 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.resource.UserErrorCode;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class EventNewAction extends AbstractEventEditAction {
     private static final long serialVersionUID = 1L;
@@ -34,8 +37,10 @@ public class EventNewAction extends AbstractEventEditAction {
         if (eventId != null && event == null)
             return renderRedirect("/events/new");
 
-        if (event == null)
-            event = new EventEx(new Event(), user, null, new ArrayList<EventRelationEx>());
+        if (event == null) {
+            List<EventTicket> tickets = Collections.singletonList(EventTicket.createDefaultTicket(null, event));
+            event = new EventEx(new Event(), user, null, new ArrayList<EventRelationEx>(), tickets);
+        }
 
         return render("events/new.jsp");
     }

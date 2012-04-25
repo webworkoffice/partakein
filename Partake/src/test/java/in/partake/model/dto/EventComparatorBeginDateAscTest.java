@@ -1,5 +1,6 @@
 package in.partake.model.dto;
 
+import in.partake.base.DateTime;
 import in.partake.model.dto.auxiliary.EventRelation;
 
 import java.util.ArrayList;
@@ -7,7 +8,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -45,7 +45,7 @@ public final class EventComparatorBeginDateAscTest {
                 createEvent("ID", 2010, 12, 1, 11, 5)
         });
         Collections.sort(list, comparator);
-        Assert.assertFalse(list.get(0).getBeginDate().after(list.get(1).getBeginDate()));
+        Assert.assertFalse(list.get(0).getBeginDate().isAfter(list.get(1).getBeginDate()));
     }
 
     @Test
@@ -55,7 +55,7 @@ public final class EventComparatorBeginDateAscTest {
                 createEvent("ID", 2010, 12, 1, 10, 55)
         });
         Collections.sort(list, comparator);
-        Assert.assertFalse(list.get(0).getBeginDate().after(list.get(1).getBeginDate()));
+        Assert.assertFalse(list.get(0).getBeginDate().isAfter(list.get(1).getBeginDate()));
     }
 
     @Test
@@ -125,7 +125,7 @@ public final class EventComparatorBeginDateAscTest {
 
     private Event createEvent(String id, int beginYear, int beginMonth, int beginDay, int beginHour, int beginMin) {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("JST"), Locale.JAPANESE);
-        Date createdAt = calendar.getTime();
+        DateTime createdAt = new DateTime(calendar.getTimeInMillis());
 
         calendar.clear();
         calendar.set(Calendar.YEAR, beginYear);
@@ -133,9 +133,10 @@ public final class EventComparatorBeginDateAscTest {
         calendar.set(Calendar.DAY_OF_MONTH, beginDay);
         calendar.set(Calendar.HOUR_OF_DAY, beginHour);
         calendar.set(Calendar.MINUTE, beginMin);
-        Date beginDate = calendar.getTime();
 
-        Event event = new Event(id, "title", "summary", "category", null, beginDate, null, 0,
+        DateTime beginDate = new DateTime(calendar.getTimeInMillis());
+
+        Event event = new Event(id, "title", "summary", "category", beginDate, null,
                 "url", "place", "address", "description", "hashTag", "ownerId", null, null, null,
                 true, "passcode", false, false, new ArrayList<EventRelation>(), createdAt, null, 0);
         return event;

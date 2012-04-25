@@ -15,6 +15,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.ITwitterLinkageAccess;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.TwitterLinkage;
@@ -272,7 +273,13 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
             return;
         }
 
-        Event event = daos.getEventAccess().find(con, notification.getEventId());
+        EventTicket ticket = daos.getEventTicketAccess().find(con, notification.getTicketId());
+        if (ticket == null) {
+            failedSendingUserNotification(con, daos, it, envelope, notification);
+            return;
+        }
+
+        Event event = daos.getEventAccess().find(con, ticket.getEventId());
         if (event == null) {
             failedSendingUserNotification(con, daos, it, envelope, notification);
             return;

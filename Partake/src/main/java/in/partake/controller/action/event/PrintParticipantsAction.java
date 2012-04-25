@@ -6,22 +6,25 @@ import in.partake.controller.base.permission.EventParticipationListPermission;
 import in.partake.model.EnrollmentEx;
 import in.partake.model.EventEx;
 import in.partake.model.IPartakeDAOs;
-import in.partake.model.ParticipationList;
+import in.partake.model.EventTicketHolderList;
 import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
+import in.partake.model.dto.EventTicket;
 import in.partake.resource.UserErrorCode;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class PrintParticipantsAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
 
     private EventEx event;
-    private ParticipationList participationList;
+    private Map<UUID, EventTicketHolderList> ticketHolderListMap;
 
     @Override
     protected String doExecute() throws DAOException, PartakeException {
@@ -32,7 +35,7 @@ public class PrintParticipantsAction extends AbstractPartakeAction {
         transaction.execute();
 
         event = transaction.getEvent();
-        participationList = transaction.getParticipationList();
+        ticketHolderListMap = transaction.getTicketHolderListMap();
 
         return render("events/participants/print.jsp");
     }
@@ -41,8 +44,8 @@ public class PrintParticipantsAction extends AbstractPartakeAction {
         return event;
     }
 
-    public ParticipationList getParticipationList() {
-        return participationList;
+    public Map<UUID, EventTicketHolderList> getTicketHolderListMap() {
+        return ticketHolderListMap;
     }
 }
 
@@ -51,7 +54,8 @@ class ParticipantsListTransaction extends DBAccess<Void> {
     private String eventId;
 
     private EventEx event;
-    private ParticipationList participationList;
+    private List<EventTicket> tickets;
+    private Map<UUID, EventTicketHolderList> ticketHolderListMap;
 
     public ParticipantsListTransaction(UserEx user, String eventId) {
         this.user = user;
@@ -68,8 +72,12 @@ class ParticipantsListTransaction extends DBAccess<Void> {
         if (!EventParticipationListPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, event);
-        participationList = event.calculateParticipationList(participations);
+        tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+        for (EventTicket ticket : tickets) {
+            List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+            ticketHolderListMap.put(ticket.getId(), ticket.calculateParticipationList(event, participations));
+        }
+
         return null;
     }
 
@@ -77,7 +85,11 @@ class ParticipantsListTransaction extends DBAccess<Void> {
         return event;
     }
 
-    public ParticipationList getParticipationList() {
-        return participationList;
+    public List<EventTicket> getTickets() {
+    	return tickets;
+    }
+
+    public Map<UUID, EventTicketHolderList> getTicketHolderListMap() {
+        return ticketHolderListMap;
     }
 }

@@ -1,17 +1,18 @@
 package in.partake.controller.api.event;
 
+import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.UserEx;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.dto.auxiliary.EventRelation;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,12 +47,12 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
             event.setCategory(category);
 
         // BeginDate
-        Date beginDate = getDateParameter("beginDate");
+        DateTime beginDate = getDateTimeParameter("beginDate");
         {
             if (beginDate == null)
                 invalidParameters.put("beginDate", "開始日時は必ず入力してください。");
             else {
-                Calendar beginCalendar = TimeUtil.calendar(beginDate);
+                Calendar beginCalendar = TimeUtil.calendar(beginDate.toDate());
                 if (beginCalendar.get(Calendar.YEAR) < 2000 || 2100 < beginCalendar.get(Calendar.YEAR))
                     invalidParameters.put("beginDate", "開始日時の範囲が不正です。");
                 event.setBeginDate(beginDate);
@@ -60,40 +61,19 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
 
         // EndDate
         {
-            Date endDate = getDateParameter("endDate");
+            DateTime endDate = getDateTimeParameter("endDate");
             if (endDate == null)
                 event.setEndDate(null);
             else {
-                Calendar endCalendar = TimeUtil.calendar(endDate);
+                Calendar endCalendar = TimeUtil.calendar(endDate.toDate());
                 if (endCalendar.get(Calendar.YEAR) < 2000 || 2100 < endCalendar.get(Calendar.YEAR))
                     invalidParameters.put("endDate", "終了日時の範囲が不正です。");
-                else if (beginDate != null && endDate.before(beginDate))
+                else if (beginDate != null && endDate.isBefore(beginDate))
                     invalidParameters.put("endDate", "終了日時が開始日時より前になっています。");
                 else
                     event.setEndDate(endDate);
             }
         }
-
-        // Deadline
-        {
-            Date deadline = getDateParameter("deadline");
-            if (deadline == null)
-                event.setDeadline(null);
-            else {
-                Calendar deadlineCalendar = TimeUtil.calendar(deadline);
-                if (deadlineCalendar.get(Calendar.YEAR) < 2000 || 2100 < deadlineCalendar.get(Calendar.YEAR))
-                    invalidParameters.put("deadline", "締切日時が範囲外の値になっています。");
-                else
-                    event.setDeadline(deadline);
-            }
-        }
-
-        // Capacity
-        int capacity = optIntegerParameter("capacity", 0);
-        if (0 <= capacity)
-            event.setCapacity(capacity);
-        else
-            invalidParameters.put("capacity", "定員が範囲外の値になっています。");
 
         // URL
         {
@@ -201,7 +181,22 @@ public abstract class AbstractEventEditAPI extends AbstractPartakeAPI {
         }
     }
 
+    protected void updateTicketsFromParameter(UserEx user, List<EventTicket> tickets, JSONObject invalidParaemeters) {
+        // TODO: If event was published, Ticket cannot be removed.
+
+        String[] ticketIds = getParameters("ticketIds[]");
+        String[] ticketTypes = getParameters("ticketTypes[]");
+        String[] ticketNames = getParameters("ticketNames[]");
+        String[] ticketAmounts = getParameters("ticketAmounts[]");
+        String[] ticketAcceptsFrom = getParameters("ticketAcceptsFrom[]");
+        String[] ticketAcceptsTill = getParameters("ticketAcceptsTill[]");
+
+        throw new RuntimeException("Not implemented yet!");
+    }
+
     protected void updateEventRelationFromParameter(UserEx user, List<EventRelation> relations, JSONObject invalidParameters) {
+        // TOOD: このコードだと、relations は消されないんじゃない？
+
         String[] relatedEventIDs = getParameters("relatedEventID[]");
         if (relatedEventIDs == null)
             return;

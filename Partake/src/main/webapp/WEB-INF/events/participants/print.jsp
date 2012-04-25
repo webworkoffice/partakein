@@ -8,7 +8,7 @@
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.dto.EventReminder"%>
-<%@page import="in.partake.model.ParticipationList"%>
+<%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.model.dto.Message"%>
 <%@page import="static in.partake.view.util.Helper.h"%>
 <%@taglib prefix="s" uri="/struts-tags" %>
@@ -17,10 +17,10 @@
 <!DOCTYPE html>
 
 <%
-    PrintParticipantsAction action = (PrintParticipantsAction) request.getAttribute(Constants.ATTR_ACTION);
+	PrintParticipantsAction action = (PrintParticipantsAction) request.getAttribute(Constants.ATTR_ACTION);
 
     EventEx event = action.getEvent();
-    ParticipationList participationList = action.getParticipationList();
+    EventTicketHolderList participationList = action.getParticipationList();
 
     List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
     List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();

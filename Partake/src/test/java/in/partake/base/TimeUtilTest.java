@@ -60,45 +60,45 @@ public class TimeUtilTest {
 
     @Test
     public void dateConverterTest() {
-        Date date1 = new Date();
-        Date date2 = TimeUtil.dateFromTimeString(TimeUtil.getTimeString(date1));
+        DateTime date1 = TimeUtil.getCurrentDateTime();
+        DateTime date2 = TimeUtil.dateTimeFromTimeString(TimeUtil.getTimeString(date1));
         Assert.assertEquals(date1, date2);
     }
 
     @Test
     public void dateConverterCornerTest1() {
-        Date date1 = new Date(Long.MAX_VALUE);
-        Date date2 = TimeUtil.dateFromTimeString(TimeUtil.getTimeString(date1));
+        DateTime date1 = new DateTime(Long.MAX_VALUE);
+        DateTime date2 = TimeUtil.dateTimeFromTimeString(TimeUtil.getTimeString(date1));
         Assert.assertEquals(date1, date2);
     }
 
     @Test
     public void dateConverterCornerTest2() {
-        Date date1 = new Date(0);
-        Date date2 = TimeUtil.dateFromTimeString(TimeUtil.getTimeString(date1));
+        DateTime date1 = new DateTime(0);
+        DateTime date2 = TimeUtil.dateTimeFromTimeString(TimeUtil.getTimeString(date1));
         Assert.assertEquals(date1, date2);
     }
 
     @Test
     public void testOneDayBefore() {
-        Date date = new Date();
-        Date before = TimeUtil.oneDayBefore(date);
+        DateTime date = TimeUtil.getCurrentDateTime();
+        DateTime before = TimeUtil.oneDayBefore(date);
 
         assertThat(before.getTime(), is(date.getTime() - 3600 * 24 * 1000));
     }
 
     @Test
     public void testHalfDayBefore() {
-        Date date = new Date();
-        Date before = TimeUtil.halfDayBefore(date);
+        DateTime date = TimeUtil.getCurrentDateTime();
+        DateTime before = TimeUtil.halfDayBefore(date);
 
         assertThat(before.getTime(), is(date.getTime() - 3600 * 12 * 1000));
     }
 
     @Test
     public void testOneDayAfter() {
-        Date date = new Date();
-        Date after = TimeUtil.oneDayAfter(date);
+        DateTime date = TimeUtil.getCurrentDateTime();
+        DateTime after = TimeUtil.oneDayAfter(date);
 
         assertThat(after.getTime(), is(date.getTime() + 3600 * 24 * 1000));
     }

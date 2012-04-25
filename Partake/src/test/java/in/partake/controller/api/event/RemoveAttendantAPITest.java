@@ -23,13 +23,13 @@ public class RemoveAttendantAPITest extends APIControllerTest {
 
         loginAs(proxy, EVENT_OWNER_ID);
 
-        Enrollment enrollment = loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_ID);
+        Enrollment enrollment = loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
 
         proxy.execute();
         assertResultOK(proxy);
 
-        enrollment = loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_ID);
+        enrollment = loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment, is(nullValue()));
     }
 

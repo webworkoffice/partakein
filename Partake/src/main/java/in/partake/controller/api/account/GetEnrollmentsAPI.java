@@ -13,6 +13,7 @@ import in.partake.model.dao.access.IEnrollmentAccess;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.CalculatedEnrollmentStatus;
 
 import java.util.ArrayList;
@@ -38,16 +39,16 @@ public class GetEnrollmentsAPI extends AbstractPartakeAPI {
         transaction.execute();
 
         JSONArray statuses = new JSONArray();
-        for (Pair<Event, CalculatedEnrollmentStatus> eventStatus : transaction.getStatuses()) {
+        for (Pair<EventTicket, CalculatedEnrollmentStatus> ticketAndStatus : transaction.getStatuses()) {
             JSONObject obj = new JSONObject();
-            obj.put("event", eventStatus.getFirst().toSafeJSON());
-            obj.put("status", eventStatus.getSecond().toString());
+            obj.put("ticket", ticketAndStatus.getFirst().toSafeJSON());
+            obj.put("status", ticketAndStatus.getSecond().toString());
             statuses.add(obj);
         }
 
         JSONObject obj = new JSONObject();
-        obj.put("numTotalEvents", transaction.getNumTotalEvents());
-        obj.put("eventStatuses", statuses);
+        obj.put("numTotalTickets", transaction.getNumTotalTickets());
+        obj.put("statuses", statuses);
 
         return renderOK(obj);
     }
@@ -58,8 +59,8 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
     private int offset;
     private int limit;
 
-    private int numTotalEvents;
-    private List<Pair<Event, CalculatedEnrollmentStatus>> statuses;
+    private int numTotalTickets;
+    private List<Pair<EventTicket, CalculatedEnrollmentStatus>> statuses;
 
     public GetEnrollmentsTransaction(String userId, int offset, int limit) {
         this.userId = userId;
@@ -72,8 +73,8 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
         IEnrollmentAccess enrollmentAccess = daos.getEnrollmentAccess();
         List<Enrollment> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
 
-        this.numTotalEvents = enrollmentAccess.countEventsByUserId(con, userId);
-        this.statuses = new ArrayList<Pair<Event, CalculatedEnrollmentStatus>>();
+        this.numTotalTickets = enrollmentAccess.countByUserId(con, userId);
+        this.statuses = new ArrayList<Pair<EventTicket, CalculatedEnrollmentStatus>>();
 
         for (Enrollment enrollment : enrollments) {
             if (enrollment == null)
@@ -83,18 +84,22 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
             if (event == null)
                 continue;
 
-            CalculatedEnrollmentStatus calculatedEnrollmentStatus = EnrollmentDAOFacade.calculateEnrollmentStatus(con, daos, userId, event);
-            statuses.add(new Pair<Event, CalculatedEnrollmentStatus>(event, calculatedEnrollmentStatus));
+            EventTicket ticket = daos.getEventTicketAccess().find(con, enrollment.getTicketId());
+            if (ticket == null)
+                continue;
+
+            CalculatedEnrollmentStatus calculatedEnrollmentStatus = EnrollmentDAOFacade.calculateEnrollmentStatus(con, daos, userId, ticket, event);
+            statuses.add(new Pair<EventTicket, CalculatedEnrollmentStatus>(ticket, calculatedEnrollmentStatus));
         }
 
         return null;
     }
 
-    public int getNumTotalEvents() {
-        return numTotalEvents;
+    public int getNumTotalTickets() {
+        return numTotalTickets;
     }
 
-    public List<Pair<Event, CalculatedEnrollmentStatus>> getStatuses() {
+    public List<Pair<EventTicket, CalculatedEnrollmentStatus>> getStatuses() {
         return this.statuses;
     }
 }

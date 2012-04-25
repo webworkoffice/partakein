@@ -1,9 +1,8 @@
 package in.partake.model.dto;
 
+import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
-import in.partake.model.EnrollmentEx;
-import in.partake.model.ParticipationList;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.Constants;
@@ -12,9 +11,7 @@ import in.partake.resource.PartakeProperties;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,10 +26,8 @@ public class Event extends PartakeModel<Event> {
     private String title;       // event title
     private String summary;     // event summary
     private String category;    // event category
-    private Date deadline;
-    private Date beginDate;
-    private Date endDate;
-    private int capacity;       // how many people can attend?
+    private DateTime beginDate;
+    private DateTime endDate;
     private String url;         // URL
     private String place;       // event place
     private String address;
@@ -54,8 +49,8 @@ public class Event extends PartakeModel<Event> {
     private boolean isRemoved;
 
     private List<EventRelation> eventRelations;
-    private Date createdAt;     //
-    private Date modifiedAt;    //
+    private DateTime createdAt;     //
+    private DateTime modifiedAt;    //
     private int revision;       // used for RSS.
 
     // begin date 順に並べる comparator
@@ -68,7 +63,7 @@ public class Event extends PartakeModel<Event> {
                 if (lhs == null) { return -1; }
                 if (rhs == null) { return 1; }
                 if (!lhs.getBeginDate().equals(rhs.getBeginDate())) {
-                    if (lhs.getBeginDate().before(rhs.getBeginDate())) { return -1; }
+                    if (lhs.getBeginDate().isBefore(rhs.getBeginDate())) { return -1; }
                     else { return 1; }
                 } else {
                     return lhs.getId().compareTo(rhs.getId());
@@ -85,10 +80,8 @@ public class Event extends PartakeModel<Event> {
         this.title = "";
         this.summary = "";
         this.category = EventCategory.getCategories().get(0).getKey();
-        this.deadline = null;
-        this.beginDate = TimeUtil.oneDayAfter(TimeUtil.getCurrentDate());
+        this.beginDate = TimeUtil.oneDayAfter(TimeUtil.getCurrentDateTime());
         this.endDate = null;
-        this.capacity = 0;
         this.url = "";
         this.place = "";
         this.address = "";
@@ -102,8 +95,8 @@ public class Event extends PartakeModel<Event> {
         this.passcode = null;
         this.isPreview = true;
         this.isRemoved = false;
-        this.eventRelations = Collections.emptyList();
-        this.createdAt = TimeUtil.getCurrentDate();
+        this.eventRelations = new ArrayList<EventRelation>();
+        this.createdAt = TimeUtil.getCurrentDateTime();
         this.modifiedAt = null;
         this.revision = 1;
     }
@@ -113,10 +106,8 @@ public class Event extends PartakeModel<Event> {
         this.title = event.title;
         this.summary = event.summary;
         this.category = event.category;
-        this.deadline = event.deadline == null ? null : (Date) event.deadline.clone();
-        this.beginDate = event.beginDate == null ? null : (Date) event.beginDate.clone();
-        this.endDate = event.endDate == null ? null : (Date) event.endDate.clone();
-        this.capacity = event.capacity;
+        this.beginDate = event.beginDate;
+        this.endDate = event.endDate;
         this.url = event.url;
         this.place = event.place;
         this.address = event.address;
@@ -132,8 +123,8 @@ public class Event extends PartakeModel<Event> {
         this.isRemoved = event.isRemoved;
         if (event.eventRelations != null)
             this.eventRelations = new ArrayList<EventRelation>(event.eventRelations);
-        this.createdAt = event.createdAt == null ? null : (Date) event.createdAt.clone();
-        this.modifiedAt = event.modifiedAt == null ? null : (Date) event.modifiedAt.clone();
+        this.createdAt = event.createdAt;
+        this.modifiedAt = event.modifiedAt;
         this.revision = event.revision;
     }
 
@@ -142,13 +133,10 @@ public class Event extends PartakeModel<Event> {
         this.title = json.getString("title");
         this.summary = json.getString("summary");
         this.category = json.getString("category");
-        if (json.containsKey("deadline"))
-            this.deadline = new Date(json.getLong("deadline"));
         if (json.containsKey("beginDate"))
-            this.beginDate = new Date(json.getLong("beginDate"));
+            this.beginDate = new DateTime(json.getLong("beginDate"));
         if (json.containsKey("endDate"))
-            this.endDate = new Date(json.getLong("endDate"));
-        this.capacity = json.optInt("capacity", 0);
+            this.endDate = new DateTime(json.getLong("endDate"));
         this.url = json.optString("url", null);
         this.place = json.optString("place", null);
         this.address = json.optString("address", null);
@@ -170,24 +158,23 @@ public class Event extends PartakeModel<Event> {
         }
 
         if (json.containsKey("createdAt"))
-            this.createdAt = new Date(json.getLong("createdAt"));
+            this.createdAt = new DateTime(json.getLong("createdAt"));
         if (json.containsKey("modifiedAt"))
-            this.modifiedAt = new Date(json.getLong("modifiedAt"));
+            this.modifiedAt = new DateTime(json.getLong("modifiedAt"));
         this.revision = json.optInt("revision", 1);
     }
 
-    public Event(String id, String title, String summary, String category, Date deadline, Date beginDate, Date endDate, int capacity,
+    public Event(String id, String title, String summary, String category, DateTime beginDate, DateTime endDate,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             String foreImageId, String backImageId,
-            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved, List<EventRelation> relations, Date createdAt, Date modifiedAt, int revision) {
+            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved,
+            List<EventRelation> relations, DateTime createdAt, DateTime modifiedAt, int revision) {
         this.id = id;
         this.title = title;
         this.summary = summary;
         this.category = category;
-        this.deadline = deadline;
         this.beginDate = beginDate;
         this.endDate = endDate;
-        this.capacity = capacity;
         this.url = url;
         this.place = place;
         this.address = address;
@@ -229,11 +216,6 @@ public class Event extends PartakeModel<Event> {
         // TODO Localeは外部ファイルなどで設定可能にする
         // TODO: We don't want to use locale. Instead, we just return date as a long value.
         DateFormat format = new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
-        if (deadline != null) {
-            // TODO: deadline should be deprecated.
-            obj.put("deadline", format.format(deadline));
-            obj.put("deadlineTime", deadline.getTime());
-        }
         if (beginDate != null) {
             // TODO: beginDate should be deprecated.
             obj.put("beginDate", format.format(beginDate));
@@ -244,7 +226,6 @@ public class Event extends PartakeModel<Event> {
             obj.put("endDate", format.format(endDate));
             obj.put("endDateTime", endDate.getTime());
         }
-        obj.put("capacity", capacity);
         obj.put("url", url);
         obj.put("place", place);
         obj.put("address", address);
@@ -260,8 +241,7 @@ public class Event extends PartakeModel<Event> {
         obj.put("draft", isPreview);
         // obj.put("removed", isRemoved);
 
-        JSONArray array = Util.toJSONArray(eventRelations);
-        obj.put("relations", array);
+        obj.put("relations", Util.toJSONArray(eventRelations));
 
         if (createdAt != null) {
             obj.put("createdAt", format.format(createdAt));
@@ -280,13 +260,10 @@ public class Event extends PartakeModel<Event> {
         obj.put("title", title);
         obj.put("summary", summary);
         obj.put("category", category);
-        if (deadline != null)
-            obj.put("deadline", deadline.getTime());
         if (beginDate != null)
             obj.put("beginDate", beginDate.getTime());
         if (endDate != null)
             obj.put("endDate", endDate.getTime());
-        obj.put("capacity", capacity);
         obj.put("url", url);
         obj.put("place", place);
         obj.put("address", address);
@@ -302,12 +279,8 @@ public class Event extends PartakeModel<Event> {
         obj.put("draft", isPreview);
         obj.put("removed", isRemoved);
 
-        if (eventRelations != null) {
-            JSONArray array = new JSONArray();
-            for (EventRelation relation : eventRelations)
-                array.add(relation.toJSON());
-            obj.put("relations", array);
-        }
+        if (eventRelations != null)
+            obj.put("relations", Util.toJSONArray(eventRelations));
 
         if (createdAt != null)
             obj.put("createdAt", createdAt.getTime());
@@ -332,10 +305,8 @@ public class Event extends PartakeModel<Event> {
         if (!ObjectUtils.equals(lhs.title, rhs.title)) { return false; }
         if (!ObjectUtils.equals(lhs.summary, rhs.summary)) { return false; }
         if (!ObjectUtils.equals(lhs.category, rhs.category)) { return false; }
-        if (!ObjectUtils.equals(lhs.deadline, rhs.deadline)) { return false; }
         if (!ObjectUtils.equals(lhs.beginDate, rhs.beginDate)) { return false; }
         if (!ObjectUtils.equals(lhs.endDate, rhs.endDate)) { return false; }
-        if (!ObjectUtils.equals(lhs.capacity, rhs.capacity)) { return false; }
         if (!ObjectUtils.equals(lhs.url, rhs.url)) { return false; }
         if (!ObjectUtils.equals(lhs.place, rhs.place)) { return false; }
         if (!ObjectUtils.equals(lhs.address, rhs.address)) { return false; }
@@ -365,10 +336,8 @@ public class Event extends PartakeModel<Event> {
         code = code * 37 + ObjectUtils.hashCode(title);
         code = code * 37 + ObjectUtils.hashCode(summary);
         code = code * 37 + ObjectUtils.hashCode(category);
-        code = code * 37 + ObjectUtils.hashCode(deadline);
         code = code * 37 + ObjectUtils.hashCode(beginDate);
         code = code * 37 + ObjectUtils.hashCode(endDate);
-        code = code * 37 + ObjectUtils.hashCode(capacity);
         code = code * 37 + ObjectUtils.hashCode(url);
         code = code * 37 + ObjectUtils.hashCode(place);
         code = code * 37 + ObjectUtils.hashCode(address);
@@ -419,20 +388,12 @@ public class Event extends PartakeModel<Event> {
         return category;
     }
 
-    public Date getDeadline() {
-        return deadline;
-    }
-
-    public Date getBeginDate() {
+    public DateTime getBeginDate() {
         return beginDate;
     }
 
-    public Date getEndDate() {
+    public DateTime getEndDate() {
         return endDate;
-    }
-
-    public int getCapacity() {
-        return capacity;
     }
 
     public String getUrl() {
@@ -491,11 +452,11 @@ public class Event extends PartakeModel<Event> {
         return eventRelations;
     }
 
-    public Date getCreatedAt() {
+    public DateTime getCreatedAt() {
         return createdAt;
     }
 
-    public Date getModifiedAt() {
+    public DateTime getModifiedAt() {
         return modifiedAt;
     }
 
@@ -525,24 +486,14 @@ public class Event extends PartakeModel<Event> {
         this.category = category;
     }
 
-    public void setDeadline(Date deadline) {
-        checkToUpdateStatus();
-        this.deadline = deadline;
-    }
-
-    public void setBeginDate(Date beginDate) {
+    public void setBeginDate(DateTime beginDate) {
         checkToUpdateStatus();
         this.beginDate = beginDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(DateTime endDate) {
         checkToUpdateStatus();
         this.endDate = endDate;
-    }
-
-    public void setCapacity(int capacity) {
-        checkToUpdateStatus();
-        this.capacity = capacity;
     }
 
     public void setUrl(String url) {
@@ -605,12 +556,12 @@ public class Event extends PartakeModel<Event> {
         this.eventRelations = relations;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(DateTime createdAt) {
         checkToUpdateStatus();
         this.createdAt = createdAt;
     }
 
-    public void setModifiedAt(Date modifiedAt) {
+    public void setModifiedAt(DateTime modifiedAt) {
         checkToUpdateStatus();
         this.modifiedAt = modifiedAt;
     }
@@ -622,47 +573,26 @@ public class Event extends PartakeModel<Event> {
 
     // ----------------------------------------------------------------------
 
+    public DateTime getDeadlineOfAllTickets(List<EventTicket> tickets) {
+        DateTime dt = null;
+        for (EventTicket ticket : tickets) {
+            DateTime t = ticket.getAcceptsFrom();
+            if (t == null)
+                continue;
+            else if (dt == null || t.isBefore(dt))
+                dt = t;
+        }
+
+        if (dt != null)
+            return dt;
+
+        return new DateTime(beginDate.getTime() - 1000 * 3600 * 3);
+    }
+
     public String getEventURL() {
         String topPath = PartakeProperties.get().getTopPath();
         String thispageURL = topPath + "/events/" + getId();
         return thispageURL;
-    }
-
-    /**
-     * true if reservation is acceptable now.
-     * @return
-     */
-    public boolean canReserve() {
-        Date now = new Date();
-        Date deadline = getDeadline();
-        if (deadline == null) { deadline = getBeginDate(); }
-
-        return now.before(TimeUtil.halfDayBefore(deadline));
-    }
-
-    /**
-     * get a calculated deadline. If deadline is set, it is returned. Otherwise, beginDate is deadline.
-     * @return
-     */
-    public Date getCalculatedDeadline() {
-        if (getDeadline() != null) { return getDeadline(); }
-        return new Date(getBeginDate().getTime());
-    }
-
-    public Date getCalculatedReservationDeadline() {
-        if (getDeadline() != null) { return getDeadline(); }
-        return new Date(getBeginDate().getTime() - 1000 * 3600 * 3);
-    }
-
-    /**
-     * true if all reservations are cancelled.
-     * @return
-     */
-    public boolean isReservationTimeOver() {
-        Date now = new Date();
-        Date deadline = getCalculatedReservationDeadline();
-
-        return deadline.before(now);
     }
 
     private void checkToUpdateStatus() {
@@ -682,52 +612,6 @@ public class Event extends PartakeModel<Event> {
         }
 
         return false;
-    }
-
-    /**
-     * From participations, distribute participation to enrolled, spare, or cancelled.
-     * @param participations
-     * @return
-     */
-    public ParticipationList calculateParticipationList(List<EnrollmentEx> participations) {
-        List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>();
-        List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>();
-        List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>();
-        boolean timeover = isReservationTimeOver();
-
-        int reservedEnrolled = 0;
-        int reservedSpare = 0;
-
-        for (EnrollmentEx participation : participations) {
-            switch (participation.getStatus()) {
-            case CANCELLED:
-                cancelledParticipations.add(participation);
-                break;
-            case ENROLLED:
-                if (getCapacity() == 0 || enrolledParticipations.size() < getCapacity()) {
-                    enrolledParticipations.add(participation);
-                } else {
-                    spareParticipations.add(participation);
-                }
-                break;
-            case RESERVED:
-                if (timeover) {
-                    cancelledParticipations.add(participation);
-                } else if (getCapacity() == 0 || enrolledParticipations.size() < getCapacity()) {
-                    enrolledParticipations.add(participation);
-                    ++reservedEnrolled;
-                } else {
-                    spareParticipations.add(participation);
-                    ++reservedSpare;
-                }
-                break;
-            case NOT_ENROLLED: // TODO: shouldn't happen.
-                cancelledParticipations.add(participation);
-                break;
-            }
-        }
-
-        return new ParticipationList(enrolledParticipations, spareParticipations, cancelledParticipations, reservedEnrolled, reservedSpare);
     }
 
     public boolean hasEndDate() {
