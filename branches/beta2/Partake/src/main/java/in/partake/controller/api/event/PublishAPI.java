@@ -33,7 +33,7 @@ public class PublishAPI extends AbstractPartakeAPI {
         List<EventTicket> tickets = transaction.getTickets();
 
         IEventSearchService searchService = PartakeApp.getEventSearchService();
-        if (event.isPrivate())
+        if (!event.isSearchable())
             searchService.remove(event.getId());
         else
             searchService.create(event, tickets);
@@ -61,11 +61,11 @@ class PublishTransaction extends Transaction<Event> {
         if (!StringUtils.equals(event.getOwnerId(), user.getId()))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_EDIT);
 
-        if (!event.isPreview())
+        if (!event.isDraft())
             throw new PartakeException(UserErrorCode.EVENT_ALREADY_PUBLISHED);
 
         event = new Event(event);
-        event.setPreview(false);
+        event.setDraft(false);
         daos.getEventAccess().put(con, event);
 
         // Event Activity に挿入

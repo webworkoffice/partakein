@@ -51,7 +51,7 @@ class GetTransaction extends DBAccess<EventEx> {
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
 
-        if (event.isPrivate()) {
+        if (!StringUtils.isBlank(event.getPasscode())) {
             // owner および manager は見ることが出来る。
             if (user != null && PrivateEventShowPermission.check(event, user)) {
                 // OK. You have the right to show this event.

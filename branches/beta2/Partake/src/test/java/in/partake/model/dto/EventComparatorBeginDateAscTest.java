@@ -138,7 +138,7 @@ public final class EventComparatorBeginDateAscTest {
 
         Event event = new Event(id, "title", "summary", "category", beginDate, null,
                 "url", "place", "address", "description", "hashTag", "ownerId", null, null, null,
-                true, "passcode", false, false, new ArrayList<EventRelation>(), createdAt, null, 0);
+                "passcode", false, new ArrayList<EventRelation>(), createdAt, null, 0);
         return event;
     }
 }

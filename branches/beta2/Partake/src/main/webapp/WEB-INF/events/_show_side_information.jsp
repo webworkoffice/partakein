@@ -34,30 +34,9 @@
     List<EventRelationEx> eventRelations = action.getRelations();
 %>
 
-<%
-    Map<UUID, EventTicketHolderList> ticketHolderMap = action.getTicketHolderListMap();
-
-    List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>();
-    List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>();
-    List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>();
-%>
-
-<h3>開催日時</h3>
-<p>開催日時: <%= Helper.readableDuration(event.getBeginDate(), event.getEndDate()) %></p>
-<p>申込期間: ほげほげ</p>
-
-
-<h3>開催場所</h3>
-<p>会場: <%= StringUtils.isBlank(event.getPlace()) ? "未定" : h(event.getPlace()) %></p>
-<% if (!StringUtils.isEmpty(event.getAddress())) { %>
-<div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(Util.encodeURIComponent(event.getAddress())) %>">
-    <img src="http://maps.google.co.jp/maps/api/staticmap?size=280x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />
-</a></div>
-<p>住所: <%= h(event.getAddress()) %></p>
-<% } %>
-
 <h3>主催者</h3>
 <p><a href="<%= request.getContextPath() %>/users/<%= h(event.getOwnerId()) %>">
+    <img src="<%= h(event.getOwner().getTwitterLinkage().getProfileImageURL()) %>" class="profile-image" alt="" width="20" height="20" />
     <% if (event.getOwner().getTwitterLinkage().getName() != null) { %>
         <%= escapeTwitterResponse(event.getOwner().getTwitterLinkage().getName()) %>
         (<%= h(event.getOwner().getTwitterLinkage().getScreenName()) %>)
@@ -65,6 +44,19 @@
         <%= h(event.getOwner().getTwitterLinkage().getScreenName()) %>
     <% } %>
 </a></p>
+
+<h3>開催日時</h3>
+<p>開催日時: <%= Helper.readableDuration(event.getBeginDate(), event.getEndDate()) %></p>
+<p>申込期間: ほげほげ</p>
+
+<h3>開催場所</h3>
+<p>会場: <%= StringUtils.isBlank(event.getPlace()) ? "未定" : h(event.getPlace()) %></p>
+<% if (!StringUtils.isBlank(event.getAddress())) { %>
+<p>住所: <%= h(event.getAddress()) %></p>
+<div class="event-map"><a href="http://maps.google.co.jp/maps?q=<%= h(Util.encodeURIComponent(event.getAddress())) %>">
+    <img src="http://maps.google.co.jp/maps/api/staticmap?size=280x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />
+</a></div>
+<% } %>
 
 <% if (eventRelations != null && !eventRelations.isEmpty()) { %>
     <h3>関連イベント</h3>
@@ -76,6 +68,3 @@
             </p>
     <% } %>
 <% } %>
-
-<h3>その他</h3>
-<p>カテゴリ: <%= event.getCategory() != null ? EventCategory.getReadableCategoryName(event.getCategory()) : "-" %></p>

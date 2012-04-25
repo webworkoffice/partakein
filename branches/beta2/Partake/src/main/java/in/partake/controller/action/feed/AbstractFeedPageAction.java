@@ -30,7 +30,7 @@ public abstract class AbstractFeedPageAction extends AbstractPartakeAction{
 
         for (EventEx event : events) {
             if (event == null) { continue; }
-            if (event.isPrivate() || event.isPreview()) { continue; }
+            if (!event.isSearchable()) continue;
 
             SyndContent content = new SyndContentImpl();
             content.setType("text/html");

@@ -179,7 +179,7 @@ public class SearchAPITest extends APIControllerTest {
         event.setBeginDate(new DateTime(0L));
         event.setCategory("neta");
         event.setCreatedAt(new DateTime(0L));
-        event.setPrivate(false);	// privateイベントは検索の対象にならないので公開イベントとして作成
+        event.setPasscode(null); // privateイベントは検索の対象にならないので公開イベントとして作成
         return event;
     }
 

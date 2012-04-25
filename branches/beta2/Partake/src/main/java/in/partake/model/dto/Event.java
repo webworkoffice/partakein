@@ -38,15 +38,8 @@ public class Event extends PartakeModel<Event> {
     private String foreImageId;
     private String backImageId;
 
-    // TODO: 'isPrivate' should be removed. Use passcode is null or not instead.
-    private boolean isPrivate;  // true if the event is private.
     private String passcode;    // passcode to show (if not public)
-
-    // TODO: isPreview should be renamed to 'draft'
-    private boolean isPreview;    // true if the event is still in preview.
-
-    // TODO: isRemoved should be renamed to 'removed'
-    private boolean isRemoved;
+    private boolean draft;    // true if the event is still in preview.
 
     private List<EventRelation> eventRelations;
     private DateTime createdAt;     //
@@ -91,10 +84,8 @@ public class Event extends PartakeModel<Event> {
         this.managerScreenNames = "";
         this.foreImageId = null;
         this.backImageId = null;
-        this.isPrivate = false;
         this.passcode = null;
-        this.isPreview = true;
-        this.isRemoved = false;
+        this.draft = true;
         this.eventRelations = new ArrayList<EventRelation>();
         this.createdAt = TimeUtil.getCurrentDateTime();
         this.modifiedAt = null;
@@ -117,10 +108,8 @@ public class Event extends PartakeModel<Event> {
         this.managerScreenNames = event.managerScreenNames;
         this.foreImageId = event.foreImageId;
         this.backImageId = event.backImageId;
-        this.isPrivate = event.isPrivate;
         this.passcode = event.passcode;
-        this.isPreview = event.isPreview;
-        this.isRemoved = event.isRemoved;
+        this.draft = event.draft;
         if (event.eventRelations != null)
             this.eventRelations = new ArrayList<EventRelation>(event.eventRelations);
         this.createdAt = event.createdAt;
@@ -146,10 +135,8 @@ public class Event extends PartakeModel<Event> {
         this.managerScreenNames = json.optString("managerScreenNames", null);
         this.foreImageId = json.optString("foreImageId", null);
         this.backImageId = json.optString("backImageId", null);
-        this.isPrivate = json.optBoolean("isPrivate", false);
         this.passcode = json.optString("passcode", null);
-        this.isPreview = json.optBoolean("draft", false);
-        this.isRemoved = json.optBoolean("removed", false);
+        this.draft = json.optBoolean("draft", false);
         JSONArray ar = json.optJSONArray("relations");
         if (ar != null) {
             this.eventRelations = new ArrayList<EventRelation>();
@@ -167,7 +154,7 @@ public class Event extends PartakeModel<Event> {
     public Event(String id, String title, String summary, String category, DateTime beginDate, DateTime endDate,
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             String foreImageId, String backImageId,
-            boolean isPrivate, String passcode, boolean isPreview, boolean isRemoved,
+            String passcode, boolean draft,
             List<EventRelation> relations, DateTime createdAt, DateTime modifiedAt, int revision) {
         this.id = id;
         this.title = title;
@@ -186,10 +173,8 @@ public class Event extends PartakeModel<Event> {
         this.foreImageId = foreImageId;
         this.backImageId = backImageId;
 
-        this.isPrivate = isPrivate;
         this.passcode = passcode;
-        this.isPreview = isPreview;
-        this.isRemoved = isRemoved;
+        this.draft = draft;
         if (relations != null)
             this.eventRelations = new ArrayList<EventRelation>(relations);
 
@@ -236,10 +221,8 @@ public class Event extends PartakeModel<Event> {
             obj.put("managerScreenNames", managerScreenNames);
         obj.put("foreImageId", foreImageId);
         obj.put("backImageId", backImageId);
-        //obj.put("isPrivate", isPrivate);
         obj.put("passcode", passcode);
-        obj.put("draft", isPreview);
-        // obj.put("removed", isRemoved);
+        obj.put("draft", draft);
 
         obj.put("relations", Util.toJSONArray(eventRelations));
 
@@ -274,10 +257,8 @@ public class Event extends PartakeModel<Event> {
             obj.put("managerScreenNames", managerScreenNames);
         obj.put("foreImageId", foreImageId);
         obj.put("backImageId", backImageId);
-        obj.put("isPrivate", isPrivate);
         obj.put("passcode", passcode);
-        obj.put("draft", isPreview);
-        obj.put("removed", isRemoved);
+        obj.put("draft", draft);
 
         if (eventRelations != null)
             obj.put("relations", Util.toJSONArray(eventRelations));
@@ -316,10 +297,8 @@ public class Event extends PartakeModel<Event> {
         if (!ObjectUtils.equals(lhs.managerScreenNames, rhs.managerScreenNames)) { return false; }
         if (!ObjectUtils.equals(lhs.foreImageId, rhs.foreImageId)) { return false; }
         if (!ObjectUtils.equals(lhs.backImageId, rhs.backImageId)) { return false; }
-        if (!ObjectUtils.equals(lhs.isPrivate, rhs.isPrivate)) { return false; }
         if (!ObjectUtils.equals(lhs.passcode, rhs.passcode)) { return false; }
-        if (!ObjectUtils.equals(lhs.isPreview, rhs.isPreview)) { return false; }
-        if (!ObjectUtils.equals(lhs.isRemoved, rhs.isRemoved)) { return false; }
+        if (!ObjectUtils.equals(lhs.draft, rhs.draft)) { return false; }
         if (!ObjectUtils.equals(lhs.eventRelations, rhs.eventRelations)) { return false; }
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
@@ -347,10 +326,8 @@ public class Event extends PartakeModel<Event> {
         code = code * 37 + ObjectUtils.hashCode(managerScreenNames);
         code = code * 37 + ObjectUtils.hashCode(foreImageId);
         code = code * 37 + ObjectUtils.hashCode(backImageId);
-        code = code * 37 + ObjectUtils.hashCode(isPrivate);
         code = code * 37 + ObjectUtils.hashCode(passcode);
-        code = code * 37 + ObjectUtils.hashCode(isPreview);
-        code = code * 37 + ObjectUtils.hashCode(isRemoved);
+        code = code * 37 + ObjectUtils.hashCode(draft);
         code = code * 37 + ObjectUtils.hashCode(eventRelations);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
@@ -432,20 +409,12 @@ public class Event extends PartakeModel<Event> {
         return backImageId;
     }
 
-    public boolean isPrivate() {
-        return isPrivate;
-    }
-
     public String getPasscode() {
         return passcode;
     }
 
-    public boolean isPreview() {
-        return isPreview;
-    }
-
-    public boolean isRemoved() {
-        return isRemoved;
+    public boolean isDraft() {
+        return draft;
     }
 
     public List<EventRelation> getRelations() {
@@ -531,24 +500,14 @@ public class Event extends PartakeModel<Event> {
         this.managerScreenNames = managerScreenNames;
     }
 
-    public void setPrivate(boolean isPrivate) {
-        checkToUpdateStatus();
-        this.isPrivate = isPrivate;
-    }
-
     public void setPasscode(String passcode) {
         checkToUpdateStatus();
         this.passcode = passcode;
     }
 
-    public void setPreview(boolean isPreview) {
+    public void setDraft(boolean draft) {
         checkToUpdateStatus();
-        this.isPreview = isPreview;
-    }
-
-    public void setRemoved(boolean isRemoved) {
-        checkToUpdateStatus();
-        this.isRemoved = isRemoved;
+        this.draft = draft;
     }
 
     public void setRelations(List<EventRelation> relations) {
@@ -572,6 +531,15 @@ public class Event extends PartakeModel<Event> {
     }
 
     // ----------------------------------------------------------------------
+
+    public boolean isSearchable() {
+        if (isDraft())
+            return false;
+        if (!StringUtils.isBlank(passcode))
+            return false;
+
+        return true;
+    }
 
     public DateTime getDeadlineOfAllTickets(List<EventTicket> tickets) {
         DateTime dt = null;
@@ -598,6 +566,10 @@ public class Event extends PartakeModel<Event> {
     private void checkToUpdateStatus() {
         checkFrozen();
         ++revision;
+    }
+
+    public boolean isPrivate() {
+        return !StringUtils.isBlank(getPasscode());
     }
 
     public boolean isManager(String name) {

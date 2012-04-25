@@ -27,14 +27,17 @@
 %>
 
 <div class="row" style="background-color: #FFD">
-    <div class="span9">
+    <div class="span12">
         <ul class="nav nav-pills nav-stacked-if-phone subnav">
+            <li>
+                <a>管理メニュー</a>
+            </li>
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><img class="hidden-phone-inline" src="/images/gear.png"/> イベント編集<b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <%-- <li><a href="#">イベント閲覧情報</a></li>
                     <li class="divider"></li> --%>
-                    <li><a href="/events/edit/<%= h(event.getId()) %>">イベントを編集</a></li>
+                    <li><a href="/events/edit/basic/<%= h(event.getId()) %>">イベントを編集</a></li>
                     <li><a href="/events/new?eventId=<%= h(event.getId()) %>">コピーして新しいイベントを作成</a></li>
                     <% if (EventRemovePermission.check(event, user)) { %>
                     <li><a data-toggle="modal" href="#event-delete-dialog">イベントを削除</a></li>
@@ -55,6 +58,10 @@
                     <li class="divider"></li>
                     <li><a data-toggle="modal" href="#event-reminder-dialog">リマインダー送付状況</a></li>
                 </ul>
+            </li>
+
+            <li class="pull-right">
+                <a href='#'>この内容でイベントを公開</a>
             </li>
         </ul>
     </div>

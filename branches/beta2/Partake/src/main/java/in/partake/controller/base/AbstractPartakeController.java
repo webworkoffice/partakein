@@ -14,7 +14,6 @@ import in.partake.session.PartakeSession;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -66,13 +65,13 @@ public abstract class AbstractPartakeController implements SessionAware, Request
         try {
             return doExecute();
         } catch (DAOException e) {
-            return renderError(ServerErrorCode.DB_ERROR, e);
+            return renderError(ServerErrorCode.DB_ERROR, null, e);
         } catch (PartakeException e) {
             return renderException(e);
         } catch (RuntimeException e) {
-            return renderError(ServerErrorCode.UNKNOWN_ERROR, e);
+            return renderError(ServerErrorCode.UNKNOWN_ERROR, null, e);
         } catch (Exception e) {
-            return renderError(ServerErrorCode.UNKNOWN_ERROR, e);
+            return renderError(ServerErrorCode.UNKNOWN_ERROR, null, e);
         }
     }
 
@@ -81,8 +80,8 @@ public abstract class AbstractPartakeController implements SessionAware, Request
     // ----------------------------------------------------------------------
     // Render
 
-    protected abstract String renderInvalid(UserErrorCode ec, Throwable e);
-    protected abstract String renderError(ServerErrorCode ec, Throwable e);
+    protected abstract String renderInvalid(UserErrorCode ec, Map<String, String> additionalInfo, Throwable e);
+    protected abstract String renderError(ServerErrorCode ec, Map<String, String> additionalInfo, Throwable e);
     protected abstract String renderLoginRequired();
     protected abstract String renderForbidden();
     protected abstract String renderNotFound();
@@ -96,10 +95,30 @@ public abstract class AbstractPartakeController implements SessionAware, Request
             return renderNotFound();
 
         if (e.isUserError())
-            return renderInvalid(e.getUserErrorCode(), e.getCause());
+            return renderInvalid(e.getUserErrorCode(), e.getAdditionalInfo(), e.getCause());
 
         assert e.isServerError();
-        return renderError(e.getServerErrorCode(), e.getCause());
+        return renderError(e.getServerErrorCode(), e.getAdditionalInfo(), e.getCause());
+    }
+
+    protected String renderInvalid(UserErrorCode ec) {
+        return renderInvalid(ec, null, null);
+    }
+
+    protected String renderInvalid(UserErrorCode ec, Throwable e) {
+        return renderInvalid(ec, null, e);
+    }
+
+    protected String renderInvalid(UserErrorCode ec, Map<String, String> additionalInfo) {
+        return renderInvalid(ec, additionalInfo, null);
+    }
+
+    protected String renderError(ServerErrorCode errorCode) {
+        return renderError(errorCode, null, null);
+    }
+
+    protected String renderError(ServerErrorCode errorCode, Throwable e) {
+        return renderError(errorCode, null, e);
     }
 
     // ----------------------------------------------------------------------
@@ -199,30 +218,24 @@ public abstract class AbstractPartakeController implements SessionAware, Request
         }
     }
 
-    @Deprecated
-    protected Date getDateParameter(String key) {
+    protected DateTime getDateTimeParameter(String key) {
         String value = getParameter(key);
         if (value == null)
             return null;
 
-        Date date = TimeUtil.parseForEvent(value);
+        DateTime date = TimeUtil.parseForEvent(value);
         if (date != null)
             return date;
 
         // Try parse it as long.
         try {
             long time = Long.valueOf(value);
-            return new Date(time);
+            return new DateTime(time);
         } catch (NumberFormatException e) {
             // Do nothing.
         }
 
         return null;
-    }
-
-    protected DateTime getDateTimeParameter(String key) {
-        Date d = getDateParameter(key);
-        return d != null ? new DateTime(d.getTime()) : null;
     }
 
     protected UUID getValidUUIDParameter(String key, UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
@@ -263,11 +276,11 @@ public abstract class AbstractPartakeController implements SessionAware, Request
     }
 
     protected String getValidEventIdParameter() throws PartakeException {
-    	return getValidIdParameter("eventId", UserErrorCode.MISSING_EVENT_ID, UserErrorCode.INVALID_EVENT_ID);
+        return getValidIdParameter("eventId", UserErrorCode.MISSING_EVENT_ID, UserErrorCode.INVALID_EVENT_ID);
     }
 
     protected UUID getValidTicketIdParameter() throws PartakeException {
-    	return getValidUUIDParameter("ticketId", UserErrorCode.MISSING_TICKET_ID, UserErrorCode.INVALID_TICKET_ID);
+        return getValidUUIDParameter("ticketId", UserErrorCode.MISSING_TICKET_ID, UserErrorCode.INVALID_TICKET_ID);
     }
 
     protected UUID getValidTicketIdParameter(UserErrorCode missing, UserErrorCode invalid) throws PartakeException {
@@ -306,7 +319,7 @@ public abstract class AbstractPartakeController implements SessionAware, Request
             return new String[]{ (String) param };
         }
         if (param instanceof String[]) {
-            String[] strs = (String[])param;
+            String[] strs = (String[]) param;
             if (strs.length == 0) { return null; }
             return strs;
         }
@@ -316,6 +329,10 @@ public abstract class AbstractPartakeController implements SessionAware, Request
                 param.getClass().toString(),
                 key));
         return null;
+    }
+
+    protected Map<String, Object> getParameters() {
+        return ActionContext.getContext().getParameters();
     }
 
     public String getLocation() {

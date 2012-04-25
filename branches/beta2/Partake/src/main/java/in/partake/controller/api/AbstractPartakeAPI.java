@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.json.JSONObject;
 
@@ -97,15 +98,8 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
      * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
      * ステータスコードは 500 を返す。
      */
-    protected String renderError(ServerErrorCode errorCode) {
-        return renderError(errorCode, null);
-    }
-
-    /**
-     * <code>{ "result": "error", "reason": reason }</code> をレスポンスとして返す。
-     * ステータスコードは 500 を返す。
-     */
-    protected String renderError(ServerErrorCode errorCode, Throwable e) {
+    @Override
+    protected String renderError(ServerErrorCode errorCode, Map<String, String> additionalInfo, Throwable e) {
         assert errorCode != null;
 
         final String reasonString = errorCode.toString() + ":" + errorCode.getReasonString();
@@ -115,27 +109,19 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
         JSONObject obj = new JSONObject();
         obj.put("result", "error");
         obj.put("reason", errorCode.getReasonString());
+        if (additionalInfo != null) {
+            JSONObject info = new JSONObject();
+            for (Entry<String, String> entry : additionalInfo.entrySet())
+                info.put(entry.getKey(), entry.getValue());
+            obj.put("additional", info);
+        }
+
         this.status = 500;
         return renderJSON(obj);
     }
 
-    /**
-     * <code>{ "result": "invalid", "reason": reason }</code> をレスポンスとして返す。
-     * ステータスコードは 400 を返す。
-     */
-    protected String renderInvalid(UserErrorCode ec) {
-        return renderInvalid(ec, null, null);
-    }
-
-    protected String renderInvalid(UserErrorCode ec, Throwable e) {
-        return renderInvalid(ec, null, e);
-    }
-
-    protected String renderInvalid(UserErrorCode ec, JSONObject errorParams) {
-        return renderInvalid(ec, errorParams, null);
-    }
-
-    protected String renderInvalid(UserErrorCode ec, JSONObject errorParams, Throwable e) {
+    @Override
+    protected String renderInvalid(UserErrorCode ec, Map<String, String> additionalInfo, Throwable e) {
         assert ec != null;
 
         if (e != null)
@@ -144,8 +130,12 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
         JSONObject obj = new JSONObject();
         obj.put("result", "invalid");
         obj.put("reason", ec.getReasonString());
-        if (errorParams != null)
-            obj.put("errorParameters", errorParams);
+        if (additionalInfo != null) {
+            JSONObject info = new JSONObject();
+            for (Entry<String, String> entry : additionalInfo.entrySet())
+                info.put(entry.getKey(), entry.getValue());
+            obj.put("additional", info);
+        }
 
         this.status = 400;
         return renderJSON(obj);

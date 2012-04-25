@@ -23,7 +23,7 @@ public class PublishAPITest extends APIControllerTest {
         assertResultOK(proxy);
 
         Event event = loadEvent(UNPUBLISHED_EVENT_ID);
-        assertThat(event.isPreview(), is(false));
+        assertThat(event.isDraft(), is(false));
     }
 
     @Test
