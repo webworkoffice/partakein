@@ -30,8 +30,7 @@
             </a>
             <div class="nav-collapse">
             <ul class="nav">
-                <li><a data-toggle="modal" href="#create-event-dialog">イベントを作る (新)</a></li>
-                <li><a href="/events/new">イベントを作る</a></li>
+                <li><a data-toggle="modal" href="#create-event-dialog">イベントを作る</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">イベントを見つける <b class="caret"></b></a>
                     <ul class="dropdown-menu">

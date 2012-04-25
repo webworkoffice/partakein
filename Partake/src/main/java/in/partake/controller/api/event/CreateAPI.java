@@ -11,6 +11,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
 import in.partake.resource.UserErrorCode;
 
 import java.util.Calendar;
@@ -75,14 +76,20 @@ public class CreateAPI extends AbstractPartakeAPI {
 }
 
 class CreateTransaction extends Transaction<String> {
-    private Event embryo;
+    private Event event;
 
-    public CreateTransaction(Event embryo) {
-        this.embryo = embryo;
+    public CreateTransaction(Event event) {
+        this.event = event;
     }
 
     @Override
     protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        return EventDAOFacade.create(con, daos, embryo);
+        String eventId = EventDAOFacade.create(con, daos, event);
+        event.setId(eventId);
+
+        EventTicket ticket = EventTicket.createDefaultTicket(daos.getEventTicketAccess().getFreshId(con), event);
+        daos.getEventTicketAccess().put(con, ticket);
+
+        return eventId;
     }
 }
