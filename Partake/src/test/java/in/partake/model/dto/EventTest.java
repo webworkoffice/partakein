@@ -40,13 +40,13 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
                 new Event("id", "title", "summary", "category",
                         now, now, "url", "place",
                         "address", "description", "#hashTag", "ownerId", null,
-                        "foreImageId", "backImageId", true, "passcode", false, false,
+                        "foreImageId", "backImageId", "passcode", false,
                         new ArrayList<EventRelation>(),
                         now, now, -1),
                 new Event("id2", "title2", "summary2", "category2",
                         now, now, "url2", "place2",
                         "address2", "description2", "#hashTag2", "ownerId2", "hoge,fuga",
-                        "foreImageId2", "backImageId2", false, "passcode2", false, false,
+                        "foreImageId2", "backImageId2", "passcode2", false,
                         new ArrayList<EventRelation>(),
                         now, now, 1)
         };
@@ -73,9 +73,8 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
             Assert.assertEquals(source.getManagerScreenNames(), new Event(source).getManagerScreenNames());
             Assert.assertEquals(source.getForeImageId(), new Event(source).getForeImageId());
             Assert.assertEquals(source.getBackImageId(), new Event(source).getBackImageId());
-            Assert.assertEquals(source.isPrivate(), new Event(source).isPrivate());
             Assert.assertEquals(source.getPasscode(), new Event(source).getPasscode());
-            Assert.assertEquals(source.isPreview(), new Event(source).isPreview());
+            Assert.assertEquals(source.isDraft(), new Event(source).isDraft());
             Assert.assertEquals(source.getCreatedAt(), new Event(source).getCreatedAt());
             Assert.assertEquals(source.getModifiedAt(), new Event(source).getModifiedAt());
             Assert.assertEquals(source.getRevision(), new Event(source).getRevision());

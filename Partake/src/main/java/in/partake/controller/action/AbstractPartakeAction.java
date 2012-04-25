@@ -6,6 +6,7 @@ import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
 import java.io.InputStream;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
@@ -27,15 +28,8 @@ public abstract class AbstractPartakeAction extends AbstractPartakeController {
         return "jsp";
     }
 
-    /**
-     * invalid user request.
-     */
-    protected String renderInvalid(UserErrorCode errorCode) {
-        return renderInvalid(errorCode, null);
-    }
-
     @Override
-    protected String renderInvalid(UserErrorCode ec, Throwable e) {
+    protected String renderInvalid(UserErrorCode ec, Map<String, String> additionalInfo, Throwable e) {
         if (e != null)
             logger.info("renderInvalid", e);
 
@@ -47,7 +41,7 @@ public abstract class AbstractPartakeAction extends AbstractPartakeController {
     }
 
     @Override
-    protected String renderError(ServerErrorCode ec, Throwable e) {
+    protected String renderError(ServerErrorCode ec, Map<String, String> additionalInfo, Throwable e) {
         if (e != null)
             logger.info("redirectError", e);
 
@@ -57,19 +51,6 @@ public abstract class AbstractPartakeAction extends AbstractPartakeController {
             setRedirectURL("/error");
 
         return REDIRECT;
-    }
-
-    protected String renderError(ServerErrorCode ec) {
-        return renderError(ec, null);
-    }
-
-    /**
-     * a utility function to show database error.
-     * @return
-     */
-    @Deprecated
-    protected String redirectDBError() {
-        return renderError(ServerErrorCode.DB_ERROR);
     }
 
     protected String renderLoginRequired() {

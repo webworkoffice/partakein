@@ -32,9 +32,8 @@ public class CalendarDAOFacade {
                 if (event == null)
                     continue;
 
-                assert !event.isPrivate();
-                assert !event.isPreview();
-                if (event.isPrivate() || event.isPreview())
+                assert event.isSearchable();
+                if (!event.isSearchable())
                     continue;
 
                 if (!EventCategory.getAllEventCategory().equals(categoryName) && !categoryName.equals(event.getCategory()))

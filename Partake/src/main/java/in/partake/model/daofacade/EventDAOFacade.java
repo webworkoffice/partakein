@@ -86,9 +86,8 @@ public class EventDAOFacade {
         }
 
         // さらに、twitter bot がつぶやく (private の場合はつぶやかない)
-        if (!eventEmbryo.isPrivate() && !eventEmbryo.isPreview()) {
+        if (eventEmbryo.isSearchable())
             tweetNewEventArrival(con, daos, eventEmbryo);
-        }
 
         return eventEmbryo.getId();
     }
@@ -133,7 +132,7 @@ public class EventDAOFacade {
 
                 List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, event.getId());
 
-                if (event.isPrivate() || event.isPreview())
+                if (!event.isSearchable())
                     searchService.remove(event.getId());
                 else if (searchService.hasIndexed(event.getId()))
                     searchService.update(event, tickets);
@@ -166,13 +165,13 @@ public class EventDAOFacade {
             for (EventTicket ticket : tickets) {
                 Enrollment enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId());
                 if (enrollment != null && enrollment.getStatus().isEnrolled()) {
-                	enrolled = true;
-                	break;
+                    enrolled = true;
+                    break;
                 }
             }
 
             if (!enrolled)
-            	requiredEvents.add(relation.getEvent());
+                requiredEvents.add(relation.getEvent());
         }
 
         return requiredEvents;

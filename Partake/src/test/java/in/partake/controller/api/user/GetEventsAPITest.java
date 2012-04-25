@@ -59,7 +59,7 @@ public class GetEventsAPITest extends APIControllerTest {
                     dao.put(con, new Event(ids.get(i), "title", "summary", "category",
                             new DateTime(i), null, "url", "place",
                             "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID, TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME,
-                            null, null, isPrivate, null, draft, false, new ArrayList<EventRelation>(),
+                            null, null, isPrivate ? "passcode" : null, draft, new ArrayList<EventRelation>(),
                             new DateTime(i), new DateTime(i), -1));
                 }
 

@@ -122,7 +122,7 @@ class SearchTransaction extends DBAccess<List<Event>> {
 
         for (String eventId : eventIds) {
             Event event = daos.getEventAccess().find(con, eventId);
-            if (event != null && !event.isPrivate() && !event.isPreview())
+            if (event != null && event.isSearchable())
                 events.add(event);
         }
 

@@ -8,6 +8,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.UserErrorCode;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
@@ -59,8 +60,8 @@ public class ModifyAPITest extends APIControllerTest {
     private void setEventParameters(ActionProxy proxy, EventEx event) {
         if (event.getId() != null)
             addParameter(proxy, "eventId", event.getId());
-        if (event.isPreview())
-            addParameter(proxy, "draft", String.valueOf(event.isPreview()));
+        if (event.isDraft())
+            addParameter(proxy, "draft", String.valueOf(event.isDraft()));
 
         // Basic Information
         addParameter(proxy, "title", event.getTitle());
@@ -78,8 +79,6 @@ public class ModifyAPITest extends APIControllerTest {
         addParameter(proxy, "description", event.getDescription());
         if (event.getHashTag() != null)
             addParameter(proxy, "hashTag", event.getHashTag());
-        if (event.isPrivate())
-            addParameter(proxy, "secret", String.valueOf(event.isPrivate()));
         if (event.getPasscode() != null)
             addParameter(proxy, "passcode", event.getPasscode());
         if (event.getManagerScreenNames() != null)

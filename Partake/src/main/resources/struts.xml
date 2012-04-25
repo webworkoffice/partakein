@@ -127,7 +127,16 @@
     <package name="events" namespace="/events" extends="partake-default">
         <!-- Event Editing -->
         <action name="new" class="in.partake.controller.action.event.EventNewAction" />
-        <action name="edit/*" class="in.partake.controller.action.event.EventEditAction">
+        <action name="edit/basic/*" class="in.partake.controller.action.event.EventEditAction">
+            <param name="eventId">{1}</param>
+        </action>
+        <action name="edit/ticket/*" class="in.partake.controller.action.event.EventTicketEditAction">
+            <param name="eventId">{1}</param>
+        </action>
+        <action name="edit/enquete/*" class="in.partake.controller.action.event.EventEnqueteEditAction">
+            <param name="eventId">{1}</param>
+        </action>
+        <action name="edit/permission/*" class="in.partake.controller.action.event.EventPermissionEditAction">
             <param name="eventId">{1}</param>
         </action>
 

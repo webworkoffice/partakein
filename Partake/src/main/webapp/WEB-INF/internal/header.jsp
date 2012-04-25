@@ -1,3 +1,4 @@
+<%@page import="in.partake.base.TimeUtil"%>
 <%@page import="in.partake.session.PartakeSession"%>
 <%@page import="in.partake.resource.MessageCode"%>
 <%@page import="in.partake.controller.base.AbstractPartakeController"%>
@@ -29,6 +30,7 @@
             </a>
             <div class="nav-collapse">
             <ul class="nav">
+                <li><a data-toggle="modal" href="#create-event-dialog">イベントを作る (新)</a></li>
                 <li><a href="/events/new">イベントを作る</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">イベントを見つける <b class="caret"></b></a>
@@ -44,7 +46,7 @@
             %>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="<%=h(user.getTwitterLinkage().getProfileImageURL())%>" class="profile-image rad sdw" alt="profile image" width="20" height="20" />
+                        <img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image" alt="" width="20" height="20" />
                         <%=user.getScreenName()%>
                         <b class="caret"></b>
                     </a>
@@ -136,6 +138,72 @@
             <input type="submit" value="OpenID でログイン" />
         </form>
     </div>
+</div>
+
+<div id="create-event-dialog" class="modal" style="display:none">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">&times;</a>
+        <h3>イベントを作成</h3>
+    </div>
+    <div class="modal-body">
+        <p>イベントを作成します。</p>
+        <p>まずはタイトルと開催期間を入力しましょう。項目は後で編集可能です。</p>
+
+        <form class="form-horizontal"><fieldset>
+            <div class="control-group">
+                <label class="control-label">タイトル</label>
+                <div class="controls">
+                    <input type="text" id="create-event-form-title" name="title" value="新規イベント" class="span4 disable-keypress-submit" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">開催期間</label>
+                <div class="controls">
+                    <input type="text" id="create-event-form-begin-date-input" name="beginDate" class="span2 disable-keypress-submit"
+                        placeholder="YYYY-MM-DD HH:MM"
+                        value="<%= TimeUtil.formatForEvent(TimeUtil.getCurrentDateTime()) %>" />
+                    〜
+                    <div class="input-prepend">
+                        <div class="add-on"><input type="checkbox" name="usesEndDate" checked /></div><input type="text" id="create-event-form-end-date-checkbox" name="endDate" class="span2 disable-keypress-submit"
+                            placeholder="YYYY-MM-DD HH:MM"
+                            value="<%= TimeUtil.formatForEvent(TimeUtil.getCurrentDateTime()) %>" />
+                    </div>
+                </div>
+            </div>
+        </fieldset></form>
+    </div>
+    <div class="modal-footer spinner-container">
+        <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
+        <a href="#" id="event-enroll-dialog-submit" class="btn btn-danger">新規イベントを保存</a>
+    </div>
+    <script>
+    $('#create-event-form-begin-date-input').datetimepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+    $('#create-event-form-end-date-input').datetimepicker({
+        dateFormat: 'yy-mm-dd'
+    });
+    $('.disable-keypress-submit').keypress(function(e) {
+        if (e.which == 13) { // If enterkey is pressed.
+            return false;
+        }
+        return true;
+    });
+    $('#event-enroll-dialog-submit').click(function(e) {
+        var title = $('#create-event-form-title').val();
+        var beginDate = $('#create-event-form-begin-date-input').val();
+        var usesEndDate = $('#create-event-form-end-date-checkbox').is(':checked');
+        var endDate = usesEndDate ? $('create-event-form-end-date-input').val() : null;
+
+        partake.event.create(title, beginDate, endDate)
+        .done(function (json) {
+            var eventId = json.eventId;
+            location.href = '/events/' + json.eventId;
+        })
+        .fail(partake.defaultFailHandler);
+
+    });
+    </script>
 </div>
 
 <div class="container">

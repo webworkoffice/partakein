@@ -86,9 +86,12 @@ body {
         <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png" title="非公開イベント" /><% } %>
         <%= h(event.getTitle()) %>
     </h1>
-    <% if (!StringUtils.isEmpty(event.getSummary())) { %>
-        <p><%= h(event.getSummary()) %></p>
-    <% } %>
+    <p>
+        <% if (!StringUtils.isEmpty(event.getSummary())) { %>
+            <%= h(event.getSummary()) %>
+        <% } %>
+        <span class="label label-info"><%= h(EventCategory.getReadableCategoryName(event.getCategory())) %></span>
+    </p>
 </div>
 
 <div class="row">
@@ -121,62 +124,60 @@ body {
 <jsp:include page="/WEB-INF/events/_show_enroll.jsp" flush="true" />
 
 <div class="row">
-
-<div class="span4 tabbable pull-right">
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#side-information" data-toggle="tab">イベント情報</a></li>
-        <li><a href="#side-participants" data-toggle="tab">参加者情報</a></li>
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" id="side-information">
-            <jsp:include page="/WEB-INF/events/_show_side_information.jsp" flush="true" />
-        </div>
-        <div class="tab-pane" id="side-participants">
-            <jsp:include page="/WEB-INF/events/_show_side_participants.jsp" flush="true" />
-        </div>
-    </div>
-</div>
-
-<div class="span8">
-    <% if (event.getForeImageId() != null) { %>
-    <div class="row">
-        <div class="span8">
-            <div class="event-image">
-                <img id="event-image-image" src="/images/<%= event.getForeImageId() %>" />
-            </div>
-        </div>
-    </div>
-    <% } %>
-
-    <h3>イベント</h3>
-    <div class="event-description" style="min-height: 200px;">
-        <%= cleanupHTML(event.getDescription()) %>
-    </div>
-
-    <h3>コメント</h3>
-    <div class="tabbable event-nav">
+    <div class="span4 tabbable pull-right">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#news1" title="コメントボード" data-toggle="tab">掲示板</a></li>
-            <li><a href="#news2" title="管理者からのメッセージ" data-toggle="tab">管理者から</a></li>
-            <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
-            <li><a href="#side-twitter" data-toggle="tab">Twitter</a></li>
-            <% } %>
+            <li class="active"><a href="#side-information" data-toggle="tab">イベント情報</a></li>
+            <li><a href="#side-participants" data-toggle="tab">参加者情報</a></li>
         </ul>
         <div class="tab-content">
-            <div id="news1" class="tab-pane active">
-                <jsp:include page="/WEB-INF/events/_show_bottom_commentboard.jsp" flush="true" />
+            <div class="tab-pane active" id="side-information">
+                <jsp:include page="/WEB-INF/events/_show_side_information.jsp" flush="true" />
             </div>
-            <div id="news2" class="tab-pane">
-                <jsp:include page="/WEB-INF/events/_show_bottom_message.jsp" flush="true" />
-            </div>
-            <div id="side-twitter" class="tab-pane">
-                <jsp:include page="/WEB-INF/events/_show_side_twitter.jsp" flush="true" />
+            <div class="tab-pane" id="side-participants">
+                <jsp:include page="/WEB-INF/events/_show_side_participants.jsp" flush="true" />
             </div>
         </div>
     </div>
-</div>
 
-</div><%-- end of .span8 --%>
+    <div class="span8">
+        <% if (event.getForeImageId() != null) { %>
+        <div class="row">
+            <div class="span8">
+                <div class="event-image">
+                    <img id="event-image-image" src="/images/<%= event.getForeImageId() %>" />
+                </div>
+            </div>
+        </div>
+        <% } %>
+
+        <h3>イベント</h3>
+        <div class="event-description" style="min-height: 200px;">
+            <%= cleanupHTML(event.getDescription()) %>
+        </div>
+
+        <h3>コメント</h3>
+        <div class="tabbable event-nav">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#news1" title="コメントボード" data-toggle="tab">掲示板</a></li>
+                <li><a href="#news2" title="管理者からのメッセージ" data-toggle="tab">管理者から</a></li>
+                <% if (!StringUtils.isEmpty(event.getHashTag())) { %>
+                <li><a href="#side-twitter" data-toggle="tab">Twitter</a></li>
+                <% } %>
+            </ul>
+            <div class="tab-content">
+                <div id="news1" class="tab-pane active">
+                    <jsp:include page="/WEB-INF/events/_show_bottom_commentboard.jsp" flush="true" />
+                </div>
+                <div id="news2" class="tab-pane">
+                    <jsp:include page="/WEB-INF/events/_show_bottom_message.jsp" flush="true" />
+                </div>
+                <div id="side-twitter" class="tab-pane">
+                    <jsp:include page="/WEB-INF/events/_show_side_twitter.jsp" flush="true" />
+                </div>
+            </div>
+        </div>
+    </div><%-- end of .span8 --%>
+</div>
 
 <jsp:include page="/WEB-INF/events/_show_enroll.jsp" flush="true" />
 

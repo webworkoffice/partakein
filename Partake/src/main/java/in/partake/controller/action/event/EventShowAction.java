@@ -87,11 +87,11 @@ public class EventShowAction extends AbstractPartakeAction {
     }
 
     public Map<UUID, ParticipationStatus> getParticipationStatusMap() {
-    	return participationStatusMap;
+        return participationStatusMap;
     }
 
     public Map<UUID, EventTicketHolderList>getTicketHolderListMap() {
-    	return ticketHolderListMap;
+        return ticketHolderListMap;
     }
 
     public List<CommentEx> getComments() {
@@ -107,7 +107,7 @@ public class EventShowAction extends AbstractPartakeAction {
     }
 
     public List<EventTicket> getTickets() {
-    	return tickets;
+        return tickets;
     }
 }
 
@@ -140,13 +140,13 @@ class EventShowTransaction extends DBAccess<Void> {
         if (event == null)
             return null;
 
-        if (event.isPreview()) {
+        if (event.isDraft()) {
             // If the event is draft, only owner can see it.
             if (user == null || !DraftEventEditPermission.check(event, user))
                 throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_EDIT);
         }
 
-        if (event.isPrivate()) {
+        if (!StringUtils.isBlank(event.getPasscode())) {
             // owner および manager は見ることが出来る。
             String passcode = (String) session.get("event:" + eventId);
             if (user != null && PrivateEventShowPermission.check(event, user)) {
@@ -175,11 +175,11 @@ class EventShowTransaction extends DBAccess<Void> {
             if (participations == null)
                 throw new PartakeException(ServerErrorCode.PARTICIPATIONS_RETRIEVAL_ERROR);
 
-          	ticketHolderListMap.put(ticket.getId(), ticket.calculateParticipationList(event, participations));
+            ticketHolderListMap.put(ticket.getId(), ticket.calculateParticipationList(event, participations));
             if (user != null)
-            	participationStatusMap.put(ticket.getId(), EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), ticket.getId()));
+                participationStatusMap.put(ticket.getId(), EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), ticket.getId()));
             else
-            	participationStatusMap.put(ticket.getId(), ParticipationStatus.NOT_ENROLLED);
+                participationStatusMap.put(ticket.getId(), ParticipationStatus.NOT_ENROLLED);
         }
 
         comments = EventDAOFacade.getCommentsExByEvent(con, daos, eventId);
@@ -201,11 +201,11 @@ class EventShowTransaction extends DBAccess<Void> {
     }
 
     public Map<UUID, ParticipationStatus> getParticipationStatusMap() {
-    	return participationStatusMap;
+        return participationStatusMap;
     }
 
     public Map<UUID, EventTicketHolderList>getTicketHolderListMap() {
-    	return ticketHolderListMap;
+        return ticketHolderListMap;
     }
 
     public List<CommentEx> getComments() {

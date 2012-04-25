@@ -120,9 +120,9 @@ public final class TimeUtil {
         return dateFormatForEvent.format(date);
     }
 
-    public static Date parseForEvent(String dateStr) {
+    public static DateTime parseForEvent(String dateStr) {
         try {
-            return dateFormatForEvent.parse(dateStr);
+            return new DateTime(dateFormatForEvent.parse(dateStr).getTime());
         } catch (ParseException e) {
             return null;
         }

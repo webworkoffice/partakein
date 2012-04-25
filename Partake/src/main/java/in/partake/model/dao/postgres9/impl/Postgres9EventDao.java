@@ -25,6 +25,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.sf.json.JSONObject;
 
 class EntityEventMapper extends Postgres9EntityDataMapper<Event> {
@@ -82,7 +84,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
 
         indexDao.put(pcon,
                 new String[] {"id", "ownerId", "editorNames", "draft", "isPrivate", "beginDate" },
-                new Object[] { event.getId(), event.getOwnerId(), event.getManagerScreenNames(), event.isPreview(), event.isPrivate(), event.getBeginDate() });
+                new Object[] { event.getId(), event.getOwnerId(), event.getManagerScreenNames(), event.isDraft(), StringUtils.isBlank(event.getPasscode()), event.getBeginDate() });
     }
 
     @Override

@@ -348,3 +348,11 @@ footer {
 .controls>p:first-child {
     padding-top: 5px;
 }
+
+.label-edit {
+  background-color: #468847;
+}
+.label-edit:hover {
+  background-color: #356635;
+}
+

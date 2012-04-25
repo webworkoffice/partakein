@@ -93,22 +93,24 @@
     Partake.prototype.event = {
         partake: this,
 
-        create: function(eventArgs) {
+        create: function(title, beginDate, endDate) {
             var arg = {
-                sessionToken: partake.sessionToken
+                sessionToken: partake.sessionToken,
+                title: title,
+                beginDate: beginDate,
+                endDate: endDate,
             };
-            for (var s in eventArgs)
-                arg[s] = eventArgs[s];
             return $.post('/api/event/create', arg);
         },
 
-        modify: function(eventId, eventArgs) {
+        modify: function(eventId, params) {
             var arg = {
                 sessionToken: partake.sessionToken,
-                eventId: eventId
+                eventId: eventId,
             };
-            for (var s in eventArgs)
-                arg[s] = eventArgs[s];
+            for (var s in params)
+                arg[s] = params[s];
+
             return $.post('/api/event/modify', arg);
         },
 

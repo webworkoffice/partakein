@@ -1,3 +1,4 @@
+<%@page import="in.partake.controller.action.event.AbstractEventEditAction"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.controller.action.event.EventEditAction"%>
 <%@page import="in.partake.resource.Constants"%>
@@ -7,7 +8,7 @@
 <%@taglib prefix="s" uri="/struts-tags" %>
 
 <%
-    EventEditAction action = (EventEditAction) request.getAttribute(Constants.ATTR_ACTION);
+    AbstractEventEditAction action = (AbstractEventEditAction) request.getAttribute(Constants.ATTR_ACTION);
     EventEx event = action.getEvent();
 %>
 
@@ -20,6 +21,8 @@
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
+<jsp:include page="/WEB-INF/events/_edit_manage_navigation.jsp" flush="true" />
+
 <div class="page-header">
     <h1>イベントを編集します</h1>
 </div>
@@ -28,15 +31,6 @@
     <ul class="nav nav-pills subnav">
         <li class="active"><a data-toggle="tab" href="#tab-basic">基本情報編集</a></li>
         <li><a data-toggle="tab" href="#tab-access">アクセス権の設定</a></li>
-
-        <% if (event.isPreview()) { %>
-            <li class="pull-right spinner-container"><a href="/events/<%= h(event.getId()) %>" class="btn">キャンセル</a></li>
-            <li class="pull-right spinner-container"><a id="event-modify-form-save" href="#" class="btn btn-primary">保存</a></li>
-            <li class="pull-right spinner-container"><a id="event-modify-form-publish" href="#" class="btn btn-danger">公開</a></li>
-        <% } else { %>
-            <li class="pull-right spinner-container"><a href="/events/<%= h(event.getId()) %>" class="btn">キャンセル</a></li>
-            <li class="pull-right spinner-container"><a id="event-modify-form-save" href="#" class="btn btn-primary">更新</a></li>
-        <% } %>
     </ul>
     <form id="event-form" class="form-horizontal"><div class="tab-content">
         <div id="tab-basic" class="tab-pane active">
@@ -47,7 +41,9 @@
         </div>
     </div></form>
 
-    <% if (event.isPreview()) { %>
+    <%
+        if (event.isDraft()) {
+    %>
     <script>
     $('#event-modify-form-save').popover({
         placement: 'bottom',
