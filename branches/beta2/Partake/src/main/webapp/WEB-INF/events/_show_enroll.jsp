@@ -1,6 +1,5 @@
 <%@page import="in.partake.model.EventRelationEx"%>
 <%@page import="java.util.List"%>
-<%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.UserEx"%>
@@ -18,16 +17,17 @@
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL);
 
     EventEx event = action.getEvent();
-    ParticipationStatus status = action.getParticipationStatus();
-    boolean deadlineOver = action.isDeadlineOver();
-    EventReminder reminderStatus = action.getEventReminder();
     List<EventRelationEx> eventRelations = action.getRelations();
+
+    // TODO: check these.
+    boolean deadlineOver = true;
+    ParticipationStatus status = ParticipationStatus.ENROLLED;
 %>
 
 <div class="enroll-bar">
     <div class="row clearfix">
         <div class="span5">
-            <p>開催期間 <%= Helper.readableDuration(event.getBeginDate(), event.getEndDate()) %></p>
+            <p>開催期間 ふがほげ</p>
             <p>申込期間 ほげほげ</p>
         </div>
         <div class="span3">

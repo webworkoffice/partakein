@@ -112,6 +112,10 @@ public final class TimeUtil {
         return calendar;
     }
 
+    public static String formatForEvent(DateTime date) {
+        return dateFormatForEvent.format(date.toDate());
+    }
+
     public static String formatForEvent(Date date) {
         return dateFormatForEvent.format(date);
     }

@@ -2,7 +2,6 @@
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
 <%@page import="in.partake.view.util.Helper"%>
-<%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.model.CommentEx"%>
@@ -36,9 +35,6 @@
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL);
 
     EventEx event = action.getEvent();
-    ParticipationStatus status = action.getParticipationStatus();
-    boolean deadlineOver = action.isDeadlineOver();
-    EventReminder reminderStatus = action.getEventReminder();
     List<EventRelationEx> eventRelations = action.getRelations();
 %>
 

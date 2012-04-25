@@ -52,7 +52,7 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
 
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             // event id may be NULL if system message.
-            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, ticketId TEXT NOT NULL, createdAt TIMESTAMP NOT NULL)");
+            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, ticketId TEXT NOT NULL, notificationType TEXT NOT NULL, createdAt TIMESTAMP NOT NULL)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketId" + " ON " + INDEX_TABLE_NAME + "(ticketId, createdAt)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketIdNotificationType" + " ON " + INDEX_TABLE_NAME + "(ticketId, notificationType, createdAt)");
         }
@@ -77,8 +77,8 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
             entityDao.insert(pcon, entity);
 
         indexDao.put(pcon,
-        		new String[] { "id", "ticketId", "notificationType", "createdAt" },
-        		new Object[] { t.getId(), t.getTicketId().toString(), t.getNotificationType().toString(), t.getCreatedAt() } );
+                new String[] { "id", "ticketId", "notificationType", "createdAt" },
+                new Object[] { t.getId(), t.getTicketId().toString(), t.getNotificationType().toString(), t.getCreatedAt() } );
     }
 
     @Override
@@ -120,17 +120,17 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
 
     @Override
     public EventTicketNotification findLastNotification(PartakeConnection con, UUID ticketId, NotificationType type) throws DAOException {
-    	Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-    			"SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? AND notificationType = ? ORDER BY createdAt DESC LIMIT 1",
-    			new Object[] { ticketId, type.toString() });
+        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? AND notificationType = ? ORDER BY createdAt DESC LIMIT 1",
+                new Object[] { ticketId, type.toString() });
 
         Postgres9IdMapper<EventTicketNotification> idMapper = new Postgres9IdMapper<EventTicketNotification>((Postgres9Connection) con, mapper, entityDao);
         List<EventTicketNotification> list = DAOUtil.convertToList(new Postgres9DataIterator<EventTicketNotification>(idMapper, psars));
 
         if (list.isEmpty())
-        	return null;
+            return null;
         else
-        	return list.get(0);
+            return list.get(0);
     }
 
     @Override

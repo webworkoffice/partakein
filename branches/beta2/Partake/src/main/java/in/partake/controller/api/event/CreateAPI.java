@@ -38,7 +38,7 @@ public class CreateAPI extends AbstractEventEditAPI {
         List<EventTicket> tickets = new ArrayList<EventTicket>();
         JSONObject invalidParameters = new JSONObject();
         updateEventFromParameter(user, embryo, invalidParameters);
-        updateTicketsFromParameter(user, tickets, invalidParameters);
+        updateTicketsFromParameter(user, embryo, tickets, invalidParameters);
         updateEventRelationFromParameter(user, relations, invalidParameters);
         if (!invalidParameters.isEmpty())
             return renderInvalid(UserErrorCode.INVALID_PARAMETERS, invalidParameters);

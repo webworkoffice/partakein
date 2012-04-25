@@ -56,7 +56,7 @@ public class Postgres9EnrollmentDao extends Postgres9Dao implements IEnrollmentA
         entityDao.initialize(pcon);
 
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
-            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL, ticketId TEXT NOT NULL, eventId TEXT NOT NULL, status, enrolledAt TIMESTAMP NOT NULL)");
+            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL, ticketId TEXT NOT NULL, eventId TEXT NOT NULL, status TEXT NOT NULL, enrolledAt TIMESTAMP NOT NULL)");
             indexDao.createIndex(pcon, "CREATE UNIQUE INDEX " + INDEX_TABLE_NAME + "UserIdTicketId" + " ON " + INDEX_TABLE_NAME + "(userId, ticketId)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketId" + " ON " + INDEX_TABLE_NAME + "(ticketId, enrolledAt)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketIdStatus" + " ON " + INDEX_TABLE_NAME + "(ticketId, status, enrolledAt)");

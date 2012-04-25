@@ -85,7 +85,7 @@
     <div class="controls form-inline">
         <input type="text" id="endDataInput" name="endDate" class="span2"
             placeholder="YYYY-MM-DD HH:MM"
-                value="<%= event.getEndDate() != null ? TimeUtil.formatForEvent(event.getEndDate()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
+                value="<%= event.getEndDate() != null ? TimeUtil.formatForEvent(event.getEndDate()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDateTime())) %>" />
     </div>
     <script>
     $('#endDataInput').datetimepicker({
@@ -102,43 +102,6 @@
     $("#usesEndDate").change(checkEndDate);
     </script>
 </div>
-<div id="deadline" class="control-group">
-    <label class="control-label">申込締切</label>
-    <div class="controls">
-        <label class="checkbox">
-            <input type="checkbox" id="usesDeadline" name="usesDeadline" <%= event.getDeadline() != null ? "checked" : "" %>/>
-            締め切りを設定する
-        </label>
-    </div>
-    <div class="controls form-inline">
-        <input type="text" id="deadlineInput" name="deadline" class="span2"
-                placeholder="YYYY-MM-DD HH:MM"
-                value="<%= event.getDeadline() != null? TimeUtil.formatForEvent(event.getDeadline()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDate())) %>" />
-        <p class="help-block"> 締め切り以後は参加／不参加が変更できなくなります。設定しない場合、開始日時が締め切りとなります。</p>
-    </div>
-    <script>
-    $('#deadlineInput').datetimepicker({
-        dateFormat: 'yy-mm-dd'
-    });
-    function checkDeadline() {
-        if ($("#usesDeadline").is(":checked")) {
-            $("#deadlineInput").removeAttr('disabled');
-        } else {
-            $("#deadlineInput").attr('disabled', '');
-        }
-    }
-    checkDeadline();
-    $("#usesDeadline").change(checkDeadline);
-    </script>
-</div>
-<div id="capacity" class="control-group">
-    <label class="control-label">定員</label>
-    <div class="controls">
-        <input type="text" name="capacity" class="span7" value="<%= String.valueOf(event.getCapacity()) %>"/>
-        <p class="help-block">定員を超える参加表明者は補欠者として扱われます。0 をいれると定員なしの意味になります。</p>
-    </div>
-</div>
-
 <div id="foreImageId" class="control-group">
     <label class="control-label" for="foreImage">掲載画像</label>
     <div class="controls form-inline">

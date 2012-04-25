@@ -18,8 +18,10 @@
 
 <div class="tabbable">
     <ul class="nav nav-pills subnav">
-        <li class="active"><a data-toggle="tab" href="#tab-basic">基本情報編集</a></li>
-        <li><a data-toggle="tab" href="#tab-access">アクセス権の設定</a></li>
+        <li class="active"><a data-toggle="tab" href="#tab-basic">基本情報</a></li>
+        <li><a data-toggle="tab" href="#tab-ticket">チケット</a></li>
+        <li><a data-toggle="tab" href="#tab-access">アクセス権</a></li>
+        
 
         <li class="pull-right spinner-container"><a id="event-create-form-save" href="#" class="btn btn-primary">保存</a></li>
         <li class="pull-right spinner-container"><a id="event-create-form-publish" href="#" class="btn btn-danger">公開</a></li>
@@ -27,6 +29,9 @@
     <form id="event-form" class="form-horizontal"><div class="tab-content">
         <div id="tab-basic" class="tab-pane active">
             <jsp:include page="/WEB-INF/events/_event_edit_basic.jsp" />
+        </div>
+        <div id="tab-ticket" class="tab-pane">
+            <jsp:include page="/WEB-INF/events/_event_edit_ticket.jsp" />
         </div>
         <div id="tab-access" class="tab-pane">
             <jsp:include page="/WEB-INF/events/_event_edit_access.jsp" />
