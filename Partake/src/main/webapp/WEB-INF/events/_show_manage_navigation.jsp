@@ -1,7 +1,6 @@
 <%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
-<%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.view.util.Helper"%>
@@ -22,12 +21,9 @@
 
     EventEx event = action.getEvent();
     List<CommentEx> comments = action.getComments();
-    boolean deadlineOver = action.isDeadlineOver();
     String redirectURL = action.getRedirectURL();
     if (redirectURL == null)
         redirectURL = action.getCurrentURL();
-    ParticipationStatus status = action.getParticipationStatus();
-    EventReminder reminderStatus = action.getEventReminder();
 %>
 
 <div class="row" style="background-color: #FFD">
@@ -165,22 +161,3 @@
     </script>
 </div>
 
-<div id="event-reminder-dialog" class="modal" style="display:none">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
-        <h3>リマインダーの送付状況</h3>
-    </div>
-    <div class="modal-body">
-        <dl>
-            <dt>締切24時間前(仮参加者向)</dt>
-                <dd><%= Helper.readableReminder(reminderStatus.getSentDateOfBeforeDeadlineOneday()) %></dd>
-            <dt>締切12時間前(仮参加者向)</dt>
-                <dd><%= Helper.readableReminder(reminderStatus.getSentDateOfBeforeDeadlineHalfday()) %></dd>
-            <dt>イベント１日前</dt>
-                <dd><%= Helper.readableReminder(reminderStatus.getSentDateOfBeforeTheDay()) %></dd>
-        </dl>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">OK</a>
-    </div>
-</div>

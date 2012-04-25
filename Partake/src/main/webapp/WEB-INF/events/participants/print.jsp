@@ -7,7 +7,6 @@
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.model.EventEx"%>
-<%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.model.dto.Message"%>
 <%@page import="static in.partake.view.util.Helper.h"%>
@@ -17,14 +16,14 @@
 <!DOCTYPE html>
 
 <%
-	PrintParticipantsAction action = (PrintParticipantsAction) request.getAttribute(Constants.ATTR_ACTION);
+    PrintParticipantsAction action = (PrintParticipantsAction) request.getAttribute(Constants.ATTR_ACTION);
 
     EventEx event = action.getEvent();
-    EventTicketHolderList participationList = action.getParticipationList();
+    // EventTicketHolderList participationList = action.getParticipationList();
 
-    List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
-    List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
-    List<EnrollmentEx> cancelledParticipations = participationList.getCancelledParticipations();
+    List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>(); // participationList.getEnrolledParticipations();
+    List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>(); // participationList.getSpareParticipations();
+    List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>(); // participationList.getCancelledParticipations();
 
     List<EnrollmentEx> ps = new ArrayList<EnrollmentEx>();
     ps.addAll(enrolledParticipations);

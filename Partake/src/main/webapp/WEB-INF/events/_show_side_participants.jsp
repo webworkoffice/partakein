@@ -1,7 +1,7 @@
+<%@page import="java.util.ArrayList"%>
 <%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
-<%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.view.util.Helper"%>
@@ -17,35 +17,21 @@
 <%@taglib prefix="s" uri="/struts-tags" %>
 
 <%
-	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
+    UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
     EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
 
     EventEx event = action.getEvent();
     List<CommentEx> comments = action.getComments();
-    boolean deadlineOver = action.isDeadlineOver();
     String redirectURL = action.getRedirectURL();
     if (redirectURL == null)
         redirectURL = action.getCurrentURL();
-    ParticipationStatus status = action.getParticipationStatus();
-    EventReminder reminderStatus = action.getEventReminder();
 %>
 
 <%
-	EventTicketHolderList participationList = action.getParticipationList();
-    List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
-    List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
-    List<EnrollmentEx> cancelledParticipations = participationList.getCancelledParticipations();
+    List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>();
+    List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>();
+    List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>();
 %>
-
-
-<p>定員 <%= event.getCapacity() != 0 ? String.valueOf(event.getCapacity()) : "-" %></p>
-<div class="well">
-    <h3>参加者数</h3>
-    <ul>
-        <li>参加: <%= enrolledParticipations.size() %> 人 (仮 <%= participationList.getReservedEnrolled() %> 人)
-　／　補欠: <%= spareParticipations.size() %> 人 (仮 <%= participationList.getReservedSpare() %> 人)</li>
-    </ul>
-</div>
 
 <h3><img src="<%= request.getContextPath() %>/images/circle.png" />参加者一覧 (<%= enrolledParticipations.size() %> 人)</h3>
 <% if (enrolledParticipations != null && enrolledParticipations.size() > 0) { %>

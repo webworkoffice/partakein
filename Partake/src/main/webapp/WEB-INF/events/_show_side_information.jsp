@@ -1,3 +1,6 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.UUID"%>
+<%@page import="java.util.Map"%>
 <%@page import="in.partake.model.EventRelationEx"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
 <%@page import="in.partake.base.Util"%>
@@ -5,7 +8,6 @@
 <%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
-<%@page import="in.partake.model.dto.EventReminder"%>
 <%@page import="in.partake.model.EnrollmentEx"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.view.util.Helper"%>
@@ -21,30 +23,28 @@
 <%@page import="static in.partake.view.util.Helper.escapeTwitterResponse"%>
 
 <%
-	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
+    UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
     EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
 
     EventEx event = action.getEvent();
     List<CommentEx> comments = action.getComments();
-    boolean deadlineOver = action.isDeadlineOver();
     String redirectURL = action.getRedirectURL();
     if (redirectURL == null)
         redirectURL = action.getCurrentURL();
-    ParticipationStatus status = action.getParticipationStatus();
-    EventReminder reminderStatus = action.getEventReminder();
     List<EventRelationEx> eventRelations = action.getRelations();
 %>
 
 <%
-	EventTicketHolderList participationList = action.getParticipationList();
-    List<EnrollmentEx> enrolledParticipations = participationList.getEnrolledParticipations();
-    List<EnrollmentEx> spareParticipations = participationList.getSpareParticipations();
-    List<EnrollmentEx> cancelledParticipations = participationList.getCancelledParticipations();
+    Map<UUID, EventTicketHolderList> ticketHolderMap = action.getTicketHolderListMap();
+
+    List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>();
+    List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>();
+    List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>();
 %>
 
 <h3>開催日時</h3>
 <p>開催日時: <%= Helper.readableDuration(event.getBeginDate(), event.getEndDate()) %></p>
-<p>申込期間: <%= Helper.readableDate(event.getDeadline() == null ? event.getBeginDate() : event.getDeadline()) %></p>
+<p>申込期間: ほげほげ</p>
 
 
 <h3>開催場所</h3>

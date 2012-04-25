@@ -28,7 +28,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
     private DateTime modifiedAt;
 
     public static EventTicket createDefaultTicket(UUID id, Event event) {
-        return new EventTicket(id, event.getId(), "自由席", TicketType.FREE_TICKET, 0, null, null, TimeUtil.getCurrentDateTime(), null);
+        return new EventTicket(id, event != null ? event.getId() : null, "自由席", TicketType.FREE_TICKET, 0, null, null, TimeUtil.getCurrentDateTime(), null);
     }
 
     public EventTicket(UUID id, String eventId, String name, TicketType ticketType, int amount,

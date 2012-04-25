@@ -218,6 +218,13 @@ public final class Helper {
         return readableDate(new Date(d.getTime()));
     }
 
+    public static String readableDuration(DateTime beginDate, DateTime endDate) {
+        Date begin = beginDate != null ? new Date(beginDate.getTime()) : null;
+        Date end = endDate != null ? new Date(endDate.getTime()) : null;
+        return readableDuration(begin, end);
+    }
+
+    @Deprecated
     public static String readableDuration(Date beginDate, Date endDate) {
         if (endDate == null) {
             return readableDate(beginDate);
