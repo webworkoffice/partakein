@@ -139,7 +139,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
 
     protected void addParameter(ActionProxy proxy, String key, Object obj) {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
-        if (obj instanceof String || obj instanceof String[])
+        if (obj == null || obj instanceof String || obj instanceof String[])
             actionContext.getParameters().put(key, obj);
         else
             actionContext.getParameters().put(key, obj.toString());

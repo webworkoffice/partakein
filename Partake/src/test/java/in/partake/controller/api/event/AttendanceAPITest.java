@@ -25,7 +25,7 @@ public class AttendanceAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_ABSENT_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
 
@@ -50,8 +50,8 @@ public class AttendanceAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
-        addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "userId", ATTENDANCE_UNKNOWN_USER_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "absent");
         addValidSessionTokenToParameter(proxy);
 
@@ -60,7 +60,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
         // Check status is changed.
         {
-            UserTicketApplication enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
+            UserTicketApplication enrollment = loadEnrollment(ATTENDANCE_UNKNOWN_USER_ID, DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }
     }
@@ -77,7 +77,7 @@ public class AttendanceAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "unknown");
         addValidSessionTokenToParameter(proxy);
 
@@ -96,7 +96,7 @@ public class AttendanceAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy(API_EVENT_ATTEND_URL);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
 
@@ -110,7 +110,7 @@ public class AttendanceAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         // addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
 
@@ -124,12 +124,12 @@ public class AttendanceAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
-        // addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        // addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy, UserErrorCode.MISSING_EVENT_ID);
+        assertResultInvalid(proxy, UserErrorCode.MISSING_TICKET_ID);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class AttendanceAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         // addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
 
@@ -152,7 +152,7 @@ public class AttendanceAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "present");
         addValidSessionTokenToParameter(proxy);
 
@@ -166,7 +166,7 @@ public class AttendanceAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_PRESENT_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "hogehoge");
         addValidSessionTokenToParameter(proxy);
 
@@ -180,7 +180,7 @@ public class AttendanceAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID);
-        addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", TestDataProvider.DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "status", "present");
         addInvalidSessionTokenToParameter(proxy);
 

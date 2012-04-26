@@ -33,7 +33,7 @@ public class GetTicketsAPITest extends APIControllerTest {
         List<UUID> ticketIds = prepareEvents(20);
         prepareEnrollment(DEFAULT_USER_ID, ticketIds, eventId);
 
-        ActionProxy proxy = getActionProxy("/api/account/enrollments");
+        ActionProxy proxy = getActionProxy("/api/account/tickets");
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "limit", "10");
 
@@ -41,12 +41,12 @@ public class GetTicketsAPITest extends APIControllerTest {
         assertResultOK(proxy);
 
         JSONObject obj = getJSON(proxy);
-        assertThat(obj.getInt("numTotalEvents"), is(20));
+        assertThat(obj.getInt("totalTicketCount"), is(20));
 
-        JSONArray array = obj.getJSONArray("eventStatuses");
+        JSONArray array = obj.getJSONArray("ticketStatuses");
         assertThat(array.size(), is(10));
         for (int i = 0; i < 10; ++i) {
-            assertThat(array.getJSONObject(i).getJSONObject("event").getString("id"), is(ticketIds.get(i).toString()));
+            assertThat(array.getJSONObject(i).getJSONObject("ticket").getString("id"), is(ticketIds.get(i).toString()));
             assertThat(array.getJSONObject(i).getString("status"), is("enrolled"));
         }
     }
