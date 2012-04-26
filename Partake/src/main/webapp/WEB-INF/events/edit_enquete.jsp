@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.dto.auxiliary.EnqueteQuestion"%>
 <%@page import="in.partake.controller.action.event.AbstractEventEditAction"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.controller.action.event.EventEditAction"%>
@@ -39,7 +40,7 @@
 <div id="template" style="display: none; border-top: 1px solid; padding-top: 10px; padding-bottom: 10px;">
     <div id="template-head" class="row">
         <div id="template-question-text" class="span6 offset-half">質問文を入力してください。</div>
-        <div id="template-question-type" class="span3">テキスト</div>
+        <div id="template-question-type" class="span3">テキスト (１行)</div>
         <div class="span2-half">
             <a href="#" id="template-show-edit"><i class="icon-pencil"></i>編集</a>
             <a href="#" id="template-remove"><i class="icon-remove"></i>削除</a>
@@ -90,16 +91,19 @@
 </div></div>
 
 <script>
-$('#template-hide-edit, #template-head').click(function() {
-    var id = $(this).attr('id');
-    var prefix = id.substr(0, id.indexOf('-'));
-
+function didUpdateFromForm(prefix) {
     var question = $('#' + prefix + '-question-input').val();
     if (question && question != "")
         $('#' + prefix + '-question-text').text(question);
     else
         $('#' + prefix + '-question-text').text('質問文を入力してください。');
+}
 
+$('#template-hide-edit, #template-head').click(function() {
+    var id = $(this).attr('id');
+    var prefix = id.substr(0, id.indexOf('-'));
+
+    didUpdateFromForm(prefix);
     $('#' + prefix + '-body').toggle();
     $('#' + prefix + '-head').toggle();
 });
@@ -134,31 +138,69 @@ $('#template-item a').click(function() {
     var v = $(this).parent().parent();
     v.remove();
 });
+function addItem(prefix) {
+    var v = $('#template-item').clone(true);
+    v.removeAttr('id');
+    v.insertBefore($('#' + prefix + '-add-item').parent());
+
+    return v;
+}
 $('#template-add-item').click(function() {
     var id = $(this).attr('id');
     var prefix = id.substr(0, id.indexOf('-'));
 
-    var v = $('#template-item').clone(true);
-    v.removeAttr('id');
-    v.insertBefore($('#' + prefix + '-add-item').parent());
+    addItem(prefix);
 });
+
+function cloneTemplate(newPrefix, removesFirstOption) {
+    var template = $('#template');
+    var cloned = template.clone(true);
+    if (removesFirstOption)
+        cloned.find("#template-item").remove();
+    cloned.find("[id^=template]").each(function() {
+        var id = $(this).attr('id').replace('template', newPrefix);
+        $(this).attr('id', id);
+    });
+    cloned.attr('id', newPrefix);
+    cloned.show();
+    return cloned;
+}
 
 $(function() {
     var idx = 0;
     $('#add-new-question').click(function() {
         idx += 1;
-        var template = $('#template');
-        var clone = template.clone(true);
         var newPrefix = "q" + idx;
-        clone.find("[id^=template]").each(function() {
-            var id = $(this).attr('id').replace('template', newPrefix);
-            $(this).attr('id', id);
-        });
-        clone.attr('id', newPrefix);
-        clone.show();
-        $('#question-list').append(clone);
+        var cloned = cloneTemplate(newPrefix);
+        $('#question-list').append(cloned);
     });
 });
+
+// Initial display
+var initialData = [
+<% for (EnqueteQuestion question : event.getEnquetes()) { %>
+     <%= question.toJSON() %>,
+<% } %>
+];
+
+for (var i = 0; i < initialData.length; ++i) {
+    var data = initialData[i];
+    var prefix = "i" + i;
+    var cloned = cloneTemplate(prefix, true);
+    $('#question-list').append(cloned);
+
+    $('#' + prefix + '-question-input').val(data.question);
+    $('#' + prefix + '-answertype').val(data.type);
+    $('#' + prefix + '-answertype').change();
+
+    for (var j = 0; j < data.options.length; ++j) {
+        var v = addItem(prefix);
+        var input = v.find("input");
+        input.val(data.options[j]);
+    }
+
+    didUpdateFromForm(prefix);
+}
 </script>
 
 <form><fieldset>
