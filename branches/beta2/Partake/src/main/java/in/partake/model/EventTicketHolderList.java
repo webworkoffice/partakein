@@ -3,16 +3,16 @@ package in.partake.model;
 import java.util.List;
 
 public class EventTicketHolderList {
-    private List<UserTicketApplicationEx> enrolledParticipations;
-    private List<UserTicketApplicationEx> spareParticipations;
-    private List<UserTicketApplicationEx> cancelledParticipations;
+    private List<UserTicketEx> enrolledParticipations;
+    private List<UserTicketEx> spareParticipations;
+    private List<UserTicketEx> cancelledParticipations;
     /** 参加者のうち、仮参加者の人数 */
     private int reservedEnrolled;
     /** 補欠のうち、仮参加者の人数 */
     private int reservedSpare;
 
     public EventTicketHolderList(
-            List<UserTicketApplicationEx> enrolledParticipations, List<UserTicketApplicationEx> spareParticipations, List<UserTicketApplicationEx> cancelledParticipations, int reservedEnrolled, int reservedSpare) {
+            List<UserTicketEx> enrolledParticipations, List<UserTicketEx> spareParticipations, List<UserTicketEx> cancelledParticipations, int reservedEnrolled, int reservedSpare) {
         this.enrolledParticipations = enrolledParticipations;
         this.spareParticipations = spareParticipations;
         this.cancelledParticipations = cancelledParticipations;
@@ -20,15 +20,15 @@ public class EventTicketHolderList {
         this.reservedSpare = reservedSpare;
     }
 
-    public List<UserTicketApplicationEx> getEnrolledParticipations() {
+    public List<UserTicketEx> getEnrolledParticipations() {
         return enrolledParticipations;
     }
 
-    public List<UserTicketApplicationEx> getSpareParticipations() {
+    public List<UserTicketEx> getSpareParticipations() {
         return spareParticipations;
     }
 
-    public List<UserTicketApplicationEx> getCancelledParticipations() {
+    public List<UserTicketEx> getCancelledParticipations() {
         return cancelledParticipations;
     }
 

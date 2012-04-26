@@ -5,7 +5,7 @@ import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.DraftEventEditPermission;
 import in.partake.controller.base.permission.PrivateEventShowPermission;
 import in.partake.model.EventCommentEx;
-import in.partake.model.UserTicketApplicationEx;
+import in.partake.model.UserTicketEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventMessageEx;
 import in.partake.model.EventRelationEx;
@@ -171,7 +171,7 @@ class EventShowTransaction extends DBAccess<Void> {
         ticketHolderListMap = new HashMap<UUID, EventTicketHolderList>();
         participationStatusMap = new HashMap<UUID, ParticipationStatus>();
         for (EventTicket ticket : tickets) {
-            List<UserTicketApplicationEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+            List<UserTicketEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
             if (participations == null)
                 throw new PartakeException(ServerErrorCode.PARTICIPATIONS_RETRIEVAL_ERROR);
 

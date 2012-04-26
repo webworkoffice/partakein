@@ -1,7 +1,7 @@
 <%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
-<%@page import="in.partake.model.UserTicketApplicationEx"%>
+<%@page import="in.partake.model.UserTicketEx"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.Event"%>

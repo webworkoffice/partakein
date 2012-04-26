@@ -4,7 +4,7 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.access.IAccess;
 import in.partake.model.dao.access.IUserCalendarLinkageAccess;
 import in.partake.model.dao.access.IEventCommentAccess;
-import in.partake.model.dao.access.IUserTicketApplicationAccess;
+import in.partake.model.dao.access.IUserTicketAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
@@ -31,7 +31,7 @@ import java.util.List;
 public abstract class PartakeDAOFactory implements IPartakeDAOs {
     private final IUserCalendarLinkageAccess calendarLinkageAccess;
     private final IEventCommentAccess commentAccess;
-    private final IUserTicketApplicationAccess enrollmentAccess;
+    private final IUserTicketAccess enrollmentAccess;
     private final IEventAccess eventAccess;
     private final IEventFeedAccess eventFeedAccess;
     private final IEventActivityAccess eventActivityAccess;
@@ -110,7 +110,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         return commentAccess;
     }
 
-    public final IUserTicketApplicationAccess getEnrollmentAccess() {
+    public final IUserTicketAccess getEnrollmentAccess() {
         return enrollmentAccess;
     }
 
@@ -196,7 +196,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
 
     protected abstract IUserCalendarLinkageAccess createCalendarLinkageAccess();
     protected abstract IEventCommentAccess createCommentAccess();
-    protected abstract IUserTicketApplicationAccess createEnrollmentAccess();
+    protected abstract IUserTicketAccess createEnrollmentAccess();
     protected abstract IEventAccess createEventAccess();
     protected abstract IEventTicketAccess createEventTicketAccess();
     protected abstract IEventFeedAccess createEventFeedAccess();

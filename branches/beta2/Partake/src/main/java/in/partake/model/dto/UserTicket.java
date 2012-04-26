@@ -11,7 +11,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-public class UserTicketApplication extends PartakeModel<UserTicketApplication> {
+public class UserTicket extends PartakeModel<UserTicket> {
     private String id;
     private String userId;
     private UUID ticketId;
@@ -26,11 +26,11 @@ public class UserTicketApplication extends PartakeModel<UserTicketApplication> {
     // ----------------------------------------------------------------------
     // constructors
 
-    public UserTicketApplication() {
+    public UserTicket() {
         this.vip = false;
     }
 
-    public UserTicketApplication(String id, String userId, UUID ticketId, String eventId, String comment,
+    public UserTicket(String id, String userId, UUID ticketId, String eventId, String comment,
             ParticipationStatus status, boolean vip, ModificationStatus modificationStatus,
             AttendanceStatus attendanceStatus, DateTime modifiedAt) {
         this.id = id;
@@ -45,7 +45,7 @@ public class UserTicketApplication extends PartakeModel<UserTicketApplication> {
         this.modifiedAt = modifiedAt;
     }
 
-    public UserTicketApplication(UserTicketApplication p) {
+    public UserTicket(UserTicket p) {
         this.id = p.id;
         this.userId = p.userId;
         this.ticketId = p.ticketId;
@@ -58,7 +58,7 @@ public class UserTicketApplication extends PartakeModel<UserTicketApplication> {
         this.modifiedAt = p.modifiedAt;
     }
 
-    public UserTicketApplication(JSONObject obj) {
+    public UserTicket(JSONObject obj) {
         this.id = obj.getString("id");
         this.userId = obj.getString("userId");
         this.ticketId = UUID.fromString(obj.getString("ticketId"));
@@ -98,10 +98,10 @@ public class UserTicketApplication extends PartakeModel<UserTicketApplication> {
     // equals method
 
     public boolean equals(Object obj) {
-        if (!(obj instanceof UserTicketApplication)) { return false; }
+        if (!(obj instanceof UserTicket)) { return false; }
 
-        UserTicketApplication lhs = this;
-        UserTicketApplication rhs = (UserTicketApplication) obj;
+        UserTicket lhs = this;
+        UserTicket rhs = (UserTicket) obj;
 
         if (!ObjectUtils.equals(lhs.id,                 rhs.id))                 { return false; }
         if (!ObjectUtils.equals(lhs.userId,             rhs.userId))             { return false; }

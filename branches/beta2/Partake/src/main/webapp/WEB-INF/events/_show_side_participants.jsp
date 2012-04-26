@@ -2,7 +2,7 @@
 <%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
-<%@page import="in.partake.model.UserTicketApplicationEx"%>
+<%@page import="in.partake.model.UserTicketEx"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.Event"%>
@@ -28,9 +28,9 @@
 %>
 
 <%
-    List<UserTicketApplicationEx> enrolledParticipations = new ArrayList<UserTicketApplicationEx>();
-    List<UserTicketApplicationEx> spareParticipations = new ArrayList<UserTicketApplicationEx>();
-    List<UserTicketApplicationEx> cancelledParticipations = new ArrayList<UserTicketApplicationEx>();
+    List<UserTicketEx> enrolledParticipations = new ArrayList<UserTicketEx>();
+    List<UserTicketEx> spareParticipations = new ArrayList<UserTicketEx>();
+    List<UserTicketEx> cancelledParticipations = new ArrayList<UserTicketEx>();
 %>
 
 <h3><img src="<%=request.getContextPath()%>/images/circle.png" />参加者一覧 (<%=enrolledParticipations.size()%> 人)</h3>
@@ -39,7 +39,7 @@
 %>
     <ol>
     <%
-        for (UserTicketApplicationEx participation : enrolledParticipations) {
+        for (UserTicketEx participation : enrolledParticipations) {
     %>
         <%-- TODO: 仮参加は色をかえるべき --%>
         <%
@@ -100,7 +100,7 @@
     <h3><img src="<%=request.getContextPath()%>/images/square.png" />補欠者一覧 (<%=spareParticipations.size()%> 人)</h3>
     <ul>
     <%
-        for (UserTicketApplicationEx participation : spareParticipations) {
+        for (UserTicketEx participation : spareParticipations) {
     %>
         <%
             // TODO: 仮参加は色をかえるべき
@@ -159,7 +159,7 @@
     <h3><img src="<%=request.getContextPath()%>/images/cross.png" />キャンセル一覧 (<%=cancelledParticipations.size()%> 人)</h3>
     <ul>
     <%
-        for (UserTicketApplicationEx participation : cancelledParticipations) {
+        for (UserTicketEx participation : cancelledParticipations) {
     %>
         <% if (ParticipationStatus.RESERVED.equals(participation.getStatus())) { %>
             <li>

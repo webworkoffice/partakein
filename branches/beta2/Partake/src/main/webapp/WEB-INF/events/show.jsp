@@ -5,11 +5,11 @@
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.model.EventCommentEx"%>
-<%@page import="in.partake.model.UserTicketApplicationEx"%>
+<%@page import="in.partake.model.UserTicketEx"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dao.DataIterator"%>
-<%@page import="in.partake.model.dto.UserTicketApplication"%>
+<%@page import="in.partake.model.dto.UserTicket"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
 <%@page import="in.partake.model.dto.EventComment"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>

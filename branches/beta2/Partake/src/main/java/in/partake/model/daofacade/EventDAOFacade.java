@@ -12,7 +12,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dto.EventComment;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeed;
@@ -163,7 +163,7 @@ public class EventDAOFacade {
             boolean enrolled = false;
             List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, relation.getEventId());
             for (EventTicket ticket : tickets) {
-                UserTicketApplication enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId());
+                UserTicket enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId());
                 if (enrollment != null && enrollment.getStatus().isEnrolled()) {
                     enrolled = true;
                     break;

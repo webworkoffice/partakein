@@ -3,7 +3,7 @@ package in.partake.controller.api.event;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.UserErrorCode;
 
@@ -25,7 +25,7 @@ public class ApplyAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        UserTicketApplication enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
+        UserTicket enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
     }
 
@@ -41,7 +41,7 @@ public class ApplyAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        UserTicketApplication enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
+        UserTicket enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.RESERVED));
     }
 
@@ -57,7 +57,7 @@ public class ApplyAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        UserTicketApplication enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
+        UserTicket enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.CANCELLED));
     }
 
@@ -85,7 +85,7 @@ public class ApplyAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
 
-        UserTicketApplication enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
+        UserTicket enrollment = loadEnrollment(DEFAULT_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
         assertThat(enrollment.getComment(), is(""));
     }
@@ -115,12 +115,12 @@ public class ApplyAPITest extends APIControllerTest {
         addParameter(proxy, "comment", "comment");
         addValidSessionTokenToParameter(proxy);
 
-        UserTicketApplication original = loadEnrollment(EVENT_RESERVED_USER_ID, DEFAULT_EVENT_TICKET_ID);
+        UserTicket original = loadEnrollment(EVENT_RESERVED_USER_ID, DEFAULT_EVENT_TICKET_ID);
 
         proxy.execute();
         assertResultOK(proxy);
 
-        UserTicketApplication enrollment = loadEnrollment(EVENT_RESERVED_USER_ID, DEFAULT_EVENT_TICKET_ID);
+        UserTicket enrollment = loadEnrollment(EVENT_RESERVED_USER_ID, DEFAULT_EVENT_TICKET_ID);
 
         assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
         assertThat(enrollment.getModifiedAt(), is(original.getModifiedAt()));

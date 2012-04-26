@@ -9,9 +9,9 @@ import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IUserTicketApplicationAccess;
+import in.partake.model.dao.access.IUserTicketAccess;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.CalculatedEnrollmentStatus;
@@ -70,13 +70,13 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        IUserTicketApplicationAccess enrollmentAccess = daos.getEnrollmentAccess();
-        List<UserTicketApplication> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
+        IUserTicketAccess enrollmentAccess = daos.getEnrollmentAccess();
+        List<UserTicket> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
 
         this.numTotalTickets = enrollmentAccess.countByUserId(con, userId);
         this.statuses = new ArrayList<Pair<EventTicket, CalculatedEnrollmentStatus>>();
 
-        for (UserTicketApplication enrollment : enrollments) {
+        for (UserTicket enrollment : enrollments) {
             if (enrollment == null)
                 continue;
 

@@ -5,7 +5,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IUserCalendarLinkageAccess;
 import in.partake.model.dao.access.IEventCommentAccess;
-import in.partake.model.dao.access.IUserTicketApplicationAccess;
+import in.partake.model.dao.access.IUserTicketAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
@@ -67,7 +67,7 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected IUserTicketApplicationAccess createEnrollmentAccess() {
+    protected IUserTicketAccess createEnrollmentAccess() {
         return new Postgres9UserTicketApplicationDao();
     }
 

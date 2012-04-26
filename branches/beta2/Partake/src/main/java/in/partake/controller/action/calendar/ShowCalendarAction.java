@@ -7,7 +7,7 @@ import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.UserCalendarLink;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.User;
@@ -64,9 +64,9 @@ class ShowCalendarTransaction extends DBAccess<Calendar> {
         Calendar calendar = CalendarUtil.createCalendarSkeleton();
 
         // TODO: We only consider the first 1000 entries of enrollments due to memory limit.
-        List<UserTicketApplication> enrollments =
+        List<UserTicket> enrollments =
                 daos.getEnrollmentAccess().findByUserId(con, user.getId(), 0, 1000);
-        for (UserTicketApplication enrollment : enrollments) {
+        for (UserTicket enrollment : enrollments) {
             // TODO: Event should be search-able by ticket-id.
             EventTicket ticket = daos.getEventTicketAccess().find(con, enrollment.getTicketId());
             Event event = daos.getEventAccess().find(con, ticket.getEventId());

@@ -9,7 +9,7 @@ import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IUserTicketApplicationAccess;
+import in.partake.model.dao.access.IUserTicketAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.aux.EventFilterCondition;
 import in.partake.model.dao.aux.EventStatus;
@@ -79,7 +79,7 @@ class GetEventsTransaction extends DBAccess<Void> {
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         getEventsFromDB(con, daos);
 
-        IUserTicketApplicationAccess enrollmentAccess = daos.getEnrollmentAccess();
+        IUserTicketAccess enrollmentAccess = daos.getEnrollmentAccess();
 
         this.eventStatuses = new ArrayList<EventStatus>();
         for (Event event : eventsRetrieved) {

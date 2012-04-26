@@ -5,7 +5,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.MapperDataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IUserTicketApplicationAccess;
+import in.partake.model.dao.access.IUserTicketAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9Dao;
 import in.partake.model.dao.postgres9.Postgres9DataIterator;
@@ -16,7 +16,7 @@ import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.daoutil.DAOUtil;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
 import java.util.List;
@@ -24,13 +24,13 @@ import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
-class EntityEnrollmentMapper extends Postgres9EntityDataMapper<UserTicketApplication> {
-    public UserTicketApplication map(JSONObject obj) {
-        return new UserTicketApplication(obj).freeze();
+class EntityEnrollmentMapper extends Postgres9EntityDataMapper<UserTicket> {
+    public UserTicket map(JSONObject obj) {
+        return new UserTicket(obj).freeze();
     }
 }
 
-public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements IUserTicketApplicationAccess {
+public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements IUserTicketAccess {
     static final String ENTITY_TABLE_NAME = "UserTicketApplicationEntities";
     static final String INDEX_TABLE_NAME = "UserTicketApplicationIndex";
     static final int CURRENT_VERSION = 1;
@@ -75,7 +75,7 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
     }
 
     @Override
-    public void put(PartakeConnection con, UserTicketApplication t) throws DAOException {
+    public void put(PartakeConnection con, UserTicket t) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
@@ -90,7 +90,7 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
     }
 
     @Override
-    public UserTicketApplication find(PartakeConnection con, String id) throws DAOException {
+    public UserTicket find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
@@ -107,12 +107,12 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
     }
 
     @Override
-    public DataIterator<UserTicketApplication> getIterator(PartakeConnection con) throws DAOException {
-        return new MapperDataIterator<Postgres9Entity, UserTicketApplication>(mapper, entityDao.getIterator((Postgres9Connection) con));
+    public DataIterator<UserTicket> getIterator(PartakeConnection con) throws DAOException {
+        return new MapperDataIterator<Postgres9Entity, UserTicket>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override
-    public UserTicketApplication findByTicketIdAndUserId(PartakeConnection con, UUID ticketId, String userId) throws DAOException {
+    public UserTicket findByTicketIdAndUserId(PartakeConnection con, UUID ticketId, String userId) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         String id = indexDao.find(pcon, "id", new String[] { "userId", "ticketId" }, new Object[] { userId, ticketId.toString() });
         if (id == null)
@@ -132,36 +132,36 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
     }
 
     @Override
-    public List<UserTicketApplication> findByTicketId(PartakeConnection con, UUID eventTicketId, int offset, int limit) throws DAOException {
+    public List<UserTicket> findByTicketId(PartakeConnection con, UUID eventTicketId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? ORDER BY enrolledAt DESC OFFSET ? LIMIT ?",
                 new Object[] { eventTicketId.toString(), offset, limit });
 
-        Postgres9IdMapper<UserTicketApplication> idMapper = new Postgres9IdMapper<UserTicketApplication>((Postgres9Connection) con, mapper, entityDao);
-        DataIterator<UserTicketApplication> it = new Postgres9DataIterator<UserTicketApplication>(idMapper, psars);
+        Postgres9IdMapper<UserTicket> idMapper = new Postgres9IdMapper<UserTicket>((Postgres9Connection) con, mapper, entityDao);
+        DataIterator<UserTicket> it = new Postgres9DataIterator<UserTicket>(idMapper, psars);
         return DAOUtil.freeze(DAOUtil.convertToList(it));
     }
 
     @Override
-    public List<UserTicketApplication> findByEventId(PartakeConnection con, String eventId, int offset, int limit) throws DAOException {
+    public List<UserTicket> findByEventId(PartakeConnection con, String eventId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY enrolledAt DESC OFFSET ? LIMIT ?",
                 new Object[] { eventId, offset, limit });
 
-        Postgres9IdMapper<UserTicketApplication> idMapper = new Postgres9IdMapper<UserTicketApplication>((Postgres9Connection) con, mapper, entityDao);
-        DataIterator<UserTicketApplication> it = new Postgres9DataIterator<UserTicketApplication>(idMapper, psars);
+        Postgres9IdMapper<UserTicket> idMapper = new Postgres9IdMapper<UserTicket>((Postgres9Connection) con, mapper, entityDao);
+        DataIterator<UserTicket> it = new Postgres9DataIterator<UserTicket>(idMapper, psars);
         return DAOUtil.freeze(DAOUtil.convertToList(it));
     }
 
 
     @Override
-    public List<UserTicketApplication> findByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
+    public List<UserTicket> findByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE userId = ? ORDER BY enrolledAt DESC OFFSET ? LIMIT ?",
                 new Object[] { userId, offset, limit });
 
-        Postgres9IdMapper<UserTicketApplication> idMapper = new Postgres9IdMapper<UserTicketApplication>((Postgres9Connection) con, mapper, entityDao);
-        DataIterator<UserTicketApplication> it = new Postgres9DataIterator<UserTicketApplication>(idMapper, psars);
+        Postgres9IdMapper<UserTicket> idMapper = new Postgres9IdMapper<UserTicket>((Postgres9Connection) con, mapper, entityDao);
+        DataIterator<UserTicket> it = new Postgres9DataIterator<UserTicket>(idMapper, psars);
         return DAOUtil.freeze(DAOUtil.convertToList(it));
     }
 
