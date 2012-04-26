@@ -154,6 +154,18 @@
             return $.post('/api/event/removeComment', arg);
         },
 
+        modifyEnquete: function(eventId, questions, types, options) {
+            var arg = {
+                sessionToken: partake.sessionToken,
+                eventId: eventId,
+                questions: questions,
+                types: types,
+                options: options
+            };
+
+            return $.post('/api/event/modifyEnquete', arg);
+        },
+
         enroll: function(eventId, status, comment) {
             var arg = {
                     sessionToken: partake.sessionToken,

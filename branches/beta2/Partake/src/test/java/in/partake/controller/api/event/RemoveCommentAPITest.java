@@ -1,11 +1,11 @@
 package in.partake.controller.api.event;
 
+import in.partake.controller.api.APIControllerTest;
+import in.partake.model.fixture.TestDataProvider;
+
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
-
-import in.partake.controller.api.APIControllerTest;
-import in.partake.model.fixture.TestDataProvider;
 
 public class RemoveCommentAPITest extends APIControllerTest {
 
@@ -18,21 +18,21 @@ public class RemoveCommentAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_COMMENTOR_ID);
 
         proxy.execute();
-        assertResultOK(proxy);        
+        assertResultOK(proxy);
     }
-    
+
     @Test
     public void testToRemoveInvalidComment() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
         addParameter(proxy, "commentId", TestDataProvider.INVALID_COMMENT_ID);
-        
+
         loginAs(proxy, TestDataProvider.EVENT_COMMENTOR_ID);
 
         proxy.execute();
         assertResultInvalid(proxy);
     }
 
-    
+
     @Test
     public void testToRemoveCommentByEventOwner() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
@@ -44,7 +44,7 @@ public class RemoveCommentAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
     }
-    
+
     @Test
     public void testToRemoveCommentByEventEditor() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
@@ -54,9 +54,9 @@ public class RemoveCommentAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_EDITOR_ID);
 
         proxy.execute();
-        assertResultOK(proxy);        
+        assertResultOK(proxy);
     }
-    
+
     @Test
     public void testToRemoveCommentByOtherOne() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
@@ -83,7 +83,7 @@ public class RemoveCommentAPITest extends APIControllerTest {
     public void testToRemoveCommentWithoutValidSessionToken() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
         addParameter(proxy, "commentId", TestDataProvider.COMMENTOR_COMMENT_ID);
-        
+
         loginAs(proxy, TestDataProvider.EVENT_COMMENTOR_ID);
 
         proxy.execute();

@@ -41,13 +41,13 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
                         now, now, "url", "place",
                         "address", "description", "#hashTag", "ownerId", null,
                         "foreImageId", "backImageId", "passcode", false,
-                        new ArrayList<EventRelation>(),
+                        new ArrayList<EventRelation>(), null,
                         now, now, -1),
                 new Event("id2", "title2", "summary2", "category2",
                         now, now, "url2", "place2",
                         "address2", "description2", "#hashTag2", "ownerId2", "hoge,fuga",
                         "foreImageId2", "backImageId2", "passcode2", false,
-                        new ArrayList<EventRelation>(),
+                        new ArrayList<EventRelation>(), null,
                         now, now, 1)
         };
     }

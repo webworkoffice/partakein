@@ -63,7 +63,7 @@ public class GetEnrollmentsAPITest extends APIControllerTest {
             Event event = new Event(null, "title", "summary", category,
                     late, late, "url", "place",
                     "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
-                    EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false, new ArrayList<EventRelation>(),
+                    EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false, new ArrayList<EventRelation>(), null,
                     now, now, -1);
             String eventId = storeEvent(event);
 

@@ -3,6 +3,7 @@ package in.partake.model.dto;
 import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
+import in.partake.model.dto.auxiliary.EnqueteQuestion;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.Constants;
@@ -42,6 +43,8 @@ public class Event extends PartakeModel<Event> {
     private boolean draft;    // true if the event is still in preview.
 
     private List<EventRelation> eventRelations;
+    private List<EnqueteQuestion> enquetes;
+
     private DateTime createdAt;     //
     private DateTime modifiedAt;    //
     private int revision;       // used for RSS.
@@ -87,6 +90,7 @@ public class Event extends PartakeModel<Event> {
         this.passcode = null;
         this.draft = true;
         this.eventRelations = new ArrayList<EventRelation>();
+        this.enquetes = null;
         this.createdAt = TimeUtil.getCurrentDateTime();
         this.modifiedAt = null;
         this.revision = 1;
@@ -112,6 +116,8 @@ public class Event extends PartakeModel<Event> {
         this.draft = event.draft;
         if (event.eventRelations != null)
             this.eventRelations = new ArrayList<EventRelation>(event.eventRelations);
+        if (event.enquetes != null)
+            this.enquetes = new ArrayList<EnqueteQuestion>(event.enquetes);
         this.createdAt = event.createdAt;
         this.modifiedAt = event.modifiedAt;
         this.revision = event.revision;
@@ -137,11 +143,21 @@ public class Event extends PartakeModel<Event> {
         this.backImageId = json.optString("backImageId", null);
         this.passcode = json.optString("passcode", null);
         this.draft = json.optBoolean("draft", false);
-        JSONArray ar = json.optJSONArray("relations");
-        if (ar != null) {
-            this.eventRelations = new ArrayList<EventRelation>();
-            for (int i = 0; i < ar.size(); ++i)
-                eventRelations.add(new EventRelation(ar.getJSONObject(i)));
+        {
+            JSONArray ar = json.optJSONArray("relations");
+            if (ar != null) {
+                this.eventRelations = new ArrayList<EventRelation>();
+                for (int i = 0; i < ar.size(); ++i)
+                    eventRelations.add(new EventRelation(ar.getJSONObject(i)));
+            }
+        }
+        {
+            JSONArray ar = json.optJSONArray("enquetes");
+            if (ar != null) {
+                this.enquetes = new ArrayList<EnqueteQuestion>();
+                for (int i = 0; i < ar.size(); ++i)
+                    enquetes.add(new EnqueteQuestion(ar.getJSONObject(i)));
+            }
         }
 
         if (json.containsKey("createdAt"))
@@ -155,7 +171,8 @@ public class Event extends PartakeModel<Event> {
             String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
             String foreImageId, String backImageId,
             String passcode, boolean draft,
-            List<EventRelation> relations, DateTime createdAt, DateTime modifiedAt, int revision) {
+            List<EventRelation> relations, List<EnqueteQuestion> enquetes,
+            DateTime createdAt, DateTime modifiedAt, int revision) {
         this.id = id;
         this.title = title;
         this.summary = summary;
@@ -177,6 +194,8 @@ public class Event extends PartakeModel<Event> {
         this.draft = draft;
         if (relations != null)
             this.eventRelations = new ArrayList<EventRelation>(relations);
+        if (enquetes != null)
+            this.enquetes = new ArrayList<EnqueteQuestion>(enquetes);
 
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -225,6 +244,7 @@ public class Event extends PartakeModel<Event> {
         obj.put("draft", draft);
 
         obj.put("relations", Util.toJSONArray(eventRelations));
+        obj.put("enquetes", Util.toJSONArray(enquetes));
 
         if (createdAt != null) {
             obj.put("createdAt", format.format(createdAt));
@@ -262,6 +282,8 @@ public class Event extends PartakeModel<Event> {
 
         if (eventRelations != null)
             obj.put("relations", Util.toJSONArray(eventRelations));
+        if (enquetes != null)
+            obj.put("enquetes", Util.toJSONArray(enquetes));
 
         if (createdAt != null)
             obj.put("createdAt", createdAt.getTime());
@@ -300,6 +322,7 @@ public class Event extends PartakeModel<Event> {
         if (!ObjectUtils.equals(lhs.passcode, rhs.passcode)) { return false; }
         if (!ObjectUtils.equals(lhs.draft, rhs.draft)) { return false; }
         if (!ObjectUtils.equals(lhs.eventRelations, rhs.eventRelations)) { return false; }
+        if (!ObjectUtils.equals(lhs.enquetes, rhs.enquetes)) { return false; }
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
         if (!ObjectUtils.equals(lhs.revision, rhs.revision)) { return false; }
@@ -329,6 +352,7 @@ public class Event extends PartakeModel<Event> {
         code = code * 37 + ObjectUtils.hashCode(passcode);
         code = code * 37 + ObjectUtils.hashCode(draft);
         code = code * 37 + ObjectUtils.hashCode(eventRelations);
+        code = code * 37 + ObjectUtils.hashCode(enquetes);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
         code = code * 37 + ObjectUtils.hashCode(revision);
@@ -419,6 +443,10 @@ public class Event extends PartakeModel<Event> {
 
     public List<EventRelation> getRelations() {
         return eventRelations;
+    }
+
+    public List<EnqueteQuestion> getEnquetes() {
+        return enquetes;
     }
 
     public DateTime getCreatedAt() {
@@ -513,6 +541,11 @@ public class Event extends PartakeModel<Event> {
     public void setRelations(List<EventRelation> relations) {
         checkToUpdateStatus();
         this.eventRelations = relations;
+    }
+
+    public void setEnquetes(List<EnqueteQuestion> enquetes) {
+        checkToUpdateStatus();
+        this.enquetes = enquetes;
     }
 
     public void setCreatedAt(DateTime createdAt) {
