@@ -10,6 +10,11 @@ public final class DateTime implements Comparable<DateTime> {
         this.millis = millis;
     }
 
+    public DateTime(Date date) {
+        this.millis = date.getTime();
+    }
+
+
     public long getTime() {
         return millis;
     }
