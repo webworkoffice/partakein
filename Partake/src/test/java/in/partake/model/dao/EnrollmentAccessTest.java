@@ -76,7 +76,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
                 String userId = UUID.randomUUID().toString();
 
                 Event event = createEvent(eventId, userId);
-                EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event);
+                EventTicket ticket = EventTicket.createDefaultTicket(ticketId, eventId);
                 con.beginTransaction();
                 {
                     daos.getEventAccess().put(con, event);
@@ -112,7 +112,7 @@ public class EnrollmentAccessTest extends AbstractDaoTestCaseBase<IEnrollmentAcc
                 String userId  = UUID.randomUUID().toString();
 
                 Event event = createEvent(eventId, userId);
-                EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event);
+                EventTicket ticket = EventTicket.createDefaultTicket(ticketId, eventId);
 
                 // create
                 {

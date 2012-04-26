@@ -59,7 +59,7 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
         storeEvent(event);
 
         UUID ticketId = UUID.randomUUID();
-        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event);
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
         storeEventTicket(ticket);
 
         String[] enrollmentIds = new String[] { UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), };
@@ -118,7 +118,7 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
         storeEvent(event);
 
         UUID ticketId = UUID.randomUUID();
-        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event);
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
         ticket.setAmount(1);
         storeEventTicket(ticket);
 

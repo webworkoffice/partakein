@@ -87,7 +87,7 @@ class CreateTransaction extends Transaction<String> {
         String eventId = EventDAOFacade.create(con, daos, event);
         event.setId(eventId);
 
-        EventTicket ticket = EventTicket.createDefaultTicket(daos.getEventTicketAccess().getFreshId(con), event);
+        EventTicket ticket = EventTicket.createDefaultTicket(daos.getEventTicketAccess().getFreshId(con), eventId);
         daos.getEventTicketAccess().put(con, ticket);
 
         return eventId;

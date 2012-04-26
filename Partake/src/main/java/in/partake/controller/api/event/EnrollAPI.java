@@ -1,6 +1,5 @@
 package in.partake.controller.api.event;
 
-import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
@@ -71,17 +70,16 @@ class EnrollTransaction extends Transaction<Void> {
     // TODO: We should share a lot of code with ChangeEnrollmentCommentAPI.
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-    	EventTicket ticket = daos.getEventTicketAccess().find(con, ticketId);
-    	if (ticket == null)
+        EventTicket ticket = daos.getEventTicketAccess().find(con, ticketId);
+        if (ticket == null)
             throw new PartakeException(UserErrorCode.INVALID_TICKET_ID);
 
-    	Event event = daos.getEventAccess().find(con, ticket.getEventId());
+        Event event = daos.getEventAccess().find(con, ticket.getEventId());
         if (event == null)
             throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
 
-        DateTime deadline = ticket.getCalculatedDeadline(event);
         // もし、締め切りを過ぎている場合、変更が出来なくなる。
-        if (deadline.isBefore(TimeUtil.getCurrentDateTime()))
+        if (!ticket.acceptsApplication(event, TimeUtil.getCurrentDateTime()))
             throw new PartakeException(UserErrorCode.INVALID_ENROLL_TIMEOVER);
 
         // 現在の状況が登録されていない場合、

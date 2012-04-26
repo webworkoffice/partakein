@@ -128,12 +128,14 @@ public final class TimeUtil {
         }
     }
 
+    @Deprecated
     public static DateTime oneDayBefore(DateTime dt) {
-        return new DateTime(dt.getTime() - 1000 * 3600 * 24);
+        return dt.nDayBefore(1);
     }
 
+    @Deprecated
     public static DateTime oneDayAfter(DateTime dt) {
-        return new DateTime(dt.getTime() + 1000 * 3600 * 24);
+        return dt.nDayAfter(1);
     }
 
     public static DateTime halfDayBefore(DateTime dt) {
