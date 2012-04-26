@@ -241,6 +241,8 @@
         <action name="postComment" class="in.partake.controller.api.event.PostCommentAPI" />
         <action name="removeComment" class="in.partake.controller.api.event.RemoveCommentAPI" />
 
+        <action name="modifyEnquete" class="in.partake.controller.api.event.ModifyEnqueteAPI" />
+
         <action name="search" class="in.partake.controller.api.event.SearchAPI" />
     </package>
 </struts>

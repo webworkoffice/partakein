@@ -103,13 +103,6 @@
     </script>
 </div>
 
-<div id="url" class="control-group">
-    <label class="control-label">URL</label>
-    <div class="controls">
-        <input type="text" name="url" class="span7" value="<%= h(event.getUrl()) %>" />
-        <p class="help-block">参考 URL を設定します。</p>
-    </div>
-</div>
 <div id="hashTag" class="control-group">
     <label class="control-label">ハッシュタグ</label>
     <div class="controls">

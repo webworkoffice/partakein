@@ -176,6 +176,16 @@
 .span2-half {
     width: 190px;
 }
+.offset-half {
+    margin-left: 50px;
+}
+.offset1-half {
+  margin-left: 130px;
+}
+.offset2-half {
+  margin-left: 210px;
+}
+
 
 input.span1-half,textarea.span1-half,.uneditable-input.span1-half {
     width: 90px;

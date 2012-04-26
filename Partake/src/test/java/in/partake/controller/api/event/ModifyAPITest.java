@@ -8,7 +8,6 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.UserErrorCode;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;

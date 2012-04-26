@@ -57,7 +57,7 @@
     <span id="place-edit" class="label label-edit edit-button">会場を編集</span>
 </p>
 <form id="place-form" action="javascript:$('#place-submit').click()" style="display: none;">
-    <p><input type="text" class="span9" name="place" id="place-input" value="" placeholder="会場：　「武道館」「株式会社 PARTAKE ビル 2F」など"></p>
+    <p><input type="text" class="span4" name="place" id="place-input" value="" placeholder="会場：　「武道館」「株式会社 PARTAKE ビル 2F」など"></p>
     <div class="edit-form-buttons">
         <input type="button" value="キャンセル" class="btn edit-cancel-button">
         <input id="place-submit" type="button" value="保存" class="btn edit-save-button">
@@ -88,7 +88,7 @@ $('#place-submit').click(function(e) {
     <span id="address-edit" class="label label-edit edit-button">住所を編集</span>
 </p>
 <form id="address-form" action="javascript:$('#address-submit').click()" style="display: none;">
-    <p><input type="text" class="span9" name="address" id="address-input" value="" placeholder="住所：　「東京都千代田区1-1-1」など"></p>
+    <p><input type="text" class="span4" name="address" id="address-input" value="" placeholder="住所：　「東京都千代田区1-1-1」など"></p>
     <div class="edit-form-buttons">
         <input type="button" value="キャンセル" class="btn edit-cancel-button">
         <input id="address-submit" type="button" value="保存" class="btn edit-save-button">
@@ -126,6 +126,38 @@ $('#address-submit').click(function(e) {
 <div class="event-map"><a id="address-anchor" href="http://maps.google.co.jp/maps?q=<%= h(Util.encodeURIComponent(event.getAddress())) %>">
     <img id="address-img" src="http://maps.google.co.jp/maps/api/staticmap?size=280x200&center=<%= h(Util.encodeURIComponent(event.getAddress())) %>&zoom=17&sensor=false" />
 </a></div>
+
+<h3>参考情報</h3>
+<p id="url-show">
+    URL ： <a id="url-content" href=""><%= h(event.getUrl()) %></a>
+    <span id="url-edit" class="label label-edit edit-button">URLを編集</span>
+</p>
+<form id="url-form" action="javascript:$('#url-submit').click()" style="display: none;">
+    <p><input type="text" class="span4" name="url" id="url-input" value="" placeholder="URL: http://partake.in/ など"></p>
+    <div class="edit-form-buttons">
+        <input type="button" value="キャンセル" class="btn edit-cancel-button">
+        <input id="url-submit" type="button" value="保存" class="btn edit-save-button">
+    </div>
+</form>
+<script>
+$('#url-edit').click(function(e) {
+    $('#url-input').val($('#url-content').text());
+});
+
+$('#url-submit').click(function(e) {
+    var form = $(enclosingForm(this));
+    var id = removeSuffix(form.attr("id"), "-form");
+
+    partake.event.modify(eventId, { url: $('#url-input').val() })
+    .done(function (json) {
+        $('#url-content').text($('#url-input').val());
+        $('#url-content').attr('href', $('#url-input').val());
+        $('#' + id + '-form').hide();
+        $('#' + id + '-show').show();
+    })
+    .fail(partake.defaultFailHandler);
+});
+</script>
 
 <%--
 <% if (event.getRelations() != null && !event.getR.isEmpty()) { %>

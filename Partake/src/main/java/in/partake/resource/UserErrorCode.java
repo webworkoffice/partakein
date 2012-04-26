@@ -41,6 +41,13 @@ public enum UserErrorCode {
     INVALID_TICKET_ID("invalid.ticket.id"),
     MISSING_TICKET_ID("invalid.ticket.id.missing"),
 
+    // ENQUETE
+    MISSING_ENQUETE_QUESTION("invalid.enquete.question.missing"),
+    MISSING_ENQUETE_TYPE("invalid.enquete.type.missing"),
+    MISSING_ENQUETE_OPTION("invalid.enquete.option.missing"),
+    INVALID_ENQUETE_PARAMS("invalid.enquete.params"),
+    INVALID_ENQUETE_PUBLISHED("invalid.enquete.published"),
+
     // USER
     INVALID_USER_ID("invalid.invalid_userid"),
     MISSING_USER_ID("invalid.missing_userid"),
