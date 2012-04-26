@@ -4,8 +4,8 @@ import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.DraftEventEditPermission;
 import in.partake.controller.base.permission.PrivateEventShowPermission;
-import in.partake.model.CommentEx;
-import in.partake.model.EnrollmentEx;
+import in.partake.model.EventCommentEx;
+import in.partake.model.UserTicketApplicationEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventMessageEx;
 import in.partake.model.EventRelationEx;
@@ -40,7 +40,7 @@ public class EventShowAction extends AbstractPartakeAction {
     private List<EventTicket> tickets;
     private Map<UUID, ParticipationStatus> participationStatusMap;
     private Map<UUID, EventTicketHolderList> ticketHolderListMap;
-    private List<CommentEx> comments;
+    private List<EventCommentEx> comments;
     private List<EventMessageEx> eventMessages;
     private List<EventRelationEx> relations;
 
@@ -94,7 +94,7 @@ public class EventShowAction extends AbstractPartakeAction {
         return ticketHolderListMap;
     }
 
-    public List<CommentEx> getComments() {
+    public List<EventCommentEx> getComments() {
         return comments;
     }
 
@@ -124,7 +124,7 @@ class EventShowTransaction extends DBAccess<Void> {
     private Map<UUID, EventTicketHolderList> ticketHolderListMap;
 
     private List<EventTicket> tickets;
-    private List<CommentEx> comments;
+    private List<EventCommentEx> comments;
     private List<EventMessageEx> eventMessages;
     private List<EventRelationEx> relations;
 
@@ -171,7 +171,7 @@ class EventShowTransaction extends DBAccess<Void> {
         ticketHolderListMap = new HashMap<UUID, EventTicketHolderList>();
         participationStatusMap = new HashMap<UUID, ParticipationStatus>();
         for (EventTicket ticket : tickets) {
-            List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+            List<UserTicketApplicationEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
             if (participations == null)
                 throw new PartakeException(ServerErrorCode.PARTICIPATIONS_RETRIEVAL_ERROR);
 
@@ -208,7 +208,7 @@ class EventShowTransaction extends DBAccess<Void> {
         return ticketHolderListMap;
     }
 
-    public List<CommentEx> getComments() {
+    public List<EventCommentEx> getComments() {
         return comments;
     }
 

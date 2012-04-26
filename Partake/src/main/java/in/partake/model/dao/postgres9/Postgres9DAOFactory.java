@@ -3,42 +3,42 @@ package in.partake.model.dao.postgres9;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.access.ICalendarLinkageAccess;
-import in.partake.model.dao.access.ICommentAccess;
-import in.partake.model.dao.access.IEnrollmentAccess;
+import in.partake.model.dao.access.IUserCalendarLinkageAccess;
+import in.partake.model.dao.access.IEventCommentAccess;
+import in.partake.model.dao.access.IUserTicketApplicationAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventMessageAccess;
 import in.partake.model.dao.access.IEventTicketAccess;
 import in.partake.model.dao.access.IEventTicketNotificationAccess;
-import in.partake.model.dao.access.IImageAccess;
+import in.partake.model.dao.access.IUserImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IMessageEnvelopeAccess;
-import in.partake.model.dao.access.IOpenIDLinkageAccess;
-import in.partake.model.dao.access.IThumbnailAccess;
-import in.partake.model.dao.access.ITwitterLinkageAccess;
+import in.partake.model.dao.access.IUserOpenIDLinkAccess;
+import in.partake.model.dao.access.IUserThumbnailAccess;
+import in.partake.model.dao.access.IUserTwitterLinkAccess;
 import in.partake.model.dao.access.ITwitterMessageAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserNotificationAccess;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dao.access.IUserReceivedMessageAccess;
 import in.partake.model.dao.access.IUserSentMessageAccess;
-import in.partake.model.dao.postgres9.impl.Postgres9CalendarLinkageDao;
-import in.partake.model.dao.postgres9.impl.Postgres9CommentDao;
-import in.partake.model.dao.postgres9.impl.Postgres9EnrollmentDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserCalendarLinkDao;
+import in.partake.model.dao.postgres9.impl.Postgres9EventCommentDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserTicketApplicationDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventActivityDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventFeedDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventMessageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventNotificationDao;
 import in.partake.model.dao.postgres9.impl.Postgres9EventTicketDao;
-import in.partake.model.dao.postgres9.impl.Postgres9ImageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserImageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9MessageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9MessageEnvelopeDao;
-import in.partake.model.dao.postgres9.impl.Postgres9OpenIDLinkageDao;
-import in.partake.model.dao.postgres9.impl.Postgres9ThumbnailDao;
-import in.partake.model.dao.postgres9.impl.Postgres9TwitterLinkageDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserOpenIDLinkDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserThumbnailDao;
+import in.partake.model.dao.postgres9.impl.Postgres9UserTwitterLinkDao;
 import in.partake.model.dao.postgres9.impl.Postgres9TwitterMessageDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserDao;
 import in.partake.model.dao.postgres9.impl.Postgres9UserNotificationDao;
@@ -57,18 +57,18 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected ICalendarLinkageAccess createCalendarLinkageAccess() {
-        return new Postgres9CalendarLinkageDao();
+    protected IUserCalendarLinkageAccess createCalendarLinkageAccess() {
+        return new Postgres9UserCalendarLinkDao();
     }
 
     @Override
-    protected ICommentAccess createCommentAccess() {
-        return new Postgres9CommentDao();
+    protected IEventCommentAccess createCommentAccess() {
+        return new Postgres9EventCommentDao();
     }
 
     @Override
-    protected IEnrollmentAccess createEnrollmentAccess() {
-        return new Postgres9EnrollmentDao();
+    protected IUserTicketApplicationAccess createEnrollmentAccess() {
+        return new Postgres9UserTicketApplicationDao();
     }
 
     @Override
@@ -92,23 +92,23 @@ public class Postgres9DAOFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
-        return new Postgres9OpenIDLinkageDao();
+    protected IUserOpenIDLinkAccess createOpenIDLinkageAccess() {
+        return new Postgres9UserOpenIDLinkDao();
     }
 
     @Override
-    protected IImageAccess createImageAccess() {
-        return new Postgres9ImageDao();
+    protected IUserImageAccess createImageAccess() {
+        return new Postgres9UserImageDao();
     }
 
     @Override
-    protected IThumbnailAccess createThumbnailAccess() {
-        return new Postgres9ThumbnailDao();
+    protected IUserThumbnailAccess createThumbnailAccess() {
+        return new Postgres9UserThumbnailDao();
     }
 
     @Override
-    protected ITwitterLinkageAccess createTwitterLinkageAccess() {
-        return new Postgres9TwitterLinkageDao();
+    protected IUserTwitterLinkAccess createTwitterLinkageAccess() {
+        return new Postgres9UserTwitterLinkDao();
     }
 
     @Override

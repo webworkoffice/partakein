@@ -10,7 +10,7 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
 import in.partake.resource.MessageCode;
@@ -41,7 +41,7 @@ public class VerifyForTwitterAction extends AbstractPartakeAction {
         MessageCode messageCode = null;
         try {
             ITwitterService twitterService = PartakeApp.getTwitterService();
-            TwitterLinkage linkage = twitterService.createTwitterLinkageFromLoginInformation(loginInformation, verifier);
+            UserTwitterLink linkage = twitterService.createTwitterLinkageFromLoginInformation(loginInformation, verifier);
 
             UserEx user = new VerifyForTwitterActionTransaction(linkage).execute();
             session.put(Constants.ATTR_USER, user);
@@ -64,9 +64,9 @@ public class VerifyForTwitterAction extends AbstractPartakeAction {
 }
 
 class VerifyForTwitterActionTransaction extends Transaction<UserEx> {
-    private TwitterLinkage twitterLinkageEmbryo;
+    private UserTwitterLink twitterLinkageEmbryo;
 
-    public VerifyForTwitterActionTransaction(TwitterLinkage linkage) {
+    public VerifyForTwitterActionTransaction(UserTwitterLink linkage) {
         this.twitterLinkageEmbryo = linkage;
     }
 
@@ -77,7 +77,7 @@ class VerifyForTwitterActionTransaction extends Transaction<UserEx> {
 
         try {
             // 1. まず TwitterLinkage をアップデート
-            TwitterLinkage twitterLinkage = updateTwitterLinkage(con, daos, twitterLinkageEmbryo);
+            UserTwitterLink twitterLinkage = updateTwitterLinkage(con, daos, twitterLinkageEmbryo);
             // 2. 対応するユーザーを生成
             UserEx user = getUserFromTwitterLinkage(con, daos, twitterLinkage);
             return user;
@@ -86,8 +86,8 @@ class VerifyForTwitterActionTransaction extends Transaction<UserEx> {
         }
     }
 
-    private TwitterLinkage updateTwitterLinkage(PartakeConnection con, IPartakeDAOs daos, TwitterLinkage twitterLinkageEmbryo) throws DAOException, TwitterException {
-        TwitterLinkage twitterLinkage = daos.getTwitterLinkageAccess().find(con, twitterLinkageEmbryo.getTwitterId());
+    private UserTwitterLink updateTwitterLinkage(PartakeConnection con, IPartakeDAOs daos, UserTwitterLink twitterLinkageEmbryo) throws DAOException, TwitterException {
+        UserTwitterLink twitterLinkage = daos.getTwitterLinkageAccess().find(con, twitterLinkageEmbryo.getTwitterId());
 
         if (twitterLinkage == null || twitterLinkage.getUserId() == null) {
             String userId = daos.getUserAccess().getFreshId(con);
@@ -100,7 +100,7 @@ class VerifyForTwitterActionTransaction extends Transaction<UserEx> {
         return twitterLinkageEmbryo;
     }
 
-    private UserEx getUserFromTwitterLinkage(PartakeConnection con, IPartakeDAOs daos, TwitterLinkage twitterLinkage) throws DAOException, TwitterException {
+    private UserEx getUserFromTwitterLinkage(PartakeConnection con, IPartakeDAOs daos, UserTwitterLink twitterLinkage) throws DAOException, TwitterException {
         String userId = twitterLinkage.getUserId();
         User user = daos.getUserAccess().find(con, userId);
 

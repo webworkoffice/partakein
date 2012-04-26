@@ -1,7 +1,7 @@
 package in.partake.model.dto;
 
 import in.partake.base.DateTime;
-import in.partake.model.EnrollmentEx;
+import in.partake.model.UserTicketApplicationEx;
 import in.partake.model.UserEx;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
@@ -17,18 +17,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test the comparator which created by {@link Enrollment#getPriorityBasedComparator()}.
+ * Test the comparator which created by {@link UserTicketApplication#getPriorityBasedComparator()}.
  *
- * @see Enrollment#getPriorityBasedComparator()
+ * @see UserTicketApplication#getPriorityBasedComparator()
  * @author skypencil (@eller86)
  */
 public final class ParticipationComparatorTest {
-    private Comparator<EnrollmentEx> comparator;
+    private Comparator<UserTicketApplicationEx> comparator;
     private UserEx user;
 
     @Before
     public void createComparator() {
-        comparator = EnrollmentEx.getPriorityBasedComparator();
+        comparator = UserTicketApplicationEx.getPriorityBasedComparator();
         user = null;
 
         Assert.assertNotNull(comparator);
@@ -36,15 +36,15 @@ public final class ParticipationComparatorTest {
 
     @Test
     public void sortEmptyList() {
-        List<EnrollmentEx> list = Collections.emptyList();
+        List<UserTicketApplicationEx> list = Collections.emptyList();
         Collections.sort(list, comparator);
     }
 
     @Test
     public void sortAscSortedValues() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("id1", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, null), user, 0),
-                new EnrollmentEx(new Enrollment("id2", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, null), user, 1)
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
+                new UserTicketApplicationEx(new UserTicketApplication("id1", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, null), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id2", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, null), user, 1)
         });
         Collections.sort(list, comparator);
         Assert.assertTrue(list.get(0).getPriority() > list.get(1).getPriority());
@@ -52,9 +52,9 @@ public final class ParticipationComparatorTest {
 
     @Test
     public void sortDescSortedValues() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("id1", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, null), user, 1),
-                new EnrollmentEx(new Enrollment("id2", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, null), user, 0),
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
+                new UserTicketApplicationEx(new UserTicketApplication("id1", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, null), user, 1),
+                new UserTicketApplicationEx(new UserTicketApplication("id2", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, null), user, 0),
         });
 
         Collections.sort(list, comparator);
@@ -63,9 +63,9 @@ public final class ParticipationComparatorTest {
 
     @Test
     public void sortSamePriorityValues() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("id1", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
-                new EnrollmentEx(new Enrollment("id2", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(1)), user, 0),
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
+                new UserTicketApplicationEx(new UserTicketApplication("id1", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id2", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(1)), user, 0),
         });
 
         Collections.sort(list, comparator);
@@ -75,9 +75,9 @@ public final class ParticipationComparatorTest {
 
     @Test
     public void sortSamePriorityAndDateValues() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("id1", "userID1", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
-                new EnrollmentEx(new Enrollment("id2", "userID2", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
+                new UserTicketApplicationEx(new UserTicketApplication("id1", "userID1", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id2", "userID2", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
         });
 
         Collections.sort(list, comparator);
@@ -88,9 +88,9 @@ public final class ParticipationComparatorTest {
 
     @Test
     public void sortAllSameValues() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("id1", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
-                new EnrollmentEx(new Enrollment("id2", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
+                new UserTicketApplicationEx(new UserTicketApplication("id1", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id2", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
         });
 
         Collections.sort(list, comparator);
@@ -101,25 +101,25 @@ public final class ParticipationComparatorTest {
 
     @Test
     public void sortVariousValues() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("id01", "userId00", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
-                new EnrollmentEx(new Enrollment("id02", "userId01", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 1),
-                new EnrollmentEx(new Enrollment("id03", "userId02", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 2),
-                new EnrollmentEx(new Enrollment("id04", "userId03", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(1)), user, 0),
-                new EnrollmentEx(new Enrollment("id05", "userId04", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(1)), user, 1),
-                new EnrollmentEx(new Enrollment("id06", "userId05", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(1)), user, 2),
-                new EnrollmentEx(new Enrollment("id07", "userId06", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(2)), user, 0),
-                new EnrollmentEx(new Enrollment("id08", "userId07", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(2)), user, 1),
-                new EnrollmentEx(new Enrollment("id09", "userId08", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(2)), user, 2),
-                new EnrollmentEx(new Enrollment("id10", "userId10", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(0)), user, 0),
-                new EnrollmentEx(new Enrollment("id11", "userId11", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(0)), user, 1),
-                new EnrollmentEx(new Enrollment("id12", "userId12", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(0)), user, 2),
-                new EnrollmentEx(new Enrollment("id13", "userId13", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(1)), user, 0),
-                new EnrollmentEx(new Enrollment("id14", "userId14", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(1)), user, 1),
-                new EnrollmentEx(new Enrollment("id15", "userId15", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(1)), user, 2),
-                new EnrollmentEx(new Enrollment("id16", "userId16", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(2)), user, 0),
-                new EnrollmentEx(new Enrollment("id17", "userId17", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(2)), user, 1),
-                new EnrollmentEx(new Enrollment("id18", "userId18", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(2)), user, 2),
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
+                new UserTicketApplicationEx(new UserTicketApplication("id01", "userId00", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id02", "userId01", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 1),
+                new UserTicketApplicationEx(new UserTicketApplication("id03", "userId02", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 2),
+                new UserTicketApplicationEx(new UserTicketApplication("id04", "userId03", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(1)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id05", "userId04", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(1)), user, 1),
+                new UserTicketApplicationEx(new UserTicketApplication("id06", "userId05", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(1)), user, 2),
+                new UserTicketApplicationEx(new UserTicketApplication("id07", "userId06", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(2)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id08", "userId07", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(2)), user, 1),
+                new UserTicketApplicationEx(new UserTicketApplication("id09", "userId08", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(2)), user, 2),
+                new UserTicketApplicationEx(new UserTicketApplication("id10", "userId10", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(0)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id11", "userId11", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(0)), user, 1),
+                new UserTicketApplicationEx(new UserTicketApplication("id12", "userId12", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(0)), user, 2),
+                new UserTicketApplicationEx(new UserTicketApplication("id13", "userId13", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(1)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id14", "userId14", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(1)), user, 1),
+                new UserTicketApplicationEx(new UserTicketApplication("id15", "userId15", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(1)), user, 2),
+                new UserTicketApplicationEx(new UserTicketApplication("id16", "userId16", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(2)), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication("id17", "userId17", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(2)), user, 1),
+                new UserTicketApplicationEx(new UserTicketApplication("id18", "userId18", new UUID(0, 0), "eventId", "comment", null, true,  null, null, new DateTime(2)), user, 2),
         });
 
         Collections.sort(list, comparator);
@@ -147,7 +147,7 @@ public final class ParticipationComparatorTest {
 
     @Test
     public void sortNullValues() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
                 null,
                 null
         });
@@ -158,8 +158,8 @@ public final class ParticipationComparatorTest {
 
     @Test
     public void sortParicipationAndNull() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment("id", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
+                new UserTicketApplicationEx(new UserTicketApplication("id", "userID", new UUID(0, 0), "eventId", "comment", null, false, null, null, new DateTime(0)), user, 0),
                 null
         });
 
@@ -171,9 +171,9 @@ public final class ParticipationComparatorTest {
     // throwing NullPointerException is needed? really?
     @Test(expected = NullPointerException.class)
     public void sortNullId() {
-        List<EnrollmentEx> list = Arrays.asList(new EnrollmentEx[] {
-                new EnrollmentEx(new Enrollment(null, null, null, null, "comment", ParticipationStatus.CANCELLED, false, ModificationStatus.CHANGED, null, null), user, 0),
-                new EnrollmentEx(new Enrollment(null, null, null, null, "comment", ParticipationStatus.CANCELLED, false, ModificationStatus.CHANGED, null, null), user, 0),
+        List<UserTicketApplicationEx> list = Arrays.asList(new UserTicketApplicationEx[] {
+                new UserTicketApplicationEx(new UserTicketApplication(null, null, null, null, "comment", ParticipationStatus.CANCELLED, false, ModificationStatus.CHANGED, null, null), user, 0),
+                new UserTicketApplicationEx(new UserTicketApplication(null, null, null, null, "comment", ParticipationStatus.CANCELLED, false, ModificationStatus.CHANGED, null, null), user, 0),
         });
         Collections.sort(list, comparator);
     }

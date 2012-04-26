@@ -29,7 +29,7 @@ class EntityEventMessageMapper extends Postgres9EntityDataMapper<EventMessage> {
 }
 
 public class Postgres9EventMessageDao extends Postgres9Dao implements IEventMessageAccess {
-    static final String TABLE_NAME = "EventMessageEntities";
+    static final String ENTITY_TABLE_NAME = "EventMessageEntities";
     static final String INDEX_TABLE_NAME = "EventMessageIndex";
     static final int CURRENT_VERSION = 1;
 
@@ -38,7 +38,7 @@ public class Postgres9EventMessageDao extends Postgres9Dao implements IEventMess
     private final EntityEventMessageMapper mapper;
 
     public Postgres9EventMessageDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityEventMessageMapper();
     }

@@ -2,7 +2,7 @@ package in.partake.model.dto;
 
 import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
-import in.partake.model.EnrollmentEx;
+import in.partake.model.UserTicketApplicationEx;
 import in.partake.model.EventTicketHolderList;
 import in.partake.model.dto.auxiliary.TicketApplicationEnd;
 import in.partake.model.dto.auxiliary.TicketApplicationStart;
@@ -413,16 +413,16 @@ public class EventTicket extends PartakeModel<EventTicket> {
      * @param participations
      * @return
      */
-    public EventTicketHolderList calculateParticipationList(Event event, List<EnrollmentEx> participations) {
-        List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>();
-        List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>();
-        List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>();
+    public EventTicketHolderList calculateParticipationList(Event event, List<UserTicketApplicationEx> participations) {
+        List<UserTicketApplicationEx> enrolledParticipations = new ArrayList<UserTicketApplicationEx>();
+        List<UserTicketApplicationEx> spareParticipations = new ArrayList<UserTicketApplicationEx>();
+        List<UserTicketApplicationEx> cancelledParticipations = new ArrayList<UserTicketApplicationEx>();
         boolean timeover = isReservationTimeOver(event);
 
         int reservedEnrolled = 0;
         int reservedSpare = 0;
 
-        for (EnrollmentEx participation : participations) {
+        for (UserTicketApplicationEx participation : participations) {
             switch (participation.getStatus()) {
             case CANCELLED:
                 cancelledParticipations.add(participation);

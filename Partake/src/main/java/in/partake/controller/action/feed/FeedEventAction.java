@@ -9,7 +9,7 @@ import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
-import in.partake.model.dto.EventFeedLinkage;
+import in.partake.model.dto.EventFeed;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
@@ -68,7 +68,7 @@ class FeedEventTransaction extends DBAccess<InputStream> {
     @Override
     protected InputStream doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         IEventFeedAccess feedAccess = daos.getEventFeedAccess();
-        EventFeedLinkage linkage = feedAccess.find(con, feedId);
+        EventFeed linkage = feedAccess.find(con, feedId);
         if (linkage == null)
             return null;
 

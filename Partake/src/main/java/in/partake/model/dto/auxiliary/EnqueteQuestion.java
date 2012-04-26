@@ -1,6 +1,6 @@
 package in.partake.model.dto.auxiliary;
 
-import in.partake.base.IJSONable;
+import in.partake.base.JSONable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +10,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-public class EnqueteQuestion implements IJSONable {
+public class EnqueteQuestion implements JSONable {
     private String question;
     private EnqueteAnswerType type;
     private List<String> options;

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertThat;
 import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
@@ -87,7 +87,7 @@ public class GetEnrollmentsAPITest extends APIControllerTest {
             ModificationStatus modificationStatus = ModificationStatus.CHANGED;
             AttendanceStatus attendanceStatus = AttendanceStatus.UNKNOWN;
             DateTime modifiedAt = new DateTime(TimeUtil.getCurrentTime() + (ticketIds.size() - i) * 1000);
-            Enrollment enrollment = new Enrollment(null, userId, ticketId, eventId, "comment", status, vip, modificationStatus, attendanceStatus, modifiedAt);
+            UserTicketApplication enrollment = new UserTicketApplication(null, userId, ticketId, eventId, "comment", status, vip, modificationStatus, attendanceStatus, modifiedAt);
             ids.add(storeEnrollment(enrollment));
         }
         return ids;

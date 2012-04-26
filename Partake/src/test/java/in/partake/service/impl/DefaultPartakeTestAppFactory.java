@@ -1,7 +1,7 @@
 package in.partake.service.impl;
 
 import static org.mockito.Mockito.mock;
-import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.service.ITestService;
 import in.partake.service.ITwitterService;
@@ -22,7 +22,7 @@ public class DefaultPartakeTestAppFactory extends DefaultPartakeAppFactory {
         Mockito.doReturn(mockInfo).when(twitterService).createLoginInformation(null);
         Mockito.doThrow(new TwitterException("MockException")).when(twitterService).createLoginInformation("http://www.example.com/throwException");
 
-        TwitterLinkage twitterLinkage = new TwitterLinkage(TestDataProvider.DEFAULT_TWITTER_ID, TestDataProvider.DEFAULT_TWITTER_SCREENNAME,
+        UserTwitterLink twitterLinkage = new UserTwitterLink(TestDataProvider.DEFAULT_TWITTER_ID, TestDataProvider.DEFAULT_TWITTER_SCREENNAME,
                 "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", TestDataProvider.DEFAULT_USER_ID);
         Mockito.doReturn(twitterLinkage).when(twitterService).createTwitterLinkageFromLoginInformation((TwitterLoginInformation) Mockito.any(), Mockito.anyString());
 

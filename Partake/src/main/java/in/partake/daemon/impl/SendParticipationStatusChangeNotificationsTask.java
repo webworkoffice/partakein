@@ -4,7 +4,7 @@ import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.daemon.IPartakeDaemonTask;
-import in.partake.model.EnrollmentEx;
+import in.partake.model.UserTicketApplicationEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventTicketHolderList;
 import in.partake.model.IPartakeDAOs;
@@ -14,7 +14,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.EventTicketNotification;
@@ -66,12 +66,12 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
     }
 
     private void sendChangeNotificationImpl(PartakeConnection con, IPartakeDAOs daos, EventTicket ticket, String eventId, EventEx event) throws DAOException {
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+        List<UserTicketApplicationEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
         EventTicketHolderList list = ticket.calculateParticipationList(event, participations);
 
         // TODO: ここのソース汚い。同一化できる。とくに、あとの２つは一緒。
         List<String> userIdsToBeEnrolled = new ArrayList<String>();
-        for (Enrollment p : list.getEnrolledParticipations()) {
+        for (UserTicketApplication p : list.getEnrolledParticipations()) {
             // -- 参加者向
 
             ModificationStatus status = p.getModificationStatus();
@@ -108,7 +108,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
         }
 
         List<String> userIdsToBeCancelled = new ArrayList<String>();
-        for (Enrollment p : list.getSpareParticipations()) {
+        for (UserTicketApplication p : list.getSpareParticipations()) {
             ModificationStatus status = p.getModificationStatus();
             if (status == null) { continue; }
 
@@ -125,7 +125,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
             }
         }
 
-        for (Enrollment p : list.getCancelledParticipations()) {
+        for (UserTicketApplication p : list.getCancelledParticipations()) {
             ModificationStatus status = p.getModificationStatus();
             if (status == null) { continue; }
 
@@ -159,8 +159,8 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
         }
     }
 
-    private void updateLastStatus(PartakeConnection con, IPartakeDAOs daos, String eventId, Enrollment enrollment, ModificationStatus status) throws DAOException {
-        Enrollment newEnrollment = new Enrollment(enrollment);
+    private void updateLastStatus(PartakeConnection con, IPartakeDAOs daos, String eventId, UserTicketApplication enrollment, ModificationStatus status) throws DAOException {
+        UserTicketApplication newEnrollment = new UserTicketApplication(enrollment);
         newEnrollment.setModificationStatus(status);
         daos.getEnrollmentAccess().put(con, newEnrollment);
     }

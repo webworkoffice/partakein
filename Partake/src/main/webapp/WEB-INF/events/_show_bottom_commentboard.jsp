@@ -7,7 +7,7 @@
 <%@page import="in.partake.model.UserEx"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
-<%@page import="in.partake.model.CommentEx"%>
+<%@page import="in.partake.model.EventCommentEx"%>
 <%@page import="in.partake.model.dao.DataIterator"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="in.partake.model.EventEx"%>
@@ -19,11 +19,13 @@
     EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
 
     EventEx event = action.getEvent();
-    List<CommentEx> comments = action.getComments();
+    List<EventCommentEx> comments = action.getComments();
 %>
 
 
-<% for (CommentEx comment : comments) { %>
+<%
+    for (EventCommentEx comment : comments) {
+%>
     <% if (comment == null) { continue; } %>
     <div class="comment" id="comment-<%= h(comment.getId()) %>">
         <p class="spinner-container"><a href="<%= request.getContextPath() %>/users/<%= h(comment.getUserId()) %>"><%= h(comment.getUser().getTwitterLinkage().getScreenName()) %></a>

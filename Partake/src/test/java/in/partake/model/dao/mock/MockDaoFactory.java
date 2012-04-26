@@ -1,21 +1,21 @@
 package in.partake.model.dao.mock;
 
 import in.partake.model.dao.PartakeDAOFactory;
-import in.partake.model.dao.access.ICalendarLinkageAccess;
-import in.partake.model.dao.access.ICommentAccess;
-import in.partake.model.dao.access.IEnrollmentAccess;
+import in.partake.model.dao.access.IUserCalendarLinkageAccess;
+import in.partake.model.dao.access.IEventCommentAccess;
+import in.partake.model.dao.access.IUserTicketApplicationAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventMessageAccess;
 import in.partake.model.dao.access.IEventTicketAccess;
 import in.partake.model.dao.access.IEventTicketNotificationAccess;
-import in.partake.model.dao.access.IImageAccess;
+import in.partake.model.dao.access.IUserImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IMessageEnvelopeAccess;
-import in.partake.model.dao.access.IOpenIDLinkageAccess;
-import in.partake.model.dao.access.IThumbnailAccess;
-import in.partake.model.dao.access.ITwitterLinkageAccess;
+import in.partake.model.dao.access.IUserOpenIDLinkAccess;
+import in.partake.model.dao.access.IUserThumbnailAccess;
+import in.partake.model.dao.access.IUserTwitterLinkAccess;
 import in.partake.model.dao.access.ITwitterMessageAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserNotificationAccess;
@@ -31,18 +31,18 @@ public class MockDaoFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected ICalendarLinkageAccess createCalendarLinkageAccess() {
-        return Mockito.mock(ICalendarLinkageAccess.class);
+    protected IUserCalendarLinkageAccess createCalendarLinkageAccess() {
+        return Mockito.mock(IUserCalendarLinkageAccess.class);
     }
 
     @Override
-    protected ICommentAccess createCommentAccess() {
-        return Mockito.mock(ICommentAccess.class);
+    protected IEventCommentAccess createCommentAccess() {
+        return Mockito.mock(IEventCommentAccess.class);
     }
 
     @Override
-    protected IEnrollmentAccess createEnrollmentAccess() {
-        return Mockito.mock(IEnrollmentAccess.class);
+    protected IUserTicketApplicationAccess createEnrollmentAccess() {
+        return Mockito.mock(IUserTicketApplicationAccess.class);
     }
 
     @Override
@@ -76,18 +76,18 @@ public class MockDaoFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected IOpenIDLinkageAccess createOpenIDLinkageAccess() {
-        return Mockito.mock(IOpenIDLinkageAccess.class);
+    protected IUserOpenIDLinkAccess createOpenIDLinkageAccess() {
+        return Mockito.mock(IUserOpenIDLinkAccess.class);
     }
 
     @Override
-    protected IThumbnailAccess createThumbnailAccess() {
-        return Mockito.mock(IThumbnailAccess.class);
+    protected IUserThumbnailAccess createThumbnailAccess() {
+        return Mockito.mock(IUserThumbnailAccess.class);
     }
 
     @Override
-    protected ITwitterLinkageAccess createTwitterLinkageAccess() {
-        return Mockito.mock(ITwitterLinkageAccess.class);
+    protected IUserTwitterLinkAccess createTwitterLinkageAccess() {
+        return Mockito.mock(IUserTwitterLinkAccess.class);
     }
 
     @Override
@@ -101,8 +101,8 @@ public class MockDaoFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected IImageAccess createImageAccess() {
-        return Mockito.mock(IImageAccess.class);
+    protected IUserImageAccess createImageAccess() {
+        return Mockito.mock(IUserImageAccess.class);
     }
 
     @Override

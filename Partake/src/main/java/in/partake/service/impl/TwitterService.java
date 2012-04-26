@@ -1,6 +1,6 @@
 package in.partake.service.impl;
 
-import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.ITwitterService;
 import in.partake.session.TwitterLoginInformation;
@@ -20,13 +20,13 @@ class TwitterService implements ITwitterService {
         return new TwitterLoginInformation(twitter, requestToken, redirectURL);
     }
 
-    public TwitterLinkage createTwitterLinkageFromLoginInformation(TwitterLoginInformation information, String verifier) throws TwitterException {
+    public UserTwitterLink createTwitterLinkageFromLoginInformation(TwitterLoginInformation information, String verifier) throws TwitterException {
         Twitter twitter = information.getTwitter();
         RequestToken requestToken = information.getRequestToken();
         AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
 
         twitter4j.User twitterUser = twitter.showUser(twitter.getId());
-        return new TwitterLinkage(
+        return new UserTwitterLink(
                 twitter.getId(), twitter.getScreenName(), twitterUser.getName(), accessToken.getToken(), accessToken.getTokenSecret(),
                 twitter.showUser(twitter.getId()).getProfileImageURL().toString(), null);
     }

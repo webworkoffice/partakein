@@ -13,7 +13,7 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicketNotification;
 import in.partake.model.dto.EventTicket;
@@ -64,7 +64,7 @@ public class EventReminderTaskTest extends AbstractPartakeControllerTest impleme
         storeEventTicket(ticket);
 
         String id = UUID.randomUUID().toString();
-        Enrollment enrollment = new Enrollment(id, DEFAULT_USER_ID, ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
+        UserTicketApplication enrollment = new UserTicketApplication(id, DEFAULT_USER_ID, ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                 false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, now);
         storeEnrollment(enrollment);
 

@@ -10,7 +10,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.dto.Comment;
+import in.partake.model.dto.EventComment;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.resource.UserErrorCode;
@@ -33,7 +33,7 @@ public class PostCommentAPI extends AbstractPartakeAPI {
         if (comment.length() > MAX_COMMENT_LENGTH)
             return renderInvalid(UserErrorCode.INVALID_COMMENT_TOOLONG);
 
-        Comment embryo = new Comment(null, eventId, user.getId(), comment, true, TimeUtil.getCurrentDateTime());
+        EventComment embryo = new EventComment(null, eventId, user.getId(), comment, true, TimeUtil.getCurrentDateTime());
         new PostCommentTransaction(embryo).execute();
 
         return renderOK();
@@ -41,9 +41,9 @@ public class PostCommentAPI extends AbstractPartakeAPI {
 }
 
 class PostCommentTransaction extends Transaction<Void> {
-    private Comment commentEmbryo;
+    private EventComment commentEmbryo;
 
-    public PostCommentTransaction(Comment embryo) {
+    public PostCommentTransaction(EventComment embryo) {
         this.commentEmbryo = embryo;
     }
 

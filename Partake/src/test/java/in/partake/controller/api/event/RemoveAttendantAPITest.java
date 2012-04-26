@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.UserErrorCode;
 
@@ -23,7 +23,7 @@ public class RemoveAttendantAPITest extends APIControllerTest {
 
         loginAs(proxy, EVENT_OWNER_ID);
 
-        Enrollment enrollment = loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_TICKET_ID);
+        UserTicketApplication enrollment = loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_TICKET_ID);
         assertThat(enrollment.getStatus(), is(ParticipationStatus.ENROLLED));
 
         proxy.execute();

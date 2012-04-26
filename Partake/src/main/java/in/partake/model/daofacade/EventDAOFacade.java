@@ -2,7 +2,7 @@ package in.partake.model.daofacade;
 
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
-import in.partake.model.CommentEx;
+import in.partake.model.EventCommentEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventRelationEx;
 import in.partake.model.IPartakeDAOs;
@@ -11,14 +11,14 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventActivityAccess;
-import in.partake.model.dto.Comment;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.EventComment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
-import in.partake.model.dto.EventFeedLinkage;
+import in.partake.model.dto.EventFeed;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.MessageEnvelope;
-import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.MessageDelivery;
@@ -75,7 +75,7 @@ public class EventDAOFacade {
         String feedId = daos.getEventFeedAccess().findByEventId(con, eventId);
         if (feedId == null) {
             feedId = daos.getEventFeedAccess().getFreshId(con);
-            daos.getEventFeedAccess().put(con, new EventFeedLinkage(feedId, eventId));
+            daos.getEventFeedAccess().put(con, new EventFeed(feedId, eventId));
         }
 
         // Event Activity にも挿入
@@ -163,7 +163,7 @@ public class EventDAOFacade {
             boolean enrolled = false;
             List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, relation.getEventId());
             for (EventTicket ticket : tickets) {
-                Enrollment enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId());
+                UserTicketApplication enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId());
                 if (enrollment != null && enrollment.getStatus().isEnrolled()) {
                     enrolled = true;
                     break;
@@ -180,28 +180,28 @@ public class EventDAOFacade {
     // ----------------------------------------------------------------------
     // Comments
 
-    public static CommentEx getCommentEx(PartakeConnection con, IPartakeDAOs daos, String commentId) throws DAOException {
-        Comment comment = daos.getCommentAccess().find(con, commentId);
+    public static EventCommentEx getCommentEx(PartakeConnection con, IPartakeDAOs daos, String commentId) throws DAOException {
+        EventComment comment = daos.getCommentAccess().find(con, commentId);
         if (comment == null) { return null; }
         UserEx user = UserDAOFacade.getUserEx(con, daos, comment.getUserId());
         if (user == null) { return null; }
-        return new CommentEx(comment, user);
+        return new EventCommentEx(comment, user);
     }
 
-    public static List<CommentEx> getCommentsExByEvent(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
-        List<CommentEx> result = new ArrayList<CommentEx>();
+    public static List<EventCommentEx> getCommentsExByEvent(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
+        List<EventCommentEx> result = new ArrayList<EventCommentEx>();
 
         con.beginTransaction();
-        DataIterator<Comment> iterator = daos.getCommentAccess().getCommentsByEvent(con, eventId);
+        DataIterator<EventComment> iterator = daos.getCommentAccess().getCommentsByEvent(con, eventId);
         try {
             if (iterator == null) { return result; }
 
             while (iterator.hasNext()) {
-                Comment comment = iterator.next();
+                EventComment comment = iterator.next();
                 if (comment == null) { continue; }
                 String commentId = comment.getId();
                 if (commentId == null) { continue; }
-                CommentEx commentEx = getCommentEx(con, daos, commentId);
+                EventCommentEx commentEx = getCommentEx(con, daos, commentId);
                 if (commentEx == null) { continue; }
                 result.add(commentEx);
             }
@@ -225,7 +225,7 @@ public class EventDAOFacade {
             logger.info("No bot id.");
             return;
         }
-        TwitterLinkage linkage = daos.getTwitterLinkageAccess().find(con, String.valueOf(twitterId));
+        UserTwitterLink linkage = daos.getTwitterLinkageAccess().find(con, String.valueOf(twitterId));
         if (linkage == null) {
             logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
             return;

@@ -21,14 +21,14 @@ class EntityMessageEnvelopeMapper extends Postgres9EntityDataMapper<MessageEnvel
 }
 
 public class Postgres9MessageEnvelopeDao extends Postgres9Dao implements IMessageEnvelopeAccess {
-    static final String TABLE_NAME = "MessageEnvelopeEntities";
+    static final String ENTITY_TABLE_NAME = "MessageEnvelopeEntities";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
     private final EntityMessageEnvelopeMapper mapper;
 
     public Postgres9MessageEnvelopeDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.mapper = new EntityMessageEnvelopeMapper();
     }
 

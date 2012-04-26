@@ -1,14 +1,14 @@
 package in.partake.controller.base.permission;
 
 import in.partake.model.UserEx;
-import in.partake.model.dto.Comment;
+import in.partake.model.dto.EventComment;
 import in.partake.model.dto.Event;
 
 import org.apache.commons.lang.StringUtils;
 
 public class RemoveCommentPermission extends PartakePermission {
 
-    public static boolean check(Comment comment, Event event, UserEx user) {
+    public static boolean check(EventComment comment, Event event, UserEx user) {
         assert comment != null;
         assert event != null;
         assert user != null;

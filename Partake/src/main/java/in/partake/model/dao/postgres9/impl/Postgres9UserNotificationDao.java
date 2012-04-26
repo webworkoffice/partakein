@@ -29,7 +29,7 @@ class EntityUserNotificationMapper extends Postgres9EntityDataMapper<UserNotific
 }
 
 public class Postgres9UserNotificationDao extends Postgres9Dao implements IUserNotificationAccess {
-    static final String TABLE_NAME = "UserNotificationEntities";
+    static final String ENTITY_TABLE_NAME = "UserNotificationEntities";
     static final String INDEX_TABLE_NAME = "UserNotificationIndex";
     static final int CURRENT_VERSION = 1;
 
@@ -38,7 +38,7 @@ public class Postgres9UserNotificationDao extends Postgres9Dao implements IUserN
     private final EntityUserNotificationMapper mapper;
 
     public Postgres9UserNotificationDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityUserNotificationMapper();
     }

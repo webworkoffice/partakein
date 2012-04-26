@@ -18,14 +18,14 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.daoutil.DAOUtil;
-import in.partake.model.dto.CalendarLinkage;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserCalendarLink;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicketNotification;
 import in.partake.model.dto.EventTicket;
-import in.partake.model.dto.ImageData;
+import in.partake.model.dto.UserImage;
 import in.partake.model.dto.MessageEnvelope;
-import in.partake.model.dto.ThumbnailData;
+import in.partake.model.dto.UserThumbnail;
 import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.UserNotification;
 import in.partake.model.dto.UserPreference;
@@ -317,7 +317,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         return new DBAccess<String>() {
             @Override
             protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-                CalendarLinkage linkage = daos.getCalendarAccess().findByUserId(con, userId);
+                UserCalendarLink linkage = daos.getCalendarAccess().findByUserId(con, userId);
                 if (linkage == null)
                     return null;
                 return linkage.getId();
@@ -325,19 +325,19 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
-    protected Enrollment loadEnrollment(final String enrollmentId) throws DAOException, PartakeException {
-        return new DBAccess<Enrollment>() {
+    protected UserTicketApplication loadEnrollment(final String enrollmentId) throws DAOException, PartakeException {
+        return new DBAccess<UserTicketApplication>() {
             @Override
-            protected Enrollment doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+            protected UserTicketApplication doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getEnrollmentAccess().find(con, enrollmentId);
             }
         }.execute();
     }
 
-    protected Enrollment loadEnrollment(final String userId, final UUID ticketId) throws DAOException, PartakeException {
-        return new DBAccess<Enrollment>() {
+    protected UserTicketApplication loadEnrollment(final String userId, final UUID ticketId) throws DAOException, PartakeException {
+        return new DBAccess<UserTicketApplication>() {
             @Override
-            protected Enrollment doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+            protected UserTicketApplication doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, userId);
             }
         }.execute();
@@ -352,7 +352,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
-    protected String storeEnrollment(final Enrollment enrollment) throws DAOException, PartakeException {
+    protected String storeEnrollment(final UserTicketApplication enrollment) throws DAOException, PartakeException {
         return new Transaction<String>() {
             @Override
             protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
@@ -366,19 +366,19 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
-    protected ImageData loadImage(final String imageId) throws DAOException, PartakeException {
-        return new DBAccess<ImageData>() {
+    protected UserImage loadImage(final String imageId) throws DAOException, PartakeException {
+        return new DBAccess<UserImage>() {
             @Override
-            protected ImageData doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+            protected UserImage doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getImageAccess().find(con, imageId);
             }
         }.execute();
     }
 
-    protected ThumbnailData loadThumbnail(final String imageId) throws DAOException, PartakeException {
-        return new DBAccess<ThumbnailData>() {
+    protected UserThumbnail loadThumbnail(final String imageId) throws DAOException, PartakeException {
+        return new DBAccess<UserThumbnail>() {
             @Override
-            protected ThumbnailData doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+            protected UserThumbnail doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getThumbnailAccess().find(con, imageId);
             }
         }.execute();

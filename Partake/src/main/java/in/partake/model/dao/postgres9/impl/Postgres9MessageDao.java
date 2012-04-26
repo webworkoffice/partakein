@@ -23,14 +23,14 @@ class EntityMessageMapper extends Postgres9EntityDataMapper<Message> {
 }
 
 public class Postgres9MessageDao extends Postgres9Dao implements IMessageAccess {
-    static final String TABLE_NAME = "MessageEntities";
+    static final String ENTITY_TABLE_NAME = "MessageEntities";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
     private final EntityMessageMapper mapper;
 
     public Postgres9MessageDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.mapper = new EntityMessageMapper();
     }
 

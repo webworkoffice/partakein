@@ -97,7 +97,7 @@ public abstract class AbstractPartakeModelTest<T extends PartakeModel<T>> {
         List<T> samples = getTestDataProvider().createSamples();
         Constructor<?> ctor = samples.get(0).getClass().getConstructor(JSONObject.class);
 
-        assumeThat(samples.get(0).getClass(), not(isIn(new Object[] { ImageData.class, ThumbnailData.class })));
+        assumeThat(samples.get(0).getClass(), not(isIn(new Object[] { UserImage.class, UserThumbnail.class })));
 
         for (T t : samples) {
             Object created = ctor.newInstance(t.toJSON());

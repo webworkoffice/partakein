@@ -6,8 +6,8 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.CalendarLinkage;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserCalendarLink;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.User;
@@ -53,7 +53,7 @@ class ShowCalendarTransaction extends DBAccess<Calendar> {
     @Override
     protected Calendar doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         // CalendarLinkage should have cache.
-        CalendarLinkage calendarLinkage = daos.getCalendarAccess().find(con, calendarId);
+        UserCalendarLink calendarLinkage = daos.getCalendarAccess().find(con, calendarId);
         if (calendarLinkage == null)
             throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
 
@@ -64,9 +64,9 @@ class ShowCalendarTransaction extends DBAccess<Calendar> {
         Calendar calendar = CalendarUtil.createCalendarSkeleton();
 
         // TODO: We only consider the first 1000 entries of enrollments due to memory limit.
-        List<Enrollment> enrollments =
+        List<UserTicketApplication> enrollments =
                 daos.getEnrollmentAccess().findByUserId(con, user.getId(), 0, 1000);
-        for (Enrollment enrollment : enrollments) {
+        for (UserTicketApplication enrollment : enrollments) {
             // TODO: Event should be search-able by ticket-id.
             EventTicket ticket = daos.getEventTicketAccess().find(con, enrollment.getTicketId());
             Event event = daos.getEventAccess().find(con, ticket.getEventId());

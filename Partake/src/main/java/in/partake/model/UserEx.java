@@ -3,7 +3,7 @@ package in.partake.model;
 import java.util.Set;
 
 import net.sf.json.JSONObject;
-import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
 
@@ -13,14 +13,14 @@ import in.partake.resource.PartakeProperties;
  *
  */
 public class UserEx extends User {
-    private TwitterLinkage twitterLinkage;
+    private UserTwitterLink twitterLinkage;
 
-    public UserEx(User user, TwitterLinkage twitterLinkage) {
+    public UserEx(User user, UserTwitterLink twitterLinkage) {
         super(user);
         this.twitterLinkage = twitterLinkage;
     }
 
-    public TwitterLinkage getTwitterLinkage() {
+    public UserTwitterLink getTwitterLinkage() {
         return twitterLinkage;
     }
 

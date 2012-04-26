@@ -4,14 +4,14 @@
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-<%@page import="in.partake.model.CommentEx"%>
-<%@page import="in.partake.model.EnrollmentEx"%>
+<%@page import="in.partake.model.EventCommentEx"%>
+<%@page import="in.partake.model.UserTicketApplicationEx"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dao.DataIterator"%>
-<%@page import="in.partake.model.dto.Enrollment"%>
+<%@page import="in.partake.model.dto.UserTicketApplication"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
-<%@page import="in.partake.model.dto.Comment"%>
+<%@page import="in.partake.model.dto.EventComment"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.model.dto.User"%>
 <%@page import="in.partake.model.dto.Event"%>

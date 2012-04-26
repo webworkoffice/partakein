@@ -12,13 +12,13 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.ITwitterLinkageAccess;
+import in.partake.model.dao.access.IUserTwitterLinkAccess;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.MessageEnvelope;
-import in.partake.model.dto.TwitterLinkage;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.UserNotification;
 import in.partake.model.dto.UserPreference;
@@ -144,7 +144,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
             return;
         }
 
-        TwitterLinkage twitterLinkage = receiver.getTwitterLinkage();
+        UserTwitterLink twitterLinkage = receiver.getTwitterLinkage();
         if (twitterLinkage == null || !twitterLinkage.isAuthorized()) {
             logger.warn("sendDirectMessage : envelope id " + envelope.getId() + " could not be sent : No access token");
             didSendUserMessage(con, daos, it, envelope, userMessage, MessageDelivery.FAIL);
@@ -218,7 +218,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
             return;
         }
 
-        TwitterLinkage twitterLinkage = sender.getTwitterLinkage();
+        UserTwitterLink twitterLinkage = sender.getTwitterLinkage();
         if (twitterLinkage == null || !twitterLinkage.isAuthorized()) {
             logger.warn("sendTwitterMessage : envelope id " + envelope.getId() + " could not be sent : No access token");
             failedSendingTwitterMessage(con, daos, it, envelope, message);
@@ -266,7 +266,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
             return;
         }
 
-        TwitterLinkage twitterLinkage = sender.getTwitterLinkage();
+        UserTwitterLink twitterLinkage = sender.getTwitterLinkage();
         if (twitterLinkage == null || !twitterLinkage.isAuthorized()) {
             logger.warn("sendTwitterMessage : envelope id " + envelope.getId() + " could not be sent : No access token");
             failedSendingUserNotification(con, daos, it, envelope, notification);
@@ -394,8 +394,8 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
     }
 
     private void markAsUnauthorizedUser(PartakeConnection con, IPartakeDAOs daos, UserEx user) {
-        ITwitterLinkageAccess access = daos.getTwitterLinkageAccess();
-        TwitterLinkage linkage = new TwitterLinkage(user.getTwitterLinkage());
+        IUserTwitterLinkAccess access = daos.getTwitterLinkageAccess();
+        UserTwitterLink linkage = new UserTwitterLink(user.getTwitterLinkage());
         linkage.markAsUnauthorized();
 
         try {

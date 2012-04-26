@@ -4,7 +4,7 @@ import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.daemon.IPartakeDaemonTask;
-import in.partake.model.EnrollmentEx;
+import in.partake.model.UserTicketApplicationEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventTicketHolderList;
 import in.partake.model.IPartakeDAOs;
@@ -14,7 +14,7 @@ import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.EventTicketNotification;
@@ -81,10 +81,10 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
      * @throws DAOException
      */
     private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, IPartakeDAOs daos, EventTicket ticket, Event event, NotificationType notificationType) throws DAOException {
-        List<Enrollment> participations = daos.getEnrollmentAccess().findByTicketId(con, ticket.getId(), 0, Integer.MAX_VALUE);
+        List<UserTicketApplication> participations = daos.getEnrollmentAccess().findByTicketId(con, ticket.getId(), 0, Integer.MAX_VALUE);
 
         List<String> userIds = new ArrayList<String>();
-        for (Enrollment participation : participations) {
+        for (UserTicketApplication participation : participations) {
             if (!ParticipationStatus.RESERVED.equals(participation.getStatus())) { continue; }
             userIds.add(participation.getUserId());
         }
@@ -147,11 +147,11 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
      * @throws DAOException
      */
     private void sendNotificationOnlyForParticipants(PartakeConnection con, IPartakeDAOs daos, EventTicket ticket, EventEx event, NotificationType notificationType) throws DAOException {
-        List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+        List<UserTicketApplicationEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
         EventTicketHolderList list = ticket.calculateParticipationList(event, participations);
 
         List<String> userIds = new ArrayList<String>();
-        for (EnrollmentEx p : list.getEnrolledParticipations()) {
+        for (UserTicketApplicationEx p : list.getEnrolledParticipations()) {
             if (!ParticipationStatus.ENROLLED.equals(p.getStatus()))
                 continue;
             userIds.add(p.getUserId());

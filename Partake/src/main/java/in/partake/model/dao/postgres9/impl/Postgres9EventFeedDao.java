@@ -12,26 +12,26 @@ import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
-import in.partake.model.dto.EventFeedLinkage;
+import in.partake.model.dto.EventFeed;
 import net.sf.json.JSONObject;
 
-class EntityEventFeedMapper extends Postgres9EntityDataMapper<EventFeedLinkage> {
-    public EventFeedLinkage map(JSONObject obj) {
-        return new EventFeedLinkage(obj).freeze();
+class EntityEventFeedMapper extends Postgres9EntityDataMapper<EventFeed> {
+    public EventFeed map(JSONObject obj) {
+        return new EventFeed(obj).freeze();
     }
 }
 
 public class Postgres9EventFeedDao extends Postgres9Dao implements IEventFeedAccess {
-    static final String TABLE_NAME = "EventFeedEntities";
-    static final int CURRENT_VERSION = 1;
+    static final String ENTITY_TABLE_NAME = "EventFeedEntities";
     static final String INDEX_TABLE_NAME = "EventFeedIndex";
+    static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
     private final EntityEventFeedMapper mapper;
 
     public Postgres9EventFeedDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityEventFeedMapper();
     }
@@ -54,7 +54,7 @@ public class Postgres9EventFeedDao extends Postgres9Dao implements IEventFeedAcc
     }
 
     @Override
-    public void put(PartakeConnection con, EventFeedLinkage linkage) throws DAOException {
+    public void put(PartakeConnection con, EventFeed linkage) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         Postgres9Entity entity = new Postgres9Entity(linkage.getId(), CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
 
@@ -66,7 +66,7 @@ public class Postgres9EventFeedDao extends Postgres9Dao implements IEventFeedAcc
     }
 
     @Override
-    public EventFeedLinkage find(PartakeConnection con, String id) throws DAOException {
+    public EventFeed find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
@@ -84,8 +84,8 @@ public class Postgres9EventFeedDao extends Postgres9Dao implements IEventFeedAcc
     }
 
     @Override
-    public DataIterator<EventFeedLinkage> getIterator(PartakeConnection con) throws DAOException {
-        return new MapperDataIterator<Postgres9Entity, EventFeedLinkage>(mapper, entityDao.getIterator((Postgres9Connection) con));
+    public DataIterator<EventFeed> getIterator(PartakeConnection con) throws DAOException {
+        return new MapperDataIterator<Postgres9Entity, EventFeed>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override

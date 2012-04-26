@@ -8,7 +8,7 @@ import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.Comment;
+import in.partake.model.dto.EventComment;
 import in.partake.model.dto.Event;
 import in.partake.resource.UserErrorCode;
 
@@ -37,7 +37,7 @@ class RemoveCommentTransaction extends Transaction<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        Comment comment = daos.getCommentAccess().find(con, commentId);
+        EventComment comment = daos.getCommentAccess().find(con, commentId);
         if (comment == null)
             throw new PartakeException(UserErrorCode.INVALID_COMMENT_ID);
 

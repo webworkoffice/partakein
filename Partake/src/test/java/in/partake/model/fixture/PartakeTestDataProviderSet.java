@@ -3,21 +3,21 @@ package in.partake.model.fixture;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.fixture.impl.CalendarLinkageTestDataProvider;
-import in.partake.model.fixture.impl.CommentTestDataProvider;
-import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
+import in.partake.model.fixture.impl.UserCalendarLinkTestDataProvider;
+import in.partake.model.fixture.impl.EventCommentTestDataProvider;
+import in.partake.model.fixture.impl.UserTicketApplicationTestDataProvider;
 import in.partake.model.fixture.impl.EventActivityTestDataProvider;
 import in.partake.model.fixture.impl.EventFeedTestDataProvider;
 import in.partake.model.fixture.impl.EventMessageTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 import in.partake.model.fixture.impl.EventTicketNotificationTestDataProvider;
 import in.partake.model.fixture.impl.EventTicketTestDataProvider;
-import in.partake.model.fixture.impl.ImageTestDataProvider;
+import in.partake.model.fixture.impl.UserImageTestDataProvider;
 import in.partake.model.fixture.impl.MessageEnvelopeTestDataProvider;
 import in.partake.model.fixture.impl.MessageTestDataProvider;
-import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
-import in.partake.model.fixture.impl.ThumbnailTestDataProvider;
-import in.partake.model.fixture.impl.TwitterLinkageTestDataProvider;
+import in.partake.model.fixture.impl.UserOpenIDLinkTestDataProvider;
+import in.partake.model.fixture.impl.UserThumbnailTestDataProvider;
+import in.partake.model.fixture.impl.UserTwitterLinkTestDataProvider;
 import in.partake.model.fixture.impl.TwitterMessageTestDataProvider;
 import in.partake.model.fixture.impl.UserNotificationTestDataProvider;
 import in.partake.model.fixture.impl.UserPreferenceTestDataProvider;
@@ -35,13 +35,13 @@ import java.util.ArrayList;
 public class PartakeTestDataProviderSet {
     private ArrayList<TestDataProvider<?>> providers;
 
-    private CalendarLinkageTestDataProvider calendarDataProvider;
-    private CommentTestDataProvider commentDataprovider;
-    private EnrollmentTestDataProvider enrollmentProvider;
+    private UserCalendarLinkTestDataProvider calendarDataProvider;
+    private EventCommentTestDataProvider commentDataprovider;
+    private UserTicketApplicationTestDataProvider enrollmentProvider;
     private EventTestDataProvider eventProvider;
-    private ImageTestDataProvider imageProvider;
-    private OpenIDLinkageTestDataProvider openIDLinkageProvider;
-    private TwitterLinkageTestDataProvider twitterLinkageProvider;
+    private UserImageTestDataProvider imageProvider;
+    private UserOpenIDLinkTestDataProvider openIDLinkageProvider;
+    private UserTwitterLinkTestDataProvider twitterLinkageProvider;
     private UserTestDataProvider userProvider;
     private UserReceivedMessageTestDataProvider userMessageProvider;
     private UserPreferenceTestDataProvider userPreferenceProvider;
@@ -54,7 +54,7 @@ public class PartakeTestDataProviderSet {
     private EventTicketTestDataProvider eventTicketProvider;
     private MessageTestDataProvider messageProvider;
     private MessageEnvelopeTestDataProvider messageEnvelopeProvider;
-    private ThumbnailTestDataProvider thumbnailProvider;
+    private UserThumbnailTestDataProvider thumbnailProvider;
     private TwitterMessageTestDataProvider twitterMessageProvider;
 
     public PartakeTestDataProviderSet() {
@@ -89,15 +89,15 @@ public class PartakeTestDataProviderSet {
         }
     }
 
-    public CalendarLinkageTestDataProvider getCalendarTestDataProvider() {
+    public UserCalendarLinkTestDataProvider getCalendarTestDataProvider() {
         return calendarDataProvider;
     }
 
-    public CommentTestDataProvider getCommentDataProvider() {
+    public EventCommentTestDataProvider getCommentDataProvider() {
         return commentDataprovider;
     }
 
-    public EnrollmentTestDataProvider getEnrollmentProvider() {
+    public UserTicketApplicationTestDataProvider getEnrollmentProvider() {
         return enrollmentProvider;
     }
 
@@ -109,15 +109,15 @@ public class PartakeTestDataProviderSet {
         return eventTicketProvider;
     }
 
-    public ImageTestDataProvider getImageProvider() {
+    public UserImageTestDataProvider getImageProvider() {
         return imageProvider;
     }
 
-    public OpenIDLinkageTestDataProvider getOpenIDLinkageProvider() {
+    public UserOpenIDLinkTestDataProvider getOpenIDLinkageProvider() {
         return openIDLinkageProvider;
     }
 
-    public TwitterLinkageTestDataProvider getTwitterLinkageProvider() {
+    public UserTwitterLinkTestDataProvider getTwitterLinkageProvider() {
         return twitterLinkageProvider;
     }
 
@@ -153,7 +153,7 @@ public class PartakeTestDataProviderSet {
         return messageEnvelopeProvider;
     }
 
-    public ThumbnailTestDataProvider getThumbnailProvider() {
+    public UserThumbnailTestDataProvider getThumbnailProvider() {
         return thumbnailProvider;
     }
 
@@ -173,32 +173,32 @@ public class PartakeTestDataProviderSet {
         return userNotificationProvider;
     }
 
-    private CalendarLinkageTestDataProvider createCalendarLinkageTestDataProvider() {
-        return new CalendarLinkageTestDataProvider();
+    private UserCalendarLinkTestDataProvider createCalendarLinkageTestDataProvider() {
+        return new UserCalendarLinkTestDataProvider();
     }
 
-    private CommentTestDataProvider createCommentTestDataProvider() {
-        return new CommentTestDataProvider();
+    private EventCommentTestDataProvider createCommentTestDataProvider() {
+        return new EventCommentTestDataProvider();
     }
 
-    private EnrollmentTestDataProvider createEnrollmentTestDataProvider() {
-        return new EnrollmentTestDataProvider();
+    private UserTicketApplicationTestDataProvider createEnrollmentTestDataProvider() {
+        return new UserTicketApplicationTestDataProvider();
     }
 
     private EventTestDataProvider createEventTestDataProvider() {
         return new EventTestDataProvider();
     }
 
-    private ImageTestDataProvider createImageTestDataProvider() {
-        return new ImageTestDataProvider();
+    private UserImageTestDataProvider createImageTestDataProvider() {
+        return new UserImageTestDataProvider();
     }
 
-    private OpenIDLinkageTestDataProvider createOpenIDLinkageTestDataProvider() {
-        return new OpenIDLinkageTestDataProvider();
+    private UserOpenIDLinkTestDataProvider createOpenIDLinkageTestDataProvider() {
+        return new UserOpenIDLinkTestDataProvider();
     }
 
-    private TwitterLinkageTestDataProvider createTwitterLinkageTestDataProvider() {
-        return new TwitterLinkageTestDataProvider();
+    private UserTwitterLinkTestDataProvider createTwitterLinkageTestDataProvider() {
+        return new UserTwitterLinkTestDataProvider();
     }
 
     private UserTestDataProvider createUserTestDataProvider() {
@@ -237,8 +237,8 @@ public class PartakeTestDataProviderSet {
         return new TwitterMessageTestDataProvider();
     }
 
-    private ThumbnailTestDataProvider createThumbnailTestDataProvider() {
-        return new ThumbnailTestDataProvider();
+    private UserThumbnailTestDataProvider createThumbnailTestDataProvider() {
+        return new UserThumbnailTestDataProvider();
     }
 
     private UserReceivedMessageTestDataProvider createUserReceivedMessageTestDataProvider() {

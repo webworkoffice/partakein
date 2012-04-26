@@ -14,7 +14,7 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
-import in.partake.model.dto.ImageData;
+import in.partake.model.dto.UserImage;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.IEventSearchService;
@@ -223,7 +223,7 @@ class ModifyTransaction extends Transaction<Void> {
                 throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "foreImageId", "画像IDが不正です。");
             else {
                 // Check foreImageId is owned by the owner.
-                ImageData image = daos.getImageAccess().find(con, foreImageId);
+                UserImage image = daos.getImageAccess().find(con, foreImageId);
                 if (image == null)
                     throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "foreImageId", "画像IDが不正です。");
                 if (!user.getId().equals(image.getUserId()))
@@ -242,7 +242,7 @@ class ModifyTransaction extends Transaction<Void> {
                 throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "backImageId", "画像IDが不正です。");
             else {
                 // Check foreImageId is owned by the owner.
-                ImageData image = daos.getImageAccess().find(con, backImageId);
+                UserImage image = daos.getImageAccess().find(con, backImageId);
                 if (image == null)
                     throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "backImageId", "画像IDが不正です。");
                 if (!user.getId().equals(image.getUserId()))

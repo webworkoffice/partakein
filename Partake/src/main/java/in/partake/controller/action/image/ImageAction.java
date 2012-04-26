@@ -6,7 +6,7 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.ImageData;
+import in.partake.model.dto.UserImage;
 
 import java.io.ByteArrayInputStream;
 
@@ -17,7 +17,7 @@ public class ImageAction extends AbstractPartakeAction {
     public String doExecute() throws DAOException, PartakeException {
         String imageId = getValidImageIdParameter();
 
-        ImageData image = new ImageTransaction(imageId).execute();
+        UserImage image = new ImageTransaction(imageId).execute();
         if (image == null)
             return renderNotFound();
 
@@ -25,7 +25,7 @@ public class ImageAction extends AbstractPartakeAction {
     }
 }
 
-class ImageTransaction extends DBAccess<ImageData> {
+class ImageTransaction extends DBAccess<UserImage> {
     private String imageId;
 
     public ImageTransaction(String imageId) {
@@ -33,7 +33,7 @@ class ImageTransaction extends DBAccess<ImageData> {
     }
 
     @Override
-    protected ImageData doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+    protected UserImage doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         return daos.getImageAccess().find(con, imageId);
     }
 }

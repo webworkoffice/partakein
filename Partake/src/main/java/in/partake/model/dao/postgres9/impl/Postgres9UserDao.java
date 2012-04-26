@@ -25,8 +25,8 @@ class EntityUserMapper extends Postgres9EntityDataMapper<User> {
 }
 
 public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
-    static final String TABLE_NAME = "UserEntities";
-    static final String LOGIN_INDEX_TABLE_NAME = "UserLoginIndex";
+    static final String ENTITY_TABLE_NAME = "UserEntities";
+    static final String LOGIN_INDEX_TABLE_NAME = "UserIndex";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
@@ -34,7 +34,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     private final EntityUserMapper mapper;
 
     public Postgres9UserDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.loginIndexDao = new Postgres9IndexDao(LOGIN_INDEX_TABLE_NAME);
         this.mapper = new EntityUserMapper();
     }

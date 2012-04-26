@@ -4,7 +4,7 @@
 <%@page import="in.partake.model.dto.auxiliary.AttendanceStatus"%>
 <%@page import="in.partake.model.dto.auxiliary.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="in.partake.model.EnrollmentEx"%>
+<%@page import="in.partake.model.UserTicketApplicationEx"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.resource.Constants"%>
@@ -23,11 +23,11 @@
     EventEx event = action.getEvent();
     // EventTicketHolderList participationList = action.getParticipationList();
 
-    List<EnrollmentEx> enrolledParticipations = new ArrayList<EnrollmentEx>(); // participationList.getEnrolledParticipations();
-    List<EnrollmentEx> spareParticipations = new ArrayList<EnrollmentEx>(); // participationList.getSpareParticipations();
-    List<EnrollmentEx> cancelledParticipations = new ArrayList<EnrollmentEx>(); // participationList.getCancelledParticipations();
+    List<UserTicketApplicationEx> enrolledParticipations = new ArrayList<UserTicketApplicationEx>(); // participationList.getEnrolledParticipations();
+    List<UserTicketApplicationEx> spareParticipations = new ArrayList<UserTicketApplicationEx>(); // participationList.getSpareParticipations();
+    List<UserTicketApplicationEx> cancelledParticipations = new ArrayList<UserTicketApplicationEx>(); // participationList.getCancelledParticipations();
 
-    List<EnrollmentEx> ps = new ArrayList<EnrollmentEx>();
+    List<UserTicketApplicationEx> ps = new ArrayList<UserTicketApplicationEx>();
     ps.addAll(enrolledParticipations);
     ps.addAll(spareParticipations);
 %>
@@ -78,18 +78,18 @@
 </div>
 
 <ul>
-    <li><a href="/events/<%= h(event.getId()) %>">イベントに戻る</a></li>
+    <li><a href="/events/<%=h(event.getId())%>">イベントに戻る</a></li>
 </ul>
 
 <div>
     <h3>優先度マーク</h3>
     <ul>
-        <li><img class="adjust1" src="<%= request.getContextPath() %>/images/star.png" alt="優先参加" /> ：優先参加マーク。関連イベントに参加することにより、優先参加権を得た人です。</li>
-        <li><img src="<%= request.getContextPath() %>/images/crown.png" alt="VIP" /> ：VIPマーク。あなたがVIPに指名した人は、誰よりも優先的に参加させることができます。</li>
+        <li><img class="adjust1" src="<%=request.getContextPath()%>/images/star.png" alt="優先参加" /> ：優先参加マーク。関連イベントに参加することにより、優先参加権を得た人です。</li>
+        <li><img src="<%=request.getContextPath()%>/images/crown.png" alt="VIP" /> ：VIPマーク。あなたがVIPに指名した人は、誰よりも優先的に参加させることができます。</li>
     </ul>
 </div>
 
-<h3><%= h(event.getTitle()) %> - 参加者リスト</h3>
+<h3><%=h(event.getTitle())%> - 参加者リスト</h3>
 
 <table class="table table-striped">
     <colgroup>
@@ -101,9 +101,9 @@
     <tbody>
 
     <%
-    int order = 0;
-    for (EnrollmentEx p : ps) {
-        %>
+        int order = 0;
+        for (UserTicketApplicationEx p : ps) {
+    %>
     <tr id="attendant-<%= h(p.getUserId()) %>">
         <td><%= ++order %></td>
         <td><%= h(p.getUser().getScreenName()) %></td>

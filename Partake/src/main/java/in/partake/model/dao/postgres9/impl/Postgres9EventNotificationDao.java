@@ -31,7 +31,7 @@ class EntityEventNotificationMapper extends Postgres9EntityDataMapper<EventTicke
 }
 
 public class Postgres9EventNotificationDao extends Postgres9Dao implements IEventTicketNotificationAccess {
-    static final String TABLE_NAME = "EventNotificationEntities";
+    static final String ENTITY_TABLE_NAME = "EventNotificationEntities";
     static final String INDEX_TABLE_NAME = "EventNotificationIndex";
     static final int CURRENT_VERSION = 1;
 
@@ -40,7 +40,7 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
     private final EntityEventNotificationMapper mapper;
 
     public Postgres9EventNotificationDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityEventNotificationMapper();
     }

@@ -8,7 +8,7 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.dto.CalendarLinkage;
+import in.partake.model.dto.UserCalendarLink;
 import in.partake.resource.Constants;
 
 import java.util.Map;
@@ -47,7 +47,7 @@ class RevokeCalendarAPITransaction extends Transaction<String> {
 
         // 新しくカレンダー id を作成して保存
         calendarId = daos.getCalendarAccess().getFreshId(con);
-        CalendarLinkage embryo = new CalendarLinkage(calendarId, user.getId());
+        UserCalendarLink embryo = new UserCalendarLink(calendarId, user.getId());
         daos.getCalendarAccess().put(con, embryo);
 
         // TODO: Unfortunately, the [user] must be updated to reflect this calendar revocation.
