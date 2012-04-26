@@ -8,7 +8,7 @@
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.UserEx"%>
 
-<%@page import="in.partake.model.CommentEx"%>
+<%@page import="in.partake.model.EventCommentEx"%>
 <%@page import="in.partake.model.dao.DataIterator"%>
 <%@page import="in.partake.resource.Constants"%>
 

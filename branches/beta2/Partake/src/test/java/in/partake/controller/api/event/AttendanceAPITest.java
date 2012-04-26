@@ -1,7 +1,7 @@
 package in.partake.controller.api.event;
 
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.resource.UserErrorCode;
@@ -17,7 +17,7 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToPresence() throws Exception {
         //
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
+            UserTicketApplication enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }
 
@@ -34,7 +34,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
         // Check status is changed.
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
+            UserTicketApplication enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_ABSENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
     }
@@ -43,7 +43,7 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToAbsence() throws Exception {
         //
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
+            UserTicketApplication enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
         }
 
@@ -60,7 +60,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
         // Check status is changed.
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
+            UserTicketApplication enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_UNKNOWN_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.ABSENT, enrollment.getAttendanceStatus());
         }
     }
@@ -69,7 +69,7 @@ public class AttendanceAPITest extends APIControllerTest {
     public void testShouldChangeToUnknown() throws Exception {
         //
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
+            UserTicketApplication enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.PRESENT, enrollment.getAttendanceStatus());
         }
 
@@ -86,7 +86,7 @@ public class AttendanceAPITest extends APIControllerTest {
 
         // Check status is changed.
         {
-            Enrollment enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
+            UserTicketApplication enrollment = loadEnrollment(TestDataProvider.ATTENDANCE_PRESENT_USER_ID, TestDataProvider.DEFAULT_EVENT_TICKET_ID);
             Assert.assertEquals(AttendanceStatus.UNKNOWN, enrollment.getAttendanceStatus());
         }
     }

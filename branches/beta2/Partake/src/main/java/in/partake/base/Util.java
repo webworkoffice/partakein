@@ -60,12 +60,12 @@ public final class Util {
     // ----------------------------------------------------------------------
     // Text
 
-    public static <T extends IJSONable> JSONArray toJSONArray(List<T> list) {
+    public static <T extends JSONable> JSONArray toJSONArray(List<T> list) {
         if (list == null)
             return null;
 
         JSONArray array = new JSONArray();
-        for (IJSONable jsonable : list)
+        for (JSONable jsonable : list)
             array.add(jsonable.toJSON());
 
         return array;

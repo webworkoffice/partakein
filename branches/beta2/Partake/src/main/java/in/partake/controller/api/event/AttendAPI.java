@@ -10,8 +10,8 @@ import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IEnrollmentAccess;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dao.access.IUserTicketApplicationAccess;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
@@ -69,15 +69,15 @@ class AttendTransaction extends Transaction<Void> {
     }
 
     private void updateAttendanceStatus(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        IEnrollmentAccess enrollmentAccess = daos.getEnrollmentAccess();
+        IUserTicketApplicationAccess enrollmentAccess = daos.getEnrollmentAccess();
 
         // We have already checked the event exists, so when no enrollment is found, we throw an "invalid user id"
         // exception here.
-        Enrollment enrollment = enrollmentAccess.findByTicketIdAndUserId(con, ticketId, userId);
+        UserTicketApplication enrollment = enrollmentAccess.findByTicketIdAndUserId(con, ticketId, userId);
         if (enrollment == null)
             throw new PartakeException(UserErrorCode.INVALID_USER_ID);
 
-        Enrollment newEnrollment = new Enrollment(enrollment);
+        UserTicketApplication newEnrollment = new UserTicketApplication(enrollment);
         newEnrollment.setAttendanceStatus(status);
         enrollmentAccess.put(con, newEnrollment);
     }

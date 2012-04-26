@@ -29,16 +29,16 @@ class EntityEventTicketMapper extends Postgres9EntityDataMapper<EventTicket> {
 }
 
 public class Postgres9EventTicketDao extends Postgres9Dao implements IEventTicketAccess {
-    static final String TABLE_NAME = "EventTicketEntities";
-    static final int CURRENT_VERSION = 1;
+    static final String ENTITY_TABLE_NAME = "EventTicketEntities";
     static final String INDEX_TABLE_NAME = "EventTicketIndex";
+    static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
     private final EntityEventTicketMapper mapper;
 
     public Postgres9EventTicketDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityEventTicketMapper();
     }

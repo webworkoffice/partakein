@@ -7,7 +7,7 @@ import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.OpenIDLinkage;
+import in.partake.model.dto.UserOpenIDLink;
 import in.partake.resource.UserErrorCode;
 
 public class RemoveOpenIDAPI extends AbstractPartakeAPI {
@@ -40,7 +40,7 @@ class RemoveOpenIDLinkageTransaction extends Transaction<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        OpenIDLinkage linkage = daos.getOpenIDLinkageAccess().find(con, identifier);
+        UserOpenIDLink linkage = daos.getOpenIDLinkageAccess().find(con, identifier);
         if (linkage == null || !userId.equals(linkage.getUserId()))
             throw new PartakeException(UserErrorCode.INVALID_OPENID);
 

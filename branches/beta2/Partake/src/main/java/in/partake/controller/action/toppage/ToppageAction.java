@@ -9,7 +9,7 @@ import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.aux.EventFilterCondition;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.service.IEventSearchService;
 
@@ -78,8 +78,8 @@ class ToppageTransaction extends DBAccess<Void> {
             ownedEvents = daos.getEventAccess().findByOwnerId(con, user.getId(), EventFilterCondition.ALL_EVENTS, 0, 5);
 
             enrolledEvents = new ArrayList<Event>();
-            List<Enrollment> enrollments = daos.getEnrollmentAccess().findByUserId(con, user.getId(), 0, 5);
-            for (Enrollment enrollment : enrollments) {
+            List<UserTicketApplication> enrollments = daos.getEnrollmentAccess().findByUserId(con, user.getId(), 0, 5);
+            for (UserTicketApplication enrollment : enrollments) {
                 Event event = daos.getEventAccess().find(con, enrollment.getEventId());
                 if (event != null)
                     enrolledEvents.add(event);

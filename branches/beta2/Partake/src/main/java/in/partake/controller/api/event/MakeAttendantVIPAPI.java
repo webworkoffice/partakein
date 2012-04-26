@@ -10,7 +10,7 @@ import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.resource.UserErrorCode;
@@ -61,11 +61,11 @@ class MakeAttendantVIPTransaction extends Transaction<Void> {
         if (!EventEditParticipantsPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        Enrollment enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, vipUserId);
+        UserTicketApplication enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, vipUserId);
         if (enrollment == null)
             throw new PartakeException(UserErrorCode.INVALID_ATTENDANT_EDIT);
 
-        Enrollment newEnrollment = new Enrollment(enrollment);
+        UserTicketApplication newEnrollment = new UserTicketApplication(enrollment);
         newEnrollment.setVIP(vip);
         daos.getEnrollmentAccess().put(con, newEnrollment);
 

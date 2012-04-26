@@ -8,10 +8,10 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.fixture.PartakeTestDataProviderSet;
-import in.partake.model.fixture.impl.EnrollmentTestDataProvider;
+import in.partake.model.fixture.impl.UserTicketApplicationTestDataProvider;
 import in.partake.model.fixture.impl.EventTestDataProvider;
-import in.partake.model.fixture.impl.OpenIDLinkageTestDataProvider;
-import in.partake.model.fixture.impl.TwitterLinkageTestDataProvider;
+import in.partake.model.fixture.impl.UserOpenIDLinkTestDataProvider;
+import in.partake.model.fixture.impl.UserTwitterLinkTestDataProvider;
 import in.partake.model.fixture.impl.UserTestDataProvider;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.IEventSearchService;
@@ -47,10 +47,10 @@ class TestService implements ITestService {
      * @throws PartakeException
      * @see CacheTestDataProvider
      * @see UserTestDataProvider
-     * @see TwitterLinkageTestDataProvider
-     * @see OpenIDLinkageTestDataProvider
+     * @see UserTwitterLinkTestDataProvider
+     * @see UserOpenIDLinkTestDataProvider
      * @see EventTestDataProvider
-     * @see EnrollmentTestDataProvider
+     * @see UserTicketApplicationTestDataProvider
      */
     public void setDefaultFixtures() throws DAOException, PartakeException {
         new Transaction<Void>() {

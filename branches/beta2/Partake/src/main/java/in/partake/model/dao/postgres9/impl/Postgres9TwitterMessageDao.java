@@ -22,7 +22,7 @@ class EntityTwitterMessageMapper extends Postgres9EntityDataMapper<TwitterMessag
 }
 
 public class Postgres9TwitterMessageDao extends Postgres9Dao implements ITwitterMessageAccess {
-    static final String TABLE_NAME = "TwitterMessageEntities";
+    static final String ENTITY_TABLE_NAME = "TwitterMessageEntities";
     static final String INDEX_TABLE_NAME = "TwitterMessageIndex";
     static final int CURRENT_VERSION = 1;
 
@@ -31,7 +31,7 @@ public class Postgres9TwitterMessageDao extends Postgres9Dao implements ITwitter
     private final EntityTwitterMessageMapper mapper;
 
     public Postgres9TwitterMessageDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityTwitterMessageMapper();
     }

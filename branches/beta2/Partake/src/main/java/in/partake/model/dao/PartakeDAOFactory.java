@@ -2,21 +2,21 @@ package in.partake.model.dao;
 
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.access.IAccess;
-import in.partake.model.dao.access.ICalendarLinkageAccess;
-import in.partake.model.dao.access.ICommentAccess;
-import in.partake.model.dao.access.IEnrollmentAccess;
+import in.partake.model.dao.access.IUserCalendarLinkageAccess;
+import in.partake.model.dao.access.IEventCommentAccess;
+import in.partake.model.dao.access.IUserTicketApplicationAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
 import in.partake.model.dao.access.IEventMessageAccess;
 import in.partake.model.dao.access.IEventTicketAccess;
 import in.partake.model.dao.access.IEventTicketNotificationAccess;
-import in.partake.model.dao.access.IImageAccess;
+import in.partake.model.dao.access.IUserImageAccess;
 import in.partake.model.dao.access.IMessageAccess;
 import in.partake.model.dao.access.IMessageEnvelopeAccess;
-import in.partake.model.dao.access.IOpenIDLinkageAccess;
-import in.partake.model.dao.access.IThumbnailAccess;
-import in.partake.model.dao.access.ITwitterLinkageAccess;
+import in.partake.model.dao.access.IUserOpenIDLinkAccess;
+import in.partake.model.dao.access.IUserThumbnailAccess;
+import in.partake.model.dao.access.IUserTwitterLinkAccess;
 import in.partake.model.dao.access.ITwitterMessageAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.access.IUserNotificationAccess;
@@ -29,17 +29,17 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class PartakeDAOFactory implements IPartakeDAOs {
-    private final ICalendarLinkageAccess calendarLinkageAccess;
-    private final ICommentAccess commentAccess;
-    private final IEnrollmentAccess enrollmentAccess;
+    private final IUserCalendarLinkageAccess calendarLinkageAccess;
+    private final IEventCommentAccess commentAccess;
+    private final IUserTicketApplicationAccess enrollmentAccess;
     private final IEventAccess eventAccess;
     private final IEventFeedAccess eventFeedAccess;
     private final IEventActivityAccess eventActivityAccess;
     private final IEventTicketAccess eventTicketAccess;
-    private final IImageAccess imageAccess;
-    private final IOpenIDLinkageAccess openIDLinkageAccess;
-    private final IThumbnailAccess thumbnailAccess;
-    private final ITwitterLinkageAccess twitterLinkageAccess;
+    private final IUserImageAccess imageAccess;
+    private final IUserOpenIDLinkAccess openIDLinkageAccess;
+    private final IUserThumbnailAccess thumbnailAccess;
+    private final IUserTwitterLinkAccess twitterLinkageAccess;
     private final IUserAccess userAccess;
     private final IUserPreferenceAccess userPreferenceAccess;
     private final IEventMessageAccess eventMessageAccess;
@@ -102,15 +102,15 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
     // ----------------------------------------------------------------------
     // accessors
 
-    public final ICalendarLinkageAccess getCalendarAccess() {
+    public final IUserCalendarLinkageAccess getCalendarAccess() {
         return calendarLinkageAccess;
     }
 
-    public final ICommentAccess getCommentAccess() {
+    public final IEventCommentAccess getCommentAccess() {
         return commentAccess;
     }
 
-    public final IEnrollmentAccess getEnrollmentAccess() {
+    public final IUserTicketApplicationAccess getEnrollmentAccess() {
         return enrollmentAccess;
     }
 
@@ -126,19 +126,19 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         return eventActivityAccess;
     }
 
-    public final IImageAccess getImageAccess() {
+    public final IUserImageAccess getImageAccess() {
         return imageAccess;
     }
 
-    public final IOpenIDLinkageAccess getOpenIDLinkageAccess() {
+    public final IUserOpenIDLinkAccess getOpenIDLinkageAccess() {
         return openIDLinkageAccess;
     }
 
-    public final IThumbnailAccess getThumbnailAccess() {
+    public final IUserThumbnailAccess getThumbnailAccess() {
         return thumbnailAccess;
     }
 
-    public final ITwitterLinkageAccess getTwitterLinkageAccess() {
+    public final IUserTwitterLinkAccess getTwitterLinkageAccess() {
         return twitterLinkageAccess;
     }
 
@@ -158,7 +158,7 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         return eventTicketAccess;
     }
 
-    public final ICalendarLinkageAccess getCalendarLinkageAccess() {
+    public final IUserCalendarLinkageAccess getCalendarLinkageAccess() {
         return calendarLinkageAccess;
     }
 
@@ -194,17 +194,17 @@ public abstract class PartakeDAOFactory implements IPartakeDAOs {
         return this.userSentMessageAccess;
     }
 
-    protected abstract ICalendarLinkageAccess createCalendarLinkageAccess();
-    protected abstract ICommentAccess createCommentAccess();
-    protected abstract IEnrollmentAccess createEnrollmentAccess();
+    protected abstract IUserCalendarLinkageAccess createCalendarLinkageAccess();
+    protected abstract IEventCommentAccess createCommentAccess();
+    protected abstract IUserTicketApplicationAccess createEnrollmentAccess();
     protected abstract IEventAccess createEventAccess();
     protected abstract IEventTicketAccess createEventTicketAccess();
     protected abstract IEventFeedAccess createEventFeedAccess();
     protected abstract IEventActivityAccess createEventActivityAccess();
-    protected abstract IOpenIDLinkageAccess createOpenIDLinkageAccess();
-    protected abstract IImageAccess createImageAccess();
-    protected abstract IThumbnailAccess createThumbnailAccess();
-    protected abstract ITwitterLinkageAccess createTwitterLinkageAccess();
+    protected abstract IUserOpenIDLinkAccess createOpenIDLinkageAccess();
+    protected abstract IUserImageAccess createImageAccess();
+    protected abstract IUserThumbnailAccess createThumbnailAccess();
+    protected abstract IUserTwitterLinkAccess createTwitterLinkageAccess();
     protected abstract IUserAccess creataeUserAccess();
     protected abstract IUserPreferenceAccess createUserPreferenceAccess();
     protected abstract IEventMessageAccess createEventMessageAccess();

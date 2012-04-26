@@ -9,8 +9,8 @@ import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IImageAccess;
-import in.partake.model.dto.ImageData;
+import in.partake.model.dao.access.IUserImageAccess;
+import in.partake.model.dto.UserImage;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
@@ -85,7 +85,7 @@ class CreateImageAPITransaction extends Transaction<List<String>> {
     // TODO: We should not load image in memory here. However, sending image from DB directly will cause
     // another problem, e.g. DoS.
     public List<String> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        IImageAccess dao = daos.getImageAccess();
+        IUserImageAccess dao = daos.getImageAccess();
 
         byte[] foreImageByteArray;
         try {
@@ -95,7 +95,7 @@ class CreateImageAPITransaction extends Transaction<List<String>> {
         }
 
         String imageId = dao.getFreshId(con);
-        ImageData imageEmbryo = new ImageData(imageId, user.getId(), contentType, foreImageByteArray, TimeUtil.getCurrentDate());
+        UserImage imageEmbryo = new UserImage(imageId, user.getId(), contentType, foreImageByteArray, TimeUtil.getCurrentDate());
         dao.put(con, imageEmbryo);
 
         if (limit == 1)

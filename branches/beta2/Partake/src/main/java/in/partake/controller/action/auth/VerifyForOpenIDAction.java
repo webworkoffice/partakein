@@ -9,7 +9,7 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.dto.OpenIDLinkage;
+import in.partake.model.dto.UserOpenIDLink;
 import in.partake.model.dto.User;
 import in.partake.resource.Constants;
 import in.partake.resource.MessageCode;
@@ -106,7 +106,7 @@ class GetUserFromOpenIDIdentifierTransaction extends DBAccess<UserEx> {
 
     @Override
     protected UserEx doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        OpenIDLinkage linkage = daos.getOpenIDLinkageAccess().find(con, identifier);
+        UserOpenIDLink linkage = daos.getOpenIDLinkageAccess().find(con, identifier);
         if (linkage == null)
             return null;
 
@@ -125,7 +125,7 @@ class AddOpenIDTransaction extends Transaction<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        daos.getOpenIDLinkageAccess().put(con, new OpenIDLinkage(identifier, userId));
+        daos.getOpenIDLinkageAccess().put(con, new UserOpenIDLink(identifier, userId));
         return null;
     }
 }

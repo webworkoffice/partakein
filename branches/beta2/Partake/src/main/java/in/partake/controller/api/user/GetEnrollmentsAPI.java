@@ -8,9 +8,9 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.access.IEnrollmentAccess;
+import in.partake.model.dao.access.IUserTicketApplicationAccess;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
-import in.partake.model.dto.Enrollment;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.UserPreference;
@@ -84,13 +84,13 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
         if (!pref.isProfilePublic())
             throw new PartakeException(UserErrorCode.INVALID_USER_PRIVATE);
 
-        IEnrollmentAccess enrollmentAccess = daos.getEnrollmentAccess();
-        List<Enrollment> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
+        IUserTicketApplicationAccess enrollmentAccess = daos.getEnrollmentAccess();
+        List<UserTicketApplication> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
 
         this.numTotalEvents = enrollmentAccess.countByUserId(con, userId);
         this.statuses = new ArrayList<Pair<Event, CalculatedEnrollmentStatus>>();
 
-        for (Enrollment enrollment : enrollments) {
+        for (UserTicketApplication enrollment : enrollments) {
             if (enrollment == null)
                 continue;
 

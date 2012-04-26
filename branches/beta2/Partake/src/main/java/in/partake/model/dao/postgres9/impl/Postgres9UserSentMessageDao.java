@@ -25,7 +25,7 @@ class EntityUserSentMessageMapper extends Postgres9EntityDataMapper<UserSentMess
 }
 
 public class Postgres9UserSentMessageDao extends Postgres9Dao implements IUserSentMessageAccess {
-    static final String TABLE_NAME = "UserSentMessageEntities";
+    static final String ENTITY_TABLE_NAME = "UserSentMessageEntities";
     static final String INDEX_TABLE_NAME = "UserSentMessageIndex";
     static final int CURRENT_VERSION = 1;
 
@@ -34,7 +34,7 @@ public class Postgres9UserSentMessageDao extends Postgres9Dao implements IUserSe
     private final EntityUserSentMessageMapper mapper;
 
     public Postgres9UserSentMessageDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityUserSentMessageMapper();
     }

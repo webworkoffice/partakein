@@ -30,7 +30,7 @@ class EntityUserReceivedMessageMapper extends Postgres9EntityDataMapper<UserRece
 }
 
 public class Postgres9UserReceivedMessageDao extends Postgres9Dao implements IUserReceivedMessageAccess {
-    static final String TABLE_NAME = "UserReceivedMessageEntities";
+    static final String ENTITY_TABLE_NAME = "UserReceivedMessageEntities";
     static final String INDEX_TABLE_NAME = "UserReceivedMessageIndex";
     static final int CURRENT_VERSION = 1;
 
@@ -39,7 +39,7 @@ public class Postgres9UserReceivedMessageDao extends Postgres9Dao implements IUs
     private final EntityUserReceivedMessageMapper mapper;
 
     public Postgres9UserReceivedMessageDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityUserReceivedMessageMapper();
     }

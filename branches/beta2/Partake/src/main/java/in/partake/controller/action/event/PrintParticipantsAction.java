@@ -3,7 +3,7 @@ package in.partake.controller.action.event;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.EventParticipationListPermission;
-import in.partake.model.EnrollmentEx;
+import in.partake.model.UserTicketApplicationEx;
 import in.partake.model.EventEx;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.EventTicketHolderList;
@@ -74,7 +74,7 @@ class ParticipantsListTransaction extends DBAccess<Void> {
 
         tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
         for (EventTicket ticket : tickets) {
-            List<EnrollmentEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+            List<UserTicketApplicationEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
             ticketHolderListMap.put(ticket.getId(), ticket.calculateParticipationList(event, participations));
         }
 

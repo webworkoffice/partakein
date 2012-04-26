@@ -9,8 +9,8 @@ import in.partake.model.access.DBAccess;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.ImageData;
-import in.partake.model.dto.ThumbnailData;
+import in.partake.model.dto.UserImage;
+import in.partake.model.dto.UserThumbnail;
 import in.partake.resource.ServerErrorCode;
 
 import java.awt.image.BufferedImage;
@@ -29,12 +29,12 @@ public class ThumbnailAction extends AbstractPartakeAction {
     public String doExecute() throws DAOException, PartakeException {
         String imageId = getValidImageIdParameter();
 
-        ThumbnailData data = new ThumbnailAccess(imageId).execute();
+        UserThumbnail data = new ThumbnailAccess(imageId).execute();
         if (data != null)
             return renderInlineStream(new ByteArrayInputStream(data.getData()), data.getType());
 
         // If not found, we will generate a thumbnail.
-        ThumbnailData created = new ThumbnailTransaction(imageId).execute();
+        UserThumbnail created = new ThumbnailTransaction(imageId).execute();
         if (created != null)
             return renderInlineStream(new ByteArrayInputStream(created.getData()), created.getType());
 
@@ -42,7 +42,7 @@ public class ThumbnailAction extends AbstractPartakeAction {
     }
 }
 
-class ThumbnailAccess extends DBAccess<ThumbnailData> {
+class ThumbnailAccess extends DBAccess<UserThumbnail> {
     private String imageId;
 
     public ThumbnailAccess(String imageId) {
@@ -50,8 +50,8 @@ class ThumbnailAccess extends DBAccess<ThumbnailData> {
     }
 
     @Override
-    protected ThumbnailData doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        ThumbnailData thumbnail = daos.getThumbnailAccess().find(con, imageId);
+    protected UserThumbnail doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        UserThumbnail thumbnail = daos.getThumbnailAccess().find(con, imageId);
         if (thumbnail != null)
             return thumbnail;
 
@@ -59,7 +59,7 @@ class ThumbnailAccess extends DBAccess<ThumbnailData> {
     }
 }
 
-class ThumbnailTransaction extends Transaction<ThumbnailData> {
+class ThumbnailTransaction extends Transaction<UserThumbnail> {
     private String imageId;
 
     public ThumbnailTransaction(String imageId) {
@@ -67,9 +67,9 @@ class ThumbnailTransaction extends Transaction<ThumbnailData> {
     }
 
     @Override
-    protected ThumbnailData doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+    protected UserThumbnail doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         try {
-            ImageData image = daos.getImageAccess().find(con, imageId);
+            UserImage image = daos.getImageAccess().find(con, imageId);
             if (image == null)
                 return null;
 
@@ -81,7 +81,7 @@ class ThumbnailTransaction extends Transaction<ThumbnailData> {
             ImageIO.write(converted, "png", os);
             os.close();
 
-            ThumbnailData thumbnail = new ThumbnailData(image.getId(), image.getUserId(), "image/png", os.toByteArray(), TimeUtil.getCurrentDateTime());
+            UserThumbnail thumbnail = new UserThumbnail(image.getId(), image.getUserId(), "image/png", os.toByteArray(), TimeUtil.getCurrentDateTime());
             daos.getThumbnailAccess().put(con, thumbnail);
 
             return thumbnail;

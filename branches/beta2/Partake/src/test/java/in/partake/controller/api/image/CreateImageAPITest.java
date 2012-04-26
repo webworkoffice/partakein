@@ -10,7 +10,7 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.ImageData;
+import in.partake.model.dto.UserImage;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
@@ -60,7 +60,7 @@ public class CreateImageAPITest extends APIControllerTest {
 
         assertThat(imageId, is(json.getJSONArray("imageIds").getString(0)));
 
-        ImageData imageData = loadImage(imageId);
+        UserImage imageData = loadImage(imageId);
         assertThat(imageData.getUserId(), is(DEFAULT_USER_ID));
     }
 
@@ -79,7 +79,7 @@ public class CreateImageAPITest extends APIControllerTest {
         JSONObject json = getJSON(proxy);
         String imageId = json.getString("imageId");
 
-        ImageData imageData = loadImage(imageId);
+        UserImage imageData = loadImage(imageId);
         assertThat(imageData.getType(), is("image/jpeg"));
     }
 
@@ -197,7 +197,7 @@ public class CreateImageAPITest extends APIControllerTest {
                     File file = new File("src/test/resources/images/musangas.png");
                     byte[] data = Util.getContentOfFile(file);
                     String imageId = daos.getImageAccess().getFreshId(con);
-                    ImageData imageData = new ImageData(imageId, DEFAULT_USER_ID, "image/png", data, TimeUtil.getCurrentDate());
+                    UserImage imageData = new UserImage(imageId, DEFAULT_USER_ID, "image/png", data, TimeUtil.getCurrentDate());
                     daos.getImageAccess().put(con, imageData);
                     return imageId;
                 } catch (IOException e) {

@@ -20,16 +20,15 @@ class EntityUserPreferenceMapper extends Postgres9EntityDataMapper<UserPreferenc
     }
 }
 
-//TODO: UserPreference should be merged into User.
 public class Postgres9UserPreferenceDao extends Postgres9Dao implements IUserPreferenceAccess {
-    static final String TABLE_NAME = "UserPreferenceEntities";
+    static final String ENTITY_TABLE_NAME = "UserPreferenceEntities";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
     private final EntityUserPreferenceMapper mapper;
 
     public Postgres9UserPreferenceDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.mapper = new EntityUserPreferenceMapper();
     }
 

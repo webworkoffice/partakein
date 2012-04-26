@@ -1,13 +1,13 @@
 <%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
-<%@page import="in.partake.model.EnrollmentEx"%>
+<%@page import="in.partake.model.UserTicketApplicationEx"%>
 <%@page import="in.partake.model.EventTicketHolderList"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.Event"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
-<%@page import="in.partake.model.CommentEx"%>
+<%@page import="in.partake.model.EventCommentEx"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.model.EventEx"%>
 <%@page import="in.partake.model.UserEx"%>
@@ -20,7 +20,7 @@
     EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
 
     EventEx event = action.getEvent();
-    List<CommentEx> comments = action.getComments();
+    List<EventCommentEx> comments = action.getComments();
     String redirectURL = action.getRedirectURL();
     if (redirectURL == null)
         redirectURL = action.getCurrentURL();
