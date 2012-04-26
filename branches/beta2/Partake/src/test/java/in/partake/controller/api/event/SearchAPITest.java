@@ -18,11 +18,10 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import net.sf.json.JSONObject;
@@ -119,14 +118,16 @@ public class SearchAPITest extends APIControllerTest {
 
         assertResultOK(proxy);
         JSONObject json = getJSON(proxy);
-        DateFormat format = createDateFormat();
-        Date now = new Date();
+        DateTime now = TimeUtil.getCurrentDateTime();
         boolean findEventWhichIsAfterDeadline = false;
         boolean findEventWhichIsBeforeDeadline = false;
         for (@SuppressWarnings("unchecked")Iterator<JSONObject> iter = json.getJSONArray("events").iterator(); iter.hasNext();) {
-            JSONObject event = iter.next();
-            String deadlineAsString = event.getString("deadline");
-            if(format.parse(deadlineAsString).before(now)) {
+            JSONObject eventJSON = iter.next();
+            Event event = loadEvent(eventJSON.getString("id"));
+            List<EventTicket> tickets = loadEventTickets(event.getId());
+            DateTime deadline = event.acceptsSomeTicketsTill(tickets);
+
+            if (deadline.isBefore(now)) {
                 findEventWhichIsAfterDeadline = true;
             } else {
                 findEventWhichIsBeforeDeadline = true;
@@ -167,7 +168,7 @@ public class SearchAPITest extends APIControllerTest {
         addParameter(proxy, "beforeDeadlineOnly", "(´・ω・`)");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultSuccess(proxy);
+        assertResultOK(proxy);
     }
 
     private Event createEvent() {
@@ -188,16 +189,15 @@ public class SearchAPITest extends APIControllerTest {
     private Event storeEventAfterDeadline() throws DAOException, PartakeException {
         final Event event = createEvent();
         event.setBeginDate(TimeUtil.getCurrentDateTime().nDayBefore(1));
-        new Transaction<Void>() {
+        String eventId = new Transaction<String>() {
             @Override
-            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-                EventDAOFacade.create(con, daos, event);
-                return null;
+            protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return EventDAOFacade.create(con, daos, event);
             }
         }.execute();
 
         UUID ticketId = UUID.randomUUID();
-        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, eventId);
         storeEventTicket(ticket);
 
         PartakeApp.getEventSearchService().create(event, Collections.singletonList(ticket));
@@ -207,16 +207,15 @@ public class SearchAPITest extends APIControllerTest {
     private Event storeEventBeforeDeadline() throws DAOException, PartakeException {
         final Event event = createEvent();
         event.setBeginDate(TimeUtil.getCurrentDateTime().nDayAfter(1));
-        new Transaction<Void>() {
+        String eventId = new Transaction<String>() {
             @Override
-            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-                EventDAOFacade.create(con, daos, event);
-                return null;
+            protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return EventDAOFacade.create(con, daos, event);
             }
         }.execute();
 
         UUID ticketId = UUID.randomUUID();
-        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, eventId);
         storeEventTicket(ticket);
 
         PartakeApp.getEventSearchService().create(event, Collections.singletonList(ticket));
@@ -338,14 +337,16 @@ public class SearchAPITest extends APIControllerTest {
         assertTrue(findEvents);
     }
 
-    private void assertOnlyBeforeDeadlineAreFound(JSONObject json) throws ParseException {
-        DateFormat format = createDateFormat();
-        Date now = new Date();
+    private void assertOnlyBeforeDeadlineAreFound(JSONObject json) throws ParseException, PartakeException, DAOException {
+        DateTime now = TimeUtil.getCurrentDateTime();
+
         boolean findEvents = false;
         for (@SuppressWarnings("unchecked")Iterator<JSONObject> iter = json.getJSONArray("events").iterator(); iter.hasNext();) {
-            JSONObject event = iter.next();
-            String deadlineAsString = event.getString("deadline");
-            assertThat("締め切り後のイベントが見つかってしまいました", format.parse(deadlineAsString), is(greaterThan(now)));
+            JSONObject eventJSON = iter.next();
+            Event event = loadEvent(eventJSON.getString("id"));
+            List<EventTicket> tickets = loadEventTickets(event.getId());
+            DateTime deadline = event.acceptsSomeTicketsTill(tickets);
+            assertThat("締め切り後のイベントが見つかってしまいました", deadline.getTime(), is(greaterThan(now.getTime())));
             findEvents = true;
         }
         assertTrue("見つかるはずのイベントが見つかりませんでした", findEvents);

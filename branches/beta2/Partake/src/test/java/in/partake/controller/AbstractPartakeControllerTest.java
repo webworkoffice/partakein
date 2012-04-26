@@ -289,6 +289,14 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
+    protected List<EventTicket> loadEventTickets(final String eventId) throws DAOException, PartakeException {
+        return new Transaction<List<EventTicket>>() {
+            protected List<EventTicket> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException ,PartakeException {
+                return daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
+            };
+        }.execute();
+    }
+
     protected void storeEventTicket(final EventTicket ticket) throws DAOException, PartakeException {
         new Transaction<Void>() {
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException ,PartakeException {

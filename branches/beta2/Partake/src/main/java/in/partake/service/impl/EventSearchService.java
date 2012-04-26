@@ -1,6 +1,5 @@
 package in.partake.service.impl;
 
-import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.model.dto.Event;
@@ -112,9 +111,8 @@ class EventSearchService implements IEventSearchService {
         builder.append(event.getPlace()).append(" ");
         builder.append(Util.removeTags(event.getDescription()));
 
-        DateTime deadline = event.acceptsSomeTicketsTill(tickets);
         long beginTime = event.getBeginDate().getTime();
-        long deadlineTime = deadline.getTime();
+        long deadlineTime = event.acceptsSomeTicketsTill(tickets).getTime();
 
         Document doc = new Document();
         doc.add(new Field("ID", event.getId(), Store.YES, Index.NOT_ANALYZED));

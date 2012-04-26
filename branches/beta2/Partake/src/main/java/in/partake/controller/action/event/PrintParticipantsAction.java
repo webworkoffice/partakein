@@ -74,7 +74,7 @@ class ParticipantsListTransaction extends DBAccess<Void> {
         if (!EventParticipationListPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+        tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
         for (EventTicket ticket : tickets) {
             List<UserTicketApplicationEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
             ticketHolderListMap.put(ticket.getId(), ticket.calculateParticipationList(event, participations));

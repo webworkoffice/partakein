@@ -73,7 +73,7 @@ class PublishTransaction extends Transaction<Event> {
         EventActivity activity = new EventActivity(eaa.getFreshId(con), event.getId(), "イベントが更新されました : " + event.getTitle(), event.getDescription(), event.getCreatedAt());
         eaa.put(con, activity);
 
-        this.tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+        this.tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
 
         return event;
     }

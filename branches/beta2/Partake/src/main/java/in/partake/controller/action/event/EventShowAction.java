@@ -162,7 +162,7 @@ class EventShowTransaction extends DBAccess<Void> {
         }
 
         relations = EventDAOFacade.getEventRelationsEx(con, daos, event);
-        tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+        tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
 
         // ----- 登録している、していないの条件を満たしているかどうかのチェック
         requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, daos, user, relations);
