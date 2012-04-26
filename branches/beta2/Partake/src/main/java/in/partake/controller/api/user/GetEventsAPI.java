@@ -101,7 +101,7 @@ class GetEventsTransaction extends DBAccess<Void> {
                 continue;
 
             List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, event.getId());
-            boolean isBeforeDeadline = event.getDeadlineOfAllTickets(tickets).isBefore(TimeUtil.getCurrentDateTime());
+            boolean isBeforeDeadline = event.acceptsSomeTicketsTill(tickets).isBefore(TimeUtil.getCurrentDateTime());
             int numEnrolledUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.ENROLLED);
             int numReservedUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.RESERVED);
             int numCancelledUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.CANCELLED);

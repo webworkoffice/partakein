@@ -576,10 +576,10 @@ public class Event extends PartakeModel<Event> {
         return true;
     }
 
-    public DateTime getDeadlineOfAllTickets(List<EventTicket> tickets) {
+    public DateTime acceptsSomeTicketsTill(List<EventTicket> tickets) {
         DateTime dt = null;
         for (EventTicket ticket : tickets) {
-            DateTime t = ticket.acceptsFrom(this);
+            DateTime t = ticket.acceptsTill(this);
             if (t == null)
                 continue;
             else if (dt == null || t.isBefore(dt))
@@ -589,7 +589,8 @@ public class Event extends PartakeModel<Event> {
         if (dt != null)
             return dt;
 
-        return new DateTime(beginDate.getTime() - 1000 * 3600 * 3);
+        // No acceptable tickets were found. We cannot accept any application.
+        return new DateTime(0);
     }
 
     public String getEventURL() {
