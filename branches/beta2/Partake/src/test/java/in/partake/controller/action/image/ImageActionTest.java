@@ -1,7 +1,7 @@
 package in.partake.controller.action.image;
 
 import in.partake.app.PartakeApp;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 
 import java.util.UUID;
 
@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class ImageActionTest extends AbstractPartakeControllerTest {
+public class ImageActionTest extends ActionControllerTest {
 
     @Test
     public void testToGetImage() throws Exception {

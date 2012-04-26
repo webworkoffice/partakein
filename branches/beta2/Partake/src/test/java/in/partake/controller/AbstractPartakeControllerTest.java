@@ -6,7 +6,6 @@ import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
 import in.partake.base.PartakeParamNamesConstants;
 import in.partake.base.TimeUtil;
-import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.AbstractPartakeController;
 import in.partake.model.EventEx;
 import in.partake.model.IPartakeDAOs;
@@ -18,22 +17,21 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.daoutil.DAOUtil;
-import in.partake.model.dto.UserCalendarLink;
-import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventTicketNotification;
 import in.partake.model.dto.EventTicket;
-import in.partake.model.dto.UserImage;
+import in.partake.model.dto.EventTicketNotification;
 import in.partake.model.dto.MessageEnvelope;
-import in.partake.model.dto.UserThumbnail;
 import in.partake.model.dto.TwitterMessage;
+import in.partake.model.dto.UserCalendarLink;
+import in.partake.model.dto.UserImage;
 import in.partake.model.dto.UserNotification;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.UserReceivedMessage;
+import in.partake.model.dto.UserThumbnail;
+import in.partake.model.dto.UserTicketApplication;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
-import in.partake.resource.UserErrorCode;
 import in.partake.session.PartakeSession;
 
 import java.util.HashMap;
@@ -171,27 +169,6 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         Assert.assertEquals(url, response.getRedirectedUrl());
     }
 
-    protected void assertResultSuccess(ActionProxy proxy) throws Exception {
-        Assert.assertTrue(proxy.getAction() instanceof AbstractPartakeAction);
-        Assert.assertEquals(200, response.getStatus());
-    }
-
-    protected void assertResultSuccess(ActionProxy proxy, String jspLocation) throws Exception {
-        Assert.assertTrue(proxy.getAction() instanceof AbstractPartakeAction);
-        Assert.assertEquals(200, response.getStatus());
-
-        AbstractPartakeAction action = (AbstractPartakeAction) proxy.getAction();
-        assertThat(action.getLocation(), is(jspLocation));
-    }
-
-    protected void assertResultInvalid(ActionProxy proxy) throws Exception {
-        // Assert.assertEquals(400, response.getStatus());
-        Assert.assertTrue(response.getRedirectedUrl().startsWith("/invalid"));
-    }
-
-    protected void assertResultInvalid(ActionProxy proxy, UserErrorCode ec) throws Exception {
-        Assert.assertTrue(response.getRedirectedUrl().startsWith("/invalid?errorCode=" + ec.getErrorCode()));
-    }
 
     protected void assertResultLoginRequired(ActionProxy proxy) throws Exception {
         // Will be redirected to /auth/loginRequired

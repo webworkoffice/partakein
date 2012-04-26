@@ -231,7 +231,7 @@ public class SearchAPITest extends APIControllerTest {
         addParameter(proxy, "maxNum", "10000");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultSuccess(proxy);
+        assertResultOK(proxy);
     }
 
     /**
@@ -261,7 +261,7 @@ public class SearchAPITest extends APIControllerTest {
         addParameter(proxy, "maxNum", "");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultSuccess(proxy);
+        assertResultOK(proxy);
     }
 
     @Test
@@ -271,7 +271,7 @@ public class SearchAPITest extends APIControllerTest {
         addParameter(proxy, "maxNum", "m(_ _)m");
         assertThat(proxy.execute(), equalTo("json"));
 
-        assertResultSuccess(proxy);
+        assertResultOK(proxy);
     }
 
     /**

@@ -2,13 +2,13 @@ package in.partake.controller.action.event;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class ShowParticipantsActionTest extends AbstractPartakeControllerTest {
+public class ShowParticipantsActionTest extends ActionControllerTest {
 
     @Test
     public void testToShow() throws Exception {

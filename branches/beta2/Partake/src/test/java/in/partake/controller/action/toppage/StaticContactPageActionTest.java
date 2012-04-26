@@ -1,6 +1,6 @@
 package in.partake.controller.action.toppage;
 
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 import in.partake.model.fixture.TestDataProvider;
 
 import org.junit.Assert;
@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class StaticContactPageActionTest extends AbstractPartakeControllerTest {
+public class StaticContactPageActionTest extends ActionControllerTest {
     @Test
     public void testToExecute() throws Exception {
         ActionProxy proxy = getActionProxy("/contact");
@@ -16,7 +16,7 @@ public class StaticContactPageActionTest extends AbstractPartakeControllerTest {
 
         proxy.execute();
         assertResultSuccess(proxy);
-        
+
         StaticContactPageAction action = (StaticContactPageAction) proxy.getAction();
         Assert.assertEquals("contact.jsp", action.getLocation());
     }
@@ -27,7 +27,7 @@ public class StaticContactPageActionTest extends AbstractPartakeControllerTest {
 
         proxy.execute();
         assertResultSuccess(proxy);
-        
+
         StaticContactPageAction action = (StaticContactPageAction) proxy.getAction();
         Assert.assertEquals("contact.jsp", action.getLocation());
     }

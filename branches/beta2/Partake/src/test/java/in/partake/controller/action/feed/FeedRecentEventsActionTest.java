@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -21,7 +21,7 @@ import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 
-public class FeedRecentEventsActionTest extends AbstractPartakeControllerTest {
+public class FeedRecentEventsActionTest extends ActionControllerTest {
     @Test
     public void testFeedRecentEvents() throws Exception {
         ActionProxy proxy = getActionProxy("/feed/all");

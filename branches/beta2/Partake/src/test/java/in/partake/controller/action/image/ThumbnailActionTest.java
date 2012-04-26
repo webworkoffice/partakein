@@ -3,7 +3,7 @@ package in.partake.controller.action.image;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 
 import java.util.UUID;
 
@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class ThumbnailActionTest extends AbstractPartakeControllerTest {
+public class ThumbnailActionTest extends ActionControllerTest {
 
     @Test
     public void testToGetImage() throws Exception {

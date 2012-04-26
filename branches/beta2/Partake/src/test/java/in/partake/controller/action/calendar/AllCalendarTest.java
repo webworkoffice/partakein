@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.io.ByteArrayInputStream;
@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class AllCalendarTest extends AbstractPartakeControllerTest {
+public class AllCalendarTest extends ActionControllerTest {
 
     @Test
     public void testCalendar() throws Exception {

@@ -3,14 +3,14 @@ package in.partake.controller.action.user;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 import in.partake.model.fixture.TestDataProvider;
 
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class ShowUserTest extends AbstractPartakeControllerTest {
+public class ShowUserTest extends ActionControllerTest {
     @Test
     public void testShowDefaultUser() throws Exception {
         ActionProxy proxy = getActionProxy("/users/" + TestDataProvider.DEFAULT_USER_ID);

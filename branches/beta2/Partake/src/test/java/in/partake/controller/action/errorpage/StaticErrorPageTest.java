@@ -3,7 +3,7 @@ package in.partake.controller.action.errorpage;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.resource.ServerErrorCode;
 
@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class StaticErrorPageTest extends AbstractPartakeControllerTest {
+public class StaticErrorPageTest extends ActionControllerTest {
     @Test
     public void testAccessWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/error");
