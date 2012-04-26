@@ -197,7 +197,7 @@
     <package name="account-api" namespace="/api/account" extends="partake-api-default">
         <action name="" class="in.partake.controller.api.account.GetAPI" />
         <action name="events" class="in.partake.controller.api.account.GetEventsAPI" />
-        <action name="enrollments" class="in.partake.controller.api.account.GetEnrollmentsAPI" />
+        <action name="tickets" class="in.partake.controller.api.account.GetTicketsAPI" />
         <action name="images" class="in.partake.controller.api.account.GetImagesAPI" />
         <action name="messages" class="in.partake.controller.api.account.GetMessagesAPI" />
 
@@ -211,7 +211,7 @@
     <package name="user-api" namespace="/api/user" extends="partake-api-default">
         <action name="" class="in.partake.controller.api.user.GetAPI" />
         <action name="events" class="in.partake.controller.api.user.GetEventsAPI" />
-        <action name="enrollments" class="in.partake.controller.api.user.GetEnrollmentsAPI" />
+        <action name="tickets" class="in.partake.controller.api.user.GetTicketsAPI" />
     </package>
 
     <!-- Image API  -->
@@ -229,7 +229,7 @@
         <action name="publish" class="in.partake.controller.api.event.PublishAPI" />
         <action name="remove" class="in.partake.controller.api.event.RemoveAPI" />
 
-        <action name="enroll" class="in.partake.controller.api.event.EnrollAPI" />
+        <action name="apply" class="in.partake.controller.api.event.ApplyAPI" />
 
         <action name="attend" class="in.partake.controller.api.event.AttendAPI" />
         <action name="makeAttendantVIP" class="in.partake.controller.api.event.MakeAttendantVIPAPI" />

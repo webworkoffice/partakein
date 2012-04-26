@@ -22,7 +22,7 @@ import in.partake.resource.UserErrorCode;
 import java.util.List;
 import java.util.UUID;
 
-public class EnrollAPI extends AbstractPartakeAPI {
+public class ApplyAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
