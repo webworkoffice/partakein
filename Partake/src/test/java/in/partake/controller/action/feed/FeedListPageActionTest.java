@@ -1,12 +1,12 @@
 package in.partake.controller.action.feed;
 
+import in.partake.controller.action.ActionControllerTest;
+
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-import in.partake.controller.AbstractPartakeControllerTest;
-
-public class FeedListPageActionTest extends AbstractPartakeControllerTest {
+public class FeedListPageActionTest extends ActionControllerTest {
 
     @Test
     public void testCalendar() throws Exception {

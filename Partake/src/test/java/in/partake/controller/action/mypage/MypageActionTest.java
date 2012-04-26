@@ -3,7 +3,7 @@ package in.partake.controller.action.mypage;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
 
@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class MypageActionTest extends AbstractPartakeControllerTest {
+public class MypageActionTest extends ActionControllerTest {
     @Test
     public void testToExecute() throws Exception {
         ActionProxy proxy = getActionProxy("/mypage");
@@ -19,7 +19,7 @@ public class MypageActionTest extends AbstractPartakeControllerTest {
 
         proxy.execute();
         assertResultSuccess(proxy);
-        
+
         MypageAction action = (MypageAction) proxy.getAction();
 
         assertThat(action.getPreference(), is(UserPreference.getDefaultPreference(TestDataProvider.DEFAULT_USER_ID)));
@@ -31,7 +31,7 @@ public class MypageActionTest extends AbstractPartakeControllerTest {
     public void testToExecuteWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/mypage");
 
-        proxy.execute();        
+        proxy.execute();
         assertResultLoginRequired(proxy);
     }
 }

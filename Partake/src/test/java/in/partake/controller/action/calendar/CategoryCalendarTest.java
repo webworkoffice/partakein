@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.fixture.TestDataProvider;
 
@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class CategoryCalendarTest extends AbstractPartakeControllerTest {
+public class CategoryCalendarTest extends ActionControllerTest {
 
     @Test
     public void testWithValidCategory() throws Exception {

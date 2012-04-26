@@ -1,18 +1,18 @@
 package in.partake.controller.action.errorpage;
 
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 import in.partake.model.fixture.TestDataProvider;
 
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class StaticNotFoundPageTest extends AbstractPartakeControllerTest {
+public class StaticNotFoundPageTest extends ActionControllerTest {
     @Test
     public void testAccessWithLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/notfound");
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
-        
+
         proxy.execute();
         assertResultSuccess(proxy);
    }

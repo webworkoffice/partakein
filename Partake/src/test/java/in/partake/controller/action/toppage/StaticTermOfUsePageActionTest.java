@@ -1,6 +1,6 @@
 package in.partake.controller.action.toppage;
 
-import in.partake.controller.AbstractPartakeControllerTest;
+import in.partake.controller.action.ActionControllerTest;
 import in.partake.model.fixture.TestDataProvider;
 
 import org.junit.Assert;
@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class StaticTermOfUsePageActionTest extends AbstractPartakeControllerTest {
+public class StaticTermOfUsePageActionTest extends ActionControllerTest {
     @Test
     public void testToExecute() throws Exception {
         ActionProxy proxy = getActionProxy("/termofuse");
@@ -27,7 +27,7 @@ public class StaticTermOfUsePageActionTest extends AbstractPartakeControllerTest
 
         proxy.execute();
         assertResultSuccess(proxy);
-        
+
         StaticTermOfUsePageAction action = (StaticTermOfUsePageAction) proxy.getAction();
         Assert.assertEquals("termofuse.jsp", action.getLocation());
     }

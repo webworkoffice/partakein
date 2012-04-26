@@ -1,7 +1,6 @@
 package in.partake.controller.action.event;
 
-import in.partake.controller.AbstractPartakeControllerTest;
-import in.partake.controller.action.event.EventSearchAction;
+import in.partake.controller.action.ActionControllerTest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class EventSearchTest extends AbstractPartakeControllerTest {
+public class EventSearchTest extends ActionControllerTest {
 
     @Before
     public void setUp() throws Exception {
@@ -31,9 +30,9 @@ public class EventSearchTest extends AbstractPartakeControllerTest {
         EventSearchAction controller = (EventSearchAction) proxy.getAction();
         Map<String, Object> requestMap = new HashMap<String, Object>(request.getParameterMap());
         controller.setRequest(requestMap);
-        
+
         proxy.execute();
-        assertResultSuccess(proxy);        
+        assertResultSuccess(proxy);
     }
 
     @Test
@@ -51,17 +50,17 @@ public class EventSearchTest extends AbstractPartakeControllerTest {
     /**
      * 存在しないソート順を指定して検索した場合、スコア順にソートされて返却される
      */
-    @Test	
+    @Test
     public void testToUseUnknownSortOrder() throws Exception {
         request.setParameter("sortOrder", "unknown");
         ActionProxy proxy = getActionProxy("/events/search");
         EventSearchAction controller = (EventSearchAction) proxy.getAction();
         Map<String, Object> requestMap = new HashMap<String, Object>(request.getParameterMap());
         controller.setRequest(requestMap);
-        
+
         proxy.execute();
         assertResultSuccess(proxy);
-        
-        // TODO スコア順にソートされていることを確認        
+
+        // TODO スコア順にソートされていることを確認
     }
 }
