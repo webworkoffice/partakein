@@ -16,7 +16,6 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
-import in.partake.model.dto.auxiliary.TicketType;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 
 import java.text.DateFormat;
@@ -185,6 +184,7 @@ public class SearchAPITest extends APIControllerTest {
 
     private Event storeEventAfterDeadline() throws DAOException, PartakeException {
         final Event event = createEvent();
+        event.setBeginDate(TimeUtil.getCurrentDateTime().nDayBefore(1));
         new Transaction<Void>() {
             @Override
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
@@ -194,8 +194,7 @@ public class SearchAPITest extends APIControllerTest {
         }.execute();
 
         UUID ticketId = UUID.randomUUID();
-        final EventTicket ticket = new EventTicket(ticketId, event.getId(), "name", TicketType.FREE_TICKET, 0,
-                new DateTime(0L), new DateTime(0L), new DateTime(0L), null);
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
         storeEventTicket(ticket);
 
         PartakeApp.getEventSearchService().create(event, Collections.singletonList(ticket));
@@ -204,6 +203,7 @@ public class SearchAPITest extends APIControllerTest {
 
     private Event storeEventBeforeDeadline() throws DAOException, PartakeException {
         final Event event = createEvent();
+        event.setBeginDate(TimeUtil.getCurrentDateTime().nDayAfter(1));
         new Transaction<Void>() {
             @Override
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
@@ -213,9 +213,7 @@ public class SearchAPITest extends APIControllerTest {
         }.execute();
 
         UUID ticketId = UUID.randomUUID();
-        DateTime tomorrow = TimeUtil.oneDayAfter(TimeUtil.getCurrentDateTime());
-        final EventTicket ticket = new EventTicket(ticketId, event.getId(), "name", TicketType.FREE_TICKET, 0,
-                new DateTime(0L), new DateTime(0L), new DateTime(0L), null);
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
         storeEventTicket(ticket);
 
         PartakeApp.getEventSearchService().create(event, Collections.singletonList(ticket));

@@ -577,7 +577,7 @@ public class Event extends PartakeModel<Event> {
     public DateTime getDeadlineOfAllTickets(List<EventTicket> tickets) {
         DateTime dt = null;
         for (EventTicket ticket : tickets) {
-            DateTime t = ticket.getAcceptsFrom();
+            DateTime t = ticket.acceptsFrom(this);
             if (t == null)
                 continue;
             else if (dt == null || t.isBefore(dt))

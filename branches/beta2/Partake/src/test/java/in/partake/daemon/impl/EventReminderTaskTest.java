@@ -60,7 +60,7 @@ public class EventReminderTaskTest extends AbstractPartakeControllerTest impleme
         storeEvent(event);
 
         UUID ticketId = UUID.randomUUID();
-        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event);
+        EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
         storeEventTicket(ticket);
 
         String id = UUID.randomUUID().toString();

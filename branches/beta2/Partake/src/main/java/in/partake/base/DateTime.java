@@ -52,4 +52,21 @@ public final class DateTime implements Comparable<DateTime> {
     public boolean isAfter(DateTime dt) {
         return dt.millis < millis;
     }
+
+    public DateTime nDayBefore(int n) {
+        return new DateTime(getTime() - 1000L * 3600 * 24 * n);
+    }
+
+    public DateTime nDayAfter(int n) {
+        return new DateTime(getTime() + 1000L * 3600 * 24 * n);
+    }
+
+    public DateTime nHourBefore(int n) {
+        return new DateTime(getTime() - 1000L * 3600 * n);
+    }
+
+    public DateTime nHourAfter(int n) {
+        return new DateTime(getTime() + 1000L * 3600 * n);
+    }
+
 }

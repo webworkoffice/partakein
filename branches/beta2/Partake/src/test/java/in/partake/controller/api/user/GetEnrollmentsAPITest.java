@@ -13,7 +13,6 @@ import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.dto.auxiliary.TicketType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +69,7 @@ public class GetEnrollmentsAPITest extends APIControllerTest {
             String eventId = storeEvent(event);
 
             UUID uuid = UUID.randomUUID();
-            EventTicket ticket = new EventTicket(uuid, eventId, "Free", TicketType.FREE_TICKET, 0, null, null, TimeUtil.getCurrentDateTime(), null);
+            EventTicket ticket = EventTicket.createDefaultTicket(uuid, eventId);
             storeEventTicket(ticket);
 
             ids.add(uuid);
