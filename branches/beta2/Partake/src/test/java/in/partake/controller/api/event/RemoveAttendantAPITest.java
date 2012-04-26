@@ -16,8 +16,8 @@ public class RemoveAttendantAPITest extends APIControllerTest {
 
     @Test
     public void testToRemoveAttendant() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/removeAttendant");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        ActionProxy proxy = getActionProxy(API_EVENT_REMOVE_ATTENDANT);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID.toString());
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
         addValidSessionTokenToParameter(proxy);
 
@@ -35,8 +35,8 @@ public class RemoveAttendantAPITest extends APIControllerTest {
 
     @Test
     public void testToRemoveAttendantWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/removeAttendant");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        ActionProxy proxy = getActionProxy(API_EVENT_REMOVE_ATTENDANT);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
         addValidSessionTokenToParameter(proxy);
 
@@ -46,8 +46,8 @@ public class RemoveAttendantAPITest extends APIControllerTest {
 
     @Test
     public void testToRemoveAttendantWithInvalidSessionToken() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/removeAttendant");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        ActionProxy proxy = getActionProxy(API_EVENT_REMOVE_ATTENDANT);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
         addInvalidSessionTokenToParameter(proxy);
 
@@ -58,16 +58,16 @@ public class RemoveAttendantAPITest extends APIControllerTest {
     }
 
     @Test
-    public void testToRemoveAttendantWithInvalidEventId() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/removeAttendant");
-        addParameter(proxy, "eventId", INVALID_EVENT_ID);
+    public void testToRemoveAttendantWithInvalidticketId() throws Exception {
+        ActionProxy proxy = getActionProxy(API_EVENT_REMOVE_ATTENDANT);
+        addParameter(proxy, "ticketId", INVALID_EVENT_TICKET_ID);
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
         addValidSessionTokenToParameter(proxy);
 
         loginAs(proxy, EVENT_OWNER_ID);
 
         proxy.execute();
-        assertResultInvalid(proxy, UserErrorCode.INVALID_EVENT_ID);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_TICKET_ID);
     }
 
 }

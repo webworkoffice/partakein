@@ -139,7 +139,10 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
 
     protected void addParameter(ActionProxy proxy, String key, Object obj) {
         ActionContext actionContext = proxy.getInvocation().getInvocationContext();
-        actionContext.getParameters().put(key, obj);
+        if (obj instanceof String || obj instanceof String[])
+            actionContext.getParameters().put(key, obj);
+        else
+            actionContext.getParameters().put(key, obj.toString());
     }
 
     protected void addValidSessionTokenToParameter(ActionProxy proxy) {
@@ -178,7 +181,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         Assert.assertEquals(200, response.getStatus());
 
         AbstractPartakeAction action = (AbstractPartakeAction) proxy.getAction();
-        assertThat(jspLocation, is(action.getLocation()));
+        assertThat(action.getLocation(), is(jspLocation));
     }
 
     protected void assertResultInvalid(ActionProxy proxy) throws Exception {

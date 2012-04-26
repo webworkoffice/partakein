@@ -1,5 +1,6 @@
-package in.partake.controller;
+package in.partake.controller.action.event;
 
+import in.partake.controller.AbstractPartakeControllerTest;
 import in.partake.controller.action.event.EventSearchAction;
 
 import java.util.HashMap;

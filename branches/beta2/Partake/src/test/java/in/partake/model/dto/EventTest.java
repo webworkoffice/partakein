@@ -78,19 +78,6 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
             Assert.assertEquals(source.getCreatedAt(), new Event(source).getCreatedAt());
             Assert.assertEquals(source.getModifiedAt(), new Event(source).getModifiedAt());
             Assert.assertEquals(source.getRevision(), new Event(source).getRevision());
-
-            if (source.getBeginDate() != null) {
-                Assert.assertNotSame(source.getBeginDate(), new Event(source).getBeginDate());
-            }
-            if (source.getEndDate() != null) {
-                Assert.assertNotSame(source.getEndDate(), new Event(source).getEndDate());
-            }
-            if (source.getCreatedAt() != null) {
-                Assert.assertNotSame(source.getCreatedAt(), new Event(source).getCreatedAt());
-            }
-            if (source.getModifiedAt() != null) {
-                Assert.assertNotSame(source.getModifiedAt(), new Event(source).getModifiedAt());
-            }
         }
     }
 

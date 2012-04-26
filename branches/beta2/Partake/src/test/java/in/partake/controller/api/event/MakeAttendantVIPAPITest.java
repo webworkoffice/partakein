@@ -19,7 +19,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         assertThat(loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_TICKET_ID).isVIP(), is(false));
 
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "true");
         addValidSessionTokenToParameter(proxy);
 
@@ -37,7 +37,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         assertThat(loadEnrollment(EVENT_VIP_ENROLLED_USER_ID, DEFAULT_EVENT_TICKET_ID).isVIP(), is(true));
 
         addParameter(proxy, "userId", EVENT_VIP_ENROLLED_USER_ID);
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "false");
         addValidSessionTokenToParameter(proxy);
 
@@ -52,7 +52,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/event/makeAttendantVIP");
 
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "true");
         addValidSessionTokenToParameter(proxy);
 
@@ -68,7 +68,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         assertThat(loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_TICKET_ID).isVIP(), is(false));
 
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "true");
         addValidSessionTokenToParameter(proxy);
 
@@ -84,7 +84,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         loginAs(proxy, EVENT_UNRELATED_USER_ID);
 
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "true");
         addValidSessionTokenToParameter(proxy);
 
@@ -97,7 +97,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         ActionProxy proxy = getActionProxy("/api/event/makeAttendantVIP");
         loginAs(proxy, EVENT_OWNER_ID);
 
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "true");
         addValidSessionTokenToParameter(proxy);
 
@@ -111,7 +111,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         loginAs(proxy, EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", EVENT_UNRELATED_USER_ID);
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "true");
         addValidSessionTokenToParameter(proxy);
 
@@ -120,21 +120,21 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
     }
 
     @Test
-    public void testToMakeUserVipWithInvalidEventId() throws Exception {
+    public void testToMakeUserVipWithInvalidTicketId() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/makeAttendantVIP");
         loginAs(proxy, EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
-        addParameter(proxy, "eventId", INVALID_EVENT_ID);
+        addParameter(proxy, "ticketId", INVALID_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "true");
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy, UserErrorCode.INVALID_EVENT_ID);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_TICKET_ID);
     }
 
     @Test
-    public void testToMakeUserVipWithoutEventId() throws Exception {
+    public void testToMakeUserVipWithoutticketId() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/makeAttendantVIP");
         loginAs(proxy, EVENT_OWNER_ID);
 
@@ -143,7 +143,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy, UserErrorCode.MISSING_EVENT_ID);
+        assertResultInvalid(proxy, UserErrorCode.MISSING_TICKET_ID);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         assertThat(loadEnrollment(EVENT_ENROLLED_USER_ID, DEFAULT_EVENT_TICKET_ID).isVIP(), is(false));
 
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
@@ -167,7 +167,7 @@ public class MakeAttendantVIPAPITest extends APIControllerTest {
         loginAs(proxy, EVENT_OWNER_ID);
 
         addParameter(proxy, "userId", EVENT_ENROLLED_USER_ID);
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "vip", "true");
 
         proxy.execute();

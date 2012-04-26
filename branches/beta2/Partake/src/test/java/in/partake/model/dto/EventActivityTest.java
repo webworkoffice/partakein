@@ -26,7 +26,6 @@ public class EventActivityTest extends AbstractPartakeModelTest<EventActivity> {
         EventActivity copied = new EventActivity(activity);
         Assert.assertEquals(activity, copied);
         Assert.assertEquals(activity, new EventActivity("id", "userId", "title", "content", date));
-        Assert.assertNotSame(activity.getCreatedAt(), copied.getCreatedAt());
 
         // Ensures NullPointerException won't happen.
         new EventActivity(new EventActivity("id", "userId", "title", "content", null));

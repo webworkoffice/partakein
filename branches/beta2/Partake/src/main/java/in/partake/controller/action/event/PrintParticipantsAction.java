@@ -16,6 +16,7 @@ import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.EventTicket;
 import in.partake.resource.UserErrorCode;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -60,6 +61,7 @@ class ParticipantsListTransaction extends DBAccess<Void> {
     public ParticipantsListTransaction(UserEx user, String eventId) {
         this.user = user;
         this.eventId = eventId;
+        this.ticketHolderListMap = new HashMap<UUID, EventTicketHolderList>();
     }
 
     @Override
@@ -86,7 +88,7 @@ class ParticipantsListTransaction extends DBAccess<Void> {
     }
 
     public List<EventTicket> getTickets() {
-    	return tickets;
+        return tickets;
     }
 
     public Map<UUID, EventTicketHolderList> getTicketHolderListMap() {
