@@ -112,7 +112,7 @@ class EventSearchService implements IEventSearchService {
         builder.append(event.getPlace()).append(" ");
         builder.append(Util.removeTags(event.getDescription()));
 
-        DateTime deadline = event.getDeadlineOfAllTickets(tickets);
+        DateTime deadline = event.acceptsSomeTicketsTill(tickets);
         long beginTime = event.getBeginDate().getTime();
         long deadlineTime = deadline.getTime();
 

@@ -84,7 +84,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
 
         indexDao.put(pcon,
                 new String[] {"id", "ownerId", "editorNames", "draft", "isPrivate", "beginDate" },
-                new Object[] { event.getId(), event.getOwnerId(), event.getManagerScreenNames(), event.isDraft(), StringUtils.isBlank(event.getPasscode()), event.getBeginDate() });
+                new Object[] { event.getId(), event.getOwnerId(), event.getManagerScreenNames(), event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
     }
 
     @Override
