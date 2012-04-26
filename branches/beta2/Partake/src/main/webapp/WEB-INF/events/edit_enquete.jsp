@@ -178,9 +178,12 @@ $(function() {
 
 // Initial display
 var initialData = [
-<% for (EnqueteQuestion question : event.getEnquetes()) { %>
-     <%= question.toJSON() %>,
-<% } %>
+<% if (event.getEnquetes() != null) {
+    for (EnqueteQuestion question : event.getEnquetes()) { %>
+        <%= question.toJSON() %>,
+    <% }
+} %>
+
 ];
 
 for (var i = 0; i < initialData.length; ++i) {

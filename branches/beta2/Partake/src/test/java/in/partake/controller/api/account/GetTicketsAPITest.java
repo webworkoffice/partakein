@@ -3,6 +3,7 @@ package in.partake.controller.api.account;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import in.partake.base.DateTime;
+import in.partake.base.Pair;
 import in.partake.base.TimeUtil;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dto.Event;
@@ -29,9 +30,8 @@ public class GetTicketsAPITest extends APIControllerTest {
 
     @Test
     public void testGetEnrollments() throws Exception {
-        String eventId = prepareEvent();
-        List<UUID> ticketIds = prepareEventTickets(20, eventId);
-        prepareUserTickets(DEFAULT_USER_ID, ticketIds, eventId);
+        List<Pair<UUID, String>> ids = prepareEvents(20);
+        prepareEnrollment(DEFAULT_USER_ID, ids);
 
         ActionProxy proxy = getActionProxy("/api/account/tickets");
         loginAs(proxy, DEFAULT_USER_ID);
@@ -46,49 +46,51 @@ public class GetTicketsAPITest extends APIControllerTest {
         JSONArray array = obj.getJSONArray("ticketStatuses");
         assertThat(array.size(), is(10));
         for (int i = 0; i < 10; ++i) {
-            assertThat(array.getJSONObject(i).getJSONObject("ticket").getString("id"), is(ticketIds.get(i).toString()));
+            assertThat(array.getJSONObject(i).getJSONObject("ticket").getString("id"), is(ids.get(i).getFirst().toString()));
             assertThat(array.getJSONObject(i).getString("status"), is("enrolled"));
         }
     }
 
-    private String prepareEvent() throws Exception {
+    private List<Pair<UUID, String>> prepareEvents(int n) throws Exception {
+        List<Pair<UUID, String>> ids = new ArrayList<Pair<UUID, String>>();
+
         DateTime now = TimeUtil.getCurrentDateTime();
         DateTime late = new DateTime(now.getTime() + 1000 * 3600);
         String category = EventCategory.getCategories().get(0).getKey();
 
-        Event event = new Event(null, "title", "summary", category,
-                late, late, "url", "place",
-                "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
-                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false, new ArrayList<EventRelation>(), null,
-                now, now, -1);
-        return storeEvent(event);
-    }
-
-    private List<UUID> prepareEventTickets(int n, String eventId) throws Exception {
-        List<UUID> ids = new ArrayList<UUID>();
-
         for (int i = 0; i < n; ++i) {
-            UUID ticketId = UUID.randomUUID();
-            EventTicket ticket = EventTicket.createDefaultTicket(ticketId, eventId);
+            boolean isPrivate = i % 2 == 1;
+            Event event = new Event(null, "title", "summary", category,
+                    late, late, "url", "place",
+                    "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
+                    EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, isPrivate ? "passcode" : null, false, new ArrayList<EventRelation>(), null,
+                    now, now, -1);
+
+            String eventId = storeEvent(event);
+
+            UUID uuid = UUID.randomUUID();
+            EventTicket ticket = EventTicket.createDefaultTicket(uuid, eventId);
             storeEventTicket(ticket);
 
-            ids.add(ticketId);
+            ids.add(new Pair<UUID, String>(uuid, eventId));
         }
+
         return ids;
     }
 
-    private List<String> prepareUserTickets(String userId, List<UUID> ticketIds, String eventId) throws Exception {
-        List<String> ids = new ArrayList<String>();
-        for (int i = 0; i < ticketIds.size(); ++i) {
-            UUID ticketId = ticketIds.get(i);
+    private List<String> prepareEnrollment(String userId, List<Pair<UUID, String>> ids) throws Exception {
+        List<String> userTicketIds = new ArrayList<String>();
+        for (int i = 0; i < ids.size(); ++i) {
+            UUID ticketId = ids.get(i).getFirst();
+            String eventId = ids.get(i).getSecond();
             ParticipationStatus status = ParticipationStatus.ENROLLED;
             boolean vip = false;
             ModificationStatus modificationStatus = ModificationStatus.CHANGED;
             AttendanceStatus attendanceStatus = AttendanceStatus.UNKNOWN;
-            DateTime modifiedAt = new DateTime(TimeUtil.getCurrentTime() + (ticketIds.size() - i) * 1000);
+            DateTime modifiedAt = new DateTime(TimeUtil.getCurrentTime() + (ids.size() - i) * 1000);
             UserTicket enrollment = new UserTicket(null, userId, ticketId, eventId, "comment", status, vip, modificationStatus, attendanceStatus, modifiedAt);
-            ids.add(storeEnrollment(enrollment));
+            userTicketIds.add(storeEnrollment(enrollment));
         }
-        return ids;
+        return userTicketIds;
     }
 }
