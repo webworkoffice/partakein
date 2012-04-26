@@ -31,13 +31,13 @@
             return $.post('/api/account/events', arg);
         },
 
-        getEnrollments: function(offset, limit) {
+        getTickets: function(offset, limit) {
             var arg = {
                 offset: offset,
                 limit: limit
             };
 
-            return $.post('/api/account/enrollments', arg);
+            return $.post('/api/account/tickets', arg);
         },
 
         getImages: function(offset, limit) {
@@ -166,25 +166,15 @@
             return $.post('/api/event/modifyEnquete', arg);
         },
 
-        enroll: function(eventId, status, comment) {
+        apply: function(ticketId, status, comment) {
             var arg = {
                     sessionToken: partake.sessionToken,
-                    eventId: eventId,
+                    ticketId: ticketId,
                     status: status,
                     comment: comment
                 };
 
-                return $.post('/api/event/enroll', arg);
-        },
-
-        changeEnrollmentComment: function(eventId, comment) {
-            var arg = {
-                sessionToken: partake.sessionToken,
-                eventId: eventId,
-                comment: comment
-            };
-
-            return $.post('/api/event/enroll/changeComment', arg);
+                return $.post('/api/event/apply', arg);
         },
 
         makeAttendantVIP: function(userId, eventId, vip) {
@@ -238,7 +228,7 @@
             return $.post('/api/user/events', arg);
         },
 
-        getEnrollments: function(userId, offset, limit) {
+        getTickets: function(userId, offset, limit) {
             var arg = {
                 sessionToken: partake.sessionToken,
                 userId: userId,
@@ -246,7 +236,7 @@
                 limit: limit
             };
 
-            return $.post('/api/user/enrollments', arg);
+            return $.post('/api/user/tickets', arg);
         }
     };
 

@@ -35,7 +35,7 @@ public class DateTimeTest {
     @Test
     public void testOneDayAfter() {
         DateTime date = TimeUtil.getCurrentDateTime();
-        DateTime after = date.nDayBefore(1);
+        DateTime after = date.nDayAfter(1);
 
         assertThat(after.getTime(), is(date.getTime() + 3600 * 24 * 1000));
     }

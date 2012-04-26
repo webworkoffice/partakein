@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class GetEnrollmentsAPITest extends APIControllerTest {
+public class GetTicketsAPITest extends APIControllerTest {
 
     @Test
     public void testGetEnrollments() throws Exception {
