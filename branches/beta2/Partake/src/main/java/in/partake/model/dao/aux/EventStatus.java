@@ -4,8 +4,8 @@ import in.partake.model.dto.Event;
 import net.sf.json.JSONObject;
 
 public class EventStatus {
-	public Event event;
-	public boolean isBeforeDeadline;
+    public Event event;
+    public boolean isBeforeDeadline;
     public int numEnrolledUsers;
     public int numReservedUsers;
     public int numCancelledUsers;
@@ -20,6 +20,7 @@ public class EventStatus {
 
     public JSONObject toSafeJSON() {
         JSONObject obj = new JSONObject();
+        obj.put("event", event.toSafeJSON());
         obj.put("isBeforeDeadline", isBeforeDeadline);
         obj.put("numEnrolledUsers", numEnrolledUsers);
         obj.put("numReservedUsers", numReservedUsers);

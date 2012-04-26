@@ -66,16 +66,6 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
         return array;
     }
 
-    /**
-    * <p>以下のtest用データがDatastoreにあることを保証します。
-    * <ul>
-    * <li>{@link TestDataProvider#EVENT_ID1}〜{@link TestDataProvider#EVENT_ID3}のEventIDを持つ公開イベント3つ
-    * <li>{@link TestDataProvider#EVENT_PRIVATE_ID1}〜{@link TestDataProvider#EVENT_PRIVATE_ID3}のEventIDを持つ非公開イベント3つ
-    * </ul>
-    * @param con Datastoreへの接続
-    * @param factory DAOファクトリクラスのインスタンス
-    * @throws DAOException
-    */
     public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
         IEventAccess dao = daos.getEventAccess();
         dao.truncate(con);
@@ -101,14 +91,14 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
         dao.put(con, new Event(JAPANESE_EVENT_ID, "title", "summary", category,
                 late, late, "http://www.example.com/", "place",
                 "address", "unique identifier -- " + JAPANESE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
-                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, "passcode", false,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
                 new ArrayList<EventRelation>(), null,
                 now, now, -1));
 
         dao.put(con, new Event(UNIQUEIDENTIFIER_EVENT_ID, "title", "summary", category,
                 late, late, "http://www.example.com/", "place",
                 "address", "unique identifier -- " + UNIQUE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
-                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, "passcode", false,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
                 new ArrayList<EventRelation>(), null,
                 now, now, -1));
 

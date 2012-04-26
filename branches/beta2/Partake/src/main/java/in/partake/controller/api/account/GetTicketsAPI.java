@@ -47,8 +47,8 @@ public class GetTicketsAPI extends AbstractPartakeAPI {
         }
 
         JSONObject obj = new JSONObject();
-        obj.put("numTotalTickets", transaction.getNumTotalTickets());
-        obj.put("statuses", statuses);
+        obj.put("totalTicketCount", transaction.getNumTotalTickets());
+        obj.put("ticketStatuses", statuses);
 
         return renderOK(obj);
     }
