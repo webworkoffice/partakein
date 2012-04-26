@@ -30,8 +30,7 @@ public class RemoveAttendantAPI extends AbstractPartakeAPI {
     }
 }
 
-class RemoveAttendantTransaction extends Transaction<Void>
-{
+class RemoveAttendantTransaction extends Transaction<Void> {
     private UserEx user;
     private UUID ticketId;
     private String userId;
@@ -44,14 +43,14 @@ class RemoveAttendantTransaction extends Transaction<Void>
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-    	EventTicket ticket = daos.getEventTicketAccess().find(con, ticketId);
-    	if (ticket == null)
-    		throw new PartakeException(UserErrorCode.INVALID_TICKET_ID);
+        EventTicket ticket = daos.getEventTicketAccess().find(con, ticketId);
+        if (ticket == null)
+            throw new PartakeException(UserErrorCode.INVALID_TICKET_ID);
 
         IEventAccess eventDao = daos.getEventAccess();
         Event event = eventDao.find(con, ticket.getEventId());
         if (event == null)
-        	throw new PartakeException(UserErrorCode.INVALID_TICKET_ID);
+            throw new PartakeException(UserErrorCode.INVALID_TICKET_ID);
 
         if (!EventEditParticipantsPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);

@@ -222,12 +222,12 @@ public class Event extends PartakeModel<Event> {
         DateFormat format = new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
         if (beginDate != null) {
             // TODO: beginDate should be deprecated.
-            obj.put("beginDate", format.format(beginDate));
+            obj.put("beginDate", format.format(beginDate.toDate()));
             obj.put("beginDateTime", beginDate.getTime());
         }
         if (endDate != null) {
             // TODO: endDate should be deprecated.
-            obj.put("endDate", format.format(endDate));
+            obj.put("endDate", format.format(endDate.toDate()));
             obj.put("endDateTime", endDate.getTime());
         }
         obj.put("url", url);
@@ -247,10 +247,12 @@ public class Event extends PartakeModel<Event> {
         obj.put("enquetes", Util.toJSONArray(enquetes));
 
         if (createdAt != null) {
-            obj.put("createdAt", format.format(createdAt));
+            obj.put("createdAt", format.format(createdAt.toDate()));
+            obj.put("createdAtTime", createdAt.getTime());
         }
         if (modifiedAt != null) {
-            obj.put("modofiedAt", format.format(modifiedAt));
+            obj.put("modifiedAt", format.format(modifiedAt.toDate()));
+            obj.put("modifiedAtTime", modifiedAt.getTime());
         }
         obj.put("revision", revision);
 

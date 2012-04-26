@@ -40,18 +40,11 @@ public final class EventCommentTest extends AbstractPartakeModelTest<EventCommen
     @Test
     public void testCopyConstructor() {
         for (EventComment source : samples) {
-            // Comment class doesn't override #equals() method.
-            // Assert.assertEquals(source, new Comment(source));
-
             Assert.assertEquals(source.getId(), new EventComment(source).getId());
             Assert.assertEquals(source.getEventId(), new EventComment(source).getEventId());
             Assert.assertEquals(source.getUserId(), new EventComment(source).getUserId());
             Assert.assertEquals(source.getComment(), new EventComment(source).getComment());
             Assert.assertEquals(source.getCreatedAt(), new EventComment(source).getCreatedAt());
-
-            if (source.getCreatedAt() != null) {
-                Assert.assertNotSame(source.getCreatedAt(), new EventComment(source).getCreatedAt());
-            }
         }
     }
 

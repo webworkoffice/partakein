@@ -1,31 +1,16 @@
 package in.partake.model.dto;
 
 import in.partake.base.DateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity(name = "Comments")
 public class EventComment extends PartakeModel<EventComment> {
-    @Id
     private String id;          // comment id
-    @Column
     private String eventId;     // the event id this comment is associated to
-    @Column
     private String userId;      // who wrote this comment
-    @Column @Lob
     private String comment;     // content
-    @Column
     private boolean isHTML;     // true if HTML.
-    @Column @Temporal(TemporalType.TIMESTAMP)
     private DateTime createdAt;
 
     public EventComment(String id, String eventId, String userId, String comment, boolean isHTML, DateTime createdAt) {
