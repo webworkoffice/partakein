@@ -3,7 +3,7 @@ package in.partake.model.dao.mock;
 import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IUserCalendarLinkageAccess;
 import in.partake.model.dao.access.IEventCommentAccess;
-import in.partake.model.dao.access.IUserTicketApplicationAccess;
+import in.partake.model.dao.access.IUserTicketAccess;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IEventActivityAccess;
 import in.partake.model.dao.access.IEventFeedAccess;
@@ -41,8 +41,8 @@ public class MockDaoFactory extends PartakeDAOFactory {
     }
 
     @Override
-    protected IUserTicketApplicationAccess createEnrollmentAccess() {
-        return Mockito.mock(IUserTicketApplicationAccess.class);
+    protected IUserTicketAccess createEnrollmentAccess() {
+        return Mockito.mock(IUserTicketAccess.class);
     }
 
     @Override

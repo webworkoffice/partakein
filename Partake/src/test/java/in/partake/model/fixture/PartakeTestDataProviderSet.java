@@ -5,7 +5,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.fixture.impl.UserCalendarLinkTestDataProvider;
 import in.partake.model.fixture.impl.EventCommentTestDataProvider;
-import in.partake.model.fixture.impl.UserTicketApplicationTestDataProvider;
+import in.partake.model.fixture.impl.UserTicketTestDataProvider;
 import in.partake.model.fixture.impl.EventActivityTestDataProvider;
 import in.partake.model.fixture.impl.EventFeedTestDataProvider;
 import in.partake.model.fixture.impl.EventMessageTestDataProvider;
@@ -37,7 +37,7 @@ public class PartakeTestDataProviderSet {
 
     private UserCalendarLinkTestDataProvider calendarDataProvider;
     private EventCommentTestDataProvider commentDataprovider;
-    private UserTicketApplicationTestDataProvider enrollmentProvider;
+    private UserTicketTestDataProvider enrollmentProvider;
     private EventTestDataProvider eventProvider;
     private UserImageTestDataProvider imageProvider;
     private UserOpenIDLinkTestDataProvider openIDLinkageProvider;
@@ -97,7 +97,7 @@ public class PartakeTestDataProviderSet {
         return commentDataprovider;
     }
 
-    public UserTicketApplicationTestDataProvider getEnrollmentProvider() {
+    public UserTicketTestDataProvider getEnrollmentProvider() {
         return enrollmentProvider;
     }
 
@@ -181,8 +181,8 @@ public class PartakeTestDataProviderSet {
         return new EventCommentTestDataProvider();
     }
 
-    private UserTicketApplicationTestDataProvider createEnrollmentTestDataProvider() {
-        return new UserTicketApplicationTestDataProvider();
+    private UserTicketTestDataProvider createEnrollmentTestDataProvider() {
+        return new UserTicketTestDataProvider();
     }
 
     private EventTestDataProvider createEventTestDataProvider() {

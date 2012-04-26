@@ -2,7 +2,7 @@ package in.partake.model.daofacade;
 
 import in.partake.base.PartakeRuntimeException;
 import in.partake.base.TimeUtil;
-import in.partake.model.UserTicketApplicationEx;
+import in.partake.model.UserTicketEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventTicketHolderList;
 import in.partake.model.IPartakeDAOs;
@@ -10,7 +10,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventActivityAccess;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventTicket;
@@ -31,16 +31,16 @@ import java.util.UUID;
 public class EnrollmentDAOFacade {
 
     // TODO: Maybe we should create EventTikcetEx, which has an Event.
-    public static List<UserTicketApplicationEx> getEnrollmentExs(PartakeConnection con, IPartakeDAOs daos, EventTicket ticket, Event event) throws DAOException {
+    public static List<UserTicketEx> getEnrollmentExs(PartakeConnection con, IPartakeDAOs daos, EventTicket ticket, Event event) throws DAOException {
         // priority のあるイベントに参加している場合、priority に 1 を付加する。
 
         // --- まず、EnrollmentEx を作成
-        List<UserTicketApplicationEx> ps = new ArrayList<UserTicketApplicationEx>();
-        for (UserTicketApplication p : daos.getEnrollmentAccess().findByTicketId(con, ticket.getId(), 0, Integer.MAX_VALUE)) {
+        List<UserTicketEx> ps = new ArrayList<UserTicketEx>();
+        for (UserTicket p : daos.getEnrollmentAccess().findByTicketId(con, ticket.getId(), 0, Integer.MAX_VALUE)) {
             if (p == null) { continue; }
             UserEx user = UserDAOFacade.getUserEx(con, daos, p.getUserId());
             if (user == null) { continue; }
-            UserTicketApplicationEx pe = new UserTicketApplicationEx(p, user, 0);
+            UserTicketEx pe = new UserTicketEx(p, user, 0);
             ps.add(pe);
         }
 
@@ -53,8 +53,8 @@ public class EnrollmentDAOFacade {
             // related event の参加者を Set で取得
             Set<String> relatedEventParticipantsIds = new HashSet<String>();
             {
-                List<UserTicketApplication> relatedEventParticipations = daos.getEnrollmentAccess().findByEventId(con, relation.getEventId(), 0, Integer.MAX_VALUE);
-                for (UserTicketApplication p : relatedEventParticipations) {
+                List<UserTicket> relatedEventParticipations = daos.getEnrollmentAccess().findByEventId(con, relation.getEventId(), 0, Integer.MAX_VALUE);
+                for (UserTicket p : relatedEventParticipations) {
                     if (p.getStatus().isEnrolled()) {
                         relatedEventParticipantsIds.add(p.getUserId());
                     }
@@ -62,7 +62,7 @@ public class EnrollmentDAOFacade {
             }
 
             // 参加していれば、それを追加。priority があれば、+1 する。
-            for (UserTicketApplicationEx p : ps) {
+            for (UserTicketEx p : ps) {
                 if (!relatedEventParticipantsIds.contains(p.getUserId())) { continue; }
                 p.addRelatedEventId(relation.getEventId());
                 if (relation.hasPriority()) {
@@ -72,11 +72,11 @@ public class EnrollmentDAOFacade {
 
         }
 
-        for (UserTicketApplicationEx p : ps) {
+        for (UserTicketEx p : ps) {
             p.freeze();
         }
 
-        Collections.sort(ps, UserTicketApplicationEx.getPriorityBasedComparator());
+        Collections.sort(ps, UserTicketEx.getPriorityBasedComparator());
 
         return ps;
     }
@@ -114,7 +114,7 @@ public class EnrollmentDAOFacade {
     }
 
     public static ParticipationStatus getParticipationStatus(PartakeConnection con, IPartakeDAOs daos, String userId, UUID ticketId) throws DAOException {
-        UserTicketApplication enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, userId);
+        UserTicket enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, userId);
         if (enrollment == null)
             return ParticipationStatus.NOT_ENROLLED;
         return enrollment.getStatus();
@@ -124,15 +124,15 @@ public class EnrollmentDAOFacade {
      * event の参加順位(何番目に参加したか)を返します。
      */
     public static int getOrderOfEnrolledEvent(PartakeConnection con, IPartakeDAOs daos, EventTicket ticket, Event event, String userId) throws DAOException {
-        List<UserTicketApplicationEx> enrollments = getEnrollmentExs(con, daos, ticket, event);
+        List<UserTicketEx> enrollments = getEnrollmentExs(con, daos, ticket, event);
         EventTicketHolderList list = ticket.calculateParticipationList(event, enrollments);
 
         int result = 0;
-        for (UserTicketApplication e : list.getEnrolledParticipations()) {
+        for (UserTicket e : list.getEnrolledParticipations()) {
             ++result;
             if (userId.equals(e.getUserId())) { return result; }
         }
-        for (UserTicketApplication e : list.getSpareParticipations()) {
+        for (UserTicket e : list.getSpareParticipations()) {
             ++result;
             if (userId.equals(e.getUserId())) { return result; }
         }
@@ -146,14 +146,14 @@ public class EnrollmentDAOFacade {
         String userId = user.getId();
         String eventId = event.getId();
 
-        UserTicketApplication oldEnrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, userId);
-        UserTicketApplication newEnrollment;
+        UserTicket oldEnrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, userId);
+        UserTicket newEnrollment;
         if (oldEnrollment == null) {
             String id = daos.getEnrollmentAccess().getFreshId(con);
-            newEnrollment = new UserTicketApplication(id, userId, ticketId, eventId,
+            newEnrollment = new UserTicket(id, userId, ticketId, eventId,
                     comment, ParticipationStatus.NOT_ENROLLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime());
         } else {
-            newEnrollment = new UserTicketApplication(oldEnrollment);
+            newEnrollment = new UserTicket(oldEnrollment);
         }
 
 

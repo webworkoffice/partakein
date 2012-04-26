@@ -28,7 +28,7 @@ import in.partake.model.dto.UserNotification;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.UserReceivedMessage;
 import in.partake.model.dto.UserThumbnail;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
@@ -313,19 +313,19 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
-    protected UserTicketApplication loadEnrollment(final String enrollmentId) throws DAOException, PartakeException {
-        return new DBAccess<UserTicketApplication>() {
+    protected UserTicket loadEnrollment(final String enrollmentId) throws DAOException, PartakeException {
+        return new DBAccess<UserTicket>() {
             @Override
-            protected UserTicketApplication doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+            protected UserTicket doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getEnrollmentAccess().find(con, enrollmentId);
             }
         }.execute();
     }
 
-    protected UserTicketApplication loadEnrollment(final String userId, final UUID ticketId) throws DAOException, PartakeException {
-        return new DBAccess<UserTicketApplication>() {
+    protected UserTicket loadEnrollment(final String userId, final UUID ticketId) throws DAOException, PartakeException {
+        return new DBAccess<UserTicket>() {
             @Override
-            protected UserTicketApplication doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+            protected UserTicket doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticketId, userId);
             }
         }.execute();
@@ -340,7 +340,7 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
-    protected String storeEnrollment(final UserTicketApplication enrollment) throws DAOException, PartakeException {
+    protected String storeEnrollment(final UserTicket enrollment) throws DAOException, PartakeException {
         return new Transaction<String>() {
             @Override
             protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {

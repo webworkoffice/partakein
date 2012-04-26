@@ -12,7 +12,7 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.EventMessage;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.MessageEnvelope;
@@ -95,8 +95,8 @@ class SendMessageTransaction extends Transaction<Void> {
         EventMessage eventMessage = new EventMessage(eventMessageId, eventId, sender.getId(), messageId.toString(), TimeUtil.getCurrentDateTime(), null);
         daos.getEventMessageAccess().put(con, eventMessage);
 
-        List<UserTicketApplication> participations = daos.getEnrollmentAccess().findByEventId(con, eventId, 0, Integer.MAX_VALUE);
-        for (UserTicketApplication participation : participations) {
+        List<UserTicket> participations = daos.getEnrollmentAccess().findByEventId(con, eventId, 0, Integer.MAX_VALUE);
+        for (UserTicket participation : participations) {
             if (!participation.getStatus().isEnrolled())
                 continue;
 

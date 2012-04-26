@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 
 /**
  * enrollment with related data.
  * @author shinyak
  *
  */
-public class UserTicketApplicationEx extends UserTicketApplication {    
+public class UserTicketEx extends UserTicket {    
     private UserEx user;
     private List<String> relatedEventIds;
     private int priority;
 
     // priority, modifiedAt 順に並べる comparator 
-    public static Comparator<UserTicketApplicationEx> getPriorityBasedComparator() {
-        return new Comparator<UserTicketApplicationEx>() {
+    public static Comparator<UserTicketEx> getPriorityBasedComparator() {
+        return new Comparator<UserTicketEx>() {
             @Override
-            public int compare(UserTicketApplicationEx lhs, UserTicketApplicationEx rhs) {
+            public int compare(UserTicketEx lhs, UserTicketEx rhs) {
                 if (lhs == rhs) { return 0; }
                 if (lhs == null) { return -1; }
                 if (rhs == null) { return 1; }
@@ -38,7 +38,7 @@ public class UserTicketApplicationEx extends UserTicketApplication {
     }
 
     
-    public UserTicketApplicationEx(UserTicketApplication enrollment, UserEx user, int priority) {
+    public UserTicketEx(UserTicket enrollment, UserEx user, int priority) {
         super(enrollment);
         this.user = user;
         this.relatedEventIds = new ArrayList<String>();

@@ -13,7 +13,7 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.UserNotification;
@@ -64,21 +64,21 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
 
         String[] enrollmentIds = new String[] { UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), };
 
-        UserTicketApplication[] enrollments = new UserTicketApplication[] {
-                new UserTicketApplication(enrollmentIds[0], DEFAULT_USER_IDS[0], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
+        UserTicket[] enrollments = new UserTicket[] {
+                new UserTicket(enrollmentIds[0], DEFAULT_USER_IDS[0], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                         false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.PRESENT, now),
-                new UserTicketApplication(enrollmentIds[1], DEFAULT_USER_IDS[1], ticketId, event.getId(), "comment", ParticipationStatus.RESERVED,
+                new UserTicket(enrollmentIds[1], DEFAULT_USER_IDS[1], ticketId, event.getId(), "comment", ParticipationStatus.RESERVED,
                         false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.PRESENT, now),
-                new UserTicketApplication(enrollmentIds[2], DEFAULT_USER_IDS[2], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
+                new UserTicket(enrollmentIds[2], DEFAULT_USER_IDS[2], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                         false, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, now)
         };
 
-        for (UserTicketApplication enrollment : enrollments)
+        for (UserTicket enrollment : enrollments)
             storeEnrollment(enrollment);
         new SendParticipationStatusChangeNotificationsTask().run();
 
         // The status should be changed to ENROLLED
-        UserTicketApplication[] changed = new UserTicketApplication[] {
+        UserTicket[] changed = new UserTicket[] {
                 loadEnrollment(enrollmentIds[0]), loadEnrollment(enrollmentIds[1]), loadEnrollment(enrollmentIds[2]),
         };
         assertThat(changed[0].getModificationStatus(), is(ModificationStatus.ENROLLED));
@@ -126,24 +126,24 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
                 UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(),
         };
 
-        UserTicketApplication[] enrollments = new UserTicketApplication[] {
-                new UserTicketApplication(enrollmentIds[0], DEFAULT_USER_IDS[0], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
+        UserTicket[] enrollments = new UserTicket[] {
+                new UserTicket(enrollmentIds[0], DEFAULT_USER_IDS[0], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                         false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, now),
-                new UserTicketApplication(enrollmentIds[1], DEFAULT_USER_IDS[1], ticketId, event.getId(), "comment", ParticipationStatus.RESERVED,
+                new UserTicket(enrollmentIds[1], DEFAULT_USER_IDS[1], ticketId, event.getId(), "comment", ParticipationStatus.RESERVED,
                         false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 1)),
-                new UserTicketApplication(enrollmentIds[2], DEFAULT_USER_IDS[2], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
+                new UserTicket(enrollmentIds[2], DEFAULT_USER_IDS[2], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                         false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 2)),
-                new UserTicketApplication(enrollmentIds[3], DEFAULT_USER_IDS[3], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
+                new UserTicket(enrollmentIds[3], DEFAULT_USER_IDS[3], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
                         false, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 3))
         };
 
-        for (UserTicketApplication enrollment : enrollments)
+        for (UserTicket enrollment : enrollments)
             storeEnrollment(enrollment);
         new SendParticipationStatusChangeNotificationsTask().run();
 
         // The status should be changed to NOT_ENROLLED.
         // Only the first person can enroll.
-        UserTicketApplication[] changed = new UserTicketApplication[] {
+        UserTicket[] changed = new UserTicket[] {
                 loadEnrollment(enrollmentIds[0]), loadEnrollment(enrollmentIds[1]), loadEnrollment(enrollmentIds[2]), loadEnrollment(enrollmentIds[3]),
         };
         assertThat(changed[0].getModificationStatus(), is(ModificationStatus.ENROLLED));

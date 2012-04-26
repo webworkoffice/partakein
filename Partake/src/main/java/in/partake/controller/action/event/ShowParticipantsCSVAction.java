@@ -3,7 +3,7 @@ package in.partake.controller.action.event;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.EventParticipationListPermission;
-import in.partake.model.UserTicketApplicationEx;
+import in.partake.model.UserTicketEx;
 import in.partake.model.EventTicketHolderList;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
@@ -12,7 +12,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.dto.UserTicketApplication;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
@@ -65,7 +65,7 @@ class ShowParticipantsCSVTransaction extends DBAccess<InputStream> {
         if (!EventParticipationListPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
 
-        List<UserTicketApplicationEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+        List<UserTicketEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
         EventTicketHolderList list = ticket.calculateParticipationList(event, participations);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -77,7 +77,7 @@ class ShowParticipantsCSVTransaction extends DBAccess<InputStream> {
     }
 
     private void doWrite(PartakeConnection con, IPartakeDAOs daos, EventTicketHolderList list, CSVWriter writer) throws DAOException, PartakeException {
-        for (UserTicketApplication participation : list.getEnrolledParticipations()) {
+        for (UserTicket participation : list.getEnrolledParticipations()) {
             UserEx attendant = UserDAOFacade.getUserEx(con, daos, participation.getUserId());
 
             String[] lst = new String[4];
@@ -94,7 +94,7 @@ class ShowParticipantsCSVTransaction extends DBAccess<InputStream> {
             writer.writeNext(lst);
         }
 
-        for (UserTicketApplication participation : list.getSpareParticipations()) {
+        for (UserTicket participation : list.getSpareParticipations()) {
             UserEx attendant = UserDAOFacade.getUserEx(con, daos, participation.getUserId());
 
             String[] lst = new String[4];

@@ -2,7 +2,7 @@
 <%@page import="in.partake.model.EventRelationEx"%>
 <%@page import="in.partake.model.dto.auxiliary.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="in.partake.model.UserTicketApplicationEx"%>
+<%@page import="in.partake.model.UserTicketEx"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
 <%@page import="in.partake.resource.Constants"%>
@@ -21,11 +21,11 @@
     EventEx event = action.getEvent();
     // EventTicketHolderList participationList = action.getParticipationList();
 
-    List<UserTicketApplicationEx> enrolledParticipations = new ArrayList<UserTicketApplicationEx>(); // participationList.getEnrolledParticipations();
-    List<UserTicketApplicationEx> spareParticipations = new ArrayList<UserTicketApplicationEx>(); // participationList.getSpareParticipations();
-    List<UserTicketApplicationEx> cancelledParticipations = new ArrayList<UserTicketApplicationEx>(); // participationList.getCancelledParticipations();
+    List<UserTicketEx> enrolledParticipations = new ArrayList<UserTicketEx>(); // participationList.getEnrolledParticipations();
+    List<UserTicketEx> spareParticipations = new ArrayList<UserTicketEx>(); // participationList.getSpareParticipations();
+    List<UserTicketEx> cancelledParticipations = new ArrayList<UserTicketEx>(); // participationList.getCancelledParticipations();
 
-    List<UserTicketApplicationEx> ps = new ArrayList<UserTicketApplicationEx>();
+    List<UserTicketEx> ps = new ArrayList<UserTicketEx>();
     ps.addAll(enrolledParticipations);
     ps.addAll(spareParticipations);
 %>
@@ -79,14 +79,14 @@
                     <th>関連イベント <%=++cnt%> <a href="<%=h(eventRelation.getEvent().getEventURL())%>">*</a></th>
                 <%
                     }
-                        }
+                                }
                 %>
     </tr>
 </thead>
 <tbody>
     <%
         int order = 0;
-        for (UserTicketApplicationEx p : ps) {
+            for (UserTicketEx p : ps) {
     %>
     <tr>
         <td><%= ++order %></td>
