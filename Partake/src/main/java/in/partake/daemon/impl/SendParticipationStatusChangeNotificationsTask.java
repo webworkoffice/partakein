@@ -56,7 +56,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
 
                 if (!now.isBefore(event.getBeginDate())) { continue; }
 
-                List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+                List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
                 for (EventTicket ticket : tickets)
                 	sendChangeNotificationImpl(con, daos, ticket, eventId, event);
             }

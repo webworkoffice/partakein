@@ -577,6 +577,10 @@ public class Event extends PartakeModel<Event> {
     }
 
     public DateTime acceptsSomeTicketsTill(List<EventTicket> tickets) {
+        // No acceptable tickets were found. We cannot accept any application.
+        if (tickets == null)
+            return new DateTime(0);
+
         DateTime dt = null;
         for (EventTicket ticket : tickets) {
             DateTime t = ticket.acceptsTill(this);

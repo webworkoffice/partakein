@@ -15,10 +15,10 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testEnroll() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "status", "enroll");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "comment", "comment");
         addValidSessionTokenToParameter(proxy);
 
@@ -31,10 +31,10 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testReserve() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "status", "reserve");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "comment", "comment");
         addValidSessionTokenToParameter(proxy);
 
@@ -47,10 +47,10 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testCancel() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "status", "cancel");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "comment", "comment");
         addValidSessionTokenToParameter(proxy);
 
@@ -63,10 +63,10 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testWithInvalidStatus() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "status", "invalid");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "comment", "comment");
         addValidSessionTokenToParameter(proxy);
 
@@ -76,10 +76,10 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testEnrollWithoutComment() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "status", "enroll");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
@@ -92,10 +92,10 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testEnrollWithLongComment() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "status", "enroll");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 1025; ++i)
             builder.append('a');
@@ -108,10 +108,10 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testEnrollWontChangeEnrolledAt() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         loginAs(proxy, EVENT_RESERVED_USER_ID);
         addParameter(proxy, "status", "enroll");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "comment", "comment");
         addValidSessionTokenToParameter(proxy);
 
@@ -128,10 +128,10 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testWithoutValidSessionToken() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         loginAs(proxy, DEFAULT_USER_ID);
         addParameter(proxy, "status", "enroll");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "comment", "comment");
 
         proxy.execute();
@@ -140,9 +140,9 @@ public class ApplyAPITest extends APIControllerTest {
 
     @Test
     public void testWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/enroll");
+        ActionProxy proxy = getActionProxy(API_EVENT_APPLY);
         addParameter(proxy, "status", "enroll");
-        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "ticketId", DEFAULT_EVENT_TICKET_ID);
         addParameter(proxy, "comment", "comment");
 
         proxy.execute();

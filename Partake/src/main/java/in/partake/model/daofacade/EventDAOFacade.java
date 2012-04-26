@@ -52,7 +52,7 @@ public class EventDAOFacade {
             }
         }
 
-        List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+        List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
         return new EventEx(event, user, feedId, relationExs, tickets);
     }
 
@@ -130,7 +130,7 @@ public class EventDAOFacade {
                 Event event = it.next();
                 if (event == null) { continue; }
 
-                List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, event.getId());
+                List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, event.getId());
 
                 if (!event.isSearchable())
                     searchService.remove(event.getId());
@@ -161,7 +161,7 @@ public class EventDAOFacade {
             }
 
             boolean enrolled = false;
-            List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, relation.getEventId());
+            List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, relation.getEventId());
             for (EventTicket ticket : tickets) {
                 UserTicketApplication enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId());
                 if (enrollment != null && enrollment.getStatus().isEnrolled()) {

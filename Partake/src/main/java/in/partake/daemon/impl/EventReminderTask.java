@@ -55,7 +55,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
                 if (event == null) { continue; }
                 if (event.getBeginDate().isBefore(now)) { continue; }
 
-                List<EventTicket> tickets = daos.getEventTicketAccess().getEventTicketsByEventId(con, eventId);
+                List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
                 for (EventTicket ticket : tickets)
                     sendEventNotification(con, daos, ticket, event, topPath, now);
             }

@@ -61,16 +61,16 @@ public class Postgres9EventTicketDao extends Postgres9Dao implements IEventTicke
     }
 
     @Override
-    public void put(PartakeConnection con, EventTicket comment) throws DAOException {
+    public void put(PartakeConnection con, EventTicket ticket) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(comment.getId(), CURRENT_VERSION, comment.toJSON().toString().getBytes(UTF8), null, comment.getCreatedAt());
-        if (entityDao.exists(pcon, comment.getId()))
+        Postgres9Entity entity = new Postgres9Entity(ticket.getId(), CURRENT_VERSION, ticket.toJSON().toString().getBytes(UTF8), null, ticket.getCreatedAt());
+        if (entityDao.exists(pcon, ticket.getId()))
             entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
 
-        indexDao.put(pcon, new String[] { "id", "eventId", "createdAt" }, new Object[] { comment.getId().toString(), comment.getEventId(), comment.getCreatedAt() });
+        indexDao.put(pcon, new String[] { "id", "eventId", "createdAt" }, new Object[] { ticket.getId().toString(), ticket.getEventId(), ticket.getCreatedAt() });
     }
 
     @Override
@@ -100,7 +100,7 @@ public class Postgres9EventTicketDao extends Postgres9Dao implements IEventTicke
     }
 
     @Override
-    public List<EventTicket> getEventTicketsByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public List<EventTicket> findEventTicketsByEventId(PartakeConnection con, String eventId) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY createdAt ASC",
                 new Object[] { eventId });

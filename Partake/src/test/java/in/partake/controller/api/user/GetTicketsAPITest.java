@@ -33,7 +33,7 @@ public class GetTicketsAPITest extends APIControllerTest {
         List<UUID> ticketIds = prepareEvents(20);
         prepareEnrollment(DEFAULT_USER_ID, ticketIds, eventId);
 
-        ActionProxy proxy = getActionProxy("/api/user/enrollments");
+        ActionProxy proxy = getActionProxy("/api/user/tickets");
         addParameter(proxy, "userId", DEFAULT_USER_ID);
         addParameter(proxy, "limit", "10");
 
