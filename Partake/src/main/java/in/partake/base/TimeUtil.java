@@ -128,44 +128,6 @@ public final class TimeUtil {
         }
     }
 
-    @Deprecated
-    public static DateTime oneDayBefore(DateTime dt) {
-        return dt.nDayBefore(1);
-    }
-
-    @Deprecated
-    public static DateTime oneDayAfter(DateTime dt) {
-        return dt.nDayAfter(1);
-    }
-
-    public static DateTime halfDayBefore(DateTime dt) {
-        return new DateTime(dt.getTime() - 1000 * 3600 * 12);
-    }
-
-    public static DateTime halfDayAfter(DateTime dt) {
-        return new DateTime(dt.getTime() + 1000 * 3600 * 12);
-    }
-
-    @Deprecated
-    public static Date oneDayBefore(Date date) {
-        return new Date(date.getTime() - 1000 * 3600 * 24);
-    }
-
-    @Deprecated
-    public static Date halfDayBefore(Date date) {
-        return new Date(date.getTime() - 1000 * 3600 * 12);
-    }
-
-    @Deprecated
-    public static Date oneDayAfter(Date date) {
-        return new Date(date.getTime() + 1000 * 3600 * 24);
-    }
-
-    @Deprecated
-    public static Date halfDayAfter(Date date) {
-        return new Date(date.getTime() + 1000 * 3600 * 12);
-    }
-
     public static DateTime dateTimeFromTimeString(String timeString) {
         try {
             return new DateTime(Long.parseLong(timeString));

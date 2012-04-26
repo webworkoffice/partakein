@@ -76,7 +76,7 @@ public class Event extends PartakeModel<Event> {
         this.title = "";
         this.summary = "";
         this.category = EventCategory.getCategories().get(0).getKey();
-        this.beginDate = TimeUtil.oneDayAfter(TimeUtil.getCurrentDateTime());
+        this.beginDate = TimeUtil.getCurrentDateTime().nDayAfter(1);
         this.endDate = null;
         this.url = "";
         this.place = "";

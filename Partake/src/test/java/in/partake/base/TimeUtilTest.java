@@ -78,29 +78,4 @@ public class TimeUtilTest {
         DateTime date2 = TimeUtil.dateTimeFromTimeString(TimeUtil.getTimeString(date1));
         Assert.assertEquals(date1, date2);
     }
-
-    @Test
-    public void testOneDayBefore() {
-        DateTime date = TimeUtil.getCurrentDateTime();
-        DateTime before = TimeUtil.oneDayBefore(date);
-
-        assertThat(before.getTime(), is(date.getTime() - 3600 * 24 * 1000));
-    }
-
-    @Test
-    public void testHalfDayBefore() {
-        DateTime date = TimeUtil.getCurrentDateTime();
-        DateTime before = TimeUtil.halfDayBefore(date);
-
-        assertThat(before.getTime(), is(date.getTime() - 3600 * 12 * 1000));
-    }
-
-    @Test
-    public void testOneDayAfter() {
-        DateTime date = TimeUtil.getCurrentDateTime();
-        DateTime after = TimeUtil.oneDayAfter(date);
-
-        assertThat(after.getTime(), is(date.getTime() + 3600 * 24 * 1000));
-    }
-
 }

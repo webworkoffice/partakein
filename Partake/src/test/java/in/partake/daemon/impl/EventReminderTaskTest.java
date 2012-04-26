@@ -56,7 +56,7 @@ public class EventReminderTaskTest extends AbstractPartakeControllerTest impleme
         DateTime now = TimeUtil.getCurrentDateTime();
         Event event = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider().create();
         event.setOwnerId(DEFAULT_USER_ID);
-        event.setBeginDate(TimeUtil.halfDayAfter(now));
+        event.setBeginDate(now.nHourBefore(12));
         storeEvent(event);
 
         UUID ticketId = UUID.randomUUID();

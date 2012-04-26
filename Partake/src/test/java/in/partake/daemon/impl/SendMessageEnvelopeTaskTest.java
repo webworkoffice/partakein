@@ -100,7 +100,7 @@ public class SendMessageEnvelopeTaskTest extends AbstractPartakeControllerTest i
     @Test
     public void sendInvalidatedMessage() throws Exception {
         DateTime now = TimeUtil.getCurrentDateTime();
-        DateTime before = TimeUtil.oneDayBefore(now);
+        DateTime before = now.nDayBefore(1);
 
         UUID uuid = UUID.randomUUID();
         MessageEnvelope envelope = MessageEnvelope.createForTwitterMessage(uuid.toString(), TWITTER_MESSAGE_INQUEUE_ID, before);
