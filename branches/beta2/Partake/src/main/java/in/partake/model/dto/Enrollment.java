@@ -82,7 +82,7 @@ public class Enrollment extends PartakeModel<Enrollment> {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
         obj.put("userId", userId);
-        obj.put("ticketId", ticketId);
+        obj.put("ticketId", ticketId.toString());
         obj.put("eventId", eventId);
         obj.put("comment", comment);
         obj.put("vip", vip);

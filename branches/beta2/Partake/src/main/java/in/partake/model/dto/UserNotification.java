@@ -60,7 +60,7 @@ public class UserNotification extends PartakeModel<UserNotification> {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("ticketId", ticketId);
+        obj.put("ticketId", ticketId.toString());
         obj.put("userId", userId);
         obj.put("notificationType", notificationType.toString());
         obj.put("delivery", delivery.toString());
