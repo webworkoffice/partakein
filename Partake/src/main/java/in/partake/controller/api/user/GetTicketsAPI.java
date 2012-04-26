@@ -54,8 +54,8 @@ public class GetTicketsAPI extends AbstractPartakeAPI {
         }
 
         JSONObject obj = new JSONObject();
-        obj.put("numTotalEvents", transaction.getNumTotalEvents());
-        obj.put("eventStatuses", statuses);
+        obj.put("totalTicketCount", transaction.getTotalTicketCount());
+        obj.put("ticketStatuses", statuses);
 
         return renderOK(obj);
     }
@@ -66,7 +66,7 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
     private int offset;
     private int limit;
 
-    private int numTotalEvents;
+    private int totalTicketCount;
     private List<Pair<Event, CalculatedEnrollmentStatus>> statuses;
 
     public GetEnrollmentsTransaction(String userId, int offset, int limit) {
@@ -87,7 +87,7 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
         IUserTicketAccess enrollmentAccess = daos.getEnrollmentAccess();
         List<UserTicket> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
 
-        this.numTotalEvents = enrollmentAccess.countByUserId(con, userId);
+        this.totalTicketCount = enrollmentAccess.countByUserId(con, userId);
         this.statuses = new ArrayList<Pair<Event, CalculatedEnrollmentStatus>>();
 
         for (UserTicket enrollment : enrollments) {
@@ -109,8 +109,8 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
         return null;
     }
 
-    public int getNumTotalEvents() {
-        return numTotalEvents;
+    public int getTotalTicketCount() {
+        return totalTicketCount;
     }
 
     public List<Pair<Event, CalculatedEnrollmentStatus>> getStatuses() {

@@ -43,6 +43,31 @@
             </div>
         <% } else { %>
             <div class="row">
+                <h3>管理中のイベント</h3>
+                <% for (Event event : action.getOwnedEvents()) {
+                    if (event == null)
+                        continue;
+                %>
+                <div class="span2" style="height: 200px;">
+                    <div class="well thin">
+                        <h4><a href="/events/<%= event.getId() %>"><%=h(event.getTitle())%></a></h4>
+                        <div class="event-image clearfix" style="width:100px; height:100px; position:relative; overflow: hidden;">
+                            <% if (event.getForeImageId() != null) { %>
+                                <a href="/events/<%= event.getId() %>"><img src="/images/thumbnail/<%= event.getForeImageId() %>" alt=""
+                                style="position: absolute; top:0; left:0; right:0; bottom:0; margin:auto; width: 260px"
+                                /></a>
+                            <% } %>
+                        </div>
+                        <p><%=h(event.getSummary())%></p>
+                        <% if (event.getBeginDate() != null) { %>
+                            <p><%=Helper.readableDate(event.getBeginDate())%></p>
+                        <% } %>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+
+            <div class="row">
                 <div class="span4">
                     <h3>参加中のイベント</h3>
                     <% for (Event event : action.getEnrolledEvents()) {
