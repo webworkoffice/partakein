@@ -43,7 +43,7 @@
     <div class="controls form-inline">
         <input type="text" id="endDataInput" name="endDate" class="span2"
             placeholder="YYYY-MM-DD HH:MM"
-                value="<%= event.getEndDate() != null ? TimeUtil.formatForEvent(event.getEndDate()) : TimeUtil.formatForEvent(TimeUtil.oneDayAfter(TimeUtil.getCurrentDateTime())) %>" />
+                value="<%= event.getEndDate() != null ? TimeUtil.formatForEvent(event.getEndDate()) : TimeUtil.formatForEvent(TimeUtil.getCurrentDateTime().nDayAfter(1)) %>" />
     </div>
     <script>
     $('#endDataInput').datetimepicker({
