@@ -185,6 +185,19 @@ public final class Helper {
         "日", "月", "火", "水", "木", "金", "土"
     };
 
+    /** 日時を読みやすい形で表示します */
+    public static String shortReadableData(DateTime dt) {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(dt.toDate());
+
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int date = cal.get(Calendar.DAY_OF_MONTH);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int min = cal.get(Calendar.MINUTE);
+
+        return String.format("%04d/%d/%d %02d:%02d", year, month, date, hour, min);
+    }
 
     /** 日時を読みやすい形で表示します */
     public static String readableDate(Date d) {
