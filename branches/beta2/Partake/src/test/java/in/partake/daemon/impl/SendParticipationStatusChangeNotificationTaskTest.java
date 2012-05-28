@@ -55,7 +55,7 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
 
         Event event = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider().create();
         event.setOwnerId(EVENT_OWNER_ID);
-        event.setBeginDate(now.nHourBefore(12));
+        event.setBeginDate(now.nHourAfter(48));
         storeEvent(event);
 
         UUID ticketId = UUID.randomUUID();
@@ -114,12 +114,13 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
 
         Event event = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider().create();
         event.setOwnerId(EVENT_OWNER_ID);
-        event.setBeginDate(now.nHourBefore(12));
+        event.setBeginDate(now.nHourAfter(48));
         storeEvent(event);
 
         UUID ticketId = UUID.randomUUID();
         EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
         ticket.setAmount(1);
+        ticket.setAmountInfinite(false);
         storeEventTicket(ticket);
 
         String[] enrollmentIds = new String[] {

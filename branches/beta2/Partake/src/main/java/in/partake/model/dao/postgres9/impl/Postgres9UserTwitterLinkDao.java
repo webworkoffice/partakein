@@ -132,7 +132,7 @@ public class Postgres9UserTwitterLinkDao extends Postgres9Dao implements IUserTw
         // What happends if '%' is included in the screenNamePrefix?
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE screenNamePrefix LIKE ?",
-                new Object[] { screenNamePrefix + "%" });
+                new Object[] { escapeForLike(screenNamePrefix) + "%" });
 
         try {
             Postgres9IdMapper<UserTwitterLink> idMapper = new Postgres9IdMapper<UserTwitterLink>((Postgres9Connection) con, mapper, entityDao);

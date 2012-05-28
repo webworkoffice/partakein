@@ -61,7 +61,7 @@ public class GetEventsAPITest extends APIControllerTest {
                             new DateTime(i), null, "url", "place",
                             "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID,
                             null, null, isPrivate ? "passcode" : null, draft,
-                            Collections.singletonList(TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
+                            Collections.singletonList(TestDataProvider.EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
                             new DateTime(i), new DateTime(i), -1));
                 }
 
