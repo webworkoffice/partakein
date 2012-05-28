@@ -235,11 +235,13 @@ public class Event extends PartakeModel<Event> {
         if (beginDate != null) {
             // TODO: beginDate should be deprecated.
             obj.put("beginDate", format.format(beginDate.toDate()));
+            obj.put("beginDateText", format.format(beginDate.toDate()));
             obj.put("beginDateTime", beginDate.getTime());
         }
         if (endDate != null) {
             // TODO: endDate should be deprecated.
             obj.put("endDate", format.format(endDate.toDate()));
+            obj.put("endDateText", format.format(endDate.toDate()));
             obj.put("endDateTime", endDate.getTime());
         }
         obj.put("url", url);
@@ -595,7 +597,7 @@ public class Event extends PartakeModel<Event> {
 
     public DateTime acceptsSomeTicketsTill(List<EventTicket> tickets) {
         // No acceptable tickets were found. We cannot accept any application.
-        if (tickets == null)
+        if (tickets == null || tickets.isEmpty())
             return new DateTime(0);
 
         DateTime dt = null;
@@ -603,7 +605,7 @@ public class Event extends PartakeModel<Event> {
             DateTime t = ticket.acceptsTill(this);
             if (t == null)
                 continue;
-            else if (dt == null || t.isBefore(dt))
+            else if (dt == null || t.isAfter(dt))
                 dt = t;
         }
 

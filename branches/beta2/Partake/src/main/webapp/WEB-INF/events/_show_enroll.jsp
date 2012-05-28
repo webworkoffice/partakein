@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.dto.EventTicket"%>
 <%@page import="in.partake.model.EventRelationEx"%>
 <%@page import="java.util.List"%>
 <%@page import="in.partake.model.dto.auxiliary.ParticipationStatus"%>
@@ -17,6 +18,7 @@
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL);
 
     EventEx event = action.getEvent();
+    List<EventTicket> tickets = action.getTickets();
     List<EventRelationEx> eventRelations = action.getRelations();
 
     // TODO: check these.
@@ -24,15 +26,20 @@
     ParticipationStatus status = ParticipationStatus.ENROLLED;
 %>
 
+<% if (tickets == null || tickets.isEmpty()) { %>
+<div class="enroll-bar">
+    <p>このイベントにはチケットが登録されていません。</p>
+</div>
+<% } else {
+    for (EventTicket ticket : tickets) { %>
 <div class="enroll-bar">
     <div class="row clearfix">
-        <div class="span5">
-            <p>開催期間 ふがほげ</p>
-            <p>申込期間 ほげほげ</p>
-        </div>
         <div class="span3">
-            <p>定員 ほげほげ</p>
-            <p>会場 ほげほげ</p>
+            <p style="font-size: 20px; line-height: 40px;"><%= ticket.getName() %></p>
+        </div>
+        <div class="span5">
+            <p>定員 <%= ticket.isAmountInfinite() ? "制限なし" : String.valueOf(ticket.getAmount()) %></p>
+            <p>申込期間 <%= Helper.readableDuration(ticket.acceptsFrom(event), ticket.acceptsTill(event)) %></p>
         </div>
 
         <div class="row span4" style="height: 50px;">
@@ -47,8 +54,10 @@
         <% } else if (false) { %>
             前提条件となるイベントに参加する必要があります。
         <% } else { %>
-            <a href="#" class="btn btn-danger-flat span4-width p2-height" data-toggle="modal" data-target="#event-enroll-dialog">参加申し込み</a>
+            <a href="#" class="btn btn-danger-flat span4-width p2-height" data-toggle="modal" data-target="#event-enroll-dialog">参加申込</a>
         <% } %>
         </div>
     </div>
 </div>
+    <% } %>
+<% } %>

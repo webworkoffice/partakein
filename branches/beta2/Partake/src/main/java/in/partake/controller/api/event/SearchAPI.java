@@ -48,6 +48,10 @@ public class SearchAPI extends AbstractPartakeAPI {
         boolean beforeDeadlineOnly =
                 optBooleanParameter("beforeDeadlineOnly", DEFAULT_BEFORE_DEADLINE_ONLY);
 
+        int offset = optIntegerParameter("offset", 0);
+        if (offset < 0)
+            return renderInvalid(UserErrorCode.INVALID_ARGUMENT);
+
         int maxNum = optIntegerParameter("maxNum", DEFAULT_MAX_NUM);
         maxNum = Util.ensureRange(maxNum, 0, MAX_NUM);
         if (maxNum <= 0)

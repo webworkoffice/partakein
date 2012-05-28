@@ -21,7 +21,12 @@
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
     <title>イベントを編集します</title>
 </head>
-<body>
+<body
+    <% if (!StringUtils.isBlank(event.getBackImageId())) { %>
+        style="background-image: url(/images/<%= h(event.getBackImageId()) %>)"
+    <% } %>
+>
+
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <jsp:include page="/WEB-INF/events/_edit_manage_navigation.jsp" flush="true" />
@@ -62,6 +67,7 @@ $(function() {
 });
 </script>
 
+<div class="event-body">
 
 <div class="page-header">
     <h1 id="title-show">
@@ -171,6 +177,68 @@ $(function() {
         .fail(partake.defaultFailHandler);
     });
     </script>
+
+    <div id="backimage-show">
+        <span id="backimage-edit" class="label label-edit edit-button">背景画像を編集</span>
+    </div>
+    <form id="backimage-form" style="display: none;">
+        <input type="hidden" id="backimage-id" value="<%= event.getBackImageId() %>" />
+        <div class="event-image">
+            <% if (StringUtils.isBlank(event.getBackImageId())) { %>
+                <img id="backimage-editimage" src="/images/no-image.png">
+            <% } else { %>
+                <img id="backimage-editimage" src="/images/<%= h(event.getBackImageId()) %>">
+            <% } %>
+        </div>
+
+        <div class="edit-back-buttons">
+            <input type="button" value="キャンセル" class="btn edit-cancel-button">
+            <input id="backimage-remove" type="button" value="画像を削除" class="btn edit-remove-button">
+            <input id="backimage-select" type="button" value="画像を選択" class="btn">
+        </div>
+        <script>
+            $('#backimage-edit').click(function() {
+            });
+            $('#backimage-remove').click(function() {
+                partake.event.modify(eventId, { 'backImageId': "" })
+                .done(function (json) {
+                    $('#backimage-id').val("");
+                    $('#backimage-showimage').hide();
+                    $('#backimage-editimage').attr('src', '/images/no-image.png');
+                    document.body.style.backgroundImage = '';
+                    $('#backimage-form').hide();
+                    $('#backimage-show').show();
+                })
+                .fail(partake.defaultFailHanlder);
+            });
+            $('#backimage-select').click(function() {
+                $('#image-upload-dialog').attr('purpose', 'background');
+                var imageId = $('#backimage-id').val();
+                if (!imageId || imageId == "") {
+                    $('#selected-image').attr('src', '/images/no-image.png');
+                } else {
+                    $('#selected-image').attr('src', '/images/' + imageId);
+                }
+                $('#image-upload-dialog').modal('show');
+            });
+
+            function onBackImageSelected(imageId, dialog) {
+                partake.event.modify(eventId, { 'backImageId': imageId })
+                .done(function (json) {
+                    $('#backimage-id').val(imageId);
+                    $('#backimage-showimage').attr('src', '/images/' + imageId);
+                    $('#backimage-editimage').attr('src', "/images/" + imageId);
+                    document.body.style.backgroundImage = "url(/images/" + imageId + ")";
+                    dialog.modal('hide');
+
+                    $('#backimage-showimage').show();
+                    $('#backimage-form').hide();
+                    $('#backimage-show').show();
+                })
+                .fail(partake.defaultFailHanlder);
+            }
+        </script>
+    </form>
 </div>
 
 <div class="row">
@@ -242,7 +310,6 @@ $(function() {
                         $('#foreimage-showimage').show();
                         $('#foreimage-form').hide();
                         $('#foreimage-show').show();
-
                     })
                     .fail(partake.defaultFailHanlder);
                 }
@@ -382,8 +449,7 @@ $(function() {
         if (dialog.attr('purpose') == "foreground" && imageId) {
             onForeImageSelected(imageId, dialog);
         } else if (dialog.attr('purpose') == "background" && imageId) {
-            if (onBackImageSelected(imageId))
-                dialog.modal('hide');
+            onBackImageSelected(imageId, dialog);
         }
     });
 
@@ -410,7 +476,6 @@ $(function() {
                 updateImageList(json.imageIds);
                 updatePagination(1, cachedTotalImageCount);
             } catch (e) {
-                console.log(e);
                 alert('レスポンスが JSON 形式ではありません。');
             }
         }
@@ -439,6 +504,8 @@ $(function() {
     });
 });
 </script>
+
+</div>
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

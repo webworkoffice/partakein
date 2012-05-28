@@ -10,7 +10,6 @@ import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9ConnectionPool;
 import in.partake.model.dao.postgres9.Postgres9DAOFactory;
 import in.partake.model.daofacade.EventDAOFacade;
-import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventComment;
@@ -59,7 +58,8 @@ public class Main {
     private static Postgres9ConnectionPool pool;
 
     public static void main(String[] args) throws Exception {
-        PartakeApp.initialize("unittest");
+        // PartakeApp.initialize("unittest");
+        initializeDataSource();
 
         factory = new Postgres9DAOFactory();
         pool = new Postgres9ConnectionPool();
@@ -358,7 +358,7 @@ public class Main {
                     rs.getString("summary"),
                     rs.getString("category"),
                     (rs.getTimestamp("beginDate") != null ? new DateTime(rs.getTimestamp("beginDate").getTime()) : null),
-                    (rs.getTimestamp("endDate") != null ? new DateTime(rs.getTimestamp("endDate").getTime()) : null),
+                    (rs.getTimestamp("endDate") != null && rs.getTimestamp("endDate").getTime() > 0 ? new DateTime(rs.getTimestamp("endDate").getTime()) : null),
                     rs.getString("url"),
                     rs.getString("place"),
                     rs.getString("address"),
@@ -492,7 +492,8 @@ public class Main {
                 UUID ticketId = UUID.randomUUID();
                 EventTicket ticket = new EventTicket(ticketId, eventId, "VIP Ticket",
                         TicketApplicationStart.ANYTIME, 0, (DateTime) null,
-                        TicketApplicationEnd.TILL_CUSTOM_DAY, 0, rs.getTimestamp("deadline") != null ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
+                        rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
+                        0, rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
                                 TicketPriceType.FREE, 0, false, countVip, createdAt(rs), modifiedAt(rs));
                 factory.getEventTicketAccess().put(pcon, ticket);
 
@@ -518,7 +519,8 @@ public class Main {
                 UUID ticketId = UUID.randomUUID();
                 EventTicket ticket = new EventTicket(ticketId, eventId, "Priority Ticket",
                         TicketApplicationStart.ANYTIME, 0, (DateTime) null,
-                        TicketApplicationEnd.TILL_CUSTOM_DAY, 0, rs.getTimestamp("deadline") != null ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
+                        rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
+                        0, rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
                                 TicketPriceType.FREE, 0, false, countPri, createdAt(rs), modifiedAt(rs));
                 factory.getEventTicketAccess().put(pcon, ticket);
 
@@ -545,7 +547,9 @@ public class Main {
                 UUID ticketId = UUID.randomUUID();
                 EventTicket ticket = new EventTicket(ticketId, eventId, "チケット",
                         TicketApplicationStart.ANYTIME, 0, (DateTime) null,
-                        TicketApplicationEnd.TILL_CUSTOM_DAY, 0, rs.getTimestamp("deadline") != null ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
+                        rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
+                        0,
+                        rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
                                 TicketPriceType.FREE, 0, isInfinity, Math.max(0, capacity - countVip - countPri), createdAt(rs), modifiedAt(rs));
                 factory.getEventTicketAccess().put(pcon, ticket);
 

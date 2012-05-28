@@ -14,12 +14,12 @@
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <div class="page-header">
-	<h1>お問い合わせ</h1>
+    <h1>お問い合わせ</h1>
 </div>
 
 <p>お問い合わせ、ご要望などは、twitter で <a href="http://twitter.com/partakein">@partakein</a> までお送りください。</p><br>
 
-<h2>PR</h2>
+<h2>Powered By</h2>
 
 <div class="biglogo">
 <img src="<%= request.getContextPath() %>/images/works-biglogo.jpg">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

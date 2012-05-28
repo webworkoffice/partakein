@@ -22,7 +22,6 @@
 <![endif]-->
 
 <%= Helper.javascript(
-        "/js/script.js",
         "/js/partake.js",
         "/js/partake-ui.js",
         "/js/vendor/jquery.ui.widget.js",
@@ -32,6 +31,7 @@
         "/js/jquery-ui-timepicker-addon.js",
         "/js/jquery-ui-timepicker-ja.js",
         "/js/jquery.json.2.3.js",
+        "/js/jquery.masonry.min.js",
         "/js/scrolltopcontrol.js",
         "/js/jquery.fixup.js",
         "/js/bootstrap.min.js"

@@ -61,7 +61,7 @@
             </li>
 
             <li class="pull-right">
-                <a href='#'>この内容でイベントを公開</a>
+                <a data-toggle="modal" href='#event-publish-dialog'>この内容でイベントを公開</a>
             </li>
         </ul>
     </div>
@@ -107,6 +107,30 @@
             });
         }
         $('#event-delete-dialog-submit-button').click(removeEvent);
+    </script>
+</div>
+
+<div id="event-publish-dialog" class="modal" style="display:none">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">&times;</a>
+        <h3>Publish the event</h3>
+    </div>
+    <div class="modal-body">
+        <p>Event will be published.</p>
+    </div>
+    <div class="modal-footer spinner-container">
+        <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
+        <a href="#" id="event-publish-button" class="btn btn-danger">送信</a>
+    </div>
+    <script>
+    $('#event-publish-button').click(function() {
+        var eventId = '<%= h(event.getId()) %>';
+        partake.event.publish(eventId)
+        .done(function(json) {
+            $('#event-publish-dialog').modal('hide');
+        })
+        .fail(partake.defaultFailHandler);
+    });
     </script>
 </div>
 

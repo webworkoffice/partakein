@@ -56,7 +56,7 @@
     <div id="editors" class="control-group">
         <label for="editors" class="control-label">編集者</label>
         <div class="controls">
-            <input type="text" name="editors" class="span7" value="<%= h(event.getManagerScreenNames()) %>"/>
+            <input type="text" name="editors" class="span7" value="<%= event.getEditors() %>"/>
             <p class="help-block">自分以外にも編集者を指定できます。twitter のショートネームをコンマ区切りで列挙してください。編集者はイベント削除以外のことを行うことが出来ます。</p>
             <p class="help-block">例： user1, user2, user3</p>
         </div>

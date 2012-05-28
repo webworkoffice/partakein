@@ -28,7 +28,7 @@ public final class Constants {
 
     // TODO: We'd like to use 'long' value as is.
     @Deprecated
-    public static final String JSON_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
+    public static final String JSON_DATE_FORMAT = "yyyy/MM/dd HH:mm";
 
     private Constants() {
         // Prevents from instantiation.
