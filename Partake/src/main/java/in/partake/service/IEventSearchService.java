@@ -14,6 +14,9 @@ public interface IEventSearchService {
 
     public boolean hasIndexed(String eventId) throws EventSearchServiceException;
 
+    public List<String> search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int offset, int limit) throws EventSearchServiceException;
+
+
     public List<String> search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws EventSearchServiceException;
     public List<String> getRecent(int maxDocument) throws EventSearchServiceException;
     public List<String> getRecentByCategory(String category, int maxDocument) throws EventSearchServiceException;

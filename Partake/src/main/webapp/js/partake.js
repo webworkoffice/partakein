@@ -114,6 +114,15 @@
             return $.post('/api/event/modify', arg);
         },
 
+        publish: function(eventId) {
+            var arg = {
+                sessionToken: partake.sessionToken,
+                eventId: eventId,
+            };
+
+            return $.post('/api/event/publish', arg);
+        },
+
         remove: function(eventId) {
             var arg = {
                 sessionToken: partake.sessionToken,
@@ -121,6 +130,16 @@
             };
 
             return $.post('/api/event/remove', arg);
+        },
+
+        simpleSearch: function(query, offset, limit) {
+            var arg = {
+                query: query,
+                offset: offset,
+                limit: limit
+            };
+
+            return $.post('/api/event/search', arg);
         },
 
         search: function(query, category, sortOrder, beforeDeadlineOnly, maxNum) {

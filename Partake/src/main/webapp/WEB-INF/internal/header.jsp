@@ -40,6 +40,21 @@
                 </li>
             </ul>
             <ul class="nav pull-right">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    About
+                    <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="http://code.google.com/p/partakein/wiki/FAQ">よくある質問</a></li>
+                    <li><a href="http://code.google.com/p/partakein/issues/list">ご要望・バグ報告</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/contact">お問い合わせ</a></li>
+                    <li><a href="/termofuse">利用規約</a></li>
+                    <li class="divider"></li>
+                    <li><a href="http://code.google.com/p/partakein/">Copyright &copy; The PARTAKE Committers</a></li>
+                </ul>
+            </li>
             <%
                 if (user != null) {
             %>
@@ -209,7 +224,7 @@
 
 <%-- header-nomessages.jsp をけす　 --%>
 <%
-    if (!"true".equals(request.getAttribute(Constants.ATTR_NO_HEADER_MESSAGES))) {
+    if (!"true".equals(request.getParameter(Constants.ATTR_NO_HEADER_MESSAGES))) {
 %>
 <div class="message">
     <%-- warning / error --%>

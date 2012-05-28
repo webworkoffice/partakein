@@ -160,6 +160,24 @@ $('#url-submit').click(function(e) {
 </script>
 
 <%--
+<h3>関連イベント</h3>
+<p id="related-show">
+    URL ： <a id="related-content" href=""><%= h(event.getUrl()) %></a>
+    <span id="related-edit" class="label label-edit edit-button">関連イベントを編集</span>
+</p>
+<form id="related-form" action="javascript:$('#related-submit').click()" style="display: none;">
+    <p><input type="text" class="span4" name="url" id="url-input" value="" placeholder="URL: http://partake.in/ など"></p>
+    <div class="edit-form-buttons">
+        <input type="button" value="キャンセル" class="btn edit-cancel-button">
+        <input id="url-submit" type="button" value="保存" class="btn edit-save-button">
+    </div>
+</form>
+<script>
+$('#related-edit').click(function(e) {
+    $('#related-input').val($('#related-content').text());
+});
+</script>
+
 <% if (event.getRelations() != null && !event.getR.isEmpty()) { %>
     <h3>関連イベント</h3>
     <% for (EventRelationEx eventRelation : eventRelations) { %>

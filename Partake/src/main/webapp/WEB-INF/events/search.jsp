@@ -137,8 +137,6 @@
 
     $('#search-form-button').click(doSearch);
 
-
-
     $(function() {
         try {
             console.log($('#textareaToSavetemporaryJSON').val());

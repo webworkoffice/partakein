@@ -55,7 +55,7 @@ class EventSearchService implements IEventSearchService {
     public List<String> getUpcomingByCategory(String category, int maxDocument) throws EventSearchServiceException {
         try {
             TopDocs docs = LuceneService.get().search("", category, "beginDate", true, maxDocument);
-            return convertToIds(docs);
+            return convertToIds(docs, 0);
         } catch (ParseException e) {
             assert false;
             throw new EventSearchServiceException(e);
@@ -65,30 +65,42 @@ class EventSearchService implements IEventSearchService {
     @Override
     public List<String> getRecent(int maxDocument) throws EventSearchServiceException {
         TopDocs docs = LuceneService.get().getRecentDocuments(maxDocument);
-        return convertToIds(docs);
+        return convertToIds(docs, 0);
     }
 
     @Override
     public List<String> getRecentByCategory(String category, int maxDocument) throws EventSearchServiceException {
         TopDocs docs = LuceneService.get().getRecentCategoryDocuments(category, maxDocument);
-        return convertToIds(docs);
+        return convertToIds(docs, 0);
     }
+
+    @Override
+    public List<String> search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int offset, int limit) throws EventSearchServiceException {
+        try {
+            TopDocs docs = LuceneService.get().search(term, category, sortOrder, beforeDeadlineOnly, offset + limit);
+            return convertToIds(docs, offset);
+        } catch (ParseException e) {
+            throw new EventSearchServiceException(e);
+        }
+    }
+
 
     @Override
     public List<String> search(String term, String category, String sortOrder, boolean beforeDeadlineOnly, int maxDocument) throws EventSearchServiceException {
         try {
             TopDocs docs = LuceneService.get().search(term, category, sortOrder, beforeDeadlineOnly, maxDocument);
-            return convertToIds(docs);
+            return convertToIds(docs, 0);
         } catch (ParseException e) {
             assert false;
             throw new EventSearchServiceException(e);
         }
     }
 
-    private List<String> convertToIds(TopDocs docs) throws EventSearchServiceException {
+    private List<String> convertToIds(TopDocs docs, int offset) throws EventSearchServiceException {
         List<String> eventIds = new ArrayList<String>();
 
-        for (ScoreDoc doc : docs.scoreDocs) {
+        for (int i = offset; i < docs.scoreDocs.length; ++i) {
+            ScoreDoc doc = docs.scoreDocs[i];
             Document document = LuceneService.get().getDocument(doc.doc);
             String id = document.get("ID");
             if (id == null)
