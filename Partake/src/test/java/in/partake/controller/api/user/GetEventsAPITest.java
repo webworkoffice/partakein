@@ -79,7 +79,7 @@ public class GetEventsAPITest extends APIControllerTest {
         assertResultOK(proxy);
 
         JSONObject obj = getJSON(proxy);
-        assertThat(obj.getInt("numTotalEvents"), is(N - 6));
+        assertThat(obj.getInt("totalEventCount"), is(N - 6));
         assertThat(obj.getJSONArray("eventStatuses"), is(not(nullValue())));
         JSONArray array = obj.getJSONArray("eventStatuses");
         assertThat(array.size(), is(10));
@@ -106,7 +106,7 @@ public class GetEventsAPITest extends APIControllerTest {
         assertResultOK(proxy);
 
         JSONObject obj = getJSON(proxy);
-        assertThat(obj.getInt("numTotalEvents"), is(N - 6));
+        assertThat(obj.getInt("totalEventCount"), is(N - 6));
         assertThat(obj.getJSONArray("eventStatuses"), is(not(nullValue())));
         JSONArray array = obj.getJSONArray("eventStatuses");
         assertThat(array.size(), is(10));

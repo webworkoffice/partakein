@@ -115,7 +115,7 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
         Event event = new Event();
         event.setBeginDate(new DateTime(0L));
         JSONObject json = event.toSafeJSON();
-        Assert.assertEquals("1970/01/01 09:00:00", json.getString("beginDate"));
+        Assert.assertEquals("1970/01/01 09:00", json.getString("beginDate"));
         Assert.assertFalse(json.containsKey("endDate"));
     }
 }

@@ -14,7 +14,8 @@ public class LoginByTwitterAction extends AbstractPartakeAction {
     public String doExecute() throws DAOException {
         try {
             ITwitterService twitterService = PartakeApp.getTwitterService();
-            TwitterLoginInformation info = twitterService.createLoginInformation(getParameter("redirectURL"));
+            String redirectURL = getParameter("redirectURL");
+            TwitterLoginInformation info = twitterService.createLoginInformation(redirectURL);
             String url = info.getAuthenticationURL();
 
             getPartakeSession().setTwitterLoginInformation(info);

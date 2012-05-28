@@ -91,7 +91,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
 
         // TODO: ここから下のコードは、参加者のみにおくる場合と仮参加者のみに送る場合で共有するべき
         String eventNotificationId = daos.getEventNotificationAccess().getFreshId(con);
-        EventTicketNotification notification = new EventTicketNotification(eventNotificationId, ticket.getId(), userIds, notificationType, TimeUtil.getCurrentDateTime(), null);
+        EventTicketNotification notification = new EventTicketNotification(eventNotificationId, ticket.getId(), ticket.getEventId(), userIds, notificationType, TimeUtil.getCurrentDateTime());
         daos.getEventNotificationAccess().put(con, notification);
 
         DateTime invalidAfter = ticket.acceptsReservationTill(event);
@@ -158,7 +158,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
         }
 
         String eventNotificationId = daos.getEventNotificationAccess().getFreshId(con);
-        EventTicketNotification notification = new EventTicketNotification(eventNotificationId, ticket.getId(), userIds, notificationType, TimeUtil.getCurrentDateTime(), null);
+        EventTicketNotification notification = new EventTicketNotification(eventNotificationId, ticket.getId(), ticket.getEventId(), userIds, notificationType, TimeUtil.getCurrentDateTime());
         daos.getEventNotificationAccess().put(con, notification);
 
         DateTime invalidAfter = event.getBeginDate();

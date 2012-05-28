@@ -11,7 +11,9 @@ public class RemoveCommentPermission extends PartakePermission {
     public static boolean check(EventComment comment, Event event, UserEx user) {
         assert comment != null;
         assert event != null;
-        assert user != null;
+
+        if (user == null)
+            return false;
 
         if (StringUtils.equals(comment.getUserId(), user.getId()))
             return true;

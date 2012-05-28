@@ -6,7 +6,7 @@ import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
 import in.partake.resource.UserErrorCode;
 
-public class EventPermissionEditAction extends AbstractEventEditAction {
+public class EventPrivacyEditAction extends AbstractEventEditAction {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -21,7 +21,7 @@ public class EventPermissionEditAction extends AbstractEventEditAction {
         if (!EventEditPermission.check(event, user))
             return renderForbidden(UserErrorCode.FORBIDDEN_EVENT_EDIT);
 
-        return render("events/edit_permission.jsp");
+        return render("events/edit_privacy.jsp");
     }
 }
 

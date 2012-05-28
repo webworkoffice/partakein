@@ -100,10 +100,12 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                 new Object[] { event.getId(), event.getOwnerId(), event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
 
         editorIndexDao.remove(pcon, "id", event.getId());
-        for (String editorId : event.getEditors()) {
-            editorIndexDao.put(pcon,
-                    new String[] { "id", "editorId", "draft", "isPrivate", "beginDate" },
-                    new Object[] { event.getId(), editorId, event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
+        if (event.getEditors() != null) {
+            for (String editorId : event.getEditors()) {
+                editorIndexDao.put(pcon,
+                        new String[] { "id", "editorId", "draft", "isPrivate", "beginDate" },
+                        new Object[] { event.getId(), editorId, event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
+            }
         }
     }
 
@@ -208,7 +210,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         String condition = conditionClauseForCriteria(criteria);
 
         Postgres9StatementAndResultSet psars = editorIndexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE editorId = ? " + condition + " ORDER BY beginDate DESC OFFSET ? LIMIT ?",
+                "SELECT id FROM " + EDITOR_INDEX_TABLE_NAME + " WHERE editorId = ? " + condition + " ORDER BY beginDate DESC OFFSET ? LIMIT ?",
                 new Object[] { editorUserId, offset, limit });
 
         Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);

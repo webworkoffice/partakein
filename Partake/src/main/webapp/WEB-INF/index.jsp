@@ -28,14 +28,14 @@
 <div class="container">
 
 <div class="row clearfix">
-    <div class="span4">
+    <div class="span8">
         <h2>PARTAKE</h2>
         <p>PARTAKE (パーテイク) は、イベントの作成・参加管理・参加者への連絡が簡単にできる、イベント開催支援サービスです。</p>
         <p>飲み会のメンバー募集から、セミナーや勉強会の開催、あるいは大規模イベントの開催まで、PARTAKE は強力にイベントの開催を支援します。</p>
-        <p><a data-toggle="modal" class="btn btn-large btn-info span3" href="#create-event-dialog" style="margin-bottom: 10px;">イベントを作る (無料)</a></p>
-        <p><a href="/events/<%= h(Constants.DEMO_ID.toString()) %>" class="btn btn-large span3">デモを見る</a></p>
+        <p><a data-toggle="modal" class="btn btn-large btn-info span6" href="#create-event-dialog" style="margin-bottom: 10px;">イベントを作る (無料)</a></p>
+        <p><a href="/events/<%= h(Constants.DEMO_ID.toString()) %>" class="btn btn-large span6">デモを見る</a></p>
     </div>
-    <div class="span8">
+    <div class="span16">
         <div id="toppage-carousel" class="carousel slide">
             <div class="carousel-inner">
                 <div class="item" style="height: 300px;">
@@ -72,45 +72,7 @@
     <jsp:param name="FORM_TYPE" value="simple" />
 </jsp:include>
 
-
-<div class="row" style="display:none">
-    <h1>新着イベント</h1>
-    <div id="recent-events" style="position: relative;">
-        <% for (Event event : action.getRecentEvents()) {
-        if (event == null)
-            continue;
-    %>
-    <div class="span3 masonry-box" style="margin-bottom: 5px;"><div class="thumbnail">
-        <% if (event.getForeImageId() != null) { %>
-            <a href="/events/<%= event.getId() %>">
-                <img src="/images/thumbnail/<%= event.getForeImageId() %>" alt=""  width="220" height="220" />
-            </a>
-        <% } else { %>
-            <a href="/events/<%= event.getId() %>">
-                <img src="/images/no-image.png" alt="" />
-            </a>
-        <% } %>
-        <div class="caption">
-            <h5><a href="/events/<%= event.getId() %>"><%=h(event.getTitle())%></a></h5>
-            <% if (event.getBeginDate() != null) { %>
-                <p><%=Helper.shortReadableData(event.getBeginDate())%>〜</p>
-            <% } %>
-            <p><%=h(event.getSummary())%></p>
-        </div>
-    </div></div>
-    <% } %>
-    </div>
 </div>
-
-
-<script>
-$('#recent-events').imagesLoaded(function(){
-    $('#recent-events').masonry({
-        itemSelector : '.masonry-box'
-    });
-});
-</script>
-
-</div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

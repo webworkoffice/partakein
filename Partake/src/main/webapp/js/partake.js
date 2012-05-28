@@ -103,6 +103,15 @@
             return $.post('/api/event/create', arg);
         },
 
+        copy: function(eventId) {
+            var arg = {
+                sessionToken: partake.sessionToken,
+                eventId: eventId
+            };
+
+            return $.post('/api/event/copy', arg);
+        },
+
         modify: function(eventId, params) {
             var arg = {
                 sessionToken: partake.sessionToken,
@@ -130,16 +139,6 @@
             };
 
             return $.post('/api/event/remove', arg);
-        },
-
-        simpleSearch: function(query, offset, limit) {
-            var arg = {
-                query: query,
-                offset: offset,
-                limit: limit
-            };
-
-            return $.post('/api/event/search', arg);
         },
 
         search: function(query, category, sortOrder, beforeDeadlineOnly, maxNum) {
@@ -185,6 +184,21 @@
             return $.post('/api/event/modifyEnquete', arg);
         },
 
+        getNotifications: function(eventId) {
+            var arg = {
+                eventId: eventId
+            };
+
+            return $.post('/api/event/getNotifications', arg);
+        }
+    };
+
+    // ----------------------------------------------------------------------
+    // Ticket
+
+    Partake.prototype.ticket = {
+        partake: this,
+
         apply: function(ticketId, status, comment) {
             var arg = {
                     sessionToken: partake.sessionToken,
@@ -193,24 +207,24 @@
                     comment: comment
                 };
 
-                return $.post('/api/event/apply', arg);
+                return $.post('/api/ticket/apply', arg);
         },
 
-        removeAttendant: function(userId, eventId) {
+        removeAttendant: function(userId, ticketId) {
             var arg = {
                 sessionToken: partake.sessionToken,
                 userId: userId,
-                eventId: eventId
+                ticketId: ticketId
             };
 
             return $.post('/api/event/removeAttendant', arg);
         },
 
-        changeAttendance: function(userId, eventId, status) {
+        changeAttendance: function(userId, ticketId, status) {
             var arg = {
                 sessionToken: partake.sessionToken,
                 userId: userId,
-                eventId: eventId,
+                ticketId: ticketId,
                 status: status
             };
 

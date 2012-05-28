@@ -40,8 +40,6 @@ public class ModifyEnqueteAPI extends AbstractPartakeAPI {
         if (questions.length != types.length || questions.length != options.length)
             return renderInvalid(UserErrorCode.INVALID_ENQUETE_PARAMS);
 
-
-
         new ModifyEnqueteTransaction(user, eventId, questions, types, options).execute();
         return renderOK();
     }

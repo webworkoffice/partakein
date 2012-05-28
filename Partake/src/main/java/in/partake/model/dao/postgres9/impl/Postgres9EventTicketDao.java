@@ -49,8 +49,8 @@ public class Postgres9EventTicketDao extends Postgres9Dao implements IEventTicke
         entityDao.initialize(pcon);
 
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
-            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, eventId TEXT NOT NULL, createdAt TIMESTAMP NOT NULL)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventId" + " ON " + INDEX_TABLE_NAME + "(eventId, createdAt)");
+            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, eventId TEXT NOT NULL, seq INT NOT NULL)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventId" + " ON " + INDEX_TABLE_NAME + "(eventId, seq, id)");
         }
     }
 
@@ -70,7 +70,9 @@ public class Postgres9EventTicketDao extends Postgres9Dao implements IEventTicke
         else
             entityDao.insert(pcon, entity);
 
-        indexDao.put(pcon, new String[] { "id", "eventId", "createdAt" }, new Object[] { ticket.getId().toString(), ticket.getEventId(), ticket.getCreatedAt() });
+        indexDao.put(pcon,
+                new String[] { "id", "eventId", "seq" },
+                new Object[] { ticket.getId().toString(), ticket.getEventId(), ticket.getOrder() });
     }
 
     @Override
@@ -102,7 +104,7 @@ public class Postgres9EventTicketDao extends Postgres9Dao implements IEventTicke
     @Override
     public List<EventTicket> findEventTicketsByEventId(PartakeConnection con, String eventId) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY createdAt ASC",
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY (seq, id) ASC",
                 new Object[] { eventId });
 
         Postgres9IdMapper<EventTicket> idMapper = new Postgres9IdMapper<EventTicket>((Postgres9Connection) con, mapper, entityDao);

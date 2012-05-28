@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.dto.auxiliary.NotificationType"%>
 <%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
 <%@page import="in.partake.controller.action.event.EventShowAction"%>
@@ -26,45 +27,50 @@
         redirectURL = action.getCurrentURL();
 %>
 
-<div class="row" style="background-color: #FFD">
-    <div class="span12">
-        <ul class="nav nav-pills nav-stacked-if-phone subnav">
-            <li>
-                <a>管理メニュー</a>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><img class="hidden-phone-inline" src="/images/gear.png"/> イベント編集<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <%-- <li><a href="#">イベント閲覧情報</a></li>
-                    <li class="divider"></li> --%>
-                    <li><a href="/events/edit/basic/<%= h(event.getId()) %>">イベントを編集</a></li>
-                    <li><a href="/events/new?eventId=<%= h(event.getId()) %>">コピーして新しいイベントを作成</a></li>
-                    <% if (EventRemovePermission.check(event, user)) { %>
-                    <li><a data-toggle="modal" href="#event-delete-dialog">イベントを削除</a></li>
-                    <% } else { %>
-                    <% } %>
-                </ul>
-            </li>
-            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><img class="hidden-phone-inline" src="/images/momonga1.png"/> 参加者管理<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/events/printParticipants/<%= h(event.getId()) %>">参加者リストを出力</a></li>
-                    <li><a href="/events/showParticipants/<%= h(event.getId()) %>">参加ステータスを編集</a></li>
-                </ul>
-            </li>
-            <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><b><img class="hidden-phone-inline" src="/images/mail.png"/></b> メッセージ管理<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a data-toggle="modal" href="#message-send-dialog">参加者へメッセージ送信</a></li>
-                    <%-- <li><a href="#">メッセージ送信状況</a></li> --%>
-                    <li class="divider"></li>
-                    <li><a data-toggle="modal" href="#event-reminder-dialog">リマインダー送付状況</a></li>
-                </ul>
-            </li>
+<div class="subnav subnav-fixed">
+    <ul class="nav nav-pills nav-stacked-if-phone">
+        <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#"><img class="hidden-phone-inline" src="/images/gear.png"/> イベント編集<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/events/edit/basic/<%= h(event.getId()) %>">イベントを編集</a></li>
+                <li><a id="copy-event">コピーして新しいイベントを作成</a></li>
+                <% if (EventRemovePermission.check(event, user)) { %>
+                <li><a data-toggle="modal" href="#event-delete-dialog">イベントを削除</a></li>
+                <% } else { %>
+                <% } %>
+            </ul>
+            <script>
+            $('#copy-event').click(function() {
+                var eventId = '<%= h(event.getId()) %>';
+                partake.event.copy(eventId)
+                .done(function (json) {
+                    location.href = "/events/edit/basic/" + json.eventId;
+                })
+                .fail(partake.defaultFailHandler);
+            })
+            </script>
+        </li>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><img class="hidden-phone-inline" src="/images/momonga1.png"/> 参加者管理<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="/events/participants/<%= h(event.getId()) %>">参加者一覧を表示</a></li>
+                <li><a href="/events/participants/csv/<%= h(event.getId()) %>">参加者リストを CSV (UTF-8) で出力</a></li>
+            </ul>
+        </li>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><b><img class="hidden-phone-inline" src="/images/mail.png"/></b> メッセージ管理<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a data-toggle="modal" href="#message-send-dialog">参加者へメッセージ送信</a></li>
+                <%-- <li><a href="#">メッセージ送信状況</a></li> --%>
+                <li class="divider"></li>
+                <li><a data-toggle="modal" href="#event-reminder-dialog">リマインダーなどの送付状況</a></li>
+            </ul>
+        </li>
 
-            <li class="pull-right">
-                <a data-toggle="modal" href='#event-publish-dialog'>この内容でイベントを公開</a>
-            </li>
-        </ul>
-    </div>
+        <% if (event.isDraft()) { %>
+        <li class="pull-right">
+            <a data-toggle="modal" href='#event-publish-dialog'>この内容でイベントを公開</a>
+        </li>
+        <% } %>
+    </ul>
 </div>
 
 <div id="event-delete-dialog" class="modal" style="display:none">
@@ -113,14 +119,24 @@
 <div id="event-publish-dialog" class="modal" style="display:none">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">&times;</a>
-        <h3>Publish the event</h3>
+        <h3>イベントを公開します</h3>
     </div>
     <div class="modal-body">
-        <p>Event will be published.</p>
+        <p>イベントを公開することで、次のことができるようになります。</p>
+        <ul>
+            <li><strong>ユーザーが参加登録できる</strong>ようになります。</li>
+            <li>プライベートイベントでなければ、<strong>検索結果に現れる</strong>ようになります。</li>
+        </ul>
+        <p>逆に、次のことができなくなります。</p>
+        <ul>
+            <li>イベントを再び非公開にすることは出来ません（プライベートイベントに変更することは可能です）</li>
+            <li>アンケートの編集ができなくなります。</li>
+            <li>（既に参加者がいる）チケットは削除できなくなります。</li>
+        </ul>
     </div>
     <div class="modal-footer spinner-container">
         <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
-        <a href="#" id="event-publish-button" class="btn btn-danger">送信</a>
+        <a href="#" id="event-publish-button" class="btn btn-danger">公開する</a>
     </div>
     <script>
     $('#event-publish-button').click(function() {
@@ -128,6 +144,7 @@
         partake.event.publish(eventId)
         .done(function(json) {
             $('#event-publish-dialog').modal('hide');
+            partake.ui.showMessage('イベントを公開しました。');
         })
         .fail(partake.defaultFailHandler);
     });
@@ -141,12 +158,14 @@
     </div>
     <div class="modal-body">
         <%-- TODO: maxCodePointsOfMessage should not be null. --%>
-        <p>参加者に twitter 経由でメッセージを送ることができます。メッセージは、長くとも 500 文字以内で記述してください。最大で１時間３回１日５回まで送ることができます。</p>
+        <p>参加者に twitter 経由でメッセージを送ることができます。題名は 100 文字以下、メッセージは 1000 文字以内で記述してください。最大で１時間３回１日５回まで送ることができます。</p>
         <form>
-            <label>題名<input id="message-send-dialog-subject" type="text" name="title" /></label>
-            <label>本文<textarea id="message-send-dialog-body" name="message" class="span7" rows="4"></textarea></label>
+            <label for="message-send-dialog-subject">題名</label>
+            <input id="message-send-dialog-subject" type="text" name="title" />
+            <label for="message-send-dialog-body">本文</label>
+            <textarea id="message-send-dialog-body" name="message" class="span14" rows="4"></textarea>
         </form>
-        <p>残り <span id="message-length">500</span> 文字</p>
+        <p>残り <span id="message-length">1000</span> 文字</p>
     </div>
     <div class="modal-footer spinner-container">
         <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
@@ -180,7 +199,7 @@
             var textarea = $('#message-send-dialog-body');
             var submitButton = $('#message-send-dialog-submit-button');
             var messageSpan = $('#message-length');
-            var left = 500 - codePointCount(textarea.val());
+            var left = 1000 - textarea.val().length;
 
             messageSpan.text(left).css('color', left > 20 ? '#000' : '#f00');
             if (left < 0)
@@ -188,7 +207,74 @@
             else
                 submitButton.removeAttr('disabled');
         }
-        $('#message-send-dialog-textarea').keydown(onMessageChange).keyup(onMessageChange);
+        $('#message-send-dialog-body').keydown(onMessageChange).keyup(onMessageChange);
     </script>
 </div>
 
+<div id="event-reminder-dialog" class="modal" style="display:none">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">&times;</a>
+        <h3>リマインダーなどの送付状況</h3>
+    </div>
+    <div class="modal-body">
+        <div id="event-reminder-dialog-spinner"><img src="/img/spinner.gif"></div>
+        <ul id="event-reminder-list">
+        </ul>
+    </div>
+    <div class="modal-footer spinner-container">
+        <a href="#" data-dismiss="modal" class="btn btn-primary">OK</a>
+    </div>
+    <script>
+    var isEventReminderRetrievalInvoked = false;
+    $('#event-reminder-dialog').on('show', function() {
+        var eventId = '<%= h(event.getId()) %>';
+        if (isEventReminderRetrievalInvoked)
+            return;
+        isEventReminderRetrievalInvoked = true;
+        $('#event-reminder-dialog-spinner').show();
+        $('#event-reminder-list').hide();
+        partake.event.getNotifications(eventId, 0, 10)
+        .done(function(json) {
+            $('#event-reminder-list').clear();
+            if (json.notifications.length == 0) {
+                $('#event-reminder-list').append($('<li>このイベントに関する通知はまだ何も送付されていません。</li>'));
+            } else {
+                for (var i = 0; i < json.notifications.length; ++i) {
+                    var type = null;
+                    switch (json.notifications[i].notificationType) {
+                    case '<%= NotificationType.EVENT_ONEDAY_BEFORE_REMINDER.toString() %>':
+                        type = '一日前通知';
+                        break;
+                    case '<%= NotificationType.ONE_DAY_BEFORE_REMINDER_FOR_RESERVATION.toString() %>':
+                        type = '仮参加者に対する一日前の催促';
+                        break;
+                    case '<%= NotificationType.HALF_DAY_BEFORE_REMINDER_FOR_RESERVATION.toString() %>':
+                        type = '仮参加者に対する半日前の催促';
+                        break;
+                    case '<%= NotificationType.BECAME_TO_BE_ENROLLED.toString() %>':
+                        type = '繰り上がり';
+                        break;
+                    case '<%= NotificationType.BECAME_TO_BE_CANCELLED.toString() %>':
+                        type = '繰り下がり';
+                        break;
+                    }
+
+                    if (type) {
+                        var li = $('<li></li>');
+                        var span1 = $('<span></span>').text(type);
+                        var span2 = $('<span></span>').text(new Date(json.notifications[i].createdAt));
+                        li.append(span1).append(span2);
+                        $('#event-reminder-list').append(li);
+                    }
+                }
+            }
+            $('#event-reminder-dialog-spinner').hide();
+            $('#event-reminder-list').show();
+        })
+        .fail(partake.defaultFailHanlder)
+        .fail(function() {
+            isEventReminderRetrievalInvoked = false;
+        });
+    });
+    </script>
+</div>

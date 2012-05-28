@@ -1,6 +1,5 @@
 package in.partake.controller.api.account;
 
-import in.partake.base.Pair;
 import in.partake.base.PartakeException;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
@@ -11,9 +10,9 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IUserTicketAccess;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
-import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.auxiliary.CalculatedEnrollmentStatus;
 
 import java.util.ArrayList;
@@ -21,6 +20,18 @@ import java.util.List;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+class TicketAndStatus {
+    public EventTicket ticket;
+    public Event event;
+    public CalculatedEnrollmentStatus status;
+
+    public TicketAndStatus(EventTicket ticket, Event event, CalculatedEnrollmentStatus status) {
+        this.ticket = ticket;
+        this.event = event;
+        this.status = status;
+    }
+}
 
 public class GetTicketsAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
@@ -39,15 +50,16 @@ public class GetTicketsAPI extends AbstractPartakeAPI {
         transaction.execute();
 
         JSONArray statuses = new JSONArray();
-        for (Pair<EventTicket, CalculatedEnrollmentStatus> ticketAndStatus : transaction.getStatuses()) {
+        for (TicketAndStatus ticketAndStatus : transaction.getStatuses()) {
             JSONObject obj = new JSONObject();
-            obj.put("ticket", ticketAndStatus.getFirst().toSafeJSON());
-            obj.put("status", ticketAndStatus.getSecond().toString());
+            obj.put("ticket", ticketAndStatus.ticket.toSafeJSON());
+            obj.put("event", ticketAndStatus.event.toSafeJSON());
+            obj.put("status", ticketAndStatus.status.toString());
             statuses.add(obj);
         }
 
         JSONObject obj = new JSONObject();
-        obj.put("totalTicketCount", transaction.getNumTotalTickets());
+        obj.put("totalTicketCount", transaction.getTotalTicketCount());
         obj.put("ticketStatuses", statuses);
 
         return renderOK(obj);
@@ -60,12 +72,13 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
     private int limit;
 
     private int numTotalTickets;
-    private List<Pair<EventTicket, CalculatedEnrollmentStatus>> statuses;
+    private List<TicketAndStatus> statuses;
 
     public GetEnrollmentsTransaction(String userId, int offset, int limit) {
         this.userId = userId;
         this.offset = offset;
         this.limit = limit;
+        this.statuses = new ArrayList<TicketAndStatus>();
     }
 
     @Override
@@ -74,7 +87,6 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
         List<UserTicket> enrollments = enrollmentAccess.findByUserId(con, userId, offset, limit);
 
         this.numTotalTickets = enrollmentAccess.countByUserId(con, userId);
-        this.statuses = new ArrayList<Pair<EventTicket, CalculatedEnrollmentStatus>>();
 
         for (UserTicket enrollment : enrollments) {
             if (enrollment == null)
@@ -89,17 +101,18 @@ class GetEnrollmentsTransaction extends DBAccess<Void> {
                 continue;
 
             CalculatedEnrollmentStatus calculatedEnrollmentStatus = EnrollmentDAOFacade.calculateEnrollmentStatus(con, daos, userId, ticket, event);
-            statuses.add(new Pair<EventTicket, CalculatedEnrollmentStatus>(ticket, calculatedEnrollmentStatus));
+            TicketAndStatus status = new TicketAndStatus(ticket, event, calculatedEnrollmentStatus);
+            statuses.add(status);
         }
 
         return null;
     }
 
-    public int getNumTotalTickets() {
+    public int getTotalTicketCount() {
         return numTotalTickets;
     }
 
-    public List<Pair<EventTicket, CalculatedEnrollmentStatus>> getStatuses() {
+    public List<TicketAndStatus> getStatuses() {
         return this.statuses;
     }
 }

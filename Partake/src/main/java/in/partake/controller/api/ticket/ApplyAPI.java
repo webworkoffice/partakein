@@ -1,4 +1,4 @@
-package in.partake.controller.api.event;
+package in.partake.controller.api.ticket;
 
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;

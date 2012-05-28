@@ -49,7 +49,7 @@ public class GetEventsAPI extends AbstractPartakeAPI {
             statuses.add(status.toSafeJSON());
 
         JSONObject obj = new JSONObject();
-        obj.put("numTotalEvents", transaction.getNumTotalEvents());
+        obj.put("totalEventCount", transaction.getNumTotalEvents());
         obj.put("eventStatuses", statuses);
 
         return renderOK(obj);
@@ -105,7 +105,15 @@ class GetEventsTransaction extends DBAccess<Void> {
             int numEnrolledUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.ENROLLED);
             int numReservedUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.RESERVED);
             int numCancelledUsers = enrollmentAccess.countByEventId(con, event.getId(), ParticipationStatus.CANCELLED);
-            eventStatuses.add(new EventStatus(event, isBeforeDeadline, numEnrolledUsers, numReservedUsers, numCancelledUsers));
+
+            int amount = 0;
+            boolean isAmountInfinite = false;
+            for (EventTicket ticket : tickets) {
+                isAmountInfinite |= ticket.isAmountInfinite();
+                amount += ticket.getAmount();
+            }
+
+            eventStatuses.add(new EventStatus(event, isAmountInfinite, amount, isBeforeDeadline, numEnrolledUsers, numReservedUsers, numCancelledUsers));
         }
 
         return null;

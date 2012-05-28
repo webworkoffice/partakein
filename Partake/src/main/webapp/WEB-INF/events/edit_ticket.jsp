@@ -19,10 +19,13 @@
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
     <title>チケット</title>
 </head>
-<body>
+<body class="with-sub-nav">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
-<jsp:include page="/WEB-INF/events/_edit_manage_navigation.jsp" flush="true" />
+<jsp:include page="/WEB-INF/events/_edit_manage_navigation.jsp" flush="true">
+    <jsp:param name="NAVIGATION" value="ticket" />
+</jsp:include>
 
 <div class="page-header">
     <h1>チケット</h1>
@@ -30,36 +33,36 @@
 </div>
 
 <div class="row" style="margin-bottom: 10px;">
-    <div class="span6 offset-half">チケット名</div>
-    <div class="span3">数量</div>
+    <div class="span12 offset1">チケット名</div>
+    <div class="span6">数量</div>
 </div>
 
-<div class="row"><div id="ticket-list" class="span12" style="border-bottom: 1px solid; margin-bottom: 10px;">
+<div class="row"><div id="ticket-list" class="span24" style="border-bottom: 1px solid; margin-bottom: 10px;">
 </div></div>
 
 <div id="template" style="display: none; border-top: 1px solid; padding-top: 10px; padding-bottom: 10px;">
     <div id="template-head" class="row">
-        <div id="template-question-text" class="span6 offset-half">チケット名を入力してください。</div>
-        <div id="template-question-type" class="span3">0/0</div>
-        <div class="span2-half">
+        <div id="template-question-text" class="span12 offset1">チケット名を入力してください。</div>
+        <div id="template-question-type" class="span6">0/0</div>
+        <div class="span5">
             <a href="#" id="template-show-edit"><i class="icon-pencil"></i>編集</a>
             <a href="#" id="template-remove"><i class="icon-remove"></i>削除</a>
         </div>
     </div>
     <div id="template-body" class="row" style="display: none;">
-        <div class="span9 offset-half">
+        <div class="span18 offset1">
             <form class="form-horizontal"><fieldset>
                 <div class="control-group">
                     <label class="control-label">チケット名</label>
                     <div class="controls">
-                        <input id="template-ticket-name" type="text" class="span6">
+                        <input id="template-ticket-name" type="text" class="span12">
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label">募集開始日時</label>
                     <div class="controls">
                         <label class="radio"><input type="radio" name="ticketApplicationStart[]" value="fromNow" checked />今から</label>
-                        <label class="radio"><input type="radio" name="ticketApplicationStart[]" value="beforeNDays" />イベントの <input type="text" class="span1" name="ticketApplicationStartDay[]" value="0" /> 日前から</label>
+                        <label class="radio"><input type="radio" name="ticketApplicationStart[]" value="beforeNDays" />イベントの <input type="text" class="span2" name="ticketApplicationStartDay[]" value="0" /> 日前から</label>
                         <label class="radio"><input type="radio" name="ticketApplicationStart[]" value="custom" />次の日付
                             <input type="text" type="text" name="" />
                         </label>
@@ -70,7 +73,7 @@
                     <div class="controls">
                         <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="justBeforeEvent" checked />イベントが始まるまで</label>
                         <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="justAfterEvent" checked />イベントが終わるまで</label>
-                        <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="beforeNDays" />イベントの <input type="text" class="span1" name="ticketApplicationPeriodEndDay[]" value="0" /> 日前まで</label>
+                        <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="beforeNDays" />イベントの <input type="text" class="span2" name="ticketApplicationPeriodEndDay[]" value="0" /> 日前まで</label>
                         <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="custom" />次の日付
                             <input type="text" type="text" name="" />
                         </label>
@@ -81,7 +84,7 @@
                     <div class="controls">
                         <label class="radio"><input type="radio" name="ticketPrice[]" value="free" checked />無料</label>
                         <label class="radio"><input type="radio" name="ticketPrice[]" value="nonFree" />
-                        <input type="text" class="span2" name="ticketPriceText[]" value="1000" />円 (会場で支払い)</label>
+                        <input type="text" class="span4" name="ticketPriceText[]" value="1000" />円 (会場で支払い)</label>
                     </div>
                 </div>
                 <div class="control-group">
@@ -94,13 +97,13 @@
                 </div>
             </fieldset></form>
         </div>
-        <div class="span2-half">
+        <div class="span5">
             <a href="#" id="template-hide-edit"><i class="icon-ok"></i>編集終了</a>
         </div>
     </div>
 </div>
 
-<div class="row"><div class="span11 offset-half">
+<div class="row"><div class="span11 offset1">
     <form class="form-horizontal"><fieldset>
         <a id="add-new-ticket">＋ 新しいチケットを追加</a>
     </fieldset></form>
@@ -176,7 +179,7 @@ for (var i = 0; i < initialData.length; ++i) {
 
 <form><fieldset>
     <div class="form-actions">
-        <input type="button" id="enquete-submit" class="btn btn-danger-flat" value="保存">
+        <input type="button" id="enquete-submit" class="btn btn-primary" value="保存">
         <span id="enquete-submit-info" class="text-info"></span>
     </div>
 </fieldset></form>
@@ -212,8 +215,7 @@ $('#enquete-submit').click(function() {
 });
 </script>
 
-
-
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

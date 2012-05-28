@@ -8,6 +8,7 @@ import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.UserDAOFacade;
+import in.partake.model.dto.UserCalendarLink;
 import in.partake.model.dto.UserOpenIDLink;
 import in.partake.model.dto.UserPreference;
 
@@ -19,6 +20,7 @@ public class MypageAction extends AbstractPartakeAction {
 
     private UserPreference preference;
     private List<UserOpenIDLink> openIds;
+    private UserCalendarLink calendarLink;
 
     public String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
@@ -28,6 +30,7 @@ public class MypageAction extends AbstractPartakeAction {
 
         preference = transaction.getPreference();
         openIds = transaction.getOpenIds();
+        calendarLink = transaction.getCalendarLink();
 
         return render("mypage/show.jsp");
     }
@@ -38,6 +41,10 @@ public class MypageAction extends AbstractPartakeAction {
         return preference;
     }
 
+    public UserCalendarLink getCalendarLink() {
+        return calendarLink;
+    }
+
     public List<UserOpenIDLink> getOpenIds() {
         return openIds;
     }
@@ -46,6 +53,7 @@ public class MypageAction extends AbstractPartakeAction {
 class MypageActionTransaction extends DBAccess<Void> {
     private String userId;
     private UserPreference preference;
+    private UserCalendarLink calendarLink;
     private List<UserOpenIDLink> openIds;
 
     public MypageActionTransaction(String userId) {
@@ -55,12 +63,17 @@ class MypageActionTransaction extends DBAccess<Void> {
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
         preference = UserDAOFacade.getPreference(con, daos, userId);
+        calendarLink = daos.getCalendarAccess().findByUserId(con, userId);
         openIds = daos.getOpenIDLinkageAccess().findByUserId(con, userId);
         return null;
     }
 
     public UserPreference getPreference() {
         return preference;
+    }
+
+    public UserCalendarLink getCalendarLink() {
+        return calendarLink;
     }
 
     public List<UserOpenIDLink> getOpenIds() {

@@ -58,7 +58,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
 
                 List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
                 for (EventTicket ticket : tickets)
-                	sendChangeNotificationImpl(con, daos, ticket, eventId, event);
+                    sendChangeNotificationImpl(con, daos, ticket, eventId, event);
             }
         } finally {
             it.close();
@@ -93,7 +93,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
         }
         if (!userIdsToBeEnrolled.isEmpty()) {
             String eventNotificationId = daos.getEventNotificationAccess().getFreshId(con);
-            EventTicketNotification notification = new EventTicketNotification(eventNotificationId, ticket.getId(), userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_ENROLLED, TimeUtil.getCurrentDateTime(), null);
+            EventTicketNotification notification = new EventTicketNotification(eventNotificationId, ticket.getId(), ticket.getEventId(), userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_ENROLLED, TimeUtil.getCurrentDateTime());
             daos.getEventNotificationAccess().put(con, notification);
 
             for (String userId : userIdsToBeEnrolled) {
@@ -144,7 +144,7 @@ class SendParticipationStatusChangeNotificationsTask extends Transaction<Void> i
 
         if (!userIdsToBeCancelled.isEmpty()) {
             String notificationId = daos.getEventNotificationAccess().getFreshId(con);
-            EventTicketNotification notification = new EventTicketNotification(notificationId, ticket.getId(), userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_CANCELLED, TimeUtil.getCurrentDateTime(), null);
+            EventTicketNotification notification = new EventTicketNotification(notificationId, ticket.getId(), ticket.getEventId(), userIdsToBeEnrolled, NotificationType.BECAME_TO_BE_CANCELLED, TimeUtil.getCurrentDateTime());
             daos.getEventNotificationAccess().put(con, notification);
 
             for (String userId : userIdsToBeCancelled) {

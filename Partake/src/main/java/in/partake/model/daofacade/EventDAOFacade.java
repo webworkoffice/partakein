@@ -11,15 +11,15 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventActivityAccess;
-import in.partake.model.dto.EventComment;
-import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
+import in.partake.model.dto.EventComment;
 import in.partake.model.dto.EventFeed;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.MessageEnvelope;
-import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.TwitterMessage;
+import in.partake.model.dto.UserTicket;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.resource.PartakeProperties;
@@ -90,6 +90,31 @@ public class EventDAOFacade {
             tweetNewEventArrival(con, daos, eventEmbryo);
 
         return eventEmbryo.getId();
+    }
+
+    public static String copy(PartakeConnection con, IPartakeDAOs daos, UserEx user, String eventId) throws DAOException {
+        Event event = daos.getEventAccess().find(con, eventId);
+        if (event == null)
+            return null;
+
+        // --- copy event.
+        Event newEvent = new Event(event);
+        newEvent.setId(null);
+        newEvent.setTitle(Util.shorten("コピー -- " + event.getTitle(), 100));
+        newEvent.setDraft(true);
+        String newEventId = EventDAOFacade.create(con, daos, newEvent);
+        newEvent.setId(eventId);
+
+        // --- copy ticket.
+        List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
+        for (EventTicket ticket : tickets) {
+            EventTicket newTicket = new EventTicket(ticket);
+            newTicket.setId(daos.getEventTicketAccess().getFreshId(con));
+            newTicket.setEventId(newEventId);
+            daos.getEventTicketAccess().put(con, newTicket);
+        }
+
+        return newEventId;
     }
 
     public static void modify(PartakeConnection con, IPartakeDAOs daos, Event eventEmbryo) throws DAOException {

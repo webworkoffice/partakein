@@ -33,7 +33,7 @@ public class UserOpenIDLinkTestDataProvider extends TestDataProvider<UserOpenIDL
         IUserOpenIDLinkAccess dao = daos.getOpenIDLinkageAccess();
         dao.truncate(con);
 
-        dao.put(con, new UserOpenIDLink(DEFAULT_USER_OPENID_ID, DEFAULT_USER_OPENID_IDENTIFIER, DEFAULT_USER_ID));
-        dao.put(con, new UserOpenIDLink(DEFAULT_USER_OPENID_ALTERNATIVE_ID, DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER, DEFAULT_USER_ID));
+        dao.put(con, new UserOpenIDLink(DEFAULT_USER_OPENID_ID, DEFAULT_USER_ID, DEFAULT_USER_OPENID_IDENTIFIER));
+        dao.put(con, new UserOpenIDLink(DEFAULT_USER_OPENID_ALTERNATIVE_ID, DEFAULT_USER_ID, DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER));
     }
 }

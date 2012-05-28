@@ -6,14 +6,16 @@
 
 <html lang="ja">
 <head>
-	<jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
-	<title>ログインが必要です</title>
+    <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
+    <title>ログインが必要です</title>
 </head>
 <body>
-<jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
-
+<jsp:include page="/WEB-INF/internal/header.jsp" flush="true">
+    <jsp:param name="NO_HEADER_MESSAGES" value="true" />
+</jsp:include>
+<div class="container">
 <div class="page-header">
-	<h1>ログインが必要です</h1>
+    <h1>ログインが必要です</h1>
 </div>
 
 <p>PARTAKE では、Twitter アカウントを用いてログインすることができます。PARTAKE への登録は必要ありません。</p>
@@ -28,6 +30,7 @@
 <p>PARTAKE では、Twitter アカウントをログインに使用します。</p>
 <p><a href="https://twitter.com/signup">このページで  Twitter のアカウントを取得してください。</a></p>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

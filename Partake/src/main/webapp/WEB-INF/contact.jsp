@@ -12,6 +12,7 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
 <div class="page-header">
     <h1>お問い合わせ</h1>
@@ -26,6 +27,7 @@
 <img src="<%= request.getContextPath() %>/images/aiit-biglogo.gif">
 </div>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

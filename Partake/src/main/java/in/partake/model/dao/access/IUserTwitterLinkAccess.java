@@ -1,5 +1,6 @@
 package in.partake.model.dao.access;
 
+import java.util.List;
 import java.util.UUID;
 
 import in.partake.model.dao.DAOException;
@@ -14,4 +15,6 @@ public interface IUserTwitterLinkAccess extends IAccess<UserTwitterLink, UUID> {
     public UUID getFreshId(PartakeConnection con) throws DAOException;
     public UserTwitterLink findByTwitterId(PartakeConnection con, long twitterId) throws DAOException;
     public UserTwitterLink findByUserId(PartakeConnection con, String userId) throws DAOException;
+
+    public List<UserTwitterLink> findByScreenNamePrefix(PartakeConnection con, String screenNamePrefix, int limit) throws DAOException;
 }

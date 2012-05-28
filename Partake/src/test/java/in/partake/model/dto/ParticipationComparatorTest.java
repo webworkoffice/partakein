@@ -41,37 +41,14 @@ public final class ParticipationComparatorTest {
     }
 
     @Test
-    public void sortSamePriorityValues() {
-        List<UserTicketEx> list = Arrays.asList(new UserTicketEx[] {
-                new UserTicketEx(new UserTicket("id1", "userID", new UUID(0, 0), "eventId", "comment", null, null, null, new DateTime(0), new DateTime(0), null), user),
-                new UserTicketEx(new UserTicket("id2", "userID", new UUID(0, 0), "eventId", "comment", null, null, null, new DateTime(1), new DateTime(0), null), user),
-        });
-
-        Collections.sort(list, comparator);
-        Assert.assertTrue(list.get(0).getModifiedAt().compareTo(list.get(1).getModifiedAt()) < 0);
-    }
-
-    @Test
-    public void sortSamePriorityAndDateValues() {
-        List<UserTicketEx> list = Arrays.asList(new UserTicketEx[] {
-                new UserTicketEx(new UserTicket("id1", "userID1", new UUID(0, 0), "eventId", "comment", null, null, null, new DateTime(0), new DateTime(0), null), user),
-                new UserTicketEx(new UserTicket("id2", "userID2", new UUID(0, 0), "eventId", "comment", null, null, null, new DateTime(0), new DateTime(0), null), user),
-        });
-
-        Collections.sort(list, comparator);
-        Assert.assertTrue(list.get(0).getModifiedAt().compareTo(list.get(1).getModifiedAt()) == 0);
-        Assert.assertTrue(list.get(0).getUserId().compareTo(list.get(1).getUserId()) < 0);
-    }
-
-    @Test
     public void sortAllSameValues() {
         List<UserTicketEx> list = Arrays.asList(new UserTicketEx[] {
-                new UserTicketEx(new UserTicket("id1", "userID", new UUID(0, 0), "eventId", "comment", null, null, null, new DateTime(0), new DateTime(0), null), user),
-                new UserTicketEx(new UserTicket("id2", "userID", new UUID(0, 0), "eventId", "comment", null, null, null, new DateTime(0), new DateTime(0), null), user),
+                new UserTicketEx(new UserTicket("id1", "userID", new UUID(0, 0), "eventId", "comment", null, null, null, null, new DateTime(0), new DateTime(0), null), user),
+                new UserTicketEx(new UserTicket("id2", "userID", new UUID(0, 0), "eventId", "comment", null, null, null, null, new DateTime(0), new DateTime(0), null), user),
         });
 
         Collections.sort(list, comparator);
-        Assert.assertTrue(list.get(0).getModifiedAt().compareTo(list.get(1).getModifiedAt()) == 0);
+        Assert.assertTrue(list.get(0).getAppliedAt().compareTo(list.get(1).getAppliedAt()) == 0);
         Assert.assertTrue(list.get(0).getUserId().compareTo(list.get(1).getUserId()) == 0);
     }
 
@@ -89,7 +66,7 @@ public final class ParticipationComparatorTest {
     @Test
     public void sortParicipationAndNull() {
         List<UserTicketEx> list = Arrays.asList(new UserTicketEx[] {
-                new UserTicketEx(new UserTicket("id", "userID", new UUID(0, 0), "eventId", "comment", null, null, null, new DateTime(0), new DateTime(0), new DateTime(0)), user),
+                new UserTicketEx(new UserTicket("id", "userID", new UUID(0, 0), "eventId", "comment", null, null, null, null, new DateTime(0), new DateTime(0), new DateTime(0)), user),
                 null
         });
 
@@ -102,8 +79,8 @@ public final class ParticipationComparatorTest {
     @Test(expected = NullPointerException.class)
     public void sortNullId() {
         List<UserTicketEx> list = Arrays.asList(new UserTicketEx[] {
-                new UserTicketEx(new UserTicket(null, null, null, null, "comment", ParticipationStatus.CANCELLED, ModificationStatus.CHANGED, null, null, new DateTime(0), null), user),
-                new UserTicketEx(new UserTicket(null, null, null, null, "comment", ParticipationStatus.CANCELLED, ModificationStatus.CHANGED, null, null, new DateTime(0), null), user),
+                new UserTicketEx(new UserTicket(null, null, null, null, "comment", ParticipationStatus.CANCELLED, ModificationStatus.CHANGED, null, null, null, new DateTime(0), null), user),
+                new UserTicketEx(new UserTicket(null, null, null, null, "comment", ParticipationStatus.CANCELLED, ModificationStatus.CHANGED, null, null, null, new DateTime(0), null), user),
         });
         Collections.sort(list, comparator);
     }

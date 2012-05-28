@@ -1,12 +1,14 @@
 package in.partake.model.dto;
 
+import in.partake.base.JSONable;
+
 import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> {
+public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> implements JSONable {
     private UUID id;
     private String userId;
     private String identifier;

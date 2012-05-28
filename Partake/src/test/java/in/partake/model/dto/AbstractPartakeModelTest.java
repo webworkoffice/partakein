@@ -86,8 +86,10 @@ public abstract class AbstractPartakeModelTest<T extends PartakeModel<T>> {
     public final void testToCheckEquals() throws Exception {
         List<T> samples = getTestDataProvider().createSamples();
 
-        for (int i = 1; i < samples.size(); ++i)
-            assertThat(samples.get(0).equals(samples.get(i)), is(false));
+        for (int i = 1; i < samples.size(); ++i) {
+            assertThat("Index " + String.valueOf(i) + " is the same as index 0.",
+                    samples.get(0).equals(samples.get(i)), is(false));
+        }
 
         assertThat(samples.get(0).equals(null), is(false));
     }

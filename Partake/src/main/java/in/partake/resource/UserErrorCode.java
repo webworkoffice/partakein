@@ -103,11 +103,15 @@ public enum UserErrorCode {
     // MESSAGE
     MISSING_MESSAGE("invalid.message.missing"),
     MISSING_MESSAGE_SUBJECT("invalid.message.subject"),
+    INVALID_MESSAGE_SUBJECT_TOOLONG("invalid.message.subject.toolong"),
     INVALID_MESSAGE_TOOMUCH("invalid.message.toomuch"),
     INVALID_MESSAGE_TOOLONG("invalid.message.toolong"),
 
     // ENROLLMENT
     INVALID_MISSING_VIP("invalid.enrollment.vip.missing"),
+
+    // NOTIFICATION
+    FORBIDDEN_SHOW_NOTIFICATION("invalid.notification.show.forbidden"),
 
     // OAUTH
     INVALID_OAUTH_VERIFIER("invalid.oauth.verifier");

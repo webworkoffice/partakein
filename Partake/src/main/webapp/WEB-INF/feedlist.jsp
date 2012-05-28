@@ -41,5 +41,6 @@
 </ul>
 
 </div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

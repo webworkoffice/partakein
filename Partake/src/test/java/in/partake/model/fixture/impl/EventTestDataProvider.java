@@ -79,35 +79,49 @@ public class EventTestDataProvider extends TestDataProvider<Event> {
                 late, late, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
-                Collections.singletonList(EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
                 now, now, -1));
 
         dao.put(con, new Event(PRIVATE_EVENT_ID, "title", "summary", category,
                 late, late, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, "passcode", false,
-                Collections.singletonList(EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
                 now, now, -1));
 
         dao.put(con, new Event(JAPANESE_EVENT_ID, "title", "summary", category,
                 late, late, "http://www.example.com/", "place",
                 "address", "unique identifier -- " + JAPANESE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
-                Collections.singletonList(EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
                 now, now, -1));
 
         dao.put(con, new Event(UNIQUEIDENTIFIER_EVENT_ID, "title", "summary", category,
                 late, late, "http://www.example.com/", "place",
                 "address", "unique identifier -- " + UNIQUE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
-                Collections.singletonList(EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
                 now, now, -1));
 
         dao.put(con, new Event(UNPUBLISHED_EVENT_ID, "title", "summary", category,
                 late, late, "http://www.example.com/", "place",
                 "address", "description", "#hashTag", EVENT_OWNER_ID,
                 EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, true,
-                Collections.singletonList(EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
+                now, now, -1));
+
+        dao.put(con, new Event(PUBLISHED_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
+                now, now, -1));
+
+        dao.put(con, new Event(NO_PARTICIPANTS_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, true,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
                 now, now, -1));
     }
 }

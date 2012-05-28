@@ -34,15 +34,15 @@
     for (EventTicket ticket : tickets) { %>
 <div class="enroll-bar">
     <div class="row clearfix">
-        <div class="span3">
+        <div class="span6">
             <p style="font-size: 20px; line-height: 40px;"><%= ticket.getName() %></p>
         </div>
-        <div class="span5">
+        <div class="span10">
             <p>定員 <%= ticket.isAmountInfinite() ? "制限なし" : String.valueOf(ticket.getAmount()) %></p>
             <p>申込期間 <%= Helper.readableDuration(ticket.acceptsFrom(event), ticket.acceptsTill(event)) %></p>
         </div>
 
-        <div class="row span4" style="height: 50px;">
+        <div class="row span8" style="height: 50px;">
         <% if (deadlineOver) { %>
             <a href="#" class="btn btn-flat span4-width p2-height disabled">申込期間外です</a>
         <% } else if (user == null) { %>
