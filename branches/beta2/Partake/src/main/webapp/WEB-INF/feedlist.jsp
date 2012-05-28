@@ -11,9 +11,10 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
 <div class="page-header">
-	<h1>フィードリスト</h1>
+    <h1>フィードリスト</h1>
 </div>
 
 <h2>RSS 配信</h2>
@@ -39,6 +40,6 @@
     <% } %>
 </ul>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
 </body>
 </html>
