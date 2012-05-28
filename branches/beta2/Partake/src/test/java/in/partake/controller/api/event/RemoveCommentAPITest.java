@@ -2,6 +2,7 @@ package in.partake.controller.api.event;
 
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.resource.UserErrorCode;
 
 import org.junit.Test;
 
@@ -25,11 +26,12 @@ public class RemoveCommentAPITest extends APIControllerTest {
     public void testToRemoveInvalidComment() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/removeComment");
         addParameter(proxy, "commentId", TestDataProvider.INVALID_COMMENT_ID);
+        addValidSessionTokenToParameter(proxy);
 
         loginAs(proxy, TestDataProvider.EVENT_COMMENTOR_ID);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_COMMENT_ID);
     }
 
 
@@ -87,6 +89,6 @@ public class RemoveCommentAPITest extends APIControllerTest {
         loginAs(proxy, TestDataProvider.EVENT_COMMENTOR_ID);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_SECURITY_CSRF);
     }
 }

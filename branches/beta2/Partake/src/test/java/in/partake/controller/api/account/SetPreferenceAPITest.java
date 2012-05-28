@@ -3,6 +3,7 @@ package in.partake.controller.api.account;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.resource.UserErrorCode;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
         addParameter(proxy, "profilePublic", "false");
         addParameter(proxy, "receivingTwitterMessage", "false");
-        addParameter(proxy, "tweetingAttendanceAutomatically", "false");        
+        addParameter(proxy, "tweetingAttendanceAutomatically", "false");
         proxy.execute();
 
         assertResultOK(proxy);
@@ -34,7 +35,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
         Assert.assertEquals(false, pref.isReceivingTwitterMessage());
         Assert.assertEquals(false, pref.tweetsAttendanceAutomatically());
     }
-    
+
     @Test
     public void testToSetPreferenceWithLoginWithoutPreference() throws Exception {
         ActionProxy proxy = getActionProxy("/api/account/setPreference");
@@ -43,7 +44,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
         addParameter(proxy, "profilePublic", "false");
         addParameter(proxy, "receivingTwitterMessage", "false");
-        addParameter(proxy, "tweetingAttendanceAutomatically", "false");        
+        addParameter(proxy, "tweetingAttendanceAutomatically", "false");
         proxy.execute();
 
         assertResultOK(proxy);
@@ -83,7 +84,7 @@ public class SetPreferenceAPITest extends APIControllerTest {
         addInvalidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_SECURITY_CSRF);
     }
 
     @Test
@@ -92,5 +93,5 @@ public class SetPreferenceAPITest extends APIControllerTest {
 
         proxy.execute();
         assertResultLoginRequired(proxy);
-    }  
+    }
 }

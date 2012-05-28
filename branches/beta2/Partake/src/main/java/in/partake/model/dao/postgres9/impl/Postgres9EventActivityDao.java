@@ -67,7 +67,7 @@ public class Postgres9EventActivityDao extends Postgres9Dao implements IEventAct
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why User does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(activity.getId(), CURRENT_VERSION, activity.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(activity.getId(), CURRENT_VERSION, activity.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, activity.getId()))
             entityDao.update(pcon, entity);
         else

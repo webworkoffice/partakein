@@ -29,6 +29,18 @@ public class PartakeException extends Exception {
         this.serverErrorCode = ec;
     }
 
+    public PartakeException(ServerErrorCode ec, String key, String value) {
+        super(ec.getReasonString());
+        this.serverErrorCode = ec;
+        this.additionalInfo = Collections.singletonMap(key, value);
+    }
+
+    public PartakeException(ServerErrorCode ec, Map<String, String> additionalInfo) {
+        super(ec.getReasonString());
+        this.serverErrorCode = ec;
+        this.additionalInfo = additionalInfo;
+    }
+
     public PartakeException(UserErrorCode ec) {
         super(ec.getReasonString());
         this.userErrorCode = ec;
@@ -43,6 +55,12 @@ public class PartakeException extends Exception {
     public PartakeException(UserErrorCode ec, Throwable t) {
         super(ec.getReasonString(), t);
         this.userErrorCode = ec;
+    }
+
+    public PartakeException(UserErrorCode ec, Map<String, String> additionalInfo) {
+        super(ec.getReasonString());
+        this.userErrorCode = ec;
+        this.additionalInfo = additionalInfo;
     }
 
     public boolean isServerError() {

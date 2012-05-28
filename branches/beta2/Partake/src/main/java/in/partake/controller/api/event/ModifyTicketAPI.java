@@ -1,6 +1,5 @@
 package in.partake.controller.api.event;
 
-import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
@@ -14,11 +13,11 @@ import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventTicketAccess;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
-import in.partake.model.dto.auxiliary.EnqueteAnswerType;
-import in.partake.model.dto.auxiliary.EnqueteQuestion;
+import in.partake.model.dto.auxiliary.TicketAmountType;
 import in.partake.model.dto.auxiliary.TicketApplicationEnd;
 import in.partake.model.dto.auxiliary.TicketApplicationStart;
 import in.partake.model.dto.auxiliary.TicketPriceType;
+import in.partake.model.dto.auxiliary.TicketReservationEnd;
 import in.partake.resource.UserErrorCode;
 
 import java.util.ArrayList;
@@ -26,9 +25,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.postgresql.jdbc2.TimestampUtils;
-
-import net.sf.json.JSONArray;
 
 public class ModifyTicketAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
@@ -43,34 +39,38 @@ public class ModifyTicketAPI extends AbstractPartakeAPI {
         int N = ids.length;
 
         String[] names = ensureParameters("name[]", N, UserErrorCode.INVALID_ARGUMENT);
-        String[] startDateTypes = ensureParameters("startDateType[]", N, UserErrorCode.INVALID_ARGUMENT);
-        String[] startDateDays = ensureParameters("startDateDays[]", N, UserErrorCode.INVALID_ARGUMENT);
-        String[] customStartDates = ensureParameters("customStartDate[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] startDateTypes = ensureParameters("applicationStart[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] startDateDays = ensureParameters("applicationStartDayBeforeEvent[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] customStartDates = ensureParameters("customApplicationStartDate[]", N, UserErrorCode.INVALID_ARGUMENT);
 
-        String[] endDateTypes = ensureParameters("endDateType[]", N, UserErrorCode.INVALID_ARGUMENT);
-        String[] endDateDays = ensureParameters("endDateDays[]", N, UserErrorCode.INVALID_ARGUMENT);
-        String[] customEndDates = ensureParameters("customEndDate[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] endDateTypes = ensureParameters("applicationEnd[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] endDateDays = ensureParameters("applicationEndDayBeforeEvent[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] customEndDates = ensureParameters("customApplicationEndDate[]", N, UserErrorCode.INVALID_ARGUMENT);
 
-        String[] priceTypes = ensureParameters("priceTypes[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] reservationEndDateTypes = ensureParameters("reservationEnd[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] reservationEndHourBeforeApplications = ensureParameters("reservationEndHourBeforeApplication[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] customReservationEndDates = ensureParameters("customReservationEndDate[]", N, UserErrorCode.INVALID_ARGUMENT);
+
+        String[] priceTypes = ensureParameters("priceType[]", N, UserErrorCode.INVALID_ARGUMENT);
         String[] prices = ensureParameters("price[]", N, UserErrorCode.INVALID_ARGUMENT);
 
-        String[] amountInfinites = ensureParameters("amountInfinite[]", N, UserErrorCode.INVALID_ARGUMENT);
+        String[] amountTypes = ensureParameters("amountType[]", N, UserErrorCode.INVALID_ARGUMENT);
         String[] amounts = ensureParameters("amount[]", N, UserErrorCode.INVALID_ARGUMENT);
 
         List<EventTicket> tickets = new ArrayList<EventTicket>();
         try {
             for (int i = 0; i < N; ++i) {
-                if (!Util.isUUID(ids[i]))
+                if (!StringUtils.isBlank(ids[i]) && !Util.isUUID(ids[i]))
                     return renderInvalid(UserErrorCode.INVALID_ARGUMENT);
-                UUID id = UUID.fromString(ids[i]);
+                UUID id = StringUtils.isBlank(ids[i]) ? null : UUID.fromString(ids[i]);
                 EventTicket ticket = new EventTicket(id, eventId, i, names[i],
                         TicketApplicationStart.safeValueOf(startDateTypes[i]), Integer.parseInt(startDateDays[i]), TimeUtil.parseForEvent(customStartDates[i]),
                         TicketApplicationEnd.safeValueOf(endDateTypes[i]), Integer.parseInt(endDateDays[i]), TimeUtil.parseForEvent(customEndDates[i]),
+                        TicketReservationEnd.safeValueOf(reservationEndDateTypes[i]), Integer.parseInt(reservationEndHourBeforeApplications[i]), TimeUtil.parseForEvent(customReservationEndDates[i]),
                         TicketPriceType.safeValueOf(priceTypes[i]), Integer.parseInt(prices[i]),
-                        "true".equals(amountInfinites[i]), Integer.parseInt(amounts[i]),
+                        TicketAmountType.safeValueOf(amountTypes[i]), Integer.parseInt(amounts[i]),
                         TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime());
 
-                // TODO: Check ticket validity.
                 if (!ticket.validate())
                     return renderInvalid(UserErrorCode.INVALID_ARGUMENT);
 
@@ -104,52 +104,58 @@ class ModifyTicketTransaction extends Transaction<Void> {
         if (!EventEditPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_EDIT);
 
-        if (event.isDraft())
-            modifyTicketsForDraftEvent(con, daos);
-        else
-            modifyTicketsForPublishedEvent(con, daos);
-
+        modifyTickets(con, daos, event.isDraft());
         return null;
     }
 
-    private void modifyTicketsForDraftEvent(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
-        // Replaces all the tickets.
-        IEventTicketAccess dao = daos.getEventTicketAccess();
-        dao.removeByEventId(con, eventId);
-        for (EventTicket ticket : tickets)
-            dao.put(con, ticket);
-    }
-
-    private void modifyTicketsForPublishedEvent(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+    private void modifyTickets(PartakeConnection con, IPartakeDAOs daos, boolean forDraft) throws DAOException, PartakeException {
         IEventTicketAccess dao = daos.getEventTicketAccess();
         List<EventTicket> originalTickets = dao.findEventTicketsByEventId(con, eventId);
         boolean[] processed = new boolean[originalTickets.size()];
 
         // |tickets| should contain all the original ticket.
         for (EventTicket ticket : tickets) {
-            boolean found = false;
+            EventTicket originalTicket = null;
             for (int i = 0; i < originalTickets.size(); ++i) {
-                if (!ticket.getId().equals(originalTickets.get(i).getId()))
+                if (!originalTickets.get(i).getId().equals(ticket.getId()))
                     continue;
                 if (processed[i])
                     throw new PartakeException(UserErrorCode.INVALID_TICKET_DUPLICATE_ID);
 
                 // Found the original ticket.
                 processed[i] = true;
-                found = true;
-
-                // Capacity cannot be reduced.
-                // TODO: We should
-
-
+                originalTicket = originalTickets.get(i);
                 break;
             }
 
-            if (!found && ticket.getId() != null)
-                throw new PartakeException(UserErrorCode.INVALID_PARAMETERS);
-
-
+            if (originalTicket == null) {
+                // If new ticket has id, it's strange. Otherwise, add a new ticket id.
+                if (ticket.getId() != null)
+                    throw new PartakeException(UserErrorCode.INVALID_PARAMETERS);
+                ticket.setId(daos.getEventTicketAccess().getFreshId(con));
+            } else if (!forDraft) {
+                // If the event has been published, ticket amount should be preserved.
+                if (originalTicket.isAmountInfinite()) {
+                    if (!ticket.isAmountInfinite())
+                        throw new PartakeException(UserErrorCode.INVALID_PARAMETERS);
+                } else {
+                    if (!ticket.isAmountInfinite() && ticket.getAmount() < originalTicket.getAmount())
+                        throw new PartakeException(UserErrorCode.INVALID_PARAMETERS);
+                }
+            }
         }
 
+        // If the event has already been published, all ticket should be preserved.
+        if (!forDraft) {
+            for (int i = 0; i < processed.length; ++i) {
+                if (!processed[i])
+                    throw new PartakeException(UserErrorCode.INVALID_PARAMETERS);
+            }
+        }
+
+        // OK. let's save the tickets.
+        dao.removeByEventId(con, eventId);
+        for (EventTicket ticket : tickets)
+            dao.put(con, ticket);
     }
 }

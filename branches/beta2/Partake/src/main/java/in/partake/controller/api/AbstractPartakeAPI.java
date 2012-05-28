@@ -5,7 +5,6 @@ import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +18,12 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(AbstractPartakeAPI.class);
 
-    private InputStream stream;
     private int status;
     private Map<String, String> headers;
 
     protected AbstractPartakeAPI() {
+        this.contentType = "json";
+        this.contentDisposition = "inline";
         this.status = 200;
         this.headers = new HashMap<String, String>();
     }
@@ -33,15 +33,6 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
 
     protected void addHeader(String key, String value) {
         headers.put(key, value);
-    }
-
-    /** return input stream. */
-    public InputStream getInputStream() {
-        return stream;
-    }
-
-    public String getContentType() {
-        return "text/json";
     }
 
     public int getStatus() {
@@ -72,6 +63,20 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
         }
     }
 
+    @Deprecated
+    protected String renderJSONWith(JSONObject obj, String contentType) {
+        assert obj != null;
+
+        try {
+            this.contentType = contentType;
+            this.stream = new ByteArrayInputStream(obj.toString().getBytes("utf-8"));
+            return "stream";
+        } catch (UnsupportedEncodingException e) {
+            logger.fatal("This exception should not be thrown!", e);
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * <code>{ "result": "ok" }</code> をレスポンスとして返す。
      * with status code 200.
@@ -92,6 +97,15 @@ public abstract class AbstractPartakeAPI extends AbstractPartakeController {
         }
         obj.put("result", "ok");
         return renderJSON(obj);
+    }
+
+    @Deprecated
+    protected String renderOKWith(JSONObject obj, String contentType) {
+        if (obj.containsKey("result")) {
+            throw new RuntimeException("obj should not contain result");
+        }
+        obj.put("result", "ok");
+        return renderJSONWith(obj, contentType);
     }
 
     /**

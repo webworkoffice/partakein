@@ -1,5 +1,6 @@
 package in.partake.model.fixture.impl;
 
+import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.model.IPartakeDAOs;
@@ -12,7 +13,6 @@ import in.partake.model.fixture.TestDataProvider;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,21 +47,21 @@ public class UserImageTestDataProvider extends TestDataProvider<UserImage> {
                 data[i] = (byte)(i % N);
             }
 
-            return new UserImage(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", data, new Date(objNumber));
+            return new UserImage(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", data, new DateTime(objNumber));
         } else {
-            return new UserImage(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", new byte[] { 1, 2, (byte) objNumber }, new Date(objNumber));
+            return new UserImage(uuid.toString(), DEFAULT_USER_ID, "data/octet-stream", new byte[] { 1, 2, (byte) objNumber }, new DateTime(objNumber));
         }
     }
 
     @Override
     public List<UserImage> createSamples() {
         List<UserImage> array = new ArrayList<UserImage>();
-        array.add(new UserImage("id", "userId", "type", new byte[] { 0, 1, 2 } , new Date(0)));
-        array.add(new UserImage("id1", "userId", "type", new byte[] { 0, 1, 2 } , new Date(0)));
-        array.add(new UserImage("id", "userId1", "type", new byte[] { 0, 1, 2 } , new Date(0)));
-        array.add(new UserImage("id", "userId", "type1", new byte[] { 0, 1, 2 } , new Date(0)));
-        array.add(new UserImage("id", "userId", "type", new byte[] { 0, 1, 3 } , new Date(0)));
-        array.add(new UserImage("id", "userId", "type", new byte[] { 0, 1, 2 } , new Date(1)));
+        array.add(new UserImage("id", "userId", "type", new byte[] { 0, 1, 2 } , new DateTime(0)));
+        array.add(new UserImage("id1", "userId", "type", new byte[] { 0, 1, 2 } , new DateTime(0)));
+        array.add(new UserImage("id", "userId1", "type", new byte[] { 0, 1, 2 } , new DateTime(0)));
+        array.add(new UserImage("id", "userId", "type1", new byte[] { 0, 1, 2 } , new DateTime(0)));
+        array.add(new UserImage("id", "userId", "type", new byte[] { 0, 1, 3 } , new DateTime(0)));
+        array.add(new UserImage("id", "userId", "type", new byte[] { 0, 1, 2 } , new DateTime(1)));
         return array;
     }
 
@@ -71,9 +71,10 @@ public class UserImageTestDataProvider extends TestDataProvider<UserImage> {
         dao.truncate(con);
 
         // IMAGE_OWNED_BY_DEFAULT_USER_ID contains DEFAULT_IMAGE_ID.
-        dao.put(con, new UserImage(EVENT_FOREIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", defaultImageContent, TimeUtil.getCurrentDate()));
-        dao.put(con, new UserImage(EVENT_BACKIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", defaultImageContent, TimeUtil.getCurrentDate()));
+        dao.put(con, new UserImage(EVENT_FOREIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", defaultImageContent, TimeUtil.getCurrentDateTime()));
+        dao.put(con, new UserImage(EVENT_BACKIMAGE_ID, EVENT_OWNER_ID, "byte/octet-stream", defaultImageContent, TimeUtil.getCurrentDateTime()));
+        dao.put(con, new UserImage(IMAGE_OWNER_IMAGE_ID, IMAGE_OWNER_ID, "byte/octet-stream", defaultImageContent, TimeUtil.getCurrentDateTime()));
         for (int i = 0; i < IMAGE_OWNED_BY_DEFAULT_USER_ID.length; ++i)
-            dao.put(con, new UserImage(IMAGE_OWNED_BY_DEFAULT_USER_ID[i], DEFAULT_USER_ID, "byte/octet-stream", defaultImageContent, new Date(IMAGE_OWNED_BY_DEFAULT_USER_ID.length - i)));
+            dao.put(con, new UserImage(IMAGE_OWNED_BY_DEFAULT_USER_ID[i], DEFAULT_USER_ID, "byte/octet-stream", defaultImageContent, new DateTime(IMAGE_OWNED_BY_DEFAULT_USER_ID.length - i)));
     }
 }

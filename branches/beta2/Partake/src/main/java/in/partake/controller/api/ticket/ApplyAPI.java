@@ -4,14 +4,12 @@ import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
-import in.partake.model.EventRelationEx;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
-import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.MessageDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
@@ -20,7 +18,11 @@ import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.UserErrorCode;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 public class ApplyAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
@@ -28,10 +30,12 @@ public class ApplyAPI extends AbstractPartakeAPI {
     @Override
     protected String doExecute() throws PartakeException, DAOException {
         UserEx user = ensureLogin();
+        ensureValidSessionToken();
+
         UUID ticketId = getValidTicketIdParameter();
         String status = getParameter("status");
         String comment = getParameter("comment");
-        ensureValidSessionToken();
+        Map<UUID, List<String>> enqueteAnswers = convertToMap(getParameter("enqueteAnswers"));
 
         // If the comment does not exist, we use empty string instead.
         if (comment == null)
@@ -49,8 +53,17 @@ public class ApplyAPI extends AbstractPartakeAPI {
         else
             return renderInvalid(UserErrorCode.INVALID_ENROLL_STATUS);
 
-        new EnrollTransaction(user, ticketId, participationStatus, comment).execute();
+        new EnrollTransaction(user, ticketId, participationStatus, comment, enqueteAnswers).execute();
         return renderOK();
+    }
+
+    private Map<UUID, List<String>> convertToMap(String jsonStr) throws PartakeException {
+        try {
+            JSONObject map = JSONObject.fromObject(jsonStr);
+            return Util.parseEnqueteAnswers(map);
+        } catch (JSONException e) {
+            throw new PartakeException(UserErrorCode.INVALID_ENQUETE_ANSWERS);
+        }
     }
 }
 
@@ -59,12 +72,14 @@ class EnrollTransaction extends Transaction<Void> {
     private UUID ticketId;
     private ParticipationStatus status;
     private String comment;
+    private Map<UUID, List<String>> enqueteAnswers;
 
-    public EnrollTransaction(UserEx user, UUID ticketId, ParticipationStatus status, String comment) {
+    public EnrollTransaction(UserEx user, UUID ticketId, ParticipationStatus status, String comment, Map<UUID, List<String>> enqueteAnswers) {
         this.user = user;
         this.ticketId = ticketId;
         this.status = status;
         this.comment = comment;
+        this.enqueteAnswers = enqueteAnswers;
     }
 
     // TODO: We should share a lot of code with ChangeEnrollmentCommentAPI.
@@ -82,16 +97,11 @@ class EnrollTransaction extends Transaction<Void> {
         if (!ticket.acceptsApplication(event, TimeUtil.getCurrentDateTime()))
             throw new PartakeException(UserErrorCode.INVALID_ENROLL_TIMEOVER);
 
-        // 現在の状況が登録されていない場合、
-        List<EventRelationEx> relations = EventDAOFacade.getEventRelationsEx(con, daos, event);
-        ParticipationStatus currentStatus = EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), ticketId);
-        if (!currentStatus.isEnrolled()) {
-            List<Event> requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, daos, user, relations);
-            if (requiredEvents != null && !requiredEvents.isEmpty())
-                throw new PartakeException(UserErrorCode.INVALID_ENROLL_REQUIRED);
-        }
+        // もし、予約締切を過ぎている場合、reservation にはできない。
+        if (ticket.isReservationTimeOver(event) && ParticipationStatus.RESERVED.equals(status))
+            throw new PartakeException(UserErrorCode.INVALID_APPLICATION_RESERVATION_TIMEOVER);
 
-        EnrollmentDAOFacade.enrollImpl(con, daos, user, ticketId, event, status, comment, false, ticket.isReservationTimeOver(event));
+        EnrollmentDAOFacade.enrollImpl(con, daos, user, ticketId, event, status, comment, enqueteAnswers, false, ticket.isReservationTimeOver(event));
         tweetEnrollment(con, daos, user, event, status);
         return null;
     }

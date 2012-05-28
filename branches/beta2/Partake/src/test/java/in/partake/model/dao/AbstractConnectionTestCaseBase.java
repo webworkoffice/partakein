@@ -2,7 +2,6 @@ package in.partake.model.dao;
 
 import in.partake.app.PartakeApp;
 import in.partake.base.TimeUtil;
-import in.partake.model.fixture.TestDataProviderConstants;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

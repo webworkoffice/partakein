@@ -2,6 +2,9 @@ package in.partake.view.util;
 
 import in.partake.base.DateTime;
 import in.partake.base.Util;
+import in.partake.model.dto.Event;
+import in.partake.model.dto.EventTicket;
+import in.partake.model.dto.auxiliary.TicketApplicationStart;
 import in.partake.resource.Constants;
 import in.partake.session.CSRFPrevention;
 import in.partake.session.PartakeSession;
@@ -229,6 +232,13 @@ public final class Helper {
 
     public static String readableDate(DateTime d) {
         return readableDate(new Date(d.getTime()));
+    }
+
+    public static String readableApplicationDuration(EventTicket ticket, Event event) {
+        if (TicketApplicationStart.ANYTIME.equals(ticket.getApplicationStart()))
+            return readableDate(ticket.acceptsTill(event)) + "まで";
+
+        return Helper.readableDuration(ticket.acceptsFrom(event), ticket.acceptsTill(event));
     }
 
     public static String readableDuration(DateTime beginDate, DateTime endDate) {

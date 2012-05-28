@@ -1,5 +1,7 @@
 package in.partake.base;
 
+import in.partake.resource.Constants;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,7 +16,7 @@ import java.util.TimeZone;
  * @author shinyak
  */
 public final class TimeUtil {
-    private static Date currentDate;
+    private static DateTime currentDateTime;
 
     private TimeUtil() {
         // Prevents from instantiation.
@@ -24,7 +26,7 @@ public final class TimeUtil {
      * Resets the current date.
      */
     public static void resetCurrentDate() {
-        TimeUtil.currentDate = null;
+        TimeUtil.currentDateTime = null;
     }
 
     /**
@@ -32,16 +34,9 @@ public final class TimeUtil {
      * そうでなければ、OS から現在時刻を取得して返す。
      * @return
      */
-    public static Date getCurrentDate() {
-        if (currentDate != null)
-            return currentDate;
-        else
-            return new Date();
-    }
-
     public static DateTime getCurrentDateTime() {
-        if (currentDate != null)
-            return new DateTime(currentDate.getTime());
+        if (currentDateTime != null)
+            return new DateTime(currentDateTime.getTime());
         else
             return new DateTime(System.currentTimeMillis());
     }
@@ -52,30 +47,26 @@ public final class TimeUtil {
      * @return
      */
     public static long getCurrentTime() {
-        if (currentDate != null)
-            return currentDate.getTime();
+        if (currentDateTime != null)
+            return currentDateTime.getTime();
         else
             return new Date().getTime();
     }
 
     public static void setCurrentDateTime(DateTime dt) {
-        currentDate = new Date(dt.getTime());
-    }
-
-    public static void setCurrentDate(Date date) {
-        currentDate = date;
+        currentDateTime = dt;
     }
 
     public static void setCurrentTime(long time) {
-        currentDate = new Date(time);
+        currentDateTime = new DateTime(time);
     }
 
     /**
      * Waits for a while.
      */
     public static void waitForTick() {
-        if (currentDate != null) {
-            setCurrentTime(currentDate.getTime() + 20);
+        if (currentDateTime != null) {
+            setCurrentTime(currentDateTime.getTime() + 20);
             return;
         }
 
@@ -89,14 +80,30 @@ public final class TimeUtil {
         } while (now == TimeUtil.getCurrentTime());
     }
 
+    public static DateTime create(int year, int month, int date, int hour, int min, int sec) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.DATE, date);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, min);
+        calendar.set(Calendar.SECOND, sec);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.setTimeZone(TimeZone.getTimeZone("JST"));
+
+        return new DateTime(calendar.getTime());
+    }
+
+
     public static Date create(int year, int month, int date, int hour, int min, int sec, TimeZone timeZone) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month - 1);
         calendar.set(Calendar.DATE, date);
-        calendar.set(Calendar.HOUR, hour);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, min);
         calendar.set(Calendar.SECOND, sec);
+        calendar.set(Calendar.MILLISECOND, 0);
         calendar.setTimeZone(timeZone);
 
         return calendar.getTime();
@@ -112,18 +119,12 @@ public final class TimeUtil {
     }
 
     public static String formatForEvent(DateTime date) {
-        DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        DateFormat dateFormatForEvent = new SimpleDateFormat(Constants.READABLE_DATE_FORMAT);
         return dateFormatForEvent.format(date.toDate());
     }
 
-    @Deprecated
-    public static String formatForEvent(Date date) {
-        DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        return dateFormatForEvent.format(date);
-    }
-
     public static DateTime parseForEvent(String dateStr) {
-        DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        DateFormat dateFormatForEvent = new SimpleDateFormat(Constants.READABLE_DATE_FORMAT);
         try {
             return new DateTime(dateFormatForEvent.parse(dateStr).getTime());
         } catch (ParseException e) {
@@ -148,21 +149,7 @@ public final class TimeUtil {
         }
     }
 
-    @Deprecated
-    public static Date dateFromTimeString(String timeString) {
-        try {
-            return new Date(Long.parseLong(timeString));
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
     public static String getTimeString(DateTime date) {
-        return getTimeString(date.getTime());
-    }
-
-    @Deprecated
-    public static String getTimeString(Date date) {
         return getTimeString(date.getTime());
     }
 

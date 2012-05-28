@@ -1,3 +1,6 @@
+<%@page import="java.util.UUID"%>
+<%@page import="in.partake.model.dto.EventTicket"%>
+<%@page import="java.util.Map"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="in.partake.controller.base.permission.EventRemovePermission"%>
 <%@page import="in.partake.controller.base.permission.EventEditPermission"%>
@@ -21,126 +24,77 @@
     EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
 
     EventEx event = action.getEvent();
-    List<EventCommentEx> comments = action.getComments();
-    String redirectURL = action.getRedirectURL();
-    if (redirectURL == null)
-        redirectURL = action.getCurrentURL();
+    List<EventTicket> tickets = action.getTickets();
+    Map<UUID, EventTicketHolderList> ticketHoldersMap = action.getTicketHolderListMap();
 %>
 
-<%
-    List<UserTicketEx> enrolledParticipations = new ArrayList<UserTicketEx>();
-    List<UserTicketEx> spareParticipations = new ArrayList<UserTicketEx>();
-    List<UserTicketEx> cancelledParticipations = new ArrayList<UserTicketEx>();
-%>
+<%--
+    1. 各チケットの参加者を表示する
+    2. 補欠、キャンセル者はデフォルトでは表示せず、「補欠者、キャンセル者も表示する」をクリックすることで表示される
+--%>
 
-<h3><img src="<%=request.getContextPath()%>/images/circle.png" />参加者一覧 (<%=enrolledParticipations.size()%> 人)</h3>
-<%
-    if (enrolledParticipations != null && enrolledParticipations.size() > 0) {
-%>
+<% for (EventTicket ticket : tickets) {
+    EventTicketHolderList list = ticketHoldersMap.get(ticket.getId()); %>
+<div>
+    <h3><%= h(ticket.getName()) %> (参加者)</h3>
+    <% if (list.getEnrolledParticipations().isEmpty()) { %>
+    <p>現在参加者はいません</p>
+    <% } else { %>
     <ol>
-    <%
-        for (UserTicketEx participation : enrolledParticipations) {
-    %>
-        <%-- TODO: 仮参加は色をかえるべき --%>
-        <%
-            if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) {
-        %>
+        <% for (UserTicketEx userTicket : list.getEnrolledParticipations()) { %>
             <li>
-                <img class="userphoto" src="<%=h(participation.getUser().getTwitterLinkage().getProfileImageURL())%>" alt="" />
-                <a href="<%=request.getContextPath()%>/users/<%=h(participation.getUserId())%>">
-                    <%=h(participation.getUser().getTwitterLinkage().getScreenName())%>
+                <img class="userphoto" src="<%=h(userTicket.getUser().getProfileImageURL())%>" alt="">
+                <a href="/users/<%=h(userTicket.getUserId())%>">
+                    <%= h(userTicket.getUser().getTwitterLinkage().getScreenName()) %>
                 </a>
-                : <%=h(participation.getComment())%>
-            </li>
-        <%
-            } else {
-        %>
-            <li>
-                <img class="userphoto" src="<%=h(participation.getUser().getTwitterLinkage().getProfileImageURL())%>" alt="" />
-                <a href="<%=request.getContextPath()%>/users/<%=h(participation.getUserId())%>">
-                <%=h(participation.getUser().getTwitterLinkage().getScreenName())%>
-                </a>
-                <img src="<%=request.getContextPath()%>/images/reserved1.png" title="仮参加" alt="仮参加者" />
-                : <%=h(participation.getComment())%>
-            </li>
-        <%
-            }
-        %>
-    <%
-        }
-    %>
-    </ol>
-<%
-    } else {
-%>
-    <p>現在参加者はいません。</p>
-<%
-    }
-%>
-
-<%
-    if (spareParticipations != null && spareParticipations.size() > 0) {
-%>
-    <h3><img src="<%=request.getContextPath()%>/images/square.png" />補欠者一覧 (<%=spareParticipations.size()%> 人)</h3>
-    <ul>
-    <%
-        for (UserTicketEx participation : spareParticipations) {
-    %>
-        <%
-            // TODO: 仮参加は色をかえるべき
-        %>
-        <%
-            if (ParticipationStatus.ENROLLED.equals(participation.getStatus())) {
-        %>
-            <li>
-                <img class="userphoto" src="<%=h(participation.getUser().getTwitterLinkage().getProfileImageURL())%>" alt="" />
-                <a href="<%=request.getContextPath()%>/users/<%=h(participation.getUserId())%>">
-                <%=h(participation.getUser().getTwitterLinkage().getScreenName())%>
-                </a>
-                : <%=h(participation.getComment())%>
-            </li>
-        <%
-            } else {
-        %>
-            <li>
-                <img class="userphoto" src="<%=h(participation.getUser().getTwitterLinkage().getProfileImageURL())%>" alt="" />
-                <a href="<%=request.getContextPath()%>/users/<%=h(participation.getUserId())%>">
-                <%=h(participation.getUser().getTwitterLinkage().getScreenName())%>
-                </a>
-                <img src="<%=request.getContextPath()%>/images/reserved1.png" title="仮参加" alt="仮参加者" />
-                : <%=h(participation.getComment())%>
-            </li>
-        <%
-            }
-        %>
-    <%
-        }
-    %>
-    </ul>
-<%
-    }
-%>
-
-<%
-    if (cancelledParticipations != null && cancelledParticipations.size() > 0) {
-%>
-    <h3><img src="<%=request.getContextPath()%>/images/cross.png" />キャンセル一覧 (<%=cancelledParticipations.size()%> 人)</h3>
-    <ul>
-    <%
-        for (UserTicketEx participation : cancelledParticipations) {
-    %>
-        <% if (ParticipationStatus.RESERVED.equals(participation.getStatus())) { %>
-            <li>
-                <img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
-                <a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> (仮参加後の参加表明なし) : <%= h(participation.getComment()) %>
-            </li>
-        <% } else { %>
-            <li>
-                <img class="userphoto" src="<%= h(participation.getUser().getTwitterLinkage().getProfileImageURL()) %>" alt="" />
-                <a href="<%= request.getContextPath() %>/users/<%= h(participation.getUserId()) %>"><%= h(participation.getUser().getTwitterLinkage().getScreenName()) %></a> : <%= h(participation.getComment()) %>
+                <% if (userTicket.getStatus().equals(ParticipationStatus.RESERVED)) { %><img src="/images/reserved1.png" title="仮参加" alt="仮参加者" /><% } %>
+                : <%= h(userTicket.getComment()) %>
             </li>
         <% } %>
-    <% 	} %>
-    </ul>
+    </ol>
+    <% } %>
+</div>
+
+<% if (!list.getSpareParticipations().isEmpty() || !list.getCancelledParticipations().isEmpty()) { %>
+<p><a onclick="$('#list-<%= h(ticket.getId().toString()) %>').show()">補欠・キャンセル済の参加者を表示する</a></p>
 <% } %>
+<div id="list-<%= h(ticket.getId().toString()) %>" style="display: none">
+    <h3>補欠</h3>
+    <% if (list.getSpareParticipations().isEmpty()) { %>
+    <p>現在補欠者はいません</p>
+    <% } else { %>
+    <ol>
+        <% for (UserTicketEx userTicket : list.getSpareParticipations()) { %>
+            <li>
+                <img class="userphoto" src="<%=h(userTicket.getUser().getProfileImageURL())%>" alt="">
+                <a href="/users/<%=h(userTicket.getUserId())%>">
+                    <%= h(userTicket.getUser().getTwitterLinkage().getScreenName()) %>
+                </a>
+                <% if (userTicket.getStatus().equals(ParticipationStatus.RESERVED)) { %><img src="/images/reserved1.png" title="仮参加" alt="仮参加者" /><% } %>
+                : <%= h(userTicket.getComment()) %>
+            </li>
+        <% } %>
+    </ol>
+    <% } %>
+
+    <h3>キャンセル</h3>
+    <% if (list.getCancelledParticipations().isEmpty()) { %>
+    <p>現在補欠者はいません</p>
+    <% } else { %>
+    <ol>
+        <% for (UserTicketEx userTicket : list.getCancelledParticipations()) { %>
+            <li>
+                <img class="userphoto" src="<%=h(userTicket.getUser().getProfileImageURL())%>" alt="">
+                <a href="/users/<%=h(userTicket.getUserId())%>">
+                    <%= h(userTicket.getUser().getTwitterLinkage().getScreenName()) %>
+                </a>
+                <% if (userTicket.getStatus().equals(ParticipationStatus.RESERVED)) { %><img src="/images/reserved1.png" title="仮参加" alt="仮参加者" /><% } %>
+                : <%= h(userTicket.getComment()) %>
+            </li>
+        <% } %>
+    </ol>
+    <% } %>
+</div>
+<% } %>
+
 

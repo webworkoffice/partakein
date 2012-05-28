@@ -148,7 +148,6 @@
                     '<td><input type="checkbox" name="relatedEventRequired[]" /></td>' +
                     '<td><input type="checkbox" name="relatedEventPriority[]" /></td>');
             var tr = e.srcElement.parentNode.parentNode;
-            console.log(tr);
             $(tr).after(newTr);
             updateRelatedEvent();
         }

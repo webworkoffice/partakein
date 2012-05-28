@@ -58,7 +58,7 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why User does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(user.getId(), CURRENT_VERSION, user.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(user.getId(), CURRENT_VERSION, user.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, user.getId()))
             entityDao.update(pcon, entity);
         else

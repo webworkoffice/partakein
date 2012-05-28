@@ -22,6 +22,7 @@ import in.partake.resource.ServerErrorCode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class EnrollmentDAOFacade {
@@ -106,7 +107,7 @@ public class EnrollmentDAOFacade {
 
     // TODO: "changesOnlyComment" should die!
     public static void enrollImpl(PartakeConnection con, IPartakeDAOs daos, UserEx user, UUID ticketId, Event event,
-            ParticipationStatus status, String comment, boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
+            ParticipationStatus status, String comment, Map<UUID, List<String>> enqueteAnswers,boolean changesOnlyComment, boolean isReservationTimeOver) throws DAOException {
         String userId = user.getId();
         String eventId = event.getId();
 
@@ -120,12 +121,12 @@ public class EnrollmentDAOFacade {
             newEnrollment = new UserTicket(oldEnrollment);
         }
 
-
         newEnrollment.setComment(comment);
+        newEnrollment.setEnqueteAnswers(enqueteAnswers);
         if (oldEnrollment == null) {
             newEnrollment.setStatus(status);
             newEnrollment.setModificationStatus(ModificationStatus.CHANGED);
-            newEnrollment.setModifiedAt(TimeUtil.getCurrentDateTime());
+            newEnrollment.setAppliedAt(TimeUtil.getCurrentDateTime());
         } else if (changesOnlyComment || status.equals(oldEnrollment.getStatus())) {
             // 特に変更しない
         } else if (status.isEnrolled() == oldEnrollment.getStatus().isEnrolled()) {
@@ -135,8 +136,11 @@ public class EnrollmentDAOFacade {
         } else {
             newEnrollment.setStatus(status);
             newEnrollment.setModificationStatus(ModificationStatus.CHANGED);
-            newEnrollment.setModifiedAt(TimeUtil.getCurrentDateTime());
+            newEnrollment.setAppliedAt(TimeUtil.getCurrentDateTime());
         }
+
+        if (oldEnrollment == null)
+            newEnrollment.setModifiedAt(TimeUtil.getCurrentDateTime());
 
         //
         if (status != null) {

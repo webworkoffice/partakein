@@ -59,7 +59,7 @@ public class Postgres9TwitterMessageDao extends Postgres9Dao implements ITwitter
     public void put(PartakeConnection con, TwitterMessage t) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, t.getId()))
             entityDao.update(pcon, entity);
         else

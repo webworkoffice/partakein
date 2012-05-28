@@ -109,6 +109,19 @@ public interface TestDataProviderConstants {
     public static final long DEFAULT_RECEIVER_TWITTER_ID = 91;
     public static final String DEFAULT_RECEIVER_TWITTER_SCREENNAME = "receiver";
 
+    public static final String IMAGE_OWNER_ID = new UUID(1, 92).toString();
+    public static final UUID IMAGE_OWNER_TWITTER_LINK_ID = new UUID(100, 92);
+    public static final long IMAGE_OWNER_TWITTER_ID = 92;
+    public static final String IMAGE_OWNER_TWITTER_SCREENNAME = "imageowner";
+
+    public static final String USER_NO_TWITTER_LINK_ID = new UUID(1, 93).toString();
+    public static final String USER_NO_TWITTER_LINK_SCREEN_NAME = "notwitter";
+
+    public static final String USER_TWITTER_NOAUTH_ID = new UUID(1, 94).toString();
+    public static final UUID USER_TWITTER_NOAUTH_TWITTER_LINK_ID = new UUID(100, 94);
+    public static final long USER_TWITTER_NOAUTH_TWITTER_ID = 94;
+    public static final String USER_TWITTER_NOAUTH_TWITTER_SCREENNAME = "notwitterauth";
+
     // Events
     public static final String INVALID_EVENT_ID = new UUID(2, -1).toString();
     public static final String DEFAULT_EVENT_ID = new UUID(2, 0).toString();
@@ -138,6 +151,7 @@ public interface TestDataProviderConstants {
     // Images
     public static final String EVENT_FOREIMAGE_ID = new UUID(3, 1).toString();
     public static final String EVENT_BACKIMAGE_ID = new UUID(3, 2).toString();
+    public static final String IMAGE_OWNER_IMAGE_ID = new UUID(3, 3).toString();
 
     public static final String[] IMAGE_OWNED_BY_DEFAULT_USER_ID = new String[] {
         new UUID(3, 10).toString(), new UUID(3, 11).toString(), new UUID(3, 12).toString(), new UUID(3, 13).toString(), new UUID(3, 14).toString(),

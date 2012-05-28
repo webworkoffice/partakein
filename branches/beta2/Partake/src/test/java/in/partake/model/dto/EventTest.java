@@ -3,7 +3,6 @@ package in.partake.model.dto;
 import in.partake.app.PartakeApp;
 import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
-import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.lang.reflect.Field;
@@ -41,13 +40,13 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
                         now, now, "url", "place",
                         "address", "description", "#hashTag", "ownerId",
                         "foreImageId", "backImageId", "passcode", false,
-                        null, new ArrayList<EventRelation>(), null,
+                        null, new ArrayList<String>(), null,
                         now, now, -1),
                 new Event("id2", "title2", "summary2", "category2",
                         now, now, "url2", "place2",
                         "address2", "description2", "#hashTag2", "ownerId2",
                         "foreImageId2", "backImageId2", "passcode2", false,
-                        null, new ArrayList<EventRelation>(), null,
+                        null, new ArrayList<String>(), null,
                         now, now, 1)
         };
     }
@@ -115,7 +114,7 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
         Event event = new Event();
         event.setBeginDate(new DateTime(0L));
         JSONObject json = event.toSafeJSON();
-        Assert.assertEquals("1970/01/01 09:00", json.getString("beginDate"));
+        Assert.assertEquals("1970-01-01 09:00", json.getString("beginDate"));
         Assert.assertFalse(json.containsKey("endDate"));
     }
 }

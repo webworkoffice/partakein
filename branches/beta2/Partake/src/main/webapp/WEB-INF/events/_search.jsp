@@ -14,14 +14,8 @@
 </form>
 <script>
     function doRenderNoResults() {
-        $('#searched-events').append($(
-            '<div class="span24">' +
-            '<p>ヒットしませんでした。別の単語で試してみてください。</p>' +
-            '<p><a href="/events/search">より詳しい検索はこちらから。</a></p>' +
-            '</div>'
-        ));
         $('#searched-events').hide();
-        $('#searched-events').fadeIn(500);
+        $('#searched-events-not-found').fadeIn(500);
     }
 </script>
 <% } else { %>
@@ -63,18 +57,17 @@
 
 <script>
     function doRenderNoResults() {
-        $('#searched-events').append($(
-            '<div class="span24">' +
-            '<p>ヒットしませんでした。別の単語で試してみてください。</p>' +
-            '</div>'
-        ));
         $('#searched-events').hide();
-        $('#searched-events').fadeIn(500);
+        $('#searched-events-not-found').fadeIn(500);
     }
 </script>
 <% } %>
 
 <div id="searched-events" class="row" style="position: relative;">
+</div>
+
+<div id="searched-events-not-found" style="display: none;">
+    <p>ヒットしませんでした。別の単語で試してみてください。</p>
 </div>
 
 <div id="template" class="span6 masonry-box" style="margin-bottom: 5px; display:none;"><div class="thumbnail">
@@ -111,6 +104,9 @@ function cloneTemplate(newPrefix) {
 
 var idx = 0;
 function render(json) {
+    $('#searched-events').show();
+    $('#searched-events-not-found').hide();
+
     var events = json.events;
     $('#searched-events').empty();
 
@@ -140,7 +136,7 @@ function render(json) {
     }
 
     $('#searched-events').imagesLoaded(function() {
-        $('#searched-events').masonry('reload')
+        $('#searched-events').masonry('reload');
     });
 }
 
@@ -177,7 +173,8 @@ $(function() {
         var json = $.parseJSON(jsonText);
         render(json);
     } catch (e) {
-        console.log(e);
+        if (window.console)
+            console.log(e);
     }
 });
 

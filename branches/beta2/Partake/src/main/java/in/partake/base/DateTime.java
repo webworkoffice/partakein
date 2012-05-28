@@ -3,12 +3,12 @@ package in.partake.base;
 import in.partake.resource.Constants;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 // Since java.util.Date is mutable, We prefer to use DateTime instead.
+// Keep DateTime immutable object.
 public final class DateTime implements Comparable<DateTime> {
     private long millis;
 
@@ -46,6 +46,11 @@ public final class DateTime implements Comparable<DateTime> {
     }
 
     @Override
+    public String toString() {
+        return millis + "[ms]";
+    }
+
+    @Override
     public int compareTo(DateTime rhs) {
         DateTime lhs = this;
         if (lhs.millis < rhs.millis)
@@ -65,7 +70,7 @@ public final class DateTime implements Comparable<DateTime> {
     }
 
     public DateTime nDayBefore(int n) {
-        return new DateTime(getTime() - 1000L * 3600 * 24 * n);
+        return new DateTime(Util.ensureMin(getTime() - 1000L * 3600 * 24 * n, 0L));
     }
 
     public DateTime nDayAfter(int n) {
@@ -73,15 +78,23 @@ public final class DateTime implements Comparable<DateTime> {
     }
 
     public DateTime nHourBefore(int n) {
-        return new DateTime(getTime() - 1000L * 3600 * n);
+        return new DateTime(Util.ensureMin(getTime() - 1000L * 3600 * n, 0L));
     }
 
     public DateTime nHourAfter(int n) {
         return new DateTime(getTime() + 1000L * 3600 * n);
     }
 
+    public DateTime nSecAfter(int n) {
+        return new DateTime(getTime() + 1000L * n);
+    }
+
+    public DateTime nSecBefore(int n) {
+        return new DateTime(getTime() - 1000L * n);
+    }
+
     public String toHumanReadableFormat() {
-        DateFormat format = new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
+        DateFormat format = new SimpleDateFormat(Constants.READABLE_DATE_FORMAT, Locale.getDefault());
         return format.format(this.toDate());
     }
 }

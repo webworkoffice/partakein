@@ -11,12 +11,13 @@ import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.resource.MessageCode;
 import in.partake.service.IEventSearchService;
 
+// TODO: should be APIed.
 public class AdminEventIndexRecreationAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
 
     public String doExecute() throws DAOException, PartakeException {
         ensureAdmin();
-        ensureValidSessionToken();
+        // ensureValidSessionToken();
 
         new EventIndexRecreationTransaction().execute();
         return renderRedirect("/admin", MessageCode.MESSAGE_EVENT_INDEX_RECREATED);

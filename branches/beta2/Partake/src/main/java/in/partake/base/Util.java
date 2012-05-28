@@ -1,7 +1,5 @@
 package in.partake.base;
 
-import in.partake.view.util.Helper;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,14 +11,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.twitter.Regex;
@@ -37,6 +39,9 @@ public final class Util {
     // UUID
 
     public static boolean isUUID(String str) {
+        if (str == null)
+            return false;
+
         try {
             UUID.fromString(str);
             return true;
@@ -47,6 +52,18 @@ public final class Util {
 
     // ----------------------------------------------------------------------
     // Numeric
+
+    public static long ensureMin(long value, long min) {
+        if (value < min)
+            return min;
+        return value;
+    }
+
+    public static int ensureMin(int value, int min) {
+        if (value < min)
+            return min;
+        return value;
+    }
 
     public static int ensureRange(int value, int min, int max) {
         assert min <= max;
@@ -82,7 +99,6 @@ public final class Util {
         return array;
     }
 
-
     public static Boolean parseBooleanParameter(String value) {
         if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value))
             return true;
@@ -100,10 +116,25 @@ public final class Util {
             return defaultValue;
     }
 
-    // TODO: Use StringUtils.isEmpty() instead.
-    @Deprecated
-    public static boolean isEmpty(String str) {
-        return StringUtils.isEmpty(str);
+    public static Map<UUID, List<String>> parseEnqueteAnswers(JSONObject map) {
+        Map<UUID, List<String>> enqueteAnswers = new HashMap<UUID, List<String>>();
+        for (Object entryObj : map.entrySet()) {
+            Entry<?, ?> entry = (Entry<?, ?>) entryObj;
+            if (!Util.isUUID(entry.getKey().toString()))
+                continue;
+
+            if (!(entry.getValue() instanceof JSONArray))
+                continue;
+
+            JSONArray array = (JSONArray) entry.getValue();
+            List<String> answers = new ArrayList<String>();
+            for (int i = 0; i < array.size(); ++i)
+                answers.add(array.getString(i));
+
+            enqueteAnswers.put(UUID.fromString(entry.getKey().toString()), answers);
+        }
+
+        return enqueteAnswers;
     }
 
     public static boolean isValidHashtag(String hashTag) {
@@ -149,11 +180,6 @@ public final class Util {
     public static String removeURLFragment(String str) {
         if (str == null) { return null; }
         return str.replaceAll("#.*", "");
-    }
-
-    @Deprecated
-    public static String removeHash(String str) {
-        return removeURLFragment(str);
     }
 
     public static void writeFromFile(BufferedWriter writer, File inFile, String encode) throws IOException {
@@ -237,23 +263,6 @@ public final class Util {
     // ----------------------------------------------------------------------
     // HTML
 
-    // TODO: These functions are should be moved to Helper.
-    // HTML escape
-    @Deprecated
-    public static String h(String s) {
-        return Helper.escapeHTML(s);
-    }
-
-    @Deprecated
-    public static String cleanupText(String dirtyText) {
-        return Helper.cleanupText(dirtyText);
-    }
-
-    @Deprecated
-    public static String cleanupHTML(String dirtyHTML) {
-        return Helper.cleanupHTML(dirtyHTML);
-    }
-
     /**
      * validなHTMLから、HTMLタグとコメントを取り除く。
      *
@@ -267,24 +276,6 @@ public final class Util {
 
     // ----------------------------------------------------------------------
     // URI
-
-    // escapeURI の代わりに encodeURI を使うこと。encodeURIComponent
-    @Deprecated
-    public static String escapeURI(String s) {
-        return encodeURI(s);
-    }
-
-    // URLへの文字列埋込みではencodeURIComponentを使うべき＆他の使い道がない
-    @Deprecated
-    public static String encodeURI(String s) {
-        if (s == null) { return ""; }
-        try {
-            return URLEncoder.encode(s, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.warn("safely returns empty string.", e);
-            return "";
-        }
-    }
 
     /**
      * Javascriptの同名関数と同様、

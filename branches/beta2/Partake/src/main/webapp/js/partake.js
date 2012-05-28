@@ -98,7 +98,7 @@
                 sessionToken: partake.sessionToken,
                 title: title,
                 beginDate: beginDate,
-                endDate: endDate,
+                endDate: endDate
             };
             return $.post('/api/event/create', arg);
         },
@@ -172,16 +172,26 @@
             return $.post('/api/event/removeComment', arg);
         },
 
-        modifyEnquete: function(eventId, questions, types, options) {
+        modifyEnquete: function(eventId, ids, questions, types, options) {
             var arg = {
                 sessionToken: partake.sessionToken,
                 eventId: eventId,
+                ids: ids,
                 questions: questions,
                 types: types,
                 options: options
             };
 
             return $.post('/api/event/modifyEnquete', arg);
+        },
+
+        modifyTicket: function(eventId, tickets) {
+            var arg = $.extend(tickets, {
+                sessionToken: partake.sessionToken,
+                eventId: eventId
+            });
+
+            return $.post('/api/event/modifyTicket', arg);
         },
 
         getNotifications: function(eventId) {
@@ -199,15 +209,16 @@
     Partake.prototype.ticket = {
         partake: this,
 
-        apply: function(ticketId, status, comment) {
+        apply: function(ticketId, status, comment, enqueteAnswers) {
             var arg = {
-                    sessionToken: partake.sessionToken,
-                    ticketId: ticketId,
-                    status: status,
-                    comment: comment
-                };
+                sessionToken: partake.sessionToken,
+                ticketId: ticketId,
+                status: status,
+                comment: comment,
+                enqueteAnswers: $.toJSON(enqueteAnswers)
+            };
 
-                return $.post('/api/ticket/apply', arg);
+            return $.post('/api/ticket/apply', arg);
         },
 
         removeAttendant: function(userId, ticketId) {
@@ -217,7 +228,7 @@
                 ticketId: ticketId
             };
 
-            return $.post('/api/event/removeAttendant', arg);
+            return $.post('/api/ticket/removeAttendant', arg);
         },
 
         changeAttendance: function(userId, ticketId, status) {
@@ -228,7 +239,7 @@
                 status: status
             };
 
-            return $.post('/api/event/attend', arg);
+            return $.post('/api/ticket/attend', arg);
         }
     };
 
@@ -280,10 +291,34 @@
         }
     };
 
+    // ----------------------------------------------------------------------
+    // Admin
+
+    Partake.prototype.admin = {
+        partake: this,
+
+        recreateEventIndex: function() {
+            var arg = {
+                sessionToken: partake.sessionToken
+            };
+            return $.post('/api/admin/recreateEventIndex', arg);
+        }
+    };
+
+    // ----------------------------------------------------------------------
+    // Utility
+
     Partake.prototype.defaultFailHandler = function (xhr) {
         try {
             var json = $.parseJSON(xhr.responseText);
-            alert(json.reason);
+            var errorMessage = json.reason;
+
+            if (json.additional) {
+                for (var s in json.additional)
+                    errorMessage += "\n" + s + ": " + json.additional[s];
+            }
+
+            alert(errorMessage);
         } catch (e) {
             alert('レスポンスが JSON 形式ではありません。');
         }

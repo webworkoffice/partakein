@@ -129,7 +129,6 @@ $(function() {
     };
 
     var width = $(window).width();
-    console.log(width);
     if (width <= 480) {
         initArg.initial_type = "phone";
         initArg.width = "" + (width - 40);
@@ -153,9 +152,6 @@ $(function() {
     $('#commentForm-commentEdit').tinymce(initArg);
 
     $(window).resize(function() {
-        console.log("resize");
-        console.log(initArg.width);
-        console.log($(window).width());
         if (initArg.initial_type != "phone")
             return;
         var width = $(window).width();

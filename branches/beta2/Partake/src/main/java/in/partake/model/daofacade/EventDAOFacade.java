@@ -4,7 +4,6 @@ import in.partake.base.TimeUtil;
 import in.partake.base.Util;
 import in.partake.model.EventCommentEx;
 import in.partake.model.EventEx;
-import in.partake.model.EventRelationEx;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.dao.DAOException;
@@ -18,9 +17,8 @@ import in.partake.model.dto.EventFeed;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.MessageEnvelope;
 import in.partake.model.dto.TwitterMessage;
-import in.partake.model.dto.UserTicket;
+import in.partake.model.dto.User;
 import in.partake.model.dto.UserTwitterLink;
-import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.resource.PartakeProperties;
 import in.partake.service.EventSearchServiceException;
@@ -37,30 +35,34 @@ public class EventDAOFacade {
     public static EventEx getEventEx(PartakeConnection con, IPartakeDAOs daos, String eventId) throws DAOException {
         Event event = daos.getEventAccess().find(con, eventId);
         if (event == null) { return null; }
-        UserEx user = UserDAOFacade.getUserEx(con, daos, event.getOwnerId());
-        if (user == null) { return null; }
+        UserEx owner = UserDAOFacade.getUserEx(con, daos, event.getOwnerId());
+        if (owner == null) { return null; }
 
         String feedId = daos.getEventFeedAccess().findByEventId(con, eventId);
 
-        List<EventRelation> relations = event.getRelations();
-        List<EventRelationEx> relationExs = new ArrayList<EventRelationEx>();
-        if (relations != null) {
-            for (EventRelation relation : relations) {
-                EventRelationEx relationEx = getEventRelationEx(con, daos, relation);
-                if (relationEx == null) { continue; }
-                relationExs.add(relationEx);
+        List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
+
+        List<User> editors = new ArrayList<User>();
+        if (event.getEditorIds() != null) {
+            for (String editorId : event.getEditorIds()) {
+                User editor = daos.getUserAccess().find(con, editorId);
+                if (editor != null)
+                    editors.add(editor);
             }
         }
 
-        List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
-        return new EventEx(event, user, feedId, relationExs, tickets);
+        List<Event> relatedEvents = new ArrayList<Event>();
+        if (event.getRelatedEventIds() != null) {
+            for (String relatedEventId : event.getRelatedEventIds()) {
+                Event relatedEvent = daos.getEventAccess().find(con, relatedEventId);
+                if (relatedEvent != null)
+                    relatedEvents.add(relatedEvent);
+            }
+        }
+
+        return new EventEx(event, owner, feedId, tickets, editors, relatedEvents);
     }
 
-    public static EventRelationEx getEventRelationEx(PartakeConnection con, IPartakeDAOs daos, EventRelation relation) throws DAOException {
-        Event event = daos.getEventAccess().find(con, relation.getEventId());
-        if (event == null) { return null; }
-        return new EventRelationEx(relation, event);
-    }
 
     /**
      * event をデータベースに保持します。
@@ -134,19 +136,6 @@ public class EventDAOFacade {
         // TODO: twitter bot が更新をつぶやいてもいいような気がする。
     }
 
-    public static List<EventRelationEx> getEventRelationsEx(PartakeConnection con, IPartakeDAOs daos, Event event) throws DAOException {
-        List<EventRelationEx> relations = new ArrayList<EventRelationEx>();
-        for (EventRelation relation : event.getRelations()) {
-            if (relation == null)
-                continue;
-
-            EventRelationEx relex = new EventRelationEx(relation, event);
-            relations.add(relex);
-        }
-
-        return relations;
-    }
-
     public static void recreateEventIndex(PartakeConnection con, IPartakeDAOs daos, IEventSearchService searchService) throws DAOException, EventSearchServiceException {
         searchService.truncate();
         DataIterator<Event> it = daos.getEventAccess().getIterator(con);
@@ -167,39 +156,6 @@ public class EventDAOFacade {
         } finally {
             it.close();
         }
-    }
-
-    /** user が event に登録するために、登録が必要な event たちを列挙する。 */
-    public static List<Event> getRequiredEventsNotEnrolled(PartakeConnection con, IPartakeDAOs daos, UserEx user, List<EventRelationEx> relations) throws DAOException {
-        List<Event> requiredEvents = new ArrayList<Event>();
-        for (EventRelationEx relation : relations) {
-            if (!relation.isRequired())
-                continue;
-
-            if (relation.getEvent() == null)
-                continue;
-
-            // If <code>user</code> is null, we mark this event as not enrolled.
-            if (user == null) {
-                requiredEvents.add(relation.getEvent());
-                continue;
-            }
-
-            boolean enrolled = false;
-            List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, relation.getEventId());
-            for (EventTicket ticket : tickets) {
-                UserTicket enrollment = daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId());
-                if (enrollment != null && enrollment.getStatus().isEnrolled()) {
-                    enrolled = true;
-                    break;
-                }
-            }
-
-            if (!enrolled)
-                requiredEvents.add(relation.getEvent());
-        }
-
-        return requiredEvents;
     }
 
     // ----------------------------------------------------------------------

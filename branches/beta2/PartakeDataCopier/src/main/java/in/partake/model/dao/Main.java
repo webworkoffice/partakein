@@ -23,13 +23,14 @@ import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.EnqueteQuestion;
-import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.NotificationType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.auxiliary.TicketAmountType;
 import in.partake.model.dto.auxiliary.TicketApplicationEnd;
 import in.partake.model.dto.auxiliary.TicketApplicationStart;
 import in.partake.model.dto.auxiliary.TicketPriceType;
+import in.partake.model.dto.auxiliary.TicketReservationEnd;
 import in.partake.resource.Constants;
 
 import java.sql.Connection;
@@ -42,6 +43,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -216,7 +218,7 @@ public class Main {
                             userId,
                             rs2.getString("type"),
                             rs2.getBytes("data"),
-                            new Date(date.getTime()));
+                            new DateTime(date.getTime()));
                     factory.getImageAccess().put(pcon, t);
                 }
                 rs2.close();
@@ -233,7 +235,7 @@ public class Main {
                             userId,
                             rs2.getString("type"),
                             rs2.getBytes("data"),
-                            new Date(date.getTime()));
+                            new DateTime(date.getTime()));
                     factory.getImageAccess().put(pcon, t);
                 }
                 rs2.close();
@@ -322,15 +324,13 @@ public class Main {
             System.out.println(++i);
             String eventId = eventId("id", rs);
 
-            List<EventRelation> relations = new ArrayList<EventRelation>();
+            List<String> relatedEventIds = new ArrayList<String>();
             {
                 PreparedStatement ps2 = con.prepareStatement("SELECT * FROM EventRelations WHERE srcEventId = ?");
                 ps2.setString(1, eventId);
                 ResultSet rs2 = ps2.executeQuery();
-                while (rs2.next()) {
-                    EventRelation rel = new EventRelation(eventId("dstEventId", rs2), rs2.getBoolean("required"), rs2.getBoolean("priority"));
-                    relations.add(rel);
-                }
+                while (rs2.next())
+                    relatedEventIds.add(eventId("dstEventId", rs2));
                 rs2.close();
                 ps2.close();
             }
@@ -359,13 +359,13 @@ public class Main {
                     foreImageId,
                     backImageId,
                     rs.getBoolean("isPrivate") ? rs.getString("passcode") : (String) null,
-                            false, // draft
-                            editors,
-                            relations,
-                            (List<EnqueteQuestion>) null, // enquetes
-                            createdAt(rs),
-                            modifiedAt(rs),
-                            rs.getInt("revision"));
+                    false, // draft
+                    editors,
+                    relatedEventIds,
+                    (List<EnqueteQuestion>) null, // enquetes
+                    createdAt(rs),
+                    modifiedAt(rs),
+                    rs.getInt("revision"));
             factory.getEventAccess().put(pcon, event);
         }
 
@@ -383,12 +383,14 @@ public class Main {
         while (rs.next()) {
             System.out.println(++cnt + ": UserTicket");
             List<UUID> ticketIds = new ArrayList<UUID>();
+
+            String rawEventId = rs.getString("id");
             String eventId = eventId("id", rs);
 
             List<Enrollment> enrollments = new ArrayList<Enrollment>();
             {
                 PreparedStatement ps2 = con.prepareStatement("SELECT * FROM Enrollments WHERE eventId = ?");
-                ps2.setString(1, eventId);
+                ps2.setString(1, rawEventId);
                 ResultSet rs2 = ps2.executeQuery();
                 while (rs2.next()) {
                     int statusVal = rs2.getInt("status");
@@ -416,7 +418,7 @@ public class Main {
             List<String> priorityEventIds = new ArrayList<String>();
             {
                 PreparedStatement ps2 = con.prepareStatement("SELECT * from EventRelations WHERE srcEventId = ? AND priority = true");
-                ps2.setString(1, eventId);
+                ps2.setString(1, rawEventId);
                 ResultSet rs2 = ps2.executeQuery();
                 while (rs2.next()) {
                     priorityEventIds.add(eventId("dstEventId", rs2));
@@ -494,7 +496,8 @@ public class Main {
                         TicketApplicationStart.ANYTIME, 0, (DateTime) null,
                         rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
                         0, rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
-                                TicketPriceType.FREE, 0, false, countVip, createdAt(rs), modifiedAt(rs));
+                        TicketReservationEnd.TILL_NHOUR_BEFORE, 3, (DateTime) null,
+                        TicketPriceType.FREE, 0, TicketAmountType.LIMITED, countVip, createdAt(rs), modifiedAt(rs));
                 factory.getEventTicketAccess().put(pcon, ticket);
 
                 // And creates a user ticket.
@@ -507,7 +510,7 @@ public class Main {
                             e.getUserId(), ticketId, eventId,
                             e.getComment(), e.getStatus(),
                             e.getModificationStatus(), e.getAttendanceStatus(),
-                            (List<String>) null,
+                            (Map<UUID, List<String>>) null,
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()));
@@ -523,7 +526,8 @@ public class Main {
                         TicketApplicationStart.ANYTIME, 0, (DateTime) null,
                         rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
                         0, rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
-                                TicketPriceType.FREE, 0, false, countPri, createdAt(rs), modifiedAt(rs));
+                                TicketReservationEnd.TILL_NHOUR_BEFORE, 3, (DateTime) null,
+                                TicketPriceType.FREE, 0, TicketAmountType.LIMITED, countPri, createdAt(rs), modifiedAt(rs));
                 factory.getEventTicketAccess().put(pcon, ticket);
 
                 // And creates a user ticket.
@@ -536,7 +540,7 @@ public class Main {
                             e.getUserId(), ticketId, eventId,
                             e.getComment(), e.getStatus(),
                             e.getModificationStatus(), e.getAttendanceStatus(),
-                            (List<String>) null,
+                            (Map<UUID, List<String>>) null,
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()));
@@ -554,7 +558,8 @@ public class Main {
                         rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
                         0,
                         rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
-                                TicketPriceType.FREE, 0, isInfinity, Math.max(0, capacity - countVip - countPri), createdAt(rs), modifiedAt(rs));
+                                TicketReservationEnd.TILL_NHOUR_BEFORE, 3, (DateTime) null,
+                                TicketPriceType.FREE, 0, isInfinity ? TicketAmountType.UNLIMITED : TicketAmountType.LIMITED, Math.max(0, capacity - countVip - countPri), createdAt(rs), modifiedAt(rs));
                 factory.getEventTicketAccess().put(pcon, ticket);
 
                 // And creates a user ticket.
@@ -568,7 +573,7 @@ public class Main {
                             e.getUserId(), ticketId, eventId,
                             e.getComment(), e.getStatus(),
                             e.getModificationStatus(), e.getAttendanceStatus(),
-                            (List<String>) null,
+                            (Map<UUID, List<String>>) null,
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()));
@@ -579,7 +584,7 @@ public class Main {
             // Copy EventReminder
             {
                 PreparedStatement ps2 = con.prepareStatement("SELECT * from EventReminders WHERE eventId = ?");
-                ps2.setString(1, eventId);
+                ps2.setString(1, rawEventId);
                 ResultSet rs2 = ps2.executeQuery();
                 while (rs2.next()) {
                     Timestamp sentDateOfbeforeDeadlineHalfDay = rs2.getTimestamp("sentdateofbeforedeadlinehalfday");

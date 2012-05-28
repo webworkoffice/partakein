@@ -120,14 +120,14 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
         //    2.2. 前回送った時刻が締め切り２４時間以上前で、かつ送った時刻より１時間以上経過している。
         {
             EventTicketNotification notification = daos.getEventNotificationAccess().findLastNotification(con, ticket.getId(), NotificationType.ONE_DAY_BEFORE_REMINDER_FOR_RESERVATION);
-            if (needsToSend(now, deadline.nDayBefore(1), notification.getCreatedAt()))
+            if (notification == null || needsToSend(now, deadline.nDayBefore(1), notification.getCreatedAt()))
                 sendNotificationOnlyForReservedParticipants(con, daos, ticket, event, NotificationType.ONE_DAY_BEFORE_REMINDER_FOR_RESERVATION);
         }
 
         // 締め切り１２時間前になっても RESERVED な人がいればメッセージを送付する。
         {
             EventTicketNotification notification = daos.getEventNotificationAccess().findLastNotification(con, ticket.getId(), NotificationType.HALF_DAY_BEFORE_REMINDER_FOR_RESERVATION);
-            if (needsToSend(now, deadline.nHourBefore(12), notification.getCreatedAt()))
+            if (notification == null || needsToSend(now, deadline.nHourBefore(12), notification.getCreatedAt()))
                 sendNotificationOnlyForReservedParticipants(con, daos, ticket, event, NotificationType.HALF_DAY_BEFORE_REMINDER_FOR_RESERVATION);
         }
 
@@ -135,7 +135,7 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
         // 参加が確定していない人には、RESERVED なメッセージが送られている。
         {
             EventTicketNotification notification = daos.getEventNotificationAccess().findLastNotification(con, ticket.getId(), NotificationType.EVENT_ONEDAY_BEFORE_REMINDER);
-            if (needsToSend(now, beginDate.nDayBefore(1), notification.getCreatedAt()))
+            if (notification == null || needsToSend(now, beginDate.nDayBefore(1), notification.getCreatedAt()))
                 sendNotificationOnlyForParticipants(con, daos, ticket, event, NotificationType.EVENT_ONEDAY_BEFORE_REMINDER);
         }
     }

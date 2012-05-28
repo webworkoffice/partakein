@@ -1,3 +1,4 @@
+<%@page import="in.partake.base.Util"%>
 <%@page import="in.partake.model.dto.EventTicket"%>
 <%@page import="in.partake.controller.action.event.AbstractEventEditAction"%>
 <%@page import="in.partake.model.EventEx"%>
@@ -33,8 +34,8 @@
 </div>
 
 <div class="row" style="margin-bottom: 10px;">
-    <div class="span12 offset1">チケット名</div>
-    <div class="span6">数量</div>
+    <div class="span12 offset1"><strong>チケット名</strong></div>
+    <div class="span6"><strong>数量</strong></div>
 </div>
 
 <div class="row"><div id="ticket-list" class="span24" style="border-bottom: 1px solid; margin-bottom: 10px;">
@@ -42,8 +43,8 @@
 
 <div id="template" style="display: none; border-top: 1px solid; padding-top: 10px; padding-bottom: 10px;">
     <div id="template-head" class="row">
-        <div id="template-question-text" class="span12 offset1">チケット名を入力してください。</div>
-        <div id="template-question-type" class="span6">0/0</div>
+        <div id="template-ticket-summary-name" class="span12 offset1">チケット名を入力してください。</div>
+        <div id="template-ticket-summary-amount" class="span6">無制限</div>
         <div class="span5">
             <a href="#" id="template-show-edit"><i class="icon-pencil"></i>編集</a>
             <a href="#" id="template-remove"><i class="icon-remove"></i>削除</a>
@@ -51,48 +52,60 @@
     </div>
     <div id="template-body" class="row" style="display: none;">
         <div class="span18 offset1">
-            <form class="form-horizontal"><fieldset>
+            <form id="template-form" class="form-horizontal"><fieldset>
+                <input id="template-id" type="hidden" name="id" value="">
                 <div class="control-group">
                     <label class="control-label">チケット名</label>
                     <div class="controls">
-                        <input id="template-ticket-name" type="text" class="span12">
+                        <input id="template-name" name="name" type="text" class="span12">
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label">募集開始日時</label>
                     <div class="controls">
-                        <label class="radio"><input type="radio" name="ticketApplicationStart[]" value="fromNow" checked />今から</label>
-                        <label class="radio"><input type="radio" name="ticketApplicationStart[]" value="beforeNDays" />イベントの <input type="text" class="span2" name="ticketApplicationStartDay[]" value="0" /> 日前から</label>
-                        <label class="radio"><input type="radio" name="ticketApplicationStart[]" value="custom" />次の日付
-                            <input type="text" type="text" name="" />
+                        <label class="radio"><input id="template-start-anytime" type="radio" name="applicationStart" value="anytime" checked />今から</label>
+                        <label class="radio"><input id="template-start-before" type="radio" name="applicationStart" value="from_nday_before" />イベントの <input type="text" class="span2" name="applicationStartDayBeforeEvent" value="0" /> 日前から</label>
+                        <label class="radio"><input id="template-start-custom" type="radio" name="applicationStart" value="from_custom_day" />次の日付から
+                            <input type="text" type="text" name="customApplicationStartDate" placeholder="YYYY-MM-DD hh:mm" />
                         </label>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label">募集終了日時</label>
                     <div class="controls">
-                        <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="justBeforeEvent" checked />イベントが始まるまで</label>
-                        <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="justAfterEvent" checked />イベントが終わるまで</label>
-                        <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="beforeNDays" />イベントの <input type="text" class="span2" name="ticketApplicationPeriodEndDay[]" value="0" /> 日前まで</label>
-                        <label class="radio"><input type="radio" name="ticketApplicationEnd[]" value="custom" />次の日付
-                            <input type="text" type="text" name="" />
+                        <label class="radio"><input type="radio" name="applicationEnd" value="till_time_before_event" checked />イベントが始まるまで</label>
+                        <label class="radio"><input type="radio" name="applicationEnd" value="till_time_after_event" checked />イベントが終わるまで</label>
+                        <label class="radio"><input type="radio" name="applicationEnd" value="till_nday_before" />イベントの <input type="text" class="span2" name="applicationEndDayBeforeEvent" value="0" /> 日前まで</label>
+                        <label class="radio"><input type="radio" name="applicationEnd" value="till_custom_day" />次の日付まで
+                            <input type="text" type="text" name="customApplicationEndDate" placeholder="YYYY-MM-DD hh:mm"/>
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">仮参加締切日時</label>
+                    <div class="controls">
+                        <label class="radio"><input type="radio" name="reservationEnd" value="till_time_before_application" checked />申込締切と同じ</label>
+                        <label class="radio"><input type="radio" name="reservationEnd" value="till_nhour_before" />申込締切の <input type="text" class="span2" name="reservationEndHourBeforeApplication" value="0" /> 時間前まで</label>
+                        <label class="radio"><input type="radio" name="reservationEnd" value="till_none" />仮参加を認めない</label>
+                        <label class="radio"><input type="radio" name="reservationEnd" value="till_custom_day" />次の日付まで
+                            <input type="text" type="text" name="customReservationEndDate" placeholder="YYYY-MM-DD hh:mm" />
                         </label>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label">価格</label>
                     <div class="controls">
-                        <label class="radio"><input type="radio" name="ticketPrice[]" value="free" checked />無料</label>
-                        <label class="radio"><input type="radio" name="ticketPrice[]" value="nonFree" />
-                        <input type="text" class="span4" name="ticketPriceText[]" value="1000" />円 (会場で支払い)</label>
+                        <label class="radio"><input type="radio" name="priceType" value="free" checked />無料</label>
+                        <label class="radio"><input type="radio" name="priceType" value="nonfree" />
+                        <input type="text" class="span4" name="price" value="1000" />円 (会場で支払い)</label>
                     </div>
                 </div>
                 <div class="control-group">
                     <label class="control-label">チケット枚数</label>
                     <div class="controls">
-                        <label class="radio"><input type="radio" name="ticketAmount[]" value="unlimited" checked />無制限</label>
-                        <label class="radio"><input type="radio" name="ticketAmount[]" value="limited" />
-                            <input type="text" class="span2" name="ticketAmountText[]" value="10" />枚</label>
+                        <label class="radio"><input type="radio" name="amountType" value="unlimited" checked />無制限</label>
+                        <label class="radio"><input type="radio" name="amountType" value="limited" />
+                            <input type="text" class="span2" name="amount" value="10" />枚</label>
                     </div>
                 </div>
             </fieldset></form>
@@ -111,11 +124,18 @@
 
 <script>
 function didUpdateFromForm(prefix) {
-    var question = $('#' + prefix + '-question-input').val();
-    if (question && question != "")
-        $('#' + prefix + '-question-text').text(question);
+    var ticketName = $('#' + prefix + ' input[name="name"]').val();
+    if (ticketName && ticketName != "")
+        $('#' + prefix + "-ticket-summary-name").text(ticketName);
     else
-        $('#' + prefix + '-question-text').text('チケット名を入力して下さい');
+        $('#' + prefix + "-ticket-summary-name").text('チケット名を入力してください。');
+
+    var ticketAmountType = $('#' + prefix + ' input[name="amountType"]:checked').val();
+    var ticketAmount = $('#' + prefix + ' input[name="amount"]').val();
+    if (ticketAmountType == "limited" && ticketAmount != null)
+        $('#' + prefix + "-ticket-summary-amount").text(ticketAmount);
+    else
+        $('#' + prefix + "-ticket-summary-amount").text('無制限');
 }
 
 $('#template-hide-edit, #template-head').click(function() {
@@ -154,8 +174,7 @@ $(function() {
     });
 });
 
-var initialData = [];
-
+var initialData = <%= Util.toSafeJSONArray(event.getTikcets()) %>;
 
 for (var i = 0; i < initialData.length; ++i) {
     var data = initialData[i];
@@ -163,15 +182,27 @@ for (var i = 0; i < initialData.length; ++i) {
     var cloned = cloneTemplate(prefix, true);
     $('#ticket-list').append(cloned);
 
-    $('#' + prefix + '-question-input').val(data.question);
-    $('#' + prefix + '-answertype').val(data.type);
-    $('#' + prefix + '-answertype').change();
+    $('#' + prefix + ' input[name="id"]').val(data.id);
+    $('#' + prefix + ' input[name="eventId"]').val(data.eventId);
+    $('#' + prefix + ' input[name="name"]').val(data.name);
 
-    for (var j = 0; j < data.options.length; ++j) {
-        var v = addItem(prefix);
-        var input = v.find("input");
-        input.val(data.options[j]);
-    }
+    $('#' + prefix + ' input[name="applicationStart"]').val([data.applicationStart]);
+    $('#' + prefix + ' input[name="applicationStartDayBeforeEvent"]').val(data.applicationStartDayBeforeEvent);
+    $('#' + prefix + ' input[name="customApplicationStartDate"]').val(data.customApplicationStartDateText);
+
+    $('#' + prefix + ' input[name="applicationEnd"]').val([data.applicationEnd]);
+    $('#' + prefix + ' input[name="applicationEndDayBeforeEvent"]').val(data.applicationEndDayBeforeEvent);
+    $('#' + prefix + ' input[name="customApplicationEndDate"]').val(data.customApplicationEndDateText);
+
+    $('#' + prefix + ' input[name="reservationEnd"]').val([data.reservationEnd]);
+    $('#' + prefix + ' input[name="reservationEndHourBeforeApplication"]').val(data.reservationEndHourBeforeApplication);
+    $('#' + prefix + ' input[name="customReservationEndDate"]').val(data.customReservationEndDate);
+
+    $('#' + prefix + ' input[name="priceType"]').val([data.priceType]);
+    $('#' + prefix + ' input[name="price"]').val(data.price);
+
+    $('#' + prefix + ' input[name="amountType"]').val([data.amountType]);
+    $('#' + prefix + ' input[name="amount"]').val(data.amount);
 
     didUpdateFromForm(prefix);
 }
@@ -179,37 +210,53 @@ for (var i = 0; i < initialData.length; ++i) {
 
 <form><fieldset>
     <div class="form-actions">
-        <input type="button" id="enquete-submit" class="btn btn-primary" value="保存">
-        <span id="enquete-submit-info" class="text-info"></span>
+        <input type="button" id="ticket-submit" class="btn btn-primary" value="保存">
+        <span id="ticket-submit-info" class="text-info"></span>
     </div>
 </fieldset></form>
 
 <script>
-$('#enquete-submit').click(function() {
-    var list = $('#question-list').children();
-    var questions = [];
-    var types = [];
-    var options = [];
+$('#ticket-submit').click(function() {
+    function getValues(name) {
+        var inputs = $('form input[name="' + name + '"]').filter(function() {
+            return $(this).form().attr('id').indexOf('template') != 0;
+        });
 
-    list.each(function(i) {
-        var elem = $(this);
-        var prefix = elem.attr('id');
-        var question = $('#' + prefix + '-question-input').val();
-        var option = $('#' + prefix + '-options input').map(function() {
-            return $(this).val();
-        }).get();
+        var result = [];
+        for (var i = 0; i < inputs.length; ++i)
+            result.push($(inputs.get(i)).val());
+        return result;
+    }
+    function getSelectedValues(name) {
+        var inputs = $('form input[name="' + name + '"]').filter(function() {
+            return $(this).form().attr('id').indexOf('template') != 0 && $(this).is(':checked');
+        });
 
-        questions.push(question);
-        types.push(type);
-        options.push($.toJSON(option));
-    });
+        var result = [];
+        for (var i = 0; i < inputs.length; ++i)
+            result.push($(inputs.get(i)).val());
+        return result;
+    }
+
+    var names = ['id', 'name',
+                 'applicationStartDayBeforeEvent', 'customApplicationStartDate',
+                 'applicationEndDayBeforeEvent', 'customApplicationEndDate',
+                 'reservationEndHourBeforeApplication', 'customReservationEndDate',
+                 'price', 'amount'];
+    var selectNames = ['applicationStart', 'applicationEnd', 'reservationEnd', 'priceType', 'amountType'];
+
+    var tickets = {};
+    for (var i = 0; i < names.length; ++i)
+        tickets[names[i]] = getValues(names[i]);
+    for (var i = 0; i < selectNames.length; ++i)
+        tickets[selectNames[i]] = getSelectedValues(selectNames[i]);
 
     var eventId = '<%= h(event.getId()) %>';
-    partake.event.modifyTicket(eventId, questions, types, options)
+    partake.event.modifyTicket(eventId, tickets)
     .done(function (json) {
-        $('#enquete-submit-info').hide();
-        $('#enquete-submit-info').text('保存しました');
-        $('#enquete-submit-info').fadeIn(500);
+        $('#ticket-submit-info').hide();
+        $('#ticket-submit-info').text('保存しました');
+        $('#ticket-submit-info').fadeIn(500);
     })
     .fail(partake.defaultFailHandler);
 });

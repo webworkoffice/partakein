@@ -9,12 +9,18 @@
 <link rel="stylesheet" type="text/css" href="/css/jquery-ui-1.8.16.custom.css" />
 <link rel="stylesheet" type="text/css" href="/css/jquery-ui-timepicker-addon.css" />
 <link rel="stylesheet" type="text/css" href="/css/style.css?version=<%= Helper.getCssVersion() %>" media="screen,print" />
+<!--[if IE ]>
+<link rel="stylesheet" type="text/css" href="/css/fixie.css">
+<![endif]-->
 <link rel="shortcut icon" href="/images/favicon.ico">
 
+<%--
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+--%>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.19/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
-<%-- <script type="text/javascript" src="http://www.google.com/jsapi"></script> --%>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 
 <%-- Support HTML5 elements for IE6-8 support --%>
 <!--[if lt IE 9]>
@@ -24,6 +30,7 @@
 <%= Helper.javascript(
         "/js/partake.js",
         "/js/partake-ui.js",
+        "/js/partake-util.js",
         "/js/vendor/jquery.ui.widget.js",
         "/js/jquery.iframe-transport.js",
         "/js/jquery.fileupload.js",

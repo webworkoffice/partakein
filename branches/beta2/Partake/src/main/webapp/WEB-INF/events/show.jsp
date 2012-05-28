@@ -24,7 +24,6 @@
 <%@page import="static in.partake.view.util.Helper.cleanupHTML"%>
 <%@page import="static in.partake.view.util.Helper.escapeTwitterResponse"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
-<%@page import="in.partake.model.EventRelationEx"%>
 
 <%
     EventShowAction action = (EventShowAction) request.getAttribute(Constants.ATTR_ACTION);
@@ -35,7 +34,6 @@
         redirectURL = (String)request.getAttribute(Constants.ATTR_CURRENT_URL);
 
     EventEx event = action.getEvent();
-    List<EventRelationEx> eventRelations = action.getRelations();
 %>
 
 <!DOCTYPE html>
@@ -96,7 +94,6 @@ body {
         <% if (!StringUtils.isEmpty(event.getSummary())) { %>
             <%= h(event.getSummary()) %>
         <% } %>
-
     </p>
     <p>
         <span class="label label-info"><%= h(EventCategory.getReadableCategoryName(event.getCategory())) %></span>
@@ -159,7 +156,7 @@ body {
         </div>
         <% } %>
 
-        <h3>イベント</h3>
+        <h3>詳細情報</h3>
         <div class="event-description" style="min-height: 200px;">
             <%= cleanupHTML(event.getDescription()) %>
         </div>

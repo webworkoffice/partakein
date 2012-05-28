@@ -17,6 +17,8 @@ import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
 import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.EventTicket;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -109,6 +111,28 @@ public class Postgres9EventTicketDao extends Postgres9Dao implements IEventTicke
 
         Postgres9IdMapper<EventTicket> idMapper = new Postgres9IdMapper<EventTicket>((Postgres9Connection) con, mapper, entityDao);
         return DAOUtil.convertToList(new Postgres9DataIterator<EventTicket>(idMapper, psars));
+    }
+
+    @Override
+    public void removeByEventId(PartakeConnection con, String eventId) throws DAOException {
+        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY (seq, id) ASC",
+                new Object[] { eventId });
+
+        try {
+            ResultSet rs = psars.getResultSet();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                if (id == null)
+                    continue;
+
+                remove(con, UUID.fromString(id));
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        } finally {
+            psars.close();
+        }
     }
 
     @Override

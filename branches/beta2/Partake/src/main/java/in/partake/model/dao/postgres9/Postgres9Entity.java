@@ -2,7 +2,6 @@ package in.partake.model.dao.postgres9;
 
 import in.partake.base.DateTime;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class Postgres9Entity {
@@ -16,16 +15,6 @@ public class Postgres9Entity {
     private byte[] opt;
     /** Time index updated at. */
     private DateTime updatedAt;
-
-    // TODO: This ctor should be deprecated later.
-    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, Date updatedAt) {
-        this.id = id;
-        this.version = version;
-        this.body = body;
-        this.opt = opt;
-        if (updatedAt != null)
-            this.updatedAt = new DateTime(updatedAt.getTime());
-    }
 
     // TODO: This ctor should be deprecated later.
     public Postgres9Entity(String id, int version, byte[] body, byte[] opt, DateTime updatedAt) {

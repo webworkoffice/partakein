@@ -5,22 +5,20 @@ import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.controller.base.permission.DraftEventEditPermission;
 import in.partake.controller.base.permission.PrivateEventShowPermission;
 import in.partake.model.EventCommentEx;
-import in.partake.model.UserTicketEx;
 import in.partake.model.EventEx;
 import in.partake.model.EventMessageEx;
-import in.partake.model.EventRelationEx;
 import in.partake.model.EventTicketHolderList;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.UserTicketEx;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EnrollmentDAOFacade;
 import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.daofacade.MessageDAOFacade;
-import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
-import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.UserTicket;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
@@ -36,13 +34,11 @@ public class EventShowAction extends AbstractPartakeAction {
 
     private EventEx event;
     private boolean needsPasscode;
-    private List<Event> requiredEvents;
     private List<EventTicket> tickets;
-    private Map<UUID, ParticipationStatus> participationStatusMap;
+    private Map<UUID, UserTicket> userTicketMap;
     private Map<UUID, EventTicketHolderList> ticketHolderListMap;
     private List<EventCommentEx> comments;
     private List<EventMessageEx> eventMessages;
-    private List<EventRelationEx> relations;
 
     @Override
     protected String doExecute() throws DAOException, PartakeException {
@@ -63,13 +59,12 @@ public class EventShowAction extends AbstractPartakeAction {
             return renderRedirect("/events/passcode?eventId=" + eventId);
         }
 
-        this.requiredEvents = transaction.getRequiredEvents();
         this.tickets = transaction.getEventTickets();
-        this.participationStatusMap = transaction.getParticipationStatusMap();
+        this.userTicketMap = transaction.getUserTicketMap();
         this.ticketHolderListMap = transaction.getTicketHolderListMap();
         this.comments = transaction.getComments();
         this.eventMessages = transaction.getEventMessages();
-        this.relations = transaction.getRelations();
+
 
         return render("events/show.jsp");
     }
@@ -82,15 +77,7 @@ public class EventShowAction extends AbstractPartakeAction {
         return needsPasscode;
     }
 
-    public List<Event> getRequiredEvents() {
-        return requiredEvents;
-    }
-
-    public Map<UUID, ParticipationStatus> getParticipationStatusMap() {
-        return participationStatusMap;
-    }
-
-    public Map<UUID, EventTicketHolderList>getTicketHolderListMap() {
+    public Map<UUID, EventTicketHolderList> getTicketHolderListMap() {
         return ticketHolderListMap;
     }
 
@@ -102,12 +89,12 @@ public class EventShowAction extends AbstractPartakeAction {
         return eventMessages;
     }
 
-    public List<EventRelationEx> getRelations() {
-        return relations;
-    }
-
     public List<EventTicket> getTickets() {
         return tickets;
+    }
+
+    public Map<UUID, UserTicket> getUserTicketMap() {
+        return this.userTicketMap;
     }
 }
 
@@ -118,15 +105,13 @@ class EventShowTransaction extends DBAccess<Void> {
 
     private EventEx event;
     private boolean needsPasscode;
-    private List<Event> requiredEvents;
 
-    private Map<UUID, ParticipationStatus> participationStatusMap;
     private Map<UUID, EventTicketHolderList> ticketHolderListMap;
+    private Map<UUID, UserTicket> userTicketMap;
 
     private List<EventTicket> tickets;
     private List<EventCommentEx> comments;
     private List<EventMessageEx> eventMessages;
-    private List<EventRelationEx> relations;
 
     public EventShowTransaction(UserEx user, String eventId, Map<String, Object> session) {
         this.user = user;
@@ -161,15 +146,11 @@ class EventShowTransaction extends DBAccess<Void> {
             }
         }
 
-        relations = EventDAOFacade.getEventRelationsEx(con, daos, event);
         tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
-
-        // ----- 登録している、していないの条件を満たしているかどうかのチェック
-        requiredEvents = EventDAOFacade.getRequiredEventsNotEnrolled(con, daos, user, relations);
 
         // ----- participants を反映
         ticketHolderListMap = new HashMap<UUID, EventTicketHolderList>();
-        participationStatusMap = new HashMap<UUID, ParticipationStatus>();
+        userTicketMap = new HashMap<UUID, UserTicket>();
         for (EventTicket ticket : tickets) {
             List<UserTicketEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
             if (participations == null)
@@ -177,9 +158,7 @@ class EventShowTransaction extends DBAccess<Void> {
 
             ticketHolderListMap.put(ticket.getId(), ticket.calculateParticipationList(event, participations));
             if (user != null)
-                participationStatusMap.put(ticket.getId(), EnrollmentDAOFacade.getParticipationStatus(con, daos, user.getId(), ticket.getId()));
-            else
-                participationStatusMap.put(ticket.getId(), ParticipationStatus.NOT_ENROLLED);
+                userTicketMap.put(ticket.getId(), daos.getEnrollmentAccess().findByTicketIdAndUserId(con, ticket.getId(), user.getId()));
         }
 
         comments = EventDAOFacade.getCommentsExByEvent(con, daos, eventId);
@@ -196,16 +175,12 @@ class EventShowTransaction extends DBAccess<Void> {
         return needsPasscode;
     }
 
-    public List<Event> getRequiredEvents() {
-        return requiredEvents;
-    }
-
-    public Map<UUID, ParticipationStatus> getParticipationStatusMap() {
-        return participationStatusMap;
-    }
-
     public Map<UUID, EventTicketHolderList>getTicketHolderListMap() {
         return ticketHolderListMap;
+    }
+
+    public Map<UUID, UserTicket> getUserTicketMap() {
+        return userTicketMap;
     }
 
     public List<EventCommentEx> getComments() {
@@ -218,9 +193,5 @@ class EventShowTransaction extends DBAccess<Void> {
 
     public List<EventTicket> getEventTickets() {
         return tickets;
-    }
-
-    public List<EventRelationEx> getRelations() {
-        return relations;
     }
 }

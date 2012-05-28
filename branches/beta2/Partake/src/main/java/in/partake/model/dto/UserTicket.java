@@ -1,15 +1,15 @@
 package in.partake.model.dto;
 
 import in.partake.base.DateTime;
+import in.partake.base.Util;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -23,7 +23,7 @@ public class UserTicket extends PartakeModel<UserTicket> {
     private ParticipationStatus status;
     private ModificationStatus modificationStatus;
     private AttendanceStatus attendanceStatus;
-    private List<String> enqueteAnswers;
+    private Map<UUID, List<String>> enqueteAnswers;
     private DateTime appliedAt;
     private DateTime createdAt;
     private DateTime modifiedAt;
@@ -33,7 +33,7 @@ public class UserTicket extends PartakeModel<UserTicket> {
 
     public UserTicket(String id, String userId, UUID ticketId, String eventId, String comment,
             ParticipationStatus status, ModificationStatus modificationStatus, AttendanceStatus attendanceStatus,
-            List<String> enqueteAnswers,
+            Map<UUID, List<String>> enqueteAnswers,
             DateTime appliedAt, DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.userId = userId;
@@ -63,10 +63,8 @@ public class UserTicket extends PartakeModel<UserTicket> {
         this.modificationStatus = ModificationStatus.safeValueOf(obj.getString("modificationStatus"));
         this.attendanceStatus = AttendanceStatus.safeValueOf(obj.getString("attendanceStatus"));
         if (obj.containsKey("enqueteAnswers")) {
-            this.enqueteAnswers = new ArrayList<String>();
-            JSONArray array = obj.getJSONArray("enqueteAnswers");
-            for (int i = 0; i < array.size(); ++i)
-                enqueteAnswers.add(array.getString(i));
+            JSONObject map = obj.getJSONObject("enqueteAnswers");
+            this.enqueteAnswers = Util.parseEnqueteAnswers(map);
         }
         this.appliedAt = new DateTime(obj.getLong("appliedAt"));
         this.createdAt = new DateTime(obj.getLong("createdAt"));
@@ -91,10 +89,10 @@ public class UserTicket extends PartakeModel<UserTicket> {
         obj.put("modificationStatus", modificationStatus.toString());
         obj.put("attendanceStatus", attendanceStatus.toString());
         if (enqueteAnswers != null && !enqueteAnswers.isEmpty()) {
-            JSONArray array = new JSONArray();
-            for (String answer : enqueteAnswers)
-                array.add(answer);
-            obj.put("enqueteAnswers", array);
+            JSONObject enqueteAnswers = new JSONObject();
+            for (Map.Entry<UUID, List<String>> entry : this.enqueteAnswers.entrySet())
+                enqueteAnswers.put(entry.getKey().toString(), entry.getValue());
+            obj.put("enqueteAnswers", enqueteAnswers);
         }
         obj.put("appliedAt", appliedAt.getTime());
         obj.put("createdAt", createdAt.getTime());
@@ -188,7 +186,7 @@ public class UserTicket extends PartakeModel<UserTicket> {
         return attendanceStatus;
     }
 
-    public List<String> getEnqueteAnswers() {
+    public Map<UUID, List<String>> getEnqueteAnswers() {
         return enqueteAnswers;
     }
 
@@ -244,7 +242,7 @@ public class UserTicket extends PartakeModel<UserTicket> {
         this.attendanceStatus = attendanceStatus;
     }
 
-    public void setEnqueteAnswers(List<String> enqueteAnswers) {
+    public void setEnqueteAnswers(Map<UUID, List<String>> enqueteAnswers) {
         checkFrozen();
         this.enqueteAnswers = enqueteAnswers;
     }

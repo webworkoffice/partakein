@@ -2,8 +2,7 @@ package in.partake.model.dto.auxiliary;
 
 public enum EnqueteAnswerType {
     TEXT("text"),
-    TEXTAREA("textArea"),
-    DATETIME("datetime"),
+    TEXTAREA("textarea"),
     CHECKBOX("checkbox"),
     RADIOBUTTON("radiobutton");
 

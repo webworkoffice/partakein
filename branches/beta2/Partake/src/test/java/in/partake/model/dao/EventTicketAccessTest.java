@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.*;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
 
 public class EventTicketAccessTest extends AbstractDaoTestCaseBase<IEventTicketAccess, EventTicket, UUID> {
     private EventTicketTestDataProvider provider;
@@ -30,6 +31,7 @@ public class EventTicketAccessTest extends AbstractDaoTestCaseBase<IEventTicketA
         return provider.create(pkNumber, pkSalt, objNumber);
     }
 
+    @Test
     public void testFindByEventId() throws Exception {
         final String eventId1 = UUID.randomUUID().toString();
         final String eventId2 = UUID.randomUUID().toString();

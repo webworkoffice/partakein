@@ -1,11 +1,13 @@
 package in.partake.controller.api.event;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import in.partake.base.DateTime;
+import in.partake.base.TimeUtil;
+import in.partake.base.Util;
 import in.partake.controller.api.APIControllerTest;
-import in.partake.model.EventEx;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.UserErrorCode;
 
 import org.junit.Test;
@@ -15,29 +17,12 @@ import com.opensymphony.xwork2.ActionProxy;
 public class ModifyAPITest extends APIControllerTest {
 
     @Test
-    public void testToModify() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/modify");
-        loginAs(proxy, EVENT_OWNER_ID);
-        addValidSessionTokenToParameter(proxy);
-
-        EventEx event = loadEventEx(DEFAULT_EVENT_ID);
-        event.setTitle("MODIFIED");
-        setEventParameters(proxy, event);
-
-        proxy.execute();
-        assertResultOK(proxy);
-
-        Event modified = loadEvent(DEFAULT_EVENT_ID);
-        assertThat(modified.getTitle(), is("MODIFIED"));
-    }
-
-    @Test
     public void testToModifyWithoutLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/modify");
 
-        EventEx event = loadEventEx(DEFAULT_EVENT_ID);
-        setEventParameters(proxy, event);
         addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "title", "modified");
 
         proxy.execute();
         assertResultLoginRequired(proxy);
@@ -46,62 +31,804 @@ public class ModifyAPITest extends APIControllerTest {
     @Test
     public void testToModifyWithInvalidSessionToken() throws Exception {
         ActionProxy proxy = getActionProxy("/api/event/modify");
-        loginAs(proxy, EVENT_OWNER_ID);
 
-        EventEx event = loadEventEx(DEFAULT_EVENT_ID);
-        setEventParameters(proxy, event);
+        loginAs(proxy, EVENT_OWNER_ID);
         addInvalidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "title", "modified");
 
         proxy.execute();
         assertResultInvalid(proxy, UserErrorCode.INVALID_SECURITY_CSRF);
     }
 
-    private void setEventParameters(ActionProxy proxy, EventEx event) {
-        if (event.getId() != null)
-            addParameter(proxy, "eventId", event.getId());
-        if (event.isDraft())
-            addParameter(proxy, "draft", String.valueOf(event.isDraft()));
+    @Test
+    public void testToModifyWithInvalidEventId1() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
 
-        // Basic Information
-        addParameter(proxy, "title", event.getTitle());
-        addParameter(proxy, "summary", event.getSummary());
-        addParameter(proxy, "category", event.getCategory());
-        addParameter(proxy, "beginDate", String.valueOf(event.getBeginDate().getTime()));
-        if (event.getEndDate() != null)
-            addParameter(proxy, "endDate", String.valueOf(event.getEndDate().getTime()));
-        if (event.getUrl() != null)
-            addParameter(proxy, "url", event.getUrl());
-        if (event.getPlace() != null)
-            addParameter(proxy, "place", event.getPlace());
-        if (event.getAddress() != null)
-            addParameter(proxy, "address", event.getAddress());
-        addParameter(proxy, "description", event.getDescription());
-        if (event.getHashTag() != null)
-            addParameter(proxy, "hashTag", event.getHashTag());
-        if (event.getPasscode() != null)
-            addParameter(proxy, "passcode", event.getPasscode());
-        if (event.getForeImageId() != null)
-            addParameter(proxy, "foreImageId", event.getForeImageId());
-        if (event.getBackImageId() != null)
-            addParameter(proxy, "backImageId", event.getBackImageId());
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", INVALID_EVENT_ID);
+        addParameter(proxy, "title", "modified");
 
-        // event relations
-        if (event.getEventRelations() != null && !event.getEventRelations().isEmpty()) {
-            int size = event.getEventRelations().size();
-            String[] relatedEventIds = new String[size];
-            String[] relatedEventRequired = new String[size];
-            String[] relatedEventPriority = new String[size];
-
-            for (int i = 0; i < event.getEventRelations().size(); ++i) {
-                EventRelation relation = event.getEventRelations().get(i);
-                relatedEventIds[i] = relation.getEventId();
-                relatedEventRequired[i] = String.valueOf(relation.isRequired());
-                relatedEventPriority[i] = String.valueOf(relation.hasPriority());
-            }
-
-            addParameter(proxy, "relatedEventID[]", relatedEventIds);
-            addParameter(proxy, "relatedEventRequired[]", relatedEventRequired);
-            addParameter(proxy, "relatedEventPriority[]", relatedEventPriority);
-        }
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_EVENT_ID);
     }
+
+    @Test
+    public void testToModifyWithInvalidEventId2() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", "non-uuid");
+        addParameter(proxy, "title", "modified");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_EVENT_ID);
+    }
+
+    // --- title
+
+    @Test
+    public void testToModifyTitle() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "title", "modified");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getTitle(), is("modified"));
+    }
+
+    @Test
+    public void testToModifyTitleEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "title", "");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "title");
+    }
+
+    @Test
+    public void testToModifyTitleTooLong() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "title", Util.randomString(101));
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "title");
+    }
+
+    @Test
+    public void testToModifyTitleLongEnough() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "title", Util.randomString(100));
+
+        proxy.execute();
+        assertResultOK(proxy);
+    }
+
+    // --- summary
+
+    @Test
+    public void testToModifySummary() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "summary", "modified");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getSummary(), is("modified"));
+    }
+
+    @Test
+    public void testToModifySummaryEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "summary", "");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getSummary(), is(""));
+    }
+
+    @Test
+    public void testToModifySummaryTooLong() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "summary", Util.randomString(101));
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "summary");
+    }
+
+    @Test
+    public void testToModifySummaryLongEnough() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "summary", Util.randomString(100));
+
+        proxy.execute();
+        assertResultOK(proxy);
+    }
+
+    // --- category
+
+    @Test
+    public void testToModifyCategory() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "category", "others");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getCategory(), is("others"));
+    }
+
+    @Test
+    public void testToModifyCategoryEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "category", "");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "category");
+    }
+
+    @Test
+    public void testToModifyCategoryInvalid() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "category", "invalidCategory");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "category");
+    }
+
+    // --- begindate
+
+    @Test
+    public void testToModifyBeginDate() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "beginDate", "2012-08-01 00:00");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getBeginDate(), is(TimeUtil.create(2012, 8, 1, 0, 0, 0)));
+    }
+
+    @Test
+    public void testToModifyBeginDateFromEpoc() throws Exception {
+        DateTime dt = TimeUtil.create(2012, 8, 1, 0, 0, 0);
+
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "beginDate", String.valueOf(dt.getTime()));
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getBeginDate(), is(dt));
+    }
+
+    @Test
+    public void testToModifyBeginDateInvalid() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "beginDate", "invalid");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "beginDate");
+    }
+
+    @Test
+    public void testToModifyBeginDateEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "beginDate", "");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "beginDate");
+    }
+
+    @Test
+    public void testToModifyBeginDateInvalidRange() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "beginDate", "1970-01-01 09:00");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "beginDate");
+    }
+
+    @Test
+    public void testToModifyBeginDateInvalidRange2() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "beginDate", "1900-01-01 09:00");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "beginDate");
+    }
+
+    @Test
+    public void testToModifyBeginDateInvalidRange3() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "beginDate", "2200-01-01 09:00");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "beginDate");
+    }
+
+    // --- enddata
+
+    @Test
+    public void testToModifyEndDate() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "endDate", "2012-08-01 00:00");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getEndDate(), is(TimeUtil.create(2012, 8, 1, 0, 0, 0)));
+    }
+
+    @Test
+    public void testToModifyEndDateFromEpoc() throws Exception {
+        DateTime dt = TimeUtil.create(2012, 8, 1, 0, 0, 0);
+
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "endDate", String.valueOf(dt.getTime()));
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getEndDate(), is(dt));
+    }
+
+    @Test
+    public void testToModifyEndDateInvalid() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "endDate", "invalid");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "endDate");
+    }
+
+    @Test
+    public void testToModifyEndDateEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "endDate", "");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getEndDate(), is(nullValue()));
+    }
+
+
+    @Test
+    public void testToModifyEndDateInvalidRange() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "endDate", "1970-01-01 09:00");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "endDate");
+    }
+
+    @Test
+    public void testToModifyEndDateInvalidRange2() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "endDate", "1900-01-01 09:00");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "endDate");
+    }
+
+    @Test
+    public void testToModifyEndDateInvalidRange3() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "endDate", "2200-01-01 09:00");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "endDate");
+    }
+
+    // --- url
+
+    @Test
+    public void testToModifyUrl() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "url", "http://www.example.com/hogehoge");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getUrl(), is("http://www.example.com/hogehoge"));
+    }
+
+    @Test
+    public void testToModifyUrlValidHttps() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "url", "https://www.example.com/hogehoge");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getUrl(), is("https://www.example.com/hogehoge"));
+    }
+
+    @Test
+    public void testToModifyUrlEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "url", "");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getUrl(), is(""));
+    }
+
+    @Test
+    public void testToModifyUrlTooLong() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "url", "http://" + Util.randomString(4000));
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "url");
+    }
+
+    @Test
+    public void testToModifyUrlInvalid() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "url", "invalid://www.example.com/");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "url");
+    }
+
+    // --- place
+
+    @Test
+    public void testToModifyPlace() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "place", "hogehoge");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getPlace(), is("hogehoge"));
+    }
+
+    @Test
+    public void testToModifyPlaceEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "place", "");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getPlace(), is(""));
+    }
+
+    @Test
+    public void testToModifyPlaceTooLong() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "place", Util.randomString(400));
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "place");
+    }
+
+    // --- address
+
+    @Test
+    public void testToModifyAddress() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "address", "hogehoge");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getAddress(), is("hogehoge"));
+    }
+
+    @Test
+    public void testToModifyAddressEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "address", "");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getAddress(), is(""));
+    }
+
+
+    @Test
+    public void testToModifyAddressTooLong() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "address", Util.randomString(301));
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "address");
+    }
+
+    // --- description
+
+    @Test
+    public void testToModifyDescription() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "description", "hogehoge");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getDescription(), is("hogehoge"));
+    }
+
+    @Test
+    public void testToModifyDescriptionEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "description", "");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getDescription(), is(""));
+    }
+
+    @Test
+    public void testToModifyDescritpionTooLong() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "description", Util.randomString(1000 * 1000 + 1));
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "description");
+    }
+
+    // --- hashtag
+
+    @Test
+    public void testToModifyHashTag() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "hashTag", "#hogehoge");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getHashTag(), is("#hogehoge"));
+    }
+
+    @Test
+    public void testToModifyHashTagEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "hashTag", "");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getHashTag(), is(nullValue()));
+    }
+
+    @Test
+    public void testToModifyHashTagTooLong() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "hashTag", "#" + Util.randomString(200));
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "hashTag");
+    }
+
+    @Test
+    public void testToModifyHashTagInvalid() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "hashTag", "mogemoge");
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "hashTag");
+    }
+
+    // --- passcode
+
+    @Test
+    public void testToModifyPasscode() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "passcode", "hogehoge");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getPasscode(), is("hogehoge"));
+    }
+
+    @Test
+    public void testToModifyPasscodeEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "passcode", "");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getPasscode(), is(nullValue()));
+    }
+
+    @Test
+    public void testToModifyPasscodeTooLong() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "passcode", Util.randomString(21));
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "passcode");
+    }
+
+    // --- foreimageid
+
+    @Test
+    public void testToModifyForeImage() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "foreImageId", EVENT_FOREIMAGE_ID);
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getForeImageId(), is(EVENT_FOREIMAGE_ID));
+    }
+
+    @Test
+    public void testToModifyForeImageEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "foreImageId", "");
+
+        proxy.execute();
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getForeImageId(), is(nullValue()));
+    }
+
+    @Test
+    public void testToModifyForeImageNotOwned() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "foreImageId", IMAGE_OWNER_IMAGE_ID);
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "foreImageId");
+    }
+
+    // backimageid
+
+    @Test
+    public void testToModifyBackImage() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "backImageId", EVENT_FOREIMAGE_ID);
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getBackImageId(), is(EVENT_FOREIMAGE_ID));
+    }
+
+    @Test
+    public void testToModifyBackImageEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "backImageId", "");
+
+        proxy.execute();
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getBackImageId(), is(nullValue()));
+    }
+
+    @Test
+    public void testToModifyBackImageNotOwned() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "backImageId", IMAGE_OWNER_IMAGE_ID);
+
+        proxy.execute();
+        assertResultInvalid(proxy, UserErrorCode.INVALID_PARAMETERS, "backImageId");
+    }
+
+    // --- relatedEventIds[]
+
+    @Test
+    public void testToModifyRelatedEventIdsEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "relatedEventIds[]", "[]");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getRelatedEventIds().size(), is(0));
+    }
+
+    // --- editorIds[]
+
+    @Test
+    public void testToModifyEditorIdsEmpty() throws Exception {
+        ActionProxy proxy = getActionProxy("/api/event/modify");
+        loginAs(proxy, EVENT_OWNER_ID);
+        addValidSessionTokenToParameter(proxy);
+        addParameter(proxy, "eventId", DEFAULT_EVENT_ID);
+        addParameter(proxy, "editorIds[]", "[]");
+
+        proxy.execute();
+        assertResultOK(proxy);
+
+        Event modified = loadEvent(DEFAULT_EVENT_ID);
+        assertThat(modified.getRelatedEventIds().size(), is(0));
+    }
+
 }

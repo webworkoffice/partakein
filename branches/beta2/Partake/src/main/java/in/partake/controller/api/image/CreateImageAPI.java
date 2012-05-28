@@ -57,7 +57,14 @@ public class CreateImageAPI extends AbstractPartakeAPI {
         JSONObject obj = new JSONObject();
         obj.put("imageId", imageIds.get(0));
         obj.put("imageIds", imageIds);
-        return renderOK(obj);
+
+        // MSIE should return text/plain or text/html here, since we use iframe.
+        // TODO: Should use Accept header instead of this.
+        if (getBooleanParameter("ensureTextPlain"))
+            return renderOKWith(obj, "text/plain");
+        else
+            return renderOK(obj);
+
     }
 
     public void setFile(File file) {
@@ -95,7 +102,7 @@ class CreateImageAPITransaction extends Transaction<List<String>> {
         }
 
         String imageId = dao.getFreshId(con);
-        UserImage imageEmbryo = new UserImage(imageId, user.getId(), contentType, foreImageByteArray, TimeUtil.getCurrentDate());
+        UserImage imageEmbryo = new UserImage(imageId, user.getId(), contentType, foreImageByteArray, TimeUtil.getCurrentDateTime());
         dao.put(con, imageEmbryo);
 
         if (limit == 1)

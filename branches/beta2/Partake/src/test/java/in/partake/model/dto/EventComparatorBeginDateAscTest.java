@@ -1,7 +1,6 @@
 package in.partake.model.dto;
 
 import in.partake.base.DateTime;
-import in.partake.model.dto.auxiliary.EventRelation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,7 +137,7 @@ public final class EventComparatorBeginDateAscTest {
 
         Event event = new Event(id, "title", "summary", "category", beginDate, null,
                 "url", "place", "address", "description", "hashTag", "ownerId", null, null,
-                "passcode", false, null, new ArrayList<EventRelation>(), null, createdAt, null, 0);
+                "passcode", false, null, new ArrayList<String>(), null, createdAt, null, 0);
         return event;
     }
 }

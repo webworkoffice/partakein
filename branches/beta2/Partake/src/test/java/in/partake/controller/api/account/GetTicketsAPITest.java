@@ -11,7 +11,6 @@ import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.EventCategory;
-import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
@@ -65,7 +64,7 @@ public class GetTicketsAPITest extends APIControllerTest {
                     "url", "place",
                     "address", "description", "#hashTag", EVENT_OWNER_ID,
                     EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, isPrivate ? "passcode" : null, false,
-                    Collections.singletonList(EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
+                    Collections.singletonList(EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<String>(), null,
                     now, now, -1);
 
             String eventId = storeEvent(event);

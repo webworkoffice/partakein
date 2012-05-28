@@ -1,5 +1,6 @@
 package in.partake.model.dao.postgres9;
 
+import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
@@ -150,7 +151,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
                 byte[] body = rs.getBytes(2);
                 byte[] opt = rs.getBytes(3);
                 Timestamp updatedAt = rs.getTimestamp(4);
-                return new Postgres9Entity(id, version, body, opt, updatedAt);
+                return new Postgres9Entity(id, version, body, opt, updatedAt != null ? new DateTime(updatedAt.getTime()) : null);
             } else {
                 return null;
             }
@@ -232,7 +233,7 @@ public class Postgres9EntityDao extends Postgres9Dao {
                     byte[] body = rs.getBytes(3);
                     byte[] opt = rs.getBytes(4);
                     Timestamp updatedAt = rs.getTimestamp(5);
-                    return new Postgres9Entity(id, version, body, opt, updatedAt);
+                    return new Postgres9Entity(id, version, body, opt, updatedAt != null ? new DateTime(updatedAt.getTime()) : null);
                 } catch (SQLException e) {
                     throw new DAOException(e);
                 }

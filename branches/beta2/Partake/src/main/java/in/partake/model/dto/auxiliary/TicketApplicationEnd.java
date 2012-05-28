@@ -3,7 +3,7 @@ package in.partake.model.dto.auxiliary;
 public enum TicketApplicationEnd {
     TILL_TIME_BEFORE_EVENT,
     TILL_TIME_AFTER_EVENT,
-    TILL_NTH_DAY_BEFORE,
+    TILL_NDAY_BEFORE,
     TILL_CUSTOM_DAY;
 
     public String toString() {

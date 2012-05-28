@@ -73,7 +73,7 @@ public class Postgres9UserThumbnailDao extends Postgres9Dao implements IUserThum
     public void put(PartakeConnection con, UserThumbnail imageData) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(imageData.getId(), CURRENT_VERSION, imageData.toJSON().toString().getBytes(UTF8), imageData.getData(), TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(imageData.getId(), CURRENT_VERSION, imageData.toJSON().toString().getBytes(UTF8), imageData.getData(), TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, imageData.getId()))
             entityDao.update(pcon, entity);
         else

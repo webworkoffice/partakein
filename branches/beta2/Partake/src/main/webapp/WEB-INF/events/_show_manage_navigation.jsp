@@ -33,6 +33,10 @@
             <a class="dropdown-toggle" data-toggle="dropdown" href="#"><img class="hidden-phone-inline" src="/images/gear.png"/> イベント編集<b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a href="/events/edit/basic/<%= h(event.getId()) %>">イベントを編集</a></li>
+                <li><a href="/events/edit/ticket/<%= h(event.getId()) %>">チケットを編集</a></li>
+                <li><a href="/events/edit/enquete/<%= h(event.getId()) %>">アンケートを編集</a></li>
+                <li><a href="/events/edit/privacy/<%= h(event.getId()) %>">プライバシーを編集</a></li>
+                <li class="divider"></li>
                 <li><a id="copy-event">コピーして新しいイベントを作成</a></li>
                 <% if (EventRemovePermission.check(event, user)) { %>
                 <li><a data-toggle="modal" href="#event-delete-dialog">イベントを削除</a></li>
@@ -144,7 +148,7 @@
         partake.event.publish(eventId)
         .done(function(json) {
             $('#event-publish-dialog').modal('hide');
-            partake.ui.showMessage('イベントを公開しました。');
+            location.href = '/events/' + eventId;
         })
         .fail(partake.defaultFailHandler);
     });
@@ -235,7 +239,7 @@
         $('#event-reminder-list').hide();
         partake.event.getNotifications(eventId, 0, 10)
         .done(function(json) {
-            $('#event-reminder-list').clear();
+            $('#event-reminder-list').empty();
             if (json.notifications.length == 0) {
                 $('#event-reminder-list').append($('<li>このイベントに関する通知はまだ何も送付されていません。</li>'));
             } else {

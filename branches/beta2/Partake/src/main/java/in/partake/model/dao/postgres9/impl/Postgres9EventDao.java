@@ -26,9 +26,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.sf.json.JSONObject;
+
+import org.apache.commons.lang.StringUtils;
 
 class EntityEventMapper extends Postgres9EntityDataMapper<Event> {
     public Event map(JSONObject obj) {
@@ -89,7 +89,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     public void put(PartakeConnection con, Event event) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(event.getId(), CURRENT_VERSION, event.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(event.getId(), CURRENT_VERSION, event.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, event.getId()))
             entityDao.update(pcon, entity);
         else
@@ -100,8 +100,8 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
                 new Object[] { event.getId(), event.getOwnerId(), event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
 
         editorIndexDao.remove(pcon, "id", event.getId());
-        if (event.getEditors() != null) {
-            for (String editorId : event.getEditors()) {
+        if (event.getEditorIds() != null) {
+            for (String editorId : event.getEditorIds()) {
                 editorIndexDao.put(pcon,
                         new String[] { "id", "editorId", "draft", "isPrivate", "beginDate" },
                         new Object[] { event.getId(), editorId, event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
@@ -141,31 +141,6 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     public boolean isRemoved(PartakeConnection con, String eventId) throws DAOException {
         // TODO: should be implemented.
         return false;
-    }
-
-    // TODO: Why not DataIterator?
-    @Override
-    public List<Event> findByOwnerId(PartakeConnection con, String userId) throws DAOException {
-        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ownerId = ?",
-                new Object[] { userId });
-
-        Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
-
-        try {
-            ArrayList<Event> events = new ArrayList<Event>();
-            DataIterator<Event> it = new Postgres9DataIterator<Event>(idMapper, psars);
-            while (it.hasNext()) {
-                Event event = it.next();
-                if (event == null)
-                    continue;
-                events.add(event);
-            }
-
-            return events;
-        } finally {
-            psars.close();
-        }
     }
 
     @Override

@@ -22,27 +22,27 @@ public class TimeUtilTest {
     public void testCurrentDate1() {
         Date now = new Date();
         assertThat(TimeUtil.getCurrentTime(), is(greaterThanOrEqualTo(now.getTime())));
-        assertThat(TimeUtil.getCurrentDate().getTime(), is(greaterThanOrEqualTo(now.getTime())));
+        assertThat(TimeUtil.getCurrentDateTime().getTime(), is(greaterThanOrEqualTo(now.getTime())));
         assertThat(TimeUtil.getCurrentDateTime().getTime(), is(greaterThanOrEqualTo(now.getTime())));
 
-        TimeUtil.setCurrentDate(new Date(0L));
+        TimeUtil.setCurrentDateTime(new DateTime(0L));
         assertThat(TimeUtil.getCurrentTime(), is(0L));
-        assertThat(TimeUtil.getCurrentDate().getTime(), is(0L));
+        assertThat(TimeUtil.getCurrentDateTime().getTime(), is(0L));
         assertThat(TimeUtil.getCurrentDateTime().getTime(), is(0L));
 
         TimeUtil.setCurrentTime(0L);
         assertThat(TimeUtil.getCurrentTime(), is(0L));
-        assertThat(TimeUtil.getCurrentDate().getTime(), is(0L));
+        assertThat(TimeUtil.getCurrentDateTime().getTime(), is(0L));
         assertThat(TimeUtil.getCurrentDateTime().getTime(), is(0L));
 
         TimeUtil.setCurrentDateTime(new DateTime(0L));
         assertThat(TimeUtil.getCurrentTime(), is(0L));
-        assertThat(TimeUtil.getCurrentDate().getTime(), is(0L));
+        assertThat(TimeUtil.getCurrentDateTime().getTime(), is(0L));
         assertThat(TimeUtil.getCurrentDateTime().getTime(), is(0L));
 
         TimeUtil.resetCurrentDate();
         assertThat(TimeUtil.getCurrentTime(), is(not(0L)));
-        assertThat(TimeUtil.getCurrentDate().getTime(), is(not(0L)));
+        assertThat(TimeUtil.getCurrentDateTime().getTime(), is(not(0L)));
         assertThat(TimeUtil.getCurrentDateTime().getTime(), is(not(0L)));
     }
 
@@ -56,6 +56,12 @@ public class TimeUtilTest {
         assertThat(d1, lessThanOrEqualTo(d2));
         assertThat(d2, lessThanOrEqualTo(d3));
         assertThat(d3, lessThanOrEqualTo(d4));
+    }
+
+    @Test
+    public void testToCreate() {
+        DateTime dt = TimeUtil.create(1970, 1, 1, 9, 0, 0);
+        assertThat(dt.getTime(), is(0L));
     }
 
     @Test

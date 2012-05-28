@@ -73,5 +73,9 @@ public class UserTestDataProvider extends TestDataProvider<User> {
         dao.put(con, new User(DEFAULT_SENDER_ID, DEFAULT_SENDER_TWITTER_SCREENNAME, "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
         dao.put(con, new User(DEFAULT_RECEIVER_ID, DEFAULT_RECEIVER_TWITTER_SCREENNAME, "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
 
+        dao.put(con, new User(IMAGE_OWNER_ID, IMAGE_OWNER_TWITTER_SCREENNAME, "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
+
+        dao.put(con, new User(USER_NO_TWITTER_LINK_ID, USER_NO_TWITTER_LINK_SCREEN_NAME, "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
+        dao.put(con, new User(USER_TWITTER_NOAUTH_ID, USER_TWITTER_NOAUTH_TWITTER_SCREENNAME, "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
     }
 }

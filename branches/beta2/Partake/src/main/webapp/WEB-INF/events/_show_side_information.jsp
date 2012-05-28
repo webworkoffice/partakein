@@ -1,7 +1,7 @@
+<%@page import="in.partake.model.dto.User"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.UUID"%>
 <%@page import="java.util.Map"%>
-<%@page import="in.partake.model.EventRelationEx"%>
 <%@page import="in.partake.model.dto.auxiliary.EventCategory"%>
 <%@page import="in.partake.base.Util"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
@@ -31,7 +31,6 @@
     String redirectURL = action.getRedirectURL();
     if (redirectURL == null)
         redirectURL = action.getCurrentURL();
-    List<EventRelationEx> eventRelations = action.getRelations();
 %>
 
 <h3>主催者</h3>
@@ -45,9 +44,15 @@
     <% } %>
 </a></p>
 
+<% if (event.getEditors() != null && !event.getEditors().isEmpty()) { %>
+<h3>編集者</h3>
+<div><% for (User editor : event.getEditors()) { %>
+    <p><a href="/users/<%= h(editor.getId()) %>"><img src="<%= h(editor.getProfileImageURL()) %>" width="20" height="20"><%= h(editor.getScreenName()) %></a></p>
+<% } %></div>
+<% } %>
+
 <h3>開催日時</h3>
-<p>開催日時: <%= Helper.readableDuration(event.getBeginDate(), event.getEndDate()) %></p>
-<p>申込期間: ほげほげ</p>
+<p><%= Helper.readableDuration(event.getBeginDate(), event.getEndDate()) %></p>
 
 <h3>開催場所</h3>
 <p>会場: <%= StringUtils.isBlank(event.getPlace()) ? "未定" : h(event.getPlace()) %></p>
@@ -58,13 +63,11 @@
 </a></div>
 <% } %>
 
-<% if (eventRelations != null && !eventRelations.isEmpty()) { %>
+<% if (event.getRelatedEvents() != null && !event.getRelatedEvents().isEmpty()) { %>
     <h3>関連イベント</h3>
-    <% for (EventRelationEx eventRelation : eventRelations) { %>
-        <img src="/images/mark.png" class="" alt="" />
-        <a href="<%= h(eventRelation.getEvent().getEventURL()) %>"><%= h(eventRelation.getEvent().getTitle()) %></a>
-        <p><% if (eventRelation.isRequired()) { %><img src="<%= request.getContextPath() %>/images/attention.png" alt="" /> この関連イベントへの参加が必須です<% } %>
-            <% if (eventRelation.hasPriority()) { %><img src="<%= request.getContextPath() %>/images/star.png" alt="" /> 参加すると本イベントへ優先的に参加可能<% } %>
-            </p>
+    <ul>
+    <% for (Event relatedEvent : event.getRelatedEvents()) { %>
+        <li><a href="<%= h(relatedEvent.getEventURL()) %>"><%= h(relatedEvent.getTitle()) %></a></li>
     <% } %>
+    </ul>
 <% } %>

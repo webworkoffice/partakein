@@ -418,6 +418,21 @@ public abstract class AbstractPartakeController implements SessionAware, Request
         return user;
     }
 
+
+    /** return contentType. This function is only valid when renderStream() has been called. */
+    final public String getContentType() {
+        return this.contentType;
+    }
+
+    /** return input stream. This function is only valid when renderStream() has been called. */
+    final public InputStream getInputStream() {
+        return stream;
+    }
+
+    final public String getContentDisposition() {
+        return this.contentDisposition;
+    }
+
     // ----------------------------------------------------------------------
     // CSRF
 

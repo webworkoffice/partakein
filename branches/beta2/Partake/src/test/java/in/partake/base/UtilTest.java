@@ -1,22 +1,129 @@
 package in.partake.base;
 
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+
 public class UtilTest {
+
+    @Test
+    public void testIsUUID() {
+        assertThat(Util.isUUID(null), is(false));
+        assertThat(Util.isUUID(""), is(false));
+        assertThat(Util.isUUID("something"), is(false));
+        assertThat(Util.isUUID("00000000-0000-0000-0000-000000000000"), is(true));
+        assertThat(Util.isUUID("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"), is(false));
+    }
+
+    @Test
+    public void testEnsureMin() {
+        assertThat(Util.ensureMin(3, 0), is(3));
+        assertThat(Util.ensureMin(-1, 0), is(0));
+        assertThat(Util.ensureMin(3, Integer.MAX_VALUE), is(Integer.MAX_VALUE));
+
+        assertThat(Util.ensureMin(3L, 0L), is(3L));
+        assertThat(Util.ensureMin(-1L, 0L), is(0L));
+        assertThat(Util.ensureMin(3L, Long.MAX_VALUE), is(Long.MAX_VALUE));
+    }
+
+    @Test
+    public void testToJSONArray() {
+        class X implements JSONable, SafeJSONable {
+            private String value;
+
+            public X(String value) {
+                this.value = value;
+            }
+
+            @Override
+            public JSONObject toJSON() {
+                JSONObject obj = new JSONObject();
+                obj.put("value", value);
+                return obj;
+            }
+
+            @Override
+            public JSONObject toSafeJSON() {
+                JSONObject obj = new JSONObject();
+                obj.put("safe", value);
+                return obj;
+            }
+        }
+
+        List<X> xs = new ArrayList<X>();
+        xs.add(new X("0"));
+        xs.add(new X("1"));
+        xs.add(new X("2"));
+
+        JSONArray array = Util.toJSONArray(xs);
+        JSONArray safes = Util.toSafeJSONArray(xs);
+
+        assertThat(array.size(), is(3));
+        assertThat(array.getJSONObject(0).getString("value"), is("0"));
+        assertThat(array.getJSONObject(1).getString("value"), is("1"));
+        assertThat(array.getJSONObject(2).getString("value"), is("2"));
+
+        assertThat(safes.size(), is(3));
+        assertThat(safes.getJSONObject(0).getString("safe"), is("0"));
+        assertThat(safes.getJSONObject(1).getString("safe"), is("1"));
+        assertThat(safes.getJSONObject(2).getString("safe"), is("2"));
+    }
+
+    @Test
+    public void testToParseEnqueteAnswers() {
+        UUID[] ids = new UUID[5];
+        for (int i = 0; i < 5; ++i)
+            ids[i] = new UUID(0, i);
+
+        JSONObject obj = JSONObject.fromObject("{ \""+ids[0].toString()+"\": [\"hoge\", \"fuga\"], " +
+                "\""+ids[1].toString()+"\": [1, 2, 3], " +
+                "\""+ids[2].toString()+"\": [], " +
+                "\""+ids[3].toString()+"\": \"\", " +
+                "\""+ids[4].toString()+"\": 3, " +
+                "}");
+
+        Map<UUID, List<String>> converted = Util.parseEnqueteAnswers(obj);
+
+        List<String> hogefuga = new ArrayList<String>();
+        hogefuga.add("hoge");
+        hogefuga.add("fuga");
+
+        assertThat(converted.get(ids[0]).size(), is(2));
+        assertThat(converted.get(ids[0]), hasItem("hoge"));
+        assertThat(converted.get(ids[0]), hasItem("fuga"));
+        assertThat(converted.get(ids[1]).size(), is(3));
+        assertThat(converted.get(ids[1]), hasItem("1"));
+        assertThat(converted.get(ids[1]), hasItem("2"));
+        assertThat(converted.get(ids[1]), hasItem("3"));
+        assertThat(converted.get(ids[2]).size(), is(0));
+        assertThat(converted.get(ids[3]), nullValue());
+        assertThat(converted.get(ids[4]), nullValue());
+    }
+
     @Test
     public void testEnsureRange() {
-        Assert.assertThat(Util.ensureRange(10, 0, 100), is(10));
-        Assert.assertThat(Util.ensureRange(-10, 0, 100), is(0));
-        Assert.assertThat(Util.ensureRange(110, 0, 100), is(100));
-        Assert.assertThat(Util.ensureRange(0, 0, 100), is(0));
-        Assert.assertThat(Util.ensureRange(1000, 0, 100), is(100));
-        Assert.assertThat(Util.ensureRange(Integer.MIN_VALUE, 0, Integer.MAX_VALUE), is(0));
-        Assert.assertThat(Util.ensureRange(Integer.MAX_VALUE, 0, Integer.MAX_VALUE), is(Integer.MAX_VALUE));
-        Assert.assertThat(Util.ensureRange(0, 1, 100), is(1));
+        assertThat(Util.ensureRange(10, 0, 100), is(10));
+        assertThat(Util.ensureRange(-10, 0, 100), is(0));
+        assertThat(Util.ensureRange(110, 0, 100), is(100));
+        assertThat(Util.ensureRange(0, 0, 100), is(0));
+        assertThat(Util.ensureRange(1000, 0, 100), is(100));
+        assertThat(Util.ensureRange(Integer.MIN_VALUE, 0, Integer.MAX_VALUE), is(0));
+        assertThat(Util.ensureRange(Integer.MAX_VALUE, 0, Integer.MAX_VALUE), is(Integer.MAX_VALUE));
+        assertThat(Util.ensureRange(0, 1, 100), is(1));
     }
 
     @Test
@@ -118,11 +225,8 @@ public class UtilTest {
         Assert.assertEquals("abc", Util.removeTags("abc<!-- comment \n>\n>\n hoge -->"));
     }
 
-    // TODO Test for the summer time if support other timezone.
-
     @Test
     public void testEncodeURIComponent() {
-//		Assert.assertEquals("", Util.encodeURIComponent(null));
         Assert.assertEquals("", Util.encodeURIComponent(""));
         Assert.assertEquals("%20!%22%23%24%25%26'()*%2B%2C-.%2F%3B%3F%3A%40%3D~", Util.encodeURIComponent(" !\"#$%&'()*+,-./;?:@=~"));
         Assert.assertEquals("Thyme%20%26time%3Dagain", Util.encodeURIComponent("Thyme &time=again"));

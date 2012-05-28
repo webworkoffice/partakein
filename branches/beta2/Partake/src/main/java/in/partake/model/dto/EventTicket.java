@@ -1,22 +1,30 @@
 package in.partake.model.dto;
 
 import in.partake.base.DateTime;
+import in.partake.base.PartakeRuntimeException;
+import in.partake.base.SafeJSONable;
 import in.partake.base.TimeUtil;
-import in.partake.model.UserTicketEx;
 import in.partake.model.EventTicketHolderList;
+import in.partake.model.UserTicketEx;
+import in.partake.model.dto.auxiliary.TicketAmountType;
 import in.partake.model.dto.auxiliary.TicketApplicationEnd;
 import in.partake.model.dto.auxiliary.TicketApplicationStart;
 import in.partake.model.dto.auxiliary.TicketPriceType;
+import in.partake.model.dto.auxiliary.TicketReservationEnd;
+import in.partake.resource.ServerErrorCode;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-public class EventTicket extends PartakeModel<EventTicket> {
+public class EventTicket extends PartakeModel<EventTicket> implements SafeJSONable {
     private UUID id;
     private String eventId;
 
@@ -31,10 +39,14 @@ public class EventTicket extends PartakeModel<EventTicket> {
     private int applicationEndDayBeforeEvent; // Only valid if applicationEnd is nDayBefore.
     private DateTime customApplicationEndDate; // Only valid if applicationEnd is custom.
 
+    private TicketReservationEnd reservationEnd;
+    private int reservationEndHourBeforeApplication; // Only valid if reservationEnd is nDayBefore.
+    private DateTime customReservationEndDate; // Only valid if reservationEnd is custom.
+
     private TicketPriceType priceType;
     private int price;
 
-    private boolean isAmountInfinite;
+    private TicketAmountType amountType;
     private int amount;
 
     private DateTime createdAt;
@@ -44,16 +56,18 @@ public class EventTicket extends PartakeModel<EventTicket> {
         return new EventTicket(id, eventId, 1, "自由席",
                 TicketApplicationStart.ANYTIME, 0, null,
                 TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null,
+                TicketReservationEnd.TILL_NHOUR_BEFORE, 3, null,
                 TicketPriceType.FREE, 0,
-                true, 0,
+                TicketAmountType.UNLIMITED, 0,
                 TimeUtil.getCurrentDateTime(), null);
     }
 
     public EventTicket(UUID id, String eventId, int order, String name,
             TicketApplicationStart applicationStart, int applicationStartDayBeforeEvent, DateTime customApplicationStartDate,
             TicketApplicationEnd applicationEnd, int applicationEndDayBeforeEvent, DateTime customApplicationEndDate,
+            TicketReservationEnd reservationEnd, int reservationEndHourBeforeApplication, DateTime customReservationEndDate,
             TicketPriceType priceType, int price,
-            boolean isAmountInfinite, int amount,
+            TicketAmountType amountType, int amount,
             DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.eventId = eventId;
@@ -68,10 +82,14 @@ public class EventTicket extends PartakeModel<EventTicket> {
         this.applicationEndDayBeforeEvent = applicationEndDayBeforeEvent;
         this.customApplicationEndDate = customApplicationEndDate;
 
+        this.reservationEnd = reservationEnd;
+        this.reservationEndHourBeforeApplication = reservationEndHourBeforeApplication;
+        this.customReservationEndDate = customReservationEndDate;
+
         this.priceType = priceType;
         this.price = price;
 
-        this.isAmountInfinite = isAmountInfinite;
+        this.amountType = amountType;
         this.amount = amount;
 
         this.createdAt = createdAt;
@@ -82,8 +100,9 @@ public class EventTicket extends PartakeModel<EventTicket> {
         this(t.id, t.eventId, t.order, t.name,
                 t.applicationStart, t.applicationStartDayBeforeEvent, t.customApplicationStartDate,
                 t.applicationEnd, t.applicationEndDayBeforeEvent, t.customApplicationEndDate,
+                t.reservationEnd, t.reservationEndHourBeforeApplication, t.customReservationEndDate,
                 t.priceType, t.price,
-                t.isAmountInfinite, t.amount,
+                t.amountType, t.amount,
                 t.createdAt, t.modifiedAt);
     }
 
@@ -103,10 +122,15 @@ public class EventTicket extends PartakeModel<EventTicket> {
         if (obj.containsKey("customApplicationEndDate"))
             this.customApplicationEndDate = new DateTime(obj.getLong("customApplicationEndDate"));
 
-        this.priceType = TicketPriceType.valueOf(obj.getString("priceType"));
+        this.reservationEnd = TicketReservationEnd.safeValueOf(obj.optString("reservationEnd"));
+        this.reservationEndHourBeforeApplication = obj.optInt("reservationEndHourBeforeApplication", 0);
+        if (obj.containsKey("customReservationEndDate"))
+            this.customReservationEndDate = new DateTime(obj.getLong("customReservationEndDate"));
+
+        this.priceType = TicketPriceType.safeValueOf(obj.getString("priceType"));
         this.price = obj.getInt("price");
 
-        this.isAmountInfinite = obj.getBoolean("isAmountInfinite");
+        this.amountType = TicketAmountType.safeValueOf(obj.getString("amountType"));
         this.amount = obj.getInt("amount");
 
         this.createdAt = new DateTime(obj.getLong("createdAt"));
@@ -138,10 +162,15 @@ public class EventTicket extends PartakeModel<EventTicket> {
         if (customApplicationEndDate != null)
             json.put("customApplicationEndDate", customApplicationEndDate.getTime());
 
+        json.put("reservationEnd", reservationEnd.toString());
+        json.put("reservationEndHourBeforeApplication", reservationEndHourBeforeApplication);
+        if (customReservationEndDate != null)
+            json.put("customReservationEndDate", customReservationEndDate.getTime());
+
         json.put("priceType", priceType.toString());
         json.put("price", price);
 
-        json.put("isAmountInfinite", isAmountInfinite);
+        json.put("amountType", amountType.toString());
         json.put("amount", amount);
 
         json.put("createdAt", createdAt.getTime());
@@ -151,9 +180,20 @@ public class EventTicket extends PartakeModel<EventTicket> {
         return json;
     }
 
+
     public JSONObject toSafeJSON() {
-        // Since all fields seems not sensitive, we call toJSON for now.
-        return toJSON();
+        JSONObject json = toJSON();
+
+        // We would like to add -Text for start date and end date.
+        // TODO: Format string should be externalized.
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        if (customApplicationStartDate != null)
+            json.put("customApplicationStartDateText", format.format(customApplicationStartDate.toDate()));
+
+        if (customApplicationEndDate != null)
+            json.put("customApplicationEndDateText", format.format(customApplicationEndDate.toDate()));
+
+        return json;
     }
 
     public boolean validate() {
@@ -201,7 +241,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
         if (!ObjectUtils.equals(lhs.customApplicationEndDate, rhs.customApplicationEndDate)) { return false; }
         if (!ObjectUtils.equals(lhs.priceType, rhs.priceType)) { return false; }
         if (!ObjectUtils.equals(lhs.price, rhs.price)) { return false; }
-        if (!ObjectUtils.equals(lhs.isAmountInfinite, rhs.isAmountInfinite)) { return false; }
+        if (!ObjectUtils.equals(lhs.amountType, rhs.amountType)) { return false; }
         if (!ObjectUtils.equals(lhs.amount, rhs.amount)) { return false; }
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
@@ -225,7 +265,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
         code = code * 37 + ObjectUtils.hashCode(customApplicationEndDate);
         code = code * 37 + ObjectUtils.hashCode(priceType);
         code = code * 37 + ObjectUtils.hashCode(price);
-        code = code * 37 + ObjectUtils.hashCode(isAmountInfinite);
+        code = code * 37 + ObjectUtils.hashCode(amountType);
         code = code * 37 + ObjectUtils.hashCode(amount);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
@@ -277,6 +317,18 @@ public class EventTicket extends PartakeModel<EventTicket> {
         return customApplicationEndDate;
     }
 
+    public TicketReservationEnd getReservationEnd() {
+        return reservationEnd;
+    }
+
+    public int getReservationEndHourBeforeApplication() {
+        return reservationEndHourBeforeApplication;
+    }
+
+    public DateTime getCustomReservationEndDate() {
+        return customReservationEndDate;
+    }
+
     public TicketPriceType getPriceType() {
         return priceType;
     }
@@ -285,8 +337,8 @@ public class EventTicket extends PartakeModel<EventTicket> {
         return price;
     }
 
-    public boolean isAmountInfinite() {
-        return isAmountInfinite;
+    public TicketAmountType getAmountType() {
+        return amountType;
     }
 
     public int getAmount() {
@@ -361,9 +413,9 @@ public class EventTicket extends PartakeModel<EventTicket> {
         this.price = price;
     }
 
-    public void setAmountInfinite(boolean isAmountInfinite) {
+    public void setAmountType(TicketAmountType amountType) {
         checkFrozen();
-        this.isAmountInfinite = isAmountInfinite;
+        this.amountType = amountType;
     }
 
     public void setAmount(int amount) {
@@ -383,6 +435,11 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
     // ----------------------------------------------------------------------
 
+    public boolean isAmountInfinite() {
+        return this.amountType == TicketAmountType.UNLIMITED;
+    }
+
+
     public boolean acceptsApplication(Event event, DateTime now) {
         return acceptsFrom(event).isBefore(now) && now.isBefore(acceptsTill(event));
     }
@@ -399,8 +456,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
             return customApplicationStartDate;
         }
 
-        assert false;
-        throw new RuntimeException("should not happen.");
+        throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
     }
 
     public DateTime acceptsTill(Event event) {
@@ -412,18 +468,28 @@ public class EventTicket extends PartakeModel<EventTicket> {
                 return event.getEndDate();
             else
                 return event.getBeginDate();
-        case TILL_NTH_DAY_BEFORE:
+        case TILL_NDAY_BEFORE:
             return event.getBeginDate().nDayBefore(applicationEndDayBeforeEvent);
         case TILL_CUSTOM_DAY:
             return customApplicationEndDate;
         }
 
-        assert false;
-        throw new RuntimeException("should not happen.");
+        throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
     }
 
     public DateTime acceptsReservationTill(Event event) {
-        return acceptsTill(event).nDayBefore(1);
+        switch (reservationEnd) {
+        case TILL_NONE:
+            return new DateTime(0L);
+        case TILL_TIME_BEFORE_APPLICATION:
+            return acceptsTill(event);
+        case TILL_NHOUR_BEFORE:
+            return acceptsTill(event).nHourBefore(reservationEndHourBeforeApplication);
+        case TILL_CUSTOM_DAY:
+            return customReservationEndDate;
+        }
+
+        throw new PartakeRuntimeException(ServerErrorCode.LOGIC_ERROR);
     }
 
     /**
