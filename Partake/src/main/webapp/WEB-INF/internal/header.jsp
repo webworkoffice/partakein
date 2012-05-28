@@ -220,13 +220,11 @@
     </script>
 </div>
 
-<div class="container">
-
 <%-- header-nomessages.jsp をけす　 --%>
 <%
     if (!"true".equals(request.getParameter(Constants.ATTR_NO_HEADER_MESSAGES))) {
 %>
-<div class="message">
+<div class="container"><div class="message">
     <%-- warning / error --%>
     <%
         AbstractPartakeController pas = (AbstractPartakeController) request.getAttribute(Constants.ATTR_ACTION);
@@ -250,8 +248,5 @@
             }
         }
     %>
-</div>
-<%
-    }
-%>
-
+</div></div>
+<% } %>

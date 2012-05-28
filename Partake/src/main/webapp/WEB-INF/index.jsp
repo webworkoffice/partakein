@@ -25,6 +25,7 @@
 <body>
 
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
 <div class="row clearfix">
     <div class="span4">

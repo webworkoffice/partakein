@@ -1,15 +1,17 @@
+<%@page import="in.partake.resource.Constants"%>
+<%@page import="in.partake.controller.action.event.EventSearchAction"%>
+<%@page import="in.partake.base.KeyValuePair"%>
+<%@page import="static in.partake.view.util.Helper.h"%>
 <%@page import="java.util.Enumeration"%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 
 <% if ("simple".equalsIgnoreCase((String) request.getParameter("FORM_TYPE"))) { %>
-<div>
-    <form class="well form-search">
-        <p style="text-align: center;"><span class="span3" style="float: none; padding-right: 20px;">イベント検索</span>
-            <input id="search-term" type="text" class="span6 search-query">
-            <button id="search-button" type="button" class="btn btn-primary span3" style="float: none">Search</button>
-        </p>
-    </form>
-</div>
+<form class="well form-search">
+    <p style="text-align: center;"><span class="span3" style="float: none; padding-right: 20px;">イベント検索</span>
+        <input id="search-term" type="text" class="span6 search-query">
+        <button id="search-button" type="button" class="btn btn-primary span3" style="float: none">Search</button>
+    </p>
+</form>
 <script>
     function doRenderNoResults() {
         $('#searched-events').append($(
@@ -18,10 +20,58 @@
             '<p><a href="/events/search">より詳しい検索はこちらから。</a></p>' +
             '</div>'
         ));
+        $('#searched-events').hide();
+        $('#searched-events').fadeIn(500);
     }
 </script>
 <% } else { %>
+    <% EventSearchAction action = (EventSearchAction) request.getAttribute(Constants.ATTR_ACTION); %>
+<form id="search-form" class="well form-horizontal"><fieldset>
+    <%-- <legend>タイトル、本文からイベントを検索</legend>  --%>
+    <div class="control-group">
+        <label class="control-label">検索語句</label>
+        <div class="controls">
+            <input type="text" id="search-term" name="searchTerm" />
+            <input id="search-form-button" type="button" class="btn btn-primary" alt="Search" value="Search" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">オプション</label>
+        <div class="controls">
+            <div class="form-inline">
+                <span class="event-search-inline">カテゴリ</span><select id="category" name="category">
+                <% for (KeyValuePair kv : action.getCategories()) { %>
+                    <option value="<%= h(kv.getKey()) %>"><%= h(kv.getValue()) %></option>
+                <% } %>
+                </select>
+                <span class="event-search-inline">並べ替え</span><select id="sort-order" name="sortOrder">
+                <% for (KeyValuePair kv : action.getSortOrders()) { %>
+                    <option value="<%= h(kv.getKey()) %>"><%= h(kv.getValue()) %></option>
+                <% } %>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <div class="form-inline">
+                <label class="checkbox"><input type="checkbox" id="before-deadline-only" name="beforeDeadlineOnly" checked />締め切り前のイベントのみを検索する</label>
+            </div>
+        </div>
+    </div>
+</fieldset></form>
 
+<script>
+    function doRenderNoResults() {
+        $('#searched-events').append($(
+            '<div class="span12">' +
+            '<p>ヒットしませんでした。別の単語で試してみてください。</p>' +
+            '</div>'
+        ));
+        $('#searched-events').hide();
+        $('#searched-events').fadeIn(500);
+    }
+</script>
 <% } %>
 
 <div id="searched-events" class="row" style="position: relative;">
@@ -96,7 +146,11 @@ function render(json) {
 
 function doSearch() {
     var query = $('#search-term').val();
-    partake.event.search(query, 'all', 'createdAt', true, 30)
+    var category = $('#category option:selected').val() || 'all';
+    var sortOrder = $('#sort-order option:selected').val() || 'createdAt';
+    var beforeDeadlineOnly = $('#before-deadline-only').is(':checked') || 'true';
+
+    partake.event.search(query, category, sortOrder, beforeDeadlineOnly, 30)
     .done(function(json) {
         $('#textareaToSavetemporaryJSON').val($.toJSON(json));
         console.log($.toJSON(json));
