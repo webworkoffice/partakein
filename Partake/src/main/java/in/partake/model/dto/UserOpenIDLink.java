@@ -1,37 +1,30 @@
 package in.partake.model.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity(name = "OpenIDLinkages")
 public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> {
-    @Id @Column(length = 4096)
-    private String id;
-    @Column
+    private UUID id;
     private String userId;
+    private String identifier;
 
-    public UserOpenIDLink() {
-
-    }
-
-    public UserOpenIDLink(String id, String userId) {
+    public UserOpenIDLink(UUID id, String userId, String identifier) {
         this.id = id;
         this.userId = userId;
+        this.identifier = identifier;
     }
 
     public UserOpenIDLink(UserOpenIDLink linkage) {
-        this.id = linkage.id;
-        this.userId = linkage.userId;
+        this(linkage.id, linkage.userId, linkage.identifier);
     }
 
     public UserOpenIDLink(JSONObject obj) {
-        this.id = obj.getString("id");
+        this.id = UUID.fromString(obj.getString("id"));
         this.userId = obj.getString("userId");
+        this.identifier = obj.getString("identifier");
     }
 
     @Override
@@ -42,8 +35,9 @@ public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> {
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
-        obj.put("id", id);
+        obj.put("id", id.toString());
         obj.put("userId", userId);
+        obj.put("identifier", identifier);
 
         return obj;
     }
@@ -60,6 +54,7 @@ public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> {
 
         if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
         if (!ObjectUtils.equals(lhs.userId, rhs.userId)) { return false; }
+        if (!ObjectUtils.equals(lhs.identifier, rhs.identifier)) { return false; }
 
         return true;
     }
@@ -70,6 +65,7 @@ public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> {
 
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(userId);
+        code = code * 37 + ObjectUtils.hashCode(identifier);
 
         return code;
     }
@@ -77,7 +73,7 @@ public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> {
     // -----------------------------------------------------------------------------
     //
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -85,7 +81,11 @@ public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> {
         return userId;
     }
 
-    public void setId(String id) {
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setId(UUID id) {
         checkFrozen();
         this.id = id;
     }
@@ -93,5 +93,10 @@ public class UserOpenIDLink extends PartakeModel<UserOpenIDLink> {
     public void setUserId(String userId) {
         checkFrozen();
         this.userId = userId;
+    }
+
+    public void setIdentifier(String identifier) {
+        checkFrozen();
+        this.identifier = identifier;
     }
 }

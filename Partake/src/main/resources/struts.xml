@@ -232,7 +232,6 @@
         <action name="apply" class="in.partake.controller.api.event.ApplyAPI" />
 
         <action name="attend" class="in.partake.controller.api.event.AttendAPI" />
-        <action name="makeAttendantVIP" class="in.partake.controller.api.event.MakeAttendantVIPAPI" />
         <action name="removeAttendant" class="in.partake.controller.api.event.RemoveAttendantAPI" />
 
         <action name="sendMessage" class="in.partake.controller.api.event.SendMessageAPI" />

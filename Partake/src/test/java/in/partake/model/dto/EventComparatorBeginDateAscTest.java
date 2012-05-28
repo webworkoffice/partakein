@@ -137,8 +137,8 @@ public final class EventComparatorBeginDateAscTest {
         DateTime beginDate = new DateTime(calendar.getTimeInMillis());
 
         Event event = new Event(id, "title", "summary", "category", beginDate, null,
-                "url", "place", "address", "description", "hashTag", "ownerId", null, null, null,
-                "passcode", false, new ArrayList<EventRelation>(), null, createdAt, null, 0);
+                "url", "place", "address", "description", "hashTag", "ownerId", null, null,
+                "passcode", false, null, new ArrayList<EventRelation>(), null, createdAt, null, 0);
         return event;
     }
 }

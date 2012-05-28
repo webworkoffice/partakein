@@ -101,66 +101,6 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
         }.execute();
     }
 
-
-    @Test
-    public void testToFindByScreenName() throws Exception {
-        new DBAccess<Void>() {
-            @Override
-            protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-
-                String userId = "userId-screenname-" + System.currentTimeMillis();
-                Set<String> expectedEventIds = new HashSet<String>();
-
-                String screenNames[] = new String[]{
-                        null,
-                        "",
-                        "A",
-                        "A,B,C",
-                        "  A  ",
-
-                        "  A  ,  B  ,  C  ",
-                        "  AA, B A, A",
-                        "   A,   B   A  , C   ",
-                        " B, B, B",
-                        " C "
-                };
-                String[] originalEventIds = new String[10];
-
-                // event 作成
-                for (int i = 0; i < 10; ++i) {
-                    Event original = createEvent(null, userId);
-                    original.setManagerScreenNames(screenNames[i]);
-                    {
-                        con.beginTransaction();
-                        String eventId = dao.getFreshId(con);
-                        originalEventIds[i] = eventId;
-
-                        original.setId(eventId);
-
-                        dao.put(con, original);
-                        con.commit();
-
-                        if (original.isManager("A")) {
-                            expectedEventIds.add(eventId);
-                        }
-                    }
-                }
-
-                {
-                    List<Event> targetEvents = dao.findByScreenName(con, "A");
-                    Set<String> targetEventIds = new HashSet<String>();
-                    for (Event e : targetEvents) {
-                        targetEventIds.add(e.getId());
-                    }
-
-                    Assert.assertEquals(expectedEventIds, targetEventIds);
-                }
-
-                return null;
-            }
-        }.execute();
-    }
-
     private Event createEvent(String eventId, String userId) {
         EventTestDataProvider provider = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider();
         Event event = provider.create();

@@ -18,6 +18,7 @@ import in.partake.resource.UserErrorCode;
 import in.partake.session.OpenIDLoginInformation;
 
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -106,7 +107,7 @@ class GetUserFromOpenIDIdentifierTransaction extends DBAccess<UserEx> {
 
     @Override
     protected UserEx doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        UserOpenIDLink linkage = daos.getOpenIDLinkageAccess().find(con, identifier);
+        UserOpenIDLink linkage = daos.getOpenIDLinkageAccess().findByOpenId(con, identifier);
         if (linkage == null)
             return null;
 
@@ -125,7 +126,8 @@ class AddOpenIDTransaction extends Transaction<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        daos.getOpenIDLinkageAccess().put(con, new UserOpenIDLink(identifier, userId));
+        UUID id = daos.getOpenIDLinkageAccess().getFreshId(con);
+        daos.getOpenIDLinkageAccess().put(con, new UserOpenIDLink(id, userId, identifier));
         return null;
     }
 }

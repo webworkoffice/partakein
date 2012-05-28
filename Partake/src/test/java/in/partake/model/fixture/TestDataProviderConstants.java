@@ -10,7 +10,9 @@ public interface TestDataProviderConstants {
     public static final UUID DEFAULT_TWITTER_LINK_ID = new UUID(100, 0);
     public static final long DEFAULT_TWITTER_ID = 0;
     public static final String DEFAULT_TWITTER_SCREENNAME = "testUser";
+    public static final UUID DEFAULT_USER_OPENID_ID = new UUID(101, 1);
     public static final String DEFAULT_USER_OPENID_IDENTIFIER = "http://www.example.com/ident";
+    public static final UUID DEFAULT_USER_OPENID_ALTERNATIVE_ID = new UUID(101, 1);
     public static final String DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER = "http://www.example.com/alternative";
 
     // Users who do not have any specific rolls.
@@ -66,11 +68,6 @@ public interface TestDataProviderConstants {
     public static final UUID EVENT_ENROLLED_USER_TWITTER_LINK_ID = new UUID(100, 40);
     public static final long EVENT_ENROLLED_USER_TWITTER_ID = 40;
     public static final String EVENT_ENROLLED_USER_TWITTER_SCREENNAME = "eventEnrolledUser";
-
-    public static final String EVENT_VIP_ENROLLED_USER_ID = new UUID(1, 41).toString();
-    public static final UUID EVENT_VIP_ENROLLED_USER_TWITTER_LINK_ID = new UUID(100, 41);
-    public static final long EVENT_VIP_ENROLLED_USER_TWITTER_ID = 41;
-    public static final String EVENT_VIP_ENROLLED_USER_TWITTER_SCREENNAME = "eventVipEnrolledUser";
 
     public static final String EVENT_RESERVED_USER_ID = new UUID(1, 50).toString();
     public static final UUID EVENT_RESERVED_USER_TWITTER_LINK_ID = new UUID(100, 50);

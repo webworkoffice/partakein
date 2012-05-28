@@ -17,45 +17,34 @@ public class UserTicket extends PartakeModel<UserTicket> {
     private UUID ticketId;
     private String eventId; // Note: this is a bit redundant, but this will reduce DB access a lot.
     private String comment;
-    private boolean vip;
     private ParticipationStatus status;
     private ModificationStatus modificationStatus;
     private AttendanceStatus attendanceStatus;
-    private DateTime modifiedAt; // TODO: should be renamed to enrolledAt.
+    private DateTime appliedAt;
+    private DateTime createdAt;
+    private DateTime modifiedAt;
 
     // ----------------------------------------------------------------------
     // constructors
 
-    public UserTicket() {
-        this.vip = false;
-    }
-
     public UserTicket(String id, String userId, UUID ticketId, String eventId, String comment,
-            ParticipationStatus status, boolean vip, ModificationStatus modificationStatus,
-            AttendanceStatus attendanceStatus, DateTime modifiedAt) {
+            ParticipationStatus status, ModificationStatus modificationStatus,
+            AttendanceStatus attendanceStatus, DateTime appliedAt, DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.userId = userId;
         this.ticketId = ticketId;
         this.eventId = eventId;
         this.comment = comment;
         this.status = status;
-        this.vip = vip;
         this.modificationStatus = modificationStatus;
         this.attendanceStatus = attendanceStatus;
+        this.appliedAt = appliedAt;
+        this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
 
     public UserTicket(UserTicket p) {
-        this.id = p.id;
-        this.userId = p.userId;
-        this.ticketId = p.ticketId;
-        this.eventId = p.eventId;
-        this.comment = p.comment;
-        this.status = p.status;
-        this.vip = p.vip;
-        this.modificationStatus = p.modificationStatus;
-        this.attendanceStatus = p.attendanceStatus;
-        this.modifiedAt = p.modifiedAt;
+        this(p.id, p.userId, p.ticketId, p.eventId, p.comment, p.status, p.modificationStatus, p.attendanceStatus, p.appliedAt, p.createdAt, p.modifiedAt);
     }
 
     public UserTicket(JSONObject obj) {
@@ -64,10 +53,11 @@ public class UserTicket extends PartakeModel<UserTicket> {
         this.ticketId = UUID.fromString(obj.getString("ticketId"));
         this.eventId = obj.getString("eventId");
         this.comment = obj.getString("comment");
-        this.vip = obj.getBoolean("vip");
         this.status = ParticipationStatus.safeValueOf(obj.getString("status"));
         this.modificationStatus = ModificationStatus.safeValueOf(obj.getString("modificationStatus"));
         this.attendanceStatus = AttendanceStatus.safeValueOf(obj.getString("attendanceStatus"));
+        this.appliedAt = new DateTime(obj.getLong("appliedAt"));
+        this.createdAt = new DateTime(obj.getLong("createdAt"));
         if (obj.containsKey("modifiedAt"))
             this.modifiedAt = new DateTime(obj.getLong("modifiedAt"));
     }
@@ -85,10 +75,11 @@ public class UserTicket extends PartakeModel<UserTicket> {
         obj.put("ticketId", ticketId.toString());
         obj.put("eventId", eventId);
         obj.put("comment", comment);
-        obj.put("vip", vip);
         obj.put("status", status.toString());
         obj.put("modificationStatus", modificationStatus.toString());
         obj.put("attendanceStatus", attendanceStatus.toString());
+        obj.put("appliedAt", appliedAt.getTime());
+        obj.put("createdAt", createdAt.getTime());
         if (modifiedAt != null)
             obj.put("modifiedAt", modifiedAt.getTime());
         return obj;
@@ -108,10 +99,11 @@ public class UserTicket extends PartakeModel<UserTicket> {
         if (!ObjectUtils.equals(lhs.ticketId,           rhs.ticketId))           { return false; }
         if (!ObjectUtils.equals(lhs.eventId,            rhs.eventId))            { return false; }
         if (!ObjectUtils.equals(lhs.comment,            rhs.comment))            { return false; }
-        if (!ObjectUtils.equals(lhs.vip,                rhs.vip))                { return false; }
         if (!ObjectUtils.equals(lhs.status,             rhs.status))             { return false; }
         if (!ObjectUtils.equals(lhs.modificationStatus, rhs.modificationStatus)) { return false; }
         if (!ObjectUtils.equals(lhs.attendanceStatus,   rhs.attendanceStatus))   { return false; }
+        if (!ObjectUtils.equals(lhs.appliedAt,          rhs.appliedAt))          { return false; }
+        if (!ObjectUtils.equals(lhs.createdAt,          rhs.createdAt))          { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt,         rhs.modifiedAt))         { return false; }
 
         return true;
@@ -125,10 +117,11 @@ public class UserTicket extends PartakeModel<UserTicket> {
         hashCode = hashCode * 37 + ObjectUtils.hashCode(ticketId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(eventId);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(comment);
-        hashCode = hashCode * 37 + ObjectUtils.hashCode(vip);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(status);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(modificationStatus);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(attendanceStatus);
+        hashCode = hashCode * 37 + ObjectUtils.hashCode(appliedAt);
+        hashCode = hashCode * 37 + ObjectUtils.hashCode(createdAt);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(modifiedAt);
 
         return hashCode;
@@ -175,8 +168,12 @@ public class UserTicket extends PartakeModel<UserTicket> {
         return attendanceStatus;
     }
 
-    public boolean isVIP() {
-        return vip;
+    public DateTime getAppliedAt() {
+        return appliedAt;
+    }
+
+    public DateTime getCreatedAt() {
+        return createdAt;
     }
 
     public DateTime getModifiedAt() {
@@ -208,11 +205,6 @@ public class UserTicket extends PartakeModel<UserTicket> {
         this.comment = comment;
     }
 
-    public void setVIP(boolean vip) {
-        checkFrozen();
-        this.vip = vip;
-    }
-
     public void setStatus(ParticipationStatus status) {
         checkFrozen();
         this.status = status;
@@ -226,6 +218,16 @@ public class UserTicket extends PartakeModel<UserTicket> {
     public void setAttendanceStatus(AttendanceStatus attendanceStatus) {
         checkFrozen();
         this.attendanceStatus = attendanceStatus;
+    }
+
+    public void setAppliedAt(DateTime appliedAt) {
+        checkFrozen();
+        this.appliedAt = appliedAt;
+    }
+
+    public void setCreatedAt(DateTime createdAt) {
+        checkFrozen();
+        this.createdAt = createdAt;
     }
 
     public void setModifiedAt(DateTime modifiedAt) {

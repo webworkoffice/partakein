@@ -1,7 +1,10 @@
 package in.partake.controller.action.auth;
 
+import java.util.UUID;
+
 import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
+import in.partake.base.TimeUtil;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
@@ -87,8 +90,11 @@ class VerifyForTwitterActionTransaction extends Transaction<UserEx> {
 
         if (twitterLinkage == null || twitterLinkage.getUserId() == null) {
             String userId = daos.getUserAccess().getFreshId(con);
+            UUID id = daos.getTwitterLinkageAccess().getFreshId(con);
+            twitterLinkageEmbryo.setId(id);
             twitterLinkageEmbryo.setUserId(userId);
         } else {
+            twitterLinkageEmbryo.setId(twitterLinkage.getId());
             twitterLinkageEmbryo.setUserId(twitterLinkage.getUserId());
         }
 
@@ -103,7 +109,7 @@ class VerifyForTwitterActionTransaction extends Transaction<UserEx> {
             return new UserEx(user, twitterLinkage);
 
         // If no user was associated to UserTwitterLink, we create a new user.
-        User newUser = new User(userId, twitterLinkage.getScreenName(), twitterLinkage.getProfileImageURL());
+        User newUser = new User(userId, twitterLinkage.getScreenName(), twitterLinkage.getProfileImageURL(), TimeUtil.getCurrentDateTime(), null);
         daos.getUserAccess().put(con, newUser);
         newUser.freeze();
 

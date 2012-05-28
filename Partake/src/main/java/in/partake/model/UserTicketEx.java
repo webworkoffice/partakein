@@ -11,12 +11,11 @@ import in.partake.model.dto.UserTicket;
  * @author shinyak
  *
  */
-public class UserTicketEx extends UserTicket {    
+public class UserTicketEx extends UserTicket {
     private UserEx user;
     private List<String> relatedEventIds;
-    private int priority;
 
-    // priority, modifiedAt 順に並べる comparator 
+    // priority, modifiedAt 順に並べる comparator
     public static Comparator<UserTicketEx> getPriorityBasedComparator() {
         return new Comparator<UserTicketEx>() {
             @Override
@@ -25,45 +24,33 @@ public class UserTicketEx extends UserTicket {
                 if (lhs == null) { return -1; }
                 if (rhs == null) { return 1; }
 
-                if ( lhs.isVIP() && !rhs.isVIP()) { return -1; } 
-                if (!lhs.isVIP() &&  rhs.isVIP()) { return  1; } 
-                
-                if (lhs.getPriority() > rhs.getPriority()) { return -1; }
-                if (lhs.getPriority() < rhs.getPriority()) { return 1; }
-                int x = lhs.getModifiedAt().compareTo(rhs.getModifiedAt());
-                if (x != 0) { return x; }
+                int x = lhs.getAppliedAt().compareTo(rhs.getAppliedAt());
+                if (x != 0)
+                    return x;
+
+                // If application time is the same, we use userId to compare it.
                 return lhs.getUserId().compareTo(rhs.getUserId());
             }
-        };        
+        };
     }
 
-    
-    public UserTicketEx(UserTicket enrollment, UserEx user, int priority) {
+
+    public UserTicketEx(UserTicket enrollment, UserEx user) {
         super(enrollment);
         this.user = user;
         this.relatedEventIds = new ArrayList<String>();
-        this.priority = priority;
     }
-    
+
     public UserEx getUser() {
         return this.user;
     }
-    
+
     public List<String> getRelatedEventIds() {
         return relatedEventIds;
     }
-    
-    public int getPriority() {
-        return priority;
-    }
-    
+
     public void addRelatedEventId(String eventId) {
         checkFrozen();
         relatedEventIds.add(eventId);
-    }
-    
-    public void setPriority(int priority) {
-        checkFrozen();
-        this.priority = priority; 
     }
 }

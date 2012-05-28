@@ -2,30 +2,26 @@ package in.partake.model.daofacade;
 
 import in.partake.base.PartakeRuntimeException;
 import in.partake.base.TimeUtil;
-import in.partake.model.UserTicketEx;
-import in.partake.model.EventEx;
 import in.partake.model.EventTicketHolderList;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.UserTicketEx;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventActivityAccess;
-import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventTicket;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.CalculatedEnrollmentStatus;
-import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.resource.ServerErrorCode;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class EnrollmentDAOFacade {
@@ -40,44 +36,12 @@ public class EnrollmentDAOFacade {
             if (p == null) { continue; }
             UserEx user = UserDAOFacade.getUserEx(con, daos, p.getUserId());
             if (user == null) { continue; }
-            UserTicketEx pe = new UserTicketEx(p, user, 0);
+            UserTicketEx pe = new UserTicketEx(p, user);
+            pe.freeze();
             ps.add(pe);
         }
 
-        // --- 各 related event に対して、参加しているかどうかを調査。
-        List<EventRelation> eventRelations = event.getRelations();
-        for (EventRelation relation : eventRelations) {
-            EventEx ev = EventDAOFacade.getEventEx(con, daos, relation.getEventId());
-            if (ev == null) { continue; }
-
-            // related event の参加者を Set で取得
-            Set<String> relatedEventParticipantsIds = new HashSet<String>();
-            {
-                List<UserTicket> relatedEventParticipations = daos.getEnrollmentAccess().findByEventId(con, relation.getEventId(), 0, Integer.MAX_VALUE);
-                for (UserTicket p : relatedEventParticipations) {
-                    if (p.getStatus().isEnrolled()) {
-                        relatedEventParticipantsIds.add(p.getUserId());
-                    }
-                }
-            }
-
-            // 参加していれば、それを追加。priority があれば、+1 する。
-            for (UserTicketEx p : ps) {
-                if (!relatedEventParticipantsIds.contains(p.getUserId())) { continue; }
-                p.addRelatedEventId(relation.getEventId());
-                if (relation.hasPriority()) {
-                    p.setPriority(p.getPriority() + 1);
-                }
-            }
-
-        }
-
-        for (UserTicketEx p : ps) {
-            p.freeze();
-        }
-
         Collections.sort(ps, UserTicketEx.getPriorityBasedComparator());
-
         return ps;
     }
 
@@ -151,7 +115,7 @@ public class EnrollmentDAOFacade {
         if (oldEnrollment == null) {
             String id = daos.getEnrollmentAccess().getFreshId(con);
             newEnrollment = new UserTicket(id, userId, ticketId, eventId,
-                    comment, ParticipationStatus.NOT_ENROLLED, false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime());
+                    comment, ParticipationStatus.NOT_ENROLLED, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null);
         } else {
             newEnrollment = new UserTicket(oldEnrollment);
         }

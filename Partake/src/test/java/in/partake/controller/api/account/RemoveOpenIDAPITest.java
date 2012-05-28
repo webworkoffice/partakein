@@ -1,9 +1,12 @@
 package in.partake.controller.api.account;
 
 import in.partake.controller.api.APIControllerTest;
+import in.partake.model.dto.UserOpenIDLink;
 import in.partake.model.fixture.TestDataProvider;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -24,9 +27,13 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
         assertResultOK(proxy);
 
         // Check the OpenID has been really removed.
-        List<String> identifiers = loadOpenIDIdentifiers(TestDataProvider.DEFAULT_USER_ID);
-        Assert.assertNotNull(identifiers);
-        Assert.assertFalse(identifiers.contains(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
+        List<UserOpenIDLink> links = loadOpenIDIdentifiers(DEFAULT_USER_ID);
+        Assert.assertNotNull(links);
+
+        List<UUID> ids = new ArrayList<UUID>();
+        for (UserOpenIDLink link : links)
+            ids.add(link.getId());
+        Assert.assertFalse(ids.contains(DEFAULT_USER_OPENID_ID));
     }
 
     @Test

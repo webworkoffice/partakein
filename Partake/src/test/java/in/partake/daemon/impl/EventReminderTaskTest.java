@@ -65,7 +65,7 @@ public class EventReminderTaskTest extends AbstractPartakeControllerTest impleme
 
         String id = UUID.randomUUID().toString();
         UserTicket enrollment = new UserTicket(id, DEFAULT_USER_ID, ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
-                false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, now);
+                ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, now, now, now);
         storeEnrollment(enrollment);
 
         // This event should be reminded.

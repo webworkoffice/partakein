@@ -177,17 +177,6 @@
                 return $.post('/api/event/apply', arg);
         },
 
-        makeAttendantVIP: function(userId, eventId, vip) {
-            var arg = {
-                sessionToken: partake.sessionToken,
-                userId: userId,
-                eventId: eventId,
-                vip: vip
-            };
-
-            return $.post('/api/event/makeAttendantVIP', arg);
-        },
-
         removeAttendant: function(userId, eventId) {
             var arg = {
                 sessionToken: partake.sessionToken,

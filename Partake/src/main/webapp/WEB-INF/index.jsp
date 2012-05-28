@@ -30,11 +30,11 @@
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <div class="row">
-<% for (Event event : action.getOwnedEvents()) {
+    <% for (Event event : action.getRecentEvents()) {
     if (event == null)
         continue;
 %>
-<div class="thumbnail span3">
+<div class="span3"><div class="thumbnail">
     <% if (event.getForeImageId() != null) { %>
         <a href="/events/<%= event.getId() %>">
             <img src="/images/thumbnail/<%= event.getForeImageId() %>" alt=""  width="220" height="220" />
@@ -51,7 +51,7 @@
         <% } %>
         <p><%=h(event.getSummary())%></p>
     </div>
-</div>
+</div></div>
 <% } %>
 </div>
 
@@ -238,6 +238,8 @@
         </ul>
     </div>
 </div>
+
+
 
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>

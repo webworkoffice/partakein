@@ -40,11 +40,11 @@ class RemoveOpenIDLinkageTransaction extends Transaction<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        UserOpenIDLink linkage = daos.getOpenIDLinkageAccess().find(con, identifier);
+        UserOpenIDLink linkage = daos.getOpenIDLinkageAccess().findByOpenId(con, identifier);
         if (linkage == null || !userId.equals(linkage.getUserId()))
             throw new PartakeException(UserErrorCode.INVALID_OPENID);
 
-        daos.getOpenIDLinkageAccess().remove(con, identifier);
+        daos.getOpenIDLinkageAccess().remove(con, linkage.getId());
         return null;
     }
 }

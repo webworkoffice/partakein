@@ -80,8 +80,6 @@ public class ModifyAPITest extends APIControllerTest {
             addParameter(proxy, "hashTag", event.getHashTag());
         if (event.getPasscode() != null)
             addParameter(proxy, "passcode", event.getPasscode());
-        if (event.getManagerScreenNames() != null)
-            addParameter(proxy, "editors", event.getManagerScreenNames());
         if (event.getForeImageId() != null)
             addParameter(proxy, "foreImageId", event.getForeImageId());
         if (event.getBackImageId() != null)

@@ -50,14 +50,6 @@
                 <a href="<%=request.getContextPath()%>/users/<%=h(participation.getUserId())%>">
                     <%=h(participation.getUser().getTwitterLinkage().getScreenName())%>
                 </a>
-                <%
-                    if (participation.isVIP()) {
-                %><img src="<%=request.getContextPath()%>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
-                <%
-                    } else if (participation.getPriority() > 0) {
-                %><img src="<%=request.getContextPath()%>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><%
-                    }
-                %>
                 : <%=h(participation.getComment())%>
             </li>
         <%
@@ -69,14 +61,6 @@
                 <%=h(participation.getUser().getTwitterLinkage().getScreenName())%>
                 </a>
                 <img src="<%=request.getContextPath()%>/images/reserved1.png" title="仮参加" alt="仮参加者" />
-                <%
-                    if (participation.isVIP()) {
-                %><img src="<%=request.getContextPath()%>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
-                <%
-                    } else if (participation.getPriority() > 0) {
-                %><img src="<%=request.getContextPath()%>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><%
-                    }
-                %>
                 : <%=h(participation.getComment())%>
             </li>
         <%
@@ -113,14 +97,6 @@
                 <a href="<%=request.getContextPath()%>/users/<%=h(participation.getUserId())%>">
                 <%=h(participation.getUser().getTwitterLinkage().getScreenName())%>
                 </a>
-                <%
-                    if (participation.isVIP()) {
-                %><img src="<%=request.getContextPath()%>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
-                <%
-                    } else if (participation.getPriority() > 0) {
-                %><img src="<%=request.getContextPath()%>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><%
-                    }
-                %>
                 : <%=h(participation.getComment())%>
             </li>
         <%
@@ -131,14 +107,6 @@
                 <a href="<%=request.getContextPath()%>/users/<%=h(participation.getUserId())%>">
                 <%=h(participation.getUser().getTwitterLinkage().getScreenName())%>
                 </a>
-                <%
-                    if (participation.isVIP()) {
-                %><img src="<%=request.getContextPath()%>/images/crown.png" title="VIPです（主催者が設定しました）" alt="VIP 参加者" />
-                <%
-                    } else if (participation.getPriority() > 0) {
-                %><img src="<%=request.getContextPath()%>/images/star.png" title="優先(関連イベント参加者)" alt="優先参加者" /><%
-                    }
-                %>
                 <img src="<%=request.getContextPath()%>/images/reserved1.png" title="仮参加" alt="仮参加者" />
                 : <%=h(participation.getComment())%>
             </li>

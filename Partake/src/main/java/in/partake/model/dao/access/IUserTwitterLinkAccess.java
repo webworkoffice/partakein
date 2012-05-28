@@ -11,6 +11,7 @@ public interface IUserTwitterLinkAccess extends IAccess<UserTwitterLink, UUID> {
     // TODO: あとで実装する必要がある
     // public List<TwitterLinkage> findByScreenName(PartakeConnection con, String screenName) throws DAOException;
 
+    public UUID getFreshId(PartakeConnection con) throws DAOException;
     public UserTwitterLink findByTwitterId(PartakeConnection con, long twitterId) throws DAOException;
     public UserTwitterLink findByUserId(PartakeConnection con, String userId) throws DAOException;
 }

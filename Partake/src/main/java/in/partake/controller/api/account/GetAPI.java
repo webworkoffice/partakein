@@ -7,6 +7,7 @@ import in.partake.model.UserEx;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
+import in.partake.model.dto.UserOpenIDLink;
 import in.partake.model.dto.UserPreference;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class GetAPI extends AbstractPartakeAPI {
 class GetAPITransaction extends DBAccess<Void> {
     private String userId;
     private UserPreference preference;
-    private List<String> openIds;
+    private List<UserOpenIDLink> openIds;
 
     public GetAPITransaction(String userId) {
         this.userId = userId;
@@ -53,7 +54,7 @@ class GetAPITransaction extends DBAccess<Void> {
         return preference;
     }
 
-    public List<String> getOpenIds() {
+    public List<UserOpenIDLink> getOpenIds() {
         return openIds;
     }
 }

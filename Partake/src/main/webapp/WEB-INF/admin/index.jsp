@@ -28,7 +28,6 @@
         <h2>Count of users</h2>
         <dl>
             <dt>User</dt><dd><%= action.getCountUser() %></dd>
-            <dt>Active User (who sign in the last 30 days)</dt><dd><%= action.getCountActiveUser() %></dd>
         </dl>
 
         <h2>Count of events</h2>

@@ -1,5 +1,6 @@
 package in.partake.model.dto;
 
+import in.partake.base.TimeUtil;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.model.fixture.impl.UserTestDataProvider;
 
@@ -14,9 +15,9 @@ public class UserTest extends AbstractPartakeModelTest<User> {
     @Before
     public void createSampleData() {
         samples = new User[] {
-                new User("id1", "screenName1", "http://www.example.com/1"),
-                new User("id2", "screenName2", "http://www.example.com/2"),
-                new User("id3", "screenName3", "http://www.example.com/3"),
+                new User("id1", "screenName1", "http://www.example.com/1", TimeUtil.getCurrentDateTime(), null),
+                new User("id2", "screenName2", "http://www.example.com/2", TimeUtil.getCurrentDateTime(), null),
+                new User("id3", "screenName3", "http://www.example.com/3", TimeUtil.getCurrentDateTime(), null),
         };
     }
 
@@ -36,7 +37,7 @@ public class UserTest extends AbstractPartakeModelTest<User> {
 
     @Test
     public void testToJSONFromJSON() {
-        User user = new User("id1", "screenName1", "http://www.example.com/1");
+        User user = new User("id1", "screenName1", "http://www.example.com/1", TimeUtil.getCurrentDateTime(), null);
         Assert.assertEquals(user, new User(user.toJSON()));
     }
 

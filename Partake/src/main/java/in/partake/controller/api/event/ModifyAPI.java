@@ -207,14 +207,6 @@ class ModifyTransaction extends Transaction<Void> {
                 event.setPasscode(passcode);
         }
 
-        if (params.containsKey("editors")) {
-            String editors = getString("editors");
-            if (editors != null && 120 < editors.length())
-                throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "editors", "編集者が多すぎます。");
-            else
-                event.setManagerScreenNames(editors);
-        }
-
         if (params.containsKey("foreImageId")) {
             String foreImageId = getString("foreImageId");
             if (StringUtils.isBlank(foreImageId) || "null".equals(foreImageId))

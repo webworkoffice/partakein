@@ -4,8 +4,11 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.action.ActionControllerTest;
+import in.partake.model.dto.UserOpenIDLink;
 import in.partake.model.dto.UserPreference;
-import in.partake.model.fixture.TestDataProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -15,16 +18,20 @@ public class MypageActionTest extends ActionControllerTest {
     @Test
     public void testToExecute() throws Exception {
         ActionProxy proxy = getActionProxy("/mypage");
-        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
+        loginAs(proxy, DEFAULT_USER_ID);
 
         proxy.execute();
         assertResultSuccess(proxy);
 
         MypageAction action = (MypageAction) proxy.getAction();
 
-        assertThat(action.getPreference(), is(UserPreference.getDefaultPreference(TestDataProvider.DEFAULT_USER_ID)));
-        assertThat(action.getOpenIds(), hasItem(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
-        assertThat(action.getOpenIds(), hasItem(TestDataProvider.DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER));
+        List<String> ids = new ArrayList<String>();
+        for (UserOpenIDLink link : action.getOpenIds())
+            ids.add(link.getIdentifier());
+
+        assertThat(action.getPreference(), is(UserPreference.getDefaultPreference(DEFAULT_USER_ID)));
+        assertThat(ids, hasItem(DEFAULT_USER_OPENID_IDENTIFIER));
+        assertThat(ids, hasItem(DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER));
     }
 
     @Test

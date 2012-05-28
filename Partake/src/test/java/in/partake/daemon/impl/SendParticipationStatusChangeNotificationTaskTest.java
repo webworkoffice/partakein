@@ -66,11 +66,11 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
 
         UserTicket[] enrollments = new UserTicket[] {
                 new UserTicket(enrollmentIds[0], DEFAULT_USER_IDS[0], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
-                        false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.PRESENT, now),
+                        ModificationStatus.NOT_ENROLLED, AttendanceStatus.PRESENT, now, now, null),
                 new UserTicket(enrollmentIds[1], DEFAULT_USER_IDS[1], ticketId, event.getId(), "comment", ParticipationStatus.RESERVED,
-                        false, ModificationStatus.NOT_ENROLLED, AttendanceStatus.PRESENT, now),
+                        ModificationStatus.NOT_ENROLLED, AttendanceStatus.PRESENT, now, now, null),
                 new UserTicket(enrollmentIds[2], DEFAULT_USER_IDS[2], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
-                        false, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, now)
+                        ModificationStatus.CHANGED, AttendanceStatus.PRESENT, now, now, null)
         };
 
         for (UserTicket enrollment : enrollments)
@@ -128,13 +128,13 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
 
         UserTicket[] enrollments = new UserTicket[] {
                 new UserTicket(enrollmentIds[0], DEFAULT_USER_IDS[0], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
-                        false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, now),
+                        ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, now, now, null),
                 new UserTicket(enrollmentIds[1], DEFAULT_USER_IDS[1], ticketId, event.getId(), "comment", ParticipationStatus.RESERVED,
-                        false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 1)),
+                        ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 1), now, null),
                 new UserTicket(enrollmentIds[2], DEFAULT_USER_IDS[2], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
-                        false, ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 2)),
+                        ModificationStatus.ENROLLED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 2), now, null),
                 new UserTicket(enrollmentIds[3], DEFAULT_USER_IDS[3], ticketId, event.getId(), "comment", ParticipationStatus.ENROLLED,
-                        false, ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 3))
+                        ModificationStatus.CHANGED, AttendanceStatus.PRESENT, new DateTime(now.getTime() + 3), now, null)
         };
 
         for (UserTicket enrollment : enrollments)

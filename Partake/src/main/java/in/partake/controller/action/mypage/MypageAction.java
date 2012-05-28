@@ -8,6 +8,7 @@ import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.UserDAOFacade;
+import in.partake.model.dto.UserOpenIDLink;
 import in.partake.model.dto.UserPreference;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class MypageAction extends AbstractPartakeAction {
     // private static final Logger logger = Logger.getLogger(MypageController.class);
 
     private UserPreference preference;
-    private List<String> openIds;
+    private List<UserOpenIDLink> openIds;
 
     public String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
@@ -37,7 +38,7 @@ public class MypageAction extends AbstractPartakeAction {
         return preference;
     }
 
-    public List<String> getOpenIds() {
+    public List<UserOpenIDLink> getOpenIds() {
         return openIds;
     }
 }
@@ -45,7 +46,7 @@ public class MypageAction extends AbstractPartakeAction {
 class MypageActionTransaction extends DBAccess<Void> {
     private String userId;
     private UserPreference preference;
-    private List<String> openIds;
+    private List<UserOpenIDLink> openIds;
 
     public MypageActionTransaction(String userId) {
         this.userId = userId;
@@ -62,7 +63,7 @@ class MypageActionTransaction extends DBAccess<Void> {
         return preference;
     }
 
-    public List<String> getOpenIds() {
+    public List<UserOpenIDLink> getOpenIds() {
         return openIds;
     }
 }
