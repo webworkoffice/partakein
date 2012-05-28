@@ -57,7 +57,7 @@ public class Postgres9UserCalendarLinkDao extends Postgres9Dao implements IUserC
     public void put(PartakeConnection con, UserCalendarLink linkage) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(linkage.getId(), CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(linkage.getId(), CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, linkage.getId()))
             entityDao.update(pcon, entity);
         else

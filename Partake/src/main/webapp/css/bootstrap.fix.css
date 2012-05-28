@@ -1,5 +1,18 @@
 @charset "UTF-8";
 
+body {
+    padding-top: 50px;
+}
+
+body.with-sub-nav {
+    padding-top: 90px;
+}
+
+/* In windows, we don't want to show a horizontal scroll bar. */
+.modal-body {
+    overflow-x: hidden;
+}
+
 @media (min-width: 768px) {
     .pull-right-if-not-phone {
         float: right;
@@ -55,14 +68,6 @@
 }
 
 @media (min-width : 980px) {
-    body {
-        padding-top: 50px;
-    }
-
-    body.with-sub-nav {
-        padding-top: 90px;
-    }
-
     .event-promotion-container {
         position: absolute;
         top: -10px;
@@ -86,8 +91,14 @@
     }
 }
 
-.no-width-limit {
-    width: auto !important;
+@media (max-width : 979px) {
+    body {
+        padding-top: 0;
+    }
+
+    body.with-sub-nav {
+        padding-top: 0;
+    }
 }
 
 .nav.subnav {
@@ -143,7 +154,7 @@
     line-height: 32px;
 }
 
-.invisible {
+.invisible-if-not-ie {
     position: absolute;
     left: -9999px;
 }

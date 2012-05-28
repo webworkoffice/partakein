@@ -3,6 +3,7 @@ package in.partake.model;
 import java.util.Set;
 
 import net.sf.json.JSONObject;
+import in.partake.base.SafeJSONable;
 import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
@@ -12,7 +13,7 @@ import in.partake.resource.PartakeProperties;
  * @author shinyak
  *
  */
-public class UserEx extends User {
+public class UserEx extends User implements SafeJSONable {
     private UserTwitterLink twitterLinkage;
 
     public UserEx(User user, UserTwitterLink twitterLinkage) {
@@ -38,14 +39,12 @@ public class UserEx extends User {
         return adminScreenNames.contains(screenName);
     }
 
-    public JSONObject toSafeJSON(boolean withTwitter) {
+
+    public JSONObject toSafeJSON() {
         JSONObject obj = super.toSafeJSON();
 
-        assert obj.get("twitter") == null;
-
-        if (withTwitter) {
+        if (twitterLinkage != null)
             obj.put("twitter", twitterLinkage.toSafeJSON());
-        }
 
         return obj;
     }

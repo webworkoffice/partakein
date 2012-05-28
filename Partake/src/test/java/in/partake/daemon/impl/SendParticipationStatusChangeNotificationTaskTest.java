@@ -22,6 +22,7 @@ import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.NotificationType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.auxiliary.TicketAmountType;
 import in.partake.model.fixture.TestDataProviderConstants;
 import in.partake.service.ITwitterService;
 
@@ -120,7 +121,7 @@ public class SendParticipationStatusChangeNotificationTaskTest extends AbstractP
         UUID ticketId = UUID.randomUUID();
         EventTicket ticket = EventTicket.createDefaultTicket(ticketId, event.getId());
         ticket.setAmount(1);
-        ticket.setAmountInfinite(false);
+        ticket.setAmountType(TicketAmountType.LIMITED);
         storeEventTicket(ticket);
 
         String[] enrollmentIds = new String[] {

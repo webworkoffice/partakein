@@ -5,6 +5,7 @@ import in.partake.base.PartakeException;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.access.IEventAccess;
+import in.partake.model.dao.aux.EventFilterCondition;
 import in.partake.model.dto.Event;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 
@@ -54,7 +55,7 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
                     }
                 }
 
-                List<Event> targetEvents = dao.findByOwnerId(con, userId);
+                List<Event> targetEvents = dao.findByOwnerId(con, userId, EventFilterCondition.ALL_EVENTS, 0, Integer.MAX_VALUE);
                 Set<String> targetEventIds = new HashSet<String>();
                 for (Event e : targetEvents) {
                     targetEventIds.add(e.getId());
@@ -92,7 +93,7 @@ public class EventAccessTest extends AbstractDaoTestCaseBase<IEventAccess, Event
                     }
                 }
 
-                List<Event> targetEvents = dao.findByOwnerId(con, invalidUserId);
+                List<Event> targetEvents = dao.findByOwnerId(con, invalidUserId, EventFilterCondition.ALL_EVENTS, 0, Integer.MAX_VALUE);
 
                 Assert.assertNotNull(targetEvents);
                 Assert.assertTrue(targetEvents.isEmpty());

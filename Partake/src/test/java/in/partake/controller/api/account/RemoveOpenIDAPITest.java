@@ -3,6 +3,7 @@ package in.partake.controller.api.account;
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dto.UserOpenIDLink;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.resource.UserErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.MISSING_OPENID);
     }
 
     @Test
@@ -61,7 +62,6 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
 
     @Test
     public void testToRemoveOpenIDWithInvalidLogin() throws Exception {
-        // openid-remove-0 user does not have openid-remove-2 identifier.
         ActionProxy proxy = getActionProxy("/api/account/removeOpenID");
 
         loginAs(proxy, TestDataProvider.DEFAULT_ANOTHER_USER_ID);
@@ -70,7 +70,7 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
         addValidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_OPENID);
     }
 
     @Test
@@ -84,6 +84,6 @@ public class RemoveOpenIDAPITest extends APIControllerTest {
         addInvalidSessionTokenToParameter(proxy);
 
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_SECURITY_CSRF);
     }
 }

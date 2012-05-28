@@ -63,6 +63,9 @@ public class UserTwitterLinkTestDataProvider extends TestDataProvider<UserTwitte
         dao.put(con, new UserTwitterLink(DEFAULT_SENDER_TWITTER_LINK_ID, DEFAULT_SENDER_TWITTER_ID, DEFAULT_SENDER_ID, DEFAULT_SENDER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/"));
         dao.put(con, new UserTwitterLink(DEFAULT_RECEIVER_TWITTER_LINK_ID, DEFAULT_RECEIVER_TWITTER_ID, DEFAULT_RECEIVER_ID, DEFAULT_RECEIVER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/"));
 
-    }
+        dao.put(con, new UserTwitterLink(IMAGE_OWNER_TWITTER_LINK_ID, IMAGE_OWNER_TWITTER_ID, IMAGE_OWNER_ID, IMAGE_OWNER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/"));
 
+        // accessToken and accessTokenSecret are null for this user.
+        dao.put(con, new UserTwitterLink(USER_TWITTER_NOAUTH_TWITTER_LINK_ID, USER_TWITTER_NOAUTH_TWITTER_ID, USER_TWITTER_NOAUTH_ID, USER_TWITTER_NOAUTH_TWITTER_SCREENNAME, "testUser 1", null, null, "http://www.example.com/"));
+    }
 }

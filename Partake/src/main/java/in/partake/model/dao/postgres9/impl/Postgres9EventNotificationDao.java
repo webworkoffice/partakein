@@ -71,7 +71,7 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why User does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, t.getId()))
             entityDao.update(pcon, entity);
         else
@@ -133,7 +133,7 @@ public class Postgres9EventNotificationDao extends Postgres9Dao implements IEven
     public EventTicketNotification findLastNotification(PartakeConnection con, UUID ticketId, NotificationType type) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? AND notificationType = ? ORDER BY createdAt DESC LIMIT 1",
-                new Object[] { ticketId, type.toString() });
+                new Object[] { ticketId.toString(), type.toString() });
 
         Postgres9IdMapper<EventTicketNotification> idMapper = new Postgres9IdMapper<EventTicketNotification>((Postgres9Connection) con, mapper, entityDao);
         List<EventTicketNotification> list = DAOUtil.convertToList(new Postgres9DataIterator<EventTicketNotification>(idMapper, psars));

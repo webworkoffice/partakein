@@ -22,7 +22,7 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="/"><img src="/images/momonga2.png" alt="" style="vertical-align: baseline"> PARTAKE</a>
+            <a class="brand" href="/">PARTAKE</a>
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -30,7 +30,7 @@
             </a>
             <div class="nav-collapse">
             <ul class="nav">
-                <li><a data-toggle="modal" href="#create-event-dialog">イベントを作る</a></li>
+                <li><a id="nav-create-event" href="#create-event-dialog">イベントを作る</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">イベントを見つける <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -39,22 +39,34 @@
                     </ul>
                 </li>
             </ul>
+            <script>
+            <% if (user != null) { %>
+            $('#nav-create-event').click(function(e) {
+                $('#create-event-dialog').modal('show');
+            });
+            <% } else { %>
+            $('#nav-create-event').click(function(e) {
+                location.href = '/loginRequired';
+            });
+            <% } %>
+            </script>
             <ul class="nav pull-right">
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    About
-                    <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="http://code.google.com/p/partakein/wiki/FAQ">よくある質問</a></li>
-                    <li><a href="http://code.google.com/p/partakein/issues/list">ご要望・バグ報告</a></li>
-                    <li class="divider"></li>
-                    <li><a href="/contact">お問い合わせ</a></li>
-                    <li><a href="/termofuse">利用規約</a></li>
-                    <li class="divider"></li>
-                    <li><a href="http://code.google.com/p/partakein/">Copyright &copy; The PARTAKE Committers</a></li>
-                </ul>
-            </li>
+                <li class="dropdown hidden-phone">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        About
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="http://code.google.com/p/partakein/wiki/FAQ">よくある質問</a></li>
+                        <li><a href="http://code.google.com/p/partakein/issues/list">ご要望・バグ報告</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/contact">お問い合わせ</a></li>
+                        <li><a href="/termofuse">利用規約</a></li>
+                        <li class="divider"></li>
+                        <li><a href="http://code.google.com/p/partakein/">Copyright &copy; The PARTAKE Committers</a></li>
+                    </ul>
+                </li>
+
             <%
                 if (user != null) {
             %>
@@ -189,7 +201,7 @@
     </div>
     <div class="modal-footer spinner-container">
         <a href="#" class="btn" data-dismiss="modal">キャンセル</a>
-        <a href="#" id="event-enroll-dialog-submit" class="btn btn-danger">新規イベントを保存</a>
+        <a href="#" id="create-event-dialog-submit" class="btn btn-danger">新規イベントを保存</a>
     </div>
     <script>
     $('#create-event-form-begin-date-input').datetimepicker({
@@ -204,7 +216,7 @@
         }
         return true;
     });
-    $('#event-enroll-dialog-submit').click(function(e) {
+    $('#create-event-dialog-submit').click(function(e) {
         var title = $('#create-event-form-title').val();
         var beginDate = $('#create-event-form-begin-date-input').val();
         var usesEndDate = $('#create-event-form-end-date-checkbox').is(':checked');
@@ -212,8 +224,7 @@
 
         partake.event.create(title, beginDate, endDate)
         .done(function (json) {
-            var eventId = json.eventId;
-            location.href = '/events/' + json.eventId;
+            location.href = '/events/edit/basic/' + json.eventId;
         })
         .fail(partake.defaultFailHandler);
 

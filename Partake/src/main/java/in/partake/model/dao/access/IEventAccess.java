@@ -24,8 +24,6 @@ public interface IEventAccess extends IAccess<Event, String> {
      * @return
      * @throws DAOException
      */
-    @Deprecated
-    public abstract List<Event> findByOwnerId(PartakeConnection con, String userId) throws DAOException;
     public abstract List<Event> findByOwnerId(PartakeConnection con, String userId, EventFilterCondition condition, int offset, int limit) throws DAOException;
     public abstract int countEventsByOwnerId(PartakeConnection con, String userId, EventFilterCondition condition) throws DAOException;
 

@@ -29,12 +29,12 @@
 
 <div class="page-header">
     <h1>アンケート</h1>
-    <p>イベント参加時にアンケートを取ることができます。</p>
+    <p>イベント参加時にアンケートを取ることができます。既にユーザーが登録済みのアンケートを変更した場合、アンケートの結果に不整合が生じる恐れがあります。</p>
 </div>
 
 <div class="row" style="margin-bottom: 10px;">
-    <div class="span12 offset1">質問</div>
-    <div class="span6">回答形式</div>
+    <div class="span12 offset1"><strong>質問</strong></div>
+    <div class="span6"><strong>回答形式</strong></div>
 </div>
 
 <div id="question-list" style="border-bottom: 1px solid; margin-bottom: 10px;">
@@ -52,6 +52,7 @@
     <div id="template-body" class="row" style="display: none;">
         <div class="span18 offset1">
             <form class="form-horizontal"><fieldset>
+                <input id="template-question-id" name="id" type="hidden">
                 <div class="control-group">
                     <label class="control-label">質問文</label>
                     <div class="controls">
@@ -64,9 +65,8 @@
                         <select id="template-answertype">
                             <option value="text">テキスト (短め / １行のテキストボックスが表示されます)</option>
                             <option value="textarea">テキスト (長め / 複数行のテキストボックスが表示されます)</option>
-                            <option value="datetime">日付 (日付選択に適した形式で表示されます)</option>
                             <option value="checkbox">チェックボックス (複数の選択肢からいくつでも選べます)</option>
-                            <option value="radio">ラジオボタン (複数の選択肢から１つだけ選べます)</option>
+                            <option value="radiobutton">ラジオボタン (複数の選択肢から１つだけ選べます)</option>
                         </select>
                     </div>
                 </div>
@@ -126,13 +126,10 @@ $('#template-answertype').change(function () {
     } else if (v == 'textarea') {
         $('#' + prefix + '-options').hide();
         $('#' + prefix + '-question-type').text('テキスト (複数行)');
-    } else if (v == 'datetime') {
-        $('#' + prefix + '-options').hide();
-        $('#' + prefix + '-question-type').text('日付');
     } else if (v == 'checkbox') {
         $('#' + prefix + '-options').show();
         $('#' + prefix + '-question-type').text('チェックボックス');
-    } else if (v == 'radio') {
+    } else if (v == 'radiobutton') {
         $('#' + prefix + '-options').show();
         $('#' + prefix + '-question-type').text('ラジオボタン');
     }
@@ -186,7 +183,6 @@ var initialData = [
         <%= question.toJSON() %>,
     <% }
 } %>
-
 ];
 
 for (var i = 0; i < initialData.length; ++i) {
@@ -195,6 +191,7 @@ for (var i = 0; i < initialData.length; ++i) {
     var cloned = cloneTemplate(prefix, true);
     $('#question-list').append(cloned);
 
+    $('#' + prefix + '-question-id').val(data.id);
     $('#' + prefix + '-question-input').val(data.question);
     $('#' + prefix + '-answertype').val(data.type);
     $('#' + prefix + '-answertype').change();
@@ -219,6 +216,7 @@ for (var i = 0; i < initialData.length; ++i) {
 <script>
 $('#enquete-submit').click(function() {
     var list = $('#question-list').children();
+    var ids = [];
     var questions = [];
     var types = [];
     var options = [];
@@ -226,19 +224,22 @@ $('#enquete-submit').click(function() {
     list.each(function(i) {
         var elem = $(this);
         var prefix = elem.attr('id');
+
+        var id = $('#' + prefix + '-question-id').val();
         var question = $('#' + prefix + '-question-input').val();
         var type = $('#' + prefix + '-answertype').val();
         var option = $('#' + prefix + '-options input').map(function() {
             return $(this).val();
         }).get();
 
+        ids.push(id);
         questions.push(question);
         types.push(type);
         options.push($.toJSON(option));
     });
 
     var eventId = '<%= h(event.getId()) %>';
-    partake.event.modifyEnquete(eventId, questions, types, options)
+    partake.event.modifyEnquete(eventId, ids, questions, types, options)
     .done(function (json) {
         $('#enquete-submit-info').hide();
         $('#enquete-submit-info').text('保存しました');

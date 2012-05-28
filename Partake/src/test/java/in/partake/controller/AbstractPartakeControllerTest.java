@@ -293,6 +293,16 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
+    protected MessageEnvelope loadEnvelope(final String id) throws DAOException, PartakeException {
+        return new DBAccess<MessageEnvelope>() {
+            @Override
+            protected MessageEnvelope doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+                return daos.getMessageEnvelopeAccess().find(con, id);
+            }
+        }.execute();
+    }
+
+
     protected List<MessageEnvelope> loadEnvelopes() throws DAOException, PartakeException {
         return new DBAccess<List<MessageEnvelope>>() {
             @Override

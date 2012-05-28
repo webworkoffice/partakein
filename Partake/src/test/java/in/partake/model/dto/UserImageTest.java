@@ -25,8 +25,8 @@ public class UserImageTest extends AbstractPartakeModelTest<UserImage> {
     public void createSampleData() {
         samples = new UserImage[] {
                 new UserImage(),
-                new UserImage("id1", "userId1", "something", new byte[] { -1, 0, 1 }, TimeUtil.getCurrentDate()),
-                new UserImage("id2", "userId2", "somewhere", new byte[] { 0, 1, 2, 3, 4 }, TimeUtil.getCurrentDate()),
+                new UserImage("id1", "userId1", "something", new byte[] { -1, 0, 1 }, TimeUtil.getCurrentDateTime()),
+                new UserImage("id2", "userId2", "somewhere", new byte[] { 0, 1, 2, 3, 4 }, TimeUtil.getCurrentDateTime()),
         };
     }
 

@@ -4,7 +4,6 @@
 <%@page import="in.partake.base.Util"%>
 <%@page import="in.partake.view.util.Helper"%>
 <%@page import="in.partake.model.dto.auxiliary.AttendanceStatus"%>
-<%@page import="in.partake.model.dto.auxiliary.EventRelation"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="in.partake.model.UserTicketEx"%>
 <%@page import="java.util.List"%>
@@ -74,7 +73,7 @@ function removeAttendant(userId, ticketId) {
     if (!window.confirm('参加者を削除しようとしています。この操作は取り消せません。削除しますか？'))
         return;
 
-    partake.event.removeAttendant(userId, eventId)
+    partake.ticket.removeAttendant(userId, ticketId)
     .done(function (json) {
         location.reload();
     })
@@ -82,12 +81,13 @@ function removeAttendant(userId, ticketId) {
 }
 
 function changeAttendance(userId, ticketId, status) {
-    partake.event.changeAttendance(userId, ticketId, status)
+    var id = ticketId + '-' + userId;
+    partake.ticket.changeAttendance(userId, ticketId, status)
     .done(function(json) {
-        $("#attendance-status-" + userId).html("保存しました");
+        $("#attendance-status-" + id).html("保存しました");
     })
     .fail(function(xhr) {
-        $("#attendance-status-" + userId).html("保存時にエラーが発生しました");
+        $("#attendance-status-" + id).html("保存時にエラーが発生しました");
     })
 }
 </script>

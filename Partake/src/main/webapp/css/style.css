@@ -3,6 +3,3 @@
 @import "bootstrap.css";
 @import "bootstrap.fix.css";
 @import "partake.css";
-
-/* IE reads non-doublequoted files */
-@import fixie.css;

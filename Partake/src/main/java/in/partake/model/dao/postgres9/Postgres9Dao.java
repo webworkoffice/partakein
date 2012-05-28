@@ -54,6 +54,17 @@ public abstract class Postgres9Dao {
     }
 
     /**
+     * Drop the table.
+     */
+    protected void dropTable(Postgres9Connection pcon, String tableName) throws DAOException {
+        try {
+            dropTable(pcon.getConnection(), tableName);
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
      * Executes SQL.
      */
     protected void executeSQL(Postgres9Connection pcon, String sql) throws DAOException {
@@ -127,4 +138,18 @@ public abstract class Postgres9Dao {
             close(ps);
         }
     }
+
+    private void dropTable(Connection con, String tableName) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement("DROP TABLE " + tableName);
+            ps.execute();
+        } finally {
+            close(rs);
+            close(ps);
+        }
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
+import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.controller.base.permission.EventEditPermission;
 import in.partake.model.IPartakeDAOs;
@@ -15,6 +16,7 @@ import in.partake.resource.UserErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import net.sf.json.JSONArray;
 
@@ -27,6 +29,7 @@ public class ModifyEnqueteAPI extends AbstractPartakeAPI {
         ensureValidSessionToken();
         String eventId = getValidEventIdParameter();
 
+        String[] questionIds = getParameters("ids[]");
         String[] questions = getParameters("questions[]");
         String[] types = getParameters("types[]");
         String[] options = getParameters("options[]");
@@ -40,7 +43,7 @@ public class ModifyEnqueteAPI extends AbstractPartakeAPI {
         if (questions.length != types.length || questions.length != options.length)
             return renderInvalid(UserErrorCode.INVALID_ENQUETE_PARAMS);
 
-        new ModifyEnqueteTransaction(user, eventId, questions, types, options).execute();
+        new ModifyEnqueteTransaction(user, eventId, questionIds, questions, types, options).execute();
         return renderOK();
     }
 }
@@ -48,13 +51,15 @@ public class ModifyEnqueteAPI extends AbstractPartakeAPI {
 class ModifyEnqueteTransaction extends Transaction<Void> {
     private UserEx user;
     private String eventId;
+    private String[] ids;
     private String[] questions;
     private String[] types;
     private String[] options;
 
-    public ModifyEnqueteTransaction(UserEx user, String eventId, String[] questions, String[] types, String[] options) {
+    public ModifyEnqueteTransaction(UserEx user, String eventId, String[] ids, String[] questions, String[] types, String[] options) {
         this.user = user;
         this.eventId = eventId;
+        this.ids = ids;
         this.questions = questions;
         this.types = types;
         this.options = options;
@@ -67,8 +72,6 @@ class ModifyEnqueteTransaction extends Transaction<Void> {
             throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
         if (!EventEditPermission.check(event, user))
             throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_EDIT);
-        if (!event.isDraft())
-            throw new PartakeException(UserErrorCode.INVALID_ENQUETE_PUBLISHED);
 
         List<EnqueteQuestion> enquetes = new ArrayList<EnqueteQuestion>();
         for (int i = 0; i < questions.length; ++i) {
@@ -77,8 +80,9 @@ class ModifyEnqueteTransaction extends Transaction<Void> {
             for (int j = 0; j < array.size(); ++j)
                 optionValues.add(array.getString(j));
 
+            UUID enqueteId = Util.isUUID(ids[i]) ? UUID.fromString(ids[i]) : UUID.randomUUID();
             EnqueteQuestion question = new EnqueteQuestion(
-                    questions[i], EnqueteAnswerType.safeValueOf(types[i]), optionValues);
+                    enqueteId, questions[i], EnqueteAnswerType.safeValueOf(types[i]), optionValues);
             enquetes.add(question);
         }
 

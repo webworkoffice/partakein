@@ -17,6 +17,37 @@ public class DateTimeTest {
     };
 
     @Test
+    public void testEquals() {
+        assertThat(new DateTime(0L).equals(null), is(false));
+        assertThat(new DateTime(0L).equals(new String("0")), is(false));
+
+        assertThat(new DateTime(0L).equals(new DateTime(0L)), is(true));
+        assertThat(new DateTime(0L).equals(new DateTime(1L)), is(false));
+    }
+
+    @Test
+    public void testIsBefore() {
+        assertThat(new DateTime(500L).isBefore(new DateTime(499L)), is(false));
+        assertThat(new DateTime(500L).isBefore(new DateTime(500L)), is(false));
+        assertThat(new DateTime(500L).isBefore(new DateTime(501L)), is(true));
+
+        assertThat(new DateTime(Long.MIN_VALUE).isBefore(new DateTime(0)), is(true));
+        assertThat(new DateTime(0).isBefore(new DateTime(Long.MAX_VALUE)), is(true));
+        assertThat(new DateTime(Long.MIN_VALUE).isBefore(new DateTime(Long.MAX_VALUE)), is(true));
+    }
+
+    @Test
+    public void testIsAfter() {
+        assertThat(new DateTime(500L).isAfter(new DateTime(499L)), is(true));
+        assertThat(new DateTime(500L).isAfter(new DateTime(500L)), is(false));
+        assertThat(new DateTime(500L).isAfter(new DateTime(501L)), is(false));
+
+        assertThat(new DateTime(Long.MIN_VALUE).isAfter(new DateTime(0)), is(false));
+        assertThat(new DateTime(0).isAfter(new DateTime(Long.MAX_VALUE)), is(false));
+        assertThat(new DateTime(Long.MIN_VALUE).isAfter(new DateTime(Long.MAX_VALUE)), is(false));
+    }
+
+    @Test
     public void testOneDayBefore() {
         DateTime date = TimeUtil.getCurrentDateTime();
         DateTime before = date.nDayBefore(1);

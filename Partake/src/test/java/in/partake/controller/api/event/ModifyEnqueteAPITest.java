@@ -6,7 +6,6 @@ import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.auxiliary.EnqueteAnswerType;
 import in.partake.model.dto.auxiliary.EnqueteQuestion;
-import in.partake.resource.UserErrorCode;
 
 import java.util.List;
 
@@ -22,6 +21,8 @@ public class ModifyEnqueteAPITest extends APIControllerTest {
         loginAs(proxy, EVENT_OWNER_ID);
         addValidSessionTokenToParameter(proxy);
         addParameter(proxy, "eventId", UNPUBLISHED_EVENT_ID);
+
+        addParameter(proxy, "ids[]", new String[] { "" });
         addParameter(proxy, "questions[]", new String[] { "test" });
         addParameter(proxy, "types[]", new String[] { "text" });
         addParameter(proxy, "options[]", new String[] { "[]" });
@@ -34,19 +35,5 @@ public class ModifyEnqueteAPITest extends APIControllerTest {
         assertThat(questions.size(), is(1));
         assertThat(questions.get(0).getAnswerType(), is(EnqueteAnswerType.TEXT));
         assertThat(questions.get(0).getText(), is("test"));
-    }
-
-    @Test
-    public void testToModifyPublishedEvent() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/modifyEnquete");
-        loginAs(proxy, EVENT_OWNER_ID);
-        addValidSessionTokenToParameter(proxy);
-        addParameter(proxy, "eventId", PUBLISHED_EVENT_ID);
-        addParameter(proxy, "questions[]", new String[] { "test" });
-        addParameter(proxy, "types[]", new String[] { "text" });
-        addParameter(proxy, "options[]", new String[] { "[]" });
-
-        proxy.execute();
-        assertResultInvalid(proxy, UserErrorCode.INVALID_ENQUETE_PUBLISHED);
     }
 }

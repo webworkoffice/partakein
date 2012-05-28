@@ -6,9 +6,9 @@ import in.partake.base.Util;
 import in.partake.model.UserEx;
 import in.partake.model.dto.auxiliary.EnqueteQuestion;
 import in.partake.model.dto.auxiliary.EventCategory;
-import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.resource.Constants;
 import in.partake.resource.PartakeProperties;
+import in.partake.view.util.Helper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,8 +43,8 @@ public class Event extends PartakeModel<Event> {
     private String passcode;    // passcode to show (if not public)
     private boolean draft;    // true if the event is still in preview.
 
-    private List<String> editors; // twitterScreenName (starts from @) or userId.
-    private List<EventRelation> eventRelations;
+    private List<String> editorIds; // a list of UserId.
+    private List<String> relatedEventIds;
     private List<EnqueteQuestion> enquetes;
 
     private DateTime createdAt;     //
@@ -90,8 +90,8 @@ public class Event extends PartakeModel<Event> {
         this.backImageId = null;
         this.passcode = null;
         this.draft = true;
-        this.editors = new ArrayList<String>();
-        this.eventRelations = new ArrayList<EventRelation>();
+        this.editorIds = new ArrayList<String>();
+        this.relatedEventIds = new ArrayList<String>();
         this.enquetes = null;
         this.createdAt = TimeUtil.getCurrentDateTime();
         this.modifiedAt = null;
@@ -115,10 +115,10 @@ public class Event extends PartakeModel<Event> {
         this.backImageId = event.backImageId;
         this.passcode = event.passcode;
         this.draft = event.draft;
-        if (event.editors != null)
-            this.editors = new ArrayList<String>(event.editors);
-        if (event.eventRelations != null)
-            this.eventRelations = new ArrayList<EventRelation>(event.eventRelations);
+        if (event.editorIds != null)
+            this.editorIds = new ArrayList<String>(event.editorIds);
+        if (event.relatedEventIds != null)
+            this.relatedEventIds = new ArrayList<String>(event.relatedEventIds);
         if (event.enquetes != null)
             this.enquetes = new ArrayList<EnqueteQuestion>(event.enquetes);
         this.createdAt = event.createdAt;
@@ -146,19 +146,19 @@ public class Event extends PartakeModel<Event> {
         this.passcode = json.optString("passcode", null);
         this.draft = json.optBoolean("draft", false);
         {
-            JSONArray ar = json.optJSONArray("editors");
+            JSONArray ar = json.optJSONArray("editorIds");
             if (ar != null) {
-                this.editors = new ArrayList<String>();
+                this.editorIds = new ArrayList<String>();
                 for (int i = 0; i < ar.size(); ++i)
-                    editors.add(ar.getString(i));
+                    editorIds.add(ar.getString(i));
             }
         }
         {
-            JSONArray ar = json.optJSONArray("relations");
+            JSONArray ar = json.optJSONArray("relatedEventIds");
             if (ar != null) {
-                this.eventRelations = new ArrayList<EventRelation>();
+                this.relatedEventIds = new ArrayList<String>();
                 for (int i = 0; i < ar.size(); ++i)
-                    eventRelations.add(new EventRelation(ar.getJSONObject(i)));
+                    relatedEventIds.add(ar.getString(i));
             }
         }
         {
@@ -181,7 +181,7 @@ public class Event extends PartakeModel<Event> {
             String url, String place, String address, String description, String hashTag, String ownerId,
             String foreImageId, String backImageId,
             String passcode, boolean draft,
-            List<String> editors, List<EventRelation> relations, List<EnqueteQuestion> enquetes,
+            List<String> editorIds, List<String> relatedEventIds, List<EnqueteQuestion> enquetes,
             DateTime createdAt, DateTime modifiedAt, int revision) {
         this.id = id;
         this.title = title;
@@ -202,10 +202,10 @@ public class Event extends PartakeModel<Event> {
         this.passcode = passcode;
         this.draft = draft;
 
-        if (editors != null)
-            this.editors = new ArrayList<String>(editors);
-        if (relations != null)
-            this.eventRelations = new ArrayList<EventRelation>(relations);
+        if (editorIds != null)
+            this.editorIds = new ArrayList<String>(editorIds);
+        if (relatedEventIds != null)
+            this.relatedEventIds = new ArrayList<String>(relatedEventIds);
         if (enquetes != null)
             this.enquetes = new ArrayList<EnqueteQuestion>(enquetes);
 
@@ -230,8 +230,7 @@ public class Event extends PartakeModel<Event> {
         obj.put("summary", summary);
         obj.put("category", category);
         // TODO Localeは外部ファイルなどで設定可能にする
-        // TODO: We don't want to use locale. Instead, we just return date as a long value.
-        DateFormat format = new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
+        DateFormat format = new SimpleDateFormat(Constants.READABLE_DATE_FORMAT, Locale.getDefault());
         if (beginDate != null) {
             // TODO: beginDate should be deprecated.
             obj.put("beginDate", format.format(beginDate.toDate()));
@@ -244,6 +243,7 @@ public class Event extends PartakeModel<Event> {
             obj.put("endDateText", format.format(endDate.toDate()));
             obj.put("endDateTime", endDate.getTime());
         }
+        obj.put("eventDuration", Helper.readableDuration(beginDate, endDate));
         obj.put("url", url);
         obj.put("place", place);
         obj.put("address", address);
@@ -255,10 +255,10 @@ public class Event extends PartakeModel<Event> {
         obj.put("passcode", passcode);
         obj.put("draft", draft);
 
-        if (editors != null)
-            obj.put("editors", editors);
-        if (eventRelations != null)
-            obj.put("relations", Util.toJSONArray(eventRelations));
+        if (editorIds != null)
+            obj.put("editorIds", editorIds);
+        if (relatedEventIds != null)
+            obj.put("relatedEventIds", relatedEventIds);
         if (enquetes != null)
             obj.put("enquetes", Util.toJSONArray(enquetes));
 
@@ -298,10 +298,10 @@ public class Event extends PartakeModel<Event> {
         obj.put("passcode", passcode);
         obj.put("draft", draft);
 
-        if (editors != null)
-            obj.put("editors", editors);
-        if (eventRelations != null)
-            obj.put("relations", Util.toJSONArray(eventRelations));
+        if (editorIds != null)
+            obj.put("editorIds", editorIds);
+        if (relatedEventIds != null)
+            obj.put("relatedEventIds", relatedEventIds);
         if (enquetes != null)
             obj.put("enquetes", Util.toJSONArray(enquetes));
 
@@ -340,8 +340,8 @@ public class Event extends PartakeModel<Event> {
         if (!ObjectUtils.equals(lhs.backImageId, rhs.backImageId)) { return false; }
         if (!ObjectUtils.equals(lhs.passcode, rhs.passcode)) { return false; }
         if (!ObjectUtils.equals(lhs.draft, rhs.draft)) { return false; }
-        if (!ObjectUtils.equals(lhs.editors, rhs.editors)) { return false; }
-        if (!ObjectUtils.equals(lhs.eventRelations, rhs.eventRelations)) { return false; }
+        if (!ObjectUtils.equals(lhs.editorIds, rhs.editorIds)) { return false; }
+        if (!ObjectUtils.equals(lhs.relatedEventIds, rhs.relatedEventIds)) { return false; }
         if (!ObjectUtils.equals(lhs.enquetes, rhs.enquetes)) { return false; }
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
@@ -370,8 +370,8 @@ public class Event extends PartakeModel<Event> {
         code = code * 37 + ObjectUtils.hashCode(backImageId);
         code = code * 37 + ObjectUtils.hashCode(passcode);
         code = code * 37 + ObjectUtils.hashCode(draft);
-        code = code * 37 + ObjectUtils.hashCode(editors);
-        code = code * 37 + ObjectUtils.hashCode(eventRelations);
+        code = code * 37 + ObjectUtils.hashCode(editorIds);
+        code = code * 37 + ObjectUtils.hashCode(relatedEventIds);
         code = code * 37 + ObjectUtils.hashCode(enquetes);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
         code = code * 37 + ObjectUtils.hashCode(modifiedAt);
@@ -457,12 +457,12 @@ public class Event extends PartakeModel<Event> {
         return draft;
     }
 
-    public List<String> getEditors() {
-        return editors;
+    public List<String> getEditorIds() {
+        return editorIds;
     }
 
-    public List<EventRelation> getRelations() {
-        return eventRelations;
+    public List<String> getRelatedEventIds() {
+        return relatedEventIds;
     }
 
     public List<EnqueteQuestion> getEnquetes() {
@@ -553,15 +553,15 @@ public class Event extends PartakeModel<Event> {
         this.draft = draft;
     }
 
-    public void setEditors(List<String> editors) {
+    public void setEditorIds(List<String> editorIds) {
         checkToUpdateStatus();
-        this.editors = editors;
+        this.editorIds = editorIds;
     }
 
 
-    public void setRelations(List<EventRelation> relations) {
+    public void setRelatedEventIds(List<String> relatedEventIds) {
         checkToUpdateStatus();
-        this.eventRelations = relations;
+        this.relatedEventIds = relatedEventIds;
     }
 
     public void setEnquetes(List<EnqueteQuestion> enquetes) {
@@ -632,8 +632,8 @@ public class Event extends PartakeModel<Event> {
     }
 
     public boolean isManager(UserEx user) {
-        for (String editor : editors) {
-            if (editor.equals(user.getId()))
+        for (String editorId : editorIds) {
+            if (editorId.equals(user.getId()))
                 return true;
         }
 

@@ -3,14 +3,10 @@ package in.partake.controller.api;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import in.partake.controller.AbstractPartakeControllerTest;
-import in.partake.resource.Constants;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import net.sf.json.JSONObject;
 
@@ -62,15 +58,6 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
         assertThat(obj.getString("result"), is("ok"));
     }
 
-    @Deprecated
-    protected void assertResultInvalid(ActionProxy proxy) throws Exception {
-        Assert.assertEquals(400, response.getStatus());
-
-        JSONObject obj = getJSON(proxy);
-        Assert.assertEquals("invalid", obj.get("result"));
-        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
-    }
-
     protected void assertResultInvalid(ActionProxy proxy, UserErrorCode ec) throws Exception {
         Assert.assertEquals(400, response.getStatus());
 
@@ -78,6 +65,18 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
         assertThat(obj.getString("result"), is("invalid"));
         assertThat(obj.getString("reason"), is(ec.getReasonString()));
     }
+
+    protected void assertResultInvalid(ActionProxy proxy, UserErrorCode ec, String additional) throws Exception {
+        Assert.assertEquals(400, response.getStatus());
+
+        JSONObject obj = getJSON(proxy);
+        assertThat(obj.getString("result"), is("invalid"));
+        assertThat(obj.getString("reason"), is(ec.getReasonString()));
+
+        JSONObject additionalObj = obj.getJSONObject("additional");
+        assertThat(additionalObj.containsKey(additional), is(true));
+    }
+
 
     protected void assertResultLoginRequired(ActionProxy proxy) throws Exception {
         // status code should be 401.
@@ -113,30 +112,11 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
         // TODO: Check errorCode here.
     }
 
-    @Deprecated
-    protected void assertResultError(ActionProxy proxy) throws Exception {
-        Assert.assertEquals(500, response.getStatus());
-
-        JSONObject obj = getJSON(proxy);
-        Assert.assertEquals("error", obj.get("result"));
-        Assert.assertFalse(StringUtils.isBlank((String) obj.get("reason")));
-    }
-
     protected void assertResultError(ActionProxy proxy, ServerErrorCode ec) throws Exception {
         Assert.assertEquals(500, response.getStatus());
 
         JSONObject obj = getJSON(proxy);
         assertThat(obj.getString("result"), is("error"));
         assertThat(obj.getString("reason"), is(ec.getReasonString()));
-    }
-
-    /**
-     * PARTAKE API標準のDateフォーマットをparseするためのフォーマットを作成する。
-     * このメソッドが返すインスタンスはスレッドセーフではないため、他スレッドとの共用は避けること。
-     * @return API標準のDateフォーマット
-     */
-    protected DateFormat createDateFormat() {
-        // TODO Localeは外部ファイルなどで設定可能にする
-        return new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
     }
 }

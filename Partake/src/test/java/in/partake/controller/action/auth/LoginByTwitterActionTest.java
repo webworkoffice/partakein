@@ -1,29 +1,13 @@
 package in.partake.controller.action.auth;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 import in.partake.controller.action.ActionControllerTest;
 import in.partake.resource.ServerErrorCode;
-import in.partake.session.PartakeSession;
 
 import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
 public class LoginByTwitterActionTest extends ActionControllerTest {
-    @Test
-    public void testWithValidVerifierLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/auth/verifyForTwitter");
-        proxy.execute();
-
-        assertRedirectedTo("http://www.example.com/validAuthenticationURL");
-
-        PartakeSession session = getPartakeSession(proxy);
-        assertThat(session.takeTwitterLoginInformation(), is(not(nullValue())));
-    }
-
     @Test
     public void testLoginWithOAuthError() throws Exception {
         ActionProxy proxy = getActionProxy("/auth/loginByTwitter");

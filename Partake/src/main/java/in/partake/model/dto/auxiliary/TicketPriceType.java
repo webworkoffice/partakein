@@ -4,6 +4,10 @@ public enum TicketPriceType {
     FREE,
     NONFREE;
 
+    public String toString() {
+        return super.toString().toLowerCase();
+    }
+
     public static TicketPriceType safeValueOf(String key) {
         if ("free".equalsIgnoreCase(key))
             return FREE;

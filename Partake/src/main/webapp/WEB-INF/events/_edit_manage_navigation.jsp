@@ -30,9 +30,9 @@
 <div class="subnav subnav-fixed">
     <ul class="nav nav-pills nav-stacked-if-phone">
         <li <%= "basic".equals(request.getParameter("NAVIGATION")) ? "class='active'" : "" %>><a href="/events/edit/basic/<%= h(event.getId()) %>">基本内容</a></li>
-        <li <%= "privacy".equals(request.getParameter("NAVIGATION")) ? "class='active'" : "" %>><a href="/events/edit/privacy/<%= h(event.getId()) %>">プライバシー</a></li>
         <li <%= "ticket".equals(request.getParameter("NAVIGATION")) ? "class='active'" : "" %>><a href="/events/edit/ticket/<%= h(event.getId()) %>">チケット</a></li>
         <li <%= "enquete".equals(request.getParameter("NAVIGATION")) ? "class='active'" : "" %>><a href="/events/edit/enquete/<%= h(event.getId()) %>">アンケート</a></li>
+        <li <%= "privacy".equals(request.getParameter("NAVIGATION")) ? "class='active'" : "" %>><a href="/events/edit/privacy/<%= h(event.getId()) %>">プライバシー</a></li>
         <li class="pull-right"><a href="/events/<%= h(event.getId()) %>">編集を終了</a></li>
     </ul>
 </div>

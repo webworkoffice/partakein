@@ -2,8 +2,8 @@ package in.partake.model;
 
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
+import in.partake.model.dto.User;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,15 +14,18 @@ import java.util.List;
 public class EventEx extends Event {
     private UserEx owner;
     private String feedId;
-    private List<EventRelationEx> eventRelations;
     private List<EventTicket> tickets;
+    private List<User> editors;
+    private List<Event> relatedEvents;
 
-    public EventEx(Event event, UserEx owner, String feedId, List<EventRelationEx> eventRelations, List<EventTicket> tickets) {
+    public EventEx(Event event, UserEx owner, String feedId,
+            List<EventTicket> tickets, List<User> editors, List<Event> relatedEvents) {
         super(event);
         this.owner = owner;
         this.feedId = feedId;
-        this.eventRelations = eventRelations;
         this.tickets = tickets;
+        this.editors = editors;
+        this.relatedEvents = relatedEvents;
     }
 
     public UserEx getOwner() {
@@ -33,12 +36,16 @@ public class EventEx extends Event {
         return feedId;
     }
 
-    public List<EventRelationEx> getEventRelations() {
-        return Collections.unmodifiableList(eventRelations);
-    }
-
     public List<EventTicket> getTikcets() {
         return tickets;
+    }
+
+    public List<User> getEditors() {
+        return editors;
+    }
+
+    public List<Event> getRelatedEvents() {
+        return relatedEvents;
     }
 
     public String getDefaultTwitterPromotionMessage() {

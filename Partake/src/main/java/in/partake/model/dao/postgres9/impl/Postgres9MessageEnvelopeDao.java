@@ -18,6 +18,11 @@ class EntityMessageEnvelopeMapper extends Postgres9EntityDataMapper<MessageEnvel
     public MessageEnvelope map(JSONObject obj) {
         return new MessageEnvelope(obj).freeze();
     }
+
+    @Override
+    public Postgres9Entity unmap(MessageEnvelope t) throws DAOException {
+        return new Postgres9Entity(t.getId(), Postgres9MessageEnvelopeDao.CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
+    }
 }
 
 public class Postgres9MessageEnvelopeDao extends Postgres9Dao implements IMessageEnvelopeAccess {
@@ -48,7 +53,7 @@ public class Postgres9MessageEnvelopeDao extends Postgres9Dao implements IMessag
 
         // TODO: Entity should have getId() instead of getEnvelopeId().
         // TODO: Why User does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(envelope.getId(), CURRENT_VERSION, envelope.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(envelope.getId(), CURRENT_VERSION, envelope.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, envelope.getId()))
             entityDao.update(pcon, entity);
         else

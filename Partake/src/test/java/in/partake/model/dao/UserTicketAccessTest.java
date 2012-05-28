@@ -7,12 +7,10 @@ import in.partake.base.TimeUtil;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.access.IUserTicketAccess;
-import in.partake.model.dto.Event;
 import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
-import in.partake.model.fixture.impl.EventTestDataProvider;
 
 import java.util.List;
 import java.util.UUID;
@@ -143,15 +141,5 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
                 return null;
             }
         }.execute();
-    }
-
-    private Event createEvent(String eventId, String userId) {
-        EventTestDataProvider provider = PartakeApp.getTestService().getTestDataProviderSet().getEventProvider();
-        Event event = provider.create();
-
-        event.setId(eventId);
-        event.setOwnerId(userId);
-
-        return event;
     }
 }

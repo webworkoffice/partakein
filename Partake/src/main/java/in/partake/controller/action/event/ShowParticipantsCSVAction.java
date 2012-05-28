@@ -1,21 +1,15 @@
 package in.partake.controller.action.event;
 
+import in.partake.base.Pair;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
-import in.partake.controller.base.permission.EventParticipationListPermission;
-import in.partake.model.UserTicketEx;
+import in.partake.model.EventEx;
 import in.partake.model.EventTicketHolderList;
-import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
-import in.partake.model.access.DBAccess;
+import in.partake.model.UserTicketEx;
 import in.partake.model.dao.DAOException;
-import in.partake.model.dao.PartakeConnection;
-import in.partake.model.daofacade.EnrollmentDAOFacade;
-import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.dto.UserTicket;
-import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
-import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.auxiliary.EnqueteQuestion;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 
@@ -24,8 +18,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -35,86 +33,95 @@ public class ShowParticipantsCSVAction extends AbstractPartakeAction {
     @Override
     protected String doExecute() throws DAOException, PartakeException {
         UserEx user = ensureLogin();
-        UUID ticketId = getValidTicketIdParameter(UserErrorCode.INVALID_NOTFOUND, UserErrorCode.INVALID_NOTFOUND);
+        String eventId = getValidEventIdParameter(UserErrorCode.INVALID_NOTFOUND, UserErrorCode.INVALID_NOTFOUND);
 
-        InputStream is = new ShowParticipantsCSVTransaction(user, ticketId).execute();
-        return renderAttachmentStream(is, "text/csv");
+        ParticipantsListTransaction transaction = new ParticipantsListTransaction(user, eventId);
+        transaction.execute();
+
+        EventEx event = transaction.getEvent();
+        List<Pair<EventTicket, EventTicketHolderList>> ticketAndHolders = transaction.getTicketAndHolders();
+        Map<String, String[]> userTicketInfoMap = transaction.getUserTicketInfoMap();
+
+        try {
+            InputStream is = createCSVInputStream(event, ticketAndHolders, userTicketInfoMap);
+            return renderAttachmentStream(is, "text/csv; charset=UTF-8");
+        } catch (IOException e) {
+            return renderError(ServerErrorCode.ERROR_IO, e);
+        }
     }
-}
 
-class ShowParticipantsCSVTransaction extends DBAccess<InputStream> {
-    private UserEx user;
-    private UUID ticketId;
-
-    public ShowParticipantsCSVTransaction(UserEx user, UUID ticketId) {
-        this.user = user;
-        this.ticketId = ticketId;
-    }
-
-    @Override
-    protected InputStream doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-    	EventTicket ticket = daos.getEventTicketAccess().find(con, ticketId);
-    	if (ticket == null)
-    		throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
-
-    	Event event = daos.getEventAccess().find(con, ticket.getEventId());
-        if (event == null)
-        	throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
-
-        // Only owner can retrieve the participants list.
-        if (!EventParticipationListPermission.check(event, user))
-            throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
-
-        List<UserTicketEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
-        EventTicketHolderList list = ticket.calculateParticipationList(event, participations);
-
+    private InputStream createCSVInputStream(EventEx event, List<Pair<EventTicket, EventTicketHolderList>> ticketAndHolders, Map<String, String[]> userTicketInfoMap) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos));
+        CSVWriter writer = new CSVWriter(new OutputStreamWriter(baos, Charset.forName("UTF-8")));
 
-        doWrite(con, daos, list, writer);
+        writeHeader(writer, event);
+        for (int i = 0; i < ticketAndHolders.size(); ++i) {
+            EventTicket ticket = ticketAndHolders.get(i).getFirst();
+            EventTicketHolderList list = ticketAndHolders.get(i).getSecond();
+            writeTicket(writer, event, ticket, list, i, userTicketInfoMap);
+        }
+
+        writer.flush();
+        writer.close();
 
         return new ByteArrayInputStream(baos.toByteArray());
     }
 
-    private void doWrite(PartakeConnection con, IPartakeDAOs daos, EventTicketHolderList list, CSVWriter writer) throws DAOException, PartakeException {
-        for (UserTicket participation : list.getEnrolledParticipations()) {
-            UserEx attendant = UserDAOFacade.getUserEx(con, daos, participation.getUserId());
-
-            String[] lst = new String[4];
-            lst[0] = attendant.getTwitterLinkage().getScreenName();
-            // TODO why don't you use in.partake.view.util.Helper.enrollmentStatus to get status?
-            if (ParticipationStatus.ENROLLED.equals(participation.getStatus()))
-                lst[1] = "参加";
-            else if (ParticipationStatus.RESERVED.equals(participation.getStatus()))
-                lst[1] = "仮参加";
-            else
-                lst[1] = "(状態不明...)";
-            lst[2] = participation.getComment();
-            lst[3] = participation.getModifiedAt().toString();
-            writer.writeNext(lst);
+    private void writeHeader(CSVWriter writer, EventEx event) {
+        List<String> headers = new ArrayList<String>();
+        headers.add("チケット名");
+        headers.add("順番");
+        headers.add("名前");
+        headers.add("予約状況");
+        headers.add("コメント");
+        headers.add("登録日時");
+        headers.add("出欠状況");
+        if (event.getEnquetes() != null && !event.getEnquetes().isEmpty()) {
+            for (EnqueteQuestion question : event.getEnquetes())
+                headers.add(question.getText());
         }
 
-        for (UserTicket participation : list.getSpareParticipations()) {
-            UserEx attendant = UserDAOFacade.getUserEx(con, daos, participation.getUserId());
+        writer.writeNext(headers.toArray(new String[0]));
+    }
 
-            String[] lst = new String[4];
-            lst[0] = attendant.getTwitterLinkage().getScreenName();
-            if (ParticipationStatus.ENROLLED.equals(participation.getStatus()))
-                lst[1] = "補欠 (参加)";
-            else if (ParticipationStatus.RESERVED.equals(participation.getStatus()))
-                lst[1] = "補欠 (仮参加)";
-            else
-                lst[1] = "補欠 (状態不明...)";
-            lst[2] = participation.getComment();
-            lst[3] = participation.getModifiedAt().toString();
-            writer.writeNext(lst);
+    private void writeTicket(CSVWriter writer, EventEx event, EventTicket ticket, EventTicketHolderList holderList, int ticketIndex, Map<String, String[]> userTicketInfoMap) {
+        int order = 0;
+        for (UserTicketEx userTicket : holderList.getEnrolledParticipations()) {
+            List<String> body = new ArrayList<String>();
+            body.add(ticket.getName());
+            body.add(String.valueOf(++order));
+            body.add(userTicket.getUser().getScreenName());
+            body.add(userTicket.getStatus().toHumanReadableString(false));
+            body.add(userTicket.getComment());
+            body.add(userTicket.getAppliedAt().toHumanReadableFormat());
+            body.add(userTicket.getAttendanceStatus().toHumanReadableString());
+            if (event.getEnquetes() != null && !event.getEnquetes().isEmpty()) {
+                for (EnqueteQuestion question : event.getEnquetes()) {
+                    List<String> values = userTicket.getEnqueteAnswers().get(question.getId());
+                    body.add(values != null ? StringUtils.join(values.iterator(), ',') : "");
+                }
+            }
+
+            writer.writeNext(body.toArray(new String[0]));
         }
 
-        try {
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            throw new PartakeException(ServerErrorCode.ERROR_IO);
+        for (UserTicketEx userTicket : holderList.getSpareParticipations()) {
+            List<String> body = new ArrayList<String>();
+            body.add(ticket.getName());
+            body.add(String.valueOf(++order));
+            body.add(userTicket.getUser().getScreenName());
+            body.add(userTicket.getStatus().toHumanReadableString(false));
+            body.add(userTicket.getComment());
+            body.add(userTicket.getAppliedAt().toHumanReadableFormat());
+            body.add(userTicket.getAttendanceStatus().toHumanReadableString());
+            if (event.getEnquetes() != null && !event.getEnquetes().isEmpty()) {
+                for (EnqueteQuestion question : event.getEnquetes()) {
+                    List<String> values = userTicket.getEnqueteAnswers().get(question.getId());
+                    body.add(values != null ? StringUtils.join(values.iterator(), ',') : "");
+                }
+            }
+
+            writer.writeNext(body.toArray(new String[0]));
         }
     }
 }

@@ -2,7 +2,6 @@
 <%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="java.text.NumberFormat"%>
-<%@page import="static in.partake.base.Util.h"%>
 <%
     AdminPageAction action = (AdminPageAction) request.getAttribute(Constants.ATTR_ACTION);
 %>
@@ -45,9 +44,7 @@
  --%>	</div>
     <div class="span12">
         <h2>いろんなリンク</h2>
-        <ul>
-            <li><a href="<%= request.getContextPath() %>/admin/recreateEventIndex">Luceneインデックス の再生成</a></li>
-        </ul>
+        <p><a href="/admin/recreateEventIndex">Luceneインデックス の再生成</a></p>
     </div>
 </div>
 

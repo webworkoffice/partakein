@@ -1,7 +1,8 @@
 package in.partake.model.dto;
 
+import in.partake.base.DateTime;
+
 import java.util.Arrays;
-import java.util.Date;
 
 import net.sf.json.JSONObject;
 
@@ -12,13 +13,13 @@ public class UserImage extends PartakeModel<UserImage> {
     private String userId;
     private String type;
     private byte[] data;
-    private Date   createdAt;
+    private DateTime createdAt;
 
     public UserImage() {
         this(null, null, null, null, null);
     }
 
-    public UserImage(String id, String userId, String type, byte[] data, Date createdAt) {
+    public UserImage(String id, String userId, String type, byte[] data, DateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.type = type;
@@ -39,7 +40,7 @@ public class UserImage extends PartakeModel<UserImage> {
         this.userId = obj.optString("userId");
         this.type = obj.getString("type");
         if (obj.containsKey("createdAt"))
-            this.createdAt = new Date(obj.getLong("createdAt"));
+            this.createdAt = new DateTime(obj.getLong("createdAt"));
 
         // We don't create data from JSONObject.
     }
@@ -106,7 +107,7 @@ public class UserImage extends PartakeModel<UserImage> {
         return data;
     }
 
-    public Date getCreatedAt() {
+    public DateTime getCreatedAt() {
         return createdAt;
     }
 
@@ -130,7 +131,7 @@ public class UserImage extends PartakeModel<UserImage> {
         this.data = data;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(DateTime createdAt) {
         checkFrozen();
         this.createdAt = createdAt;
     }

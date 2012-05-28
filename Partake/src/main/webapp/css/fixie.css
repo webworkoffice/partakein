@@ -6,6 +6,21 @@
     border: 1px dashed;
 } */
 
+/* max-width: 100% is buggy for IE. */
+img {
+    max-width: none;
+}
+
+.invisible-if-not-ie {
+    display: block !important;
+    position: static !important;
+    left: 0 !important;
+}
+
+.invisible-if-ie {
+    display: none;
+}
+
 .top-recent-event {
     height: auto !important;
     height: 130px;

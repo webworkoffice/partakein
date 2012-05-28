@@ -6,7 +6,7 @@
 
 <struts>
     <!-- For Debugging. These setting should be removed when releasing. -->
-    <constant name="struts.devMode" value="true" />
+    <!-- constant name="struts.devMode" value="true" /-->
     <!-- Use partake theme -->
     <constant name="struts.ui.theme" value="partake" />
 
@@ -206,6 +206,7 @@
         <action name="" class="in.partake.controller.api.user.GetAPI" />
         <action name="events" class="in.partake.controller.api.user.GetEventsAPI" />
         <action name="tickets" class="in.partake.controller.api.user.GetTicketsAPI" />
+        <action name="search" class="in.partake.controller.api.user.SearchUserAPI" />
     </package>
 
     <!-- Image API  -->

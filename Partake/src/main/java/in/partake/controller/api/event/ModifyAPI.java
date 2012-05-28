@@ -5,6 +5,7 @@ import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
+import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.controller.base.permission.EventEditPermission;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
@@ -12,24 +13,30 @@ import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
+import in.partake.model.daofacade.UserDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.UserImage;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.IEventSearchService;
+import in.partake.view.util.Helper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 
-public class ModifyAPI extends AbstractEventEditAPI {
+public class ModifyAPI extends AbstractPartakeAPI {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -54,7 +61,7 @@ public class ModifyAPI extends AbstractEventEditAPI {
         else
             searchService.create(event, tickets);
 
-        JSONObject obj = new JSONObject();
+        JSONObject obj = transaction.getJSONObject();
         obj.put("eventId", eventId);
         return renderOK(obj);
     }
@@ -67,11 +74,16 @@ class ModifyTransaction extends Transaction<Void> {
 
     private Event event;
     private List<EventTicket> tickets;
+    private JSONObject json;
 
     public ModifyTransaction(UserEx user, String eventId, Map<String, Object> params) {
         this.user = user;
         this.eventId = eventId;
         this.params = params;
+
+        // When event information is changed, you can add the editted value here to return to the client.
+        // For example, you can filter script tag for event description, and so on.
+        this.json = new JSONObject();
     }
 
     @Override
@@ -126,21 +138,30 @@ class ModifyTransaction extends Transaction<Void> {
                 throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "beginDate", "開始日時の範囲が不正です。");
             else
                 event.setBeginDate(beginDate);
+
+            json.put("eventDuration", Helper.readableDuration(event.getBeginDate(), event.getEndDate()));
         }
 
+        // TODO: What happend if beginDate is set after endDate is set and endDate <= beginDate. It should be an error.
         if (params.containsKey("endDate")) {
-            DateTime endDate = getDateTime("endDate");
-            if (endDate == null)
-                event.setEndDate(endDate);
+            String endDateStr = getString("endDate");
+            if (StringUtils.isBlank(endDateStr))
+                event.setEndDate(null);
             else {
-                Calendar endCalendar = TimeUtil.calendar(endDate.toDate());
-                if (endCalendar.get(Calendar.YEAR) < 2000 || 2100 < endCalendar.get(Calendar.YEAR))
-                    throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "endDate", "終了日時の範囲が不正です。");
-                else if (event.getBeginDate() != null && endDate.isBefore(event.getBeginDate()))
-                    throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "endDate", "終了日時が開始日時より前になっています。");
-                else
-                    event.setEndDate(endDate);
+                DateTime endDate = TimeUtil.parseForEvent(endDateStr);
+                if (endDate == null)
+                    throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "endDate", "終了日時が不正です。");
+                else {
+                    Calendar endCalendar = TimeUtil.calendar(endDate.toDate());
+                    if (endCalendar.get(Calendar.YEAR) < 2000 || 2100 < endCalendar.get(Calendar.YEAR))
+                        throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "endDate", "終了日時の範囲が不正です。");
+                    else if (event.getBeginDate() != null && endDate.isBefore(event.getBeginDate()))
+                        throw new PartakeException(UserErrorCode.INVALID_PARAMETERS, "endDate", "終了日時が開始日時より前になっています。");
+                    else
+                        event.setEndDate(endDate);
+                }
             }
+            json.put("eventDuration", Helper.readableDuration(event.getBeginDate(), event.getEndDate()));
         }
 
         if (params.containsKey("url")) {
@@ -244,6 +265,67 @@ class ModifyTransaction extends Transaction<Void> {
                 event.setBackImageId(backImageId);
             }
         }
+
+        if (params.containsKey("relatedEventIds[]")) {
+            Set<String> visitedIds = new HashSet<String>();
+            String[] relatedEventIds = getStrings("relatedEventIds[]");
+
+            List<String> eventIds = new ArrayList<String>();
+            JSONArray array = new JSONArray();
+            for (String relatedEventId : relatedEventIds) {
+                if (!Util.isUUID(relatedEventId))
+                    continue;
+
+                if (eventId.equals(relatedEventId))
+                    continue;
+
+                if (visitedIds.contains(relatedEventId))
+                    continue;
+
+                visitedIds.add(relatedEventId);
+
+                Event relatedEvent = daos.getEventAccess().find(con, relatedEventId);
+                if (relatedEvent == null)
+                    continue;
+
+                eventIds.add(relatedEventId);
+
+                JSONObject obj = new JSONObject();
+                obj.put("id", relatedEvent.getId());
+                obj.put("title", relatedEvent.getTitle());
+                array.add(obj);
+            }
+            event.setRelatedEventIds(eventIds);
+
+            // OK. We want to return event.id and event.title.
+            json.put("relatedEvents", array);
+        }
+
+        if (params.containsKey("editorIds[]")) {
+            JSONArray array = new JSONArray();
+            List<String> editorIds = new ArrayList<String>();
+            Set<String> visitedIds = new HashSet<String>();
+            for (String editorId : getStrings("editorIds[]")) {
+                // Skips invalid users here.
+                if (!Util.isUUID(editorId))
+                    continue;
+
+                if (visitedIds.contains(editorId))
+                    continue;
+                visitedIds.add(editorId);
+
+                UserEx editor = UserDAOFacade.getUserEx(con, daos, editorId);
+                if (editor == null)
+                    continue;
+
+                // OK.
+                editorIds.add(editor.getId());
+                array.add(editor.toSafeJSON());
+            }
+
+            event.setEditorIds(editorIds);
+            json.put("editors", array);
+        }
     }
 
     private String getString(String key) {
@@ -275,14 +357,6 @@ class ModifyTransaction extends Transaction<Void> {
         if (date != null)
             return date;
 
-        // Try parse it as long.
-        try {
-            long time = Long.valueOf(value);
-            return new DateTime(time);
-        } catch (NumberFormatException e) {
-            // Do nothing.
-        }
-
         return null;
     }
 
@@ -292,5 +366,9 @@ class ModifyTransaction extends Transaction<Void> {
 
     public List<EventTicket> getEventTickets() {
         return tickets;
+    }
+
+    public JSONObject getJSONObject() {
+        return json;
     }
 }

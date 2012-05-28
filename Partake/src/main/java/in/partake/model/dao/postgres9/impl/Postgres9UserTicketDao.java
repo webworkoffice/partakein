@@ -78,7 +78,7 @@ public class Postgres9UserTicketDao extends Postgres9Dao implements IUserTicketA
     public void put(PartakeConnection con, UserTicket t) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
-        Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
 
         if (entityDao.exists(pcon, t.getId()))
             entityDao.update(pcon, entity);

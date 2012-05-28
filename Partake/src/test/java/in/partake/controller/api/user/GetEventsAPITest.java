@@ -13,7 +13,6 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.resource.UserErrorCode;
 
@@ -61,7 +60,7 @@ public class GetEventsAPITest extends APIControllerTest {
                             new DateTime(i), null, "url", "place",
                             "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID,
                             null, null, isPrivate ? "passcode" : null, draft,
-                            Collections.singletonList(TestDataProvider.EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
+                            Collections.singletonList(TestDataProvider.EVENT_EDITOR_ID), new ArrayList<String>(), null,
                             new DateTime(i), new DateTime(i), -1));
                 }
 

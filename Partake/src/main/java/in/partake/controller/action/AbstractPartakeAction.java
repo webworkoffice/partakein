@@ -123,19 +123,4 @@ public abstract class AbstractPartakeAction extends AbstractPartakeController {
         String contentDisposition = String.format("inline; filename=\"%s\"", filename);
         return renderStream(stream, contentType, contentDisposition);
     }
-
-    /** return contentType. This function is only valid when renderStream() has been called. */
-    public String getContentType() {
-        return this.contentType;
-    }
-
-    /** return input stream. This function is only valid when renderStream() has been called. */
-    public InputStream getInputStream() {
-        return stream;
-    }
-
-    public String getContentDisposition() {
-        return this.contentDisposition;
-    }
-
 }

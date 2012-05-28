@@ -37,6 +37,7 @@
 <script>
 var eventId = '<%= event.getId() %>';
 
+// TODO: Move these methods to partake-util.js
 function enclosingForm(elem) {
     while (elem) {
         if (elem instanceof HTMLFormElement)
@@ -67,6 +68,16 @@ $(function() {
         $('#' + id + '-form').hide();
         $('#' + id + '-show').show();
     });
+    $('.edit-input').keypress(function(e) {
+        if (e.which != 13) // (Enter = 13)
+            return true;
+
+        var form = enclosingForm(this);
+        var id = $(form).attr('id');
+        var prefix = removeSuffix(id, '-form');
+        $('#' + prefix + '-submit').click();
+        return false;
+    });
 });
 </script>
 
@@ -77,8 +88,8 @@ $(function() {
         <span id="title-content"><%= h(event.getTitle()) %></span>
         <span id="title-edit" class="label label-edit edit-button">タイトルを編集</span>
     </h1>
-    <form id="title-form" action="javascript:$('#title-submit').click()" style="display: none;">
-        <input type="text" class="span18" name="title" id="title-input" value="" placeholder="タイトル：　「お花見」「HTML 勉強会」「武道館ライブ」など">
+    <form id="title-form" style="display: none;">
+        <input type="text" class="span18 edit-input" name="title" id="title-input" value="" placeholder="タイトル：　「お花見」「HTML 勉強会」「武道館ライブ」など">
         <div class="edit-form-buttons">
             <input type="button" value="キャンセル" class="btn edit-cancel-button">
             <input id="title-submit" type="button" value="保存" class="btn edit-save-button">
@@ -107,8 +118,8 @@ $(function() {
         <span id="summary-content"><%= h(event.getSummary()) %></span>
         <span id="summary-edit" class="label label-edit edit-button">概要を編集</span>
     </p>
-    <form id="summary-form" action="javascript:$('#summary-submit').click()" style="display: none;">
-        <p><input type="text" class="span18" name="summary" id="summary-input" value="" placeholder="概要：　「みんなで一緒に飲みましょう！」など"></p>
+    <form id="summary-form" style="display: none;">
+        <p><input type="text" class="span18 edit-input" name="summary" id="summary-input" value="" placeholder="概要：　「みんなで一緒に飲みましょう！」など"></p>
         <div class="edit-form-buttons">
             <input type="button" value="キャンセル" class="btn edit-cancel-button">
             <input id="summary-submit" type="button" value="保存" class="btn edit-save-button">
@@ -137,7 +148,7 @@ $(function() {
         <span id="category-content" class="label label-info"><%= h(EventCategory.getReadableCategoryName(event.getCategory())) %></span>
         <span id="category-edit" class="label label-edit edit-button">カテゴリを編集</span>
     </p>
-    <form id="category-form" action="javascript:$('#category-submit').click()" style="display: none;">
+    <form id="category-form" style="display: none;">
         <select id="category-input" name="category">
         <% for (KeyValuePair kv : EventCategory.getCategories()) { %>
             <option value="<%= h(kv.getKey()) %>"><%= kv.getValue() %></option>
@@ -217,7 +228,7 @@ $(function() {
             $('#backimage-select').click(function() {
                 $('#image-upload-dialog').attr('purpose', 'background');
                 var imageId = $('#backimage-id').val();
-                if (!imageId || imageId == "") {
+                if (imageId == null || imageId == "" || imageId == "null") {
                     $('#selected-image').attr('src', '/images/no-image.png');
                 } else {
                     $('#selected-image').attr('src', '/images/' + imageId);
@@ -292,7 +303,7 @@ $(function() {
                 $('#foreimage-select').click(function() {
                     $('#image-upload-dialog').attr('purpose', 'foreground');
                     var imageId = $('#foreimage-id').val();
-                    if (!imageId || imageId == "") {
+                    if (imageId == null || imageId == "" || imageId == "null") {
                         $('#foreimage-editimage').attr('src', '/images/no-image.png');
                         $('#selected-image').attr('src', '/images/no-image.png');
                     } else {
@@ -365,20 +376,15 @@ $(function() {
                 <p>新しく画像をアップロード、もしくは過去にアップロードした画像から選択します。</p>
                 <p>選択された画像</p>
                 <ul class="thumbnails">
-                    <li class="span3"><img id="selected-image" src="/images/no-image.png" alt=""></li>
+                    <li class="span6"><img id="selected-image" src="/images/no-image.png" alt=""></li>
                 </ul>
                 <form enctype="multipart/form-data">
-                    <label for="fileupload"><input type="button" class="btn btn-danger" value="新しく画像をアップロード"/></label>
-                    <input id="fileupload" type="file" name="file" class="invisible" />
+                    <label for="fileupload"><input type="button" class="btn btn-danger invisible-if-ie" value="新しく画像をアップロード"/></label>
+                    <input id="fileupload" type="file" name="file" class="invisible-if-not-ie" />
                 </form>
             </div>
             <div class="span12">
                 <ul id="image-upload-dialog-thumbnails" class="thumbnails">
-                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
                 </ul>
                 <div id="image-pagination" class="pagination pagination-centered"></div>
             </div>
@@ -400,11 +406,10 @@ $(function() {
     }
 
     function createImageHTML(imageId) {
-        console.log(imageId);
         var img = $('<img alt=""/>').attr('src', '/images/' + imageId);
         var a = $('<a class="thumbnail"></a>').append(img);
         a.click(function() { onSelectImage(imageId); });
-        var li = $('<li class="span2"></li>').append(a);
+        var li = $('<li class="span4"></li>').append(a);
 
         return li;
     }
@@ -465,16 +470,18 @@ $(function() {
             var result = form.serializeArray();
             result.push({ name: 'sessionToken', value: '<%= Helper.getSessionToken() %>' });
             result.push({ name: 'limit', value: '6' });
+            if (jQuery.browser.msie)
+                result.push({ name: 'ensureTextPlain', value: 'true'});
             return result;
         },
 
         always: function(e, data) {
-
         },
+
         done: function (e, data) {
             var xhr = data.jqXHR;
             try {
-                var json = $.parseJSON(xhr.responseText);
+                var json = $.parseJSON(xhr.responseText || data.result.text());
                 cachedTotalImageCount += 1;
                 updateImageList(json.imageIds);
                 updatePagination(1, cachedTotalImageCount);

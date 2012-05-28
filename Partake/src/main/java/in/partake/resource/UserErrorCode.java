@@ -8,6 +8,7 @@ package in.partake.resource;
  */
 public enum UserErrorCode {
     // TODO: 表記を揃える。invalid.<type>.<reason> に固定すること。
+    // TODO: invalid から始まることがわかっているのだから、ここではとってしまってもいいかもしれない。resources_ja.properties では残す。
 
     //
     UNKNOWN_USER_ERROR("invalid.unknown"),
@@ -42,17 +43,21 @@ public enum UserErrorCode {
     MISSING_TICKET_ID("invalid.ticket.id.missing"),
     INVALID_TICKET_DUPLICATE_ID("invalid.ticket.id.duplicate"),
 
+    // TICKET APPLICATION
+    INVALID_APPLICATION_RESERVATION_TIMEOVER("invalid.application.reservation.timeover"),
+
     // ENQUETE
     MISSING_ENQUETE_QUESTION("invalid.enquete.question.missing"),
     MISSING_ENQUETE_TYPE("invalid.enquete.type.missing"),
     MISSING_ENQUETE_OPTION("invalid.enquete.option.missing"),
     INVALID_ENQUETE_PARAMS("invalid.enquete.params"),
-    INVALID_ENQUETE_PUBLISHED("invalid.enquete.published"),
+    INVALID_ENQUETE_ANSWERS("invalid.enquete.answers"),
 
     // USER
     INVALID_USER_ID("invalid.invalid_userid"),
     MISSING_USER_ID("invalid.missing_userid"),
     INVALID_USER_PRIVATE("invalid.user.profile.private", 403),
+    MISSING_USERNAME("invalid.user.username.missing"),
 
     // OPEN_ID
     INVALID_OPENID("invalid.invalid_openid"),

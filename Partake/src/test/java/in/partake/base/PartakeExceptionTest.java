@@ -1,9 +1,12 @@
 package in.partake.base;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
+
+import java.util.Collections;
 
 import org.junit.Test;
 
@@ -19,14 +22,28 @@ public class PartakeExceptionTest {
         assertThat(e.getStatusCode(), is(500));
         assertThat(e.getCause(), is(nullValue()));
     }
-    
+
     @Test
     public void testServerErrorCodeWithCause() {
         Throwable t = new RuntimeException();
         PartakeException e = new PartakeException(ServerErrorCode.INTENTIONAL_ERROR, t);
         assertThat(e.getCause(), is(t));
     }
-    
+
+    @Test
+    public void testServerErrorCodeWithAdditionalInfo() {
+        PartakeException e = new PartakeException(ServerErrorCode.INTENTIONAL_ERROR, Collections.singletonMap("K", "V"));
+        assertThat(e.getAdditionalInfo().get("K"), is("V"));
+        assertThat(e.getAdditionalInfo().get("V"), is(nullValue()));
+    }
+
+    @Test
+    public void testServerErrorCodeWithAdditionalSingleInfo() {
+        PartakeException e = new PartakeException(ServerErrorCode.INTENTIONAL_ERROR, "K", "V");
+        assertThat(e.getAdditionalInfo().get("K"), is("V"));
+        assertThat(e.getAdditionalInfo().get("V"), is(nullValue()));
+    }
+
     @Test
     public void testUserErrorCode() {
         PartakeException e = new PartakeException(UserErrorCode.INTENTIONAL_USER_ERROR);
@@ -43,5 +60,19 @@ public class PartakeExceptionTest {
         Throwable t = new RuntimeException();
         PartakeException e = new PartakeException(UserErrorCode.INTENTIONAL_USER_ERROR, t);
         assertThat(e.getCause(), is(t));
+    }
+
+    @Test
+    public void testUserErrorCodeWithAdditionalInfo() {
+        PartakeException e = new PartakeException(UserErrorCode.INTENTIONAL_USER_ERROR, Collections.singletonMap("K", "V"));
+        assertThat(e.getAdditionalInfo().get("K"), is("V"));
+        assertThat(e.getAdditionalInfo().get("V"), is(nullValue()));
+    }
+
+    @Test
+    public void testUserErrorCodeWithAdditionalSingleInfo() {
+        PartakeException e = new PartakeException(UserErrorCode.INTENTIONAL_USER_ERROR, "K", "V");
+        assertThat(e.getAdditionalInfo().get("K"), is("V"));
+        assertThat(e.getAdditionalInfo().get("V"), is(nullValue()));
     }
 }

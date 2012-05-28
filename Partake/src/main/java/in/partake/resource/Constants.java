@@ -26,9 +26,9 @@ public final class Constants {
     @Deprecated
     public static final String ATTR_PARTAKE_API_SESSION_TOKEN = ATTR_PARTAKE_SESSION;
 
-    // TODO: We'd like to use 'long' value as is.
     @Deprecated
     public static final String JSON_DATE_FORMAT = "yyyy/MM/dd HH:mm";
+    public static final String READABLE_DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
     private Constants() {
         // Prevents from instantiation.

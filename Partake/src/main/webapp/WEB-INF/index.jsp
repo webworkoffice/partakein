@@ -10,7 +10,6 @@
 <%@page import="static in.partake.view.util.Helper.h"%>
 
 <%
-    ToppageAction action = (ToppageAction) request.getAttribute(Constants.ATTR_ACTION);
     UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
 %>
 
@@ -32,8 +31,19 @@
         <h2>PARTAKE</h2>
         <p>PARTAKE (パーテイク) は、イベントの作成・参加管理・参加者への連絡が簡単にできる、イベント開催支援サービスです。</p>
         <p>飲み会のメンバー募集から、セミナーや勉強会の開催、あるいは大規模イベントの開催まで、PARTAKE は強力にイベントの開催を支援します。</p>
-        <p><a data-toggle="modal" class="btn btn-large btn-info span6" href="#create-event-dialog" style="margin-bottom: 10px;">イベントを作る (無料)</a></p>
+        <p><a id="top-create-event" class="btn btn-large btn-info span6" href="#create-event-dialog" style="margin-bottom: 10px;">イベントを作る (無料)</a></p>
         <p><a href="/events/<%= h(Constants.DEMO_ID.toString()) %>" class="btn btn-large span6">デモを見る</a></p>
+        <script>
+        <% if (user != null) { %>
+        $('#top-create-event').click(function(e) {
+            $('#create-event-dialog').modal('show');
+        });
+        <% } else { %>
+        $('#top-create-event').click(function(e) {
+            location.href = '/loginRequired';
+        });
+        <% } %>
+        </script>
     </div>
     <div class="span16">
         <div id="toppage-carousel" class="carousel slide">

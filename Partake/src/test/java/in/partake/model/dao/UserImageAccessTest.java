@@ -1,6 +1,7 @@
 package in.partake.model.dao;
 
 import in.partake.app.PartakeApp;
+import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
@@ -9,7 +10,6 @@ import in.partake.model.dto.UserImage;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.model.fixture.impl.UserImageTestDataProvider;
 
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -38,7 +38,7 @@ public class UserImageAccessTest extends AbstractDaoTestCaseBase<IUserImageAcces
                 UserImage[] data = new UserImage[10];
                 for (int i = 0; i < 10; ++i) {
                     data[i] = create(i, "findIds", i);
-                    data[i].setCreatedAt(new Date(10 - i));
+                    data[i].setCreatedAt(new DateTime(10 - i));
                 }
 
                 con.beginTransaction();

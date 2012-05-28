@@ -32,6 +32,7 @@ public class MypageActionTest extends ActionControllerTest {
         assertThat(action.getPreference(), is(UserPreference.getDefaultPreference(DEFAULT_USER_ID)));
         assertThat(ids, hasItem(DEFAULT_USER_OPENID_IDENTIFIER));
         assertThat(ids, hasItem(DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER));
+        assertThat(action.getCalendarLink().getId(), is(DEFAULT_CALENDAR_ID));
     }
 
     @Test

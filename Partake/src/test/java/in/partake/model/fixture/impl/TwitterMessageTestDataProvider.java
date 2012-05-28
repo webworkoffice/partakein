@@ -36,6 +36,7 @@ public class TwitterMessageTestDataProvider extends TestDataProvider<TwitterMess
         ITwitterMessageAccess dao = daos.getTwitterMessageAccess();
         dao.truncate(con);
 
+        // Do not add TWITTER_MESSAGE_NONEXIST_ID here.
         dao.put(con, new TwitterMessage(TWITTER_MESSAGE_INQUEUE_ID, DEFAULT_USER_ID, "message", MessageDelivery.INQUEUE, new DateTime(0), null));
     }
 }

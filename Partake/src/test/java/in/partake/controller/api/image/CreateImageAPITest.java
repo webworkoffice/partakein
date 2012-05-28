@@ -197,7 +197,7 @@ public class CreateImageAPITest extends APIControllerTest {
                     File file = new File("src/test/resources/images/musangas.png");
                     byte[] data = Util.getContentOfFile(file);
                     String imageId = daos.getImageAccess().getFreshId(con);
-                    UserImage imageData = new UserImage(imageId, DEFAULT_USER_ID, "image/png", data, TimeUtil.getCurrentDate());
+                    UserImage imageData = new UserImage(imageId, DEFAULT_USER_ID, "image/png", data, TimeUtil.getCurrentDateTime());
                     daos.getImageAccess().put(con, imageData);
                     return imageId;
                 } catch (IOException e) {
