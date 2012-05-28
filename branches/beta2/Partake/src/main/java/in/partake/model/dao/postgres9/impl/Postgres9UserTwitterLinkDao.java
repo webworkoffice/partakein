@@ -62,7 +62,7 @@ public class Postgres9UserTwitterLinkDao extends Postgres9Dao implements IUserTw
             entityDao.insert(pcon, entity);
         }
 
-        indexDao.put(pcon, new String[] { "id", "twitterId", "userId"}, new Object[] { linkage.getId(), String.valueOf(linkage.getTwitterId()), linkage.getUserId() });
+        indexDao.put(pcon, new String[] { "id", "twitterId", "userId"}, new Object[] { linkage.getId().toString(), String.valueOf(linkage.getTwitterId()), linkage.getUserId() });
     }
 
     @Override
@@ -120,6 +120,8 @@ public class Postgres9UserTwitterLinkDao extends Postgres9Dao implements IUserTw
     public UserTwitterLink findByTwitterId(PartakeConnection con, long twitterId) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         String id = indexDao.find(pcon, "id", "twitterId", String.valueOf(twitterId));
+        if (id == null)
+            return null;
 
         return find(pcon, UUID.fromString(id));
     }
@@ -127,8 +129,15 @@ public class Postgres9UserTwitterLinkDao extends Postgres9Dao implements IUserTw
     @Override
     public UserTwitterLink findByUserId(PartakeConnection con, String userId) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", userId, userId);
+        String id = indexDao.find(pcon, "id", "userId", userId);
+        if (id == null)
+            return null;
 
         return find(pcon, UUID.fromString(id));
+    }
+
+    @Override
+    public UUID getFreshId(PartakeConnection con) throws DAOException {
+        return UUID.fromString(entityDao.getFreshId((Postgres9Connection) con));
     }
 }

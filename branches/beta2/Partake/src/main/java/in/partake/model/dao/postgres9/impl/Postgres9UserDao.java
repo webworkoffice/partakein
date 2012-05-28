@@ -102,9 +102,4 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
     }
-
-    @Override
-    public int countActiveUsers(PartakeConnection con, Date loggedinAfter) throws DAOException {
-        return loginIndexDao.count((Postgres9Connection) con, "lastLoginAt >= ?", new Object[] { loggedinAfter });
-    }
 }

@@ -43,9 +43,10 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
                 "eventId" + pkSalt + pkNumber,
                 "comment" + objNumber,
                 ParticipationStatus.ENROLLED,
-                false,
                 ModificationStatus.CHANGED,
                 AttendanceStatus.UNKNOWN,
+                new DateTime(1L),
+                new DateTime(1L),
                 new DateTime(1L));
     }
 
@@ -80,9 +81,9 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
                 {
                     daos.getEventAccess().put(con, event);
                     daos.getEventTicketAccess().put(con, ticket);
-                    daos.getUserAccess().put(con, new User(userId, "screenName", "http://www.example.com/"));
+                    daos.getUserAccess().put(con, new User(userId, "screenName", "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
 
-                    dao.put(con, new UserTicket(id, userId, ticketId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime()));
+                    dao.put(con, new UserTicket(id, userId, ticketId, eventId, "", ParticipationStatus.ENROLLED, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null));
                 }
                 con.commit();
 
@@ -119,8 +120,8 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
 
                     daos.getEventAccess().put(con, event);
                     daos.getEventTicketAccess().put(con, ticket);
-                    daos.getUserAccess().put(con, new User(userId, "screenName", "http://www.example.com/"));
-                    dao.put(con, new UserTicket(id, userId, ticketId, eventId, "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime()));
+                    daos.getUserAccess().put(con, new User(userId, "screenName", "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
+                    dao.put(con, new UserTicket(id, userId, ticketId, eventId, "comment", ParticipationStatus.ENROLLED, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null));
                     con.commit();
                 }
 

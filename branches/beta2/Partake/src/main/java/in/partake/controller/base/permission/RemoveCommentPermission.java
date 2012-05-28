@@ -12,16 +12,16 @@ public class RemoveCommentPermission extends PartakePermission {
         assert comment != null;
         assert event != null;
         assert user != null;
-        
+
         if (StringUtils.equals(comment.getUserId(), user.getId()))
             return true;
 
         if (StringUtils.equals(event.getOwnerId(), user.getId()))
             return true;
-        
-        if (event.isManager(user.getTwitterLinkage().getScreenName()))
+
+        if (event.isManager(user))
             return true;
-        
+
         return false;
     }
 }

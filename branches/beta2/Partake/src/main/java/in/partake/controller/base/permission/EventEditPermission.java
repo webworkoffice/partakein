@@ -10,13 +10,13 @@ public class EventEditPermission extends PartakePermission {
     public static boolean check(Event event, UserEx user) {
         assert event != null;
         assert user != null;
-        
+
         if (StringUtils.equals(event.getOwnerId(), user.getId()))
             return true;
-        
-        if (event.isManager(user.getTwitterLinkage().getScreenName()))
+
+        if (event.isManager(user))
             return true;
-        
+
         return false;
     }
 }

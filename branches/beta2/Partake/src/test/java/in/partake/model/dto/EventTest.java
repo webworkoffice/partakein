@@ -39,15 +39,15 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
         samples = new Event[] {
                 new Event("id", "title", "summary", "category",
                         now, now, "url", "place",
-                        "address", "description", "#hashTag", "ownerId", null,
+                        "address", "description", "#hashTag", "ownerId",
                         "foreImageId", "backImageId", "passcode", false,
-                        new ArrayList<EventRelation>(), null,
+                        null, new ArrayList<EventRelation>(), null,
                         now, now, -1),
                 new Event("id2", "title2", "summary2", "category2",
                         now, now, "url2", "place2",
-                        "address2", "description2", "#hashTag2", "ownerId2", "hoge,fuga",
+                        "address2", "description2", "#hashTag2", "ownerId2",
                         "foreImageId2", "backImageId2", "passcode2", false,
-                        new ArrayList<EventRelation>(), null,
+                        null, new ArrayList<EventRelation>(), null,
                         now, now, 1)
         };
     }
@@ -70,7 +70,6 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
             Assert.assertEquals(source.getDescription(), new Event(source).getDescription());
             Assert.assertEquals(source.getHashTag(), new Event(source).getHashTag());
             Assert.assertEquals(source.getOwnerId(), new Event(source).getOwnerId());
-            Assert.assertEquals(source.getManagerScreenNames(), new Event(source).getManagerScreenNames());
             Assert.assertEquals(source.getForeImageId(), new Event(source).getForeImageId());
             Assert.assertEquals(source.getBackImageId(), new Event(source).getBackImageId());
             Assert.assertEquals(source.getPasscode(), new Event(source).getPasscode());
@@ -109,62 +108,6 @@ public final class EventTest extends AbstractPartakeModelTest<Event> {
         Assert.assertTrue(source.isFrozen());
 
         Assert.assertFalse(new Event(source).isFrozen());
-    }
-
-    @Test
-    public void testIsManager() throws Exception {
-        Event event = new Event();
-        event.setManagerScreenNames("A, B, C, ABC   ,,,,,    D   ,E,F");
-
-        Assert.assertTrue(event.isManager("A"));
-        Assert.assertTrue(event.isManager("B"));
-        Assert.assertTrue(event.isManager("C"));
-        Assert.assertTrue(event.isManager("ABC"));
-        Assert.assertTrue(event.isManager("D"));
-        Assert.assertTrue(event.isManager("E"));
-        Assert.assertTrue(event.isManager("F"));
-
-        Assert.assertFalse(event.isManager(null));
-        Assert.assertFalse(event.isManager(""));
-        Assert.assertFalse(event.isManager("G"));
-        Assert.assertFalse(event.isManager("a"));
-        Assert.assertFalse(event.isManager("hoge"));
-    }
-
-    @Test
-    public void testIsManagerWhenManagerScreenNamesIsNull() throws Exception {
-        Event event = new Event();
-        event.setManagerScreenNames(null);
-
-        Assert.assertFalse(event.isManager(null));
-        Assert.assertFalse(event.isManager(""));
-        Assert.assertFalse(event.isManager("A"));
-        Assert.assertFalse(event.isManager("B"));
-        Assert.assertFalse(event.isManager("manager"));
-    }
-
-    @Test
-    public void testIsManagerWhenManagerScreenNameIsEmpty() throws Exception {
-        Event event = new Event();
-        event.setManagerScreenNames("");
-
-        Assert.assertFalse(event.isManager(null));
-        Assert.assertFalse(event.isManager(""));
-        Assert.assertFalse(event.isManager("A"));
-        Assert.assertFalse(event.isManager("B"));
-        Assert.assertFalse(event.isManager("manager"));
-    }
-
-    @Test
-    public void testIsManagerWhenManagerScreenNameIsBlank() throws Exception {
-        Event event = new Event();
-        event.setManagerScreenNames("    ");
-
-        Assert.assertFalse(event.isManager(null));
-        Assert.assertFalse(event.isManager(""));
-        Assert.assertFalse(event.isManager("A"));
-        Assert.assertFalse(event.isManager("B"));
-        Assert.assertFalse(event.isManager("manager"));
     }
 
     @Test

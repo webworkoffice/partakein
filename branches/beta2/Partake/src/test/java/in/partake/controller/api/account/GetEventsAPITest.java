@@ -17,6 +17,7 @@ import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,8 +56,9 @@ public class GetEventsAPITest extends APIControllerTest {
                 for (int i = 0; i < N; ++i) {
                     dao.put(con, new Event(ids.get(i), "title", "summary", "category",
                             new DateTime(i), null, "url", "place",
-                            "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID, TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME,
-                            null, null, null, false, new ArrayList<EventRelation>(), null,
+                            "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID,
+                            null, null, null, false,
+                            Collections.singletonList(TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
                             new DateTime(i), new DateTime(i), -1));
                 }
 

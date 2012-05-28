@@ -18,6 +18,7 @@ import in.partake.model.fixture.TestDataProvider;
 import in.partake.resource.UserErrorCode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,8 +59,9 @@ public class GetEventsAPITest extends APIControllerTest {
                     boolean draft = i % 8 == 1;
                     dao.put(con, new Event(ids.get(i), "title", "summary", "category",
                             new DateTime(i), null, "url", "place",
-                            "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID, TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME,
-                            null, null, isPrivate ? "passcode" : null, draft, new ArrayList<EventRelation>(), null,
+                            "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID,
+                            null, null, isPrivate ? "passcode" : null, draft,
+                            Collections.singletonList(TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
                             new DateTime(i), new DateTime(i), -1));
                 }
 

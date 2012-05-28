@@ -25,6 +25,7 @@ import in.partake.model.dto.TwitterMessage;
 import in.partake.model.dto.UserCalendarLink;
 import in.partake.model.dto.UserImage;
 import in.partake.model.dto.UserNotification;
+import in.partake.model.dto.UserOpenIDLink;
 import in.partake.model.dto.UserPreference;
 import in.partake.model.dto.UserReceivedMessage;
 import in.partake.model.dto.UserThumbnail;
@@ -283,10 +284,10 @@ public abstract class AbstractPartakeControllerTest extends StrutsTestCase
         }.execute();
     }
 
-    protected List<String> loadOpenIDIdentifiers(final String userId) throws DAOException, PartakeException {
-        return new DBAccess<List<String>>() {
+    protected List<UserOpenIDLink> loadOpenIDIdentifiers(final String userId) throws DAOException, PartakeException {
+        return new DBAccess<List<UserOpenIDLink>>() {
             @Override
-            protected List<String> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+            protected List<UserOpenIDLink> doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 return daos.getOpenIDLinkageAccess().findByUserId(con, userId);
             }
         }.execute();

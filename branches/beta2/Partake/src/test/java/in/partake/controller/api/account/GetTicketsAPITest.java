@@ -16,6 +16,7 @@ import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,10 +61,11 @@ public class GetTicketsAPITest extends APIControllerTest {
 
         for (int i = 0; i < n; ++i) {
             boolean isPrivate = i % 2 == 1;
-            Event event = new Event(null, "title", "summary", category,
-                    late, late, "url", "place",
-                    "address", "description", "#hashTag", EVENT_OWNER_ID, EVENT_EDITOR_TWITTER_SCREENNAME,
-                    EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, isPrivate ? "passcode" : null, false, new ArrayList<EventRelation>(), null,
+            Event event = new Event(null, "title", "summary", category, late, late,
+                    "url", "place",
+                    "address", "description", "#hashTag", EVENT_OWNER_ID,
+                    EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, isPrivate ? "passcode" : null, false,
+                    Collections.singletonList(EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
                     now, now, -1);
 
             String eventId = storeEvent(event);
@@ -84,11 +86,10 @@ public class GetTicketsAPITest extends APIControllerTest {
             UUID ticketId = ids.get(i).getFirst();
             String eventId = ids.get(i).getSecond();
             ParticipationStatus status = ParticipationStatus.ENROLLED;
-            boolean vip = false;
             ModificationStatus modificationStatus = ModificationStatus.CHANGED;
             AttendanceStatus attendanceStatus = AttendanceStatus.UNKNOWN;
-            DateTime modifiedAt = new DateTime(TimeUtil.getCurrentTime() + (ids.size() - i) * 1000);
-            UserTicket enrollment = new UserTicket(null, userId, ticketId, eventId, "comment", status, vip, modificationStatus, attendanceStatus, modifiedAt);
+            DateTime enrolledAt = new DateTime(TimeUtil.getCurrentTime() + (ids.size() - i) * 1000);
+            UserTicket enrollment = new UserTicket(null, userId, ticketId, eventId, "comment", status, modificationStatus, attendanceStatus, enrolledAt, enrolledAt, enrolledAt);
             userTicketIds.add(storeEnrollment(enrollment));
         }
         return userTicketIds;

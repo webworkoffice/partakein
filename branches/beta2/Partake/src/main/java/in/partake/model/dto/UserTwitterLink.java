@@ -39,14 +39,18 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
     }
 
     public UserTwitterLink(JSONObject obj) {
+        System.out.println(obj.toString());
         this.id = UUID.fromString(obj.getString("id"));
         this.twitterId = obj.getLong("twitterId");
         this.userId = obj.getString("userId");
         this.screenName = obj.getString("screenName");
         this.name = obj.getString("name");
-        this.accessToken = obj.getString("accessToken");
-        this.accessTokenSecret = obj.getString("accessTokenSecret");
-        this.profileImageURL = obj.getString("profileImageURL");
+        if (obj.containsKey("accessToken"))
+            this.accessToken = obj.getString("accessToken");
+        if (obj.containsKey("accessTokenSecret"))
+            this.accessTokenSecret = obj.getString("accessTokenSecret");
+        if (obj.containsKey("profileImageURL"))
+            this.profileImageURL = obj.getString("profileImageURL");
     }
 
     @Override
@@ -68,7 +72,7 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
-        obj.put("id", id);
+        obj.put("id", id.toString());
         obj.put("twitterId", twitterId);
         obj.put("userId", userId);
         obj.put("screenName", screenName);

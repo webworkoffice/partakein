@@ -27,8 +27,8 @@ class TwitterService implements ITwitterService {
 
         twitter4j.User twitterUser = twitter.showUser(twitter.getId());
         return new UserTwitterLink(
-                null, twitter.getId(), twitter.getScreenName(), twitterUser.getName(), accessToken.getToken(), accessToken.getTokenSecret(),
-                twitter.showUser(twitter.getId()).getProfileImageURL().toString(), null);
+                null, twitter.getId(), null, twitter.getScreenName(), twitterUser.getName(), accessToken.getToken(), accessToken.getTokenSecret(),
+                twitter.showUser(twitter.getId()).getProfileImageURL().toString());
     }
 
     @Override

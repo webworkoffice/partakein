@@ -14,7 +14,7 @@ public class EventSendMessagePermission extends PartakePermission {
         if (StringUtils.equals(event.getOwnerId(), user.getId()))
             return true;
 
-        if (event.isManager(user.getTwitterLinkage().getScreenName()))
+        if (event.isManager(user))
             return true;
 
         return false;

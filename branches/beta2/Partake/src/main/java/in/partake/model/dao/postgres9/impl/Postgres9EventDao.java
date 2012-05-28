@@ -17,6 +17,7 @@ import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
+import in.partake.model.daoutil.DAOUtil;
 import in.partake.model.dto.Event;
 import in.partake.resource.ServerErrorCode;
 
@@ -38,15 +39,18 @@ class EntityEventMapper extends Postgres9EntityDataMapper<Event> {
 public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     static final String ENTITY_TABLE_NAME = "EventEntities";
     static final String INDEX_TABLE_NAME = "EventIndex";
+    static final String EDITOR_INDEX_TABLE_NAME = "EventIndexForEditor";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
+    private final Postgres9IndexDao editorIndexDao;
     private final EntityEventMapper mapper;
 
     public Postgres9EventDao() {
         this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
+        this.editorIndexDao = new Postgres9IndexDao(EDITOR_INDEX_TABLE_NAME);
         this.mapper = new EntityEventMapper();
     }
 
@@ -57,11 +61,19 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
 
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME +
-                    "(id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, editorNames TEXT, draft BOOL NOT NULL, isPrivate BOOL NOT NULL, beginDate TIMESTAMP NOT NULL)");
+                    "(id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, draft BOOL NOT NULL, isPrivate BOOL NOT NULL, beginDate TIMESTAMP NOT NULL)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "OwnerId"     + " ON " + INDEX_TABLE_NAME + "(ownerId, draft, beginDate)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EditorNames" + " ON " + INDEX_TABLE_NAME + "(editorNames, draft, beginDate)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "Draft"       + " ON " + INDEX_TABLE_NAME + "(draft)");
             indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "isPrivate"   + " ON " + INDEX_TABLE_NAME + "(isPrivate)");
+        }
+
+        if (!existsTable(pcon, EDITOR_INDEX_TABLE_NAME)) {
+            editorIndexDao.createIndexTable(pcon, "CREATE TABLE " + EDITOR_INDEX_TABLE_NAME +
+                    "(id TEXT NOT NULL, editorId TEXT NOT NULL, draft BOOL NOT NULL, isPrivate BOOL NOT NULL, beginDate TIMESTAMP NOT NULL)");
+            editorIndexDao.createIndex(pcon, "CREATE UNIQUE INDEX " + EDITOR_INDEX_TABLE_NAME + "Unique" + " ON " + EDITOR_INDEX_TABLE_NAME + "(id, editorId)");
+            editorIndexDao.createIndex(pcon, "CREATE INDEX " + EDITOR_INDEX_TABLE_NAME + "EditorId"    + " ON " + EDITOR_INDEX_TABLE_NAME + "(editorId, draft, beginDate)");
+            editorIndexDao.createIndex(pcon, "CREATE INDEX " + EDITOR_INDEX_TABLE_NAME + "Draft"       + " ON " + EDITOR_INDEX_TABLE_NAME + "(draft)");
+            editorIndexDao.createIndex(pcon, "CREATE INDEX " + EDITOR_INDEX_TABLE_NAME + "isPrivate"   + " ON " + EDITOR_INDEX_TABLE_NAME + "(isPrivate)");
         }
     }
 
@@ -70,6 +82,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.truncate(pcon);
         indexDao.truncate(pcon);
+        editorIndexDao.truncate(pcon);
     }
 
     @Override
@@ -83,8 +96,15 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
             entityDao.insert(pcon, entity);
 
         indexDao.put(pcon,
-                new String[] {"id", "ownerId", "editorNames", "draft", "isPrivate", "beginDate" },
-                new Object[] { event.getId(), event.getOwnerId(), event.getManagerScreenNames(), event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
+                new String[] {"id", "ownerId", "draft", "isPrivate", "beginDate" },
+                new Object[] { event.getId(), event.getOwnerId(), event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
+
+        editorIndexDao.remove(pcon, "id", event.getId());
+        for (String editorId : event.getEditors()) {
+            editorIndexDao.put(pcon,
+                    new String[] { "id", "editorId", "draft", "isPrivate", "beginDate" },
+                    new Object[] { event.getId(), editorId, event.isDraft(), !StringUtils.isEmpty(event.getPasscode()), event.getBeginDate() });
+        }
     }
 
     @Override
@@ -102,6 +122,7 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.remove(pcon, id);
         indexDao.remove(pcon, "id", id);
+        editorIndexDao.remove(pcon, "id", id);
     }
 
     @Override
@@ -182,55 +203,19 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
         return new Postgres9DataIterator<Event>(idMapper, psars);
     }
 
-    // TODO: Why not DataIterator?
-    // TODO: This is very slow!
     @Override
-    public List<Event> findByScreenName(PartakeConnection con, String screenName) throws DAOException {
-        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE editorNames LIKE ?",
-                new Object[] { "%" + screenName + "%" });
-
-        Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
-
-        try {
-            ArrayList<Event> events = new ArrayList<Event>();
-            DataIterator<Event> it = new Postgres9DataIterator<Event>(idMapper, psars);
-            while (it.hasNext()) {
-                Event event = it.next();
-                if (event == null)
-                    continue;
-                if (event.isManager(screenName))
-                    events.add(event);
-            }
-
-            return events;
-        } finally {
-            psars.close();
-        }
-    }
-
-    @Override
-    public List<Event> findByScreenName(PartakeConnection con, String screenName, EventFilterCondition criteria, int offset, int limit) throws DAOException {
+    public List<Event> findByEditorUserId(PartakeConnection con, String editorUserId, EventFilterCondition criteria, int offset, int limit) throws DAOException {
         String condition = conditionClauseForCriteria(criteria);
 
-        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE editorNames LIKE ? " + condition + " ORDER BY beginDate DESC OFFSET ? LIMIT ?",
-                new Object[] { "%" + screenName + "%", offset, limit });
+        Postgres9StatementAndResultSet psars = editorIndexDao.select((Postgres9Connection) con,
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE editorId = ? " + condition + " ORDER BY beginDate DESC OFFSET ? LIMIT ?",
+                new Object[] { editorUserId, offset, limit });
 
         Postgres9IdMapper<Event> idMapper = new Postgres9IdMapper<Event>((Postgres9Connection) con, mapper, entityDao);
 
         try {
-            ArrayList<Event> events = new ArrayList<Event>();
             DataIterator<Event> it = new Postgres9DataIterator<Event>(idMapper, psars);
-            while (it.hasNext()) {
-                Event event = it.next();
-                if (event == null)
-                    continue;
-                if (event.isManager(screenName))
-                    events.add(event);
-            }
-
-            return events;
+            return DAOUtil.convertToList(it);
         } finally {
             psars.close();
         }
@@ -286,11 +271,11 @@ public class Postgres9EventDao extends Postgres9Dao implements IEventAccess {
     }
 
     @Override
-    public int countEventsByScreenName(PartakeConnection con, String screenName, EventFilterCondition criteria) throws DAOException {
+    public int countByEditorUserId(PartakeConnection con, String editorId, EventFilterCondition criteria) throws DAOException {
         String condition = conditionClauseForCriteria(criteria);
-        Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT count(1) FROM " + INDEX_TABLE_NAME + " WHERE editorNames LIKE ? " + condition,
-                new Object[] { "%" + screenName + "%" });
+        Postgres9StatementAndResultSet psars = editorIndexDao.select((Postgres9Connection) con,
+                "SELECT count(1) FROM " + EDITOR_INDEX_TABLE_NAME + " WHERE editorId = ? " + condition,
+                new Object[] { editorId });
 
         try {
             ResultSet rs = psars.getResultSet();

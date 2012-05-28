@@ -3,6 +3,7 @@ package in.partake.model.dto;
 import in.partake.base.DateTime;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
+import in.partake.model.UserEx;
 import in.partake.model.dto.auxiliary.EnqueteQuestion;
 import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.dto.auxiliary.EventRelation;
@@ -35,13 +36,14 @@ public class Event extends PartakeModel<Event> {
     private String description; // event description
     private String hashTag;
     private String ownerId;
-    private String managerScreenNames; // TODO: これどうするんだ
+    // private String managerScreenNames; // TODO: これどうするんだ
     private String foreImageId;
     private String backImageId;
 
     private String passcode;    // passcode to show (if not public)
     private boolean draft;    // true if the event is still in preview.
 
+    private List<String> editors; // twitterScreenName (starts from @) or userId.
     private List<EventRelation> eventRelations;
     private List<EnqueteQuestion> enquetes;
 
@@ -84,11 +86,11 @@ public class Event extends PartakeModel<Event> {
         this.description = "";
         this.hashTag = "";
         this.ownerId = "";
-        this.managerScreenNames = "";
         this.foreImageId = null;
         this.backImageId = null;
         this.passcode = null;
         this.draft = true;
+        this.editors = new ArrayList<String>();
         this.eventRelations = new ArrayList<EventRelation>();
         this.enquetes = null;
         this.createdAt = TimeUtil.getCurrentDateTime();
@@ -109,11 +111,12 @@ public class Event extends PartakeModel<Event> {
         this.description = event.description;
         this.hashTag = event.hashTag;
         this.ownerId = event.ownerId;
-        this.managerScreenNames = event.managerScreenNames;
         this.foreImageId = event.foreImageId;
         this.backImageId = event.backImageId;
         this.passcode = event.passcode;
         this.draft = event.draft;
+        if (event.editors != null)
+            this.editors = new ArrayList<String>(event.editors);
         if (event.eventRelations != null)
             this.eventRelations = new ArrayList<EventRelation>(event.eventRelations);
         if (event.enquetes != null)
@@ -138,11 +141,18 @@ public class Event extends PartakeModel<Event> {
         this.description = json.getString("description");
         this.hashTag = json.optString("hashTag", null);
         this.ownerId = json.getString("ownerId");
-        this.managerScreenNames = json.optString("managerScreenNames", null);
         this.foreImageId = json.optString("foreImageId", null);
         this.backImageId = json.optString("backImageId", null);
         this.passcode = json.optString("passcode", null);
         this.draft = json.optBoolean("draft", false);
+        {
+            JSONArray ar = json.optJSONArray("editors");
+            if (ar != null) {
+                this.editors = new ArrayList<String>();
+                for (int i = 0; i < ar.size(); ++i)
+                    editors.add(ar.getString(i));
+            }
+        }
         {
             JSONArray ar = json.optJSONArray("relations");
             if (ar != null) {
@@ -168,10 +178,10 @@ public class Event extends PartakeModel<Event> {
     }
 
     public Event(String id, String title, String summary, String category, DateTime beginDate, DateTime endDate,
-            String url, String place, String address, String description, String hashTag, String ownerId, String managerScreenNames,
+            String url, String place, String address, String description, String hashTag, String ownerId,
             String foreImageId, String backImageId,
             String passcode, boolean draft,
-            List<EventRelation> relations, List<EnqueteQuestion> enquetes,
+            List<String> editors, List<EventRelation> relations, List<EnqueteQuestion> enquetes,
             DateTime createdAt, DateTime modifiedAt, int revision) {
         this.id = id;
         this.title = title;
@@ -185,13 +195,15 @@ public class Event extends PartakeModel<Event> {
         this.description = description;
         this.hashTag = hashTag;
         this.ownerId = ownerId;
-        this.managerScreenNames = managerScreenNames;
 
         this.foreImageId = foreImageId;
         this.backImageId = backImageId;
 
         this.passcode = passcode;
         this.draft = draft;
+
+        if (editors != null)
+            this.editors = new ArrayList<String>(editors);
         if (relations != null)
             this.eventRelations = new ArrayList<EventRelation>(relations);
         if (enquetes != null)
@@ -236,15 +248,17 @@ public class Event extends PartakeModel<Event> {
         obj.put("description", description);
         obj.put("hashTag", hashTag);
         obj.put("ownerId", ownerId);
-        if (managerScreenNames != null)
-            obj.put("managerScreenNames", managerScreenNames);
         obj.put("foreImageId", foreImageId);
         obj.put("backImageId", backImageId);
         obj.put("passcode", passcode);
         obj.put("draft", draft);
 
-        obj.put("relations", Util.toJSONArray(eventRelations));
-        obj.put("enquetes", Util.toJSONArray(enquetes));
+        if (editors != null)
+            obj.put("editors", editors);
+        if (eventRelations != null)
+            obj.put("relations", Util.toJSONArray(eventRelations));
+        if (enquetes != null)
+            obj.put("enquetes", Util.toJSONArray(enquetes));
 
         if (createdAt != null) {
             obj.put("createdAt", format.format(createdAt.toDate()));
@@ -275,13 +289,15 @@ public class Event extends PartakeModel<Event> {
         obj.put("description", description);
         obj.put("hashTag", hashTag);
         obj.put("ownerId", ownerId);
-        if (managerScreenNames != null)
-            obj.put("managerScreenNames", managerScreenNames);
-        obj.put("foreImageId", foreImageId);
-        obj.put("backImageId", backImageId);
+        if (foreImageId != null)
+            obj.put("foreImageId", foreImageId);
+        if (backImageId != null)
+            obj.put("backImageId", backImageId);
         obj.put("passcode", passcode);
         obj.put("draft", draft);
 
+        if (editors != null)
+            obj.put("editors", editors);
         if (eventRelations != null)
             obj.put("relations", Util.toJSONArray(eventRelations));
         if (enquetes != null)
@@ -318,11 +334,11 @@ public class Event extends PartakeModel<Event> {
         if (!ObjectUtils.equals(lhs.description, rhs.description)) { return false; }
         if (!ObjectUtils.equals(lhs.hashTag, rhs.hashTag)) { return false; }
         if (!ObjectUtils.equals(lhs.ownerId, rhs.ownerId)) { return false; }
-        if (!ObjectUtils.equals(lhs.managerScreenNames, rhs.managerScreenNames)) { return false; }
         if (!ObjectUtils.equals(lhs.foreImageId, rhs.foreImageId)) { return false; }
         if (!ObjectUtils.equals(lhs.backImageId, rhs.backImageId)) { return false; }
         if (!ObjectUtils.equals(lhs.passcode, rhs.passcode)) { return false; }
         if (!ObjectUtils.equals(lhs.draft, rhs.draft)) { return false; }
+        if (!ObjectUtils.equals(lhs.editors, rhs.editors)) { return false; }
         if (!ObjectUtils.equals(lhs.eventRelations, rhs.eventRelations)) { return false; }
         if (!ObjectUtils.equals(lhs.enquetes, rhs.enquetes)) { return false; }
         if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
@@ -348,11 +364,11 @@ public class Event extends PartakeModel<Event> {
         code = code * 37 + ObjectUtils.hashCode(description);
         code = code * 37 + ObjectUtils.hashCode(hashTag);
         code = code * 37 + ObjectUtils.hashCode(ownerId);
-        code = code * 37 + ObjectUtils.hashCode(managerScreenNames);
         code = code * 37 + ObjectUtils.hashCode(foreImageId);
         code = code * 37 + ObjectUtils.hashCode(backImageId);
         code = code * 37 + ObjectUtils.hashCode(passcode);
         code = code * 37 + ObjectUtils.hashCode(draft);
+        code = code * 37 + ObjectUtils.hashCode(editors);
         code = code * 37 + ObjectUtils.hashCode(eventRelations);
         code = code * 37 + ObjectUtils.hashCode(enquetes);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
@@ -423,10 +439,6 @@ public class Event extends PartakeModel<Event> {
         return ownerId;
     }
 
-    public String getManagerScreenNames() {
-        return managerScreenNames;
-    }
-
     public String getForeImageId() {
         return foreImageId;
     }
@@ -441,6 +453,10 @@ public class Event extends PartakeModel<Event> {
 
     public boolean isDraft() {
         return draft;
+    }
+
+    public List<String> getEditors() {
+        return editors;
     }
 
     public List<EventRelation> getRelations() {
@@ -525,11 +541,6 @@ public class Event extends PartakeModel<Event> {
         this.ownerId = ownerId;
     }
 
-    public void setManagerScreenNames(String managerScreenNames) {
-        checkToUpdateStatus();
-        this.managerScreenNames = managerScreenNames;
-    }
-
     public void setPasscode(String passcode) {
         checkToUpdateStatus();
         this.passcode = passcode;
@@ -539,6 +550,12 @@ public class Event extends PartakeModel<Event> {
         checkToUpdateStatus();
         this.draft = draft;
     }
+
+    public void setEditors(List<String> editors) {
+        checkToUpdateStatus();
+        this.editors = editors;
+    }
+
 
     public void setRelations(List<EventRelation> relations) {
         checkToUpdateStatus();
@@ -612,15 +629,10 @@ public class Event extends PartakeModel<Event> {
         return !StringUtils.isBlank(getPasscode());
     }
 
-    public boolean isManager(String name) {
-        if (StringUtils.isBlank(name)) { return false; }
-        if (StringUtils.isBlank(getManagerScreenNames())) { return false; }
-
-        String[] screenNames = getManagerScreenNames().split(",");
-        for (String screenName : screenNames) {
-            if (name.equals(StringUtils.trim(screenName))) {
+    public boolean isManager(UserEx user) {
+        for (String editor : editors) {
+            if (editor.equals(user.getId()))
                 return true;
-            }
         }
 
         return false;

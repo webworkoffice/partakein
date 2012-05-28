@@ -1,7 +1,6 @@
 package in.partake.controller.action.admin;
 
 import in.partake.base.PartakeException;
-import in.partake.base.TimeUtil;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
@@ -11,13 +10,10 @@ import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dao.access.IUserAccess;
 import in.partake.model.dao.aux.EventFilterCondition;
 
-import java.util.Date;
-
 public class AdminPageAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
 
     private int countUser;
-    private int countActiveUser;
     private int countEvent;
     private int countPublicEvent;
     private int countPrivateEvent;
@@ -31,7 +27,6 @@ public class AdminPageAction extends AbstractPartakeAction {
         transaction.execute();
 
         countUser = transaction.getCountUser();
-        countActiveUser = transaction.getCountActiveUser();
         countEvent = transaction.getCountEvent();
         countPublicEvent = transaction.getCountPublicEvent();
         countPrivateEvent = transaction.getCountPrivateEvent();
@@ -43,10 +38,6 @@ public class AdminPageAction extends AbstractPartakeAction {
 
     public int getCountUser() {
         return countUser;
-    }
-
-    public int getCountActiveUser() {
-        return countActiveUser;
     }
 
     public int getCountEvent() {
@@ -72,7 +63,6 @@ public class AdminPageAction extends AbstractPartakeAction {
 
 class AdminCountAccess extends DBAccess<Void> {
     private int countUser;
-    private int countActiveUser;
 
     private int countEvent;
     private int countPublicEvent;
@@ -82,11 +72,8 @@ class AdminCountAccess extends DBAccess<Void> {
 
     @Override
     protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        Date oneMonthAgo = new Date(TimeUtil.getCurrentTime() - 30L * 24 * 60 * 60 * 1000);
-
         IUserAccess userAccess = daos.getUserAccess();
         countUser = userAccess.count(con);
-        countActiveUser = userAccess.countActiveUsers(con, oneMonthAgo);
 
         IEventAccess eventAccess = daos.getEventAccess();
         countEvent = eventAccess.count(con);
@@ -99,10 +86,6 @@ class AdminCountAccess extends DBAccess<Void> {
 
     public int getCountUser() {
         return countUser;
-    }
-
-    public int getCountActiveUser() {
-        return countActiveUser;
     }
 
     public int getCountEvent() {

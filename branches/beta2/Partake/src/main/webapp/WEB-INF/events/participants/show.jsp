@@ -96,7 +96,7 @@
         <col width="32px" /><col width="85px" /><col width="58px" /><col width="150px" /><col width="100px" /><col width="50px" /><col width="120px" /><col width="120px" />
     </colgroup>
     <thead>
-        <tr><th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th>登録日時</th><th>優先度</th><th>操作</th><th>実際の出欠状況</th></tr>
+        <tr><th>順番</th><th>名前</th><th>予約状況</th><th>コメント</th><th>登録日時</th><th>実際の出欠状況</th></tr>
     </thead>
     <tbody>
 
@@ -110,30 +110,6 @@
         <td><%= ParticipationStatus.ENROLLED.equals(p.getStatus()) ? "参加" : "仮参加" %></td>
         <td><%= h(p.getComment()) %></td>
         <td class="print-del"><%= h(p.getModifiedAt().toString()) %></td>
-        <td>
-            <% if (p.isVIP()) { %>
-                <img src="<%= request.getContextPath() %>/images/crown.png" alt="VIPマーク" />
-            <% } else if (p.getPriority() > 0) {
-                for (int i = 0; i < p.getPriority(); ++i) { %>
-                    <img src="<%= request.getContextPath() %>/images/star.png" alt="優先マーク" />
-                <% } %>
-            <% } else { %>
-                -
-            <% } %>
-        </td>
-        <td class="print-del">
-            <ul class="status-control">
-                <li><a href="#" onclick="removeAttendant('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>')">削除する</a></li>
-                <% if (p.isVIP()) { %>
-                    <li id="vip-<%= h(p.getUserId()) %>"><a href="#" onclick="makeAttendantVIP('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'false')">VIP 指定解除</a></li>
-                <% } else { %>
-                    <li id="nonvip-<%= h(p.getUserId()) %>"><a href="#" onclick="makeAttendantVIP('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'true')">VIP 指定</a></li>
-                <% } %>
-            </ul>
-            <script>
-
-            </script>
-        </td>
         <td class="print-del">
             <input type="radio" onchange="changeAttendance('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'unknown')" name="present-<%= h(p.getUserId()) %>" value="unknown" <%= AttendanceStatus.UNKNOWN.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 未選択<br />
             <input type="radio" onchange="changeAttendance('<%= h(p.getUserId()) %>', '<%= h(p.getEventId()) %>', 'present')" name="present-<%= h(p.getUserId()) %>" value="present" <%= AttendanceStatus.PRESENT.equals(p.getAttendanceStatus()) ? "checked" : "" %> /> 出席
