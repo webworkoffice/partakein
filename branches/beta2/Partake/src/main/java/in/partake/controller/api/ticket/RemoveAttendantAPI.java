@@ -1,4 +1,4 @@
-package in.partake.controller.api.event;
+package in.partake.controller.api.ticket;
 
 import java.util.UUID;
 

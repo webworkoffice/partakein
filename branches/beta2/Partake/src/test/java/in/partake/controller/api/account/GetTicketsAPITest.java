@@ -89,7 +89,7 @@ public class GetTicketsAPITest extends APIControllerTest {
             ModificationStatus modificationStatus = ModificationStatus.CHANGED;
             AttendanceStatus attendanceStatus = AttendanceStatus.UNKNOWN;
             DateTime enrolledAt = new DateTime(TimeUtil.getCurrentTime() + (ids.size() - i) * 1000);
-            UserTicket enrollment = new UserTicket(null, userId, ticketId, eventId, "comment", status, modificationStatus, attendanceStatus, enrolledAt, enrolledAt, enrolledAt);
+            UserTicket enrollment = new UserTicket(null, userId, ticketId, eventId, "comment", status, modificationStatus, attendanceStatus, null, enrolledAt, enrolledAt, enrolledAt);
             userTicketIds.add(storeEnrollment(enrollment));
         }
         return userTicketIds;

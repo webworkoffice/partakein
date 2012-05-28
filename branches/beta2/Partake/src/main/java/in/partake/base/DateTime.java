@@ -1,6 +1,11 @@
 package in.partake.base;
 
+import in.partake.resource.Constants;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 // Since java.util.Date is mutable, We prefer to use DateTime instead.
 public final class DateTime implements Comparable<DateTime> {
@@ -72,6 +77,11 @@ public final class DateTime implements Comparable<DateTime> {
 
     public DateTime nHourAfter(int n) {
         return new DateTime(getTime() + 1000L * 3600 * n);
+    }
+
+    public String toHumanReadableFormat() {
+        DateFormat format = new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
+        return format.format(this.toDate());
     }
 
 }

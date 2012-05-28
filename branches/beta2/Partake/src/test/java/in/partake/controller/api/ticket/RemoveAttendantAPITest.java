@@ -1,4 +1,4 @@
-package in.partake.controller.api.event;
+package in.partake.controller.api.ticket;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;

@@ -8,8 +8,6 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.access.IUserTicketAccess;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.EventTicket;
-import in.partake.model.dto.User;
 import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
@@ -45,6 +43,7 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
                 ParticipationStatus.ENROLLED,
                 ModificationStatus.CHANGED,
                 AttendanceStatus.UNKNOWN,
+                null,
                 new DateTime(1L),
                 new DateTime(1L),
                 new DateTime(1L));
@@ -75,17 +74,12 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
                 UUID ticketId = UUID.randomUUID();
                 String userId = UUID.randomUUID().toString();
 
-                Event event = createEvent(eventId, userId);
-                EventTicket ticket = EventTicket.createDefaultTicket(ticketId, eventId);
-                con.beginTransaction();
-                {
-                    daos.getEventAccess().put(con, event);
-                    daos.getEventTicketAccess().put(con, ticket);
-                    daos.getUserAccess().put(con, new User(userId, "screenName", "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
 
-                    dao.put(con, new UserTicket(id, userId, ticketId, eventId, "", ParticipationStatus.ENROLLED, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null));
+                {
+                    con.beginTransaction();
+                    dao.put(con, new UserTicket(id, userId, ticketId, eventId, "", ParticipationStatus.ENROLLED, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, null, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null));
+                    con.commit();
                 }
-                con.commit();
 
                 List<UserTicket> list = dao.findByTicketId(con, ticketId, 0, Integer.MAX_VALUE);
 
@@ -95,7 +89,6 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
                 Assert.assertEquals(userId, storedParticipation.getUserId());
                 Assert.assertEquals(ModificationStatus.CHANGED, storedParticipation.getModificationStatus());
                 Assert.assertEquals(status, storedParticipation.getStatus());
-                // TODO Auto-generated method stub
                 return null;
             }
         }.execute();
@@ -107,21 +100,17 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
             @Override
             protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
                 String id = UUID.randomUUID().toString();
+                String userId = UUID.randomUUID().toString();
                 String eventId = UUID.randomUUID().toString();
                 UUID ticketId = UUID.randomUUID();
-                String userId  = UUID.randomUUID().toString();
-
-                Event event = createEvent(eventId, userId);
-                EventTicket ticket = EventTicket.createDefaultTicket(ticketId, eventId);
 
                 // create
                 {
                     con.beginTransaction();
+                    dao.put(con, new UserTicket(id,
+                            userId, ticketId, eventId,
+                            "comment", ParticipationStatus.ENROLLED, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, null, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null));
 
-                    daos.getEventAccess().put(con, event);
-                    daos.getEventTicketAccess().put(con, ticket);
-                    daos.getUserAccess().put(con, new User(userId, "screenName", "http://www.example.com/", TimeUtil.getCurrentDateTime(), null));
-                    dao.put(con, new UserTicket(id, userId, ticketId, eventId, "comment", ParticipationStatus.ENROLLED, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null));
                     con.commit();
                 }
 

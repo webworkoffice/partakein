@@ -20,7 +20,7 @@ public class EventTicketTestDataProvider extends TestDataProvider<EventTicket> {
     @Override
     public EventTicket create(long pkNumber, String pkSalt, int objNumber) {
         UUID uuid = new UUID(pkNumber, ("eventticket" + pkSalt).hashCode());
-        return new EventTicket(uuid, DEFAULT_EVENT_ID, "name" + objNumber,
+        return new EventTicket(uuid, DEFAULT_EVENT_ID, 0, "name" + objNumber,
                 TicketApplicationStart.ANYTIME, 0, null,
                 TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null,
                 TicketPriceType.FREE, 0, false, 0, new DateTime(0), null);
@@ -30,22 +30,23 @@ public class EventTicketTestDataProvider extends TestDataProvider<EventTicket> {
     public List<EventTicket> createSamples() {
         List<EventTicket> list = new ArrayList<EventTicket>();
 
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 1), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId1", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name1", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.FROM_CUSTOM_DAY, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 1, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, new DateTime(0L), TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_AFTER_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 1, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, new DateTime(0L), TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.NONFREE, 0, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 1, false, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, true, 0, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 1, new DateTime(0), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(1), null));
-        list.add(new EventTicket(new UUID(0, 0), "eventId", "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), new DateTime(0L)));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0,  "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 1), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId1", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 1, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name1", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name1", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name1", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.FROM_CUSTOM_DAY, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 1, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, new DateTime(0L), TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_AFTER_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 1, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, new DateTime(0L), TicketPriceType.FREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.NONFREE, 0, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 1, false, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, true, 0, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 1, new DateTime(0), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(1), null));
+        list.add(new EventTicket(new UUID(0, 0), "eventId", 0, "name", TicketApplicationStart.ANYTIME, 0, null, TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null, TicketPriceType.FREE, 0, false, 0, new DateTime(0), new DateTime(0L)));
 
         return list;
     }
@@ -60,5 +61,6 @@ public class EventTicketTestDataProvider extends TestDataProvider<EventTicket> {
         dao.put(con, EventTicket.createDefaultTicket(JAPANESE_EVENT_TICKET_ID, JAPANESE_EVENT_ID));
         dao.put(con, EventTicket.createDefaultTicket(UNIQUEIDENTIFIER_EVENT_TICKET_ID, UNIQUEIDENTIFIER_EVENT_ID));
         dao.put(con, EventTicket.createDefaultTicket(UNPUBLISHED_EVENT_TICKET_ID, UNPUBLISHED_EVENT_ID));
+        dao.put(con, EventTicket.createDefaultTicket(NO_PARTICIPANTS_EVENT_TICKET_ID, NO_PARTICIPANTS_EVENT_ID));
     }
 }

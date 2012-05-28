@@ -50,13 +50,17 @@ public class VerifyForTwitterAction extends AbstractPartakeAction {
             return renderError(ServerErrorCode.TWITTER_OAUTH_ERROR);
         }
 
+        String redirectURL = loginInformation.getRedirectURL();
         if (StringUtils.isEmpty(redirectURL))
             return renderRedirect("/", messageCode);
 
         // If the redirect page is the error page, we do not want to show it. Showing the top page is better.
-        String errorPageURL = PartakeProperties.get().getTopPath() + "/error";
-        if (errorPageURL.equals(redirectURL))
-            return renderRedirect("/", messageCode);
+        String errorPagePaths[] = new String[] { "/error", "/notfound", "/invalid", "/prohibited", "/forbidden", "/loginRequired" };
+        for (String errorPagePath : errorPagePaths) {
+            String errorPageURL = PartakeProperties.get().getTopPath() + errorPagePath;
+            if (redirectURL.startsWith(errorPageURL))
+                return renderRedirect("/", messageCode);
+        }
 
         return renderRedirect(redirectURL, messageCode);
     }

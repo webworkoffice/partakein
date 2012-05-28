@@ -40,9 +40,13 @@ public class SendMessageAPI extends AbstractPartakeAPI {
 
         if (StringUtils.isBlank(subject))
             return renderInvalid(UserErrorCode.MISSING_MESSAGE_SUBJECT);
+        if (subject.length() > 100)
+            return renderInvalid(UserErrorCode.INVALID_MESSAGE_SUBJECT_TOOLONG);
 
         if (StringUtils.isBlank(body))
             return renderInvalid(UserErrorCode.MISSING_MESSAGE);
+        if (body.length() > 1000)
+            return renderInvalid(UserErrorCode.INVALID_MESSAGE_TOOLONG);
 
         try {
             new SendMessageTransaction(user, eventId, subject, body).execute();

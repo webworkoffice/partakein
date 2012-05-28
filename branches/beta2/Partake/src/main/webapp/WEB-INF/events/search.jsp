@@ -30,5 +30,6 @@
 <jsp:include page="/WEB-INF/events/_search.jsp" flush="true" />
 
 </div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
 </body>
 </html>

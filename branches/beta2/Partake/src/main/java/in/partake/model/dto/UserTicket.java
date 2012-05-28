@@ -5,8 +5,11 @@ import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -20,6 +23,7 @@ public class UserTicket extends PartakeModel<UserTicket> {
     private ParticipationStatus status;
     private ModificationStatus modificationStatus;
     private AttendanceStatus attendanceStatus;
+    private List<String> enqueteAnswers;
     private DateTime appliedAt;
     private DateTime createdAt;
     private DateTime modifiedAt;
@@ -28,8 +32,9 @@ public class UserTicket extends PartakeModel<UserTicket> {
     // constructors
 
     public UserTicket(String id, String userId, UUID ticketId, String eventId, String comment,
-            ParticipationStatus status, ModificationStatus modificationStatus,
-            AttendanceStatus attendanceStatus, DateTime appliedAt, DateTime createdAt, DateTime modifiedAt) {
+            ParticipationStatus status, ModificationStatus modificationStatus, AttendanceStatus attendanceStatus,
+            List<String> enqueteAnswers,
+            DateTime appliedAt, DateTime createdAt, DateTime modifiedAt) {
         this.id = id;
         this.userId = userId;
         this.ticketId = ticketId;
@@ -38,13 +43,14 @@ public class UserTicket extends PartakeModel<UserTicket> {
         this.status = status;
         this.modificationStatus = modificationStatus;
         this.attendanceStatus = attendanceStatus;
+        this.enqueteAnswers = enqueteAnswers;
         this.appliedAt = appliedAt;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
 
     public UserTicket(UserTicket p) {
-        this(p.id, p.userId, p.ticketId, p.eventId, p.comment, p.status, p.modificationStatus, p.attendanceStatus, p.appliedAt, p.createdAt, p.modifiedAt);
+        this(p.id, p.userId, p.ticketId, p.eventId, p.comment, p.status, p.modificationStatus, p.attendanceStatus, p.enqueteAnswers, p.appliedAt, p.createdAt, p.modifiedAt);
     }
 
     public UserTicket(JSONObject obj) {
@@ -56,6 +62,12 @@ public class UserTicket extends PartakeModel<UserTicket> {
         this.status = ParticipationStatus.safeValueOf(obj.getString("status"));
         this.modificationStatus = ModificationStatus.safeValueOf(obj.getString("modificationStatus"));
         this.attendanceStatus = AttendanceStatus.safeValueOf(obj.getString("attendanceStatus"));
+        if (obj.containsKey("enqueteAnswers")) {
+            this.enqueteAnswers = new ArrayList<String>();
+            JSONArray array = obj.getJSONArray("enqueteAnswers");
+            for (int i = 0; i < array.size(); ++i)
+                enqueteAnswers.add(array.getString(i));
+        }
         this.appliedAt = new DateTime(obj.getLong("appliedAt"));
         this.createdAt = new DateTime(obj.getLong("createdAt"));
         if (obj.containsKey("modifiedAt"))
@@ -78,6 +90,12 @@ public class UserTicket extends PartakeModel<UserTicket> {
         obj.put("status", status.toString());
         obj.put("modificationStatus", modificationStatus.toString());
         obj.put("attendanceStatus", attendanceStatus.toString());
+        if (enqueteAnswers != null && !enqueteAnswers.isEmpty()) {
+            JSONArray array = new JSONArray();
+            for (String answer : enqueteAnswers)
+                array.add(answer);
+            obj.put("enqueteAnswers", array);
+        }
         obj.put("appliedAt", appliedAt.getTime());
         obj.put("createdAt", createdAt.getTime());
         if (modifiedAt != null)
@@ -102,6 +120,7 @@ public class UserTicket extends PartakeModel<UserTicket> {
         if (!ObjectUtils.equals(lhs.status,             rhs.status))             { return false; }
         if (!ObjectUtils.equals(lhs.modificationStatus, rhs.modificationStatus)) { return false; }
         if (!ObjectUtils.equals(lhs.attendanceStatus,   rhs.attendanceStatus))   { return false; }
+        if (!ObjectUtils.equals(lhs.enqueteAnswers,     rhs.enqueteAnswers))     { return false; }
         if (!ObjectUtils.equals(lhs.appliedAt,          rhs.appliedAt))          { return false; }
         if (!ObjectUtils.equals(lhs.createdAt,          rhs.createdAt))          { return false; }
         if (!ObjectUtils.equals(lhs.modifiedAt,         rhs.modifiedAt))         { return false; }
@@ -120,6 +139,7 @@ public class UserTicket extends PartakeModel<UserTicket> {
         hashCode = hashCode * 37 + ObjectUtils.hashCode(status);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(modificationStatus);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(attendanceStatus);
+        hashCode = hashCode * 37 + ObjectUtils.hashCode(enqueteAnswers);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(appliedAt);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(createdAt);
         hashCode = hashCode * 37 + ObjectUtils.hashCode(modifiedAt);
@@ -166,6 +186,10 @@ public class UserTicket extends PartakeModel<UserTicket> {
 
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
+    }
+
+    public List<String> getEnqueteAnswers() {
+        return enqueteAnswers;
     }
 
     public DateTime getAppliedAt() {
@@ -218,6 +242,11 @@ public class UserTicket extends PartakeModel<UserTicket> {
     public void setAttendanceStatus(AttendanceStatus attendanceStatus) {
         checkFrozen();
         this.attendanceStatus = attendanceStatus;
+    }
+
+    public void setEnqueteAnswers(List<String> enqueteAnswers) {
+        checkFrozen();
+        this.enqueteAnswers = enqueteAnswers;
     }
 
     public void setAppliedAt(DateTime appliedAt) {

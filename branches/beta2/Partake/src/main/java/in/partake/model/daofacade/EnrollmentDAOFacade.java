@@ -115,7 +115,7 @@ public class EnrollmentDAOFacade {
         if (oldEnrollment == null) {
             String id = daos.getEnrollmentAccess().getFreshId(con);
             newEnrollment = new UserTicket(id, userId, ticketId, eventId,
-                    comment, ParticipationStatus.NOT_ENROLLED, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null);
+                    comment, ParticipationStatus.NOT_ENROLLED, ModificationStatus.NOT_ENROLLED, AttendanceStatus.UNKNOWN, null, TimeUtil.getCurrentDateTime(), TimeUtil.getCurrentDateTime(), null);
         } else {
             newEnrollment = new UserTicket(oldEnrollment);
         }

@@ -1,4 +1,4 @@
-package in.partake.controller.api.event;
+package in.partake.controller.api.ticket;
 
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.dto.UserTicket;
@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.opensymphony.xwork2.ActionProxy;
 
-public class AttendanceAPITest extends APIControllerTest {
+public class AttendAPITest extends APIControllerTest {
 
     @Test
     public void testShouldChangeToPresence() throws Exception {

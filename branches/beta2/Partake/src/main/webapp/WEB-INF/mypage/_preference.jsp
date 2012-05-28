@@ -1,3 +1,4 @@
+<%@page import="in.partake.model.dto.UserOpenIDLink"%>
 <%@page import="in.partake.model.dto.UserPreference"%>
 <%@page import="in.partake.controller.action.mypage.MypageAction"%>
 <%@page import="in.partake.resource.PartakeProperties"%>
@@ -13,7 +14,7 @@
     UserEx user = (UserEx)request.getSession().getAttribute(Constants.ATTR_USER);
     MypageAction action = (MypageAction) request.getAttribute(Constants.ATTR_ACTION);
     UserPreference pref = action.getPreference();
-    List<String> associatedOpenIds = action.getOpenIds();
+    List<UserOpenIDLink> associatedOpenIds = action.getOpenIds();
 %>
 
 <h2>各種設定</h2>
@@ -34,7 +35,7 @@
                 イベントに参加するとき、自動的に参加をつぶやく (default：つぶやかない)
             </label>
             <p class="spinner-container">
-                <input id="setPreferenceButton" type="button" value="この設定を保存する" />
+                <input id="setPreferenceButton" type="button" class="btn" value="この設定を保存する" />
                 <span id="setPreferenceMessage" class="text-info"></span>
             </p>
             <script>

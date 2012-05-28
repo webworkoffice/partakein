@@ -21,15 +21,18 @@
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
     <title>イベントを編集します</title>
 </head>
-<body
+<body class="with-sub-nav"
     <% if (!StringUtils.isBlank(event.getBackImageId())) { %>
         style="background-image: url(/images/<%= h(event.getBackImageId()) %>)"
     <% } %>
 >
 
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
-<jsp:include page="/WEB-INF/events/_edit_manage_navigation.jsp" flush="true" />
+<jsp:include page="/WEB-INF/events/_edit_manage_navigation.jsp" flush="true">
+    <jsp:param name="NAVIGATION" value="basic" />
+</jsp:include>
 
 <script>
 var eventId = '<%= event.getId() %>';
@@ -75,7 +78,7 @@ $(function() {
         <span id="title-edit" class="label label-edit edit-button">タイトルを編集</span>
     </h1>
     <form id="title-form" action="javascript:$('#title-submit').click()" style="display: none;">
-        <input type="text" class="span9" name="title" id="title-input" value="" placeholder="タイトル：　「お花見」「HTML 勉強会」「武道館ライブ」など">
+        <input type="text" class="span18" name="title" id="title-input" value="" placeholder="タイトル：　「お花見」「HTML 勉強会」「武道館ライブ」など">
         <div class="edit-form-buttons">
             <input type="button" value="キャンセル" class="btn edit-cancel-button">
             <input id="title-submit" type="button" value="保存" class="btn edit-save-button">
@@ -105,7 +108,7 @@ $(function() {
         <span id="summary-edit" class="label label-edit edit-button">概要を編集</span>
     </p>
     <form id="summary-form" action="javascript:$('#summary-submit').click()" style="display: none;">
-        <p><input type="text" class="span9" name="summary" id="summary-input" value="" placeholder="概要：　「みんなで一緒に飲みましょう！」など"></p>
+        <p><input type="text" class="span18" name="summary" id="summary-input" value="" placeholder="概要：　「みんなで一緒に飲みましょう！」など"></p>
         <div class="edit-form-buttons">
             <input type="button" value="キャンセル" class="btn edit-cancel-button">
             <input id="summary-submit" type="button" value="保存" class="btn edit-save-button">
@@ -242,13 +245,13 @@ $(function() {
 </div>
 
 <div class="row">
-    <div class="span4 pull-right">
+    <div class="span8 pull-right">
         <div id="side-information">
             <jsp:include page="/WEB-INF/events/_edit_side_information.jsp" flush="true" />
         </div>
     </div>
 
-    <div class="span8">
+    <div class="span16">
         <div id="foreimage-show">
             <div class="event-image">
                 <% if (StringUtils.isBlank(event.getForeImageId())) { %>
@@ -358,7 +361,7 @@ $(function() {
     </div>
     <div class="modal-body">
         <div class="row">
-            <div class="span3">
+            <div class="span6">
                 <p>新しく画像をアップロード、もしくは過去にアップロードした画像から選択します。</p>
                 <p>選択された画像</p>
                 <ul class="thumbnails">
@@ -369,13 +372,13 @@ $(function() {
                     <input id="fileupload" type="file" name="file" class="invisible" />
                 </form>
             </div>
-            <div class="span6">
+            <div class="span12">
                 <ul id="image-upload-dialog-thumbnails" class="thumbnails">
-                    <li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-                    <li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-                    <li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-                    <li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
-                    <li class="span2"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
+                    <li class="span4"><a href="#" class="thumbnail"><img src="http://placehold.it/160x120" alt=""></a></li>
                 </ul>
                 <div id="image-pagination" class="pagination pagination-centered"></div>
             </div>
@@ -507,6 +510,7 @@ $(function() {
 
 </div>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

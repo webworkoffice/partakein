@@ -1,20 +1,33 @@
 package in.partake.controller.action.event;
 
+import in.partake.base.Pair;
 import in.partake.base.PartakeException;
 import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.controller.base.permission.EventParticipationListPermission;
 import in.partake.model.EventEx;
 import in.partake.model.EventTicketHolderList;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
+import in.partake.model.UserTicketEx;
+import in.partake.model.access.DBAccess;
 import in.partake.model.dao.DAOException;
+import in.partake.model.dao.PartakeConnection;
+import in.partake.model.daofacade.EnrollmentDAOFacade;
+import in.partake.model.daofacade.EventDAOFacade;
+import in.partake.model.dto.EventTicket;
+import in.partake.resource.UserErrorCode;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class ShowParticipantsAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
 
     private EventEx event;
-    private Map<UUID, EventTicketHolderList> ticketHolderListMap;
+    private List<Pair<EventTicket, EventTicketHolderList>> ticketAndHolders;
+    private Map<String, String[]> userTicketInfoMap;
 
     @Override
     protected String doExecute() throws DAOException, PartakeException {
@@ -25,7 +38,8 @@ public class ShowParticipantsAction extends AbstractPartakeAction {
         transaction.execute();
 
         event = transaction.getEvent();
-        ticketHolderListMap = transaction.getTicketHolderListMap();
+        ticketAndHolders = transaction.getTicketAndHolders();
+        userTicketInfoMap = transaction.getUserTicketInfoMap();
 
         return render("events/participants/show.jsp");
     }
@@ -34,7 +48,77 @@ public class ShowParticipantsAction extends AbstractPartakeAction {
         return event;
     }
 
-    public Map<UUID, EventTicketHolderList> getTicketHolderListMap() {
-        return ticketHolderListMap;
+    public List<Pair<EventTicket, EventTicketHolderList>> getTicketAndHolders() {
+        return ticketAndHolders;
+    }
+
+    public Map<String, String[]> getUserTicketInfoMap() {
+        return userTicketInfoMap;
+    }
+}
+
+class ParticipantsListTransaction extends DBAccess<Void> {
+    private UserEx user;
+    private String eventId;
+
+    private EventEx event;
+    private List<EventTicket> tickets;
+    private List<Pair<EventTicket, EventTicketHolderList>> ticketAndHolders;
+    private Map<String, String[]> userTicketInfoMap;
+
+    public ParticipantsListTransaction(UserEx user, String eventId) {
+        this.user = user;
+        this.eventId = eventId;
+        this.ticketAndHolders = new ArrayList<Pair<EventTicket, EventTicketHolderList>>();
+        this.userTicketInfoMap = new HashMap<String, String[]>();
+    }
+
+    @Override
+    protected Void doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
+        event = EventDAOFacade.getEventEx(con, daos, eventId);
+        if (event == null)
+            throw new PartakeException(UserErrorCode.INVALID_NOTFOUND);
+
+        // Only owner can retrieve the participants list.
+        if (!EventParticipationListPermission.check(event, user))
+            throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_ATTENDANT_EDIT);
+
+        tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
+        for (int i = 0; i < tickets.size(); ++i) {
+            EventTicket ticket = tickets.get(i);
+            List<UserTicketEx> participations = EnrollmentDAOFacade.getEnrollmentExs(con, daos, ticket, event);
+            EventTicketHolderList list = ticket.calculateParticipationList(event, participations);
+            ticketAndHolders.add(new Pair<EventTicket, EventTicketHolderList>(ticket, list));
+
+            for (UserTicketEx participation : list.getEnrolledParticipations()) {
+                if (!userTicketInfoMap.containsKey(participation.getUserId()))
+                    userTicketInfoMap.put(participation.getUserId(), new String[tickets.size()]);
+                userTicketInfoMap.get(participation.getUserId())[i] = participation.getStatus().toHumanReadableString(false);
+            }
+            for (UserTicketEx participation : list.getSpareParticipations()) {
+                if (!userTicketInfoMap.containsKey(participation.getUserId()))
+                    userTicketInfoMap.put(participation.getUserId(), new String[tickets.size()]);
+                userTicketInfoMap.get(participation.getUserId())[i] = participation.getStatus().toHumanReadableString(true);
+            }
+            for (UserTicketEx participation : list.getCancelledParticipations()) {
+                if (!userTicketInfoMap.containsKey(participation.getUserId()))
+                    userTicketInfoMap.put(participation.getUserId(), new String[tickets.size()]);
+                userTicketInfoMap.get(participation.getUserId())[i] = participation.getStatus().toHumanReadableString(false);
+            }
+        }
+
+        return null;
+    }
+
+    public EventEx getEvent() {
+        return event;
+    }
+
+    public List<Pair<EventTicket, EventTicketHolderList>> getTicketAndHolders() {
+        return ticketAndHolders;
+    }
+
+    public Map<String, String[]> getUserTicketInfoMap() {
+        return userTicketInfoMap;
     }
 }

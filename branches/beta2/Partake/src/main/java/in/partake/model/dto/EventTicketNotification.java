@@ -1,6 +1,7 @@
 package in.partake.model.dto;
 
 import in.partake.base.DateTime;
+import in.partake.base.JSONable;
 import in.partake.model.dto.auxiliary.NotificationType;
 
 import java.util.ArrayList;
@@ -17,33 +18,33 @@ import org.apache.commons.lang.ObjectUtils;
  *
  */
 // TODO: Should use MessageCode to convert EventNotification to Text.
-public class EventTicketNotification extends PartakeModel<EventTicketNotification> {
+public class EventTicketNotification extends PartakeModel<EventTicketNotification> implements JSONable {
     private String id;
     private UUID ticketId;
+    private String eventId;
     private List<String> userIds;
     private NotificationType notificationType;
 
     private DateTime createdAt;
-    private DateTime modifiedAt;
 
     public EventTicketNotification(EventTicketNotification message) {
-        this(message.id, message.ticketId, message.userIds, message.notificationType, message.createdAt, message.modifiedAt);
+        this(message.id, message.ticketId, message.eventId, message.userIds, message.notificationType, message.createdAt);
     }
 
-    public EventTicketNotification(String id, UUID ticketId, List<String> userIds, NotificationType notificationType,  DateTime createdAt, DateTime modifiedAt) {
+    public EventTicketNotification(String id, UUID ticketId, String eventId, List<String> userIds, NotificationType notificationType,  DateTime createdAt) {
         this.id = id;
         this.ticketId = ticketId;
+        this.eventId = eventId;
         if (userIds != null)
             this.userIds = new ArrayList<String>(userIds);
         this.notificationType = notificationType;
         this.createdAt = createdAt;
-        if (modifiedAt != null)
-            this.modifiedAt = modifiedAt;
     }
 
     public EventTicketNotification(JSONObject obj) {
         this.id = obj.getString("id");
         this.ticketId = UUID.fromString(obj.getString("ticketId"));
+        this.eventId = obj.getString("eventId");
 
         this.userIds = new ArrayList<String>();
         if (userIds != null) {
@@ -54,8 +55,6 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
 
         this.notificationType = NotificationType.safeValueOf(obj.getString("notificationType"));
         this.createdAt = new DateTime(obj.getLong("createdAt"));
-        if (obj.containsKey("modifiedAt"))
-            this.modifiedAt = new DateTime(obj.getLong("modifiedAt"));
     }
 
     @Override
@@ -68,6 +67,7 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
         JSONObject obj = new JSONObject();
         obj.put("id", id);
         obj.put("ticketId", ticketId.toString());
+        obj.put("eventId", eventId);
 
         JSONArray array = new JSONArray();
         for (String userId : userIds)
@@ -77,8 +77,6 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
         obj.put("notificationType", notificationType.toString());
         if (createdAt != null)
             obj.put("createdAt", createdAt.getTime());
-        if (modifiedAt != null)
-            obj.put("modifiedAt", modifiedAt.getTime());
         return obj;
     }
 
@@ -94,10 +92,10 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
 
         if (!(ObjectUtils.equals(lhs.id,         rhs.id)))         { return false; }
         if (!(ObjectUtils.equals(lhs.ticketId,   rhs.ticketId)))   { return false; }
+        if (!(ObjectUtils.equals(lhs.eventId,    rhs.eventId)))   { return false; }
         if (!(ObjectUtils.equals(lhs.userIds,    rhs.userIds)))    { return false; }
         if (!(ObjectUtils.equals(lhs.notificationType,   rhs.notificationType)))   { return false; }
         if (!(ObjectUtils.equals(lhs.createdAt,  rhs.createdAt)))  { return false; }
-        if (!(ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt))) { return false; }
         return true;
     }
 
@@ -107,10 +105,10 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
 
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(ticketId);
+        code = code * 37 + ObjectUtils.hashCode(eventId);
         code = code * 37 + ObjectUtils.hashCode(userIds);
         code = code * 37 + ObjectUtils.hashCode(notificationType);
         code = code * 37 + ObjectUtils.hashCode(createdAt);
-        code = code * 37 + ObjectUtils.hashCode(modifiedAt);
 
         return code;
     }
@@ -126,6 +124,10 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
         return ticketId;
     }
 
+    public String getEventId() {
+        return eventId;
+    }
+
     public List<String> getUserIds() {
         return this.userIds;
     }
@@ -138,10 +140,6 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
         return createdAt;
     }
 
-    public DateTime getModifiedAt() {
-        return modifiedAt;
-    }
-
     public void setId(String id) {
         checkFrozen();
         this.id = id;
@@ -150,6 +148,11 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
     public void setTicketId(UUID ticketId) {
         checkFrozen();
         this.ticketId = ticketId;
+    }
+
+    public void setEventId(String eventId) {
+        checkFrozen();
+        this.eventId = eventId;
     }
 
     public void setUserIds(List<String> userIds) {
@@ -168,11 +171,6 @@ public class EventTicketNotification extends PartakeModel<EventTicketNotificatio
     public void setCreatedAt(DateTime createdAt) {
         checkFrozen();
         this.createdAt = createdAt;
-    }
-
-    public void setModifiedAt(DateTime modifiedAt) {
-        checkFrozen();
-        this.modifiedAt = modifiedAt;
     }
 }
 

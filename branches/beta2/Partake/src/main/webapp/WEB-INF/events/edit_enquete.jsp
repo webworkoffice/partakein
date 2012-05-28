@@ -19,10 +19,13 @@
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
     <title>アンケート</title>
 </head>
-<body>
+<body class="with-sub-nav">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
-<jsp:include page="/WEB-INF/events/_edit_manage_navigation.jsp" flush="true" />
+<jsp:include page="/WEB-INF/events/_edit_manage_navigation.jsp" flush="true">
+    <jsp:param name="NAVIGATION" value="enquete" />
+</jsp:include>
 
 <div class="page-header">
     <h1>アンケート</h1>
@@ -30,29 +33,29 @@
 </div>
 
 <div class="row" style="margin-bottom: 10px;">
-    <div class="span6 offset-half">質問</div>
-    <div class="span3">回答形式</div>
+    <div class="span12 offset1">質問</div>
+    <div class="span6">回答形式</div>
 </div>
 
-<div class="row"><div id="question-list" class="span12" style="border-bottom: 1px solid; margin-bottom: 10px;">
-</div></div>
+<div id="question-list" style="border-bottom: 1px solid; margin-bottom: 10px;">
+</div>
 
 <div id="template" style="display: none; border-top: 1px solid; padding-top: 10px; padding-bottom: 10px;">
     <div id="template-head" class="row">
-        <div id="template-question-text" class="span6 offset-half">質問文を入力してください。</div>
-        <div id="template-question-type" class="span3">テキスト (１行)</div>
-        <div class="span2-half">
+        <div id="template-question-text" class="span12 offset1">質問文を入力してください。</div>
+        <div id="template-question-type" class="span6">テキスト (１行)</div>
+        <div class="span5">
             <a href="#" id="template-show-edit"><i class="icon-pencil"></i>編集</a>
             <a href="#" id="template-remove"><i class="icon-remove"></i>削除</a>
         </div>
     </div>
     <div id="template-body" class="row" style="display: none;">
-        <div class="span9 offset-half">
+        <div class="span18 offset1">
             <form class="form-horizontal"><fieldset>
                 <div class="control-group">
                     <label class="control-label">質問文</label>
                     <div class="controls">
-                        <input id="template-question-input" type="text" class="span6">
+                        <input id="template-question-input" type="text" class="span12">
                     </div>
                 </div>
                 <div class="control-group">
@@ -78,13 +81,13 @@
                 </div>
             </fieldset></form>
         </div>
-        <div class="span2-half">
+        <div class="span5">
             <a href="#" id="template-hide-edit"><i class="icon-ok"></i>編集終了</a>
         </div>
     </div>
 </div>
 
-<div class="row"><div class="span11 offset-half">
+<div class="row"><div class="span23 offset1">
     <form class="form-horizontal"><fieldset>
         <a id="add-new-question">＋ 新しい質問を追加</a>
     </fieldset></form>
@@ -208,7 +211,7 @@ for (var i = 0; i < initialData.length; ++i) {
 
 <form><fieldset>
     <div class="form-actions">
-        <input type="button" id="enquete-submit" class="btn btn-danger-flat" value="保存">
+        <input type="button" id="enquete-submit" class="btn btn-primary" value="保存">
         <span id="enquete-submit-info" class="text-info"></span>
     </div>
 </fieldset></form>
@@ -245,6 +248,7 @@ $('#enquete-submit').click(function() {
 });
 </script>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

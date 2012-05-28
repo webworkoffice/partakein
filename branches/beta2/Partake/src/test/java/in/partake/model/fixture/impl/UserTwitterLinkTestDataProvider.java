@@ -44,12 +44,12 @@ public class UserTwitterLinkTestDataProvider extends TestDataProvider<UserTwitte
 
         dao.put(con, new UserTwitterLink(DEFAULT_TWITTER_LINK_ID, DEFAULT_TWITTER_ID, DEFAULT_USER_ID, DEFAULT_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/"));
         dao.put(con, new UserTwitterLink(DEFAULT_ANOTHER_TWITTER_LINK_ID, DEFAULT_ANOTHER_TWITTER_ID, DEFAULT_ANOTHER_USER_ID, DEFAULT_ANOTHER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/"));
-        dao.put(con, new UserTwitterLink(DEFAULT_ANOTHER_TWITTER_LINK_ID, ADMIN_USER_TWITTER_ID, ADMIN_USER_ID, ADMIN_USER_SCREENNAME, "testUser 2", "accessToken", "accessTokenSecret", "http://www.example.com/"));
+        dao.put(con, new UserTwitterLink(ADMIN_USER_TWITTER_LINK_ID, ADMIN_USER_TWITTER_ID, ADMIN_USER_ID, ADMIN_USER_SCREENNAME, "testUser 2", "accessToken", "accessTokenSecret", "http://www.example.com/"));
         dao.put(con, new UserTwitterLink(USER_WITHOUT_PREF_TWITTER_LINK_ID, USER_WITHOUT_PREF_TWITTER_ID, USER_WITHOUT_PREF_ID, USER_WITHOUT_PREF_SCREENNAME, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/"));
         dao.put(con, new UserTwitterLink(USER_WITH_PRIVATE_PREF_TWITTER_LINK_ID, USER_WITH_PRIVATE_PREF_TWITTER_ID, USER_WITH_PRIVATE_PREF_ID, USER_WITHOUT_PREF_SCREENNAME, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/"));
 
-        dao.put(con, new UserTwitterLink(EVENT_OWNER_TWITTER_LINK_ID, EVENT_OWNER_TWITTER_ID, USER_WITH_PRIVATE_PREF_ID, EVENT_OWNER_TWITTER_SCREENNAME, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/"));
-        dao.put(con, new UserTwitterLink(EVENT_EDITOR_TWITTER_LINK_ID, EVENT_EDITOR_TWITTER_ID, USER_WITH_PRIVATE_PREF_ID, EVENT_EDITOR_TWITTER_SCREENNAME, "testUser 4", "accessToken", "accessTokenSecret", "http://www.example.com/"));
+        dao.put(con, new UserTwitterLink(EVENT_OWNER_TWITTER_LINK_ID, EVENT_OWNER_TWITTER_ID, EVENT_OWNER_ID, EVENT_OWNER_TWITTER_SCREENNAME, "testUser 3", "accessToken", "accessTokenSecret", "http://www.example.com/"));
+        dao.put(con, new UserTwitterLink(EVENT_EDITOR_TWITTER_LINK_ID, EVENT_EDITOR_TWITTER_ID, EVENT_EDITOR_ID, EVENT_EDITOR_TWITTER_SCREENNAME, "testUser 4", "accessToken", "accessTokenSecret", "http://www.example.com/"));
         dao.put(con, new UserTwitterLink(EVENT_COMMENTOR_TWITTER_LINK_ID, EVENT_COMMENTOR_TWITTER_ID, EVENT_COMMENTOR_ID, EVENT_COMMENTOR_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/"));
         dao.put(con, new UserTwitterLink(EVENT_ENROLLED_USER_TWITTER_LINK_ID, EVENT_ENROLLED_USER_TWITTER_ID, EVENT_ENROLLED_USER_ID, EVENT_ENROLLED_USER_TWITTER_SCREENNAME, "testUser 4", "accessToken", "accessTokenSecret", "http://www.example.com/"));
 
@@ -60,7 +60,7 @@ public class UserTwitterLinkTestDataProvider extends TestDataProvider<UserTwitte
         dao.put(con, new UserTwitterLink(ATTENDANCE_ABSENT_USER_TWITTER_LINK_ID, ATTENDANCE_ABSENT_USER_TWITTER_ID, ATTENDANCE_ABSENT_USER_ID, ATTENDANCE_ABSENT_USER_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/"));
         dao.put(con, new UserTwitterLink(ATTENDANCE_UNKNOWN_USER_TWITTER_LINK_ID, ATTENDANCE_UNKNOWN_USER_TWITTER_ID, ATTENDANCE_UNKNOWN_USER_ID, ATTENDANCE_UNKNOWN_USER_TWITTER_SCREENNAME, "partakein", "accessToken", "accessTokenSecret", "http://www.example.com/"));
 
-        dao.put(con, new UserTwitterLink(DEFAULT_SENDER_TWITTER_LINK_ID, DEFAULT_SENDER_TWITTER_ID, ATTENDANCE_UNKNOWN_USER_ID, DEFAULT_SENDER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/"));
+        dao.put(con, new UserTwitterLink(DEFAULT_SENDER_TWITTER_LINK_ID, DEFAULT_SENDER_TWITTER_ID, DEFAULT_SENDER_ID, DEFAULT_SENDER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/"));
         dao.put(con, new UserTwitterLink(DEFAULT_RECEIVER_TWITTER_LINK_ID, DEFAULT_RECEIVER_TWITTER_ID, DEFAULT_RECEIVER_ID, DEFAULT_RECEIVER_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/"));
 
     }

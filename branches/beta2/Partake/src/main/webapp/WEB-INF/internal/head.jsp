@@ -11,12 +11,12 @@
 <link rel="stylesheet" type="text/css" href="/css/style.css?version=<%= Helper.getCssVersion() %>" media="screen,print" />
 <link rel="shortcut icon" href="/images/favicon.ico">
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<%-- <script type="text/javascript" src="http://www.google.com/jsapi"></script> --%>
 
-<!-- for IE6-8 support of HTML5 elements -->
+<%-- Support HTML5 elements for IE6-8 support --%>
 <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
@@ -27,12 +27,10 @@
         "/js/vendor/jquery.ui.widget.js",
         "/js/jquery.iframe-transport.js",
         "/js/jquery.fileupload.js",
-        "/js/jquery.switchHat.js",
         "/js/jquery-ui-timepicker-addon.js",
         "/js/jquery-ui-timepicker-ja.js",
         "/js/jquery.json.2.3.js",
         "/js/jquery.masonry.min.js",
-        "/js/scrolltopcontrol.js",
         "/js/jquery.fixup.js",
         "/js/bootstrap.min.js"
         ) %>

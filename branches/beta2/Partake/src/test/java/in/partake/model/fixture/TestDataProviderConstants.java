@@ -12,7 +12,7 @@ public interface TestDataProviderConstants {
     public static final String DEFAULT_TWITTER_SCREENNAME = "testUser";
     public static final UUID DEFAULT_USER_OPENID_ID = new UUID(101, 1);
     public static final String DEFAULT_USER_OPENID_IDENTIFIER = "http://www.example.com/ident";
-    public static final UUID DEFAULT_USER_OPENID_ALTERNATIVE_ID = new UUID(101, 1);
+    public static final UUID DEFAULT_USER_OPENID_ALTERNATIVE_ID = new UUID(101, 2);
     public static final String DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER = "http://www.example.com/alternative";
 
     // Users who do not have any specific rolls.
@@ -62,7 +62,7 @@ public interface TestDataProviderConstants {
     public static final String EVENT_COMMENTOR_ID = new UUID(1, 30).toString();
     public static final UUID EVENT_COMMENTOR_TWITTER_LINK_ID = new UUID(100, 30);
     public static final long EVENT_COMMENTOR_TWITTER_ID = 30;
-    public static final String EVENT_COMMENTOR_TWITTER_SCREENNAME = "eventEditor";
+    public static final String EVENT_COMMENTOR_TWITTER_SCREENNAME = "eventCommentor";
 
     public static final String EVENT_ENROLLED_USER_ID = new UUID(1, 40).toString();
     public static final UUID EVENT_ENROLLED_USER_TWITTER_LINK_ID = new UUID(100, 40);
@@ -116,6 +116,8 @@ public interface TestDataProviderConstants {
     public static final String JAPANESE_EVENT_ID = new UUID(2, 20).toString();
     public static final String UNIQUEIDENTIFIER_EVENT_ID = new UUID(2, 30).toString();
     public static final String UNPUBLISHED_EVENT_ID = new UUID(2, 40).toString();
+    public static final String PUBLISHED_EVENT_ID = new UUID(2, 41).toString();
+    public static final String NO_PARTICIPANTS_EVENT_ID = new UUID(2, 50).toString();
 
     // Event Tickets
     public static final UUID INVALID_EVENT_TICKET_ID = new UUID(21, -1);
@@ -124,6 +126,7 @@ public interface TestDataProviderConstants {
     public static final UUID JAPANESE_EVENT_TICKET_ID = new UUID(21, 20);
     public static final UUID UNIQUEIDENTIFIER_EVENT_TICKET_ID = new UUID(21, 30);
     public static final UUID UNPUBLISHED_EVENT_TICKET_ID = new UUID(21, 40);
+    public static final UUID NO_PARTICIPANTS_EVENT_TICKET_ID = new UUID(21, 50);
 
     // Event Comments
     public static final String INVALID_COMMENT_ID = new UUID(4, -1).toString();

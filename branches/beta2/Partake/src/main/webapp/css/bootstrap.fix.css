@@ -59,6 +59,10 @@
         padding-top: 50px;
     }
 
+    body.with-sub-nav {
+        padding-top: 90px;
+    }
+
     .event-promotion-container {
         position: absolute;
         top: -10px;
@@ -80,6 +84,10 @@
     .editing-nav {
         margin-left: 10px;
     }
+}
+
+.no-width-limit {
+    width: auto !important;
 }
 
 .nav.subnav {
@@ -161,92 +169,6 @@
     margin-top: 10px;
 }
 
-.well.thin {
-    margin-bottom: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-.span-half {
-    width: 30px;
-}
-.span1-half {
-    width: 110px;
-}
-.span2-half {
-    width: 190px;
-}
-.offset-half {
-    margin-left: 50px;
-}
-.offset1-half {
-  margin-left: 130px;
-}
-.offset2-half {
-  margin-left: 210px;
-}
-
-
-input.span1-half,textarea.span1-half,.uneditable-input.span1-half {
-    width: 90px;
-}
-
-input.span2-half,textarea.span2-half,.uneditable-input.span2-half {
-    width: 170px;
-}
-
-.well .span1 {
-    width: 20px;
-}
-
-.well .span-onehalf {
-    width: 60px;
-}
-
-.well .span2 {
-    width: 100px;
-}
-
-.well .span3 {
-    width: 180px;
-}
-
-.well .span4 {
-    width: 260px;
-}
-
-.well .span5 {
-    width: 340px;
-}
-
-.well .span6 {
-    width: 440px;
-}
-
-.well .span7 {
-    width: 500px;
-}
-
-.well .span8 {
-    width: 580px;
-}
-
-.well .span9 {
-    width: 660px;
-}
-
-.well .span10 {
-    width: 740px;
-}
-
-.well .span11 {
-    width: 820px;
-}
-
-.well .span12 {
-    width: 900px;
-}
-
 h2 {
     padding-bottom: 5px;
 }
@@ -314,17 +236,6 @@ div.event-nav {
 
 div.event-nav .tab-pane {
     min-height: 200px;
-}
-
-div.event-body {
-    background-color: white;
-    margin-left: -10px;
-    margin-right: -10px;
-    padding: 0 10px 0 10px;
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    behavior: url(border-radius.htc);
 }
 
 footer {

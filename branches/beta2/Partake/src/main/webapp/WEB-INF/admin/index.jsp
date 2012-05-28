@@ -1,11 +1,12 @@
 <%@page import="in.partake.controller.action.admin.AdminPageAction"%>
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
-
-<!DOCTYPE html>
-
+<%@page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <%@page import="in.partake.resource.Constants"%>
 <%@page import="java.text.NumberFormat"%>
 <%@page import="static in.partake.base.Util.h"%>
+<%
+    AdminPageAction action = (AdminPageAction) request.getAttribute(Constants.ATTR_ACTION);
+%>
+<!DOCTYPE html>
 
 <html lang="ja">
 <head>
@@ -14,17 +15,15 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
 <div class="page-header">
     <h1>Administrator Mode</h1>
 </div>
 
-<%
-    AdminPageAction action = (AdminPageAction) request.getAttribute(Constants.ATTR_ACTION);
-%>
 
 <div class="row">
-    <div class="span6">
+    <div class="span12">
         <h2>Count of users</h2>
         <dl>
             <dt>User</dt><dd><%= action.getCountUser() %></dd>
@@ -44,7 +43,7 @@
             <dt>Sum of all pages</dt><dd><%= format.format(hatenaBookmarkCount) %></dd>
         </dl>
  --%>	</div>
-    <div class="span6">
+    <div class="span12">
         <h2>いろんなリンク</h2>
         <ul>
             <li><a href="<%= request.getContextPath() %>/admin/recreateEventIndex">Luceneインデックス の再生成</a></li>
@@ -52,6 +51,7 @@
     </div>
 </div>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

@@ -13,9 +13,6 @@ import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.User;
-
-import java.util.Date;
-
 import net.sf.json.JSONObject;
 
 class EntityUserMapper extends Postgres9EntityDataMapper<User> {

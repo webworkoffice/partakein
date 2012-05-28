@@ -13,4 +13,6 @@ public interface IEventTicketNotificationAccess extends IAccess<EventTicketNotif
 
     public List<EventTicketNotification> findByTicketId(PartakeConnection con, UUID ticketId, int offset, int limit) throws DAOException;
     public EventTicketNotification findLastNotification(PartakeConnection con, UUID ticketId, NotificationType type) throws DAOException;
+
+    public List<EventTicketNotification> findByEventId(PartakeConnection con, String eventId, int offset, int limit) throws DAOException;
 }

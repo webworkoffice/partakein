@@ -71,6 +71,18 @@ public final class Util {
         return array;
     }
 
+    public static <T extends SafeJSONable> JSONArray toSafeJSONArray(List<T> list) {
+        if (list == null)
+            return null;
+
+        JSONArray array = new JSONArray();
+        for (SafeJSONable jsonable : list)
+            array.add(jsonable.toSafeJSON());
+
+        return array;
+    }
+
+
     public static Boolean parseBooleanParameter(String value) {
         if ("true".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value) || "checked".equalsIgnoreCase(value))
             return true;

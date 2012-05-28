@@ -72,8 +72,13 @@ body {
   })();
 </script>
 </head>
-<body class="event">
+<body
+    <% if (user != null && EventEditPermission.check(event, user)) { %>
+        class="with-sub-nav"
+    <% } %>
+>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
 <% if (user != null && EventEditPermission.check(event, user)) { %>
     <jsp:include page="/WEB-INF/events/_show_manage_navigation.jsp" flush="true" />
@@ -85,6 +90,7 @@ body {
     <h1>
         <% if (event.isPrivate()) { %><img src="<%= request.getContextPath() %>/images/private.png" title="非公開イベント" /><% } %>
         <%= h(event.getTitle()) %>
+        <% if (event.isDraft()) { %><span class="label label-important">このイベントはまだ公開されていません</span><% } %>
     </h1>
     <p>
         <% if (!StringUtils.isEmpty(event.getSummary())) { %>
@@ -127,7 +133,7 @@ body {
 <jsp:include page="/WEB-INF/events/_show_enroll.jsp" flush="true" />
 
 <div class="row">
-    <div class="span4 tabbable pull-right">
+    <div class="span8 tabbable pull-right">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#side-information" data-toggle="tab">イベント情報</a></li>
             <li><a href="#side-participants" data-toggle="tab">参加者情報</a></li>
@@ -142,10 +148,10 @@ body {
         </div>
     </div>
 
-    <div class="span8">
+    <div class="span16">
         <% if (event.getForeImageId() != null) { %>
         <div class="row">
-            <div class="span8">
+            <div class="span16">
                 <div class="event-image">
                     <img id="event-image-image" src="/images/<%= event.getForeImageId() %>" />
                 </div>
@@ -179,7 +185,7 @@ body {
                 </div>
             </div>
         </div>
-    </div><%-- end of .span8 --%>
+    </div><%-- end of .span16 --%>
 </div>
 
 <jsp:include page="/WEB-INF/events/_show_enroll.jsp" flush="true" />
@@ -188,7 +194,7 @@ body {
 
 <jsp:include page="/WEB-INF/events/_show_forms.jsp" flush="true" />
 
+</div>
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
-
 </body>
 </html>

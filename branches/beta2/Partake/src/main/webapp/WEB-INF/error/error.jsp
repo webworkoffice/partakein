@@ -14,8 +14,9 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true">
-    <jsp:param value="NO_HEADER_MESSAGES" name="true" />
+    <jsp:param name="NO_HEADER_MESSAGES" value="true" />
 </jsp:include>
+<div class="container">
 
 <div class="page-header">
     <h1>エラーが発生しました</h1>
@@ -49,6 +50,7 @@
 
 <p><a href="/">トップに戻る</a></p>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

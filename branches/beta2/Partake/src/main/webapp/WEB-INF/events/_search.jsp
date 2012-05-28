@@ -7,15 +7,15 @@
 
 <% if ("simple".equalsIgnoreCase((String) request.getParameter("FORM_TYPE"))) { %>
 <form class="well form-search">
-    <p style="text-align: center;"><span class="span3" style="float: none; padding-right: 20px;">イベント検索</span>
-        <input id="search-term" type="text" class="span6 search-query">
-        <button id="search-button" type="button" class="btn btn-primary span3" style="float: none">Search</button>
+    <p style="text-align: center;"><span class="span6" style="float: none; padding-right: 20px;">イベント検索</span>
+        <input id="search-term" type="text" class="span12 search-query">
+        <button id="search-button" type="button" class="btn btn-primary span6" style="float: none">Search</button>
     </p>
 </form>
 <script>
     function doRenderNoResults() {
         $('#searched-events').append($(
-            '<div class="span12">' +
+            '<div class="span24">' +
             '<p>ヒットしませんでした。別の単語で試してみてください。</p>' +
             '<p><a href="/events/search">より詳しい検索はこちらから。</a></p>' +
             '</div>'
@@ -64,7 +64,7 @@
 <script>
     function doRenderNoResults() {
         $('#searched-events').append($(
-            '<div class="span12">' +
+            '<div class="span24">' +
             '<p>ヒットしませんでした。別の単語で試してみてください。</p>' +
             '</div>'
         ));
@@ -77,7 +77,7 @@
 <div id="searched-events" class="row" style="position: relative;">
 </div>
 
-<div id="template" class="span3 masonry-box" style="margin-bottom: 5px; display:none;"><div class="thumbnail">
+<div id="template" class="span6 masonry-box" style="margin-bottom: 5px; display:none;"><div class="thumbnail">
     <a id="template-image-link" href="/events/some-id">
         <img id="template-image" src="/images/thumbnail/id" alt=""  width="220" height="220" />
     </a>
@@ -153,7 +153,6 @@ function doSearch() {
     partake.event.search(query, category, sortOrder, beforeDeadlineOnly, 30)
     .done(function(json) {
         $('#textareaToSavetemporaryJSON').val($.toJSON(json));
-        console.log($.toJSON(json));
         render(json);
     })
     .fail(partake.defaultFailHandler);
@@ -170,7 +169,7 @@ $(function() {
     try {
         var jsonText = $('#textareaToSavetemporaryJSON').val();
         if (jsonText == null || jsonText == "") {
-            // No value was saved.
+            // No value was saved. We do default search.
             doSearch();
             return;
         }
@@ -179,7 +178,6 @@ $(function() {
         render(json);
     } catch (e) {
         console.log(e);
-        // Do nothing.
     }
 });
 

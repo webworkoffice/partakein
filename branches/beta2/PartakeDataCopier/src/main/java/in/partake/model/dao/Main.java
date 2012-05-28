@@ -1,21 +1,18 @@
 package in.partake.model.dao;
 
-import in.partake.app.PartakeApp;
 import in.partake.base.DateTime;
-import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
 import in.partake.base.Util;
-import in.partake.model.access.DBAccess;
 import in.partake.model.dao.postgres9.Postgres9Connection;
 import in.partake.model.dao.postgres9.Postgres9ConnectionPool;
 import in.partake.model.dao.postgres9.Postgres9DAOFactory;
-import in.partake.model.daofacade.EventDAOFacade;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventComment;
 import in.partake.model.dto.EventFeed;
 import in.partake.model.dto.EventMessage;
 import in.partake.model.dto.EventTicket;
+import in.partake.model.dto.EventTicketNotification;
 import in.partake.model.dto.Message;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserCalendarLink;
@@ -28,6 +25,7 @@ import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.EnqueteQuestion;
 import in.partake.model.dto.auxiliary.EventRelation;
 import in.partake.model.dto.auxiliary.ModificationStatus;
+import in.partake.model.dto.auxiliary.NotificationType;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.dto.auxiliary.TicketApplicationEnd;
 import in.partake.model.dto.auxiliary.TicketApplicationStart;
@@ -64,13 +62,6 @@ public class Main {
         factory = new Postgres9DAOFactory();
         pool = new Postgres9ConnectionPool();
         doCopy();
-
-        new DBAccess<Void>() {
-            protected Void doExecute(PartakeConnection con, in.partake.model.IPartakeDAOs daos) throws DAOException, PartakeException {
-                EventDAOFacade.recreateEventIndex(con, daos, PartakeApp.getEventSearchService());
-                return null;
-            }
-        }.execute();
     }
 
     private static void doCopy() throws Exception {
@@ -391,6 +382,7 @@ public class Main {
         int cnt = 0;
         while (rs.next()) {
             System.out.println(++cnt + ": UserTicket");
+            List<UUID> ticketIds = new ArrayList<UUID>();
             String eventId = eventId("id", rs);
 
             List<Enrollment> enrollments = new ArrayList<Enrollment>();
@@ -399,14 +391,21 @@ public class Main {
                 ps2.setString(1, eventId);
                 ResultSet rs2 = ps2.executeQuery();
                 while (rs2.next()) {
+                    int statusVal = rs2.getInt("status");
+                    ParticipationStatus status = ParticipationStatus.values()[statusVal];
+                    int modificationStatusVal = rs2.getInt("modificationStatus");
+                    ModificationStatus modificationStatus = ModificationStatus.values()[modificationStatusVal];
+                    int attendanceStatusVal = rs2.getInt("attendanceStatus");
+                    AttendanceStatus attendanceStatus = AttendanceStatus.values()[attendanceStatusVal];
+
                     Enrollment enrollment = new Enrollment(
                             rs2.getString("userId"),
                             eventId,
                             rs2.getString("comment"),
-                            ParticipationStatus.safeValueOf(rs2.getString("comment")),
+                            status,
                             rs2.getBoolean("vip"),
-                            ModificationStatus.safeValueOf(rs2.getString("modificationStatus")),
-                            AttendanceStatus.safeValueOf(rs2.getString("attendanceStatus")),
+                            modificationStatus,
+                            attendanceStatus,
                             rs2.getTimestamp("modifiedAt"));
                     enrollments.add(enrollment);
                 }
@@ -490,7 +489,8 @@ public class Main {
             if (countVip > 0) {
                 // If there is a vip user, create a vip ticket here.
                 UUID ticketId = UUID.randomUUID();
-                EventTicket ticket = new EventTicket(ticketId, eventId, "VIP Ticket",
+                ticketIds.add(ticketId);
+                EventTicket ticket = new EventTicket(ticketId, eventId, 1, "VIP",
                         TicketApplicationStart.ANYTIME, 0, (DateTime) null,
                         rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
                         0, rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
@@ -507,6 +507,7 @@ public class Main {
                             e.getUserId(), ticketId, eventId,
                             e.getComment(), e.getStatus(),
                             e.getModificationStatus(), e.getAttendanceStatus(),
+                            (List<String>) null,
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()));
@@ -517,7 +518,8 @@ public class Main {
 
             if (countPri > 0) {
                 UUID ticketId = UUID.randomUUID();
-                EventTicket ticket = new EventTicket(ticketId, eventId, "Priority Ticket",
+                ticketIds.add(ticketId);
+                EventTicket ticket = new EventTicket(ticketId, eventId, 2, "優先チケット",
                         TicketApplicationStart.ANYTIME, 0, (DateTime) null,
                         rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
                         0, rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? new DateTime(rs.getTimestamp("deadline").getTime()) : null,
@@ -534,6 +536,7 @@ public class Main {
                             e.getUserId(), ticketId, eventId,
                             e.getComment(), e.getStatus(),
                             e.getModificationStatus(), e.getAttendanceStatus(),
+                            (List<String>) null,
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()));
@@ -545,7 +548,8 @@ public class Main {
             // Normal Ticket
             {
                 UUID ticketId = UUID.randomUUID();
-                EventTicket ticket = new EventTicket(ticketId, eventId, "チケット",
+                ticketIds.add(ticketId);
+                EventTicket ticket = new EventTicket(ticketId, eventId, 3, "チケット",
                         TicketApplicationStart.ANYTIME, 0, (DateTime) null,
                         rs.getTimestamp("deadline") != null && rs.getTimestamp("deadline").getTime() > 0 ? TicketApplicationEnd.TILL_CUSTOM_DAY : TicketApplicationEnd.TILL_TIME_BEFORE_EVENT,
                         0,
@@ -564,11 +568,66 @@ public class Main {
                             e.getUserId(), ticketId, eventId,
                             e.getComment(), e.getStatus(),
                             e.getModificationStatus(), e.getAttendanceStatus(),
+                            (List<String>) null,
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()),
                             new DateTime(e.getModifiedAt().getTime()));
                     factory.getEnrollmentAccess().put(pcon, userTicket);
                 }
+            }
+
+            // Copy EventReminder
+            {
+                PreparedStatement ps2 = con.prepareStatement("SELECT * from EventReminders WHERE eventId = ?");
+                ps2.setString(1, eventId);
+                ResultSet rs2 = ps2.executeQuery();
+                while (rs2.next()) {
+                    Timestamp sentDateOfbeforeDeadlineHalfDay = rs2.getTimestamp("sentdateofbeforedeadlinehalfday");
+                    if (sentDateOfbeforeDeadlineHalfDay != null) {
+                        for (UUID ticketId : ticketIds) {
+                            EventTicketNotification t = new EventTicketNotification(
+                                    UUID.randomUUID().toString(),
+                                    ticketId,
+                                    eventId,
+                                    (List<String>) (new ArrayList<String>()),
+                                    NotificationType.HALF_DAY_BEFORE_REMINDER_FOR_RESERVATION,
+                                    new DateTime(sentDateOfbeforeDeadlineHalfDay.getTime()));
+                            factory.getEventNotificationAccess().put(pcon, t);
+                        }
+                    }
+
+                    Timestamp sentdateofbeforedeadlineoneday = rs2.getTimestamp("sentdateofbeforedeadlineoneday");
+                    if (sentdateofbeforedeadlineoneday != null) {
+                        for (UUID ticketId : ticketIds) {
+                            EventTicketNotification t = new EventTicketNotification(
+                                    UUID.randomUUID().toString(),
+                                    ticketId,
+                                    eventId,
+                                    (List<String>) (new ArrayList<String>()),
+                                    NotificationType.ONE_DAY_BEFORE_REMINDER_FOR_RESERVATION,
+                                    new DateTime(sentdateofbeforedeadlineoneday.getTime()));
+                            factory.getEventNotificationAccess().put(pcon, t);
+                        }
+                    }
+
+
+                    Timestamp sentdateofbeforetheday = rs2.getTimestamp("sentdateofbeforetheday");
+                    if (sentdateofbeforetheday != null) {
+                        for (UUID ticketId : ticketIds) {
+                            EventTicketNotification t = new EventTicketNotification(
+                                    UUID.randomUUID().toString(),
+                                    ticketId,
+                                    eventId,
+                                    (List<String>) (new ArrayList<String>()),
+                                    NotificationType.EVENT_ONEDAY_BEFORE_REMINDER,
+                                    new DateTime(sentdateofbeforetheday.getTime()));
+                            factory.getEventNotificationAccess().put(pcon, t);
+                        }
+                    }
+
+                }
+                rs2.close();
+                ps2.close();
             }
         }
 

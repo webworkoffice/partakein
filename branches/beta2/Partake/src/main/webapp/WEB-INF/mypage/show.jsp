@@ -18,13 +18,14 @@
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
 <div class="page-header">
     <h1><%=h(user.getTwitterScreenName())%></h1>
 </div>
 
 <div class="row tabbable">
-    <div class="span3"><div class="well" style="padding: 8px 0;">
+    <div class="span6"><div class="well" style="padding: 8px 0;">
         <ul class="nav nav-list tabs">
             <li class="nav-header">管理イベント</li>
             <li class="active"><a href="#event-owner" data-toggle="tab">主催イベント</a></li>
@@ -40,7 +41,7 @@
             <li><a href="#preference" data-toggle="tab">各種設定</a></li>
         </ul>
     </div></div>
-    <div class="span9"><div class="tab-content">
+    <div class="span18"><div class="tab-content">
         <div class="tab-pane active" id="event-owner">
             <jsp:include page="/WEB-INF/mypage/_event_table.jsp" flush="true">
                 <jsp:param name="ident" value="owner" />
@@ -89,7 +90,7 @@
 })();
 </script>
 
+</div>
 <jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
-
 </body>
 </html>

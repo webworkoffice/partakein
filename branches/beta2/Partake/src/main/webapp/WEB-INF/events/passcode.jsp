@@ -7,29 +7,30 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-	<jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
-	<title>パスコードを入れてください</title>
+    <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
+    <title>パスコードを入れてください</title>
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container">
 
 <% EventPasscodeAction action = (EventPasscodeAction) request.getAttribute(Constants.ATTR_ACTION); %>
 
 <div class="page-header">
-	<h1>イベントを表示するためにパスコードを入れてください。</h1>
+    <h1>イベントを表示するためにパスコードを入れてください。</h1>
 </div>
 
 <div class="row">
-	<div class="span12">
-		<form method="post" action="/events/passcode" id="passcode-checking-form">
-			<%= Helper.tokenTags() %>
-			<input type="hidden" name="eventId" value="<%= h(action.getEventId()) %>" />
-		    <label for="passcode">パスコード:</label><input id="passcode-checking" name="passcode" autofocus="autofocus" /><br />
-		    <input type="submit" />
-		</form>
-	</div>
+    <div class="span12">
+        <form method="post" action="/events/passcode" id="passcode-checking-form">
+            <%= Helper.tokenTags() %>
+            <input type="hidden" name="eventId" value="<%= h(action.getEventId()) %>" />
+            <label for="passcode">パスコード:</label><input id="passcode-checking" name="passcode" autofocus="autofocus" /><br />
+            <input type="submit" />
+        </form>
+    </div>
 </div>
 
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div>
 </body>
 </html>

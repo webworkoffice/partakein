@@ -6,7 +6,7 @@
 
 <struts>
     <!-- For Debugging. These setting should be removed when releasing. -->
-    <!-- constant name="struts.devMode" value="true" -->
+    <constant name="struts.devMode" value="true" />
     <!-- Use partake theme -->
     <constant name="struts.ui.theme" value="partake" />
 
@@ -135,7 +135,7 @@
         <action name="edit/enquete/*" class="in.partake.controller.action.event.EventEnqueteEditAction">
             <param name="eventId">{1}</param>
         </action>
-        <action name="edit/permission/*" class="in.partake.controller.action.event.EventPermissionEditAction">
+        <action name="edit/privacy/*" class="in.partake.controller.action.event.EventPrivacyEditAction">
             <param name="eventId">{1}</param>
         </action>
 
@@ -145,16 +145,10 @@
         <action name="passcode" class="in.partake.controller.action.event.EventPasscodeAction" />
 
         <!-- Event Participants -->
-        <!-- URL はきれいにしたいな... -->
-        <action name="participants/*" class="in.partake.controller.action.event.ShowParticipantsCSVAction">
+        <action name="participants/csv/*" class="in.partake.controller.action.event.ShowParticipantsCSVAction">
             <param name="eventId">{1}</param>
         </action>
-
-        <action name="showParticipants/*" class="in.partake.controller.action.event.ShowParticipantsAction">
-            <param name="eventId">{1}</param>
-        </action>
-
-        <action name="printParticipants/*" class="in.partake.controller.action.event.PrintParticipantsAction">
+        <action name="participants/*" class="in.partake.controller.action.event.ShowParticipantsAction">
             <param name="eventId">{1}</param>
         </action>
 
@@ -225,22 +219,26 @@
         <action name="get" class="in.partake.controller.api.event.GetAPI" /> <!-- DEPRECATED -->
 
         <action name="create" class="in.partake.controller.api.event.CreateAPI" />
+        <action name="copy" class="in.partake.controller.api.event.CopyAPI" />
         <action name="modify" class="in.partake.controller.api.event.ModifyAPI" />
+        <action name="modifyEnquete" class="in.partake.controller.api.event.ModifyEnqueteAPI" />
         <action name="publish" class="in.partake.controller.api.event.PublishAPI" />
         <action name="remove" class="in.partake.controller.api.event.RemoveAPI" />
-
-        <action name="apply" class="in.partake.controller.api.event.ApplyAPI" />
-
-        <action name="attend" class="in.partake.controller.api.event.AttendAPI" />
-        <action name="removeAttendant" class="in.partake.controller.api.event.RemoveAttendantAPI" />
+        <action name="search" class="in.partake.controller.api.event.SearchAPI" />
 
         <action name="sendMessage" class="in.partake.controller.api.event.SendMessageAPI" />
 
         <action name="postComment" class="in.partake.controller.api.event.PostCommentAPI" />
         <action name="removeComment" class="in.partake.controller.api.event.RemoveCommentAPI" />
 
-        <action name="modifyEnquete" class="in.partake.controller.api.event.ModifyEnqueteAPI" />
+        <action name="getNotifications" class="in.partake.controller.api.event.GetNotificationsAPI" />
+    </package>
 
-        <action name="search" class="in.partake.controller.api.event.SearchAPI" />
+    <!-- Ticket API -->
+    <package name="ticket-api" namespace="/api/ticket" extends="partake-api-default">
+        <action name="apply" class="in.partake.controller.api.ticket.ApplyAPI" />
+
+        <action name="attend" class="in.partake.controller.api.ticket.AttendAPI" />
+        <action name="removeAttendant" class="in.partake.controller.api.ticket.RemoveAttendantAPI" />
     </package>
 </struts>

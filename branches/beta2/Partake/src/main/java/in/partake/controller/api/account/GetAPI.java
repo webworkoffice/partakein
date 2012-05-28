@@ -1,6 +1,7 @@
 package in.partake.controller.api.account;
 
 import in.partake.base.PartakeException;
+import in.partake.base.Util;
 import in.partake.controller.api.AbstractPartakeAPI;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
@@ -26,7 +27,7 @@ public class GetAPI extends AbstractPartakeAPI {
 
         JSONObject obj = user.toSafeJSON();
         obj.put("preference", transaction.getPreference().toSafeJSON());
-        obj.put("openId", transaction.getOpenIds());
+        obj.put("openIds", Util.toJSONArray(transaction.getOpenIds()));
         return renderOK(obj);
     }
 }

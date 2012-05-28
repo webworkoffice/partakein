@@ -71,10 +71,11 @@ public class GetAPITest extends APIControllerTest {
         Assert.assertEquals(pref.tweetsAttendanceAutomatically(), prefObj.getBoolean("tweetingAttendanceAutomatically"));
 
         // Checks OpenIds
-        JSONArray array = obj.getJSONArray("openId");
+        JSONArray array = obj.getJSONArray("openIds");
         List<String> openIds = new ArrayList<String>();
         for (int i = 0; i < array.size(); ++i)
-            openIds.add(array.getString(i));
+            openIds.add(array.getJSONObject(i).getString("identifier"));
+
         assertThat(openIds, hasItem(TestDataProvider.DEFAULT_USER_OPENID_IDENTIFIER));
         assertThat(openIds, hasItem(TestDataProvider.DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER));
     }

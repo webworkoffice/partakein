@@ -20,6 +20,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
     private UUID id;
     private String eventId;
 
+    private int order;
     private String name;
 
     private TicketApplicationStart applicationStart;
@@ -40,7 +41,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
     private DateTime modifiedAt;
 
     public static EventTicket createDefaultTicket(UUID id, String eventId) {
-        return new EventTicket(id, eventId, "自由席",
+        return new EventTicket(id, eventId, 1, "自由席",
                 TicketApplicationStart.ANYTIME, 0, null,
                 TicketApplicationEnd.TILL_TIME_BEFORE_EVENT, 0, null,
                 TicketPriceType.FREE, 0,
@@ -48,7 +49,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
                 TimeUtil.getCurrentDateTime(), null);
     }
 
-    public EventTicket(UUID id, String eventId, String name,
+    public EventTicket(UUID id, String eventId, int order, String name,
             TicketApplicationStart applicationStart, int applicationStartDayBeforeEvent, DateTime customApplicationStartDate,
             TicketApplicationEnd applicationEnd, int applicationEndDayBeforeEvent, DateTime customApplicationEndDate,
             TicketPriceType priceType, int price,
@@ -57,6 +58,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
         this.id = id;
         this.eventId = eventId;
         this.name = name;
+        this.order = order;
 
         this.applicationStart = applicationStart;
         this.applicationStartDayBeforeEvent = applicationStartDayBeforeEvent;
@@ -77,7 +79,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
     }
 
     public EventTicket(EventTicket t) {
-        this(t.id, t.eventId, t.name,
+        this(t.id, t.eventId, t.order, t.name,
                 t.applicationStart, t.applicationStartDayBeforeEvent, t.customApplicationStartDate,
                 t.applicationEnd, t.applicationEndDayBeforeEvent, t.customApplicationEndDate,
                 t.priceType, t.price,
@@ -88,6 +90,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
     public EventTicket(JSONObject obj) {
         this.id = UUID.fromString(obj.getString("id"));
         this.eventId = obj.getString("eventId");
+        this.order = obj.getInt("order");
         this.name = obj.getString("name");
 
         this.applicationStart = TicketApplicationStart.safeValueOf(obj.getString("applicationStart"));
@@ -122,6 +125,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
         json.put("id", id.toString());
         json.put("eventId", eventId);
+        json.put("order", order);
         json.put("name", name);
 
         json.put("applicationStart", applicationStart.toString());
@@ -164,6 +168,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
         if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
         if (!ObjectUtils.equals(lhs.eventId, rhs.eventId)) { return false; }
+        if (!ObjectUtils.equals(lhs.order, rhs.order)) { return false; }
         if (!ObjectUtils.equals(lhs.name, rhs.name)) { return false; }
         if (!ObjectUtils.equals(lhs.applicationStart, rhs.applicationStart)) { return false; }
         if (!ObjectUtils.equals(lhs.applicationStartDayBeforeEvent, rhs.applicationStartDayBeforeEvent)) { return false; }
@@ -187,6 +192,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
         code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(eventId);
+        code = code * 37 + ObjectUtils.hashCode(order);
         code = code * 37 + ObjectUtils.hashCode(name);
         code = code * 37 + ObjectUtils.hashCode(applicationStart);
         code = code * 37 + ObjectUtils.hashCode(applicationStartDayBeforeEvent);
@@ -214,6 +220,10 @@ public class EventTicket extends PartakeModel<EventTicket> {
 
     public String getEventId() {
         return eventId;
+    }
+
+    public int getOrder() {
+        return order;
     }
 
     public String getName() {
@@ -276,6 +286,11 @@ public class EventTicket extends PartakeModel<EventTicket> {
     public void setEventId(String eventId) {
         checkFrozen();
         this.eventId = eventId;
+    }
+
+    public void setOrder(int order) {
+        checkFrozen();
+        this.order = order;
     }
 
     public void setName(String name) {

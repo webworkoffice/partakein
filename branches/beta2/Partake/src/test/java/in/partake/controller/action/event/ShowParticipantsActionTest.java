@@ -12,7 +12,7 @@ public class ShowParticipantsActionTest extends ActionControllerTest {
 
     @Test
     public void testToShow() throws Exception {
-        ActionProxy proxy = getActionProxy("/events/showParticipants/" + DEFAULT_EVENT_ID);
+        ActionProxy proxy = getActionProxy("/events/participants/" + DEFAULT_EVENT_ID);
         loginAs(proxy, EVENT_OWNER_ID);
 
         proxy.execute();
@@ -26,7 +26,7 @@ public class ShowParticipantsActionTest extends ActionControllerTest {
 
     @Test
     public void testToShowWithInvalidUser() throws Exception {
-        ActionProxy proxy = getActionProxy("/events/showParticipants/" + DEFAULT_EVENT_ID);
+        ActionProxy proxy = getActionProxy("/events/participants/" + DEFAULT_EVENT_ID);
         loginAs(proxy, EVENT_UNRELATED_USER_ID);
 
         proxy.execute();

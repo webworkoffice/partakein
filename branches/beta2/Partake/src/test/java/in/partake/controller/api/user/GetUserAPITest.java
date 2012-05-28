@@ -24,15 +24,15 @@ public class GetUserAPITest extends APIControllerTest {
         assertResultOK(proxy);
 
         JSONObject obj = getJSON(proxy);
-        assertThat(obj.getString("id"), is(TestDataProvider.DEFAULT_USER_ID));
+        assertThat(obj.getString("id"), is(DEFAULT_USER_ID));
         // These values should not be public.
         assertThat(obj.get("twitterId"), is(nullValue()));
         assertThat(obj.get("lastLoginAt"), is(nullValue()));
         assertThat(obj.get("calendarId"), is(nullValue()));
 
-        JSONObject twitter = obj.getJSONObject("twitterLinkage");
+        JSONObject twitter = obj.getJSONObject("twitter");
         assertThat(twitter, is(notNullValue()));
-        assertThat(twitter.getString("screenName"), is(TestDataProvider.DEFAULT_TWITTER_SCREENNAME));
+        assertThat(twitter.getString("screenName"), is(DEFAULT_TWITTER_SCREENNAME));
         assertThat(twitter.getString("profileImageURL"), is("http://www.example.com/"));
         // These values should not be public.
         assertThat(twitter.get("accessToken"), is(nullValue()));

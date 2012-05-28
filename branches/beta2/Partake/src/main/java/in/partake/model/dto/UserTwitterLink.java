@@ -44,7 +44,8 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
         this.twitterId = obj.getLong("twitterId");
         this.userId = obj.getString("userId");
         this.screenName = obj.getString("screenName");
-        this.name = obj.getString("name");
+        if (obj.containsKey("name"))
+            this.name = obj.getString("name");
         if (obj.containsKey("accessToken"))
             this.accessToken = obj.getString("accessToken");
         if (obj.containsKey("accessTokenSecret"))

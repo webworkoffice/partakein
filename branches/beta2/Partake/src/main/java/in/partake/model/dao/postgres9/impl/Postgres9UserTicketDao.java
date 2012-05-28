@@ -30,16 +30,16 @@ class EntityEnrollmentMapper extends Postgres9EntityDataMapper<UserTicket> {
     }
 }
 
-public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements IUserTicketAccess {
-    static final String ENTITY_TABLE_NAME = "UserTicketApplicationEntities";
-    static final String INDEX_TABLE_NAME = "UserTicketApplicationIndex";
+public class Postgres9UserTicketDao extends Postgres9Dao implements IUserTicketAccess {
+    static final String ENTITY_TABLE_NAME = "UserTicketEntities";
+    static final String INDEX_TABLE_NAME = "UserTicketIndex";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
     private final EntityEnrollmentMapper mapper;
 
-    public Postgres9UserTicketApplicationDao() {
+    public Postgres9UserTicketDao() {
         this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityEnrollmentMapper();
@@ -56,13 +56,13 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
         entityDao.initialize(pcon);
 
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
-            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL, ticketId TEXT NOT NULL, eventId TEXT NOT NULL, status TEXT NOT NULL, enrolledAt TIMESTAMP NOT NULL)");
+            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL, ticketId TEXT NOT NULL, eventId TEXT NOT NULL, status TEXT NOT NULL, appliedAt TIMESTAMP NOT NULL)");
             indexDao.createIndex(pcon, "CREATE UNIQUE INDEX " + INDEX_TABLE_NAME + "UserIdTicketId" + " ON " + INDEX_TABLE_NAME + "(userId, ticketId)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketId" + " ON " + INDEX_TABLE_NAME + "(ticketId, enrolledAt)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketIdStatus" + " ON " + INDEX_TABLE_NAME + "(ticketId, status, enrolledAt)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventId" + " ON " + INDEX_TABLE_NAME + "(eventId, enrolledAt)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventIdStatus" + " ON " + INDEX_TABLE_NAME + "(ticketId, status, enrolledAt)");
-            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "UserId" + " ON " + INDEX_TABLE_NAME + "(userId, enrolledAt)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketId" + " ON " + INDEX_TABLE_NAME + "(ticketId, appliedAt)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "TicketIdStatus" + " ON " + INDEX_TABLE_NAME + "(ticketId, status, appliedAt)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventId" + " ON " + INDEX_TABLE_NAME + "(eventId, appliedAt)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "EventIdStatus" + " ON " + INDEX_TABLE_NAME + "(ticketId, status, appliedAt)");
+            indexDao.createIndex(pcon, "CREATE INDEX " + INDEX_TABLE_NAME + "UserId" + " ON " + INDEX_TABLE_NAME + "(userId, appliedAt)");
         }
     }
 
@@ -85,8 +85,8 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
         else
             entityDao.insert(pcon, entity);
         indexDao.put(pcon,
-                new String[] { "id", "userId", "ticketId", "eventId", "status", "enrolledAt" },
-                new Object[] { t.getId(), t.getUserId(), t.getTicketId().toString(), t.getEventId(), t.getStatus().toString(), t.getModifiedAt() });
+                new String[] { "id", "userId", "ticketId", "eventId", "status", "appliedAt" },
+                new Object[] { t.getId(), t.getUserId(), t.getTicketId().toString(), t.getEventId(), t.getStatus().toString(), t.getAppliedAt() });
     }
 
     @Override
@@ -134,7 +134,7 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
     @Override
     public List<UserTicket> findByTicketId(PartakeConnection con, UUID eventTicketId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? ORDER BY enrolledAt DESC OFFSET ? LIMIT ?",
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE ticketId = ? ORDER BY appliedAt DESC OFFSET ? LIMIT ?",
                 new Object[] { eventTicketId.toString(), offset, limit });
 
         Postgres9IdMapper<UserTicket> idMapper = new Postgres9IdMapper<UserTicket>((Postgres9Connection) con, mapper, entityDao);
@@ -145,7 +145,7 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
     @Override
     public List<UserTicket> findByEventId(PartakeConnection con, String eventId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY enrolledAt DESC OFFSET ? LIMIT ?",
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY appliedAt DESC OFFSET ? LIMIT ?",
                 new Object[] { eventId, offset, limit });
 
         Postgres9IdMapper<UserTicket> idMapper = new Postgres9IdMapper<UserTicket>((Postgres9Connection) con, mapper, entityDao);
@@ -157,7 +157,7 @@ public class Postgres9UserTicketApplicationDao extends Postgres9Dao implements I
     @Override
     public List<UserTicket> findByUserId(PartakeConnection con, String userId, int offset, int limit) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE userId = ? ORDER BY enrolledAt DESC OFFSET ? LIMIT ?",
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE userId = ? ORDER BY appliedAt DESC OFFSET ? LIMIT ?",
                 new Object[] { userId, offset, limit });
 
         Postgres9IdMapper<UserTicket> idMapper = new Postgres9IdMapper<UserTicket>((Postgres9Connection) con, mapper, entityDao);

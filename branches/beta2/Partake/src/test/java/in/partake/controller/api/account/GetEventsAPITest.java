@@ -58,7 +58,7 @@ public class GetEventsAPITest extends APIControllerTest {
                             new DateTime(i), null, "url", "place",
                             "address", "description", "#hashTag", TestDataProvider.EVENT_OWNER_ID,
                             null, null, null, false,
-                            Collections.singletonList(TestDataProvider.EVENT_EDITOR_TWITTER_SCREENNAME), new ArrayList<EventRelation>(), null,
+                            Collections.singletonList(TestDataProvider.EVENT_EDITOR_ID), new ArrayList<EventRelation>(), null,
                             new DateTime(i), new DateTime(i), -1));
                 }
 
@@ -77,7 +77,7 @@ public class GetEventsAPITest extends APIControllerTest {
         assertResultOK(proxy);
 
         JSONObject obj = getJSON(proxy);
-        assertThat(obj.getInt("numTotalEvents"), is(N));
+        assertThat(obj.getInt("totalEventCount"), is(N));
         assertThat(obj.getJSONArray("eventStatuses"), is(not(nullValue())));
         JSONArray array = obj.getJSONArray("eventStatuses");
         assertThat(array.size(), is(10));
@@ -98,7 +98,7 @@ public class GetEventsAPITest extends APIControllerTest {
         assertResultOK(proxy);
 
         JSONObject obj = getJSON(proxy);
-        assertThat(obj.getInt("numTotalEvents"), is(N));
+        assertThat(obj.getInt("totalEventCount"), is(N));
         assertThat(obj.getJSONArray("eventStatuses"), is(not(nullValue())));
         JSONArray array = obj.getJSONArray("eventStatuses");
         assertThat(array.size(), is(10));

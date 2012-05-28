@@ -88,6 +88,7 @@
                         <form name="loginByTwitterForm" action="<%=request.getContextPath()%>/auth/loginByTwitter" style="display:none">
                             <input type="hidden" name="redirectURL" value="<%=h(redirectURL)%>" />
                         </form></li>
+                        <li class="divider"></li>
                         <li><a data-toggle="modal" href="#openid-signin-dialog">Open ID でログイン</a></li>
                     </ul>
                 </li>
@@ -167,18 +168,18 @@
             <div class="control-group">
                 <label class="control-label">タイトル</label>
                 <div class="controls">
-                    <input type="text" id="create-event-form-title" name="title" value="新規イベント" class="span4 disable-keypress-submit" />
+                    <input type="text" id="create-event-form-title" name="title" value="新規イベント" class="span8 disable-keypress-submit" />
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label">開催期間</label>
                 <div class="controls">
-                    <input type="text" id="create-event-form-begin-date-input" name="beginDate" class="span2 disable-keypress-submit"
+                    <input type="text" id="create-event-form-begin-date-input" name="beginDate" class="span4 disable-keypress-submit"
                         placeholder="YYYY-MM-DD HH:MM"
                         value="<%= TimeUtil.formatForEvent(TimeUtil.getCurrentDateTime()) %>" />
                     〜
                     <div class="input-prepend">
-                        <div class="add-on"><input type="checkbox" name="usesEndDate" checked /></div><input type="text" id="create-event-form-end-date-checkbox" name="endDate" class="span2 disable-keypress-submit"
+                        <div class="add-on"><input type="checkbox" name="usesEndDate" checked /></div><input type="text" id="create-event-form-end-date-checkbox" name="endDate" class="span4 disable-keypress-submit"
                             placeholder="YYYY-MM-DD HH:MM"
                             value="<%= TimeUtil.formatForEvent(TimeUtil.getCurrentDateTime()) %>" />
                     </div>
