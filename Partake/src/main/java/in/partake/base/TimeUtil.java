@@ -15,7 +15,6 @@ import java.util.TimeZone;
  */
 public final class TimeUtil {
     private static Date currentDate;
-    private static final DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     private TimeUtil() {
         // Prevents from instantiation.
@@ -113,19 +112,32 @@ public final class TimeUtil {
     }
 
     public static String formatForEvent(DateTime date) {
+        DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return dateFormatForEvent.format(date.toDate());
     }
 
+    @Deprecated
     public static String formatForEvent(Date date) {
+        DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return dateFormatForEvent.format(date);
     }
 
     public static DateTime parseForEvent(String dateStr) {
+        DateFormat dateFormatForEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
             return new DateTime(dateFormatForEvent.parse(dateStr).getTime());
         } catch (ParseException e) {
-            return null;
+            // DO NOTHING.
         }
+
+        try {
+            long time = Long.valueOf(dateStr);
+            return new DateTime(time);
+        } catch (NumberFormatException e) {
+            // DO NOTHING
+        }
+
+        return null;
     }
 
     public static DateTime dateTimeFromTimeString(String timeString) {

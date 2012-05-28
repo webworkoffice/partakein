@@ -156,6 +156,29 @@ public class EventTicket extends PartakeModel<EventTicket> {
         return toJSON();
     }
 
+    public boolean validate() {
+        if (order < 0)
+            return false;
+
+        if (applicationStart == TicketApplicationStart.FROM_CUSTOM_DAY && customApplicationStartDate == null)
+            return false;
+        if (applicationStartDayBeforeEvent < 0)
+            return false;
+
+        if (applicationEnd == TicketApplicationEnd.TILL_CUSTOM_DAY && customApplicationEndDate == null)
+            return false;
+        if (applicationEndDayBeforeEvent < 0)
+            return false;
+
+        if (price < 0 || 1000000 < price)
+            return false;
+
+        if (amount < 0)
+            return false;
+
+        return true;
+    }
+
     // ----------------------------------------------------------------------
     // equals method
 
