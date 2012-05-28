@@ -131,7 +131,7 @@ public class Postgres9UserTwitterLinkDao extends Postgres9Dao implements IUserTw
     public List<UserTwitterLink> findByScreenNamePrefix(PartakeConnection con, String screenNamePrefix, int limit) throws DAOException {
         // What happends if '%' is included in the screenNamePrefix?
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
-                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE screenNamePrefix LIKE ?",
+                "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE screenName LIKE ?",
                 new Object[] { escapeForLike(screenNamePrefix) + "%" });
 
         try {
