@@ -16,7 +16,7 @@ public class AdminEventIndexRecreationAction extends AbstractPartakeAction {
 
     public String doExecute() throws DAOException, PartakeException {
         ensureAdmin();
-        // ensureValidSessionToken();
+        ensureValidSessionToken();
 
         new EventIndexRecreationTransaction().execute();
         return renderRedirect("/admin", MessageCode.MESSAGE_EVENT_INDEX_RECREATED);
