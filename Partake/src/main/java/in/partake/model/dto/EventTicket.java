@@ -443,7 +443,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
                 cancelledParticipations.add(participation);
                 break;
             case ENROLLED:
-                if (getAmount() == 0 || enrolledParticipations.size() < getAmount()) {
+                if (isAmountInfinite() || enrolledParticipations.size() < getAmount()) {
                     enrolledParticipations.add(participation);
                 } else {
                     spareParticipations.add(participation);
@@ -452,7 +452,7 @@ public class EventTicket extends PartakeModel<EventTicket> {
             case RESERVED:
                 if (timeover) {
                     cancelledParticipations.add(participation);
-                } else if (getAmount() == 0 || enrolledParticipations.size() < getAmount()) {
+                } else if (isAmountInfinite() || enrolledParticipations.size() < getAmount()) {
                     enrolledParticipations.add(participation);
                     ++reservedEnrolled;
                 } else {

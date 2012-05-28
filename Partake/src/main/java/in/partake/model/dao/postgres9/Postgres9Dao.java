@@ -17,8 +17,33 @@ import java.sql.Statement;
 public abstract class Postgres9Dao {
     static protected Charset UTF8 = Charset.forName("utf-8");
 
-    /** Checks the existence of table. 
-     * @return true if the specified table exists. 
+    protected String escapeForLike(String str) {
+        if (str == null)
+            return null;
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < str.length(); ++i) {
+            char c = str.charAt(i);
+            switch (c) {
+            case '%':
+                builder.append("\\%");
+                break;
+            case '_':
+                builder.append("\\_");
+                break;
+            case '\\':
+                builder.append("\\\\");
+                break;
+            default:
+                builder.append(c);
+            }
+        }
+
+        return builder.toString();
+    }
+
+    /** Checks the existence of table.
+     * @return true if the specified table exists.
      */
     protected boolean existsTable(Postgres9Connection pcon, String tableName) throws DAOException {
         try {
@@ -55,14 +80,14 @@ public abstract class Postgres9Dao {
     protected void close(Statement st) {
         if (st == null)
             return;
-        
+
         try {
             st.close();
         } catch (SQLException e) {
             // squash!
         }
     }
-    
+
     /** Closes ResultSet silently. */
     protected void close(ResultSet rs) {
         if (rs == null)
@@ -87,7 +112,7 @@ public abstract class Postgres9Dao {
     }
 
     private boolean existsTable(Connection con, String tableName) throws SQLException {
-        PreparedStatement ps = null;        
+        PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = con.prepareStatement("SELECT table_name FROM information_schema.tables " +

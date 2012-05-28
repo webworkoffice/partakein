@@ -28,7 +28,7 @@ public class SendMessageAPITest extends APIControllerTest {
 
     @Test
     public void testToSendLongMessage() throws Exception {
-        String longMessage = Util.randomString(1024);
+        String longMessage = Util.randomString(800);
 
         ActionProxy proxy = getActionProxy("/api/event/sendMessage");
 
