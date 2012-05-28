@@ -304,6 +304,22 @@ public abstract class AbstractPartakeController implements SessionAware, Request
             throw new PartakeException(UserErrorCode.INVALID_SECURITY_CSRF);
     }
 
+    protected String[] ensureParameters(String key, UserErrorCode ec) throws PartakeException {
+        String[] params = getParameters(key);
+        if (params == null)
+            throw new PartakeException(ec);
+
+        return params;
+    }
+
+    protected String[] ensureParameters(String key, int n, UserErrorCode ec) throws PartakeException {
+        String[] params = ensureParameters(key, ec);
+        if (params.length != n)
+            throw new PartakeException(ec);
+
+        return params;
+    }
+
     /**
      * take multiple parameters. If there is a single parameter, a new array will be created to return.
      * @param key

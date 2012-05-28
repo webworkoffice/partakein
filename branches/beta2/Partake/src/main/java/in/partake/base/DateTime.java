@@ -3,6 +3,7 @@ package in.partake.base;
 import in.partake.resource.Constants;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -83,5 +84,4 @@ public final class DateTime implements Comparable<DateTime> {
         DateFormat format = new SimpleDateFormat(Constants.JSON_DATE_FORMAT, Locale.getDefault());
         return format.format(this.toDate());
     }
-
 }

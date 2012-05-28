@@ -40,6 +40,7 @@ public enum UserErrorCode {
     // TICKET
     INVALID_TICKET_ID("invalid.ticket.id"),
     MISSING_TICKET_ID("invalid.ticket.id.missing"),
+    INVALID_TICKET_DUPLICATE_ID("invalid.ticket.id.duplicate"),
 
     // ENQUETE
     MISSING_ENQUETE_QUESTION("invalid.enquete.question.missing"),

@@ -222,6 +222,7 @@
         <action name="copy" class="in.partake.controller.api.event.CopyAPI" />
         <action name="modify" class="in.partake.controller.api.event.ModifyAPI" />
         <action name="modifyEnquete" class="in.partake.controller.api.event.ModifyEnqueteAPI" />
+        <action name="modifyTicket" class="in.partake.controller.api.event.ModifyTicketAPI" />
         <action name="publish" class="in.partake.controller.api.event.PublishAPI" />
         <action name="remove" class="in.partake.controller.api.event.RemoveAPI" />
         <action name="search" class="in.partake.controller.api.event.SearchAPI" />

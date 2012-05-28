@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface IEventTicketAccess extends IAccess<EventTicket, UUID> {
     public UUID getFreshId(PartakeConnection con) throws DAOException;
     public List<EventTicket> findEventTicketsByEventId(PartakeConnection con, String eventId) throws DAOException;
+    public void removeByEventId(PartakeConnection con, String eventId) throws DAOException;
 }
