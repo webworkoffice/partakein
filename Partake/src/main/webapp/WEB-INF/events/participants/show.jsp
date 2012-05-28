@@ -106,7 +106,7 @@
     %>
     <tr id="attendant-<%= h(p.getUserId()) %>">
         <td><%= ++order %></td>
-        <td><%= h(p.getUser().getScreenName()) %></td>
+        <td><%=h(p.getUser().getTwitterScreenName())%></td>
         <td><%= ParticipationStatus.ENROLLED.equals(p.getStatus()) ? "参加" : "仮参加" %></td>
         <td><%= h(p.getComment()) %></td>
         <td class="print-del"><%= h(p.getModifiedAt().toString()) %></td>

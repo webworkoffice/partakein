@@ -45,8 +45,8 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
         entityDao.initialize(pcon);
 
         if (!existsTable(pcon, LOGIN_INDEX_TABLE_NAME)) {
-            loginIndexDao.createIndexTable(pcon, "CREATE TABLE " + LOGIN_INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, lastLoginAt TIMESTAMP)");
-            loginIndexDao.createIndex(pcon, "CREATE INDEX " + LOGIN_INDEX_TABLE_NAME + "Login" + " ON " + LOGIN_INDEX_TABLE_NAME + "(lastLoginAt)");
+            loginIndexDao.createIndexTable(pcon, "CREATE TABLE " + LOGIN_INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, screenName TEXT NOT NULL UNIQUE)");
+            loginIndexDao.createIndex(pcon, "CREATE INDEX " + LOGIN_INDEX_TABLE_NAME + "ScreenName" + " ON " + LOGIN_INDEX_TABLE_NAME + "(screenName)");
         }
     }
 
@@ -68,8 +68,8 @@ public class Postgres9UserDao extends Postgres9Dao implements IUserAccess {
             entityDao.insert(pcon, entity);
 
         loginIndexDao.put(pcon,
-                new String[] { "id", "lastLoginAt" },
-                new Object[] { user.getId(), user.getLastLoginAt() });
+                new String[] { "id", "screenName" },
+                new Object[] { user.getId(), user.getScreenName() });
     }
 
     @Override

@@ -24,7 +24,7 @@
     <% for (EventMessageEx message : messages) { %>
         <% if (message == null) continue; %>
         <div class="comment">
-            <p><a href="<%= request.getContextPath() %>/users/<%= h(message.getSenderId()) %>"><%= h(message.getSender().getScreenName()) %></a>
+            <p><a href="<%= request.getContextPath() %>/users/<%= h(message.getSenderId()) %>"><%=h(message.getSender().getTwitterScreenName())%></a>
             : <%= Helper.readableDate(message.getCreatedAt()) %></p>
             <p><%= h(message.getMessage().getBody()) %></p>
         </div>

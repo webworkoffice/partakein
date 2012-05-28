@@ -24,11 +24,11 @@ public class UserEx extends User {
         return twitterLinkage;
     }
 
-    public String getScreenName() {
+    public String getTwitterScreenName() {
         return twitterLinkage.getScreenName();
     }
 
-    public String getProfileImageURL() {
+    public String getTwitterProfileImageURL() {
         return twitterLinkage.getProfileImageURL();
     }
 
@@ -44,7 +44,7 @@ public class UserEx extends User {
         assert obj.get("twitter") == null;
 
         if (withTwitter) {
-            obj.put("twitterLinkage", twitterLinkage.toSafeJSON());
+            obj.put("twitter", twitterLinkage.toSafeJSON());
         }
 
         return obj;

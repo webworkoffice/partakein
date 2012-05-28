@@ -1,55 +1,30 @@
 package in.partake.model.dto;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity(name = "Users")
 public class User extends PartakeModel<User> {
-    @Id
-    private String  id;
-    @Column
-    private String  twitterId;
-    @Column
-    private Date    lastLoginAt;
-    @Column
-    private String  calendarId;
+    private String id;
+    private String screenName;
+    private String profileImageURL;
 
-    public User() {
-        // do nothing
-    }
-
-    public User(String id, String twitterId, Date lastLoginAt, String calendarId) {
+    public User(String id, String screenName, String profileImageURL) {
         this.id = id;
-        this.twitterId = String.valueOf(twitterId);
-        this.lastLoginAt = lastLoginAt;
-        this.calendarId = calendarId;
-    }
-
-    public User(String id, long twitterId, Date lastLoginAt, String calendarId) {
-        this(id, String.valueOf(twitterId), lastLoginAt, calendarId);
+        this.screenName = screenName;
+        this.profileImageURL = profileImageURL;
     }
 
     public User(User user) {
         this.id = user.id;
-        this.twitterId = user.twitterId;
-        this.lastLoginAt = user.lastLoginAt;
-        this.calendarId = user.calendarId;
+        this.screenName = user.screenName;
+        this.profileImageURL = user.profileImageURL;
     }
 
     public User(JSONObject obj) {
         this.id = obj.getString("id");
-        this.twitterId = obj.getString("twitterId");
-        if (obj.containsKey("lastLoginAt"))
-            this.lastLoginAt = new Date(obj.getLong("lastLoginAt"));
-        if (obj.containsKey("calendarId"))
-            this.calendarId = obj.getString("calendarId");
+        this.screenName = obj.getString("screenName");
+        this.profileImageURL = obj.getString("profileImageURL");
     }
 
     @Override
@@ -65,6 +40,8 @@ public class User extends PartakeModel<User> {
     public JSONObject toSafeJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
+        obj.put("screenName", screenName);
+        obj.put("profileImageURL", profileImageURL);
 
         return obj;
     }
@@ -72,13 +49,8 @@ public class User extends PartakeModel<User> {
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("twitterId", twitterId);
-
-        if (lastLoginAt != null)
-            obj.put("lastLoginAt", lastLoginAt.getTime());
-
-        if (calendarId != null)
-            obj.put("calendarId", calendarId);
+        obj.put("screenName", screenName);
+        obj.put("profileImageURL", profileImageURL);
 
         return obj;
     }
@@ -93,10 +65,9 @@ public class User extends PartakeModel<User> {
         User lhs = this;
         User rhs = (User) obj;
 
-        if (!ObjectUtils.equals(lhs.id,          rhs.id))          { return false; }
-        if (!ObjectUtils.equals(lhs.lastLoginAt, rhs.lastLoginAt)) { return false; }
-        if (!ObjectUtils.equals(lhs.twitterId,   rhs.twitterId))   { return false; }
-        if (!ObjectUtils.equals(lhs.calendarId,  rhs.calendarId))  { return false; }
+        if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
+        if (!ObjectUtils.equals(lhs.screenName, rhs.id)) { return false; }
+        if (!ObjectUtils.equals(lhs.profileImageURL, rhs.id)) { return false; }
         return true;
     }
 
@@ -112,16 +83,12 @@ public class User extends PartakeModel<User> {
         return id;
     }
 
-    public Date getLastLoginAt() {
-        return lastLoginAt;
+    public String getScreenName() {
+        return screenName;
     }
 
-    public String getTwitterId() {
-        return twitterId;
-    }
-
-    public String getCalendarId() {
-        return calendarId;
+    public String getProfileImageURL() {
+        return profileImageURL;
     }
 
     public void setId(String id) {
@@ -129,22 +96,13 @@ public class User extends PartakeModel<User> {
         this.id = id;
     }
 
-    public void setLastLoginAt(Date lastLoginAt) {
+    public void setScreenName(String screenName) {
         checkFrozen();
-        this.lastLoginAt = lastLoginAt;
+        this.screenName = screenName;
     }
 
-    public void setTwitterId(String twitterId) {
+    public void setProfileImageURL(String profileImageURL) {
         checkFrozen();
-        this.twitterId = twitterId;
-    }
-
-    public void setTwitterId(int twitterId) {
-        setTwitterId(String.valueOf(twitterId));
-    }
-
-    public void setCalendarId(String calendarId) {
-        checkFrozen();
-        this.calendarId = calendarId;
+        this.profileImageURL = profileImageURL;
     }
 }

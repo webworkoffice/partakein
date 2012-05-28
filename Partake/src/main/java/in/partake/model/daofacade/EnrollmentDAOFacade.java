@@ -180,11 +180,11 @@ public class EnrollmentDAOFacade {
 
             String title;
             switch (status) {
-            case ENROLLED:      title = user.getScreenName() + " さんが参加しました";        break;
-            case CANCELLED:     title = user.getScreenName() + " さんが参加を取りやめました";     break;
-            case RESERVED:      title = user.getScreenName() + " さんが仮参加しました";      break;
-            case NOT_ENROLLED:  title = user.getScreenName() + " さんはもう参加していません"; break;
-            default:            title = user.getScreenName() + " さんが不明なステータスになっています"; break; // TODO: :-P
+            case ENROLLED:      title = user.getTwitterScreenName() + " さんが参加しました";        break;
+            case CANCELLED:     title = user.getTwitterScreenName() + " さんが参加を取りやめました";     break;
+            case RESERVED:      title = user.getTwitterScreenName() + " さんが仮参加しました";      break;
+            case NOT_ENROLLED:  title = user.getTwitterScreenName() + " さんはもう参加していません"; break;
+            default:            title = user.getTwitterScreenName() + " さんが不明なステータスになっています"; break; // TODO: :-P
             }
 
             String content = String.format("<p>詳細は <a href=\"%s\">%s</a> をごらんください。</p>", event.getEventURL(), event.getEventURL());

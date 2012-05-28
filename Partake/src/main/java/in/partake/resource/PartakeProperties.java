@@ -96,9 +96,9 @@ public class PartakeProperties {
     // ----------------------------------------------------------------------
     // Twitter Bot
 
-    public int getTwitterBotTwitterId() {
+    public long getTwitterBotTwitterId() {
         try {
-            return Integer.parseInt(properties.getProperty("in.partake.twitterbot.twitterid"));
+            return Long.parseLong(properties.getProperty("in.partake.twitterbot.twitterid"));
         } catch (NumberFormatException e) {
             return -1;
         }
