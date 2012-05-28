@@ -13,6 +13,9 @@ import in.partake.model.dao.postgres9.Postgres9Entity;
 import in.partake.model.dao.postgres9.Postgres9EntityDao;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dto.UserTwitterLink;
+
+import java.util.UUID;
+
 import net.sf.json.JSONObject;
 
 public class Postgres9UserTwitterLinkDao extends Postgres9Dao implements IUserTwitterLinkAccess {
@@ -51,59 +54,38 @@ public class Postgres9UserTwitterLinkDao extends Postgres9Dao implements IUserTw
     @Override
     public void put(PartakeConnection con, UserTwitterLink linkage) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", "twitterId", linkage.getTwitterId());
-        if (id == null)
-            id = entityDao.getFreshId(pcon);
+        Postgres9Entity entity = new Postgres9Entity(linkage.getId(), CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
 
-        Postgres9Entity entity = new Postgres9Entity(id, CURRENT_VERSION, linkage.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
-
-        if (entityDao.exists(pcon, id)) {
+        if (entityDao.exists(pcon, linkage.getId())) {
             entityDao.update(pcon, entity);
         } else {
             entityDao.insert(pcon, entity);
         }
 
-        indexDao.put(pcon, new String[] { "id", "twitterId", "userId"}, new String[] { id, linkage.getTwitterId(), linkage.getUserId() });
+        indexDao.put(pcon, new String[] { "id", "twitterId", "userId"}, new Object[] { linkage.getId(), String.valueOf(linkage.getTwitterId()), linkage.getUserId() });
     }
 
     @Override
-    public UserTwitterLink find(PartakeConnection con, String twitterId) throws DAOException {
+    public UserTwitterLink find(PartakeConnection con, UUID id) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", "twitterId", twitterId);
-        if (id == null)
-            return null;
 
         Postgres9Entity entity = entityDao.find(pcon, id);
         if (entity == null)
             return null;
 
-        // Checks the entity.
         JSONObject obj = JSONObject.fromObject(new String(entity.getBody(), UTF8));
         UserTwitterLink linkage = new UserTwitterLink(obj);
-
-        if (twitterId.equals(linkage.getTwitterId()))
-            return linkage.freeze();
-        else
-            return null;
+        return linkage.freeze();
     }
 
     @Override
-    public boolean exists(PartakeConnection con, String twitterId) throws DAOException {
-        Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", "twitterId", twitterId);
-        if (id == null)
-            return false;
-
+    public boolean exists(PartakeConnection con, UUID id) throws DAOException {
         return entityDao.exists((Postgres9Connection) con, id);
     }
 
     @Override
-    public void remove(PartakeConnection con, String twitterId) throws DAOException {
+    public void remove(PartakeConnection con, UUID id) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = indexDao.find(pcon, "id", "twitterId", twitterId);
-        if (id == null)
-            return;
-
         entityDao.remove(pcon, id);
         indexDao.remove(pcon, "id", id);
     }
@@ -132,5 +114,21 @@ public class Postgres9UserTwitterLinkDao extends Postgres9Dao implements IUserTw
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
+    }
+
+    @Override
+    public UserTwitterLink findByTwitterId(PartakeConnection con, long twitterId) throws DAOException {
+        Postgres9Connection pcon = (Postgres9Connection) con;
+        String id = indexDao.find(pcon, "id", "twitterId", String.valueOf(twitterId));
+
+        return find(pcon, UUID.fromString(id));
+    }
+
+    @Override
+    public UserTwitterLink findByUserId(PartakeConnection con, String userId) throws DAOException {
+        Postgres9Connection pcon = (Postgres9Connection) con;
+        String id = indexDao.find(pcon, "id", userId, userId);
+
+        return find(pcon, UUID.fromString(id));
     }
 }

@@ -107,8 +107,8 @@ class GetEventsTransaction extends DBAccess<Void> {
             this.numTotalEvents = eventDao.countEventsByOwnerId(con, user.getId(), EventFilterCondition.DRAFT_EVENT_ONLY);
             this.eventsRetrieved = eventDao.findByOwnerId(con, user.getId(), EventFilterCondition.DRAFT_EVENT_ONLY, offset, limit);
         } else if ("editor".equalsIgnoreCase(queryType)) {
-            this.numTotalEvents = eventDao.countEventsByScreenName(con, user.getScreenName(), EventFilterCondition.PUBLISHED_EVENT_ONLY);
-            this.eventsRetrieved = eventDao.findByScreenName(con, user.getScreenName(), EventFilterCondition.PUBLISHED_EVENT_ONLY, offset, limit);
+            this.numTotalEvents = eventDao.countEventsByScreenName(con, user.getTwitterScreenName(), EventFilterCondition.PUBLISHED_EVENT_ONLY);
+            this.eventsRetrieved = eventDao.findByScreenName(con, user.getTwitterScreenName(), EventFilterCondition.PUBLISHED_EVENT_ONLY, offset, limit);
         } else {
             throw new PartakeException(UserErrorCode.INVALID_ARGUMENT);
         }

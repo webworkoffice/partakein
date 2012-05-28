@@ -22,8 +22,10 @@ public class DefaultPartakeTestAppFactory extends DefaultPartakeAppFactory {
         Mockito.doReturn(mockInfo).when(twitterService).createLoginInformation(null);
         Mockito.doThrow(new TwitterException("MockException")).when(twitterService).createLoginInformation("http://www.example.com/throwException");
 
-        UserTwitterLink twitterLinkage = new UserTwitterLink(TestDataProvider.DEFAULT_TWITTER_ID, TestDataProvider.DEFAULT_TWITTER_SCREENNAME,
-                "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/", TestDataProvider.DEFAULT_USER_ID);
+        UserTwitterLink twitterLinkage = new UserTwitterLink(
+                TestDataProvider.DEFAULT_TWITTER_LINK_ID, TestDataProvider.DEFAULT_TWITTER_ID, TestDataProvider.DEFAULT_USER_ID,
+                TestDataProvider.DEFAULT_TWITTER_SCREENNAME, "testUser 1", "accessToken", "accessTokenSecret", "http://www.example.com/");
+
         Mockito.doReturn(twitterLinkage).when(twitterService).createTwitterLinkageFromLoginInformation((TwitterLoginInformation) Mockito.any(), Mockito.anyString());
 
 

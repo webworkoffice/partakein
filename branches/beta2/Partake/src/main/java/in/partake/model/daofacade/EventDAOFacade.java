@@ -220,12 +220,12 @@ public class EventDAOFacade {
         String title = Util.shorten(event.getTitle(), 140 - length);
 
         String message = messagePrefix + " " + title + " " + eventURL + " " + hashTag;
-        int twitterId = PartakeProperties.get().getTwitterBotTwitterId();
+        long twitterId = PartakeProperties.get().getTwitterBotTwitterId();
         if (twitterId < 0) {
             logger.info("No bot id.");
             return;
         }
-        UserTwitterLink linkage = daos.getTwitterLinkageAccess().find(con, String.valueOf(twitterId));
+        UserTwitterLink linkage = daos.getTwitterLinkageAccess().findByTwitterId(con, twitterId);
         if (linkage == null) {
             logger.info("twitter bot does have partake user id. Login using the account once to create the user id.");
             return;

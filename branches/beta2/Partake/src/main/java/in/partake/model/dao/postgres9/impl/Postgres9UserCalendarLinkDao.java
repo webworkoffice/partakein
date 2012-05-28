@@ -27,12 +27,12 @@ public class Postgres9UserCalendarLinkDao extends Postgres9Dao implements IUserC
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
-    private final Postgres9IndexDao userIndexDao;
+    private final Postgres9IndexDao indexDao;
     private final EntityCalendarLinkageMapper mapper;
 
     public Postgres9UserCalendarLinkDao() {
         this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
-        this.userIndexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
+        this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityCalendarLinkageMapper();
     }
 
@@ -42,15 +42,15 @@ public class Postgres9UserCalendarLinkDao extends Postgres9Dao implements IUserC
 
         Postgres9Connection pcon = (Postgres9Connection) con;
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
-            userIndexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL)");
-            userIndexDao.createIndex(pcon, "CREATE INDEX "+ INDEX_TABLE_NAME + "UserId ON " + INDEX_TABLE_NAME + "(userId)");
+            indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, userId TEXT NOT NULL UNIQUE)");
+            indexDao.createIndex(pcon, "CREATE INDEX "+ INDEX_TABLE_NAME + "UserId ON " + INDEX_TABLE_NAME + "(userId)");
         }
     }
 
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         entityDao.truncate((Postgres9Connection) con);
-        userIndexDao.truncate((Postgres9Connection) con);
+        indexDao.truncate((Postgres9Connection) con);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Postgres9UserCalendarLinkDao extends Postgres9Dao implements IUserC
             entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
-        userIndexDao.put(pcon, new String[] { "id", "userId" }, new String[] { linkage.getId(), linkage.getUserId() });
+        indexDao.put(pcon, new String[] { "id", "userId" }, new String[] { linkage.getId(), linkage.getUserId() });
     }
 
     @Override
@@ -78,7 +78,7 @@ public class Postgres9UserCalendarLinkDao extends Postgres9Dao implements IUserC
     @Override
     public void remove(PartakeConnection con, String id) throws DAOException {
         entityDao.remove((Postgres9Connection) con, id);
-        userIndexDao.remove((Postgres9Connection) con, "id", id);
+        indexDao.remove((Postgres9Connection) con, "id", id);
     }
 
 
@@ -95,7 +95,7 @@ public class Postgres9UserCalendarLinkDao extends Postgres9Dao implements IUserC
     @Override
     public UserCalendarLink findByUserId(PartakeConnection con, String userId) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        String id = userIndexDao.find(pcon, "id", "userId", userId);
+        String id = indexDao.find(pcon, "id", "userId", userId);
         if (id == null)
             return null;
 
@@ -105,5 +105,14 @@ public class Postgres9UserCalendarLinkDao extends Postgres9Dao implements IUserC
     @Override
     public int count(PartakeConnection con) throws DAOException {
         return entityDao.count((Postgres9Connection) con);
+    }
+
+    @Override
+    public void removeByUserId(PartakeConnection con, String userId) throws DAOException {
+        Postgres9Connection pcon = (Postgres9Connection) con;
+        String id = indexDao.find(pcon, "id", "userId", userId);
+
+        entityDao.remove(pcon, id);
+        indexDao.remove(pcon, "id", id);
     }
 }

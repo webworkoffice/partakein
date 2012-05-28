@@ -77,7 +77,7 @@ public class SendMessageEnvelopeTaskTest extends AbstractPartakeControllerTest i
 
         List<MessageEnvelope> rest = loadEnvelopes();
         assertThat(rest.isEmpty(), is(true));
-        verify(PartakeApp.getTwitterService()).sendDirectMesage(anyString(), anyString(), eq(Long.parseLong(DEFAULT_TWITTER_ID)), anyString());
+        verify(PartakeApp.getTwitterService()).sendDirectMesage(anyString(), anyString(), eq(DEFAULT_TWITTER_ID), anyString());
 
         assertThat(loadUserNotification(USER_NOTIFICATION_INQUEUE_ID).getDelivery(), is(MessageDelivery.SUCCESS));
     }
@@ -92,7 +92,7 @@ public class SendMessageEnvelopeTaskTest extends AbstractPartakeControllerTest i
 
         List<MessageEnvelope> rest = loadEnvelopes();
         assertThat(rest.isEmpty(), is(true));
-        verify(PartakeApp.getTwitterService()).sendDirectMesage(anyString(), anyString(), eq(Long.parseLong(DEFAULT_RECEIVER_TWITTER_ID)), anyString());
+        verify(PartakeApp.getTwitterService()).sendDirectMesage(anyString(), anyString(), eq(DEFAULT_RECEIVER_TWITTER_ID), anyString());
 
         assertThat(loadUserReceivedMessage(USER_RECEIVED_MESSAGE_INQUEUE_ID).getDelivery(), is(MessageDelivery.SUCCESS));
     }

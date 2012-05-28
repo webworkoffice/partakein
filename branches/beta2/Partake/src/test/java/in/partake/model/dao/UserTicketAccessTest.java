@@ -7,16 +7,15 @@ import in.partake.base.TimeUtil;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.access.DBAccess;
 import in.partake.model.dao.access.IUserTicketAccess;
-import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventTicket;
 import in.partake.model.dto.User;
+import in.partake.model.dto.UserTicket;
 import in.partake.model.dto.auxiliary.AttendanceStatus;
 import in.partake.model.dto.auxiliary.ModificationStatus;
 import in.partake.model.dto.auxiliary.ParticipationStatus;
 import in.partake.model.fixture.impl.EventTestDataProvider;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -81,7 +80,7 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
                 {
                     daos.getEventAccess().put(con, event);
                     daos.getEventTicketAccess().put(con, ticket);
-                    daos.getUserAccess().put(con, new User(userId, 0, new Date(), null));
+                    daos.getUserAccess().put(con, new User(userId, "screenName", "http://www.example.com/"));
 
                     dao.put(con, new UserTicket(id, userId, ticketId, eventId, "", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime()));
                 }
@@ -120,7 +119,7 @@ public class UserTicketAccessTest extends AbstractDaoTestCaseBase<IUserTicketAcc
 
                     daos.getEventAccess().put(con, event);
                     daos.getEventTicketAccess().put(con, ticket);
-                    daos.getUserAccess().put(con, new User(userId, 0, new Date(), null));
+                    daos.getUserAccess().put(con, new User(userId, "screenName", "http://www.example.com/"));
                     dao.put(con, new UserTicket(id, userId, ticketId, eventId, "comment", ParticipationStatus.ENROLLED, false, ModificationStatus.CHANGED, AttendanceStatus.UNKNOWN, TimeUtil.getCurrentDateTime()));
                     con.commit();
                 }

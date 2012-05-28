@@ -59,7 +59,7 @@ class PostCommentTransaction extends Transaction<Void> {
         // TODO: コメント消したときにこれも消したいか？　まずいコメントが feed され続けるのは問題となりうるか？
         IEventActivityAccess eaa = daos.getEventActivityAccess();
         UserEx user = UserDAOFacade.getUserEx(con, daos, commentEmbryo.getUserId());
-        String title = user.getScreenName() + " さんがコメントを投稿しました";
+        String title = user.getTwitterScreenName() + " さんがコメントを投稿しました";
         String content = commentEmbryo.getComment();
         eaa.put(con, new EventActivity(eaa.getFreshId(con), commentEmbryo.getEventId(), title, content, commentEmbryo.getCreatedAt()));
 

@@ -153,7 +153,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
 
         try {
             Message message = daos.getMessageAccess().find(con, UUID.fromString(userMessage.getMessageId()));
-            long twitterId = Long.parseLong(twitterLinkage.getTwitterId());
+            long twitterId = twitterLinkage.getTwitterId();
 
             Event event = null;
             if (userMessage.getEventId() != null)
@@ -340,7 +340,7 @@ class SendMessageEnvelopeTask extends Transaction<Void> implements IPartakeDaemo
 
         try {
             PartakeApp.getTwitterService().sendDirectMesage(
-                    twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret(), Long.parseLong(twitterLinkage.getTwitterId()), messageBody);
+                    twitterLinkage.getAccessToken(), twitterLinkage.getAccessTokenSecret(), twitterLinkage.getTwitterId(), messageBody);
             succeededSendingUserNotification(con, daos, it, envelope, notification);
             return;
         } catch (TwitterException e) {

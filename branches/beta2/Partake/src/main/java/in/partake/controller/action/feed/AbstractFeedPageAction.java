@@ -41,7 +41,7 @@ public abstract class AbstractFeedPageAction extends AbstractPartakeAction{
             entry.setLink(event.getEventURL());
             entry.setPublishedDate(event.getCreatedAt().toDate());
 
-            entry.setAuthor(event.getOwner().getScreenName());
+            entry.setAuthor(event.getOwner().getTwitterScreenName());
             entry.setDescription(content);
 
             entries.add(entry);

@@ -90,7 +90,7 @@
     %>
     <tr>
         <td><%= ++order %></td>
-        <td><%= h(p.getUser().getScreenName()) %></td>
+        <td><%=h(p.getUser().getTwitterScreenName())%></td>
         <td><%= ParticipationStatus.ENROLLED.equals(p.getStatus()) ? "参加" : "仮参加" %></td>
         <td><%= h(p.getComment()) %></td>
         <td><%= p.getPriority() > 0 ? String.format(" 優先 %d", p.getPriority()) : "-" %></td>

@@ -3,8 +3,6 @@ package in.partake.model.dto;
 import in.partake.model.fixture.TestDataProvider;
 import in.partake.model.fixture.impl.UserTestDataProvider;
 
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,11 +13,10 @@ public class UserTest extends AbstractPartakeModelTest<User> {
 
     @Before
     public void createSampleData() {
-        Date now = new Date();
         samples = new User[] {
-                new User(),
-                new User("id1", 1, now, "calendarId1"),
-                new User("id2", 2, now, "calendarId2")
+                new User("id1", "screenName1", "http://www.example.com/1"),
+                new User("id2", "screenName2", "http://www.example.com/2"),
+                new User("id3", "screenName3", "http://www.example.com/3"),
         };
     }
 
@@ -39,7 +36,7 @@ public class UserTest extends AbstractPartakeModelTest<User> {
 
     @Test
     public void testToJSONFromJSON() {
-        User user = new User("id", 1, new Date(), "calendar1");
+        User user = new User("id1", "screenName1", "http://www.example.com/1");
         Assert.assertEquals(user, new User(user.toJSON()));
     }
 

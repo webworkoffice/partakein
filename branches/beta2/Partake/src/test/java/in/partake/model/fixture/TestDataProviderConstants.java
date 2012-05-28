@@ -7,7 +7,8 @@ public interface TestDataProviderConstants {
     public static final String INVALID_USER_ID = new UUID(1, -1).toString();
 
     public static final String DEFAULT_USER_ID = new UUID(1, 0).toString();
-    public static final String DEFAULT_TWITTER_ID = "0";
+    public static final UUID DEFAULT_TWITTER_LINK_ID = new UUID(100, 0);
+    public static final long DEFAULT_TWITTER_ID = 0;
     public static final String DEFAULT_TWITTER_SCREENNAME = "testUser";
     public static final String DEFAULT_USER_OPENID_IDENTIFIER = "http://www.example.com/ident";
     public static final String DEFAULT_USER_OPENID_ALTERNATIVE_IDENTIFIER = "http://www.example.com/alternative";
@@ -16,79 +17,99 @@ public interface TestDataProviderConstants {
     public static final String[] DEFAULT_USER_IDS = new String[] {
         new UUID(1, 100).toString(), new UUID(1, 101).toString(), new UUID(1, 102).toString(), new UUID(1, 103).toString(), new UUID(1, 104).toString(),
     };
-    public static final String[] DEFAULT_USER_TWITTER_IDS = new String[] {
-        "100", "101", "102", "103", "104"
+    public static final UUID[] DEFAULT_TWITTER_LINK_IDS = new UUID[] {
+        new UUID(100, 100), new UUID(1, 101), new UUID(1, 102), new UUID(1, 103), new UUID(1, 104),
+    };
+    public static final long[] DEFAULT_USER_TWITTER_IDS = new long[] {
+        100, 101, 102, 103, 104
     };
     public static final String[] DEFAULT_USER_TWITTER_SCREENNAME = new String[] {
         "Kotori Otonashi", "Chihaya Kisaragi", "Haruka Amami", "Miki Hoshii", "Mami Tokachi Futami"
     };
 
     public static final String DEFAULT_ANOTHER_USER_ID = new UUID(1, 1).toString();
-    public static final String DEFAULT_ANOTHER_TWITTER_ID = "1";
+    public static final UUID DEFAULT_ANOTHER_TWITTER_LINK_ID = new UUID(100, 1);
+    public static final long DEFAULT_ANOTHER_TWITTER_ID = 1;
     public static final String DEFAULT_ANOTHER_TWITTER_SCREENNAME = "testUser1";
 
     public static final String USER_WITHOUT_PREF_ID = new UUID(1, 2).toString();
-    public static final String USER_WITHOUT_PREF_TWITTER_ID = "2";
+    public static final UUID USER_WITHOUT_PREF_TWITTER_LINK_ID = new UUID(100, 2);
+    public static final long USER_WITHOUT_PREF_TWITTER_ID = 2;
     public static final String USER_WITHOUT_PREF_SCREENNAME = "testUser2";
 
     public static final String USER_WITH_PRIVATE_PREF_ID = new UUID(1, 3).toString();
-    public static final String USER_WITH_PRIVATE_PREF_TWITTER_ID = "3";
+    public static final UUID USER_WITH_PRIVATE_PREF_TWITTER_LINK_ID = new UUID(100, 3);
+    public static final long USER_WITH_PRIVATE_PREF_TWITTER_ID = 3;
     public static final String USER_WITH_PRIVATE_PREF_SCREENNAME = "testUser3";
 
     public static final String ADMIN_USER_ID = new UUID(1, 8).toString();
-    public static final String ADMIN_USER_TWITTER_ID = "8";
+    public static final UUID ADMIN_USER_TWITTER_LINK_ID = new UUID(100, 8);
+    public static final long ADMIN_USER_TWITTER_ID = 8;
     public static final String ADMIN_USER_SCREENNAME = "partakein";
 
     public static final String EVENT_OWNER_ID = new UUID(1, 10).toString();
-    public static final String EVENT_OWNER_TWITTER_ID = "10";
+    public static final UUID EVENT_OWNER_TWITTER_LINK_ID = new UUID(100, 10);
+    public static final long EVENT_OWNER_TWITTER_ID = 10;
     public static final String EVENT_OWNER_TWITTER_SCREENNAME = "eventOwner";
 
     public static final String EVENT_EDITOR_ID = new UUID(1, 20).toString();
-    public static final String EVENT_EDITOR_TWITTER_ID = "20";
+    public static final UUID EVENT_EDITOR_TWITTER_LINK_ID = new UUID(100, 20);
+    public static final long EVENT_EDITOR_TWITTER_ID = 20;
     public static final String EVENT_EDITOR_TWITTER_SCREENNAME = "eventEditor";
 
     public static final String EVENT_COMMENTOR_ID = new UUID(1, 30).toString();
-    public static final String EVENT_COMMENTOR_TWITTER_ID = "30";
+    public static final UUID EVENT_COMMENTOR_TWITTER_LINK_ID = new UUID(100, 30);
+    public static final long EVENT_COMMENTOR_TWITTER_ID = 30;
     public static final String EVENT_COMMENTOR_TWITTER_SCREENNAME = "eventEditor";
 
     public static final String EVENT_ENROLLED_USER_ID = new UUID(1, 40).toString();
-    public static final String EVENT_ENROLLED_USER_TWITTER_ID = "40";
+    public static final UUID EVENT_ENROLLED_USER_TWITTER_LINK_ID = new UUID(100, 40);
+    public static final long EVENT_ENROLLED_USER_TWITTER_ID = 40;
     public static final String EVENT_ENROLLED_USER_TWITTER_SCREENNAME = "eventEnrolledUser";
 
     public static final String EVENT_VIP_ENROLLED_USER_ID = new UUID(1, 41).toString();
-    public static final String EVENT_VIP_ENROLLED_USER_TWITTER_ID = "41";
+    public static final UUID EVENT_VIP_ENROLLED_USER_TWITTER_LINK_ID = new UUID(100, 41);
+    public static final long EVENT_VIP_ENROLLED_USER_TWITTER_ID = 41;
     public static final String EVENT_VIP_ENROLLED_USER_TWITTER_SCREENNAME = "eventVipEnrolledUser";
 
     public static final String EVENT_RESERVED_USER_ID = new UUID(1, 50).toString();
-    public static final String EVENT_RESERVED_USER_TWITTER_ID = "50";
+    public static final UUID EVENT_RESERVED_USER_TWITTER_LINK_ID = new UUID(100, 50);
+    public static final long EVENT_RESERVED_USER_TWITTER_ID = 50;
     public static final String EVENT_RESERVED_USER_TWITTER_SCREENNAME = "eventReservedUser";
 
     public static final String EVENT_CANCELLED_USER_ID = new UUID(1, 60).toString();
-    public static final String EVENT_CANCELLED_USER_TWITTER_ID = "60";
+    public static final UUID EVENT_CANCELLED_USER_TWITTER_LINK_ID = new UUID(100, 60);
+    public static final long EVENT_CANCELLED_USER_TWITTER_ID = 60;
     public static final String EVENT_CANCELLED_USER_TWITTER_SCREENNAME = "eventCancelledUser";
 
     public static final String EVENT_UNRELATED_USER_ID = new UUID(1, 70).toString();
-    public static final String EVENT_UNRELATED_USER_TWITTER_ID = "70";
+    public static final UUID EVENT_UNRELATED_USER_TWITTER_LINK_ID = new UUID(100, 70);
+    public static final long EVENT_UNRELATED_USER_TWITTER_ID = 70;
     public static final String EVENT_UNRELATED_USER_TWITTER_SCREENNAME = "eventUnrelatedUser";
 
     public static final String ATTENDANCE_PRESENT_USER_ID = new UUID(1, 80).toString();
-    public static final String ATTENDANCE_PRESENT_USER_TWITTER_ID = "80";
+    public static final UUID ATTENDANCE_PRESENT_USER_TWITTER_LINK_ID = new UUID(100, 80);
+    public static final long ATTENDANCE_PRESENT_USER_TWITTER_ID = 80;
     public static final String ATTENDANCE_PRESENT_USER_TWITTER_SCREENNAME = "attendancePresentUser";
 
     public static final String ATTENDANCE_ABSENT_USER_ID = new UUID(1, 81).toString();
-    public static final String ATTENDANCE_ABSENT_USER_TWITTER_ID = "81";
+    public static final UUID ATTENDANCE_ABSENT_USER_TWITTER_LINK_ID = new UUID(100, 81);
+    public static final long ATTENDANCE_ABSENT_USER_TWITTER_ID = 81;
     public static final String ATTENDANCE_ABSENT_USER_TWITTER_SCREENNAME = "attendanceAbsentUser";
 
     public static final String ATTENDANCE_UNKNOWN_USER_ID = new UUID(1, 82).toString();
-    public static final String ATTENDANCE_UNKNOWN_USER_TWITTER_ID = "82";
+    public static final UUID ATTENDANCE_UNKNOWN_USER_TWITTER_LINK_ID = new UUID(100, 82);
+    public static final long ATTENDANCE_UNKNOWN_USER_TWITTER_ID = 82;
     public static final String ATTENDANCE_UNKNOWN_USER_TWITTER_SCREENNAME = "attendanceUnknownUser";
 
     public static final String DEFAULT_SENDER_ID = new UUID(1, 90).toString();
-    public static final String DEFAULT_SENDER_TWITTER_ID = "90";
+    public static final UUID DEFAULT_SENDER_TWITTER_LINK_ID = new UUID(100, 90);
+    public static final long DEFAULT_SENDER_TWITTER_ID = 90;
     public static final String DEFAULT_SENDER_TWITTER_SCREENNAME = "sender";
 
     public static final String DEFAULT_RECEIVER_ID = new UUID(1, 91).toString();
-    public static final String DEFAULT_RECEIVER_TWITTER_ID = "91";
+    public static final UUID DEFAULT_RECEIVER_TWITTER_LINK_ID = new UUID(100, 91);
+    public static final long DEFAULT_RECEIVER_TWITTER_ID = 91;
     public static final String DEFAULT_RECEIVER_TWITTER_SCREENNAME = "receiver";
 
     // Events

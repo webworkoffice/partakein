@@ -2,16 +2,14 @@ package in.partake.controller.action.auth;
 
 import in.partake.app.PartakeApp;
 import in.partake.base.PartakeException;
-import in.partake.base.TimeUtil;
 import in.partake.controller.action.AbstractPartakeAction;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.daofacade.UserDAOFacade;
-import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.User;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.resource.Constants;
 import in.partake.resource.MessageCode;
 import in.partake.resource.PartakeProperties;
@@ -19,8 +17,6 @@ import in.partake.resource.ServerErrorCode;
 import in.partake.resource.UserErrorCode;
 import in.partake.service.ITwitterService;
 import in.partake.session.TwitterLoginInformation;
-
-import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -87,7 +83,7 @@ class VerifyForTwitterActionTransaction extends Transaction<UserEx> {
     }
 
     private UserTwitterLink updateTwitterLinkage(PartakeConnection con, IPartakeDAOs daos, UserTwitterLink twitterLinkageEmbryo) throws DAOException, TwitterException {
-        UserTwitterLink twitterLinkage = daos.getTwitterLinkageAccess().find(con, twitterLinkageEmbryo.getTwitterId());
+        UserTwitterLink twitterLinkage = daos.getTwitterLinkageAccess().findByTwitterId(con, twitterLinkageEmbryo.getTwitterId());
 
         if (twitterLinkage == null || twitterLinkage.getUserId() == null) {
             String userId = daos.getUserAccess().getFreshId(con);
@@ -103,15 +99,14 @@ class VerifyForTwitterActionTransaction extends Transaction<UserEx> {
     private UserEx getUserFromTwitterLinkage(PartakeConnection con, IPartakeDAOs daos, UserTwitterLink twitterLinkage) throws DAOException, TwitterException {
         String userId = twitterLinkage.getUserId();
         User user = daos.getUserAccess().find(con, userId);
+        if (user != null)
+            return new UserEx(user, twitterLinkage);
 
-        User newUser;
-        if (user == null)
-            newUser = new User(twitterLinkage.getUserId(), twitterLinkage.getTwitterId(), new Date(), null);
-        else
-            newUser = new User(user);
-
-        newUser.setLastLoginAt(TimeUtil.getCurrentDate());
+        // If no user was associated to UserTwitterLink, we create a new user.
+        User newUser = new User(userId, twitterLinkage.getScreenName(), twitterLinkage.getProfileImageURL());
         daos.getUserAccess().put(con, newUser);
-        return UserDAOFacade.getUserEx(con, daos, userId);
+        newUser.freeze();
+
+        return new UserEx(newUser, twitterLinkage);
     }
 }

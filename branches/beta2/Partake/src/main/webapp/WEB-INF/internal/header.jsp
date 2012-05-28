@@ -46,7 +46,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="<%= h(user.getTwitterLinkage().getProfileImageURL()) %>" class="profile-image" alt="" width="20" height="20" />
-                        <%=user.getScreenName()%>
+                        <%=user.getTwitterScreenName()%>
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">

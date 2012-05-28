@@ -14,13 +14,13 @@
 <html lang="ja">
 <head>
     <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
-    <title><%= h(user.getScreenName()) %> - [PARTAKE]</title>
+    <title><%=h(user.getTwitterScreenName())%> - [PARTAKE]</title>
 </head>
 <body>
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
 
 <div class="page-header">
-    <h1><%= h(user.getScreenName()) %></h1>
+    <h1><%=h(user.getTwitterScreenName())%></h1>
 </div>
 
 <div class="row tabbable">

@@ -1,68 +1,57 @@
 package in.partake.model.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import java.util.UUID;
 
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity(name = "TwitterLinkages")
 public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
-    @Id
-    private String twitterId;
-    @Column
-    private String screenName;
-    @Column
-    private String name;
-    @Column
-    private String accessToken;
-    @Column
-    private String accessTokenSecret;
-    @Column(length = 4096)
-    private String profileImageURL;
-    @Column
+    private UUID id;
+    private long twitterId;
     private String userId;
+    private String screenName;
+    private String name;
+    private String accessToken;
+    private String accessTokenSecret;
+    private String profileImageURL;
 
-    public UserTwitterLink(String twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
+    public UserTwitterLink(UUID id, long twitterId, String userId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL) {
+        this.id = id;
         this.twitterId = twitterId;
+        this.userId = userId;
         this.screenName = screenName;
         this.name = name;
         this.accessToken = accessToken;
         this.accessTokenSecret = accessTokenSecret;
         this.profileImageURL = profileImageURL;
-        this.userId = userId;
-    }
-
-    public UserTwitterLink(long twitterId, String screenName, String name, String accessToken, String accessTokenSecret, String profileImageURL, String userId) {
-        this(String.valueOf(twitterId), screenName, name, accessToken, accessTokenSecret, profileImageURL, userId);
     }
 
     public UserTwitterLink(UserTwitterLink linkage) {
+        this.id = linkage.id;
         this.twitterId = linkage.twitterId;
+        this.userId = linkage.userId;
         this.screenName = linkage.screenName;
         this.name = linkage.name;
         this.accessToken = linkage.accessToken;
         this.accessTokenSecret = linkage.accessTokenSecret;
         this.profileImageURL = linkage.profileImageURL;
-        this.userId = linkage.userId;
     }
 
     public UserTwitterLink(JSONObject obj) {
-        this.twitterId = obj.getString("twitterId");
+        this.id = UUID.fromString(obj.getString("id"));
+        this.twitterId = obj.getLong("twitterId");
+        this.userId = obj.getString("userId");
         this.screenName = obj.getString("screenName");
         this.name = obj.getString("name");
         this.accessToken = obj.getString("accessToken");
         this.accessTokenSecret = obj.getString("accessTokenSecret");
         this.profileImageURL = obj.getString("profileImageURL");
-        this.userId = obj.getString("userId");
-
     }
 
     @Override
     public Object getPrimaryKey() {
-        return twitterId;
+        return id;
     }
 
     public JSONObject toSafeJSON() {
@@ -79,13 +68,14 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
+        obj.put("id", id);
         obj.put("twitterId", twitterId);
+        obj.put("userId", userId);
         obj.put("screenName", screenName);
         obj.put("name", name);
         obj.put("accessToken", accessToken);
         obj.put("accessTokenSecret", accessTokenSecret);
         obj.put("profileImageURL", profileImageURL);
-        obj.put("userId", userId);
         return obj;
     }
 
@@ -99,13 +89,14 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
         UserTwitterLink lhs = this;
         UserTwitterLink rhs = (UserTwitterLink) obj;
 
+        if (!ObjectUtils.equals(lhs.id,                rhs.id)) { return false; }
         if (!ObjectUtils.equals(lhs.twitterId,         rhs.twitterId)) { return false; }
+        if (!ObjectUtils.equals(lhs.userId,            rhs.userId)) { return false; }
         if (!ObjectUtils.equals(lhs.screenName,        rhs.screenName)) { return false; }
         if (!ObjectUtils.equals(lhs.name,              rhs.name)) { return false; }
         if (!ObjectUtils.equals(lhs.accessToken,       rhs.accessToken)) { return false; }
         if (!ObjectUtils.equals(lhs.accessTokenSecret, rhs.accessTokenSecret)) { return false; }
         if (!ObjectUtils.equals(lhs.profileImageURL,   rhs.profileImageURL)) { return false; }
-        if (!ObjectUtils.equals(lhs.userId,            rhs.userId)) { return false; }
 
         return true;
     }
@@ -114,13 +105,14 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
     public int hashCode() {
         int code = 0;
 
+        code = code * 37 + ObjectUtils.hashCode(id);
         code = code * 37 + ObjectUtils.hashCode(twitterId);
+        code = code * 37 + ObjectUtils.hashCode(userId);
         code = code * 37 + ObjectUtils.hashCode(screenName);
         code = code * 37 + ObjectUtils.hashCode(name);
         code = code * 37 + ObjectUtils.hashCode(accessToken);
         code = code * 37 + ObjectUtils.hashCode(accessTokenSecret);
         code = code * 37 + ObjectUtils.hashCode(profileImageURL);
-        code = code * 37 + ObjectUtils.hashCode(userId);
 
         return code;
     }
@@ -128,8 +120,16 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
     // ----------------------------------------------------------------------
     //
 
-    public String getTwitterId() {
+    public UUID getId() {
+        return id;
+    }
+
+    public long getTwitterId() {
         return twitterId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getScreenName() {
@@ -152,18 +152,19 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
         return profileImageURL;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setId(UUID id) {
+        checkFrozen();
+        this.id = id;
     }
 
-    public void setTwitterId(String twitterId) {
+    public void setTwitterId(long twitterId) {
         checkFrozen();
         this.twitterId = twitterId;
     }
 
-    public void setTwitterId(int twitterId) {
+    public void setUserId(String userId) {
         checkFrozen();
-        this.twitterId = String.valueOf(twitterId);
+        this.userId = userId;
     }
 
     public void setScreenName(String screenName) {
@@ -191,10 +192,7 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
         this.profileImageURL = profileImageURL;
     }
 
-    public void setUserId(String userId) {
-        checkFrozen();
-        this.userId = userId;
-    }
+    // ----------------------------------------------------------------------
 
     /**
      * mark this linkage as unauthorized one.
