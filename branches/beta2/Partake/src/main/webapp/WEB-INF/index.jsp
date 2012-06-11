@@ -48,15 +48,8 @@
     <div class="span16">
         <div id="toppage-carousel" class="carousel slide">
             <div class="carousel-inner">
-                <div class="item" style="height: 300px;">
-                    <img src="http://twitter.github.com/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg" alt="" style="height: 300px;">
-                    <div class="carousel-caption">
-                        <h4>まずは Twitter アカウントでログイン</h4>
-                        <p>PARTAKE では登録は必要ありません。Twitter アカウントがあればログインすることができます。</p>
-                    </div>
-　　             </div>
                 <div class="item active">
-                    <img src="http://twitter.github.com/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg" alt="" style="height: 300px;">
+                    <img src="/images/carousel-search.png" alt="" style="height: 350px;">
                     <div class="carousel-caption">
                         <h4>イベントを探そう</h4>
                         <p><a href="/events/search">イベント検索ページ</a>から、登録されているイベントを検索することができます。</p>
@@ -65,7 +58,7 @@
                     </div>
                 </div>
                 <div class="item">
-                    <img src="http://twitter.github.com/bootstrap/assets/img/bootstrap-mdo-sfmoma-03.jpg" alt="" style="height: 300px;">
+                    <img src="/images/carousel-event.png" alt="" style="height: 350px;">
                     <div class="carousel-caption">
                         <h4>イベントを作ろう</h4>
                         <p>PARTAKE では、必要な情報を入力するだけで簡単にイベントページを作ることができます。イベントの登録は無料です。</p>
