@@ -66,8 +66,9 @@
                         <label class="radio"><input id="template-start-anytime" type="radio" name="applicationStart" value="anytime" checked />今から</label>
                         <label class="radio"><input id="template-start-before" type="radio" name="applicationStart" value="from_nday_before" />イベントの <input type="text" class="span2" name="applicationStartDayBeforeEvent" value="0" /> 日前から</label>
                         <label class="radio"><input id="template-start-custom" type="radio" name="applicationStart" value="from_custom_day" />次の日付から
-                            <input type="text" type="text" name="customApplicationStartDate" placeholder="YYYY-MM-DD hh:mm" />
+                            <input type="text" type="text" name="customApplicationStartDate" class="edit-date" placeholder="YYYY-MM-DD hh:mm" />
                         </label>
+                        <p class="help-block">YYYY-MM-DD hh:mm 形式で入力します。</p>
                     </div>
                 </div>
                 <div class="control-group">
@@ -77,8 +78,9 @@
                         <label class="radio"><input type="radio" name="applicationEnd" value="till_time_after_event" checked />イベントが終わるまで</label>
                         <label class="radio"><input type="radio" name="applicationEnd" value="till_nday_before" />イベントの <input type="text" class="span2" name="applicationEndDayBeforeEvent" value="0" /> 日前まで</label>
                         <label class="radio"><input type="radio" name="applicationEnd" value="till_custom_day" />次の日付まで
-                            <input type="text" type="text" name="customApplicationEndDate" placeholder="YYYY-MM-DD hh:mm"/>
+                            <input type="text" type="text" name="customApplicationEndDate" class="edit-date" placeholder="YYYY-MM-DD hh:mm"/>
                         </label>
+                        <p class="help-block">YYYY-MM-DD hh:mm 形式で入力します。</p>
                     </div>
                 </div>
                 <div class="control-group">
@@ -88,8 +90,9 @@
                         <label class="radio"><input type="radio" name="reservationEnd" value="till_nhour_before" />申込締切の <input type="text" class="span2" name="reservationEndHourBeforeApplication" value="0" /> 時間前まで</label>
                         <label class="radio"><input type="radio" name="reservationEnd" value="till_none" />仮参加を認めない</label>
                         <label class="radio"><input type="radio" name="reservationEnd" value="till_custom_day" />次の日付まで
-                            <input type="text" type="text" name="customReservationEndDate" placeholder="YYYY-MM-DD hh:mm" />
+                            <input type="text" type="text" name="customReservationEndDate" class="edit-date" placeholder="YYYY-MM-DD hh:mm" />
                         </label>
+                        <p class="help-block">YYYY-MM-DD hh:mm 形式で入力します。</p>
                     </div>
                 </div>
                 <div class="control-group">
@@ -123,6 +126,10 @@
 </div></div>
 
 <script>
+$('.edit-date').datetimepicker({
+    dateFormat: 'yy-mm-dd'
+});
+
 function didUpdateFromForm(prefix) {
     var ticketName = $('#' + prefix + ' input[name="name"]').val();
     if (ticketName && ticketName != "")

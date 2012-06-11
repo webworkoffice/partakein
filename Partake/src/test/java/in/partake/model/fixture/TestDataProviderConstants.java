@@ -177,6 +177,6 @@ public interface TestDataProviderConstants {
 
     // UserReceivedMessage
     public static final UUID USER_RECEIVED_MESSAGE_INQUEUE_ID = new UUID(12, 1);
-
+    public static final UUID INVALID_USER_RECEIVED_MESSAGE_ID = new UUID(12, -1);
 
 }

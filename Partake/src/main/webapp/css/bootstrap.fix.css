@@ -13,92 +13,8 @@ body.with-sub-nav {
     overflow-x: hidden;
 }
 
-@media (min-width: 768px) {
-    .pull-right-if-not-phone {
-        float: right;
-    }
-}
-
-@media (max-width : 767px) {
-    .hidden-phone-inline {
-        display: none;
-    }
-    .nav-stacked-if-phone>li {
-        float: none;
-    }
-    .nav-stacked-if-phone>li>a {
-        margin-right: 0;
-    }
-    .nav-tabs.nav-stacked-if-phone {
-        border-bottom: 0;
-    }
-    .nav-tabs.nav-stacked-if-phone>li>a {
-        border: 1px solid #ddd;
-        -webkit-border-radius: 0;
-        -moz-border-radius: 0;
-        border-radius: 0;
-    }
-    .nav-tabs.nav-stacked-if-phone>li:first-child>a {
-        -webkit-border-radius: 4px 4px 0 0;
-        -moz-border-radius: 4px 4px 0 0;
-        border-radius: 4px 4px 0 0;
-    }
-    .nav-tabs.nav-stacked-if-phone>li:last-child>a {
-        -webkit-border-radius: 0 0 4px 4px;
-        -moz-border-radius: 0 0 4px 4px;
-        border-radius: 0 0 4px 4px;
-    }
-    .nav-tabs.nav-stacked-if-phone>li>a:hover {
-        border-color: #ddd;
-        z-index: 2;
-    }
-    .nav-pills.nav-stacked-if-phone>li>a {
-        margin-bottom: 3px;
-    }
-    .nav-pills.nav-stacked-if-phone>li:last-child>a {
-        margin-bottom: 1px;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 979px) {
-    [class*="span"].pull-right {
-        float: right;
-        margin-left: 20px;
-    }
-}
-
-@media (min-width : 980px) {
-    .event-promotion-container {
-        position: absolute;
-        top: -10px;
-        right: 0;
-        min-height: 20px;
-        padding: 9px 19px 9px;
-        margin-bottom: 10px;
-        background-color: #f5f5f5;
-        border: 1px solid #eee;
-        border: 1px solid rgba(0, 0, 0, 0.05);
-        -webkit-border-radius: 0 0 4px 4px;
-        -moz-border-radius: 0 0 4px 4px;
-        border-radius: 0 0 4px 4px;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    }
-
-    .editing-nav {
-        margin-left: 10px;
-    }
-}
-
-@media (max-width : 979px) {
-    body {
-        padding-top: 0;
-    }
-
-    body.with-sub-nav {
-        padding-top: 0;
-    }
+input[type="text"], textarea, select, .uneditable-input {
+    color: #222 !important;
 }
 
 .nav.subnav {
@@ -297,4 +213,96 @@ footer {
 .label-edit:hover {
   background-color: #356635;
 }
+
+/* ---------------------------------------------------------------------- */
+
+@media (min-width: 768px) {
+    .pull-right-if-not-phone {
+        float: right;
+    }
+}
+
+@media (max-width : 767px) {
+    .hidden-phone-inline {
+        display: none;
+    }
+    .nav-stacked-if-phone>li {
+        float: none;
+    }
+    .nav-stacked-if-phone>li>a {
+        margin-right: 0;
+    }
+    .nav-tabs.nav-stacked-if-phone {
+        border-bottom: 0;
+    }
+    .nav-tabs.nav-stacked-if-phone>li>a {
+        border: 1px solid #ddd;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+    }
+    .nav-tabs.nav-stacked-if-phone>li:first-child>a {
+        -webkit-border-radius: 4px 4px 0 0;
+        -moz-border-radius: 4px 4px 0 0;
+        border-radius: 4px 4px 0 0;
+    }
+    .nav-tabs.nav-stacked-if-phone>li:last-child>a {
+        -webkit-border-radius: 0 0 4px 4px;
+        -moz-border-radius: 0 0 4px 4px;
+        border-radius: 0 0 4px 4px;
+    }
+    .nav-tabs.nav-stacked-if-phone>li>a:hover {
+        border-color: #ddd;
+        z-index: 2;
+    }
+    .nav-pills.nav-stacked-if-phone>li>a {
+        margin-bottom: 3px;
+    }
+    .nav-pills.nav-stacked-if-phone>li:last-child>a {
+        margin-bottom: 1px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    [class*="span"].pull-right {
+        float: right;
+        margin-left: 20px;
+    }
+}
+
+@media (min-width : 980px) {
+    .event-promotion-container {
+        position: absolute;
+        top: -10px;
+        right: 0;
+        min-height: 20px;
+        padding: 9px 19px 9px;
+        margin-bottom: 10px;
+        background-color: #f5f5f5;
+        border: 1px solid #eee;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        -webkit-border-radius: 0 0 4px 4px;
+        -moz-border-radius: 0 0 4px 4px;
+        border-radius: 0 0 4px 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+
+    .editing-nav {
+        margin-left: 10px;
+    }
+}
+
+@media (max-width : 979px) {
+    body {
+        padding-top: 0;
+    }
+
+    body.with-sub-nav {
+        padding-top: 0;
+    }
+}
+
+
 
