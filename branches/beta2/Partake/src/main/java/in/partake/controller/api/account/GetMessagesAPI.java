@@ -40,9 +40,7 @@ public class GetMessagesAPI extends AbstractPartakeAPI {
         GetMessagesTransaction transaction = new GetMessagesTransaction(user, offset, limit);
         transaction.execute();
 
-        JSONArray messages = new JSONArray();
-        for (UserMessageEx message : transaction.getUserMessageExs())
-            messages.add(message.toJSON());
+        JSONArray messages = Util.toSafeJSONArray(transaction.getUserMessageExs());
 
         JSONObject obj = new JSONObject();
         obj.put("messages", messages);

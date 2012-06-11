@@ -56,6 +56,11 @@ public class Message extends PartakeModel<Message> {
         return obj;
     }
 
+    public JSONObject toSafeJSON() {
+        // Safe to use JSON for now.
+        return toJSON();
+    }
+
     // ----------------------------------------------------------------------
     // equals method
 

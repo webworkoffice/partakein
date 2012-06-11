@@ -2,12 +2,15 @@ package in.partake.controller.api.event;
 
 import in.partake.base.PartakeException;
 import in.partake.controller.api.AbstractPartakeAPI;
+import in.partake.controller.base.permission.EventEditPermission;
 import in.partake.model.IPartakeDAOs;
 import in.partake.model.UserEx;
 import in.partake.model.access.Transaction;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.daofacade.EventDAOFacade;
+import in.partake.model.dto.Event;
+import in.partake.resource.UserErrorCode;
 import net.sf.json.JSONObject;
 
 public class CopyAPI extends AbstractPartakeAPI {
@@ -38,6 +41,13 @@ class CopyTransaction extends Transaction<String> {
 
     @Override
     protected String doExecute(PartakeConnection con, IPartakeDAOs daos) throws DAOException, PartakeException {
-        return EventDAOFacade.copy(con, daos, user, eventId);
+        Event event = daos.getEventAccess().find(con, eventId);
+        if (event == null)
+            throw new PartakeException(UserErrorCode.INVALID_EVENT_ID);
+
+        if (!EventEditPermission.check(event, user))
+            throw new PartakeException(UserErrorCode.FORBIDDEN_EVENT_COPY);
+
+        return EventDAOFacade.copy(con, daos, user, event);
     }
 }

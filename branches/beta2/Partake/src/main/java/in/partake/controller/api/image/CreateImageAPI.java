@@ -60,7 +60,7 @@ public class CreateImageAPI extends AbstractPartakeAPI {
 
         // MSIE should return text/plain or text/html here, since we use iframe.
         // TODO: Should use Accept header instead of this.
-        if (getBooleanParameter("ensureTextPlain"))
+        if (optBooleanParameter("ensureTextPlain", false))
             return renderOKWith(obj, "text/plain");
         else
             return renderOK(obj);

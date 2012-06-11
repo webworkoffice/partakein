@@ -85,8 +85,14 @@
 
 <script>
 (function() {
-    if (location.hash == "#account")
+    if (location.hash == "#account") {
         $('#account-link').tab('show');
+        return;
+    }
+
+    if (location.hash == "#message") {
+        $('#message-received').tab('show');
+    }
 })();
 </script>
 

@@ -12,31 +12,31 @@
     MypageAction action = (MypageAction) request.getAttribute(Constants.ATTR_ACTION);
 %>
 
+<%-- TODO: 本当はクリックすると、アコーディオン的にメッセージが表示されるようにしたい。 beta3 以降かな…… --%>
 <div id="received-whole">
 <table class="table table-striped">
     <colgroup>
         <col class="span1" /><col class="span6" /><col class="span3" /><col class="span2" />
     </colgroup>
     <thead>
-        <tr><th>&nbsp;</th><th>送信者</th><th>タイトル</th><th>送信日時</th></tr>
+        <tr><th>送信者</th><th>タイトル</th><th>受信日時</th></tr>
     </thead>
     <tbody id="received-tbody">
     </tbody>
 </table>
 </div>
 <div id="received-none">
-    <p>イベントがありません。</p>
+    <p>メッセージがありません。</p>
 </div>
 
 <div id="received-pagination" class="pagination pagination-centered"></div>
-
 
 <script>
 (function() {
     var ident = 'received';
 
-    function createTable(nthPage, eventStatuses) {
-        if (!eventStatuses || !eventStatuses.length) {
+    function createTable(nthPage, messages) {
+        if (!messages || !messages.length) {
             $('#' + ident + '-none').show();
             return;
         }
@@ -45,44 +45,27 @@
         var tbody = $('#' + ident + '-tbody');
         tbody.empty();
 
-        for (var i = 0; i < eventStatuses.length; ++i) {
-            var eventStatus = eventStatuses[i];
-            var event = eventStatus.event;
+        for (var i = 0; i < messages.length; ++i) {
+            var message = messages[i];
+
             var tr = $('<tr></tr>');
 
-            if (event.isPrivate)
-                $('<td><img src="/images/private.png" title="非公開イベント" /></td>').appendTo(tr);
+            // 新着？
+            if (message.openedAt)
+                $('<td></td>').text('&nbsp;').appendTo(tr);
             else
-                $('<td>&nbsp;</td>').appendTo(tr);
+                $('<td><span class="label">New</span></td>').appendTo(tr);
 
-            {
-                var td = $('<td></td>')
-                var a = $('<a></a>');
-                a.attr('href', "/events/" + event.id);
-                a.text(event.title);
-                a.appendTo(td);
-                td.appendTo(tr);
-            }
+            // 送信者
+            $('<td></td>').text(message.sender.screenName).appendTo(tr);
+            if (message.sender)
 
-            {
-                var td = $('<td></td>');
-                // var date = new Date();
-                // date.setTime(event.beginDate);
-                td.text(event.beginDate);
-                td.appendTo(tr);
-            }
+            // タイトル
+            $('<td></td>').text(message.message.subject).appendTo(tr);
 
-            {
-                var td = $('<td></td>');
-                var numParticipants = eventStatus.numEnrolledUsers;
-                if (eventStatus.isBeforeDeadline)
-                    numParticipants += eventStatus.numReservedUsers;
+            // 送信日時
+            $('<td></td>').text(message.deliveredAtText).appendTo(tr);
 
-                var str = numParticipants + "/" + event.capacity;
-
-                td.text(str);
-                td.appendTo(tr);
-            }
 
             tr.appendTo(tbody);
         }
@@ -91,7 +74,7 @@
     function update(nthPage) {
         partake.account.getMessages((nthPage - 1) * 10, 10)
         .done(function (json) {
-            createTable(nthPage, json.eventStatuses);
+            createTable(nthPage, json.messages);
             var lst = partakeUI.pagination($('#' + ident + '-pagination'), nthPage, json.totalMessagesCount, 10);
             for (var i = 0; i < lst.length; ++i) {
                 lst[i].anchor.click((function(i) {
