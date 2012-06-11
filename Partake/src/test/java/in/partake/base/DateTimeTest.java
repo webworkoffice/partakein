@@ -220,4 +220,36 @@ public class DateTimeTest {
         }
     }
 
+    @Test
+    public void testnSecBefore() {
+        long msec = 100000000L;
+        DateTime dt = new DateTime(msec);
+
+        assertThat(dt.nSecBefore(1).getTime(), is(msec - 1000));
+    }
+
+    @Test
+    public void testnSecAfter() {
+        long msec = 100000000L;
+        DateTime dt = new DateTime(msec);
+
+        assertThat(dt.nSecAfter(1).getTime(), is(msec + 1000));
+    }
+
+    public void testToHumanReadableFormat() {
+        for (Calendar calendar : SUPPORTED_CALENDAR) {
+            calendar.clear();
+            calendar.set(Calendar.YEAR, 2012);
+            calendar.set(Calendar.MONTH, 2);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            calendar.set(Calendar.HOUR_OF_DAY, 8);
+            calendar.set(Calendar.MINUTE, 10);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+
+            DateTime dt = new DateTime(calendar.getTime());
+
+            assertThat(dt.toHumanReadableFormat(), is("2012-02-01 08:10"));
+        }
+    }
 }
