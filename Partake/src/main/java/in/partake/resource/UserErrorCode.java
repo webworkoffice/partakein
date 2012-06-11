@@ -29,6 +29,7 @@ public enum UserErrorCode {
 
     FORBIDDEN_EVENT_SHOW("invalid.event.show.forbidden", 403),
     FORBIDDEN_EVENT_EDIT("invalid.event.edit.forbidden", 403),
+    FORBIDDEN_EVENT_COPY("invalid.event.copy.forbidden", 403),
     FORBIDDEN_EVENT_ATTENDANT_EDIT("invalid.event.attendant.edit.forbidden", 403),
 
     INVALID_ENROLL_TIMEOVER("invalid.event.enroll.timeover"),
@@ -112,6 +113,7 @@ public enum UserErrorCode {
     INVALID_MESSAGE_SUBJECT_TOOLONG("invalid.message.subject.toolong"),
     INVALID_MESSAGE_TOOMUCH("invalid.message.toomuch"),
     INVALID_MESSAGE_TOOLONG("invalid.message.toolong"),
+    FORBIDDEN_MESSAGE_SHOW("invalid.message.show.forbidden", 403),
 
     // ENROLLMENT
     INVALID_MISSING_VIP("invalid.enrollment.vip.missing"),

@@ -158,6 +158,12 @@
         </action>
     </package>
 
+    <package name="messages" namespace="/messages" extends="partake-default">
+        <action name="*" class="in.partake.controller.action.message.ShowAction">
+            <param name="messageId">{1}</param>
+        </action>
+    </package>
+
     <package name="feed" namespace="/feed" extends="partake-default">
         <action name="" class="in.partake.controller.action.feed.FeedListPageAction" />
         <action name="all" class="in.partake.controller.action.feed.FeedRecentEventsAction" />

@@ -94,21 +94,18 @@ public class EventDAOFacade {
         return eventEmbryo.getId();
     }
 
-    public static String copy(PartakeConnection con, IPartakeDAOs daos, UserEx user, String eventId) throws DAOException {
-        Event event = daos.getEventAccess().find(con, eventId);
-        if (event == null)
-            return null;
-
+    public static String copy(PartakeConnection con, IPartakeDAOs daos, UserEx user, Event event) throws DAOException {
         // --- copy event.
         Event newEvent = new Event(event);
         newEvent.setId(null);
         newEvent.setTitle(Util.shorten("コピー -- " + event.getTitle(), 100));
         newEvent.setDraft(true);
+        newEvent.setOwnerId(user.getId());
         String newEventId = EventDAOFacade.create(con, daos, newEvent);
-        newEvent.setId(eventId);
+        newEvent.setId(newEventId);
 
         // --- copy ticket.
-        List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
+        List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, event.getId());
         for (EventTicket ticket : tickets) {
             EventTicket newTicket = new EventTicket(ticket);
             newTicket.setId(daos.getEventTicketAccess().getFreshId(con));

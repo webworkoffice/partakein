@@ -2,7 +2,11 @@ package in.partake.model.dto;
 
 import in.partake.base.DateTime;
 import in.partake.model.dto.auxiliary.MessageDelivery;
+import in.partake.resource.Constants;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.UUID;
 
 import net.sf.json.JSONObject;
@@ -93,6 +97,18 @@ public class UserReceivedMessage extends PartakeModel<UserReceivedMessage> {
         obj.put("createdAt", createdAt.getTime());
         if (modifiedAt != null)
             obj.put("modifiedAt", modifiedAt.getTime());
+        return obj;
+    }
+
+    public JSONObject toSafeJSON() {
+        DateFormat format = new SimpleDateFormat(Constants.READABLE_DATE_FORMAT, Locale.getDefault());
+
+        JSONObject obj = toJSON();
+        if (this.deliveredAt != null) {
+            obj.put("deliveredAtText", format.format(deliveredAt.toDate()));
+            obj.put("deliveredAtTime", format.format(deliveredAt.getTime()));
+        }
+
         return obj;
     }
 
