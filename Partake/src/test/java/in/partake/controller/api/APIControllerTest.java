@@ -47,11 +47,6 @@ public abstract class APIControllerTest extends AbstractPartakeControllerTest {
     // ----------------------------------------------------------------------
 
     protected void assertResultOK(ActionProxy proxy) throws Exception {
-        if (response.getStatus() != 200) {
-            JSONObject obj = getJSON(proxy);
-            System.err.println(obj);
-        }
-
         Assert.assertEquals(200, response.getStatus());
 
         JSONObject obj = getJSON(proxy);

@@ -39,7 +39,6 @@ public class UserTwitterLink extends PartakeModel<UserTwitterLink> {
     }
 
     public UserTwitterLink(JSONObject obj) {
-        System.out.println(obj.toString());
         this.id = UUID.fromString(obj.getString("id"));
         this.twitterId = obj.getLong("twitterId");
         this.userId = obj.getString("userId");
