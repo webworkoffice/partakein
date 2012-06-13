@@ -18,12 +18,8 @@
     <h1>リソースが見つかりませんでした</h1>
 </div>
 
-<div class="row">
-    <div class="span12">
-        <p>お探しのリソースが見つかりませんでした。URL を確認してください。</p>
-        <img class="musangas" src="/images/sorry.png" alt="" />
-    </div>
-</div>
+<p>お探しのリソースが見つかりませんでした。URL を確認してください。</p>
+<img class="musangas" src="/images/sorry.png" alt="" />
 
 <p><a href="/">トップに戻る</a></p>
 </div>

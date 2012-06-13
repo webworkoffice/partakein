@@ -27,7 +27,7 @@
         redirectURL = action.getCurrentURL();
 %>
 
-<div class="subnav subnav-fixed">
+<div class="subnav subnav-fixed"><div class="container">
     <ul class="nav nav-pills nav-stacked-if-phone">
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#"><img class="hidden-phone-inline" src="/images/gear.png"/> イベント編集<b class="caret"></b></a>
@@ -75,7 +75,7 @@
         </li>
         <% } %>
     </ul>
-</div>
+</div></div>
 
 <div id="event-delete-dialog" class="modal" style="display:none">
     <div class="modal-header">

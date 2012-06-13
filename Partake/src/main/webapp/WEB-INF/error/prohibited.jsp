@@ -17,12 +17,8 @@
     <h1>権限がありません</h1>
 </div>
 
-<div class="row">
-    <div class="span12">
-        <p>実行権限がない操作を行おうとしました。</p>
-        <p><a href="<%= request.getContextPath() %>/">トップに戻る</a></p>
-    </div>
-</div>
+<p>実行権限がない操作を行おうとしました。</p>
+<p><a href="<%= request.getContextPath() %>/">トップに戻る</a></p>
 
 </div>
 <jsp:include page="/WEB-INF/internal/footer.jsp" />
