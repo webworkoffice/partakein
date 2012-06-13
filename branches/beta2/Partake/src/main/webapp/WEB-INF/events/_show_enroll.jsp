@@ -44,17 +44,17 @@
             <p>申込期間 <%= Helper.readableApplicationDuration(ticket, event) %></p>
         </div>
 
-        <div class="row span8" style="height: 50px;">
+        <div class="span8" style="height: 50px;"><div class="row">
         <% if (!ticket.acceptsApplication(event, now)) { %>
-            <a href="#" class="btn btn-flat span4-width p2-height disabled">申込期間外です</a>
+            <a href="#" class="btn btn-flat span8 p2-height disabled">申込期間外です</a>
         <% } else if (user == null) { %>
-            <a href="#" class="btn btn-flat span4-width p2-height disabled">参加するためにはログインが必要です</a>
+            <a href="#" class="btn btn-flat span8 p2-height disabled">参加するためにはログインが必要です</a>
         <% } else if (ParticipationStatus.ENROLLED.equals(status) || ParticipationStatus.RESERVED.equals(status)) { %>
-            <a href="#" class="btn button-apply-ticket span4-width p2-height" data-ticket="<%= h(ticket.getId().toString()) %>">申込変更</a>
+            <a href="#" class="btn button-apply-ticket span8 p2-height" data-ticket="<%= h(ticket.getId().toString()) %>">申込変更</a>
         <% } else { %>
-            <a href="#" class="btn btn-danger-flat button-apply-ticket span4-width p2-height" data-ticket="<%= h(ticket.getId().toString()) %>">参加申込</a>
+            <a href="#" class="btn btn-danger-flat button-apply-ticket span8 p2-height" data-ticket="<%= h(ticket.getId().toString()) %>">参加申込</a>
         <% } %>
-        </div>
+        </div></div>
     </div>
 </div>
     <% } %>

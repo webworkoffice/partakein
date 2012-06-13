@@ -29,7 +29,7 @@
             <% if (calendarLink != null) { %>
                 <input id="calendarURL" type="text" value="<%= h(PartakeProperties.get().getTopPath()) %>/calendars/<%= h(calendarLink.getId()) %>.ics" class="span12" />
             <% } else { %>
-                <input id="calendarURL" type="text" value="あなたのカレンダー ID はまだ生成されていません。" class="span6" />
+                <input id="calendarURL" type="text" value="あなたのカレンダー ID はまだ生成されていません。" class="span12" />
             <% } %>
         </div>
     </div>

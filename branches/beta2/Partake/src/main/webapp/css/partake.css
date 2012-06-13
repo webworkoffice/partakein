@@ -17,6 +17,11 @@ div.event-body {
     behavior: url(border-radius.htc);
 }
 
+.nav.subnav {
+    border-bottom: 0;
+    margin-bottom: 0;
+}
+
 .subnav {
     width: 100%;
     height: 36px;
@@ -52,8 +57,15 @@ div.event-body {
     filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
-.subnav-fixed .nav {
-    width: 938px;
-    margin: 0 auto;
-    padding: 0 1px;
+@media (max-width: 767px) {
+    .subnav {
+        height: auto;
+    }
+}
+
+@media (max-width : 979px) {
+    .subnav-fixed {
+        position: static;
+    }
+
 }
