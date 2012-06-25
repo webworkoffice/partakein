@@ -2,7 +2,7 @@ package in.partake.controller;
 
 import in.partake.model.EventEx;
 import in.partake.model.UserEx;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.auxiliary.DirectMessagePostingType;
 import in.partake.model.dto.auxiliary.UserPermission;
@@ -50,11 +50,11 @@ public class EventsMessageController extends PartakeActionSupport {
 			if (!event.hasPermission(user, UserPermission.EVENT_SEND_MESSAGE)) { return PROHIBITED; }
 
 			// ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。
-			List<Message> messages = MessageService.get().getRecentUserMessage(eventId, 5);
+			List<DirectMessage> messages = MessageService.get().getRecentUserMessage(eventId, 5);
 			Date currentTime = new Date();
 
 			if (messages.size() >= 3) {
-				Message msg = messages.get(2);
+				DirectMessage msg = messages.get(2);
 				Date msgDate = msg.getCreatedAt();
 				Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60); // one hour later after the message was sent.
 				if (currentTime.before(thresholdDate)) { // NG
@@ -63,7 +63,7 @@ public class EventsMessageController extends PartakeActionSupport {
 				}
 			}
 			if (messages.size() >= 5) {
-				Message msg = messages.get(4);
+				DirectMessage msg = messages.get(4);
 				Date msgDate = msg.getCreatedAt();
 				Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60 * 24); // one day later after the message was sent.
 

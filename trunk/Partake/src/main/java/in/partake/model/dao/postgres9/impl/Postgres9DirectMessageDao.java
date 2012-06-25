@@ -15,19 +15,19 @@ import in.partake.model.dao.postgres9.Postgres9EntityDataMapper;
 import in.partake.model.dao.postgres9.Postgres9IdMapper;
 import in.partake.model.dao.postgres9.Postgres9IndexDao;
 import in.partake.model.dao.postgres9.Postgres9StatementAndResultSet;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import net.sf.json.JSONObject;
 
-class EntityMessageMapper extends Postgres9EntityDataMapper<Message> {   
-    public Message map(JSONObject obj) {
-        return new Message(obj).freeze();
+class EntityMessageMapper extends Postgres9EntityDataMapper<DirectMessage> {
+    public DirectMessage map(JSONObject obj) {
+        return new DirectMessage(obj).freeze();
     }
 }
 
 // TODO: Should be renamed to Postgres9MessageDao.
 public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageAccess {
-    static final String TABLE_NAME = "MessageEntities";
-    static final String INDEX_TABLE_NAME = "MessageIndex";
+    static final String TABLE_NAME = "DirectMessageEntities";
+    static final String INDEX_TABLE_NAME = "DirectMessageIndex";
     static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
@@ -44,7 +44,7 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
     public void initialize(PartakeConnection con) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
         entityDao.initialize(pcon);
-        
+
         if (!existsTable(pcon, INDEX_TABLE_NAME)) {
             // event id may be NULL if system message.
             indexDao.createIndexTable(pcon, "CREATE TABLE " + INDEX_TABLE_NAME + "(id TEXT PRIMARY KEY, eventId TEXT, createdAt TIMESTAMP NOT NULL)");
@@ -60,20 +60,20 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
     }
 
     @Override
-    public void put(PartakeConnection con, Message t) throws DAOException {
+    public void put(PartakeConnection con, DirectMessage t) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why User does not have createdAt and modifiedAt?
         Postgres9Entity entity = new Postgres9Entity(t.getId(), CURRENT_VERSION, t.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
         if (entityDao.exists(pcon, t.getId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
         indexDao.put(pcon, new String[] { "id", "eventId", "createdAt" }, new Object[] { t.getId(), t.getEventId(), t.getCreatedAt() } );
     }
 
     @Override
-    public Message find(PartakeConnection con, String id) throws DAOException {
+    public DirectMessage find(PartakeConnection con, String id) throws DAOException {
         return mapper.map(entityDao.find((Postgres9Connection) con, id));
     }
 
@@ -85,8 +85,8 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
     }
 
     @Override
-    public DataIterator<Message> getIterator(PartakeConnection con) throws DAOException {
-        return new MapperDataIterator<Postgres9Entity, Message>(mapper, entityDao.getIterator((Postgres9Connection) con));        
+    public DataIterator<DirectMessage> getIterator(PartakeConnection con) throws DAOException {
+        return new MapperDataIterator<Postgres9Entity, DirectMessage>(mapper, entityDao.getIterator((Postgres9Connection) con));
     }
 
     @Override
@@ -95,13 +95,13 @@ public class Postgres9DirectMessageDao extends Postgres9Dao implements IMessageA
     }
 
     @Override
-    public DataIterator<Message> findByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public DataIterator<DirectMessage> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         Postgres9StatementAndResultSet psars = indexDao.select((Postgres9Connection) con,
                 "SELECT id FROM " + INDEX_TABLE_NAME + " WHERE eventId = ? ORDER BY createdAt DESC",
                 new Object[] { eventId });
 
-        Postgres9IdMapper<Message> idMapper = new Postgres9IdMapper<Message>((Postgres9Connection) con, mapper, entityDao);
-        return new Postgres9DataIterator<Message>(idMapper, psars);
+        Postgres9IdMapper<DirectMessage> idMapper = new Postgres9IdMapper<DirectMessage>((Postgres9Connection) con, mapper, entityDao);
+        return new Postgres9DataIterator<DirectMessage>(idMapper, psars);
     }
 
 }

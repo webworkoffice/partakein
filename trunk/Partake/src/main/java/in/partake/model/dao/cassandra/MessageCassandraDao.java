@@ -6,7 +6,7 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IMessageAccess;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.util.Util;
 
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     }
     
     @Override
-    public Message find(PartakeConnection con, String messageId) throws DAOException {
+    public DirectMessage find(PartakeConnection con, String messageId) throws DAOException {
         CassandraConnection ccon = (CassandraConnection) con;
         try {
             return getMessageById(ccon.getClient(), messageId, ccon.getAcquiredTime());
@@ -94,7 +94,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     }
 
     @Override
-    public void put(PartakeConnection con, Message embryo) throws DAOException {
+    public void put(PartakeConnection con, DirectMessage embryo) throws DAOException {
         if (embryo.getId() == null) { throw new NullPointerException(); }
         
         CassandraConnection ccon = (CassandraConnection) con;
@@ -119,7 +119,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     }
     
     @Override
-    public DataIterator<Message> getIterator(PartakeConnection con) throws DAOException {
+    public DataIterator<DirectMessage> getIterator(PartakeConnection con) throws DAOException {
         return getIteratorImpl((CassandraConnection) con, new CassandraTableDescription(DIRECTMESSAGE_PREFIX, DIRECTMESSAGE_KEYSPACE, DIRECTMESSAGE_COLUMNFAMILY, DIRECTMESSAGE_CL_R, DIRECTMESSAGE_CL_W), this);
     }
     
@@ -129,7 +129,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
     }
 
     @Override
-    public DataIterator<Message> findByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public DataIterator<DirectMessage> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         try {
             return getUserMessageIteratorImpl((CassandraConnection) con, eventId);
         } catch (Exception e) {
@@ -140,7 +140,7 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
 
     // ----------------------------------------------------------------------
     
-    private Message getMessageById(Client client, String messageId, long time) throws Exception {
+    private DirectMessage getMessageById(Client client, String messageId, long time) throws Exception {
         String key = DIRECTMESSAGE_PREFIX + messageId;
 
         SlicePredicate predicate = new SlicePredicate();
@@ -175,10 +175,10 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
             }
         }
         
-        return new Message(messageId, userId, message, eventId, createdAt).freeze();
+        return new DirectMessage(messageId, userId, message, eventId, createdAt).freeze();
     }
     
-    private void addMessage(Client client, Message embryo, long time) throws Exception {
+    private void addMessage(Client client, DirectMessage embryo, long time) throws Exception {
         String key = DIRECTMESSAGE_PREFIX + embryo.getId();
 
         List<Mutation> mutations = new ArrayList<Mutation>(); 
@@ -210,23 +210,23 @@ class MessageCassandraDao extends CassandraDao implements IMessageAccess {
         client.batch_mutate(DIRECTMESSAGE_KEYSPACE, Collections.singletonMap(key, Collections.singletonMap(DIRECTMESSAGE_COLUMNFAMILY, mutations)), DIRECTMESSAGE_CL_W);
     }    
     
-    private CassandraColumnDataIterator<Message> getUserMessageIteratorImpl(CassandraConnection con, String eventId) throws Exception {
+    private CassandraColumnDataIterator<DirectMessage> getUserMessageIteratorImpl(CassandraConnection con, String eventId) throws Exception {
         String key = DIRECTMESSAGE_EVENT_PREFIX + eventId;
 
         ColumnIterator iterator = 
             new ColumnIterator(con, DIRECTMESSAGE_EVENT_KEYSPACE, key, DIRECTMESSAGE_EVENT_COLUMNFAMILY,
                             true, DIRECTMESSAGE_EVENT_CL_R, DIRECTMESSAGE_EVENT_CL_W);
 
-        return new CassandraColumnDataIterator<Message>(iterator, new ColumnOrSuperColumnMapper<Message>(con, factory) {
+        return new CassandraColumnDataIterator<DirectMessage>(iterator, new ColumnOrSuperColumnMapper<DirectMessage>(con, factory) {
             @Override
-            public Message map(ColumnOrSuperColumn cosc) throws DAOException {
+            public DirectMessage map(ColumnOrSuperColumn cosc) throws DAOException {
                 Column column = cosc.getColumn();
                 String messageId = string(column.getValue());
                 
                 return factory.getDirectMessageAccess().find(connection, messageId);               
             }
             
-            public ColumnOrSuperColumn unmap(Message t, long time) throws DAOException {
+            public ColumnOrSuperColumn unmap(DirectMessage t, long time) throws DAOException {
                 throw new UnsupportedOperationException();
             };
         });

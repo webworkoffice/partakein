@@ -16,7 +16,7 @@ import in.partake.model.dto.Enrollment;
 import in.partake.model.dto.Envelope;
 import in.partake.model.dto.Event;
 import in.partake.model.dto.EventReminder;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
 import in.partake.model.dto.UserPreference;
@@ -82,11 +82,11 @@ public final class MessageService extends PartakeService {
             throw new PartakeException(UserErrorCode.INVALID_PROHIBITED);
 
         // ５つメッセージを取ってきて、制約をみたしているかどうかチェックする。
-        List<Message> messages = getRecentUserMessage(con, eventId, 5); 
+        List<DirectMessage> messages = getRecentUserMessage(con, eventId, 5); 
         Date currentTime = new Date();
 
         if (messages.size() >= 3) {
-            Message msg = messages.get(2);
+            DirectMessage msg = messages.get(2);
             Date msgDate = msg.getCreatedAt();
             Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60); // one hour later after the message was sent.
             if (currentTime.before(thresholdDate)) // NG
@@ -94,7 +94,7 @@ public final class MessageService extends PartakeService {
         }
         
         if (messages.size() >= 5) {
-            Message msg = messages.get(4);
+            DirectMessage msg = messages.get(4);
             Date msgDate = msg.getCreatedAt();
             Date thresholdDate = new Date(msgDate.getTime() + 1000 * 60 * 60 * 24); // one day later after the message was sent.
 
@@ -262,7 +262,7 @@ public final class MessageService extends PartakeService {
      */
     private void sendNotificationOnlyForReservedParticipants(PartakeConnection con, Event event, String message) throws DAOException {
         String messageId = getFactory().getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
+        DirectMessage embryo = new DirectMessage(messageId, event.getOwnerId(), message, null, new Date());
         getFactory().getDirectMessageAccess().put(con, embryo);
 
         List<Enrollment> participations = getFactory().getEnrollmentAccess().findByEventId(con, event.getId());
@@ -285,7 +285,7 @@ public final class MessageService extends PartakeService {
      */
     private void sendNotificationOnlyForParticipants(PartakeConnection con, EventEx event, String message) throws DAOException {
         String messageId = getFactory().getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(messageId, event.getOwnerId(), message, null, new Date());
+        DirectMessage embryo = new DirectMessage(messageId, event.getOwnerId(), message, null, new Date());
         getFactory().getDirectMessageAccess().put(con, embryo);
 
         Date deadline = event.getCalculatedDeadline();
@@ -349,7 +349,7 @@ public final class MessageService extends PartakeService {
                         case NOT_ENROLLED: {
                             if (okMessageId == null) {
                                 okMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                                Message okEmbryo = new Message(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date());
+                                DirectMessage okEmbryo = new DirectMessage(okMessageId, event.getOwnerId(), enrollingMessage, null, new Date());
                                 factory.getDirectMessageAccess().put(con, okEmbryo);
                             }
     
@@ -379,7 +379,7 @@ public final class MessageService extends PartakeService {
                         case ENROLLED:
                             if (ngMessageId == null) {
                                 ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                                Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
+                                DirectMessage ngEmbryo = new DirectMessage(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
                                 factory.getDirectMessageAccess().put(con, ngEmbryo);
                             }
     
@@ -408,7 +408,7 @@ public final class MessageService extends PartakeService {
                         case ENROLLED:
                             if (ngMessageId == null) {
                                 ngMessageId = factory.getDirectMessageAccess().getFreshId(con);
-                                Message ngEmbryo = new Message(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
+                                DirectMessage ngEmbryo = new DirectMessage(ngMessageId, event.getOwnerId(), cancellingMessage, null, new Date());
                                 factory.getDirectMessageAccess().put(con, ngEmbryo);
                             }
     
@@ -437,12 +437,12 @@ public final class MessageService extends PartakeService {
         getFactory().getEnrollmentAccess().put(con, newEnrollment);
     }
 
-    public Message getMessageById(String messageId) throws DAOException {
+    public DirectMessage getMessageById(String messageId) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         PartakeConnection con = getPool().getConnection();
         try {
             con.beginTransaction();
-            Message message = factory.getDirectMessageAccess().find(con, messageId);
+            DirectMessage message = factory.getDirectMessageAccess().find(con, messageId);
             con.commit();
 
             return message;
@@ -475,7 +475,7 @@ public final class MessageService extends PartakeService {
         PartakeDAOFactory factory = getFactory();
 
         String id = factory.getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(id, userId, message, isUserMessage ? eventId : null, new Date());
+        DirectMessage embryo = new DirectMessage(id, userId, message, isUserMessage ? eventId : null, new Date());
         factory.getDirectMessageAccess().put(con, embryo);
 
         return id;
@@ -495,10 +495,10 @@ public final class MessageService extends PartakeService {
             con.beginTransaction();
 
             List<DirectMessageEx> messages = new ArrayList<DirectMessageEx>();
-            DataIterator<Message> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
+            DataIterator<DirectMessage> it = factory.getDirectMessageAccess().findByEventId(con, eventId);
             try {
                 while (it.hasNext()) {
-                    Message message = it.next();
+                    DirectMessage message = it.next();
                     messages.add(new DirectMessageEx(message, getUserEx(con, message.getUserId())));
                 }
             } finally {
@@ -519,12 +519,12 @@ public final class MessageService extends PartakeService {
      * @return
      * @throws DAOException
      */
-    public List<Message> getRecentUserMessage(String eventId, int maxMessage) throws DAOException {
+    public List<DirectMessage> getRecentUserMessage(String eventId, int maxMessage) throws DAOException {
         PartakeConnection con = getPool().getConnection();
 
         try {
             con.beginTransaction();
-            List<Message> messages = getRecentUserMessage(con, eventId, maxMessage); 
+            List<DirectMessage> messages = getRecentUserMessage(con, eventId, maxMessage); 
             con.commit();
 
             return messages;
@@ -533,9 +533,9 @@ public final class MessageService extends PartakeService {
         }
     }
     
-    private List<Message> getRecentUserMessage(PartakeConnection con, String eventId, int maxMessage) throws DAOException {
-        List<Message> messages = new ArrayList<Message>();
-        DataIterator<Message> it = getFactory().getDirectMessageAccess().findByEventId(con, eventId);
+    private List<DirectMessage> getRecentUserMessage(PartakeConnection con, String eventId, int maxMessage) throws DAOException {
+        List<DirectMessage> messages = new ArrayList<DirectMessage>();
+        DataIterator<DirectMessage> it = getFactory().getDirectMessageAccess().findByEventId(con, eventId);
         try {
             for (int i = 0; i < maxMessage; ++i) {
                 if (!it.hasNext()) { break; }
@@ -568,7 +568,7 @@ public final class MessageService extends PartakeService {
     public void tweetMessageImpl(PartakeConnection con, User user, String messageStr) throws DAOException {
         PartakeDAOFactory factory = getFactory();
         String messageId = factory.getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(messageId, user.getId(), messageStr, null, new Date());
+        DirectMessage embryo = new DirectMessage(messageId, user.getId(), messageStr, null, new Date());
 
         factory.getDirectMessageAccess().put(con, embryo);
 
@@ -682,7 +682,7 @@ public final class MessageService extends PartakeService {
         Twitter twitter = new TwitterFactory().getInstance(accessToken);
 
         try {
-            Message message = getFactory().getDirectMessageAccess().find(con, envelope.getMessageId());
+            DirectMessage message = getFactory().getDirectMessageAccess().find(con, envelope.getMessageId());
             twitter.updateStatus(message.getMessage());
             return true;
         } catch (TwitterException e) {
@@ -734,7 +734,7 @@ public final class MessageService extends PartakeService {
         if (twitter == null) { return true; }
 
         try {
-            Message message = getFactory().getDirectMessageAccess().find(con, envelope.getMessageId());
+            DirectMessage message = getFactory().getDirectMessageAccess().find(con, envelope.getMessageId());
             int twitterId = Integer.parseInt(user.getTwitterId());
             twitter.sendDirectMessage(twitterId, message.getMessage());
 
