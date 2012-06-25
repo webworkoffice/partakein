@@ -1,22 +1,32 @@
 package in.partake.base;
 
+import in.partake.resource.Constants;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.TimeZone;
 
 /**
- * Partake 用の時刻。Immutable Object として実装すること。
+ * Time utility functions.
  *
  * @author shinyak
  */
-public class TimeUtil {
-    private static Date currentDate;
+public final class TimeUtil {
+    private static DateTime currentDateTime;
+
+    private TimeUtil() {
+        // Prevents from instantiation.
+    }
 
     /**
      * Resets the current date.
      */
     public static void resetCurrentDate() {
-        TimeUtil.currentDate = null;
+        TimeUtil.currentDateTime = null;
     }
 
     /**
@@ -24,11 +34,11 @@ public class TimeUtil {
      * そうでなければ、OS から現在時刻を取得して返す。
      * @return
      */
-    public static Date getCurrentDate() {
-        if (currentDate != null)
-            return currentDate;
+    public static DateTime getCurrentDateTime() {
+        if (currentDateTime != null)
+            return new DateTime(currentDateTime.getTime());
         else
-            return new Date();
+            return new DateTime(System.currentTimeMillis());
     }
 
     /**
@@ -37,42 +47,29 @@ public class TimeUtil {
      * @return
      */
     public static long getCurrentTime() {
-        if (currentDate != null)
-            return currentDate.getTime();
+        if (currentDateTime != null)
+            return currentDateTime.getTime();
         else
             return new Date().getTime();
     }
 
-    public static void setCurrentDate(Date date) {
-        currentDate = date;
+    public static void setCurrentDateTime(DateTime dt) {
+        currentDateTime = dt;
     }
 
     public static void setCurrentTime(long time) {
-        currentDate = new Date(time);
+        currentDateTime = new DateTime(time);
     }
 
-    public static Date create(int year, int month, int date, int hour, int min, int sec, TimeZone timeZone) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month - 1);
-        calendar.set(Calendar.DATE, date);
-        calendar.set(Calendar.HOUR, hour);
-        calendar.set(Calendar.MINUTE, min);
-        calendar.set(Calendar.SECOND, sec);
-        calendar.setTimeZone(timeZone);
-
-        return calendar.getTime();
-    }
-    
     /**
      * Waits for a while.
      */
     public static void waitForTick() {
-        if (currentDate != null) {
-            setCurrentTime(currentDate.getTime() + 20);
+        if (currentDateTime != null) {
+            setCurrentTime(currentDateTime.getTime() + 20);
             return;
         }
-        
+
         long now = new Date().getTime();
         do {
             try {
@@ -80,6 +77,83 @@ public class TimeUtil {
             } catch (InterruptedException e) {
                 // ignore.
             }
-        } while (now == new Date().getTime());
+        } while (now == TimeUtil.getCurrentTime());
+    }
+
+    public static DateTime create(int year, int month, int date, int hour, int min, int sec) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.DATE, date);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, min);
+        calendar.set(Calendar.SECOND, sec);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.setTimeZone(TimeZone.getTimeZone("JST"));
+
+        return new DateTime(calendar.getTime());
+    }
+
+
+    public static Date create(int year, int month, int date, int hour, int min, int sec, TimeZone timeZone) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.DATE, date);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, min);
+        calendar.set(Calendar.SECOND, sec);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.setTimeZone(timeZone);
+
+        return calendar.getTime();
+    }
+
+    public static Calendar calendar(Date date) {
+        if (date == null)
+            return null;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
+    }
+
+    public static String formatForEvent(DateTime date) {
+        DateFormat dateFormatForEvent = new SimpleDateFormat(Constants.READABLE_DATE_FORMAT);
+        return dateFormatForEvent.format(date.toDate());
+    }
+
+    public static DateTime parseForEvent(String dateStr) {
+        DateFormat dateFormatForEvent = new SimpleDateFormat(Constants.READABLE_DATE_FORMAT);
+        try {
+            return new DateTime(dateFormatForEvent.parse(dateStr).getTime());
+        } catch (ParseException e) {
+            // DO NOTHING.
+        }
+
+        try {
+            long time = Long.valueOf(dateStr);
+            return new DateTime(time);
+        } catch (NumberFormatException e) {
+            // DO NOTHING
+        }
+
+        return null;
+    }
+
+    public static DateTime dateTimeFromTimeString(String timeString) {
+        try {
+            return new DateTime(Long.parseLong(timeString));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static String getTimeString(DateTime date) {
+        return getTimeString(date.getTime());
+    }
+
+    public static String getTimeString(long time) {
+        return new Formatter().format("%020d", time).toString();
     }
 }

@@ -13,12 +13,12 @@ public class Postgres9DataIterator<T> extends DataIterator<T> {
     private DataMapper<ResultSet, T> mapper;
     private T next;
     private T current;
-    
+
     public Postgres9DataIterator(DataMapper<ResultSet, T> mapper, Postgres9StatementAndResultSet sars) {
         this.mapper = mapper;
         this.sars = sars;
     }
-    
+
     @Override
     public boolean hasNext() throws DAOException {
         if (next != null)
@@ -27,7 +27,7 @@ public class Postgres9DataIterator<T> extends DataIterator<T> {
         try {
             if (!sars.getResultSet().next())
                 return false;
-            
+
             next = mapper.map(sars.getResultSet());
             return true;
         } catch (SQLException e) {
@@ -52,7 +52,7 @@ public class Postgres9DataIterator<T> extends DataIterator<T> {
     public void close() {
         sars.close();
     }
-    
+
     @Override
     public void remove() throws DAOException, UnsupportedOperationException {
         throw new UnsupportedOperationException();

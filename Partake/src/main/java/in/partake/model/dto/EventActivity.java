@@ -1,66 +1,47 @@
 package in.partake.model.dto;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
+import in.partake.base.DateTime;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.openjpa.persistence.jdbc.Index;
 
-@Entity(name = "EventActivities")
+
 public class EventActivity extends PartakeModel<EventActivity> {
-    @Id
     private String id;
-    @Column @Index
     private String eventId;
-    @Column
     private String title;
-    @Column @Lob
     private String content;
-    @Temporal(TemporalType.TIMESTAMP) @Index
-    private Date createdAt;
+    private DateTime createdAt;
 
     public EventActivity() {
     }
 
-    public EventActivity(String id, String eventId, String title, String content, Date createdAt) {
+    public EventActivity(String id, String eventId, String title, String content, DateTime createdAt) {
         this.id = id;
         this.eventId = eventId;
         this.title = title;
         this.content = content;
-        this.createdAt = createdAt == null ? null : new Date(createdAt.getTime());
+        this.createdAt = createdAt;
     }
 
     public EventActivity(EventActivity eventActivity) {
         this(eventActivity.id, eventActivity.eventId, eventActivity.title, eventActivity.content, eventActivity.createdAt);
     }
-    
+
     public EventActivity(JSONObject obj) {
         this.id = obj.getString("id");
         this.eventId = obj.getString("eventId");
         this.title = obj.getString("title");
         this.content = obj.getString("content");
         if (obj.containsKey("createdAt"))
-            this.createdAt = new Date(obj.getLong("createdAt"));
-    }
-
-    @Override
-    public EventActivity copy() {
-        return new EventActivity(this);
+            this.createdAt = new DateTime(obj.getLong("createdAt"));
     }
 
     @Override
     public Object getPrimaryKey() {
         return id;
     }
-    
+
     @Override
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
@@ -122,8 +103,8 @@ public class EventActivity extends PartakeModel<EventActivity> {
         return content;
     }
 
-    public Date getCreatedAt() {
-        return createdAt == null ? null : new Date(createdAt.getTime());
+    public DateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setId(String id) {
@@ -146,8 +127,8 @@ public class EventActivity extends PartakeModel<EventActivity> {
         this.content = content;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(DateTime createdAt) {
         checkFrozen();
-        this.createdAt = createdAt == null ? null : new Date(createdAt.getTime());
+        this.createdAt = createdAt;
     }
 }

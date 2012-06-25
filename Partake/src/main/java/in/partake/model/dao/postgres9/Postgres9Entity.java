@@ -1,6 +1,8 @@
 package in.partake.model.dao.postgres9;
 
-import java.util.Date;
+import in.partake.base.DateTime;
+
+import java.util.UUID;
 
 public class Postgres9Entity {
     /** UUID */
@@ -12,10 +14,19 @@ public class Postgres9Entity {
     /** Optional Body. Will be used in BinaryEntity and CacheEntity. */
     private byte[] opt;
     /** Time index updated at. */
-    private Date updatedAt;
-    
-    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, Date updatedAt) {
+    private DateTime updatedAt;
+
+    // TODO: This ctor should be deprecated later.
+    public Postgres9Entity(String id, int version, byte[] body, byte[] opt, DateTime updatedAt) {
         this.id = id;
+        this.version = version;
+        this.body = body;
+        this.opt = opt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Postgres9Entity(UUID id, int version, byte[] body, byte[] opt, DateTime updatedAt) {
+        this.id = id.toString();
         this.version = version;
         this.body = body;
         this.opt = opt;
@@ -29,11 +40,11 @@ public class Postgres9Entity {
     public int getVersion() {
         return version;
     }
-    
+
     public byte[] getBody() {
         return body;
     }
-    
+
     public int getBodyLength() {
         return body.length;
     }
@@ -46,7 +57,7 @@ public class Postgres9Entity {
         return opt.length;
     }
 
-    public Date getUpdatedAt() {
+    public DateTime getUpdatedAt() {
         return updatedAt;
     }
 }

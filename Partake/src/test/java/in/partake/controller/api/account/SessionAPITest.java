@@ -29,7 +29,7 @@ public class SessionAPITest extends APIControllerTest {
         // If logged in, the token session should be available also.
         ActionProxy proxy = getActionProxy(SESSION_TOKEN_URL);
 
-        loginAs(proxy, TestDataProvider.USER_ID1);
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
         
         proxy.execute();
         assertResultOK(proxy);

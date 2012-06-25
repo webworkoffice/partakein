@@ -64,4 +64,8 @@ public class Postgres9Connection extends PartakeConnection {
         }
     }
 
+    @Override
+    public boolean isInTransaction() throws DAOException {
+        return inTransation;
+    }
 }

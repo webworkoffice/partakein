@@ -1,115 +1,90 @@
 package in.partake.model.dto;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
+import in.partake.base.DateTime;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.ObjectUtils;
 
-@Entity(name = "Users")
 public class User extends PartakeModel<User> {
-    @Id
-    private String  id;
-    @Column
-    private String  twitterId;
-    @Column
-    private Date    lastLoginAt; //
-    @Column
-    private String  calendarId; // TODO: なんでここに calendarId がいるんだっけ...
-    
-    public User() {
-        // do nothing
-    }
-    
-    public User(String id, String twitterId, Date lastLoginAt, String calendarId) {
-        this.id = id;
-        this.twitterId = String.valueOf(twitterId);
-        this.lastLoginAt = lastLoginAt;
-        this.calendarId = calendarId;
-    }
+    private String id;
+    private String screenName;
+    private String profileImageURL;
+    private DateTime createdAt;
+    private DateTime modifiedAt;
 
-    public User(String id, int twitterId, Date lastLoginAt, String calendarId) {
-        this(id, String.valueOf(twitterId), lastLoginAt, calendarId);
+    public User(String id, String screenName, String profileImageURL, DateTime createdAt, DateTime modifiedAt) {
+        this.id = id;
+        this.screenName = screenName;
+        this.profileImageURL = profileImageURL;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
 
     public User(User user) {
-        this.id = user.id;
-        this.twitterId = user.twitterId;
-        this.lastLoginAt = user.lastLoginAt;
-        this.calendarId = user.calendarId;
+        this(user.id, user.screenName, user.profileImageURL, user.createdAt, user.modifiedAt);
     }
-    
+
     public User(JSONObject obj) {
         this.id = obj.getString("id");
-        this.twitterId = obj.getString("twitterId");
-        if (obj.containsKey("lastLoginAt"))
-            this.lastLoginAt = new Date(obj.getLong("lastLoginAt"));
-        if (obj.containsKey("calendarId"))
-            this.calendarId = obj.getString("calendarId");        
+        this.screenName = obj.getString("screenName");
+        this.profileImageURL = obj.getString("profileImageURL");
+        this.createdAt = new DateTime(obj.getLong("createdAt"));
+        if (obj.containsKey("modifiedAt"))
+            this.modifiedAt = new DateTime(obj.getLong("modifiedAt"));
     }
 
     @Override
     public Object getPrimaryKey() {
         return id;
     }
-    
-    @Override
-    public User copy() {
-        return new User(this);
-    }
-    
+
     /**
      * sensitive な情報を含まないような user を取得します。
-     * 
+     *
      * @return
      */
     public JSONObject toSafeJSON() {
-    	JSONObject obj = new JSONObject();
-    	obj.put("id", id);
-    	
-    	return obj;
+        JSONObject obj = new JSONObject();
+        obj.put("id", id);
+        obj.put("screenName", screenName);
+        obj.put("profileImageURL", profileImageURL);
+        return obj;
     }
-    
+
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", id);
-        obj.put("twitterId", twitterId);
-        
-        if (lastLoginAt != null)
-            obj.put("lastLoginAt", lastLoginAt.getTime());
-        
-        if (calendarId != null)
-            obj.put("calendarId", calendarId);
-
+        obj.put("screenName", screenName);
+        obj.put("profileImageURL", profileImageURL);
+        obj.put("createdAt", createdAt.getTime());
+        if (modifiedAt != null)
+            obj.put("modifiedAt", modifiedAt.getTime());
         return obj;
     }
 
     // ----------------------------------------------------------------------
     // equal methods
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof User)) { return false; }
-        
+
         User lhs = this;
         User rhs = (User) obj;
-        
-        if (!ObjectUtils.equals(lhs.id,          rhs.id))          { return false; }
-        if (!ObjectUtils.equals(lhs.lastLoginAt, rhs.lastLoginAt)) { return false; }
-        if (!ObjectUtils.equals(lhs.twitterId,   rhs.twitterId))   { return false; }
-        if (!ObjectUtils.equals(lhs.calendarId,  rhs.calendarId))  { return false; }
-        return true;       
+
+        if (!ObjectUtils.equals(lhs.id, rhs.id)) { return false; }
+        if (!ObjectUtils.equals(lhs.screenName, rhs.screenName)) { return false; }
+        if (!ObjectUtils.equals(lhs.profileImageURL, rhs.profileImageURL)) { return false; }
+        if (!ObjectUtils.equals(lhs.createdAt, rhs.createdAt)) { return false; }
+        if (!ObjectUtils.equals(lhs.modifiedAt, rhs.modifiedAt)) { return false; }
+        return true;
     }
-    
+
     @Override
     public int hashCode() {
         return ObjectUtils.hashCode(id);
     }
-    
+
     // ----------------------------------------------------------------------
     // accessors
 
@@ -117,16 +92,20 @@ public class User extends PartakeModel<User> {
         return id;
     }
 
-    public Date getLastLoginAt() {
-        return lastLoginAt;
+    public String getScreenName() {
+        return screenName;
     }
 
-    public String getTwitterId() {
-        return twitterId;
+    public String getProfileImageURL() {
+        return profileImageURL;
     }
 
-    public String getCalendarId() {
-        return calendarId;
+    public DateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public DateTime getModifiedAt() {
+        return modifiedAt;
     }
 
     public void setId(String id) {
@@ -134,22 +113,23 @@ public class User extends PartakeModel<User> {
         this.id = id;
     }
 
-    public void setLastLoginAt(Date lastLoginAt) {
+    public void setScreenName(String screenName) {
         checkFrozen();
-        this.lastLoginAt = lastLoginAt;
+        this.screenName = screenName;
     }
 
-    public void setTwitterId(String twitterId) {
+    public void setProfileImageURL(String profileImageURL) {
         checkFrozen();
-        this.twitterId = twitterId;
+        this.profileImageURL = profileImageURL;
     }
 
-    public void setTwitterId(int twitterId) {
-        setTwitterId(String.valueOf(twitterId));
+    public void setCreatedAt(DateTime createdAt) {
+        checkFrozen();
+        this.createdAt = createdAt;
     }
 
-    public void setCalendarId(String calendarId) {
+    public void setModifiedAt(DateTime modifiedAt) {
         checkFrozen();
-        this.calendarId = calendarId;
+        this.modifiedAt = modifiedAt;
     }
 }

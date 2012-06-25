@@ -2,6 +2,8 @@ package in.partake.controller.api.debug;
 
 import in.partake.controller.api.APIControllerTest;
 import in.partake.model.fixture.TestDataProvider;
+import in.partake.resource.ServerErrorCode;
+import in.partake.resource.UserErrorCode;
 import net.sf.json.JSONObject;
 
 import org.junit.Assert;
@@ -18,7 +20,7 @@ public class DebugAPITest extends APIControllerTest {
         proxy.execute();
         assertResultOK(proxy);
     }
-    
+
     @Test
     public void testEchoWithData() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/echo");
@@ -34,25 +36,25 @@ public class DebugAPITest extends APIControllerTest {
     @Test
     public void testEchoWithoutData() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/echo");
-        
+
         proxy.execute();
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INVALID_ARGUMENT);
     }
 
-    
+
     @Test
     public void testSuccessIfLoginWhenLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/successIfLogin");
-        loginAs(proxy, TestDataProvider.USER_ID1);
-        
+        loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
+
         proxy.execute();
         assertResultOK(proxy);
     }
-    
+
     @Test
     public void testSuccessIfLoginWhenNotLogin() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/successIfLogin");
-        
+
         // I don't care what proxy.execute returns.
         // However, http status code and header are tested.
         proxy.execute();
@@ -62,43 +64,43 @@ public class DebugAPITest extends APIControllerTest {
     @Test
     public void testInvalid() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/invalid");
-        
+
         proxy.execute();
-        
+
         Assert.assertEquals(400, response.getStatus());
-        assertResultInvalid(proxy);
+        assertResultInvalid(proxy, UserErrorCode.INTENTIONAL_USER_ERROR);
     }
-    
+
     @Test
     public void testError() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/error");
-        
+
         proxy.execute();
-        assertResultError(proxy);        
+        assertResultError(proxy, ServerErrorCode.INTENTIONAL_ERROR);
     }
 
     @Test
     public void testErrorException() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/errorException");
-        
+
         proxy.execute();
-        assertResultError(proxy);        
+        assertResultError(proxy, ServerErrorCode.UNKNOWN_ERROR);
     }
 
     @Test
     public void testErrorDB() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/errorDB");
-        
+
         proxy.execute();
-        assertResultError(proxy);        
+        assertResultError(proxy, ServerErrorCode.DB_ERROR);
     }
-    
+
     @Test
     public void testErrorDBException() throws Exception {
         ActionProxy proxy = getActionProxy("/api/debug/errorDBException");
-        
+
         proxy.execute();
-        assertResultError(proxy);        
+        assertResultError(proxy, ServerErrorCode.DB_ERROR);
     }
 
 }

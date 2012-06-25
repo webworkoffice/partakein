@@ -16,6 +16,14 @@ public abstract class PartakeConnectionPool {
         this.firstConnectionName = new ThreadLocal<String>();
     }
     
+    public int getCurrentNumberOfConnectionForThisThread() {
+        Integer numConnection = numAcquiredConnection.get();
+        if (numConnection == null)
+            return 0;
+        else
+            return numConnection;
+    }
+    
     /** Connection を得る */
     public final PartakeConnection getConnection() throws DAOException {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();

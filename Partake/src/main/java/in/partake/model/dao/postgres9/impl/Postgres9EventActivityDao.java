@@ -22,23 +22,23 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-class EntityEventActivityMapper extends Postgres9EntityDataMapper<EventActivity> {   
+class EntityEventActivityMapper extends Postgres9EntityDataMapper<EventActivity> {
     public EventActivity map(JSONObject obj) {
         return new EventActivity(obj).freeze();
     }
 }
 
 public class Postgres9EventActivityDao extends Postgres9Dao implements IEventActivityAccess {
-    static final String TABLE_NAME = "EventActivityEntities";
-    static final int CURRENT_VERSION = 1;
+    static final String ENTITY_TABLE_NAME = "EventActivityEntities";
     static final String INDEX_TABLE_NAME = "EventActivityIndex";
+    static final int CURRENT_VERSION = 1;
 
     private final Postgres9EntityDao entityDao;
     private final Postgres9IndexDao indexDao;
     private final EntityEventActivityMapper mapper;
-    
+
     public Postgres9EventActivityDao() {
-        this.entityDao = new Postgres9EntityDao(TABLE_NAME);
+        this.entityDao = new Postgres9EntityDao(ENTITY_TABLE_NAME);
         this.indexDao = new Postgres9IndexDao(INDEX_TABLE_NAME);
         this.mapper = new EntityEventActivityMapper();
     }
@@ -57,7 +57,7 @@ public class Postgres9EventActivityDao extends Postgres9Dao implements IEventAct
     @Override
     public void truncate(PartakeConnection con) throws DAOException {
         Postgres9Connection pcon = (Postgres9Connection) con;
-        
+
         entityDao.truncate(pcon);
         indexDao.truncate(pcon);
     }
@@ -67,9 +67,9 @@ public class Postgres9EventActivityDao extends Postgres9Dao implements IEventAct
         Postgres9Connection pcon = (Postgres9Connection) con;
 
         // TODO: Why User does not have createdAt and modifiedAt?
-        Postgres9Entity entity = new Postgres9Entity(activity.getId(), CURRENT_VERSION, activity.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDate());
+        Postgres9Entity entity = new Postgres9Entity(activity.getId(), CURRENT_VERSION, activity.toJSON().toString().getBytes(UTF8), null, TimeUtil.getCurrentDateTime());
         if (entityDao.exists(pcon, activity.getId()))
-            entityDao.update(pcon, entity);            
+            entityDao.update(pcon, entity);
         else
             entityDao.insert(pcon, entity);
         indexDao.put(pcon, new String[] { "id", "eventId", "createdAt" }, new Object[] { activity.getId(), activity.getEventId(), activity.getCreatedAt() } );
@@ -81,8 +81,13 @@ public class Postgres9EventActivityDao extends Postgres9Dao implements IEventAct
     }
 
     @Override
+    public boolean exists(PartakeConnection con, String id) throws DAOException {
+        return entityDao.exists((Postgres9Connection) con, id);
+    }
+
+    @Override
     public void remove(PartakeConnection con, String id) throws DAOException {
-        Postgres9Connection pcon = (Postgres9Connection) con;        
+        Postgres9Connection pcon = (Postgres9Connection) con;
 
         entityDao.remove(pcon, id);
         indexDao.remove(pcon, "id", id);
@@ -105,7 +110,7 @@ public class Postgres9EventActivityDao extends Postgres9Dao implements IEventAct
                 new Object[] { eventId, length });
 
         Postgres9IdMapper<EventActivity> idMapper = new Postgres9IdMapper<EventActivity>((Postgres9Connection) con, mapper, entityDao);
-        
+
         DataIterator<EventActivity> it = new Postgres9DataIterator<EventActivity>(idMapper, psars);
         ArrayList<EventActivity> activities = new ArrayList<EventActivity>();
         try {
@@ -117,8 +122,12 @@ public class Postgres9EventActivityDao extends Postgres9Dao implements IEventAct
         } finally {
             it.close();
         }
-        
+
         return activities;
     }
 
+    @Override
+    public int count(PartakeConnection con) throws DAOException {
+        return entityDao.count((Postgres9Connection) con);
+    }
 }

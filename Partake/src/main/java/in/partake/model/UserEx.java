@@ -3,7 +3,8 @@ package in.partake.model;
 import java.util.Set;
 
 import net.sf.json.JSONObject;
-import in.partake.model.dto.TwitterLinkage;
+import in.partake.base.SafeJSONable;
+import in.partake.model.dto.UserTwitterLink;
 import in.partake.model.dto.User;
 import in.partake.resource.PartakeProperties;
 
@@ -12,41 +13,39 @@ import in.partake.resource.PartakeProperties;
  * @author shinyak
  *
  */
-public class UserEx extends User {
-    private TwitterLinkage twitterLinkage;
-    
-    public UserEx(User user, TwitterLinkage twitterLinkage) {
+public class UserEx extends User implements SafeJSONable {
+    private UserTwitterLink twitterLinkage;
+
+    public UserEx(User user, UserTwitterLink twitterLinkage) {
         super(user);
         this.twitterLinkage = twitterLinkage;
     }
-    
-    public TwitterLinkage getTwitterLinkage() {
+
+    public UserTwitterLink getTwitterLinkage() {
         return twitterLinkage;
     }
-    
-    public String getScreenName() {
+
+    public String getTwitterScreenName() {
         return twitterLinkage.getScreenName();
     }
-    
-    public String getProfileImageURL() {
+
+    public String getTwitterProfileImageURL() {
         return twitterLinkage.getProfileImageURL();
     }
-    
+
     public boolean isAdministrator() {
         String screenName = twitterLinkage.getScreenName();
         Set<String> adminScreenNames = PartakeProperties.get().getTwitterAdminNames();
         return adminScreenNames.contains(screenName);
     }
-    
-    public JSONObject toSafeJSON(boolean withTwitter) {
-    	JSONObject obj = super.toSafeJSON();
-    	
-    	assert obj.get("twitter") == null;
-    	
-    	if (withTwitter) {
-    	    obj.put("twitterLinkage", twitterLinkage.toSafeJSON());
-    	}
-    	
-    	return obj;
+
+
+    public JSONObject toSafeJSON() {
+        JSONObject obj = super.toSafeJSON();
+
+        if (twitterLinkage != null)
+            obj.put("twitter", twitterLinkage.toSafeJSON());
+
+        return obj;
     }
 }

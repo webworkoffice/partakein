@@ -23,7 +23,6 @@ public class PartakeProperties {
     }
 
     private PartakeProperties() {
-        reset();
     }
 
     /** mode 名を用いて読みなおす。初期化及びユニットテスト用途。 */
@@ -56,7 +55,7 @@ public class PartakeProperties {
             return false;
         return Boolean.parseBoolean(value);
     }
-    
+
     // ----------------------------------------------------------------------
 
     public String getMode() {
@@ -71,42 +70,12 @@ public class PartakeProperties {
         return properties.getProperty("in.partake.lucene.indexdir");
     }
 
-    public String getBitlyUserName() {
-        return properties.getProperty("in.partake.bitly.username");
-    }
+    public String getPartakeAppFactoryClassName() {
+        String str = properties.getProperty("in.partake.app.factory");
+        if (str == null)
+            str = "in.partake.app.imple.DefaultPartakeAppFactory";
 
-    public boolean usesCassandra() {
-        return getDAOFactoryClassName().equals("in.partake.model.dao.cassandra.CassandraDAOFactory");
-    }
-
-    public String getDAOFactoryClassName() {
-        String str = properties.getProperty("in.partake.database.daofactory");
-        if (str == null) {
-            return "in.partake.model.dao.cassandra.CassandraDAOFactory";
-        } else {
-            return str;
-        }
-    }
-
-    public String getConnectionPoolClassName() {
-        String str = properties.getProperty("in.partake.database.pool");
-        if (str == null) {
-            return "in.partake.model.dao.cassandra.CassandraConnectionPool";
-        } else {
-            return str;
-        }
-    }
-
-    public String getBitlyAPIKey() {
-        return properties.getProperty("in.partake.bitly.apikey");
-    }
-
-    public String getCassandraHost() {
-        return properties.getProperty("in.partake.cassandra.host");
-    }
-
-    public int getCassandraPort() {
-        return Integer.parseInt(properties.getProperty("in.partake.cassandra.port"));
+        return str;
     }
 
     public String getTopPath() {
@@ -127,9 +96,9 @@ public class PartakeProperties {
     // ----------------------------------------------------------------------
     // Twitter Bot
 
-    public int getTwitterBotTwitterId() {
+    public long getTwitterBotTwitterId() {
         try {
-            return Integer.parseInt(properties.getProperty("in.partake.twitterbot.twitterid"));
+            return Long.parseLong(properties.getProperty("in.partake.twitterbot.twitterid"));
         } catch (NumberFormatException e) {
             return -1;
         }
@@ -155,7 +124,7 @@ public class PartakeProperties {
     }
 
     private Properties readFrom(String resourceName) {
-        Properties properties = new Properties(); 
+        Properties properties = new Properties();
         InputStream inputStream = null;
         try {
             inputStream = getClass().getResourceAsStream(resourceName);
