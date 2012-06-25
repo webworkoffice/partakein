@@ -6,27 +6,27 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DirectMessageTest extends AbstractPartakeModelTest<Message> {
-    private Message[] samples;
+public class DirectMessageTest extends AbstractPartakeModelTest<DirectMessage> {
+    private DirectMessage[] samples;
 
     @Before
     public void createSamples() {
         Date now = new Date();
-        samples = new Message[] {
-            new Message(),
-            new Message("id1", "userId1", "message1", "eventId1", now),
-            new Message("id2", "userId2", "message2", "eventId2", now),
+        samples = new DirectMessage[] {
+            new DirectMessage(),
+            new DirectMessage("id1", "userId1", "message1", "eventId1", now),
+            new DirectMessage("id2", "userId2", "message2", "eventId2", now),
         };
     }
     
     @Test
     public void testCopyConstructor() {
-        for (Message source : samples) {
-            Assert.assertEquals(source, new Message(source));
+        for (DirectMessage source : samples) {
+            Assert.assertEquals(source, new DirectMessage(source));
         }
         
-        for (Message lhs : samples) {
-            for (Message rhs : samples) {
+        for (DirectMessage lhs : samples) {
+            for (DirectMessage rhs : samples) {
                 if (lhs == rhs) { continue; }
                 Assert.assertFalse(lhs.equals(rhs));
             }
@@ -34,7 +34,7 @@ public class DirectMessageTest extends AbstractPartakeModelTest<Message> {
     }
 
 	@Override
-	protected Message createModel() {
-		return new Message();
+	protected DirectMessage createModel() {
+		return new DirectMessage();
 	}
 }

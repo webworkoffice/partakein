@@ -22,7 +22,7 @@ import in.partake.model.dto.Event;
 import in.partake.model.dto.EventActivity;
 import in.partake.model.dto.EventFeedLinkage;
 import in.partake.model.dto.EventRelation;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 import in.partake.model.dto.Questionnaire;
 import in.partake.model.dto.TwitterLinkage;
 import in.partake.model.dto.User;
@@ -1180,7 +1180,7 @@ public final class EventService extends PartakeService {
         }
 
         String messageId = factory.getDirectMessageAccess().getFreshId(con);
-        Message embryo = new Message(messageId, userId, message, null, new Date());
+        DirectMessage embryo = new DirectMessage(messageId, userId, message, null, new Date());
         factory.getDirectMessageAccess().put(con, embryo);
         String envelopeId = factory.getEnvelopeAccess().getFreshId(con);
         Envelope envelope = new Envelope(envelopeId, userId, null, messageId, null, 0, null, null, DirectMessagePostingType.POSTING_TWITTER, new Date());

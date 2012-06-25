@@ -1,7 +1,7 @@
 package in.partake.model.dao;
 
 import in.partake.model.dao.access.IMessageAccess;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 
 import java.util.Date;
 import java.util.UUID;
@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, Message, String> {
+public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, DirectMessage, String> {
 	public TestName name = new TestName();
 
 	@Before
@@ -21,9 +21,9 @@ public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, M
 	}
 	
 	@Override
-	protected Message create(long pkNumber, String pkSalt, int objNumber) {
+	protected DirectMessage create(long pkNumber, String pkSalt, int objNumber) {
 	    UUID uuid = new UUID(pkNumber, ("message" + pkSalt).hashCode());
-	    return new Message(uuid.toString(), "userId" + objNumber, "some message", "eventId" + objNumber, new Date(1L));
+	    return new DirectMessage(uuid.toString(), "userId" + objNumber, "some message", "eventId" + objNumber, new Date(1L));
 	}
 	
 	@Test
@@ -33,18 +33,18 @@ public class MessageAccessTest extends AbstractDaoTestCaseBase<IMessageAccess, M
 		String eventId = "eventId" + System.currentTimeMillis();
 		try {
 			con.beginTransaction();
-			access.put(con, new Message(access.getFreshId(con), "userId", "message", eventId, new Date(100000L)));
-			access.put(con, new Message(access.getFreshId(con), "userId", "message", eventId, new Date(0L)));
-			access.put(con, new Message(access.getFreshId(con), "userId", "message", eventId, new Date(200000L)));
+			access.put(con, new DirectMessage(access.getFreshId(con), "userId", "message", eventId, new Date(100000L)));
+			access.put(con, new DirectMessage(access.getFreshId(con), "userId", "message", eventId, new Date(0L)));
+			access.put(con, new DirectMessage(access.getFreshId(con), "userId", "message", eventId, new Date(200000L)));
 			con.commit();
 
 			Date date = null;
 			int count = 0;
 			con.beginTransaction();
-			DataIterator<Message> iter = access.findByEventId(con, eventId);
+			DataIterator<DirectMessage> iter = access.findByEventId(con, eventId);
 			try {
     			while (iter.hasNext()) {
-    				Message m = iter.next();
+    				DirectMessage m = iter.next();
     				if (m == null)
     				    continue;
     				if (date != null) {

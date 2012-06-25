@@ -10,39 +10,39 @@ import in.partake.model.dao.DAOException;
 import in.partake.model.dao.DataIterator;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dao.access.IMessageAccess;
-import in.partake.model.dto.Message;
+import in.partake.model.dto.DirectMessage;
 
-public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
+public class JPAMessageDao extends JPADao<DirectMessage> implements IMessageAccess {
 
     @Override
     public String getFreshId(PartakeConnection con) throws DAOException {
-        return getFreshIdImpl(con, Message.class);
+        return getFreshIdImpl(con, DirectMessage.class);
     }
 
     @Override
-    public void put(PartakeConnection con, Message embryo) throws DAOException {
-        putImpl(con, embryo, Message.class);
+    public void put(PartakeConnection con, DirectMessage embryo) throws DAOException {
+        putImpl(con, embryo, DirectMessage.class);
     }
 
     @Override
-    public Message find(PartakeConnection con, String messageId) throws DAOException {
-        return findImpl(con, messageId, Message.class);
+    public DirectMessage find(PartakeConnection con, String messageId) throws DAOException {
+        return findImpl(con, messageId, DirectMessage.class);
     }    
     
     @Override
     public void remove(PartakeConnection con, String key) throws DAOException {
-        removeImpl(con, key, Message.class);
+        removeImpl(con, key, DirectMessage.class);
     }
 
     @Override
-    public DataIterator<Message> getIterator(PartakeConnection con) throws DAOException {
+    public DataIterator<DirectMessage> getIterator(PartakeConnection con) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT t FROM Messages t");
         
         @SuppressWarnings("unchecked")
-        List<Message> list = q.getResultList();
+        List<DirectMessage> list = q.getResultList();
         
-        return new JPAPartakeModelDataIterator<Message>(em, list, Message.class, false);
+        return new JPAPartakeModelDataIterator<DirectMessage>(em, list, DirectMessage.class, false);
     }
     
     @Override
@@ -54,19 +54,19 @@ public class JPAMessageDao extends JPADao<Message> implements IMessageAccess {
 
     
     @Override
-    public DataIterator<Message> findByEventId(PartakeConnection con, String eventId) throws DAOException {
+    public DataIterator<DirectMessage> findByEventId(PartakeConnection con, String eventId) throws DAOException {
         EntityManager em = getEntityManager(con);
         Query q = em.createQuery("SELECT m FROM Messages m WHERE m.eventId = :eventId ORDER BY m.createdAt desc");
         q.setParameter("eventId", eventId);
         
         @SuppressWarnings("unchecked")
-        List<Message> messages = q.getResultList();
-        List<Message> result = new ArrayList<Message>();
-        for (Message m : messages) {
-            result.add(new Message(m));
+        List<DirectMessage> messages = q.getResultList();
+        List<DirectMessage> result = new ArrayList<DirectMessage>();
+        for (DirectMessage m : messages) {
+            result.add(new DirectMessage(m));
         }
         
-        return new JPAPartakeModelDataIterator<Message>(em, result, Message.class, false);
+        return new JPAPartakeModelDataIterator<DirectMessage>(em, result, DirectMessage.class, false);
     }
 
 }
