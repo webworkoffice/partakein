@@ -1,3 +1,4 @@
+<%@page import="in.partake.controller.action.toppage.ToppageAction"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page import="in.partake.model.UserEx"%>
 <%@page import="in.partake.model.dto.Event"%>
@@ -9,170 +10,72 @@
 <%@page import="static in.partake.view.util.Helper.h"%>
 
 <%
-	UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
-	List<Event> recentEvents = (List<Event>)request.getAttribute(Constants.ATTR_RECENT_EVENTS);
+    UserEx user = (UserEx) request.getSession().getAttribute(Constants.ATTR_USER);
 %>
 
 <!DOCTYPE html>
 
 <html lang="ja">
 <head>
-	<jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
-	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed/all" />
-	<title>[PARTAKE]</title>
+    <jsp:include page="/WEB-INF/internal/head.jsp" flush="true" />
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/feed/all" />
+    <title>[PARTAKE]</title>
 </head>
 <body>
 
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
+<div class="container"><div class="content-body">
 
-<div class="hero-unit">
-    <h1>PARTAKE</h1>
-    <p>PARTAKE は、イベントの作成・参加管理・参加者への連絡が簡単にできる、イベント開催支援サービスです。</p>
-    <p><a href="/events/demo" class="btn btn-primary btn-large">デモを見る</a></p>
+<div class="row clearfix">
+    <div class="span8">
+        <h2>PARTAKE</h2>
+        <p>PARTAKE (パーテイク) は、イベントの作成・参加管理・参加者への連絡が簡単にできる、イベント開催支援サービスです。</p>
+        <p>飲み会のメンバー募集から、セミナーや勉強会の開催、あるいは大規模イベントの開催まで、PARTAKE は強力にイベントの開催を支援します。</p>
+        <p><a id="top-create-event" class="btn btn-large btn-info span6" href="#create-event-dialog" style="margin-bottom: 10px;">イベントを作る (無料)</a></p>
+        <p><a href="/events/<%= h(Constants.DEMO_ID.toString()) %>" class="btn btn-large span6">デモを見る</a></p>
+        <script>
+        <% if (user != null) { %>
+        $('#top-create-event').click(function(e) {
+            $('#create-event-dialog').modal('show');
+        });
+        <% } else { %>
+        $('#top-create-event').click(function(e) {
+            location.href = '/loginRequired';
+        });
+        <% } %>
+        </script>
+    </div>
+    <div class="span16">
+        <div id="toppage-carousel" class="carousel slide">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <img src="/images/carousel-search.png" alt="" style="height: 350px;">
+                    <div class="carousel-caption">
+                        <h4>イベントを探そう</h4>
+                        <p><a href="/events/search">イベント検索ページ</a>から、登録されているイベントを検索することができます。</p>
+                        <p>Twitter 上では<a href="http://twitter.com/partake_bot">公式ボット</a>がイベントが登録されるたびにつぶやきます。今すぐフォローしてイベントをチェック！</p>
+
+                    </div>
+                </div>
+                <div class="item">
+                    <img src="/images/carousel-event.png" alt="" style="height: 350px;">
+                    <div class="carousel-caption">
+                        <h4>イベントを作ろう</h4>
+                        <p>PARTAKE では、必要な情報を入力するだけで簡単にイベントページを作ることができます。イベントの登録は無料です。</p>
+                    </div>
+                </div>
+            </div>
+            <a class="left carousel-control" href="#toppage-carousel" data-slide="prev">‹</a>
+            <a class="right carousel-control" href="#toppage-carousel" data-slide="next">›</a>
+        </div>
+    </div>
 </div>
 
-<div class="row">
-	<div class="span6">
-		<h3><%= I18n.t("page.toppage.explanation.1") %></h3>
-		<ul class="top-feature">
-			<li><%= I18n.t("page.toppage.explanation.1.page") %><a href="<%= request.getContextPath() %>/events/demo">[<%= I18n.t("common.sample") %>]</a></li>
-			<li><%= I18n.t("page.toppage.explanation.1.announcement") %></li>
-		</ul>
-	
-		<h3><%= I18n.t("page.toppage.explanation.2") %></h3>
-		<ul class="top-feature">
-			<li><%= I18n.t("page.toppage.explanation.2.print") %></li>
-			<li><%= I18n.t("page.toppage.explanation.2.message") %></li>
-		</ul>
+<jsp:include page="/WEB-INF/events/_search.jsp" flush="true">
+    <jsp:param name="FORM_TYPE" value="simple" />
+</jsp:include>
 
-		<h3><%= I18n.t("page.toppage.explanation.3") %></h3>
-		<ul class="top-feature">
-			<li><%= I18n.t("page.toppage.explanation.3.search") %></li>
-			<li><a href="<%= request.getContextPath() %>/feedlist"><%= I18n.t("page.toppage.explanation.3.feed") %></a></li>
-			<li><a href="http://twitter.com/partake_bot"><%= I18n.t("page.toppage.explanation.3.bot") %></a></li>
-		</ul>
-	
-	   <h3><%= I18n.t("page.toppage.explanation.4") %></h3>
-	   <ul class="top-feature">
-			<li><%= I18n.t("page.toppage.explanation.4.issue") %></li>
-			<li><%= I18n.t("page.toppage.explanation.4.developer") %></li>
-			<li><%= I18n.t("page.toppage.explanation.4.faq") %></li>
-	   </ul>
-	</div><%-- end of span6 --%>
-
-	<div class="span6"><div class="tabbable">
-		<%-- ログインしていれば、直近のイベントを表示する --%>
-		<ul class="nav nav-tabs">
-			<% if (user != null) { %>
-			<li class="active"><a href="#registered-events" data-toggle="tab">登録イベント</a></li>
-			<li><a href="#managing-events" data-toggle="tab">管理イベント</a></li>
-			<li><a href="#new-events" data-toggle="tab">新着</a></li>
-			<%-- <li><a href="#recent-events" data-toggle="tab">締切間近</a></li>  --%>
-			<% } else { %>
-			<li class="active"><a href="#new-events" data-toggle="tab">新着</a></li>
-			<%-- <li><a href="#recent-events" data-toggle="tab">締切間近</a></li>  --%>
-			<% } %>
-		</ul>
-		
-		<%-- TODO: This source code should be more beautiful. --%>
-		<div class="tab-content top-page-events">
-			<% if (user != null) { %>
-			<%-- 登録イベント --%>
-			<% List<Event> enrolled = (List<Event>) request.getAttribute(Constants.ATTR_ENROLLED_EVENTSET); %>
-			<div id="registered-events" class="tab-pane active">
-				<% if (enrolled != null && !enrolled.isEmpty()) { %>
-					<% for (int i = 0; i < 3 && i < enrolled.size(); ++i) { %>
-						<% Event event = enrolled.get(i); %>
-						<% if (event == null) { continue; } %>
-						<div class="well thin"><div class="row event">
-							<div class="event-image span-onehalf">
-								<% if (event.getForeImageId() != null) { %>
-									<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-									<img class="rad sdw cler" src="/events/images/<%= event.getForeImageId() %>" alt="" /></a>
-								<% } else { %>
-									<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-									<img class="rad sdw cler" src="/images/no-image.png" alt="" /></a>
-								<% } %>
-							</div>
-							<div class="span5">
-								<h3><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></h3>
-								<p><%= h(event.getSummary()) %>
-								<% if (event.getBeginDate() != null) { %>
-									<br /><%= I18n.t("event.time") %>：<%= Helper.readableDate(event.getBeginDate()) %>
-								<% } %></p>
-							</div>
-						</div></div>
-					<% } %>
-				<% } else { %>
-					<p><%= I18n.t("page.toppage.recent.entry.empty") %></p>
-				<% } %>
-				<p class="more"><a href="<%= request.getContextPath() %>/mypage"><%= I18n.t("page.toppage.recent.more") %></a></p>
-			</div>
-		
-			<%-- 管理イベント --%>
-			<% List<Event> owned = (List<Event>) request.getAttribute(Constants.ATTR_OWNED_EVENTSET); %>
-			<div id="managing-events" class="tab-pane">
-				<% if (owned != null && !owned.isEmpty()) { %>
-					<% for (int i = 0; i < 3 && i < owned.size(); ++i) { %>
-						<% Event event = owned.get(i); %>
-						<% if (event == null) { continue; } %>
-						<div class="well thin"><div class="row event">
-							<div class="event-image span-onehalf">
-								<% if (event.getForeImageId() != null) { %>
-									<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-									<img class="rad sdw cler" src="/events/images/<%= event.getForeImageId() %>" alt="" /></a>
-								<% } else { %>
-									<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-									<img class="rad sdw cler" src="/images/no-image.png" alt="" /></a>
-								<% } %>
-							</div>
-							<div class="span5">
-								<h3><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></h3>
-								<p><%= h(event.getSummary()) %>
-								<% if (event.getBeginDate() != null) { %>
-									<br /><%= I18n.t("event.time") %>：<%= Helper.readableDate(event.getBeginDate()) %>
-								<% } %></p>
-							</div>
-						</div></div>
-					<% } %>
-				<% } else { %>
-					<p><%= I18n.t("page.toppage.recent.admin.empty") %></p>
-				<% } %>
-				<p class="more"><a href="<%= request.getContextPath() %>/mypage"><%= I18n.t("page.toppage.recent.more") %></a></p>
-			</div>
-			<% } %>
-		
-			<%-- 新着イベント --%>
-			<div id="new-events" class="tab-pane<%= user != null ? "" : " active" %>">
-				<% if (recentEvents != null) { %>
-					<% for (Event event : recentEvents) { %>
-						<% if (event == null) { continue; } %>
-						<div class="well thin"><div class="row event">
-							<div class="event-image span-onehalf">
-								<% if (event.getForeImageId() != null) { %>
-									<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-									<img class="rad sdw cler" src="/events/images/<%= event.getForeImageId() %>" alt="" /></a>
-								<% } else { %>
-									<a href="<%= request.getContextPath() %>/events/<%= event.getId() %>">
-									<img class="rad sdw cler" src="/images/no-image.png" alt="" /></a>
-								<% } %>
-							</div>
-							<div class="span5">
-								<h3><a href="<%= request.getContextPath() %>/events/<%= event.getId() %>"><%= h(event.getTitle()) %></a></h3>
-								<p><%= h(event.getSummary()) %>
-								<% if (event.getBeginDate() != null) { %>
-									<br /><%= I18n.t("event.time") %>：<%= Helper.readableDate(event.getBeginDate()) %>
-								<% } %></p>
-							</div>
-						</div></div>
-					<% } %>
-				<% } %>
-				<p class="more"><a href="/events/search"><%= I18n.t("page.toppage.recent.more") %></a></p>
-			</div>
-		</div>
-	</div></div><%-- end of span6 and --%>
-</div>
-
-<jsp:include page="/WEB-INF/internal/footer.jsp" flush="true" />
+</div></div>
+<jsp:include page="/WEB-INF/internal/footer.jsp" />
 </body>
 </html>

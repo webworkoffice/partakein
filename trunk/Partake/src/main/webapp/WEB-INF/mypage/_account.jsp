@@ -1,0 +1,121 @@
+<%@page import="in.partake.model.dto.UserOpenIDLink"%>
+<%@page import="in.partake.model.dto.UserPreference"%>
+<%@page import="in.partake.controller.action.mypage.MypageAction"%>
+<%@page import="in.partake.resource.PartakeProperties"%>
+<%@page import="in.partake.view.util.Helper"%>
+<%@page import="java.util.List"%>
+<%@page import="in.partake.model.UserEx"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@page import="in.partake.resource.Constants"%>
+<%@page import="static in.partake.view.util.Helper.h"%>
+<%@taglib prefix="s" uri="/struts-tags" %>
+
+<%
+    UserEx user = (UserEx)request.getSession().getAttribute(Constants.ATTR_USER);
+    MypageAction action = (MypageAction) request.getAttribute(Constants.ATTR_ACTION);
+    UserPreference pref = action.getPreference();
+    List<UserOpenIDLink> associatedOpenIds = action.getOpenIds();
+%>
+
+<h2>OpenID でログインできるようにする</h2>
+<p>何らかの理由でtwitter が使用できない場合に、OpenID でログインできるようにします。設定には、Google や mixi などの OpenID と Twitter ID を結び付ける必要があります。</p>
+
+
+<div class="row"><form class="form-horizontal"><fieldset>
+    <div class="control-group">
+        <label class="control-label">Open ID</label>
+        <div class="controls">
+        <% if (associatedOpenIds != null && !associatedOpenIds.isEmpty()) { %>
+            <% for (UserOpenIDLink openid : associatedOpenIds) { %>
+                <p><%= h(openid.getIdentifier()) %>
+                    <a href="#" title="結びつけを解除する" onclick="removeOpenID('<%= h(openid.getIdentifier()) %>')">[&times;]</a>
+                </p>
+            <% } %>
+        <% } else { %>
+            <p>現在どの OpenID とも結び付けられていません。</p>
+        <% } %>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <input type="button" data-toggle="modal" class="btn" data-target="#openid-connect-dialog" value="新しく OpenID と結びつける..." />
+        </div>
+    </div>
+</fieldset></form></div>
+
+<script>
+    function removeOpenID(ident) {
+        if (!window.confirm(ident + ' の結びつけが解除されます。よろしいですか？'))
+            return;
+
+        partake.account.removeOpenID(ident)
+        .done(function(json) {
+            location.reload();
+        })
+        .fail(function(xhr) {
+            try {
+                var json = $.parseJSON(xhr.responseText);
+                alert(json.reason);
+            } catch (e) {
+                alert('レスポンスが JSON 形式ではありません。');
+            }
+        });
+    }
+</script>
+
+
+<div id="openid-connect-dialog" class="modal" style="display:none">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">&times;</a>
+        <h3>OpenID と結びつけ</h3>
+    </div>
+    <div class="modal-body">
+        <p>次の ID と結びつけ</p>
+        <form method="post" action="/auth/connectWithOpenID" class="inline-block">
+            <%= Helper.tokenTags() %>
+            <input type="hidden" name="openidIdentifier" value="https://www.google.com/accounts/o8/id" />
+            <input type="submit" value="Google" />
+        </form>
+        <form method="post" action="/auth/connectWithOpenID" class="inline-block">
+            <%= Helper.tokenTags() %>
+            <input type="hidden" name="openidIdentifier" value="https://mixi.jp" />
+            <input type="submit" value="Mixi" />
+        </form>
+        <form method="post" action="/auth/connectWithOpenID" class="inline-block">
+            <%= Helper.tokenTags() %>
+            <input type="hidden" name="openidIdentifier" value="http://yahoo.co.jp" />
+            <input type="submit" value="Yahoo Japan" />
+        </form>
+        <form method="post" action="/auth/connectWithOpenID" class="inline-block">
+            <%= Helper.tokenTags() %>
+            <input type="hidden" name="openidIdentifier" value="http://livedoor.com/" />
+            <input type="submit" value="Livedoor" />
+        </form>
+
+        <p>はてな ID と結びつけ</p>
+        <form name="connectWithHatenaForm" method="post" action="/auth/connectWithOpenID" style="display:none">
+            <%= Helper.tokenTags() %>
+            <input type="hidden" id="connect-hatena-openid-identifier" name="openidIdentifier" value="http://www.hatena.ne.jp/" />
+            <input type="submit" value="はてな ID と結びつけ" />
+        </form>
+        <div>
+            <script>
+                function connectWithHatena() {
+                    var name = $("#connect-hatena-username").val().replace(/^\s+|\s+$/g, "");
+                    var ident = "http://www.hatena.ne.jp/" + name;
+                    $("#connect-hatena-openid-identifier").val(ident);
+                    document.connectWithHatenaForm.submit();
+                }
+            </script>
+            <input type="text" id="connect-hatena-username" value="" placeholder="はてな ID を入力" />
+            <input type="button" value="はてな ID と結びつけ" onclick="connectWithHatena()" />
+        </div>
+
+        <p>URL を使って結びつけ</p>
+        <form method="post" action="/auth/connectWithOpenID">
+            <%= Helper.tokenTags() %>
+            <input type="text" name="openidIdentifier" value="" placeholder="http:// OpenID URL を入力" />
+            <input type="submit" value="URL を使って結びつけ" />
+        </form>
+    </div>
+</div>

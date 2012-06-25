@@ -18,15 +18,11 @@ public class UserPreference extends PartakeModel<UserPreference> {
     private boolean receivingTwitterMessage;
     @Column
     private boolean tweetingAttendanceAutomatically;
-    
+
     public static UserPreference getDefaultPreference(String userId) {
         return new UserPreference(userId, true, true, false);
     }
-    
-    public UserPreference() {
-        // do nothing
-    }
-    
+
     public UserPreference(String userId, boolean profilePublic, boolean receivingTwitterMessage, boolean tweetingAttendanceAutomatically) {
         this.userId = userId;
         this.profilePublic = profilePublic;
@@ -40,79 +36,74 @@ public class UserPreference extends PartakeModel<UserPreference> {
         this.receivingTwitterMessage = pref.receivingTwitterMessage;
         this.tweetingAttendanceAutomatically = pref.tweetingAttendanceAutomatically;
     }
-    
+
     public UserPreference(JSONObject obj) {
         this.userId = obj.getString("id");
         this.profilePublic = obj.getBoolean("profilePublic");
         this.receivingTwitterMessage = obj.getBoolean("receivingTwitterMessage");
         this.tweetingAttendanceAutomatically = obj.getBoolean("tweetingAttendanceAutomatically");
     }
-    
+
     @Override
     public Object getPrimaryKey() {
         return userId;
     }
-    
-    @Override
-    public UserPreference copy() {
-        return new UserPreference(this);
-    }
-    
+
     public JSONObject toSafeJSON() {
         JSONObject obj = new JSONObject();
         obj.put("profilePublic", profilePublic);
         obj.put("receivingTwitterMessage", receivingTwitterMessage);
         obj.put("tweetingAttendanceAutomatically", tweetingAttendanceAutomatically);
-        
+
         return obj;
     }
-    
+
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put("id", userId);
         obj.put("profilePublic", profilePublic);
         obj.put("receivingTwitterMessage", receivingTwitterMessage);
-        obj.put("tweetingAttendanceAutomatically", tweetingAttendanceAutomatically);        
+        obj.put("tweetingAttendanceAutomatically", tweetingAttendanceAutomatically);
         return obj;
     }
-    
+
     // ---------------------------------------------------------------
     // equals method
-    
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof UserPreference)) { return false; }
-        
+
         UserPreference lhs = this;
         UserPreference rhs = (UserPreference) obj;
-        
+
         if (!ObjectUtils.equals(lhs.userId, rhs.userId)) { return false; }
         if (!ObjectUtils.equals(lhs.profilePublic, rhs.profilePublic)) { return false; }
         if (!ObjectUtils.equals(lhs.receivingTwitterMessage, rhs.receivingTwitterMessage)) { return false; }
         if (!ObjectUtils.equals(lhs.tweetingAttendanceAutomatically, rhs.tweetingAttendanceAutomatically)) { return false; }
-        
+
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         int code = 0;
-        
+
         code = code * 37 + ObjectUtils.hashCode(userId);
         code = code * 37 + ObjectUtils.hashCode(profilePublic);
         code = code * 37 + ObjectUtils.hashCode(receivingTwitterMessage);
         code = code * 37 + ObjectUtils.hashCode(tweetingAttendanceAutomatically);
-        
+
         return code;
     }
-    
+
     // ---------------------------------------------------------------
     // accessors
-    
+
     public String getUserId() {
         return userId;
     }
-    
+
     public boolean isProfilePublic() {
         return profilePublic;
     }
@@ -120,11 +111,11 @@ public class UserPreference extends PartakeModel<UserPreference> {
     public boolean isReceivingTwitterMessage() {
         return receivingTwitterMessage;
     }
-    
+
     public boolean tweetsAttendanceAutomatically() {
         return tweetingAttendanceAutomatically;
     }
-    
+
     public void setUserId(String userId) {
         checkFrozen();
         this.userId = userId;
@@ -144,8 +135,8 @@ public class UserPreference extends PartakeModel<UserPreference> {
         checkFrozen();
         this.receivingTwitterMessage = receivingTwitterMessage;
     }
-    
 
-	
+
+
 
 }

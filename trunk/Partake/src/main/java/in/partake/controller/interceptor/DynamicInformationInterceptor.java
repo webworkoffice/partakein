@@ -1,12 +1,11 @@
 package in.partake.controller.interceptor;
 
+import in.partake.controller.action.AbstractPartakeAction;
+import in.partake.resource.Constants;
+import in.partake.session.PartakeSession;
+
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
-
-import in.partake.controller.PartakeActionSupport;
-import in.partake.resource.Constants;
-import in.partake.servlet.PartakePageAttribute;
-import in.partake.servlet.PartakeSession;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
@@ -29,22 +28,18 @@ public class DynamicInformationInterceptor extends AbstractInterceptor {
 
         // TODO: ATTR_CURRENT_URL should be moved to PartakePageAttribute.
         // TODO: ATTR_CURRENT_URL should be OBSOLETE later.
-        if (action instanceof PartakeActionSupport) {
-            PartakeActionSupport pas = (PartakeActionSupport) action;
+        if (action instanceof AbstractPartakeAction) {
+            AbstractPartakeAction pas = (AbstractPartakeAction) action;
             pas.setCurrentURL(currentURL);
             ServletActionContext.getRequest().setAttribute(Constants.ATTR_CURRENT_URL, currentURL);
         } else {
             logger.warn("action is not extended from PartakeActionSupport");
         }
 
-        // create PartakeSession & PartakePageAttribute
+        // create PartakeSession
         if (context.getSession() != null && !context.getSession().containsKey(Constants.ATTR_PARTAKE_SESSION)) {
             PartakeSession partakeSession = PartakeSession.createInitialPartakeSession();
             context.getSession().put(Constants.ATTR_PARTAKE_SESSION, partakeSession);
-        }
-        if (ServletActionContext.getRequest().getAttribute(Constants.ATTR_PARTAKE_PAGE_ATTRIBUTE) == null) {
-            PartakePageAttribute attribute = new PartakePageAttribute();
-            ServletActionContext.getRequest().setAttribute(Constants.ATTR_PARTAKE_PAGE_ATTRIBUTE, attribute);
         }
 
         logger.info("processing... " + currentURL);

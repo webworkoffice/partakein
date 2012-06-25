@@ -1,16 +1,13 @@
 package in.partake.view.util;
 
-import in.partake.model.dao.DAOException;
+import in.partake.base.DateTime;
+import in.partake.base.Util;
 import in.partake.model.dto.Event;
-import in.partake.model.dto.User;
-import in.partake.model.dto.auxiliary.ParticipationStatus;
+import in.partake.model.dto.EventTicket;
+import in.partake.model.dto.auxiliary.TicketApplicationStart;
 import in.partake.resource.Constants;
-import in.partake.service.EventService;
-import in.partake.service.UserService;
-import in.partake.servlet.PartakeSession;
-import in.partake.util.SessionUtil;
-import in.partake.util.Util;
-import in.partake.util.security.CSRFPrevention;
+import in.partake.session.CSRFPrevention;
+import in.partake.session.PartakeSession;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -19,6 +16,8 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
 import org.owasp.validator.html.AntiSamy;
@@ -29,7 +28,7 @@ import org.owasp.validator.html.ScanException;
 
 /**
  * View に関する定型処理をまとめたもの。
- * 
+ *
  * @author shinyak
  */
 public final class Helper {
@@ -48,39 +47,31 @@ public final class Helper {
     }
 
     public static String getSessionToken() {
-        PartakeSession session = SessionUtil.getSession();
-        if (session == null) { return null; }
-        return session.getCSRFPrevention().getSessionToken();
+        Map<String, Object> session = ServletActionContext.getContext().getSession();
+        if (session == null)
+            return null;
+
+        PartakeSession partakeSession = (PartakeSession) session.get(Constants.ATTR_PARTAKE_SESSION);
+        if (partakeSession == null)
+            return null;
+
+        return partakeSession.getCSRFPrevention().getSessionToken();
     }
-    
-    // TODO: should be renamed to tokenTags()
-    public static String token() {
-        return sessionTokenInputTag() + onetimeTokenInputTag();
+
+    public static String tokenTags() {
+        return sessionTokenInputTag();
     }
 
     /** CSRF 対策用の token を発行。*/
     public static String sessionTokenInputTag() {
         PartakeSession session = (PartakeSession) ServletActionContext.getContext().getSession().get(Constants.ATTR_PARTAKE_SESSION);
         assert session != null;
-        
-        CSRFPrevention prevention = session.getCSRFPrevention(); 
+
+        CSRFPrevention prevention = session.getCSRFPrevention();
         assert (prevention != null);
 
-        String tokenInput  = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_TOKEN, prevention.getSessionToken());
+        String tokenInput  = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_SESSION, prevention.getSessionToken());
         return tokenInput;
-    }
-
-    /** 重複チェック用の onetime token を発行 */
-    public static String onetimeTokenInputTag() {
-        PartakeSession session = (PartakeSession) ServletActionContext.getContext().getSession().get(Constants.ATTR_PARTAKE_SESSION);
-        assert session != null;
-        
-        CSRFPrevention prevention = session.getCSRFPrevention(); 
-        assert (prevention != null);
-        
-        String onetimeInput = String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\" />", Constants.ATTR_PARTAKE_ONETIME_TOKEN, prevention.issueOnetimeToken());
-
-        return onetimeInput;
     }
 
     /**
@@ -108,7 +99,7 @@ public final class Helper {
             case '>': builder.append("&gt;"); break;
             case '"': builder.append("&quot;"); break;
             case '\'': builder.append("&apos;"); break;
-            default:  
+            default:
                 if (Character.isIdentifierIgnorable(s.codePointAt(i))) {
                     // ignore.
                 } else {
@@ -155,7 +146,7 @@ public final class Helper {
             case '"': builder.append("&quot;"); break;
             case '\'': builder.append("&apos;"); break;
             case '\n': builder.append("<br />"); break;
-            default:                
+            default:
                 if (Character.isIdentifierIgnorable(s.codePointAt(i))) {
                     // ignore.
                 } else {
@@ -197,44 +188,22 @@ public final class Helper {
         "日", "月", "火", "水", "木", "金", "土"
     };
 
-    /** 参加ステータスを表示します */
-    public static String enrollmentStatus(User user, Event event) {
-        try {
-            ParticipationStatus status = UserService.get().getParticipationStatus(user.getId(), event.getId());
+    /** 日時を読みやすい形で表示します */
+    public static String shortReadableData(DateTime dt) {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(dt.toDate());
 
-            switch (status) {
-            case ENROLLED: {
-                int order = EventService.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
-                if (order <= event.getCapacity() || event.getCapacity() == 0) {
-                    return "参加";
-                } else {
-                    return "補欠 (参加予定)";
-                }
-            }
-            case RESERVED: {
-                int order = EventService.get().getOrderOfEnrolledEvent(event.getId(), user.getId());
-                if (order <= event.getCapacity() || event.getCapacity() == 0) {
-                    return "仮参加";
-                } else {
-                    return "補欠 (仮参加予定)";
-                }
-            }
-            case NOT_ENROLLED:
-                return "未参加";
-            case CANCELLED:
-                return "キャンセル";
-            default:
-                return "エラー";
-            }
-        } catch (DAOException e) {
-            e.printStackTrace();
-            return "データベースエラー";
-        }
-    }   
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int date = cal.get(Calendar.DAY_OF_MONTH);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int min = cal.get(Calendar.MINUTE);
+
+        return String.format("%04d/%d/%d %02d:%02d", year, month, date, hour, min);
+    }
 
     /** 日時を読みやすい形で表示します */
     public static String readableDate(Date d) {
-
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(d);
 
@@ -261,6 +230,24 @@ public final class Helper {
         return String.format("%04d年%d月%d日(%s) %02d:%02d", year, month, date, dayStr, hour, min);
     }
 
+    public static String readableDate(DateTime d) {
+        return readableDate(new Date(d.getTime()));
+    }
+
+    public static String readableApplicationDuration(EventTicket ticket, Event event) {
+        if (TicketApplicationStart.ANYTIME.equals(ticket.getApplicationStart()))
+            return readableDate(ticket.acceptsTill(event)) + "まで";
+
+        return Helper.readableDuration(ticket.acceptsFrom(event), ticket.acceptsTill(event));
+    }
+
+    public static String readableDuration(DateTime beginDate, DateTime endDate) {
+        Date begin = beginDate != null ? new Date(beginDate.getTime()) : null;
+        Date end = endDate != null ? new Date(endDate.getTime()) : null;
+        return readableDuration(begin, end);
+    }
+
+    @Deprecated
     public static String readableDuration(Date beginDate, Date endDate) {
         if (endDate == null) {
             return readableDate(beginDate);
@@ -270,7 +257,7 @@ public final class Helper {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(endDate);
 
-            return readableDate(beginDate) + 
+            return readableDate(beginDate) +
             String.format(" - %02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
         } else {
             return readableDate(beginDate) + " - " + readableDate(endDate);
@@ -297,7 +284,7 @@ public final class Helper {
 
     public static String readableCapacity(int enrolled, int capacity) {
         if (capacity == 0) { return String.format("%d 人 / -", enrolled); }
-        else { return String.format("%d 人 / %d 人", enrolled, capacity); }       
+        else { return String.format("%d 人 / %d 人", enrolled, capacity); }
     }
 
     public static String readableReminder(Date date) {
@@ -318,7 +305,7 @@ public final class Helper {
     public static String javascript(String... relativePaths) {
         // TODO: すべてつなげて minify したものを作成し、それを常によむようにすると高速化されるので、そうしたい。
         StringBuilder builder = new StringBuilder();
-        
+
         String contextPath = ServletActionContext.getRequest().getContextPath();
         for (String relativePath : relativePaths) {
             String filePath = ServletActionContext.getServletContext().getRealPath(relativePath);
@@ -328,11 +315,11 @@ public final class Helper {
                 continue;
             }
             long time = file.lastModified();
-            
+
             String absolutePath = String.format("%s%s", contextPath, relativePath);
             builder.append(String.format("<script type=\"text/javascript\" src=\"%s?%d\"></script>\n", h(absolutePath), time));
         }
-        
+
         return builder.toString();
     }
 }

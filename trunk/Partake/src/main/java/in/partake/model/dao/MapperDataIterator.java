@@ -6,12 +6,12 @@ import java.util.NoSuchElementException;
 public class MapperDataIterator<S, T> extends DataIterator<T> {
     private DataMapper<S, T> mapper;
     private DataIterator<S> iterator;
-    
+
     public MapperDataIterator(DataMapper<S, T> mapper, DataIterator<S> iterator) {
         this.mapper = mapper;
         this.iterator = iterator;
     }
-    
+
     @Override
     public boolean hasNext() throws DAOException {
         return iterator.hasNext();
@@ -29,10 +29,10 @@ public class MapperDataIterator<S, T> extends DataIterator<T> {
     public void close() {
         iterator.close();
     }
-    
+
     @Override
     public void remove() throws DAOException, UnsupportedOperationException {
-        iterator.close();
+        iterator.remove();
     }
 
     @Override

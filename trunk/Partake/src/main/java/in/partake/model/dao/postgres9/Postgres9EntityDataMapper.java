@@ -10,7 +10,7 @@ import net.sf.json.JSONObject;
 
 // You should override map(Postgres9Entity) or map(JSONObject).
 public abstract class Postgres9EntityDataMapper<T extends PartakeModel<T>> implements DataMapper<Postgres9Entity, T> {
-    static protected Charset UTF8 = Charset.forName("utf-8");
+    static final protected Charset UTF8 = Charset.forName("utf-8");
 
     @Override
     public T map(Postgres9Entity entity) throws DAOException {

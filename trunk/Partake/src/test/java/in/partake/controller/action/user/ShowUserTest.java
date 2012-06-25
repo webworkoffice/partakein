@@ -1,0 +1,57 @@
+package in.partake.controller.action.user;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+import in.partake.controller.action.ActionControllerTest;
+import in.partake.model.fixture.TestDataProvider;
+
+import org.junit.Test;
+
+import com.opensymphony.xwork2.ActionProxy;
+
+public class ShowUserTest extends ActionControllerTest {
+    @Test
+    public void testShowDefaultUser() throws Exception {
+        ActionProxy proxy = getActionProxy("/users/" + TestDataProvider.DEFAULT_USER_ID);
+
+        proxy.execute();
+        assertResultSuccess(proxy);
+
+        ShowAction action = (ShowAction) proxy.getAction();
+        assertThat(action.getUser().getId(), is(TestDataProvider.DEFAULT_USER_ID));
+        assertThat(action.getLocation(), is("users/show.jsp"));
+    }
+
+    @Test
+    public void testShowUserWithoutPref() throws Exception {
+        ActionProxy proxy = getActionProxy("/users/" + TestDataProvider.USER_WITHOUT_PREF_ID);
+
+        proxy.execute();
+        assertResultSuccess(proxy);
+
+        ShowAction action = (ShowAction) proxy.getAction();
+        assertThat(action.getUser().getId(), is(TestDataProvider.USER_WITHOUT_PREF_ID));
+        assertThat(action.getLocation(), is("users/show.jsp"));
+    }
+
+    @Test
+    public void testShowPrivatePrefUser() throws Exception {
+        ActionProxy proxy = getActionProxy("/users/" + TestDataProvider.USER_WITH_PRIVATE_PREF_ID);
+
+        proxy.execute();
+        assertResultSuccess(proxy);
+
+        ShowAction action = (ShowAction) proxy.getAction();
+        assertThat(action.getUser(), is(nullValue()));
+        assertThat(action.getLocation(), is("users/private.jsp"));
+    }
+
+    @Test
+    public void testShowInvalidUser() throws Exception {
+        ActionProxy proxy = getActionProxy("/users/" + INVALID_USER_ID);
+
+        proxy.execute();
+        assertResultNotFound(proxy);
+    }
+}

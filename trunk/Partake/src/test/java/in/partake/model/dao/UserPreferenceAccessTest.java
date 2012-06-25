@@ -2,6 +2,7 @@ package in.partake.model.dao;
 
 import java.util.UUID;
 
+import in.partake.app.PartakeApp;
 import in.partake.model.dao.access.IUserPreferenceAccess;
 import in.partake.model.dto.UserPreference;
 
@@ -9,8 +10,8 @@ import org.junit.Before;
 
 public class UserPreferenceAccessTest extends AbstractDaoTestCaseBase<IUserPreferenceAccess, UserPreference, String> {
     @Before
-    public void setup() throws DAOException {
-        super.setup(getFactory().getUserPreferenceAccess());
+    public void setup() throws Exception {
+        super.setup(PartakeApp.getDBService().getDAOs().getUserPreferenceAccess());
     }
 
     @Override

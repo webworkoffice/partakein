@@ -6,164 +6,23 @@
     border: 1px dashed;
 } */
 
-
-body {
-    text-align: center;
-    margin: 10px 0 0 0;
+/* max-width: 100% is buggy for IE. */
+img {
+    max-width: none;
+}
+/* But we need max-width: 100% for #selected-image */
+img#selected-image, img#foreimage-showimage {
+    max-width: 100%;
 }
 
-#sitetitle {
-    margin-left: 15px;
+.invisible-if-not-ie {
+    display: block !important;
+    position: static !important;
+    left: 0 !important;
 }
 
-#sitetitle a {
-    txt-decoration: none;
-}
-
-#header, #wrapper, #footer {
-    text-align: left;
-}
-
-#header {
-    margin: 0;
-    padding: 0;
-    width: 900px;
-}
-
-#menu {
-    display: block;
-    margin: 5px 0 0 0;
-    padding: 0;
-}
-
-#menu ul {
-    display: block;
-    margin: 0 10px 0 0;
-    padding: 0;
-}
-
-#menu ul li {
-    display: block;
-    width: 100px;
-}
-
-#menu ul li#sign-in-with-twitter-menu {
-    display: block;
-    width: 170px;
-}
-
-#menu ul li img.signinwithtwitter {
-    margin-top: 10px;
-    margin-bottom: 4px;
-    vertical-align: middle;
-    margin-left: 10px;
-}
-
-#menu ul li#loggedin-menu {
-    width: 170px;
-}
-
-#wrapper {
-    position: relative;
-    margin: 0;
-    padding: 0;
-}
-
-#footer li {
-    display: inline;
-    margin: 0 5px;
-}
-
-.top-recent-events h3 {
-    margin-top:6px;
-}
-
-.top-recent-events h2 img {
-    margin-top:5px;
-}
-
-.event-information dl {
-    margin: 0;
-}
-
-.event-information dd {
-    height: auto !important;
-    height: 15px;
-}
-
-.event-information {
-    overflow: visible;
-}
-
-.event-searched {
-    height: 190px;
-    margin-top: 16px;
-}
-
-.event-searched-content {
-    margin-left: 180px;
-}
-
-.event-searched-image {
-    position: absolute;
-    top: 0;
-    left; 0;
-    width: 170px;
-    min-height: 170px;
-}
-
-.event-searched-image img {
-    position: absolute;
-    left: -190px;
-    width: expression(this.width >= this.height ? "170px" : "auto");
-    height: expression(this.height >= this.width ? "170px" : "auto");
-}
-
-.event-form dt, .event-form dd {
-    padding: 0;
-}
-
-.event-form dd {
-    margin: 0;
-    padding: 0;
-    height: auto !important;
-    height: 50px;
-
-    width: 650px;
-    text-align: left;
-}
-
-.event-form textarea {
-    width: 600px;
-}
-
-.event-form dd input.text-input {
-    margin: 0;
-    padding: 0;
-    width: 640px;
-    height: 30px;
-}
-
-ul.actionMessage li, ul.errorMessage li{
-    position: relative;
-}
-
-.event-description {
-    clear: both;
-}
-
-#event-image-image {
-    margin: 10px 10px;
-    width: expression(this.width >= 600 ? "600px" : "auto");
-}
-
-#event-edit-submit {
-    margin-left: 330px;
-}
-
-
-.top-explanation {
-    margin-right: 0;
+.invisible-if-ie {
+    display: none;
 }
 
 .top-recent-event {

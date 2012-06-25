@@ -1,10 +1,13 @@
 package in.partake.model.dto;
 
-import in.partake.model.dto.Event;
+import in.partake.app.PartakeApp;
+import in.partake.base.DateTime;
+import in.partake.base.TimeUtil;
+import in.partake.model.fixture.TestDataProvider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Date;
+import java.util.ArrayList;
 
 import net.sf.json.JSONObject;
 
@@ -13,175 +16,105 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author skypencil (@eller86)
  */
 public final class EventTest extends AbstractPartakeModelTest<Event> {
-	Event[] samples;
+    @Override
+    protected Event copy(Event t) {
+        return new Event(t);
+    }
 
-	@Before
-	public void createSamples() {
-		samples = new Event[] {
-				new Event(),
-				new Event("id", "shortId", "title", "summary", "category",
-						new Date(), new Date(), new Date(), 0, "url", "place",
-						"address", "description", "#hashTag", "ownerId", null,
-						"foreImageId", "backImageId", true, "passcode", false, false,
-						new Date(), new Date(), -1),
-				new Event("id2", "shortId2", "title2", "summary2", "category2",
-						new Date(1), new Date(2), new Date(3), 1, "url2", "place2",
-						"address2", "description2", "#hashTag2", "ownerId2", "hoge,fuga",
-						"foreImageId2", "backImageId2", false, "passcode2", false, false,
-						new Date(4), new Date(5), 1)
-		};
-	}
+    @Override
+    protected TestDataProvider<Event> getTestDataProvider() {
+        return PartakeApp.getTestService().getTestDataProviderSet().getEventProvider();
+    }
 
-	@Test
-	public void testCopyConstructor() {
-		for (Event source : samples) {
-			// Event class doesn't override #equals() method.
-			// Assert.assertEquals(source, new Event(source));
+    Event[] samples;
 
-			Assert.assertEquals(source.getId(), new Event(source).getId());
-			Assert.assertEquals(source.getShortId(), new Event(source).getShortId());
-			Assert.assertEquals(source.getTitle(), new Event(source).getTitle());
-			Assert.assertEquals(source.getSummary(), new Event(source).getSummary());
-			Assert.assertEquals(source.getCategory(), new Event(source).getCategory());
-			Assert.assertEquals(source.getDeadline(), new Event(source).getDeadline());
-			Assert.assertEquals(source.getBeginDate(), new Event(source).getBeginDate());
-			Assert.assertEquals(source.getEndDate(), new Event(source).getEndDate());
-			Assert.assertEquals(source.getCapacity(), new Event(source).getCapacity());
-			Assert.assertEquals(source.getUrl(), new Event(source).getUrl());
-			Assert.assertEquals(source.getPlace(), new Event(source).getPlace());
-			Assert.assertEquals(source.getAddress(), new Event(source).getAddress());
-			Assert.assertEquals(source.getDescription(), new Event(source).getDescription());
-			Assert.assertEquals(source.getHashTag(), new Event(source).getHashTag());
-			Assert.assertEquals(source.getOwnerId(), new Event(source).getOwnerId());
-			Assert.assertEquals(source.getManagerScreenNames(), new Event(source).getManagerScreenNames());
-			Assert.assertEquals(source.getForeImageId(), new Event(source).getForeImageId());
-			Assert.assertEquals(source.getBackImageId(), new Event(source).getBackImageId());
-			Assert.assertEquals(source.isPrivate(), new Event(source).isPrivate());
-			Assert.assertEquals(source.getPasscode(), new Event(source).getPasscode());
-			Assert.assertEquals(source.isPreview(), new Event(source).isPreview());
-			Assert.assertEquals(source.getCreatedAt(), new Event(source).getCreatedAt());
-			Assert.assertEquals(source.getModifiedAt(), new Event(source).getModifiedAt());
-			Assert.assertEquals(source.getRevision(), new Event(source).getRevision());
+    @Before
+    public void createSamples() {
+        DateTime now = TimeUtil.getCurrentDateTime();
+        samples = new Event[] {
+                new Event("id", "title", "summary", "category",
+                        now, now, "url", "place",
+                        "address", "description", "#hashTag", "ownerId",
+                        "foreImageId", "backImageId", "passcode", false,
+                        null, new ArrayList<String>(), null,
+                        now, now, -1),
+                new Event("id2", "title2", "summary2", "category2",
+                        now, now, "url2", "place2",
+                        "address2", "description2", "#hashTag2", "ownerId2",
+                        "foreImageId2", "backImageId2", "passcode2", false,
+                        null, new ArrayList<String>(), null,
+                        now, now, 1)
+        };
+    }
 
-			if (source.getDeadline() != null) {
-				Assert.assertNotSame(source.getDeadline(), new Event(source).getDeadline());
-			}
-			if (source.getBeginDate() != null) {
-				Assert.assertNotSame(source.getBeginDate(), new Event(source).getBeginDate());
-			}
-			if (source.getEndDate() != null) {
-				Assert.assertNotSame(source.getEndDate(), new Event(source).getEndDate());
-			}
-			if (source.getCreatedAt() != null) {
-				Assert.assertNotSame(source.getCreatedAt(), new Event(source).getCreatedAt());
-			}
-			if (source.getModifiedAt() != null) {
-				Assert.assertNotSame(source.getModifiedAt(), new Event(source).getModifiedAt());
-			}
-		}
-	}
+    @Test
+    public void testCopyConstructor() {
+        for (Event source : samples) {
+            // Event class doesn't override #equals() method.
+            // Assert.assertEquals(source, new Event(source));
 
-	@Test
-	public void testCopyConstructorByReflection() throws IllegalArgumentException, IllegalAccessException {
-		for (Event source : samples) {
-			Event copy = new Event(source);
+            Assert.assertEquals(source.getId(), new Event(source).getId());
+            Assert.assertEquals(source.getTitle(), new Event(source).getTitle());
+            Assert.assertEquals(source.getSummary(), new Event(source).getSummary());
+            Assert.assertEquals(source.getCategory(), new Event(source).getCategory());
+            Assert.assertEquals(source.getBeginDate(), new Event(source).getBeginDate());
+            Assert.assertEquals(source.getEndDate(), new Event(source).getEndDate());
+            Assert.assertEquals(source.getUrl(), new Event(source).getUrl());
+            Assert.assertEquals(source.getPlace(), new Event(source).getPlace());
+            Assert.assertEquals(source.getAddress(), new Event(source).getAddress());
+            Assert.assertEquals(source.getDescription(), new Event(source).getDescription());
+            Assert.assertEquals(source.getHashTag(), new Event(source).getHashTag());
+            Assert.assertEquals(source.getOwnerId(), new Event(source).getOwnerId());
+            Assert.assertEquals(source.getForeImageId(), new Event(source).getForeImageId());
+            Assert.assertEquals(source.getBackImageId(), new Event(source).getBackImageId());
+            Assert.assertEquals(source.getPasscode(), new Event(source).getPasscode());
+            Assert.assertEquals(source.isDraft(), new Event(source).isDraft());
+            Assert.assertEquals(source.getCreatedAt(), new Event(source).getCreatedAt());
+            Assert.assertEquals(source.getModifiedAt(), new Event(source).getModifiedAt());
+            Assert.assertEquals(source.getRevision(), new Event(source).getRevision());
+        }
+    }
 
-			for (Field field : Event.class.getDeclaredFields()) {
-				if (!Modifier.isStatic(field.getModifiers())) {
-					field.setAccessible(true);
-					Assert.assertEquals(field.get(source), field.get(copy));
-				}
-			}
-		}
-	}
+    @Test
+    public void testCopyConstructorByReflection() throws IllegalArgumentException, IllegalAccessException {
+        for (Event source : samples) {
+            Event copy = new Event(source);
 
-	@Test(expected = NullPointerException.class)
-	public void testCopyConstructorByNullValue() {
-		new Event((Event) null);
-	}
+            for (Field field : Event.class.getDeclaredFields()) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    field.setAccessible(true);
+                    Assert.assertEquals(field.get(source), field.get(copy));
+                }
+            }
+        }
+    }
 
-	@Test
-	public void testCopyConstructorByFlozenInstance() {
-		Event source = new Event();
-		Assert.assertFalse(source.isFrozen());
+    @Test(expected = NullPointerException.class)
+    public void testCopyConstructorByNullValue() {
+        new Event((Event) null);
+    }
 
-		source.freeze();
-		Assert.assertTrue(source.isFrozen());
+    @Test
+    public void testCopyConstructorByFlozenInstance() {
+        Event source = new Event();
+        Assert.assertFalse(source.isFrozen());
 
-		Assert.assertFalse(new Event(source).isFrozen());
-	}
+        source.freeze();
+        Assert.assertTrue(source.isFrozen());
 
-	@Test
-	public void testIsManager() throws Exception {
-	    Event event = new Event();
-	    event.setManagerScreenNames("A, B, C, ABC   ,,,,,    D   ,E,F");
-	    
-	    Assert.assertTrue(event.isManager("A"));
-	    Assert.assertTrue(event.isManager("B"));
-	    Assert.assertTrue(event.isManager("C"));
-	    Assert.assertTrue(event.isManager("ABC"));
-	    Assert.assertTrue(event.isManager("D"));
-	    Assert.assertTrue(event.isManager("E"));
-	    Assert.assertTrue(event.isManager("F"));
-	    
-	    Assert.assertFalse(event.isManager(null));
-	    Assert.assertFalse(event.isManager(""));
-	    Assert.assertFalse(event.isManager("G"));
-	    Assert.assertFalse(event.isManager("a"));
-	    Assert.assertFalse(event.isManager("hoge"));
-	}
-	
-	@Test
-	public void testIsManagerWhenManagerScreenNamesIsNull() throws Exception {
-	    Event event = new Event();
-	    event.setManagerScreenNames(null);
-	    
-	    Assert.assertFalse(event.isManager(null));
-	    Assert.assertFalse(event.isManager(""));
-	    Assert.assertFalse(event.isManager("A"));
-	    Assert.assertFalse(event.isManager("B"));
-	    Assert.assertFalse(event.isManager("manager"));
-	}
+        Assert.assertFalse(new Event(source).isFrozen());
+    }
 
-	@Test
-	public void testIsManagerWhenManagerScreenNameIsEmpty() throws Exception {
-	    Event event = new Event();
-	    event.setManagerScreenNames("");
-
-	    Assert.assertFalse(event.isManager(null));
-	    Assert.assertFalse(event.isManager(""));
-	    Assert.assertFalse(event.isManager("A"));
-	    Assert.assertFalse(event.isManager("B"));
-	    Assert.assertFalse(event.isManager("manager"));
-	}
-
-	@Test
-	public void testIsManagerWhenManagerScreenNameIsBlank() throws Exception {
-	    Event event = new Event();
-	    event.setManagerScreenNames("    ");
-
-	    Assert.assertFalse(event.isManager(null));
-        Assert.assertFalse(event.isManager(""));
-        Assert.assertFalse(event.isManager("A"));
-        Assert.assertFalse(event.isManager("B"));
-        Assert.assertFalse(event.isManager("manager"));
-	}
-
-	@Override
-	protected Event createModel() {
-		return new Event();
-	}
-
-	@Test
-	public void testToJsonWhenBeginDateExistsAndEndDateIsNull() {
-		Event event = new Event();
-		event.setBeginDate(new Date(0L));
-		JSONObject json = event.toSafeJSON();
-		Assert.assertEquals("1970/01/01 09:00:00", json.getString("beginDate"));
-		Assert.assertFalse(json.containsKey("endDate"));
-	}
+    @Test
+    public void testToJsonWhenBeginDateExistsAndEndDateIsNull() {
+        Event event = new Event();
+        event.setBeginDate(new DateTime(0L));
+        JSONObject json = event.toSafeJSON();
+        Assert.assertEquals("1970-01-01 09:00", json.getString("beginDate"));
+        Assert.assertFalse(json.containsKey("endDate"));
+    }
 }

@@ -1,14 +1,20 @@
 package in.partake.model.fixture.impl;
 
-import java.util.Date;
-import java.util.UUID;
-
+import in.partake.base.DateTime;
+import in.partake.base.TimeUtil;
+import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
-import in.partake.model.dao.PartakeDAOFactory;
 import in.partake.model.dao.access.IEventAccess;
 import in.partake.model.dto.Event;
+import in.partake.model.dto.auxiliary.EnqueteQuestion;
+import in.partake.model.dto.auxiliary.EventCategory;
 import in.partake.model.fixture.TestDataProvider;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Event のテストデータを作成します。
@@ -16,99 +22,105 @@ import in.partake.model.fixture.TestDataProvider;
  *
  */
 public class EventTestDataProvider extends TestDataProvider<Event> {
-    
-    @Override
-    public Event create() {
-        return create(0, "", 0);
-    }
-    
+    public static final String UNIQUE_IDENTIFIER = "dlasjfjdlkhvfiaxh";
+    public static final String JAPANESE_IDENTIFIER = "音無小鳥";
+
     @Override
     public Event create(long pkNumber, String pkSalt, int objNumber) {
-        Date now = new Date(1L);
-        Date beginDate = now;
-        String url = "http://localhost:8080/";
-        String place = "";
-        String address = "";
-        String description = "";
-        Event event = new Event("eventId" + pkSalt + pkNumber, "DUMMY EVENT" + objNumber, "DUMMY EVENT", "DUMMY CATEGORY", null, beginDate , null, 0, url , place , address , description , "#partakein", "userId", null, true, "passcode", false, false, now, now);
-        
+        DateTime now = new DateTime(objNumber);
+        DateTime beginDate = now;
+
         UUID uuid = new UUID(pkNumber, ("event" + pkSalt).hashCode());
-        event.setId(uuid.toString());
+        UUID ownerId = new UUID(objNumber, objNumber);
+        Event event = new Event(uuid.toString(), "title", "summary", "category", beginDate, null,
+                "url", "place", "address", "description", "hashTag", ownerId.toString(), null, null,
+                "passcode", false, null, new ArrayList<String>(), null, now, now, 0);
         return event;
     }
-    
-	/**
-	 * <p>以下のtest用データがDatastoreにあることを保証します。
-	 * <ul>
-	 * <li>{@link TestDataProvider#EVENT_ID1}〜{@link TestDataProvider#EVENT_ID3}のEventIDを持つ公開イベント3つ
-	 * <li>{@link TestDataProvider#EVENT_PRIVATE_ID1}〜{@link TestDataProvider#EVENT_PRIVATE_ID3}のEventIDを持つ非公開イベント3つ
-	 * </ul>
-	 * @param con Datastoreへの接続
-	 * @param factory DAOファクトリクラスのインスタンス
-	 * @throws DAOException
-	 */
-    public void createFixtures(PartakeConnection con, PartakeDAOFactory factory) throws DAOException {
-        IEventAccess dao = factory.getEventAccess();
+
+    @Override
+    public List<Event> createSamples() {
+        List<Event> array = new ArrayList<Event>();
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id1", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "titl1e", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summ1ary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "ca1tegory", new DateTime(1), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(1), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "ur1l", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "pl1ace", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "addre1ss", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "descr1iption", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "ha1shTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "own1erId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "fo1reImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "bac1kImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", null, false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", true, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, null, new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), null, null, new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<EnqueteQuestion>(), new DateTime(0), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(1), new DateTime(0), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(1), 0));
+        array.add(new Event("id", "title", "summary", "category", new DateTime(0), new DateTime(0), "url", "place", "address", "description", "hashTag", "ownerId", "foreImageId", "backImageId", "passcode", false, new ArrayList<String>(), new ArrayList<String>(), null, new DateTime(0), new DateTime(0), 1));
+        return array;
+    }
+
+    public void createFixtures(PartakeConnection con, IPartakeDAOs daos) throws DAOException {
+        IEventAccess dao = daos.getEventAccess();
         dao.truncate(con);
-        
-        Date now = new Date();
-        Date late = new Date(now.getTime() + 1000 * 3600);
-        
-        dao.put(con, new Event(EVENT_ID1, "short-id1", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
 
-        // USER2 is a editor of this event.
-        dao.put(con, new Event(EVENT_ID2, "short-id2", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, TWITTER_SCREENNAME2,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
+        DateTime now = TimeUtil.getCurrentDateTime();
+        DateTime late = now.nDayAfter(1);
+        String category = EventCategory.getCategories().get(0).getKey();
 
-        dao.put(con, new Event(EVENT_ID3, "short-id3", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
+        dao.put(con, new Event(DEFAULT_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<String>(), null,
+                now, now, -1));
 
-        dao.put(con, new Event(EVENT_PRIVATE_ID1, "short-private-id1", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", true, "passcode", false, false,
-                               now, now, -1));
+        dao.put(con, new Event(PRIVATE_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, "passcode", false,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<String>(), null,
+                now, now, -1));
 
-        dao.put(con, new Event(EVENT_PRIVATE_ID2, "short-private-id2", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", true, "passcode", false, false,
-                               now, now, -1));
+        dao.put(con, new Event(JAPANESE_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "unique identifier -- " + JAPANESE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<String>(), null,
+                now, now, -1));
 
-        dao.put(con, new Event(EVENT_PRIVATE_ID3, "short-private-id3", "title", "summary", "category", 
-                               late, late, late, 0, "url", "place",
-                               "address", "description", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", true, "passcode", false, false,
-                               now, now, -1));
+        dao.put(con, new Event(UNIQUEIDENTIFIER_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "unique identifier -- " + UNIQUE_IDENTIFIER, "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<String>(), null,
+                now, now, -1));
 
+        dao.put(con, new Event(UNPUBLISHED_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, true,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<String>(), null,
+                now, now, -1));
 
-        dao.put(con, new Event(EVENT_SEARCH_ID1, "event-search-1", "title title title", "summary", "computer", 
-                               late, late, late, 0, "url", "place",
-                               "address", "unique identifier -- djlkajsd", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
+        dao.put(con, new Event(PUBLISHED_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, false,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<String>(), null,
+                now, now, -1));
 
-        dao.put(con, new Event(EVENT_SEARCH_ID2, "event-search-2", "title title title", "summary", "computer", 
-                               late, late, late, 0, "url", "place",
-                               "address", "unique identifier -- xgnasdgb", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
-
-        dao.put(con, new Event(EVENT_SEARCH_ID3, "event-search-3", "title title title", "summary", "computer", 
-                               late, late, late, 0, "url", "place",
-                               "address", "unique identifier -- 昇竜拳", "#hashTag", USER_ID1, null,
-                               "foreImageId", "backImageId", false, null, false, false,
-                               now, now, -1));
-                
+        dao.put(con, new Event(NO_PARTICIPANTS_EVENT_ID, "title", "summary", category,
+                late, late, "http://www.example.com/", "place",
+                "address", "description", "#hashTag", EVENT_OWNER_ID,
+                EVENT_FOREIMAGE_ID, EVENT_BACKIMAGE_ID, null, true,
+                Collections.singletonList(EVENT_EDITOR_ID), new ArrayList<String>(), null,
+                now, now, -1));
     }
 }

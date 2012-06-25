@@ -12,7 +12,7 @@ public class I18nTest {
     @Test
     public void testGetJapaneseResource() {
         String actual = I18n.get().getBundle(Locale.JAPANESE).getString("invalid.invalid_userid");
-        Assert.assertEquals("無効な User ID です。", actual);
+        Assert.assertEquals("無効な UserID です。", actual);
     }
 
     @Test
