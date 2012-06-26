@@ -195,7 +195,7 @@
 
     <!-- Account API -->
     <package name="account-api" namespace="/api/account" extends="partake-api-default">
-        <action name="" class="in.partake.controller.api.account.GetAPI" />
+        <action name="get" class="in.partake.controller.api.account.GetAPI" />
         <action name="events" class="in.partake.controller.api.account.GetEventsAPI" />
         <action name="tickets" class="in.partake.controller.api.account.GetTicketsAPI" />
         <action name="images" class="in.partake.controller.api.account.GetImagesAPI" />
@@ -209,7 +209,7 @@
 
     <!-- User API -->
     <package name="user-api" namespace="/api/user" extends="partake-api-default">
-        <action name="" class="in.partake.controller.api.user.GetAPI" />
+        <action name="get" class="in.partake.controller.api.user.GetAPI" />
         <action name="events" class="in.partake.controller.api.user.GetEventsAPI" />
         <action name="tickets" class="in.partake.controller.api.user.GetTicketsAPI" />
         <action name="search" class="in.partake.controller.api.user.SearchUserAPI" />
@@ -222,8 +222,7 @@
 
     <!-- Event API -->
     <package name="event-api" namespace="/api/event" extends="partake-api-default">
-        <action name="" class="in.partake.controller.api.event.GetAPI" />
-        <action name="get" class="in.partake.controller.api.event.GetAPI" /> <!-- DEPRECATED -->
+        <action name="get" class="in.partake.controller.api.event.GetAPI" />
 
         <action name="create" class="in.partake.controller.api.event.CreateAPI" />
         <action name="copy" class="in.partake.controller.api.event.CopyAPI" />

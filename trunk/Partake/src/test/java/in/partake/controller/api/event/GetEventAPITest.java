@@ -11,7 +11,7 @@ import in.partake.resource.UserErrorCode;
 public class GetEventAPITest extends APIControllerTest {
     @Test
     public void testGetEvent() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/");
+        ActionProxy proxy = getActionProxy("/api/event/get");
         addParameter(proxy, "eventId", TestDataProvider.DEFAULT_EVENT_ID);
 
         proxy.execute();
@@ -20,7 +20,7 @@ public class GetEventAPITest extends APIControllerTest {
 
     @Test
     public void testGetEventWithoutId() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/");
+        ActionProxy proxy = getActionProxy("/api/event/get");
         // addParameter(proxy, "eventId", TestDataProvider.EVENT_ID1);
 
         proxy.execute();
@@ -29,7 +29,7 @@ public class GetEventAPITest extends APIControllerTest {
 
     @Test
     public void testGetEventWithInvalidId() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/event/");
+        ActionProxy proxy = getActionProxy("/api/event/get");
         addParameter(proxy, "eventId", TestDataProvider.INVALID_EVENT_ID);
 
         proxy.execute();
@@ -41,7 +41,7 @@ public class GetEventAPITest extends APIControllerTest {
     public void testGetPrivateEventByOwner() throws Exception {
         // If a private event is requested without login,
         // 'forbidden' should be returned.
-        ActionProxy proxy = getActionProxy("/api/event/");
+        ActionProxy proxy = getActionProxy("/api/event/get");
         addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
         loginAs(proxy, TestDataProvider.EVENT_OWNER_ID);
 
@@ -53,7 +53,7 @@ public class GetEventAPITest extends APIControllerTest {
     public void testGetPrivateEventWithoutLogin() throws Exception {
         // If a private event is requested without login,
         // 'forbidden' should be returned.
-        ActionProxy proxy = getActionProxy("/api/event/");
+        ActionProxy proxy = getActionProxy("/api/event/get");
         addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
 
         proxy.execute();
@@ -64,7 +64,7 @@ public class GetEventAPITest extends APIControllerTest {
     public void testGetPrivateEventWithInvalidLogin() throws Exception {
         // If a private event is requested with invalid user,
         // 'forbidden' should be returned.
-        ActionProxy proxy = getActionProxy("/api/event/");
+        ActionProxy proxy = getActionProxy("/api/event/get");
         addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
         loginAs(proxy, TestDataProvider.EVENT_UNRELATED_USER_ID);
 
@@ -77,7 +77,7 @@ public class GetEventAPITest extends APIControllerTest {
         // Event if not logged in, when the correct passcode is provided,
         // 'get' API should succeed.
 
-        ActionProxy proxy = getActionProxy("/api/event/");
+        ActionProxy proxy = getActionProxy("/api/event/get");
         addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
         addParameter(proxy, "passcode", "passcode");
 
@@ -88,7 +88,7 @@ public class GetEventAPITest extends APIControllerTest {
     @Test
     public void testGetPrivateEventwithInvalidPasscode() throws Exception {
         // When invalid passcode is provided, 'forbidden' should be returned.
-        ActionProxy proxy = getActionProxy("/api/event/");
+        ActionProxy proxy = getActionProxy("/api/event/get");
         addParameter(proxy, "eventId", TestDataProvider.PRIVATE_EVENT_ID);
         addParameter(proxy, "passcode", "invalid-passcode");
 
