@@ -15,12 +15,11 @@ import in.partake.resource.ServerErrorCode;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-
-import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 
 public class ThumbnailAction extends AbstractPartakeAction {
     private static final long serialVersionUID = 1L;
