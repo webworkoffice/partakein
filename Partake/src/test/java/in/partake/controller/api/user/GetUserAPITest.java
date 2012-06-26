@@ -17,7 +17,7 @@ public class GetUserAPITest extends APIControllerTest {
 
     @Test
     public void testGetUser() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/");
+        ActionProxy proxy = getActionProxy("/api/user/get");
         addParameter(proxy, "userId", TestDataProvider.DEFAULT_USER_ID);
 
         proxy.execute();
@@ -44,7 +44,7 @@ public class GetUserAPITest extends APIControllerTest {
 
     @Test
     public void testGetUserWithInvalidUserId() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/");
+        ActionProxy proxy = getActionProxy("/api/user/get");
         addParameter(proxy, "userId", TestDataProvider.INVALID_USER_ID);
         proxy.execute();
 
@@ -53,7 +53,7 @@ public class GetUserAPITest extends APIControllerTest {
 
     @Test
     public void testGetUserWithoutUserId() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/user/");
+        ActionProxy proxy = getActionProxy("/api/user/get");
         proxy.execute();
 
         assertResultInvalid(proxy, UserErrorCode.MISSING_USER_ID);

@@ -50,7 +50,7 @@ public class GetAPITest extends APIControllerTest {
 
     @Test
     public void testToGetWithLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/");
+        ActionProxy proxy = getActionProxy("/api/account/get");
         loginAs(proxy, TestDataProvider.DEFAULT_USER_ID);
 
         proxy.execute();
@@ -82,7 +82,7 @@ public class GetAPITest extends APIControllerTest {
 
     @Test
     public void testToGetWithoutLogin() throws Exception {
-        ActionProxy proxy = getActionProxy("/api/account/");
+        ActionProxy proxy = getActionProxy("/api/account/get");
 
         proxy.execute();
         assertResultLoginRequired(proxy);
