@@ -62,12 +62,12 @@ body {
 <script type="text/javascript">
   window.___gcfg = {lang: 'ja'};
 
-  (function() {
+  $(document).ready(function() {
     var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
     po.src = 'https://apis.google.com/js/plusone.js';
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(po, s);
-  })();
+  });
 </script>
 </head>
 <body
@@ -100,31 +100,36 @@ body {
     <p>
 </div>
 
-<div class="row">
-    <!-- hatena -->
-    <div class="pull-right">
-        <div style="display:inline-block;">
-            <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
-            <script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-        </div>
+<div id="social-plugins" class="row">
+    <script>
+    $(document).ready(function() {
+        var socialPluginHTML =
+        // '<!-- hatena -->' +
+        '<div class="pull-right">' +
+            '<div style="display:inline-block;">' +
+                '<a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>' +
+                '<script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></' + 'script>' +
+            '</div>' +
 
-        <!-- facebook -->
-        <iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true" height="20" width="100"></iframe>
+            // '<!-- facebook -->' +
+            '<iframe id="facebook-like-button" src="http://www.facebook.com/plugins/like.php?href=<%= h(Util.encodeURIComponent(event.getEventURL())) %>&amp;layout=button_count&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" allowTransparency="true" height="20" width="100"></iframe>' +
 
-        <!--  twitter -->
-        <div style="display:inline-block; width:105px" >
-            <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>" data-width="105px">Tweet</a>
-            <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-        </div>
+            // '<!--  twitter -->' +
+            '<div style="display:inline-block; width:105px" >' +
+                '<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="partakein" data-text="<%= h(event.getTitle())%> - [PARTAKE] <%= h(event.getHashTag()) %>" data-width="105px">Tweet</a>' +
+                '<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></' + 'script>' +
+            '</div>' +
 
-        <!-- +1 -->
-        <div style="display:inline-block; width:70px;"><div class="g-plusone" data-size="medium" data-href="<%= h(event.getEventURL()) %>"></div></div>
+            // '<!-- +1 -->' +
+            '<div style="display:inline-block; width:70px;"><div class="g-plusone" data-size="medium" data-href="<%= h(event.getEventURL()) %>"></div></div>' +
 
-        <!-- rss -->
-        <% if (event.getFeedId() != null) { %>
-            <div style="display:inline-block; vertical-align: top;"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-15x15.png" /></a></div>
-        <% } %>
-    </div>
+            // '<!-- rss -->' +
+            '<% if (event.getFeedId() != null) { %><div style="display:inline-block; vertical-align: top;"><a href="/feed/event/<%= event.getFeedId() %>"><img src="<%= request.getContextPath() %>/images/feed-icon-15x15.png" /></a></div><% } %>' +
+        '</div>';
+
+        $('#social-plugins').html(socialPluginHTML);
+    });
+    </script>
 </div>
 
 <jsp:include page="/WEB-INF/events/_show_enroll.jsp" flush="true" />
