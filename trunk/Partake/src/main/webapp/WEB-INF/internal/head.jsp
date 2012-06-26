@@ -21,26 +21,12 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.19/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-
 <%-- Support HTML5 elements for IE6-8 support --%>
 <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 
-<%= Helper.javascript(
-        "/js/partake.js",
-        "/js/partake-ui.js",
-        "/js/partake-util.js",
-        "/js/vendor/jquery.ui.widget.js",
-        "/js/jquery.iframe-transport.js",
-        "/js/jquery.fileupload.js",
-        "/js/jquery-ui-timepicker-addon.js",
-        "/js/jquery-ui-timepicker-ja.js",
-        "/js/jquery.json.2.3.js",
-        "/js/jquery.masonry.min.js",
-        "/js/jquery.fixup.js",
-        "/js/bootstrap.min.js"
-        ) %>
+<script type="text/javascript" src="/js/partake-all.min.js"></script>
 
 <script type="text/javascript">
     partake = createPartakeClient('<%= Helper.getSessionToken() %>');
