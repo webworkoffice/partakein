@@ -33,18 +33,20 @@
 
 <body class="with-sub-nav">
 <jsp:include page="/WEB-INF/internal/header.jsp" flush="true" />
-<div class="container"><div class="content-body">
+<div class="container">
 
-<div class="page-header">
-    <h1>参加者一覧</h1>
-</div>
-
-<div class="subnav subnav-fixed">
+<div class="subnav subnav-fixed"><div class="container">
     <ul class="nav nav-pills nav-stacked-if-phone">
         <li><a href="#" onclick="window.print()">印刷する</a></li>
         <li><a href="/events/participants/csv/<%=event.getId()%>.csv">CSVで出力する(UTF-8)</a></li>
         <li class="pull-right"><a href="/events/<%=h(event.getId())%>">イベントに戻る</a></li>
     </ul>
+</div></div>
+
+<div class="content-body">
+
+<div class="page-header">
+    <h1>参加者一覧</h1>
 </div>
 
 <h3><%=h(event.getTitle())%> - 参加者リスト</h3>
