@@ -238,7 +238,7 @@
         <action name="postComment" class="in.partake.controller.api.event.PostCommentAPI" />
         <action name="removeComment" class="in.partake.controller.api.event.RemoveCommentAPI" />
 
-        <action name="getNotifications" class="in.partake.controller.api.event.GetNotificationsAPI" />
+        <action name="notifications" class="in.partake.controller.api.event.GetNotificationsAPI" />
     </package>
 
     <!-- Ticket API -->

@@ -199,7 +199,7 @@
                 eventId: eventId
             };
 
-            return $.post('/api/event/getNotifications', arg);
+            return $.post('/api/event/notifications', arg);
         }
     };
 
