@@ -1,0 +1,7 @@
+<Context docbase="ROOT" path="/" reloadable="true">
+        <Resource name="jdbc/postgres" auth="Container"
+              type="javax.sql.DataSource" driverClassName="org.postgresql.Driver"
+              url="jdbc:postgresql://127.0.0.1:5432/partake"
+              username="partake" password="partake" maxActive="20" maxIdle="10"
+              maxWait="-1" />
+</Context>
