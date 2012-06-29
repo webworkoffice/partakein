@@ -11,7 +11,7 @@
         </div>
         <div class="span12">
             <h3>About</h3>
-            <p><a href="http://code.google.com/p/partakein/">Copyright &copy; The PARTAKE Committers</a></p>
+            <p><a href="https://github.com/partakein/">Copyright &copy; The PARTAKE Committers</a></p>
             <p><a href="http://www.worksap.co.jp/">Powered by <img src="<%= request.getContextPath() %>/images/worksapplications.png" alt=""></a>
                 and <a href="http://aiit.ac.jp/"><img src="<%= request.getContextPath() %>/images/aiit-logo.png"></a></p>
             <p><a href="http://career.worksap.co.jp/newgraduate/geek/index.html">[PR] <%= I18n.t("page.recruitment") %></a></p>
