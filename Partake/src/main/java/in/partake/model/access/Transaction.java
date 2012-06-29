@@ -21,7 +21,12 @@ public abstract class Transaction<T> {
 
             return result;
         } finally {
-            con.invalidate();
+            try {
+                if (con.isInTransaction())
+                    con.rollback();
+            } finally {
+                con.invalidate();
+            }
         }
     }
 
