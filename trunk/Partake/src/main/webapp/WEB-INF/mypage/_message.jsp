@@ -72,10 +72,11 @@
     }
 
     function update(nthPage) {
-        partake.account.getMessages((nthPage - 1) * 10, 10)
+        var SIZE_PER_PAGE = 30;
+        partake.account.getMessages((nthPage - 1) * SIZE_PER_PAGE, SIZE_PER_PAGE)
         .done(function (json) {
             createTable(nthPage, json.messages);
-            var lst = partakeUI.pagination($('#' + ident + '-pagination'), nthPage, json.totalMessagesCount, 10);
+            var lst = partakeUI.pagination($('#' + ident + '-pagination'), nthPage, json.totalMessagesCount, SIZE_PER_PAGE);
             for (var i = 0; i < lst.length; ++i) {
                 lst[i].anchor.click((function(i) {
                     return function() { update(lst[i].pageNum); };
