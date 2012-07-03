@@ -30,13 +30,20 @@
 
 <%--
     1. 各チケットの参加者を表示する
-    2. 補欠、キャンセル者はデフォルトでは表示せず、「補欠者、キャンセル者も表示する」をクリックすることで表示される
 --%>
 
 <% for (EventTicket ticket : tickets) {
     EventTicketHolderList list = ticketHoldersMap.get(ticket.getId()); %>
 <div>
-    <h3><%= h(ticket.getName()) %> (参加者)</h3>
+    <h2><%= h(ticket.getName()) %></h2>
+    <table class="table table-bordered">
+        <colgroup><col class="span3"><col class="span4"></colgroup>
+        <tr><th>参加者</th><td><%= list.getEnrolledParticipations().size() %> 人 (仮参加者 <%= list.getReservedEnrolled() %> 人)</td></tr>
+        <tr><th>補欠</th><td><%= list.getSpareParticipations().size() %> 人 (仮参加者 <%= list.getReservedSpare() %> 人)</td></tr>
+        <tr><th>キャンセル</th><td><%= list.getCancelledParticipations().size() %>人</td></tr>
+    </table>
+
+    <h3>参加者</h3>
     <% if (list.getEnrolledParticipations().isEmpty()) { %>
     <p>現在参加者はいません</p>
     <% } else { %>
@@ -55,10 +62,7 @@
     <% } %>
 </div>
 
-<% if (!list.getSpareParticipations().isEmpty() || !list.getCancelledParticipations().isEmpty()) { %>
-<p><a onclick="$('#list-<%= h(ticket.getId().toString()) %>').show()">補欠・キャンセル済の参加者を表示する</a></p>
-<% } %>
-<div id="list-<%= h(ticket.getId().toString()) %>" style="display: none">
+<div id="list-<%= h(ticket.getId().toString()) %>">
     <h3>補欠</h3>
     <% if (list.getSpareParticipations().isEmpty()) { %>
     <p>現在補欠者はいません</p>
