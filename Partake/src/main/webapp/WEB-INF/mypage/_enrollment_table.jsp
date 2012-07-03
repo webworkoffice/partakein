@@ -99,10 +99,11 @@
     }
 
     function update(nthPage) {
-        partake.account.getTickets((nthPage - 1) * 10, 10)
+        var SIZE_PER_PAGE = 30;
+        partake.account.getTickets((nthPage - 1) * SIZE_PER_PAGE, SIZE_PER_PAGE)
         .done(function (json) {
             createTable(nthPage, json.ticketStatuses);
-            var lst = partakeUI.pagination($('#' + ident + '-pagination'), nthPage, json.totalTicketCount, 10);
+            var lst = partakeUI.pagination($('#' + ident + '-pagination'), nthPage, json.totalTicketCount, SIZE_PER_PAGE);
             for (var i = 0; i < lst.length; ++i) {
                 lst[i].anchor.click((function(i) {
                     return function() { update(lst[i].pageNum); };
