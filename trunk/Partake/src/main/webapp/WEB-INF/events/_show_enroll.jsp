@@ -37,7 +37,7 @@
 <div class="enroll-bar">
     <div class="row clearfix">
         <div class="span6">
-            <p style="font-size: 20px; line-height: 40px;"><%= ticket.getName() %></p>
+            <p style="font-size: 20px; line-height: 40px;"><%= h(ticket.getName()) %></p>
         </div>
         <div class="span10">
             <p>定員 <%= ticket.isAmountInfinite() ? "制限なし" : String.valueOf(ticket.getAmount()) %></p>
