@@ -21,7 +21,7 @@ class PartakeDaemonTask extends TimerTask {
     @Override
     public void run() {
         if (!PartakeProperties.get().isEnabledTwitterDaemon()) {
-            logger.debug("Twitter daemon task is disabled.");
+            logger.info("Twitter daemon task is disabled.");
             return;
         }
 
