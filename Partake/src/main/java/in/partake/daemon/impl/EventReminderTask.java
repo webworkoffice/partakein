@@ -3,6 +3,7 @@ package in.partake.daemon.impl;
 import in.partake.base.DateTime;
 import in.partake.base.PartakeException;
 import in.partake.base.TimeUtil;
+import in.partake.base.Util;
 import in.partake.daemon.IPartakeDaemonTask;
 import in.partake.model.UserTicketEx;
 import in.partake.model.EventEx;
@@ -48,9 +49,11 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
         try {
             while (it.hasNext()) {
                 Event e = it.next();
-                if (e == null) { continue; }
+                if (e == null)
+                    continue;
                 String eventId = e.getId();
-                if (eventId == null) { continue; }
+                if (eventId == null || !Util.isUUID(eventId))
+                    continue;
                 EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
                 if (event == null) { continue; }
                 if (event.getBeginDate().isBefore(now)) { continue; }
