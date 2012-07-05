@@ -97,6 +97,7 @@
     <package name="admin" namespace="/admin" extends="partake-default">
         <action name="" class="in.partake.controller.action.admin.AdminPageAction" />
         <action name="recreateEventIndex" class="in.partake.controller.action.admin.AdminEventIndexRecreationAction" />
+        <action name="recreateEventIndexForDB" class="in.partake.controller.action.admin.AdminEventIndexForDBRecreationAction" />
     </package>
 
     <package name="users" namespace="/users" extends="partake-default">
