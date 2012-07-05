@@ -45,6 +45,7 @@
     <div class="span12">
         <h2>いろんなリンク</h2>
         <p><a href="/admin/recreateEventIndex">Luceneインデックス の再生成</a></p>
+        <p><a href="/admin/recreateEventIndexForDB">Event インデックス の再生成 (For DB)</a></p>
     </div>
 </div>
 
