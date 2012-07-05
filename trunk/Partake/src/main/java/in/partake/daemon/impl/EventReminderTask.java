@@ -35,6 +35,11 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
     private static final Logger logger = Logger.getLogger(EventReminderTask.class);
 
     @Override
+    public String getName() {
+        return "EventRedminerTask";
+    }
+
+    @Override
     public void run() throws Exception {
         this.execute();
     }
@@ -52,15 +57,26 @@ class EventReminderTask extends Transaction<Void> implements IPartakeDaemonTask 
                 if (e == null)
                     continue;
                 String eventId = e.getId();
-                if (eventId == null || !Util.isUUID(eventId))
+                if (eventId == null)
                     continue;
-                EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
-                if (event == null) { continue; }
-                if (event.getBeginDate().isBefore(now)) { continue; }
+                if (!Util.isUUID(eventId)) {
+                    logger.warn("eventId is not UUID.... Should not happen. : " + eventId);
+                    continue;
+                }
 
-                List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
-                for (EventTicket ticket : tickets)
-                    sendEventNotification(con, daos, ticket, event, topPath, now);
+                EventEx event = EventDAOFacade.getEventEx(con, daos, eventId);
+                if (event == null)
+                    continue;
+                if (event.getBeginDate().isBefore(now))
+                    continue;
+
+                try {
+                    List<EventTicket> tickets = daos.getEventTicketAccess().findEventTicketsByEventId(con, eventId);
+                    for (EventTicket ticket : tickets)
+                        sendEventNotification(con, daos, ticket, event, topPath, now);
+                } catch (Exception exn) {
+                    logger.error("EventReminderTask threw an error", exn);
+                }
             }
         } finally {
             it.close();

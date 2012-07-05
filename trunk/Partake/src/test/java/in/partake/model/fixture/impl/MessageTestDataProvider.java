@@ -5,8 +5,6 @@ import in.partake.model.IPartakeDAOs;
 import in.partake.model.dao.DAOException;
 import in.partake.model.dao.PartakeConnection;
 import in.partake.model.dto.Message;
-import in.partake.model.dto.UserReceivedMessage;
-import in.partake.model.dto.auxiliary.MessageDelivery;
 import in.partake.model.fixture.TestDataProvider;
 
 import java.util.ArrayList;
