@@ -1,0 +1,1 @@
+Migrated to https://github.com/partakein/partake/wiki/Developer-Guide

@@ -1,0 +1,1 @@
+PARTAKE is a web application to manage event organization.
